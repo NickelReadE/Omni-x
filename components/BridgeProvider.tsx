@@ -94,7 +94,7 @@ export const BridgeProvider = ({
     (async () => {
       const filteredNFT = nfts.filter((item: { name: string, chain: string }) => (item.name?.startsWith('Ow') && getChainIdFromName(item.chain) === provider?._network?.chainId))
       const selectedItem = filteredNFT.length > 0 ? filteredNFT[0] : null
-      if (selectedItem !== null && provider?._network?.chainId) {
+      if (selectedItem !== null && provider?._network?.chainId && unwrapInfo === undefined) {
         if (selectedItem.contract_type === 'ERC721') {
           const ERC721Instance = getERC721Instance(selectedItem.token_address, provider?._network?.chainId, null)
           const noSignerOmniXInstance = getOmnixBridgeInstance(provider?._network?.chainId, null)

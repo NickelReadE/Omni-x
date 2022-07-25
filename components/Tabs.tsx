@@ -54,19 +54,8 @@ type TabProps = {
 
 const Tabs = ({blur}: TabProps) => {
   const [currentTab, setCurrentTable] = React.useState<string>('NFTs')
-  const dispatch = useDispatch()
-
-  const {
-    address
-  } = useWallet()
 
   const nfts = useSelector(selectUserNFTs)
-
-  useEffect(() => {
-    if (address) {
-      dispatch(getUserNFTs(address) as any)
-    }
-  }, [address])
 
   return (
     <>
