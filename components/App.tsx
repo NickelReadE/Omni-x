@@ -1,27 +1,21 @@
-import Layout from './Layout'
-import { WalletProvider } from './WalletProvider'
-import {DndContext, DragEndEvent, DragStartEvent} from '@dnd-kit/core'
 import React from 'react'
+import {DndContext} from '@dnd-kit/core'
+import { WalletProvider } from './WalletProvider'
+import {BridgeProvider} from './BridgeProvider'
+import Layout from './Layout'
 
 type AppProps = {
   children?: React.ReactNode
 }
 
 function App({ children }: AppProps) {
-  const handleDragEnd = ({ active }: DragEndEvent) => {
-    const { id } = active
-    // console.log(active)
-    // console.log(id)
-  }
-  const handleDragStart = ({ active }: DragStartEvent) => {
-    // console.log(active)
-  }
-
   return (
     <WalletProvider>
-      <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-        <Layout>{children}</Layout>
-      </DndContext>
+      <BridgeProvider>
+        <DndContext>
+          <Layout>{children}</Layout>
+        </DndContext>
+      </BridgeProvider>
     </WalletProvider>
   )
 }
