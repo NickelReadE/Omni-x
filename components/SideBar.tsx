@@ -13,9 +13,9 @@ import {
   getERC721Instance,
   getERC1155Instance,
   getOmnixBridge1155Instance,
-  getOmnixBridgeInstance, validateContract
+  getOmnixBridgeInstance,
 } from '../utils/contracts'
-import {getAddressByName, getChainIdFromName, getLayerzeroChainId} from '../utils/constants'
+import {getChainIdFromName, getLayerzeroChainId} from '../utils/constants'
 import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
 import {openSnackBar} from '../redux/reducers/snackBarReducer'
@@ -34,7 +34,7 @@ const SideBar: React.FC = () => {
     connect: connectWallet,
     switchNetwork
   } = useWallet()
-  const { estimateGasFee, unwrapInfo } = useBridge()
+  const { estimateGasFee, unwrapInfo, validateONFT } = useBridge()
 
   const dispatch = useDispatch()
   const ref = useRef(null)
@@ -81,6 +81,7 @@ const SideBar: React.FC = () => {
   const [dragEnd, setDragEnd] = useState(false)
   const [targetChain, setTargetChain] = useState(97)
   const [estimatedFee, setEstimatedFee] = useState<BigNumber>(BigNumber.from('0'))
+  const [isONFT, setIsONFT] = useState(false)
   const [unwrap, setUnwrap] = useState(false)
   const {setNodeRef} = useDroppable({
     id: 'droppable',
@@ -108,6 +109,9 @@ const SideBar: React.FC = () => {
       if (id.toString().length > 0 && event.over !== null) {
         const index = id.toString().split('-')[1]
         setSelectedNFTItem(nfts[index])
+        validateONFT(nfts[index]).then((res) => {
+          setIsONFT(res)
+        })
         const metadata = nfts[index].metadata
         setImageError(false)
         // setChain(chain_list[nfts[index].chain])
@@ -631,9 +635,17 @@ const SideBar: React.FC = () => {
                     <img src="/svgs/fantom.svg" width={25} height={25} />
                   </button>
                 </div>
-                <button className="bg-g-400 text-white w-[172px] py-[10px] rounded-full m-auto" onClick={handleTransfer}>
-                  Transfer
-                </button>
+                {
+                  isONFT
+                    ?
+                    <button className="bg-g-400 text-white w-[172px] py-[10px] rounded-full m-auto" onClick={handleUnwrap}>
+                      Unwrap
+                    </button>
+                    :
+                    <button className="bg-g-400 text-white w-[172px] py-[10px] rounded-full m-auto" onClick={handleTransfer}>
+                      Transfer
+                    </button>
+                }
               </div>
             }
           </li>
