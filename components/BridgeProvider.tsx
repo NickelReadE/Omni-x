@@ -29,6 +29,7 @@ export const BridgeProvider = ({
 
   const [estimating, setEstimating] = useState(false)
   const [unwrapInfo, setUnwrapInfo] = useState<UnwrapInfo | undefined>()
+  const [selectedUnwrapInfo, setSelectedUnwrapInfo] = useState<UnwrapInfo | undefined>()
 
   const dispatch = useDispatch()
   const nfts = useSelector(selectUserNFTs)
@@ -103,7 +104,17 @@ export const BridgeProvider = ({
           const originERC721Instance = getERC721Instance(originAddress, chainId, null)
           const owner = await originERC721Instance.ownerOf(nft.token_id)
           const bridgeAddress = getAddressByName('Omnix', chainId)
-          return owner === bridgeAddress
+          if (owner === bridgeAddress) {
+            setSelectedUnwrapInfo({
+              type: 'ERC721',
+              chainId: chainId,
+              originAddress: originAddress,
+              persistentAddress: nft.token_address,
+              tokenId: nft.token_id,
+            })
+            return true
+          }
+          return false
         }
         return false
       }
@@ -149,6 +160,7 @@ export const BridgeProvider = ({
       value={{
         estimating,
         unwrapInfo,
+        selectedUnwrapInfo,
         validateONFT,
         estimateGasFee
       }}

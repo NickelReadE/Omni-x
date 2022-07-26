@@ -7,12 +7,13 @@ export type UnwrapInfo = {
   chainId: number,
   originAddress: string,
   persistentAddress: string,
-  tokenId: number
+  tokenId: string
 }
 
 export type BridgeContextType = {
   estimating: boolean,
   unwrapInfo: UnwrapInfo | undefined,
+  selectedUnwrapInfo: UnwrapInfo | undefined,
   validateONFT: (nft: NFTItem) => Promise<boolean>,
   estimateGasFee: (selectedNFTItem: NFTItem, senderChainId: number, targetChainId: number) => Promise<BigNumber>
 }
@@ -20,6 +21,7 @@ export type BridgeContextType = {
 export const BridgeContext = createContext<BridgeContextType>({
   estimating: false,
   unwrapInfo: undefined,
+  selectedUnwrapInfo: undefined,
   validateONFT: async () => false,
   estimateGasFee: async () => BigNumber.from('0'),
 })

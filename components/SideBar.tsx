@@ -34,7 +34,7 @@ const SideBar: React.FC = () => {
     connect: connectWallet,
     switchNetwork
   } = useWallet()
-  const { estimateGasFee, unwrapInfo, validateONFT } = useBridge()
+  const { estimateGasFee, unwrapInfo, selectedUnwrapInfo, validateONFT } = useBridge()
 
   const dispatch = useDispatch()
   const ref = useRef(null)
@@ -286,6 +286,23 @@ const SideBar: React.FC = () => {
       }
     }
   }, [unwrapInfo, provider?._network?.chainId, signer])
+
+  const onUnwrap = async () => {
+    if (provider?._network?.chainId && selectedUnwrapInfo) {
+      try {
+        const contractInstance = getOmnixBridgeInstance(selectedUnwrapInfo.chainId, signer)
+        const erc721Instance = getERC721Instance(selectedUnwrapInfo.persistentAddress, selectedUnwrapInfo.chainId, signer)
+        const operator = await erc721Instance.getApproved(BigNumber.from(selectedUnwrapInfo.tokenId))
+        if (operator !== contractInstance.address) {
+          await (await erc721Instance.approve(contractInstance.address, BigNumber.from(selectedUnwrapInfo.tokenId))).wait()
+        }
+        const tx = await contractInstance.withdraw(selectedUnwrapInfo.persistentAddress, selectedUnwrapInfo.tokenId)
+        await tx.wait()
+      } catch (e: any) {
+        console.log(e)
+      }
+    }
+  }
 
   useEffect(() => {
     (async () => {
@@ -620,7 +637,7 @@ const SideBar: React.FC = () => {
                 {
                   isONFT
                     ?
-                    <button className="bg-g-400 text-white w-[172px] py-[10px] rounded-full m-auto" onClick={handleUnwrap}>
+                    <button className="bg-g-400 text-white w-[172px] py-[10px] rounded-full m-auto" onClick={onUnwrap}>
                       Unwrap
                     </button>
                     :
