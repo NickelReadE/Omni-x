@@ -4,6 +4,8 @@ import Image from 'next/image'
 
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
+import ConfirmSell from '../../../components/collections/ConfirmSell'
+import ConfirmBid from '../../../components/collections/ConfirmBid'
 
 import { getNFTInfo, selectNFTInfo } from '../../../redux/reducers/collectionsReducer'
 import LazyLoad from 'react-lazyload'
@@ -18,23 +20,18 @@ import PngSub from '../../../public/images/subButton.png'
 
 import PngEtherBg from '../../../public/images/collections/ethereum_bg.png'
 import PngEther from '../../../public/images/collections/ethereum.png'
+import PngEtherSvg from '../../../public/images/collections/ethereum.svg'
 import PngIcon1 from '../../../public/images/collections/dbanner1.png'
 import PngIcon2 from '../../../public/images/collections/dbanner2.png'
 import PngIcon3 from '../../../public/images/collections/dbanner3.png'
 
 import image_25 from '../../../public/images/image 25.png'
 
-interface NFTMetaData {
-  name: string,
-  image: string,
-  attributes: Array<{trait_type: string, value: string}>,
-  description: string,
-  external_url: string,
-}
-
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('items')
+  const [openSellDlg, setOpenSellDlg] = React.useState(false)
+  const [openBidDlg, setOpenBidDlg] = React.useState(false)
 
   const router = useRouter()
   const dispatch = useDispatch()
@@ -50,84 +47,80 @@ const Item: NextPage = () => {
     }
   }, [col_url, token_id])
 
+  const truncate = (str: string) => {
+    return str.length > 12 ? str.substring(0, 9) + "..." : str;
+  }
+
+  const bidData = [
+    {account: '', chain: 'eth', bid: '', bidtype: '', owner: ''},
+    {account: '', chain: 'eth', bid: '', bidtype: '', owner: ''},
+    {account: '', chain: 'eth', bid: '', bidtype: '', owner: ''},
+    {account: '', chain: 'eth', bid: '', bidtype: '', owner: ''},
+    {account: '', chain: 'eth', bid: '', bidtype: '', owner: ''},
+    {account: '', chain: 'eth', bid: '', bidtype: '', owner: ''},
+  ]
+
   return (
     <>
       {nftInfo && nftInfo.nft && 
         <div className="w-full mt-40 pr-[70px] pb-[120px]">
           <div className="w-full 2xl:px-[10%] xl:px-[5%] lg:px-[2%] md:px-[2%] ">
-            <div className="grid grid-cols-3 gap-12 ">
+            <div className="grid grid-cols-3 2xl:gap-12 lg:gap-1 xl:gap-4">
               <div className="col-span-1">
                 <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
-                  <img src={imageError?'/images/omnix_logo_black_1.png':nftInfo.nft.image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={nftInfo.nft.image} />
+                  <img className='rounded-[8px]' src={imageError?'/images/omnix_logo_black_1.png':nftInfo.nft.image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={nftInfo.nft.image} />
                 </LazyLoad>
               </div>
               <div className="col-span-2">
                 <div className="px-6 py-3 bg-[#F8F9FA]">
-                  <div className='flex'>
-                    <h1 className="text-[#1E1C21] text-[32px] font-bold mr-32">{nftInfo.collection.name}</h1>
-                    <Image src={PngCheck} alt="checkpng"/>
+                  <div className='flex items-center'>
+                    <h1 className="text-[#1E1C21] text-[32px] font-bold mr-8">{nftInfo.collection.name}</h1>
+                    <div className='h-[22px]'><Image src={PngCheck} alt="checkpng"/></div>
                   </div>
-                  <div className="flex justify-start items-center">
+                  <div className="flex justify-between items-center mt-5">
                     <h1 className="text-[#1E1C21] text-[23px] font-normal underline">{nftInfo.nft.name}</h1>
                     <Image src={PngSub} alt=""/>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 divide-x  px-6 py-3 mt-6">
-                  <div >
+                <div className="grid 2xl:grid-cols-3 lg:grid-cols-[200px_1fr_1fr] xl:grid-cols-[230px_1fr_1fr] px-6 py-3 mt-6">
+                  <div className="">
                     <div className="flex justify-start items-center">
                       <h1 className="text-[#1E1C21] text-[20px] font-bold">owner:</h1>
-                      <h1 className="text-[#B444F9] text-[20px] font-normal underline ml-4">BOOBA.ETH</h1>
+                      <h1 className="text-[#B444F9] text-[20px] font-normal underline ml-4 break-all lg:ml-1">BOOBA.ETH</h1>
                     </div>
-                    <div className="flex">
-                      <h1 className="text-[#1E1C21] text-[60px] font-normal mr-28">69.5</h1>
-                      <Image src={PngEther} alt="eth"/>
+                    <div className="flex justify-between items-center mt-6">
+                      <h1 className="text-[#1E1C21] text-[60px] font-normal leading-[4rem]">69.5</h1>
+                      <div className="mr-5"><PngEtherSvg /></div>
                     </div>
-                    <div className="">
+                    <div className="mb-3">
                       <h1>$175,743.58</h1>
-                      <div className="flex justify-start items-center mt-3"><h1 className="mr-3 font-semibold">Highest Bid: <span className="font-normal">45</span></h1><Image src={PngEther} width={15} height={16} alt="chain  logo" /></div>
-                      <div className="flex justify-start items-center mt-3"><h1 className="mr-3 font-semibold">Last Sale: <span className="font-normal">42</span></h1><Image src={PngEther} width={15} height={16} alt="chain logo" /></div>
-                      <button className="w-[95px] px-5 py-2 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] ml-[100px]">bid</button>
+                      <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-semibold">Highest Bid: <span className="font-normal">45</span></h1><Image src={PngEther} width={15} height={16} alt="chain  logo" /></div>
+                      <div className="flex justify-start items-center"><h1 className="mr-3 font-semibold">Last Sale: <span className="font-normal">42</span></h1><Image src={PngEther} width={15} height={16} alt="chain logo" /></div>
+                      <div className="flex justify-end items-center">
+                        <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD]" onClick={() => {setOpenBidDlg(true)}}>bid</button>
+                      </div>
                     </div>
                   </div>
-                  <div className='pl-[58px] flex '>
-                    <div className='mr-[50px]'>
-                      <h2>account</h2>
-                      <p className='mt-[22px]'>0xdh3skfhn3...</p>
-                      <p className='mt-[22px]'>0xdh3skfhn3...</p>
-                      <p className='mt-[22px]'>0xdh3skfhn3...</p>
-                      <p className='mt-[22px]'>0xdh3skfhn3...</p>
-                    </div>
-                    <div  className='mr-[50px]'>
-                      <h2>chain</h2>
-                      <Image src={PngEther}  className='mt-[22px]'/>
-                      <Image src={PngEther}  className='mt-[22px]'/>
-                      <Image src={PngEther}  className='mt-[22px]'/>
-                      <Image src={PngEther}  className='mt-[22px]'/>
-                    </div>                      
-                    <div>
-                      <h2>bid</h2>
-                      <div className='flex mt-[22px]'>
-                        <Image src={PngEther}/>
-                        <span>45,700.00</span>
-                        <button className='bg-[#ADB5BD] round-[4px] px-10 py-1 ml-[32px]'>accept</button>
-                      </div>
-                      <div className='flex mt-[22px]'>
-                        <Image src={PngEther}/>
-                        <span>45,700.00</span>
-                        <button className='bg-[#ADB5BD] round-[4px] px-10 py-1 ml-[32px]'>accept</button>
-                      </div>
-                      <div className='flex mt-[22px]'>
-                        <Image src={PngEther}/>
-                        <span>45,700.00</span>
-                        <button className='bg-[#ADB5BD] round-[4px] px-10 py-1 ml-[32px]'>accept</button>
-                      </div>
-                      <div className='flex mt-[22px]'>
-                        <Image src={PngEther}/>
-                        <span>45,700.00</span>
-                        <button className='bg-[#ADB5BD] round-[4px] px-10 py-1 ml-[32px]'>accept</button>
-                      </div>
-                      
+                  <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
+                    <div className="overflow-x-hidden overflow-y-auto grid 2xl:grid-cols-[30%_25%_25%_20%] lg:grid-cols-[30%_18%_32%_20%] xl:grid-cols-[30%_18%_32%_20%] max-h-[285px]">
+                      <div className="font-bold text-[18px]">account</div>
+                      <div className="text-center font-bold text-[18px]">chain</div>
+                      <div className="font-bold text-[18px]">bid</div>
+                      <div></div>
+                      {
+                        bidData.map((item, index) => {
+                          return <>
+                            <div className='break-all mt-3'>{truncate('0x0F20E363294b858507aA7C84EF525E5700d93999')}</div>
+                            <div className="text-center mt-3"><Image src={PngEther}  className='mt-[22px]'/></div>
+                            <div className='flex justify-start items-center mt-3'>
+                              <Image src={PngIcon1}  className='mt-[22px]'/>
+                              <p className='ml-3'>45,700.00</p>
+                            </div>
+                            <div className='text-right mt-3'><button className='bg-[#ADB5BD] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5'>accept</button></div>
+                          </>
+                        })
+                      }
                     </div>
                   </div>
                 </div>
@@ -166,6 +159,8 @@ const Item: NextPage = () => {
               </div>
             </div>
           </div>
+          <ConfirmSell handleSellDlgClose={() => {setOpenSellDlg(false)}} openSellDlg={openSellDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} />
+          <ConfirmBid handleBidDlgClose={() => {setOpenBidDlg(false)}} openBidDlg={openBidDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} />
         </div>
       }
     </>

@@ -45,7 +45,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
           'py-0',
           'rounded',
           'dark:bg-gray-800',
-          'z-20',
+          'z-50',
           'fixed',
           'w-full',
         )}

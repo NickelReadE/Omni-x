@@ -271,16 +271,8 @@ const Collection: NextPage = () => {
                 <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-bold mt-3">0%</p>
               </div>
             </div>
-            <div className='mt-8'>
-              <ul className="flex flex-wrap relative justify-item-stretch text-sm font-medium text-center text-gray-500">
-                <li className={`select-none inline-block border-x-2 border-t-2 border-zince-800 text-xl px-10 py-2 rounded-t-lg ${currentTab==='items'?'bg-[#E9ECEF] text-[#1E1C21]':'bg-[#F8F9FA] text-[#6C757D]'}`} onClick={()=>setCurrentTab('items')}>items</li>
-                <li className={`select-none inline-block border-x-2 border-t-2 border-zince-800 text-xl px-10 py-2 rounded-t-lg ${currentTab==='activity'?'bg-[#E9ECEF] text-[#1E1C21]':'bg-[#F8F9FA] text-[#6C757D]'}`} onClick={()=>setCurrentTab('activity')}>activity</li>
-                <li className={`select-none inline-block border-x-2 border-t-2 border-zince-800 text-xl px-10 py-2 rounded-t-lg ${currentTab==='stats'?'bg-[#E9ECEF] text-[#1E1C21]':'bg-[#F8F9FA] text-[#6C757D]'}`} onClick={()=>setCurrentTab('stats')}>stats</li>
-              </ul>
-            </div>
           </div>
           <div className="col-span-2">
-            {/* <div className="mt-4"><button className="px-5 py-2 text-[#ADB5BD] font-['Roboto Mono'] text-lg border-2 border-[#ADB5BD] rounded-[22px]">+ watchlist</button></div> */}
             <div className="mt-7">
               { collectionInfo&&collectionInfo.discord &&
                 <Link href={collectionInfo.discord}>
@@ -307,7 +299,26 @@ const Collection: NextPage = () => {
           </div>
         </div>
       </div>
-      <div className="w-full border-t-2 border-[#E9ECEF] pr-[70px]">
+
+      <div className='w-full mt-8 border-b-2 border-[#E9ECEF]'>
+        <div className="flex">
+          <div className="w-[320px] min-w-[320px]">
+          </div>
+          <div className="px-12">
+            <ul className="flex relative justify-item-stretch text-xl font-bold text-center">
+              <li
+                className={`select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer z-30 ${currentTab === 'items' ? 'bg-[#E9ECEF] text-[#1E1C21] shadow-[1px_-1px_4px_1px_rgba(233,236,239,1)]' : 'bg-[#F8F9FA] text-[#ADB5BD] shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)]'} `}
+                onClick={() => setCurrentTab('items')}>
+                items
+              </li>
+              <li className={`select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-20 bg-[#F8F9FA] text-[#ADB5BD] `}>activity</li>
+              <li className={`select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-10 bg-[#F8F9FA] text-[#ADB5BD]`}>stats</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div className="w-full pr-[70px]">
         <div className="flex">
           <div className="w-[320px] min-w-[320px]">
             <ul className='flex flex-col space-y-4'>
@@ -432,8 +443,13 @@ const Collection: NextPage = () => {
             </ul>
           </div>
           <div className="px-12 py-6 border-l-2 border-[#E9ECEF]">
-            <div className="flex flex-row-reverse gap-4 ">
-              <div className="min-w-[180px] z-10">
+            <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 p-1 gap-4">
+            {/* <div className="flex flex-row-reverse gap-4 "> */}
+            
+              <div className="2xl:col-start-4 xl:col-start-3 lg:col-start-2 md:col-start-1">
+                <button className="rounded-lg bg-[#38B000] text-[#F8F9FA] text-lg px-6 py-2 sm:text-sm w-full">make a collection bid</button>
+              </div>
+              <div className="min-w-[180px] z-10 2xl:col-start-5 xl:col-start-4 lg:col-start-3 md:col-start-2">
                 <Listbox value={selected} onChange={onChangeSort}>
                   <div className="relative">
                     <Listbox.Button className="relative w-full cursor-default rounded-lg bg-[#E9ECEF] py-2 pl-3 pr-10 text-lg text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
@@ -482,9 +498,6 @@ const Collection: NextPage = () => {
                   </div>
                 </Listbox>
               </div>
-              <div>
-                <button className="rounded-lg bg-[#38B000] text-[#F8F9FA] text-lg px-6 py-2 sm:text-sm">make a collection bid</button>
-              </div>
             </div>
             <div className="mt-5">
               {
@@ -523,7 +536,7 @@ const Collection: NextPage = () => {
                     <div></div>
                   }
                 >
-                  <div className="grid 2xl:grid-cols-5 gap-4 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2">
+                  <div className="grid 2xl:grid-cols-5 gap-4 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 p-1">
                     { nfts.map((item, index) => {
                       console.log(item)
                       return (

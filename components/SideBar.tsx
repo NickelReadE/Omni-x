@@ -444,25 +444,25 @@ const SideBar: React.FC = () => {
             <div className="w-full py-[8px]">
               <div className="sidebar-icon">
                 {
-                  chainId === (env === 'testnet' ? 4 : 1) && <img src="/sidebar/ethereum.png" className="m-auto" />
+                  chainId === (env === 'testnet' ? 4 : 1) && <img src="/sidebar/ethereum.png" className="m-auto h-full" />
                 }
                 {
-                  chainId === (env === 'testnet' ? 421611 : 1) && <img src="/sidebar/arbitrum.png" className="m-auto" />
+                  chainId === (env === 'testnet' ? 421611 : 1) && <img src="/sidebar/arbitrum.png" className="m-auto h-full" />
                 }
                 {
-                  chainId === (env === 'testnet' ? 43113 : 1) && <img src="/sidebar/avax.png" className="m-auto" />
+                  chainId === (env === 'testnet' ? 43113 : 1) && <img src="/sidebar/avax.png" className="m-auto h-full" />
                 }
                 {
-                  chainId === (env === 'testnet' ? 97 : 1) && <img src="/sidebar/binance.png" className="m-auto" />
+                  chainId === (env === 'testnet' ? 97 : 1) && <img src="/sidebar/binance.png" className="m-auto h-full" />
                 }
                 {
-                  chainId === (env === 'testnet' ? 4002 : 1) && <img src="/sidebar/fantom.png" className="m-auto" />
+                  chainId === (env === 'testnet' ? 4002 : 1) && <img src="/sidebar/fantom.png" className="m-auto h-full" />
                 }
                 {
-                  chainId === (env === 'testnet' ? 69 : 1) && <img src="/sidebar/optimism.png" className="m-auto" />
+                  chainId === (env === 'testnet' ? 69 : 1) && <img src="/sidebar/optimism.png" className="m-auto h-full" />
                 }
                 {
-                  chainId === (env === 'testnet' ? 80001 : 1) && <img src="/sidebar/polygon.png" className="m-auto" />
+                  chainId === (env === 'testnet' ? 80001 : 1) && <img src="/sidebar/polygon.png" className="m-auto h-full" />
                 }
                 
               </div>
@@ -813,7 +813,27 @@ const SideBar: React.FC = () => {
             </div>
             <div className="w-full py-[8px]">
               <div className="sidebar-icon">
-                <img src="/sidebar/ethereum.png" className="m-auto" />
+              {
+                  chainId === (env === 'testnet' ? 4 : 1) && <img src="/sidebar/ethereum.png" className="m-auto h-full" />
+                }
+                {
+                  chainId === (env === 'testnet' ? 421611 : 1) && <img src="/sidebar/arbitrum.png" className="m-auto h-full" />
+                }
+                {
+                  chainId === (env === 'testnet' ? 43113 : 1) && <img src="/sidebar/avax.png" className="m-auto h-full" />
+                }
+                {
+                  chainId === (env === 'testnet' ? 97 : 1) && <img src="/sidebar/binance.png" className="m-auto h-full" />
+                }
+                {
+                  chainId === (env === 'testnet' ? 4002 : 1) && <img src="/sidebar/fantom.png" className="m-auto h-full" />
+                }
+                {
+                  chainId === (env === 'testnet' ? 69 : 1) && <img src="/sidebar/optimism.png" className="m-auto h-full" />
+                }
+                {
+                  chainId === (env === 'testnet' ? 80001 : 1) && <img src="/sidebar/polygon.png" className="m-auto h-full" />
+                }
               </div>
               { expandedMenu == 2 &&
                 <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{height: offsetMenu + 'px'}}>
