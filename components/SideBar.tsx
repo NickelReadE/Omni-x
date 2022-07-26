@@ -56,25 +56,7 @@ const SideBar: React.FC = () => {
   const nfts = useSelector(selectUserNFTs)
   const user = useSelector(selectUser)
 
-  const [selectedNFTItem, setSelectedNFTItem] = useState<NFTItem>({
-    amount: '1',
-    chain: 'bsc testnet',
-    contract_type: 'ERC721',
-    metadata: '',
-    name: 'TestToken',
-    token_address: '0xe667dadd7203b12c1a935b05fef5254e199ccd52',
-    token_id: '9',
-    token_uri: '',
-    attributes: '',
-    image: '',
-    custom_id: 1,
-    token: '',
-    score: 1,
-    rank: 2,
-    name1: '',
-    price: 1,
-    uri: '',
-  })
+  const [selectedNFTItem, setSelectedNFTItem] = useState<NFTItem>()
   const [image, setImage] = useState('/images/omnix_logo_black_1.png')
   const [imageError, setImageError] = useState(false)
   const [dragOver, setDragOver] = useState(false)
