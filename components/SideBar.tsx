@@ -813,7 +813,7 @@ const SideBar: React.FC = () => {
             </div>
             <div className="w-full py-[8px]">
               <div className="sidebar-icon">
-              {
+                {
                   chainId === (env === 'testnet' ? 4 : 1) && <img src="/sidebar/ethereum.png" className="m-auto h-full" />
                 }
                 {

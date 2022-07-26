@@ -1,9 +1,10 @@
-import React, {useState} from 'react'
-
+import React, {useState, ReactElement} from 'react'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import Dialog from '@material-ui/core/Dialog'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
+
+import CustomSelect from './CustomSelect'
 import Select from 'react-select'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -18,41 +19,18 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   }),
 )
-interface SelectType {
-  value: number;
-  text: string;
-}
-const data: SelectType[] = [
-  {
-    value: 1,
-    text: 'OMNI1',
-    
-  },
-  {
-    value: 2,
-    text: 'OMNI2',
-  },
+
+const data = [
+  { value: '1', text: 'OMNI1', icon: 'omnixcoin.svg' },
+  { value: '2', text: 'OMNI2', icon: 'omnixcoin.svg' }
+]
+const data1 = [
+  { value: 1, text: '1 Day', },
+  { value: 2, text: '1 Week', },
+  { value: 3, text: '1 Month', },
+  { value: 4, text: '1 Year', },
 ]
 
-const data1: SelectType[] = [
-  {
-    value: 1,
-    text: '1 Day',
-    
-  },
-  {
-    value: 2,
-    text: '1 Week',
-  },
-  {
-    value: 3,
-    text: '1 Month',
-  },
-  {
-    value: 4,
-    text: '1 Year',
-  }
-]
 interface IConfirmBidProps {
   handleBidDlgClose: () => void,
   openBidDlg: boolean,
@@ -67,7 +45,6 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
   nftTitle,
 }) => {
   const classes = useStyles()
-  const [bidType, setBidType] = useState('fixed')
   const [selectedOption, setSelectedOption] = useState(null)
 
   // handle onChange event of the dropdown
@@ -87,27 +64,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
           <div>
             <p className="text-[#6C757D] text-[18px] font-semibold">Bid Price</p>
             <div className="flex justify-start items-center mt-5">
-              <Select
-                placeholder="Select"
-                styles={{
-                  control: (styles:any) => ({ ...styles,
-                    borderRadius: '8px',
-                    backgroundColor: '#F8F9FA',
-                    border: '2px solid #E9ECEF',
-                    width: '170px'
-                  })
-                }}
-                value={selectedOption}
-                options={data}
-                isSearchable={ false }
-                onChange={handleChange}
-                getOptionLabel={(e:any) => (
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <img src={'/images/omnixcoin.svg'} />
-                    <span className="text-[#1E1C21] ml-2 font-semibold">{e ? e.text : ''}</span>
-                  </div>
-                )}
-              />
+              <CustomSelect optionData={data} />
               <input type="text" value="40.50" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F8F9FA] border-[2px] border-[#E9ECEF] rounded-lg"/>
               <span className="px-4 text-[#ADB5BD] font-light">~ $40.50 USD</span>
             </div>

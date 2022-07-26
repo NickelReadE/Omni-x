@@ -48,7 +48,7 @@ const Item: NextPage = () => {
   }, [col_url, token_id])
 
   const truncate = (str: string) => {
-    return str.length > 12 ? str.substring(0, 9) + "..." : str;
+    return str.length > 12 ? str.substring(0, 9) + '...' : str
   }
 
   const bidData = [

@@ -311,8 +311,8 @@ const Collection: NextPage = () => {
                 onClick={() => setCurrentTab('items')}>
                 items
               </li>
-              <li className={`select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-20 bg-[#F8F9FA] text-[#ADB5BD] `}>activity</li>
-              <li className={`select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-10 bg-[#F8F9FA] text-[#ADB5BD]`}>stats</li>
+              <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-20 bg-[#F8F9FA] text-[#ADB5BD]'}>activity</li>
+              <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-10 bg-[#F8F9FA] text-[#ADB5BD]'}>stats</li>
             </ul>
           </div>
         </div>
@@ -444,8 +444,6 @@ const Collection: NextPage = () => {
           </div>
           <div className="px-12 py-6 border-l-2 border-[#E9ECEF]">
             <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 p-1 gap-4">
-            {/* <div className="flex flex-row-reverse gap-4 "> */}
-            
               <div className="2xl:col-start-4 xl:col-start-3 lg:col-start-2 md:col-start-1">
                 <button className="rounded-lg bg-[#38B000] text-[#F8F9FA] text-lg px-6 py-2 sm:text-sm w-full">make a collection bid</button>
               </div>

@@ -17,7 +17,7 @@ const NFTBox = ({nft, col_url, chain}: IPropsNFTItem) => {
             <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
               <img className='collection-nft-image-item' src={imageError||nft.image==null?'/images/omnix_logo_black_1.png':nft.image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={nft.image} />
             </LazyLoad>
-            <div className="absolute top-[8px] right-[9px] p-[12px]" style={{background: "radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.2) 0%, rgba(254, 254, 255, 0) 100%)"}}>
+            <div className="absolute top-[8px] right-[9px] p-[12px]" style={{background: 'radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.2) 0%, rgba(254, 254, 255, 0) 100%)'}}>
               <div className="bg-[url('/images/ellipse.png')] hover:bg-[url('/images/ellipse_hover.png')] bg-cover w-[21px] h-[21px]"></div>
             </div>
           </div>
@@ -26,14 +26,14 @@ const NFTBox = ({nft, col_url, chain}: IPropsNFTItem) => {
           </div>
           <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle">
             <div className="flex items-center ml-3">
-                <img src="/svgs/ethereum.svg" className="w-[18px] h-[18px]" />
-                <span className="text-[#1E1C21] text-sm ml-2"> {nft.price}</span>
-              </div>
+              <img src="/svgs/ethereum.svg" className="w-[18px] h-[18px]" />
+              <span className="text-[#1E1C21] text-sm ml-2"> {nft.price}</span>
+            </div>
             <div className="mr-3 flex items-center">
               <div className="mr-3 flex items-center cursor-pointer bg-[url('/images/round-refresh.png')] hover:bg-[url('/images/round-refresh_hover.png')] bg-cover w-[20px] h-[20px]">
               </div>
               <div className="flex items-center ml-1">
-              {(chain === 'eth' || chain === 'rinkeby') &&
+                {(chain === 'eth' || chain === 'rinkeby') &&
                   <img src="/svgs/ethereum.svg" className="w-[16px] h-[16px]" />
                 }
                 {chain === 'bsc' &&

@@ -79,10 +79,10 @@ const Tabs = ({blur}: TabProps) => {
               onClick={() => setCurrentTable('NFTs')}>
               NFTs
             </li>
-            <li className={`select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-20 bg-[#f3f3f3] text-[#ADB5BD] `}>watchlist</li>
-            <li className={`select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-10 bg-[#f3f3f3] text-[#ADB5BD]`}>feed</li>
-            <li className={`select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-0 bg-[#f3f3f3] text-[#ADB5BD]`}>stats</li>
-            <li className={`absolute right-0 select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] bg-[#F8F9FA] text-[#6C757D] `}>settings</li>
+            <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-20 bg-[#f3f3f3] text-[#ADB5BD] '}>watchlist</li>
+            <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-10 bg-[#f3f3f3] text-[#ADB5BD]'}>feed</li>
+            <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-0 bg-[#f3f3f3] text-[#ADB5BD]'}>stats</li>
+            <li className={'absolute right-0 select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] bg-[#F8F9FA] text-[#6C757D] '}>settings</li>
           </ul>
           {currentTab === 'NFTs' && <NFTGrid nfts={nfts}/>}
           {currentTab === 'watchlist' && <WatchList/>}
