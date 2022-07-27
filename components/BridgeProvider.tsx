@@ -7,7 +7,7 @@ import {
   getERC721Instance,
   getLayerZeroEndpointInstance,
   getOmnixBridge1155Instance,
-  getOmnixBridgeInstance
+  getOmnixBridgeInstance, validateContract
 } from '../utils/contracts'
 import {getAddressByName, getChainIdFromName, getLayerzeroChainId} from '../utils/constants'
 import {NFTItem} from '../interface/interface'
@@ -137,17 +137,20 @@ export const BridgeProvider = ({
           const isERC721 = await ERC721Instance.supportsInterface('0x80ac58cd')
           if (isERC721) {
             const originAddress = await noSignerOmniXInstance.originAddresses(selectedItem.token_address)
-            const originERC721Instance = getERC721Instance(originAddress, chainId, null)
-            const owner = await originERC721Instance.ownerOf(selectedItem.token_id)
-            const bridgeAddress = getAddressByName('Omnix', chainId)
-            if (owner === bridgeAddress) {
-              setUnwrapInfo({
-                type: 'ERC721',
-                chainId: chainId,
-                originAddress: originAddress,
-                persistentAddress: selectedItem.token_address,
-                tokenId: selectedItem.token_id,
-              })
+            const isValid = await validateContract(provider?._network?.chainId, originAddress)
+            if (isValid) {
+              const originERC721Instance = getERC721Instance(originAddress, chainId, null)
+              const owner = await originERC721Instance.ownerOf(selectedItem.token_id)
+              const bridgeAddress = getAddressByName('Omnix', chainId)
+              if (owner === bridgeAddress) {
+                setUnwrapInfo({
+                  type: 'ERC721',
+                  chainId: chainId,
+                  originAddress: originAddress,
+                  persistentAddress: selectedItem.token_address,
+                  tokenId: selectedItem.token_id,
+                })
+              }
             }
           }
         }
