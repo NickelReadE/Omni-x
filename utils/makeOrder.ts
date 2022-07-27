@@ -4,6 +4,7 @@ import { userService } from '../services/users'
 import { orderService } from '../services/orders'
 import { addressesByNetwork, minNetPriceRatio } from '../constants'
 import { MakerOrder, signMakerOrder, SupportedChainId, SolidityType } from "@looksrare/sdk"
+import { useDispatch } from 'react-redux'
 
 interface PostMakerOrderOptionalParams {
     tokenId?: string
@@ -25,7 +26,8 @@ const prepareMakerOrder = async(
     protocolFees: BigNumber,
     creatorFees: BigNumber,
     currency: string,
-    optionalParams: PostMakerOrderOptionalParams = {}
+    optionalParams: PostMakerOrderOptionalParams = {},
+    chain: string
 ) => {
   const now = Date.now()
   const { tokenId, params, startTime, endTime } = optionalParams
@@ -43,17 +45,19 @@ const prepareMakerOrder = async(
     amount: amount.toString(),
     strategy: strategyAddress,
     currency,
-    nonce: nonce.toNumber(),
+    nonce,
     startTime: startTime ? Math.floor(startTime / 1000) : Math.floor(now / 1000),
     endTime: endTime ? Math.floor(endTime / 1000) : Math.floor(addTime(now, { months: 1 }).getTime() / 1000),
     minPercentageToAsk: Math.min(netPriceRatio, minNetPriceRatio),
     params: paramsValue,
   }
+  console.log(makerOrder)
   const signatureHash = await signMakerOrder(signer, chainId, addresses.EXCHANGE, makerOrder, paramsTypes)
 
   const data = {
     ...makerOrder,
     signature: signatureHash,
+    chain
   }
 
   return data
@@ -70,7 +74,8 @@ export const postMakerOrder = async(
   protocolFees: BigNumber,
   creatorFees: BigNumber,
   currency: string,
-  optionalParams: PostMakerOrderOptionalParams = {}
+  optionalParams: PostMakerOrderOptionalParams = {},
+  chain: string
 ) => {
     
   const signer = library.getSigner()
@@ -90,7 +95,8 @@ export const postMakerOrder = async(
     protocolFees,
     creatorFees,
     currency,
-    optionalParams
+    optionalParams,
+    chain
   )
 
   const order = await orderService.createOrder(data)
@@ -115,7 +121,8 @@ export const postMakerOrder = async(
   protocolFees: BigNumber,
   creatorFees: BigNumber,
   currency: string,
-  optionalParams: PostMakerOrderOptionalParams = {}
+  optionalParams: PostMakerOrderOptionalParams = {},
+  chain: string
 ) => {
   const signer = library.getSigner()
   const signerAddress = await signer.getAddress()
@@ -133,7 +140,8 @@ export const postMakerOrder = async(
     protocolFees,
     creatorFees,
     currency,
-    optionalParams
+    optionalParams,
+    chain
   )
 
   const order = await orderService.createOrder(data)

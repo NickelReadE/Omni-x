@@ -6,6 +6,7 @@ import { chain_list } from '../../utils/utils'
 import { IPropsNFTItem } from '../../interface/interface'
 import LazyLoad from 'react-lazyload'
 import USD from '../../public/images/USD.png'
+import { ethers } from 'ethers'
 
 
 const NFTBox = ({nft, col_url, chain}: IPropsNFTItem) => {
@@ -27,7 +28,7 @@ const NFTBox = ({nft, col_url, chain}: IPropsNFTItem) => {
             <div className="columns-2">
               <div className="flex items-center">
                 <img src="/svgs/ethereum.svg" className="w-[18px] h-[18px]" />
-                <span className="text-[#1E1C21] text-sm ml-2"> {nft.price}</span>
+                <span className="text-[#1E1C21] text-sm ml-2"> {nft.price && ethers.utils.formatEther(nft.price)}</span>
               </div>
               <div className="flex items-center flex-row-reverse">
                 {(chain === 'eth' || chain === 'rinkeby') &&

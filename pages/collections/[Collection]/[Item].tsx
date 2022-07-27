@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { getNFTInfo, selectNFTInfo } from '../../../redux/reducers/collectionsReducer'
+import { collectionsService } from '../../../services/collections'
 import LazyLoad from 'react-lazyload'
 
 import PngAlert from '../../../public/images/collections/alert.png'
@@ -20,6 +21,14 @@ import PngIcon2 from '../../../public/images/collections/dbanner2.png'
 import PngIcon3 from '../../../public/images/collections/dbanner3.png'
 
 import image_25 from '../../../public/images/image 25.png'
+import useWallet from '../../../hooks/useWallet'
+import { ethers } from 'ethers'
+import { postMakerOrder } from '../../../utils/makeOrder'
+import { addressesByNetwork } from '../../../constants'
+import { SupportedChainId } from '../../../types'
+import { getOrders, selectOrders } from '../../../redux/reducers/ordersReducer'
+import { IGetOrderRequest, IOrder } from '../../../interface/interface'
+import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
 
 interface NFTMetaData {
   name: string,
@@ -32,6 +41,14 @@ interface NFTMetaData {
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('items')
+  const [owner, setOwner] = useState('')
+  const orders = useSelector(selectOrders)
+  const [order, setOrder] = useState<IOrder>()
+
+  const {
+    provider,
+    address
+  } = useWallet()
 
   const router = useRouter()
   const dispatch = useDispatch()
@@ -42,10 +59,104 @@ const Item: NextPage = () => {
   const nftInfo = useSelector(selectNFTInfo)
 
   useEffect(() => {
+    const getNFTOwnership = async(col_url: string, token_id: string) => {
+      const tokenIdOwner = await collectionsService.getNFTOwner(col_url, token_id)
+      if ( tokenIdOwner.length > 0 ) {
+        setOwner(tokenIdOwner)
+      }
+    }
     if ( col_url && token_id ) {
       dispatch(getNFTInfo(col_url, token_id) as any)
+      getNFTOwnership(col_url, token_id)
     }
   }, [col_url, token_id])
+
+  useEffect(() => {
+    if ( nftInfo && nftInfo.collection && owner ) {
+      
+      const request: IGetOrderRequest = {
+        isOrderAsk: true,
+        chain: nftInfo.collection.chain,
+        collection: nftInfo.collection.address,
+        tokenId: nftInfo.nft.token_id,
+        signer: owner,
+        startTime: Math.floor(Date.now() / 1000).toString(),
+        endTime: Math.floor(Date.now() / 1000).toString(),
+        status: ['VALID'],
+        sort: "PRICE_ASC"
+      }
+      dispatch(getOrders(request) as any)
+    }
+  }, [nftInfo, owner])
+
+  useEffect(() => {
+    if ( orders.length > 0 ) {
+      setOrder(orders[0])
+    }
+  }, [orders])
+
+  const onBuy = async () => {
+
+  }
+
+  const onBid = async () => {
+    const price = ethers.utils.parseEther("1")
+    const chainId = 4
+    
+    const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
+    await postMakerOrder(
+      provider as any,
+      chainId,
+      false,
+      nftInfo.collection.address,
+      addresses.STRATEGY_STANDARD_SALE,
+      ethers.utils.parseUnits("1", 1),
+      price,
+      ethers.utils.parseUnits("2", 2),
+      ethers.utils.parseUnits("2", 2),
+      addresses.WETH,
+      {
+        tokenId: token_id,
+        startTime: Date.now(),
+        params: {
+          values: [4],
+          types: ["uint256"],
+        },
+      },
+      nftInfo.collection.chain
+    )
+    dispatch(openSnackBar({ message: `Make Offer Success`, status: 'success' }))
+  }
+
+  const onListing = async () => {
+    const price = ethers.utils.parseEther("1")
+    const chainId = 4
+    
+    const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
+    await postMakerOrder(
+      provider as any,
+      chainId,
+      true,
+      nftInfo.collection.address,
+      addresses.STRATEGY_STANDARD_SALE,
+      ethers.utils.parseUnits("1", 1),
+      price,
+      ethers.utils.parseUnits("2", 2),
+      ethers.utils.parseUnits("2", 2),
+      addresses.WETH,
+      {
+        tokenId: token_id,
+        startTime: Date.now(),
+        params: {
+          values: [4],
+          types: ["uint256"],
+        },
+      },
+      nftInfo.collection.chain
+    )
+
+    dispatch(openSnackBar({ message: `Listing Success`, status: 'success' }))
+  }
 
   return (
     <>
@@ -63,7 +174,9 @@ const Item: NextPage = () => {
                   <h1 className="text-[#1E1C21] text-[32px] font-bold">{nftInfo.collection.name}</h1>
                   <div className="flex justify-start items-center">
                     <h1 className="text-[#1E1C21] text-[23px] font-normal underline">{nftInfo.nft.name}</h1>
-                    <div className="flex items-center ml-16"><Image src={PngLike} alt="" /></div>
+                    <div className="flex items-center ml-16">
+                      <Image src={PngLike} alt="" />
+                    </div>
                     <span className="ml-5 text-[#ADB5BD] text-[20px]">24.5k</span>
                     <div className="flex items-center ml-8"><Image src={PngView} alt="" /></div>
                     <span className="ml-2 text-[#ADB5BD] text-[20px]">12.2k</span>
@@ -84,7 +197,7 @@ const Item: NextPage = () => {
                     <div className="flex items-center ml-3"><Image src={PngIcon3} alt="" /></div>
                   </div>
                   <div className="flex justify-start items-center mt-5 2xl:ml-40 xl:ml-40 lg:ml-20 md:ml-20">
-                    <h1 className="text-[#1E1C21] text-[60px] font-normal">{nftInfo.price}</h1>
+                    <h1 className="text-[#1E1C21] text-[60px] font-normal">{order && order.price && ethers.utils.formatEther(order.price)}</h1>
                     <div className="flex items-center ml-7"><Image src={PngEtherBg} alt="" /></div>
                     <div className="ml-12">
                       <h1>$175,743.58</h1>
@@ -93,8 +206,30 @@ const Item: NextPage = () => {
                     </div>
                   </div>
                   <div className="flex justify-start items-center mt-5 2xl:ml-40 xl:ml-40 lg:ml-20 md:ml-20">
-                    <button className="w-[220px] px-5 py-2 bg-[#1E1C21] text-[#FEFEFF] font-['Roboto Mono'] font-semibold text-[30px] rounded-[8px] border-2 border-[#1E1C21] z-10">buy</button>
-                    <button className="w-[220px] px-5 py-2 bg-[#E9ECEF] text-[#6C757D] font-['Roboto Mono'] font-semibold text-[30px] rounded-[8px] border-2 border-[#ADB5BD] relative -left-2.5">bid</button>
+                    { order && owner && address && owner.toLowerCase() != address.toLowerCase() && 
+                      <button 
+                        className="w-[220px] px-5 py-2 bg-[#1E1C21] text-[#FEFEFF] font-['Roboto Mono'] font-semibold text-[30px] rounded-[8px] border-2 border-[#1E1C21] z-10"
+                        onClick={(e) => onBuy()}
+                      >
+                        buy
+                      </button>
+                    }
+                    { owner && address && owner.toLowerCase() != address.toLowerCase() && 
+                      <button 
+                        className="w-[220px] px-5 py-2 bg-[#E9ECEF] text-[#6C757D] font-['Roboto Mono'] font-semibold text-[30px] rounded-[8px] border-2 border-[#ADB5BD] relative -left-2.5"
+                        onClick={(e) => onBid()}
+                      >
+                        bid
+                      </button>
+                    }
+                    { address && owner && owner.toLowerCase() == address.toLowerCase() && 
+                      <button 
+                        className="w-[220px] px-5 py-2 ml-4 bg-[#E9ECEF] text-[#6C757D] font-['Roboto Mono'] font-semibold text-[30px] rounded-[8px] border-2 border-[#ADB5BD] relative -left-2.5"
+                        onClick={(e) => onListing()}
+                      >
+                        Sell
+                      </button>
+                    }
                   </div>
                 </div>
               </div>
@@ -120,7 +255,7 @@ const Item: NextPage = () => {
                           <p className="text-[#B444F9] text-[12px] font-bold">{item[0]}</p>
                           <div className="flex justify-start items-center mt-2">
                             <p className="text-[#1E1C21] text-[18px] font-bold">{item[1]}<span className="ml-3 font-normal">[{trait[1]}%]</span></p>
-                            <p className="ml-5 mr-3 text-[#1E1C21] text-[18px] ml-auto">{nftInfo.price}</p>
+                            <p className="ml-5 mr-3 text-[#1E1C21] text-[18px] ml-auto">{order && order.price && ethers.utils.formatEther(order.price)}</p>
                             <Image src={PngEther} alt="" />
                           </div>
                         </div>
