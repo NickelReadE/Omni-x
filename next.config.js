@@ -5,7 +5,5 @@ module.exports = {
   },
   images: {
     domains: ['localhost', 'omni-x.s3.amazonaws.com'],
-    loader: 'akamai',
-    path: '/'
   }
 }
