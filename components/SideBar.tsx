@@ -6,7 +6,7 @@ import {useDndMonitor, useDroppable} from '@dnd-kit/core'
 import LazyLoad from 'react-lazyload'
 import {Dialog} from '@material-ui/core'
 import useWallet from '../hooks/useWallet'
-import {selectUser, selectUserNFTs} from '../redux/reducers/userReducer'
+import {getUserNFTs, selectUser, selectUserNFTs} from '../redux/reducers/userReducer'
 import {NFTItem} from '../interface/interface'
 import {
   getLayerZeroEndpointInstance,
@@ -31,6 +31,7 @@ const SideBar: React.FC = () => {
   const {
     provider,
     signer,
+    address,
     connect: connectWallet,
     switchNetwork
   } = useWallet()
@@ -215,6 +216,14 @@ const SideBar: React.FC = () => {
         const noSignerOmniXInstance = getOmnixBridgeInstance(targetChain, null)
         const dstAddress = await noSignerOmniXInstance.persistentAddresses(selectedNFTItem.token_address)
 
+        noSignerOmniXInstance.on('LzReceive', async () => {
+          // After 30 seconds from receiving the token on Target Chain, refresh user NFT items
+          setTimeout(() => {
+            dispatch(getUserNFTs(_signerAddress) as any)
+          }, 30000)
+          await switchNetwork(targetChain)
+        })
+
         let adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 3500000])
         if (dstAddress !== ethers.constants.AddressZero) {
           adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 2000000])
@@ -237,6 +246,7 @@ const SideBar: React.FC = () => {
           value: estimatedFee.nativeFee
         })
         await tx.wait()
+        setSelectedNFTItem(undefined)
       } else if (selectedNFTItem.contract_type === 'ERC1155') {
         const contractInstance = getOmnixBridge1155Instance(provider?._network?.chainId, signer)
         const noSignerOmniX1155Instance = getOmnixBridge1155Instance(targetChain, null)
@@ -262,6 +272,7 @@ const SideBar: React.FC = () => {
           value: estimatedFee.nativeFee
         })
         await tx.wait()
+        setSelectedNFTItem(undefined)
       }
 
       setConfirmTransfer(false)
@@ -279,13 +290,18 @@ const SideBar: React.FC = () => {
         }
         const tx = await contractInstance.withdraw(unwrapInfo.persistentAddress, unwrapInfo.tokenId)
         await tx.wait()
+        setTimeout(() => {
+          if (address) {
+            dispatch(getUserNFTs(address) as any)
+          }
+        }, 30000)
       } catch (e: any) {
         console.log(e)
       } finally {
         setUnwrap(false)
       }
     }
-  }, [unwrapInfo, provider?._network?.chainId, signer])
+  }, [unwrapInfo, provider?._network?.chainId, signer, address])
 
   const onUnwrap = async () => {
     if (provider?._network?.chainId && selectedUnwrapInfo) {
@@ -298,6 +314,11 @@ const SideBar: React.FC = () => {
         }
         const tx = await contractInstance.withdraw(selectedUnwrapInfo.persistentAddress, selectedUnwrapInfo.tokenId)
         await tx.wait()
+        setTimeout(() => {
+          if (address) {
+            dispatch(getUserNFTs(address) as any)
+          }
+        }, 30000)
       } catch (e: any) {
         console.log(e)
       }

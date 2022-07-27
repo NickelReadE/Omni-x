@@ -95,6 +95,7 @@ export const WalletProvider = ({
             method: 'wallet_switchEthereumChain',
             params: [{ chainId: ethers.utils.hexValue(CHAIN_ID) }]
           })
+          window.location.reload()
         } catch (e: any) {
           console.log('WalletProvider switchNetwork error', e)
           if (e.code === 4902) {
@@ -167,7 +168,7 @@ export const WalletProvider = ({
       const instance = await web3Modal.connectTo(cachedProviderName)
       if (!instance) return
       instance.on('accountsChanged', handleAccountsChanged)
-      instance.on('chainChanged', (chainId: any) => { 
+      instance.on('chainChanged', (chainId: any) => {
         console.log(chainId)
       })
       const provider = new ethers.providers.Web3Provider(instance, 'any')
