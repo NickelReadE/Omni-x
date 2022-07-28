@@ -423,7 +423,7 @@ const SideBar: React.FC = () => {
     <>
       { !onMenu &&
         <div
-          className='right-0 right-0 w-[70px] py-10 bg-[#F8F9FA] fixed h-full z-50'
+          className='right-0 right-0 w-[70px] py-10 bg-[#F8F9FA] fixed h-full z-[99]'
           onMouseEnter={() => setShowSidebar(true)}
           onMouseLeave={() => hideSidebar()}
         >
@@ -492,7 +492,7 @@ const SideBar: React.FC = () => {
       }
       <div
         ref={ref}
-        className={`right-0 right-0 w-[450px] bg-white px-[24px] py-10 fixed h-full z-40 ease-in-out duration-300 ${
+        className={`right-0 right-0 w-[450px] bg-white px-[24px] py-10 fixed h-full z-[98] ease-in-out duration-300 ${
           showSidebar || onMenu ? 'translate-x-0' : 'translate-x-full'
         }`}
         onMouseEnter={() => setOnMenu(true)}
@@ -791,7 +791,7 @@ const SideBar: React.FC = () => {
           </li>
         </ul>
         <div
-          className='top-0 right-0 w-[70px] py-10 bg-white fixed h-full z-50'
+          className='top-0 right-0 w-[70px] py-10 bg-white fixed h-full z-[99]'
         >
           <div className="flex flex-col items-center space-y-4">
             <div className="w-full py-[8px]">

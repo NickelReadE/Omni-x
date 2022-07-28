@@ -3,14 +3,14 @@ import NFTBox from './NFTBox'
 import { IPropsImage } from '../interface/interface'
 
 const chainList = [
-  { chain: 'all', img_url: '/svgs/all_chain.svg', title: 'all NFTs'},
-  { chain: 'eth', img_url: '/svgs/ethereum.svg', title: 'Ethereum'},
-  { chain: 'arbitrum', img_url: '/svgs/arbitrum.svg', title: 'Arbitrum'},
-  { chain: 'avalanche', img_url: '/svgs/avax.svg', title: 'Avalanche'},
-  { chain: 'bsc', img_url: '/svgs/binance.svg', title: 'BNB Chain'},
-  { chain: 'fantom', img_url: '/svgs/fantom.svg', title: 'Fantom'},
-  { chain: 'optimism', img_url: '/svgs/optimism.svg', title: 'Optimism'},
-  { chain: 'matic', img_url: '/svgs/polygon.svg', title: 'Polygon'},
+  { chain: 'all', img_url: '/svgs/all_chain.svg', title: 'all NFTs', disabled: false},
+  { chain: 'eth', img_url: '/svgs/ethereum.svg', title: 'Ethereum', disabled: false},
+  { chain: 'arbitrum', img_url: '/svgs/arbitrum.svg', title: 'Arbitrum', disabled: true},
+  { chain: 'avalanche', img_url: '/svgs/avax.svg', title: 'Avalanche', disabled: false},
+  { chain: 'bsc', img_url: '/svgs/binance.svg', title: 'BNB Chain', disabled: false},
+  { chain: 'fantom', img_url: '/svgs/fantom.svg', title: 'Fantom', disabled: true},
+  { chain: 'optimism', img_url: '/svgs/optimism.svg', title: 'Optimism', disabled: true},
+  { chain: 'matic', img_url: '/svgs/polygon.svg', title: 'Polygon', disabled: false},
 ]
 const NFTGrid = ({ nfts }: IPropsImage) => {
   const [chain, setChain] = React.useState('eth')
@@ -20,7 +20,7 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
         <div className="flex justify-start bg-[#F8F9FA] border-2 border-[#E9ECEF] rounded-lg p-2 w-fit">
           {
             chainList.map((item, index) => {
-              return <div key={index} className={`grid justify-items-center content-center p-3 font-medium cursor-pointer ${chain == item.chain ? 'bg-[#E9ECEF] border-2 border-[#ADB5BD] rounded-lg text-[#1E1C21]' : ''}`} onClick={() =>{setChain(item.chain)}}>
+              return <div key={index} className={`grid justify-items-center content-center p-3 font-medium cursor-pointer m-[1px] min-w-[96px] ${chain == item.chain ? 'bg-[#E9ECEF] border-2 border-[#ADB5BD] rounded-lg text-[#1E1C21]' : ''} ${item.disabled ? 'bg-[#e8e8e8] rounded-lg cursor-default' : ''}`} onClick={() =>{item.disabled ? undefined : setChain(item.chain)}}>
                 <img src={item.img_url} className="w-[21px] h-[22px]" />
                 <p className="mt-1 font-['Circular_Std'] leading-[18px] text-[14px]">{item.title}</p>
               </div>

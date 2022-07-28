@@ -52,7 +52,7 @@ const Banner = ({ slides, blur, menu }: BannerProps): JSX.Element => {
         {menu === 'home' && (
           <div className="flex justify-center w-full ">
             <div className="flex justify-between justify-center fw-60 mt-5 relative">
-              {
+              {/* {
                 bShowSettingIcon &&
                 <div className="-top-[7rem] left-[1rem] absolute" onMouseEnter={() => setShowSettingIcon(true)} onMouseLeave={() => setShowSettingIcon(false)}>
                   <a className="cursor-pointer" onClick={() => setOpenModal(true)}>
@@ -61,7 +61,7 @@ const Banner = ({ slides, blur, menu }: BannerProps): JSX.Element => {
                     </div>
                   </a>
                 </div>
-              }
+              } */}
               <div className="-top-[10rem] left-[5rem] absolute">
                 <Image 
                   src={avatarError?'/images/default_avatar.png':(process.env.API_URL + user.avatar)} 
@@ -97,11 +97,11 @@ const Banner = ({ slides, blur, menu }: BannerProps): JSX.Element => {
           </div>
         )}
       </div>   
-      <div className="w-full md:w-auto">
+      {/* <div className="w-full md:w-auto">
         <Dialog open={bOpenModal} onClose={() => setOpenModal(false)} aria-labelledby='simple-dialog-title' maxWidth={'xl'} classes={{ paper: classes.paper }}>
           <UserEdit updateModal={updateModal} />
         </Dialog>
-      </div>
+      </div> */}
     </>
   )
 }
