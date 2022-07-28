@@ -66,7 +66,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
 
   useEffect(() => {
     if ( user.address != undefined ) {
-      console.log(user);
+      console.log(user)
       if ( user.avatar ) {
         setAvatar(process.env.API_URL + user.avatar)
       }
