@@ -13,7 +13,7 @@ import {
   getERC721Instance,
   getERC1155Instance,
   getOmnixBridge1155Instance,
-  getOmnixBridgeInstance,
+  getOmnixBridgeInstance, getONFTCore721Instance,
 } from '../utils/contracts'
 import {getChainIdFromName, getLayerzeroChainId} from '../utils/constants'
 import ConfirmTransfer from './bridge/ConfirmTransfer'
@@ -35,7 +35,7 @@ const SideBar: React.FC = () => {
     connect: connectWallet,
     switchNetwork
   } = useWallet()
-  const { estimateGasFee, unwrapInfo, selectedUnwrapInfo, validateONFT } = useBridge()
+  const { estimateGasFee, estimateGasFeeONFTCore, unwrapInfo, selectedUnwrapInfo, validateOwNFT, validateONFT } = useBridge()
 
   const dispatch = useDispatch()
   const ref = useRef(null)
@@ -58,6 +58,7 @@ const SideBar: React.FC = () => {
   const user = useSelector(selectUser)
 
   const [selectedNFTItem, setSelectedNFTItem] = useState<NFTItem>()
+  const [isONFTCore, setIsONFTCore] = useState(false)
   const [image, setImage] = useState('/images/omnix_logo_black_1.png')
   const [imageError, setImageError] = useState(false)
   const [dragOver, setDragOver] = useState(false)
@@ -92,7 +93,7 @@ const SideBar: React.FC = () => {
       if (id.toString().length > 0 && event.over !== null) {
         const index = id.toString().split('-')[1]
         setSelectedNFTItem(nfts[index])
-        validateONFT(nfts[index]).then((res) => {
+        validateOwNFT(nfts[index]).then((res) => {
           setIsONFT(res)
         })
         const metadata = nfts[index].metadata
@@ -195,21 +196,54 @@ const SideBar: React.FC = () => {
     }
     if (provider?._network?.chainId === targetChain) return
 
-    const gasFee = await estimateGasFee(selectedNFTItem, provider?._network?.chainId, targetChain)
-    setEstimatedFee(gasFee)
-    setConfirmTransfer(true)
+    const isONFTCore = await validateONFT(selectedNFTItem)
+    setIsONFTCore(isONFTCore)
+    try {
+      let gasFee
+      if (isONFTCore) {
+        gasFee = await estimateGasFeeONFTCore(selectedNFTItem, provider?._network?.chainId, targetChain)
+      } else {
+        gasFee = await estimateGasFee(selectedNFTItem, provider?._network?.chainId, targetChain)
+      }
+      setEstimatedFee(gasFee)
+      setConfirmTransfer(true)
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   const onTransfer = async () => {
     if (!selectedNFTItem) return
     if (!signer) return
+    if (!provider?._network?.chainId) return
+    if (provider?._network?.chainId === targetChain) return
+    if (!address) return
 
-    if (provider?._network?.chainId) {
-      if (provider?._network?.chainId === targetChain) return
-      const lzEndpointInstance = getLayerZeroEndpointInstance(provider?._network?.chainId, provider)
-      const lzTargetChainId = getLayerzeroChainId(targetChain)
-      const _signerAddress = await signer.getAddress()
+    const lzEndpointInstance = getLayerZeroEndpointInstance(provider?._network?.chainId, provider)
+    const lzTargetChainId = getLayerzeroChainId(targetChain)
+    const _signerAddress = address
 
+    if (isONFTCore) {
+      const onftCoreInstance = getONFTCore721Instance(selectedNFTItem.token_address, provider?._network?.chainId, signer)
+      const targetONFTCoreAddress = await onftCoreInstance.trustedRemoteLookup(lzTargetChainId)
+      const targetCoreInstance = getONFTCore721Instance(targetONFTCoreAddress, targetChain, null)
+      const tx = await onftCoreInstance.sendFrom(
+        _signerAddress,
+        lzTargetChainId,
+        _signerAddress,
+        selectedNFTItem.token_id,
+        _signerAddress,
+        ethers.constants.AddressZero,
+        '0x',
+        { value: estimatedFee }
+      )
+      targetCoreInstance.on('ReceiveFromChain', (/*srcChainId, srcAddress, toAddress, tokenId, nonce*/) => {
+        setTimeout(() => {
+          dispatch(getUserNFTs(address) as any)
+        }, 30000)
+      })
+      await tx.wait()
+    } else {
       if (selectedNFTItem.contract_type === 'ERC721') {
         const contractInstance = getOmnixBridgeInstance(provider?._network?.chainId, signer)
         const erc721Instance = getERC721Instance(selectedNFTItem.token_address, 0, signer)
@@ -219,7 +253,7 @@ const SideBar: React.FC = () => {
         noSignerOmniXInstance.on('LzReceive', async () => {
           // After 30 seconds from receiving the token on Target Chain, refresh user NFT items
           setTimeout(() => {
-            dispatch(getUserNFTs(_signerAddress) as any)
+            dispatch(getUserNFTs(address) as any)
           }, 30000)
           await switchNetwork(targetChain)
         })
@@ -232,18 +266,9 @@ const SideBar: React.FC = () => {
         if (operator !== contractInstance.address) {
           await (await erc721Instance.approve(contractInstance.address, BigNumber.from(selectedNFTItem.token_id))).wait()
         }
-        // Estimate fee from layerzero endpoint
-        const _name = await erc721Instance.name()
-        const _symbol = await erc721Instance.symbol()
-        const _tokenURI = await erc721Instance.tokenURI(selectedNFTItem.token_id)
-        const _payload = ethers.utils.defaultAbiCoder.encode(
-          ['address', 'address', 'string', 'string', 'string', 'uint256'],
-          [selectedNFTItem.token_address, _signerAddress, _name, _symbol, _tokenURI, selectedNFTItem.token_id]
-        )
-        const estimatedFee = await lzEndpointInstance.estimateFees(lzTargetChainId, contractInstance.address, _payload, false, adapterParams)
 
         const tx = await contractInstance.wrap(lzTargetChainId, selectedNFTItem.token_address, BigNumber.from(selectedNFTItem.token_id), adapterParams, {
-          value: estimatedFee.nativeFee
+          value: estimatedFee
         })
         await tx.wait()
         setSelectedNFTItem(undefined)
@@ -274,9 +299,9 @@ const SideBar: React.FC = () => {
         await tx.wait()
         setSelectedNFTItem(undefined)
       }
-
-      setConfirmTransfer(false)
     }
+
+    setConfirmTransfer(false)
   }
 
   const handleUnwrap = useCallback(async () => {
@@ -301,7 +326,7 @@ const SideBar: React.FC = () => {
         setUnwrap(false)
       }
     }
-  }, [unwrapInfo, provider?._network?.chainId, signer, address])
+  }, [provider?._network?.chainId, unwrapInfo, signer, address, dispatch])
 
   const onUnwrap = async () => {
     if (provider?._network?.chainId && selectedUnwrapInfo) {

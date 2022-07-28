@@ -25,6 +25,8 @@ export const rpcProviders: { [key: number]: string } = {
   4002: 'https://rpc.testnet.fantom.network'
 }
 
+export const ONFT_CORE_INTERFACE_ID = '0x7bb0080b'
+
 export const chainInfos: { [key: number]: { name: string; logo: string, officialName: string, currency: string } } = {
   4: {
     name: 'rinkeby',
