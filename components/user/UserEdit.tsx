@@ -66,18 +66,13 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
 
   useEffect(() => {
     if ( user.address != undefined ) {
+      console.log(user);
       if ( user.avatar ) {
         setAvatar(process.env.API_URL + user.avatar)
       }
-      if ( user.banners[0] ) {
-        setBanner_1(process.env.API_URL + user.banners[0])
-      }
-      if ( user.banners[1] ) {
-        setBanner_2(process.env.API_URL + user.banners[1])
-      }
-      if ( user.banners[2] ) {
-        setBanner_3(process.env.API_URL + user.banners[2])
-      }
+      setBanner_1(process.env.API_URL + (user.banners[0]?user.banners[0]:'default_banner.png'))
+      setBanner_2(process.env.API_URL + (user.banners[1]?user.banners[1]:'default_banner.png'))
+      setBanner_3(process.env.API_URL + (user.banners[2]?user.banners[2]:'default_banner.png'))
       setUserName(user.username)
       setBio(user.bio)
       setTwitter(user.twitter)
@@ -140,9 +135,9 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
     e.stopPropagation()
 
     if ( updateProfileFormRef.current !== null ) {
-      const fileBanner_1 = await getFileFromUrl(banner_1, 'banner1.png')
-      const fileBanner_2 = await getFileFromUrl(banner_2, 'banner2.png')
-      const fileBanner_3 = await getFileFromUrl(banner_3, 'banner3.png')
+      const fileBanner_1 = await getFileFromUrl(banner_1, process.env.API_URL + 'default_banner.png')
+      const fileBanner_2 = await getFileFromUrl(banner_2, process.env.API_URL + 'default_banner.png')
+      const fileBanner_3 = await getFileFromUrl(banner_3, process.env.API_URL + 'default_banner.png')
 
       const formData = new FormData(updateProfileFormRef.current)
       const address = context.address?context.address:''
