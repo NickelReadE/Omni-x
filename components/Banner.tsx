@@ -32,6 +32,7 @@ const Banner = ({ slides, blur, menu }: BannerProps): JSX.Element => {
   const [avatarError, setAvatarError] = useState(false)
   const [bOpenModal, setOpenModal] = React.useState(false)
   const [bShowSettingIcon, setShowSettingIcon] = React.useState(false)
+  const DEFAULT_AVATAR = 'uploads\\default_avatar.png'
 
   const updateModal = (name: string):void => {
     setOpenModal(false)
@@ -64,7 +65,7 @@ const Banner = ({ slides, blur, menu }: BannerProps): JSX.Element => {
               } */}
               <div className="-top-[10rem] left-[5rem] absolute">
                 <Image 
-                  src={avatarError||user.avatar===undefined?'/images/default_avatar.png':(process.env.API_URL + user.avatar)} 
+                  src={avatarError||user.avatar===undefined||user.avatar===DEFAULT_AVATAR?'/images/default_avatar.png':(process.env.API_URL + user.avatar)} 
                   alt="avatar" 
                   onError={(e)=>{user.avatar&&setAvatarError(true)}} 
                   width={200}
