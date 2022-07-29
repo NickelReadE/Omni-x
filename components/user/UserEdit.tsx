@@ -142,13 +142,13 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
       const address = context.address?context.address:''
       formData.append('address', address)
 
-      if ( banner_1 != process.env.API_URL + DEFAULT_BANNER ) {
+      if ( banner_1 != process.env.API_URL + DEFAULT_BANNER && banner_1 != '/images/default_banner.png' ) {
         formData.append('banner_1', (await getFileFromUrl(banner_1, 'banner1.png')) as any)
       }
-      if ( banner_2 != process.env.API_URL + DEFAULT_BANNER ) {
+      if ( banner_2 != process.env.API_URL + DEFAULT_BANNER && banner_2 != '/images/default_banner.png' ) {
         formData.append('banner_2', (await getFileFromUrl(banner_2, 'banner2.png')) as any)
       }
-      if ( banner_3 != process.env.API_URL + DEFAULT_BANNER ) {
+      if ( banner_3 != process.env.API_URL + DEFAULT_BANNER && banner_3 != '/images/default_banner.png' ) {
         formData.append('banner_3', (await getFileFromUrl(banner_3, 'banner3.png')) as any)
       }
       
