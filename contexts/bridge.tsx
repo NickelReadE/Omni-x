@@ -7,6 +7,7 @@ export type UnwrapInfo = {
   chainId: number,
   originAddress: string,
   persistentAddress: string,
+  amount: number,
   tokenId: string
 }
 

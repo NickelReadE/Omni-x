@@ -26,6 +26,8 @@ export const rpcProviders: { [key: number]: string } = {
 }
 
 export const ONFT_CORE_INTERFACE_ID = '0x7bb0080b'
+export const ERC1155_INTERFACE_ID = '0xd9b67a26'
+export const ERC712_INTERFACE_ID = '0x80ac58cd'
 
 export const chainInfos: { [key: number]: { name: string; logo: string, officialName: string, currency: string } } = {
   4: {

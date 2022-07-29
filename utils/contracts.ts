@@ -73,7 +73,15 @@ export const getONFTCore721Instance = (contractAddress: string, chainId: number,
   )
 }
 
-export const getERC1155Instance = (contractAddress: string, signer: any) => {
+export const getERC1155Instance = (contractAddress: string, chainId: number, signer: any) => {
+  if (signer === null) {
+    const provider = getProvider(chainId)
+    return new ethers.Contract(
+      contractAddress,
+      ERC721ABI,
+      provider
+    )
+  }
   return new ethers.Contract(
     contractAddress,
     ERC1155ABI,
