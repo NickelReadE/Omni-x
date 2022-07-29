@@ -78,7 +78,7 @@ export const getERC1155Instance = (contractAddress: string, chainId: number, sig
     const provider = getProvider(chainId)
     return new ethers.Contract(
       contractAddress,
-      ERC721ABI,
+      ERC1155ABI,
       provider
     )
   }

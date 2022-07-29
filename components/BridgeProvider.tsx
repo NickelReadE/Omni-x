@@ -202,7 +202,7 @@ export const BridgeProvider = ({
                 const owner = await originERC721Instance.ownerOf(selectedItem.token_id)
                 const bridgeAddress = getAddressByName('Omnix', chainId)
                 if (owner === bridgeAddress) {
-                  setUnwrapInfo({
+                  return setUnwrapInfo({
                     type: 'ERC721',
                     chainId: chainId,
                     originAddress: originAddress,
@@ -217,7 +217,7 @@ export const BridgeProvider = ({
         }
         const filteredERC1155 = filteredNFT.filter((item: { contract_type: string }) => item.contract_type === 'ERC1155')
         selectedItem = filteredERC1155.length > 0 ? filteredERC1155[0] : null
-        if (selectedItem.contract_type === 'ERC1155') {
+        if (selectedItem !== null && selectedItem.contract_type === 'ERC1155') {
           console.log(selectedItem)
           const chainId = getChainIdFromName(selectedItem.chain)
           const ERC1155Instance = getERC1155Instance(selectedItem.token_address, chainId, null)
