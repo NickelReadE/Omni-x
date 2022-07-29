@@ -51,6 +51,8 @@ const SideBar: React.FC = () => {
   const [confirmTransfer, setConfirmTransfer] = useState(false)
   const [chainId, setChainID] = useState(4)
 
+  const DEFAULT_AVATAR = 'uploads\\default_avatar.png'
+
   const menu_profile = useRef<HTMLUListElement>(null)
   const menu_ethereum = useRef<HTMLUListElement>(null)
   const menu_wallets = useRef<HTMLDivElement>(null)
@@ -432,7 +434,7 @@ const SideBar: React.FC = () => {
               <div className="sidebar-icon">
                 <div className="m-auto">
                   <Image
-                    src={avatarError || user.avatar === undefined?'/images/default_avatar.png':(process.env.API_URL + user.avatar)}
+                    src={avatarError || user.avatar === undefined || user.avatar === DEFAULT_AVATAR?'/images/default_avatar.png':(process.env.API_URL + user.avatar)}
                     alt="avatar"
                     onError={(e)=>{user.avatar&&setAvatarError(true)}}
                     width={45}
@@ -798,7 +800,7 @@ const SideBar: React.FC = () => {
               <div className="sidebar-icon">
                 <div className="m-auto">
                   <Image
-                    src={avatarError || user.avatar === undefined?'/images/default_avatar.png':(process.env.API_URL + user.avatar)}
+                    src={avatarError || user.avatar === undefined || user.avatar === DEFAULT_AVATAR?'/images/default_avatar.png':(process.env.API_URL + user.avatar)}
                     alt="avatar"
                     onError={(e)=>{user.avatar&&setAvatarError(true)}}
                     width={45}
