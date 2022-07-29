@@ -13,7 +13,7 @@ import {
   getERC721Instance,
   getERC1155Instance,
   getOmnixBridge1155Instance,
-  getOmnixBridgeInstance, getONFTCore721Instance,
+  getOmnixBridgeInstance, getONFTCore721Instance, getONFTCore1155Instance,
 } from '../utils/contracts'
 import {getChainIdFromName, getLayerzeroChainId} from '../utils/constants'
 import ConfirmTransfer from './bridge/ConfirmTransfer'
@@ -224,25 +224,48 @@ const SideBar: React.FC = () => {
     const _signerAddress = address
 
     if (isONFTCore) {
-      const onftCoreInstance = getONFTCore721Instance(selectedNFTItem.token_address, provider?._network?.chainId, signer)
-      const targetONFTCoreAddress = await onftCoreInstance.trustedRemoteLookup(lzTargetChainId)
-      const targetCoreInstance = getONFTCore721Instance(targetONFTCoreAddress, targetChain, null)
-      const tx = await onftCoreInstance.sendFrom(
-        _signerAddress,
-        lzTargetChainId,
-        _signerAddress,
-        selectedNFTItem.token_id,
-        _signerAddress,
-        ethers.constants.AddressZero,
-        '0x',
-        { value: estimatedFee }
-      )
-      targetCoreInstance.on('ReceiveFromChain', (/*srcChainId, srcAddress, toAddress, tokenId, nonce*/) => {
-        setTimeout(() => {
-          dispatch(getUserNFTs(address) as any)
-        }, 30000)
-      })
-      await tx.wait()
+      if (selectedNFTItem.contract_type === 'ERC721') {
+        const onftCoreInstance = getONFTCore721Instance(selectedNFTItem.token_address, provider?._network?.chainId, signer)
+        const targetONFTCoreAddress = await onftCoreInstance.trustedRemoteLookup(lzTargetChainId)
+        const targetCoreInstance = getONFTCore721Instance(targetONFTCoreAddress, targetChain, null)
+        const tx = await onftCoreInstance.sendFrom(
+          _signerAddress,
+          lzTargetChainId,
+          _signerAddress,
+          selectedNFTItem.token_id,
+          _signerAddress,
+          ethers.constants.AddressZero,
+          '0x',
+          { value: estimatedFee }
+        )
+        targetCoreInstance.on('ReceiveFromChain', (/*srcChainId, srcAddress, toAddress, tokenId, nonce*/) => {
+          setTimeout(() => {
+            dispatch(getUserNFTs(address) as any)
+          }, 30000)
+        })
+        await tx.wait()
+      } else if (selectedNFTItem.contract_type === 'ERC1155') {
+        const onft1155CoreInstance = getONFTCore1155Instance(selectedNFTItem.token_address, provider?._network?.chainId, signer)
+        const targetONFT1155CoreAddress = await onft1155CoreInstance.trustedRemoteLookup(lzTargetChainId)
+        const targetCoreInstance = getONFTCore1155Instance(targetONFT1155CoreAddress, targetChain, null)
+        const tx = await onft1155CoreInstance.sendFrom(
+          _signerAddress,
+          lzTargetChainId,
+          _signerAddress,
+          selectedNFTItem.token_id,
+          selectedNFTItem.amount,
+          _signerAddress,
+          ethers.constants.AddressZero,
+          '0x',
+          { value: estimatedFee }
+        )
+        targetCoreInstance.on('ReceiveFromChain', (/*srcChainId, srcAddress, toAddress, tokenId, nonce*/) => {
+          setTimeout(() => {
+            dispatch(getUserNFTs(address) as any)
+          }, 30000)
+        })
+        await tx.wait()
+      }
     } else {
       if (selectedNFTItem.contract_type === 'ERC721') {
         const contractInstance = getOmnixBridgeInstance(provider?._network?.chainId, signer)
@@ -354,14 +377,27 @@ const SideBar: React.FC = () => {
   const onUnwrap = async () => {
     if (provider?._network?.chainId && selectedUnwrapInfo) {
       try {
-        const contractInstance = getOmnixBridgeInstance(selectedUnwrapInfo.chainId, signer)
-        const erc721Instance = getERC721Instance(selectedUnwrapInfo.persistentAddress, selectedUnwrapInfo.chainId, signer)
-        const operator = await erc721Instance.getApproved(BigNumber.from(selectedUnwrapInfo.tokenId))
-        if (operator !== contractInstance.address) {
-          await (await erc721Instance.approve(contractInstance.address, BigNumber.from(selectedUnwrapInfo.tokenId))).wait()
+        if (selectedUnwrapInfo.type === 'ERC721') {
+          const contractInstance = getOmnixBridgeInstance(selectedUnwrapInfo.chainId, signer)
+          const erc721Instance = getERC721Instance(selectedUnwrapInfo.persistentAddress, selectedUnwrapInfo.chainId, signer)
+          const operator = await erc721Instance.getApproved(BigNumber.from(selectedUnwrapInfo.tokenId))
+          if (operator !== contractInstance.address) {
+            await (await erc721Instance.approve(contractInstance.address, BigNumber.from(selectedUnwrapInfo.tokenId))).wait()
+          }
+          const tx = await contractInstance.withdraw(selectedUnwrapInfo.persistentAddress, selectedUnwrapInfo.tokenId)
+          await tx.wait()
+        } else if (selectedUnwrapInfo.type === 'ERC1155') {
+          const bridgeInstance = getOmnixBridge1155Instance(selectedUnwrapInfo.chainId, signer)
+          const erc1155Instance = getERC1155Instance(selectedUnwrapInfo.persistentAddress, selectedUnwrapInfo.chainId, signer)
+
+          const operator = await erc1155Instance.isApprovedForAll(address, bridgeInstance.address)
+          if (!operator) {
+            await (await erc1155Instance.setApprovalForAll(bridgeInstance.address, true)).wait()
+          }
+
+          const tx = await bridgeInstance.withdraw(selectedUnwrapInfo.persistentAddress, selectedUnwrapInfo.tokenId, selectedUnwrapInfo.amount)
+          await tx.wait()
         }
-        const tx = await contractInstance.withdraw(selectedUnwrapInfo.persistentAddress, selectedUnwrapInfo.tokenId)
-        await tx.wait()
         setTimeout(() => {
           if (address) {
             dispatch(getUserNFTs(address) as any)

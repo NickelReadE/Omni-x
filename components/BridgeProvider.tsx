@@ -14,7 +14,7 @@ import {
   ERC712_INTERFACE_ID,
   getAddressByName,
   getChainIdFromName,
-  getLayerzeroChainId,
+  getLayerzeroChainId, ONFT1155_CORE_INTERFACE_ID,
   ONFT_CORE_INTERFACE_ID
 } from '../utils/constants'
 import {NFTItem} from '../interface/interface'
@@ -134,12 +134,12 @@ export const BridgeProvider = ({
 
   const validateOwNFT = async (nft: NFTItem) => {
     const chainId = getChainIdFromName(nft.chain)
-    if (!nft.name?.startsWith('Ow')) return false
     try {
       if (nft.contract_type === 'ERC721') {
+        if (!nft.name?.startsWith('Ow')) return false
         const ERC721Instance = getERC721Instance(nft.token_address, chainId, null)
         const noSignerOmniXInstance = getOmnixBridgeInstance(chainId, null)
-        const isERC721 = await ERC721Instance.supportsInterface('0x80ac58cd')
+        const isERC721 = await ERC721Instance.supportsInterface(ERC712_INTERFACE_ID)
         if (isERC721) {
           const originAddress = await noSignerOmniXInstance.originAddresses(nft.token_address)
           const originERC721Instance = getERC721Instance(originAddress, chainId, null)
@@ -152,6 +152,29 @@ export const BridgeProvider = ({
               originAddress: originAddress,
               persistentAddress: nft.token_address,
               amount: 1,
+              tokenId: nft.token_id,
+            })
+            return true
+          }
+          return false
+        }
+        return false
+      } else if (nft.contract_type === 'ERC1155') {
+        const ERC1155Instance = getERC1155Instance(nft.token_address, chainId, null)
+        const noSignerOmniX1155Instance = getOmnixBridge1155Instance(chainId, null)
+        const isERC1155 = await ERC1155Instance.supportsInterface(ERC1155_INTERFACE_ID)
+        if (isERC1155) {
+          const originAddress = await noSignerOmniX1155Instance.originAddresses(nft.token_address)
+          const originERC1155Instance = getERC1155Instance(originAddress, chainId, null)
+          const bridgeAddress = getAddressByName('Omnix1155', chainId)
+          const ownedCount = await originERC1155Instance.balanceOf(bridgeAddress, nft.token_id)
+          if (ownedCount > 0) {
+            setSelectedUnwrapInfo({
+              type: 'ERC1155',
+              chainId: chainId,
+              originAddress: originAddress,
+              persistentAddress: nft.token_address,
+              amount: ownedCount.toNumber(),
               tokenId: nft.token_id,
             })
             return true
@@ -175,6 +198,11 @@ export const BridgeProvider = ({
         const isERC721 = await ERC721Instance.supportsInterface('0x80ac58cd')
         const isONFTERC721 = await ERC721Instance.supportsInterface(ONFT_CORE_INTERFACE_ID)
         return !!(isERC721 && isONFTERC721)
+      } else if (nft.contract_type === 'ERC1155') {
+        const ERC1155Instance = getERC1155Instance(nft.token_address, chainId, null)
+        const isERC1155 = await ERC1155Instance.supportsInterface(ERC1155_INTERFACE_ID)
+        const isONFTERC1155 = await ERC1155Instance.supportsInterface(ONFT1155_CORE_INTERFACE_ID)
+        return !!(isERC1155 && isONFTERC1155)
       }
       return false
     } catch (e) {
@@ -218,7 +246,6 @@ export const BridgeProvider = ({
         const filteredERC1155 = filteredNFT.filter((item: { contract_type: string }) => item.contract_type === 'ERC1155')
         selectedItem = filteredERC1155.length > 0 ? filteredERC1155[0] : null
         if (selectedItem !== null && selectedItem.contract_type === 'ERC1155') {
-          console.log(selectedItem)
           const chainId = getChainIdFromName(selectedItem.chain)
           const ERC1155Instance = getERC1155Instance(selectedItem.token_address, chainId, null)
           const noSignerOmniX1155Instance = getOmnixBridge1155Instance(chainId, null)
