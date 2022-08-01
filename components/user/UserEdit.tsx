@@ -33,10 +33,10 @@ interface IUserEditProps {
 const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
   const updateProfileFormRef = useRef<HTMLFormElement>(null)
 
-  const DEFAULT_BANNER = 'uploads\\default_banner.png'
-  const DEFAULT_AVATAR = 'uploads\\default_avatar.png'
+  const DEFAULT_BANNER = 'uploads/default_banner.png'
+  const DEFAULT_AVATAR = 'uploads/default_avatar.png'
 
-  const [avatar, setAvatar] = useState(process.env.API_URL + 'uploads\\default_avatar.png')
+  const [avatar, setAvatar] = useState(process.env.API_URL + 'uploads/default_avatar.png')
   const [banner_1, setBanner_1] = useState(process.env.API_URL + DEFAULT_BANNER)
   const [banner_2, setBanner_2] = useState(process.env.API_URL + DEFAULT_BANNER)
   const [banner_3, setBanner_3] = useState(process.env.API_URL + DEFAULT_BANNER)
@@ -141,7 +141,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
       const formData = new FormData(updateProfileFormRef.current)
       const address = context.address?context.address:''
       formData.append('address', address)
-      
+
       console.log(banner_1)
       console.log(banner_2)
       console.log(banner_3)
