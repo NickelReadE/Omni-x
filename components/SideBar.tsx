@@ -18,7 +18,6 @@ import {
 import {getChainIdFromName, getLayerzeroChainId} from '../utils/constants'
 import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
-import {openSnackBar} from '../redux/reducers/snackBarReducer'
 import useBridge from '../hooks/useBridge'
 
 interface RefObject {
@@ -282,7 +281,7 @@ const SideBar: React.FC = () => {
           setTimeout(() => {
             dispatch(getUserNFTs(address) as any)
           }, 30000)
-          await switchNetwork(targetChain)
+          // await switchNetwork(targetChain)
         })
 
         let adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 3500000])
@@ -310,7 +309,7 @@ const SideBar: React.FC = () => {
           setTimeout(() => {
             dispatch(getUserNFTs(address) as any)
           }, 30000)
-          await switchNetwork(targetChain)
+          // await switchNetwork(targetChain)
         })
 
         let adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 3500000])
