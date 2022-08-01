@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+	font-family: 'Roboto Mono';
+	src: url(/fonts/RobotoMono-Medium.woff2) format('woff2'), url(/fonts/RobotoMono-Medium.woff) format('woff');
+	font-weight: 500;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Circular Std';
+	src: url(/fonts/CircularStd-Medium.woff2) format('woff2'), url(/fonts/CircularStd-Medium.woff) format('woff');
+	font-weight: 500;
+	font-style: normal;
+}
+
 .bg-sidebar-hover {
     background-color: rgba(180, 68, 249, 0.15);
 }
@@ -119,6 +132,20 @@ button.sidebar {
     object-fit: contain; /* Equivalent of the background-size: cover; of a background-image */
     object-position: center;
   }
+  .nft-image {
+    border-radius: 6px;
+
+    &:hover {
+        background: radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.25) 0%, rgba(254, 254, 255, 0.1) 100%);
+        backdrop-filter: blur(2px);
+    }
+  }
+}
+
+.collection-nft-image-item {
+    background: radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.25) 0%, rgba(254, 254, 255, 0.1) 100%);
+    backdrop-filter: blur(2px);
+    border-radius: 6px;
 }
 
 .banner-slider {

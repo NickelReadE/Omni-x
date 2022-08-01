@@ -44,6 +44,9 @@ const SideBar: React.FC = () => {
   const [expandedMenu, setExpandedMenu] = useState(0)
   const [fixed, setFixed] = useState(false)
   const [confirmTransfer, setConfirmTransfer] = useState(false)
+  const [chainId, setChainID] = useState(4)
+
+  const DEFAULT_AVATAR = 'uploads\\default_avatar.png'
 
   const menu_profile = useRef<HTMLUListElement>(null)
   const menu_ethereum = useRef<HTMLUListElement>(null)
@@ -177,6 +180,7 @@ const SideBar: React.FC = () => {
   const onClickNetwork = async (chainId: number) => {
     await connectWallet()
     await switchNetwork(chainId)
+    setChainID(chainId)
   }
 
   const handleTargetChainChange = (networkIndex: number) => {
@@ -426,7 +430,7 @@ const SideBar: React.FC = () => {
     <>
       { !onMenu &&
         <div
-          className='right-0 right-0 w-[70px] py-10 bg-[#F8F9FA] fixed h-full z-50'
+          className='right-0 right-0 w-[70px] py-10 bg-[#F8F9FA] fixed h-full z-[99]'
           onMouseEnter={() => setShowSidebar(true)}
           onMouseLeave={() => hideSidebar()}
         >
@@ -435,7 +439,7 @@ const SideBar: React.FC = () => {
               <div className="sidebar-icon">
                 <div className="m-auto">
                   <Image
-                    src={avatarError?'/images/default_avatar.png':(process.env.API_URL + user.avatar)}
+                    src={avatarError || user.avatar === undefined || user.avatar === DEFAULT_AVATAR?'/images/default_avatar.png':(process.env.API_URL + user.avatar)}
                     alt="avatar"
                     onError={(e)=>{user.avatar&&setAvatarError(true)}}
                     width={45}
@@ -446,7 +450,28 @@ const SideBar: React.FC = () => {
             </div>
             <div className="w-full py-[8px]">
               <div className="sidebar-icon">
-                <img src="/sidebar/ethereum.png" className="m-auto" />
+                {
+                  chainId === (env === 'testnet' ? 4 : 1) && <img src="/sidebar/ethereum.png" className="m-auto h-full" />
+                }
+                {
+                  chainId === (env === 'testnet' ? 421611 : 1) && <img src="/sidebar/arbitrum.png" className="m-auto h-full" />
+                }
+                {
+                  chainId === (env === 'testnet' ? 43113 : 1) && <img src="/sidebar/avax.png" className="m-auto h-full" />
+                }
+                {
+                  chainId === (env === 'testnet' ? 97 : 1) && <img src="/sidebar/binance.png" className="m-auto h-full" />
+                }
+                {
+                  chainId === (env === 'testnet' ? 4002 : 1) && <img src="/sidebar/fantom.png" className="m-auto h-full" />
+                }
+                {
+                  chainId === (env === 'testnet' ? 69 : 1) && <img src="/sidebar/optimism.png" className="m-auto h-full" />
+                }
+                {
+                  chainId === (env === 'testnet' ? 80001 : 1) && <img src="/sidebar/polygon.png" className="m-auto h-full" />
+                }
+
               </div>
             </div>
             <div className="w-full py-[8px]">
@@ -474,7 +499,7 @@ const SideBar: React.FC = () => {
       }
       <div
         ref={ref}
-        className={`right-0 right-0 w-[450px] bg-white px-[24px] py-10 fixed h-full z-40 ease-in-out duration-300 ${
+        className={`right-0 right-0 w-[450px] bg-white px-[24px] py-10 fixed h-full z-[98] ease-in-out duration-300 ${
           showSidebar || onMenu ? 'translate-x-0' : 'translate-x-full'
         }`}
         onMouseEnter={() => setOnMenu(true)}
@@ -588,8 +613,12 @@ const SideBar: React.FC = () => {
             </button>
             { expandedMenu == 3 &&
               <div className='flex flex-col w-full space-y-4 p-6 pt-8 pb-0' ref={menu_wallets}>
-                <span className="font-semibold w-auto text-[16px]">Staking:</span>
-                <div className="w-full flex flex-row font-semibold text-[14px]">
+                <span className="font-semibold w-auto text-[16px]">OMNI balance:</span>
+                <span className="font-semibold w-auto text-[16px]">USDC balance:</span>
+                <span className="font-semibold w-auto text-[16px]">USDT balance:</span>
+
+                <span className="w-auto text-[16px]">Staking: comming soon</span>
+                {/* <div className="w-full flex flex-row font-semibold text-[14px]">
                   <div className="bg-g-200 w-[88px] px-[11px] py-[9px]">
                     APR
                     <span className="pull-right">50%</span>
@@ -661,7 +690,7 @@ const SideBar: React.FC = () => {
                 <div className="flex flex-row">
                   <span className="text-[14px]">*add/remove positions on profile dashboard</span>
                   <button className="w-[30px] h-[30px] bg-wallet-output"></button>
-                </div>
+                </div> */}
               </div>
             }
           </li>
@@ -678,9 +707,10 @@ const SideBar: React.FC = () => {
             { expandedMenu == 4 &&
               <div className='flex flex-col w-full space-y-4 p-6 pt-8 pb-0' ref={menu_watchlist}>
                 <div className="p-[51px] flex flex-col items-center border border-dashed border-g-300">
-                  <span className="text-[14px] text-g-300">Drag & Drop</span>
+                  {/* <span className="text-[14px] text-g-300">Drag & Drop</span>
                   <span className="text-[14px] text-g-300">an NFT or NFT Collection</span>
-                  <span className="text-[14px] text-g-300">to add your watch list</span>
+                  <span className="text-[14px] text-g-300">to add your watch list</span> */}
+                  <span className="text-[14px] text-g-300">comming soon</span>
                 </div>
               </div>
             }
@@ -776,14 +806,14 @@ const SideBar: React.FC = () => {
           </li>
         </ul>
         <div
-          className='top-0 right-0 w-[70px] py-10 bg-white fixed h-full z-50'
+          className='top-0 right-0 w-[70px] py-10 bg-white fixed h-full z-[99]'
         >
           <div className="flex flex-col items-center space-y-4">
             <div className="w-full py-[8px]">
               <div className="sidebar-icon">
                 <div className="m-auto">
                   <Image
-                    src={avatarError?'/images/default_avatar.png':(process.env.API_URL + user.avatar)}
+                    src={avatarError || user.avatar === undefined || user.avatar === DEFAULT_AVATAR?'/images/default_avatar.png':(process.env.API_URL + user.avatar)}
                     alt="avatar"
                     onError={(e)=>{user.avatar&&setAvatarError(true)}}
                     width={45}
@@ -798,7 +828,27 @@ const SideBar: React.FC = () => {
             </div>
             <div className="w-full py-[8px]">
               <div className="sidebar-icon">
-                <img src="/sidebar/ethereum.png" className="m-auto" />
+                {
+                  chainId === (env === 'testnet' ? 4 : 1) && <img src="/sidebar/ethereum.png" className="m-auto h-full" />
+                }
+                {
+                  chainId === (env === 'testnet' ? 421611 : 1) && <img src="/sidebar/arbitrum.png" className="m-auto h-full" />
+                }
+                {
+                  chainId === (env === 'testnet' ? 43113 : 1) && <img src="/sidebar/avax.png" className="m-auto h-full" />
+                }
+                {
+                  chainId === (env === 'testnet' ? 97 : 1) && <img src="/sidebar/binance.png" className="m-auto h-full" />
+                }
+                {
+                  chainId === (env === 'testnet' ? 4002 : 1) && <img src="/sidebar/fantom.png" className="m-auto h-full" />
+                }
+                {
+                  chainId === (env === 'testnet' ? 69 : 1) && <img src="/sidebar/optimism.png" className="m-auto h-full" />
+                }
+                {
+                  chainId === (env === 'testnet' ? 80001 : 1) && <img src="/sidebar/polygon.png" className="m-auto h-full" />
+                }
               </div>
               { expandedMenu == 2 &&
                 <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{height: offsetMenu + 'px'}}>

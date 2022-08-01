@@ -10,6 +10,10 @@ import {FeedItem} from '../interface/interface'
 import useWallet from '../hooks/useWallet'
 import {useDispatch, useSelector} from 'react-redux'
 import {getUserNFTs, selectUserNFTs} from '../redux/reducers/userReducer'
+import { makeStyles } from '@material-ui/core/styles'
+
+import Dialog from '@material-ui/core/Dialog'
+import UserEdit from './user/UserEdit'
 
 const feed: Array<FeedItem> = [
   {
@@ -52,26 +56,40 @@ type TabProps = {
   blur: boolean,
 }
 
+const useStyles = makeStyles({
+  paper: {
+    padding: '2rem',
+    width: '90%',
+    maxWidth: '100%',
+  },
+})
+
 const Tabs = ({blur}: TabProps) => {
   const [currentTab, setCurrentTable] = React.useState<string>('NFTs')
+  const [bOpenModal, setOpenModal] = React.useState(false)
+  const classes = useStyles()
 
   const nfts = useSelector(selectUserNFTs)
+
+  const updateModal = (name: string):void => {
+    setOpenModal(false)
+  }
 
   return (
     <>
       <div className={`w-full mt-20 px-32 ${blur ? 'blur-sm' : ''} mb-20`}>
         <div className="px-12">
           <ul
-            className="flex flex-wrap relative justify-item-stretch text-sm font-medium text-center text-gray-500 border-b-4 border-gray-300 dark:border-gray-700 dark:text-gray-400 px-8">
+            className="flex relative justify-item-stretch text-xl font-bold text-center border-b-2 border-[#E9ECEF]">
             <li
-              className={`select-none inline-block border-2 border-zince-800 text-xl p-4 text-zinc-800 ${currentTab === 'NFTs' ? 'bg-slate-200' : 'bg-slate-100'} rounded-t-lg active dark:bg-gray-800 dark:text-blue-500 w-40 cursor-pointer`}
+              className={`select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer z-30 ${currentTab === 'NFTs' ? 'bg-[#E9ECEF] text-[#1E1C21] shadow-[1px_-1px_4px_1px_rgba(233,236,239,1)]' : 'bg-[#F8F9FA] text-[#ADB5BD] shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)]'} `}
               onClick={() => setCurrentTable('NFTs')}>
               NFTs
             </li>
-            <li className={`select-none inline-block border-2 border-zince-800 text-xl p-4 text-zinc-800 ${currentTab==='watchlist'?'bg-slate-200':'bg-slate-100'} rounded-t-lg active dark:bg-gray-800 dark:text-blue-500 w-40 cursor-pointer`} onClick={()=>setCurrentTable('watchlist')}>watchlist</li>
-            <li className={'select-none inline-block border-2 border-zince-800 text-xl p-4 text-zinc-800 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500 w-40'}>feed</li>
-            <li className={'select-none border-2 border-zince-800 text-xl p-4 text-zinc-800 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500 w-40'}>stats</li>
-            <li className='select-none border-2 bg-slate-200 font-semibold absolute right-0 justify-self-end border-zince-800 text-xl p-4 text-zinc-600 bg-slate-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-200 w-40'>settings</li>
+            <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-20 bg-[#f3f3f3] text-[#ADB5BD]'}>watchlist</li>
+            <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-10 bg-[#f3f3f3] text-[#ADB5BD]'}>feed</li>
+            <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-0 bg-[#f3f3f3] text-[#ADB5BD]'}>stats</li>
+            <li className={'absolute right-0 select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] bg-[#F8F9FA] text-[#6C757D]'} onClick={() => setOpenModal(true) }>settings</li>
           </ul>
           {currentTab === 'NFTs' && <NFTGrid nfts={nfts}/>}
           {currentTab === 'watchlist' && <WatchList/>}
@@ -80,6 +98,9 @@ const Tabs = ({blur}: TabProps) => {
           {currentTab === 'stats' && <Stats/>}
         </div>
       </div>
+      <Dialog open={bOpenModal} onClose={() => setOpenModal(false)} aria-labelledby='simple-dialog-title' maxWidth={'xl'} classes={{ paper: classes.paper }}>
+        <UserEdit updateModal={updateModal} />
+      </Dialog>
     </>
   )
 }
