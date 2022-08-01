@@ -29,6 +29,9 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
         </div>
         <div className="grid grid-cols-5 gap-10 mt-4">
           {nfts.map((item, index) => {
+            if(chain != 'all' && item.chain != chain ) {
+              return
+            }
             return (
               <NFTBox nft={item} index={index} key={index} />
             )

@@ -446,10 +446,10 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
               </div>
               <div className="flex space-x-2 justify-end mb-5">
                 <button
-                  type="submit"
-                  className="inline-block px-6 py-2.5 bg-[#B444F9] text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out absolute right-[1rem] bottom-[50px]"
+                  type='submit'
+                  className="inline-block absolute right-[2rem] bottom-[50px] px-10 py-1 bg-[#B444F9] hover:bg-[#9557bb] text-white font-['Circular_Std'] font-medium text-[18px] rounded-[4px] cursor-pointer"
                 >
-                  Save
+                  save
                 </button>
               </div>
             </form>
@@ -463,7 +463,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
               <div className="flex flex-col p-4">
                 <div className='flex flex-row'>
                   <div className="flex items-center">
-                    <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]" type="checkbox"/>
+                    <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]" disabled={true} type="checkbox"/>
                   </div>
                   <div className="inline-block align-middle ml-4">
                     <p className='text-[#ADB5BD] text-lg leading-6 font-medium'>Item Sold</p>
@@ -472,7 +472,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                 </div>
                 <div className='flex flex-row my-4'>
                   <div className="flex items-center">
-                    <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]" type="checkbox"/>
+                    <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]" disabled={true} type="checkbox"/>
                   </div>
                   <div className="inline-block align-middle ml-4">
                     <p className='text-[#ADB5BD] text-lg leading-6 font-medium'>Bids</p>
@@ -481,7 +481,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                 </div>
                 <div className='flex flex-row my-4'>
                   <div className="flex items-center">
-                    <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]" type="checkbox"/>
+                    <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]" disabled={true} type="checkbox"/>
                   </div>
                   <div className="inline-block align-middle ml-4">
                     <p className='text-[#ADB5BD] text-lg leading-6 font-medium'>Outbid</p>
@@ -490,7 +490,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                 </div>
                 <div className='flex flex-row my-4'>
                   <div className="flex items-center">
-                    <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]" type="checkbox"/>
+                    <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]" disabled={true} type="checkbox"/>
                   </div>
                   <div className="inline-block align-middle ml-4">
                     <p className='text-[#ADB5BD] text-lg leading-6 font-medium'>Succesful Purchase</p>
@@ -504,17 +504,18 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                     <p className='text-[#ADB5BD] text-base leading-5'>no alerts unless bid exceeds this value:</p>
                     
                     <span className={classNames('basis-1/6',editStyle.etherspan)}>
-                      <input className="w-32 my-4" type="text" placeholder='0.005' />
+                      <input className="w-32 my-4" type="text" placeholder='0.005' disabled={true} />
                     </span>
                   </div>
                 </div>
               </div>
               <div className="flex space-x-2 justify-end mb-5">
                 <button
-                  type="submit"
-                  className="inline-block px-6 py-2.5 bg-[#ADB5BD] text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out absolute right-[1rem] bottom-[50px]"
+                  type='submit'
+                  disabled={true}
+                  className="inline-block absolute right-[2rem] bottom-[50px] px-10 py-1 bg-[#B444F9] hover:bg-[#9557bb] text-white font-['Circular_Std'] font-medium text-[18px] rounded-[4px] disabled:bg-[#a1a1a1]"
                 >
-                  Save
+                  save
                 </button>
               </div>
             </form>
@@ -528,7 +529,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
               <div className="flex flex-col p-4">
                 <div className='flex flex-row'>
                   <div className="flex items-center">
-                    <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]" type="checkbox"/>
+                    <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]" disabled={true} type="checkbox"/>
                   </div>
                   <div className="inline-block align-middle ml-4">
                     <p className='text-[#ADB5BD] text-lg leading-6 font-medium'>Accept Credit Card Payments</p>
@@ -537,7 +538,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                 </div>
                 <div className='flex flex-row my-4'>
                   <div className="flex items-center">
-                    <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]" type="checkbox"/>
+                    <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]" disabled={true} type="checkbox"/>
                   </div>
                   <div className="inline-block align-middle ml-4">
                     <p className='text-[#ADB5BD] text-lg leading-6 font-medium'>Set Default Token for Payments</p>
@@ -553,7 +554,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                       {coinTokenID==='2' &&  <Image src={UsdtIMG} alt='Usdt logo'/>}
                       {coinTokenID==='3' &&  <Image src={EthIMG} alt='Eth logo'/>}
                     </div>
-                    <select onChange={(e) => {
+                    <select disabled={true} onChange={(e) => {
                       handleTokenCoin(e.target.value)
                     }}>
                       <option value={'0'}>OMNI</option>
@@ -566,7 +567,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                 </div>
                 <div className='flex flex-row my-4'>
                   <div className="flex items-center">
-                    <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]" type="checkbox"/>
+                    <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]" disabled={true} type="checkbox"/>
                   </div>
                   <div className="inline-block align-middle ml-4">
                     <p className='text-[#ADB5BD] text-lg leading-6 font-medium'>List Prices by Default in:</p>
@@ -582,7 +583,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                       {coinNFTID==='2' &&  <Image src={UsdtIMG} alt='Usdt logo'/>}
                       {coinNFTID==='3' &&  <Image src={EthIMG} alt='Eth logo'/>}
                     </div>
-                    <select onChange={(e) => {
+                    <select disabled={true} onChange={(e) => {
                       handleNFTCoin(e.target.value)
                     }}>
                       <option value={'0'}>OMNI</option>
@@ -597,9 +598,10 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
               <div className='flex space-x-2 justify-end mb-5'>
                 <button
                   type='submit'
-                  className='inline-block px-6 py-2.5 bg-[#ADB5BD] text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out absolute right-[1rem] bottom-[50px]'
+                  disabled={true}
+                  className="inline-block absolute right-[2rem] bottom-[50px] px-10 py-1 bg-[#B444F9] hover:bg-[#9557bb] text-white font-['Circular_Std'] font-medium text-[18px] rounded-[4px] disabled:bg-[#a1a1a1]"
                 >
-                  Save
+                  save
                 </button>
               </div>
             </form>
