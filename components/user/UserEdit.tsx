@@ -141,6 +141,10 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
       const formData = new FormData(updateProfileFormRef.current)
       const address = context.address?context.address:''
       formData.append('address', address)
+      
+      console.log(banner_1)
+      console.log(banner_2)
+      console.log(banner_3)
 
       if ( banner_1 != process.env.API_URL + DEFAULT_BANNER && banner_1 != '/images/default_banner.png' ) {
         formData.append('banner_1', (await getFileFromUrl(banner_1, 'banner1.png')) as any)
