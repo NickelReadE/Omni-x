@@ -133,7 +133,10 @@ export const BridgeProvider = ({
   }
 
   const validateOwNFT = async (nft: NFTItem) => {
+    if (!provider?._network?.chainId) return false
     const chainId = getChainIdFromName(nft.chain)
+    if (provider?._network?.chainId !== chainId) return false
+
     try {
       if (nft.contract_type === 'ERC721') {
         if (!nft.name?.startsWith('Ow')) return false
