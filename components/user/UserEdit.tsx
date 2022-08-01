@@ -23,7 +23,10 @@ import editStyle from '../../styles/useredit.module.scss'
 import UserSVG from '../../public/svgs/user.svg'
 import AlertSVG from '../../public/svgs/alert.svg'
 import PaymentSVG from '../../public/svgs/payment.svg'
-
+import EthIMG from '../../public/images/payment/eth.png'
+import OmniIMG from '../../public/images/payment/omni.png'
+import UsdcIMG from '../../public/images/payment/usdc.png'
+import UsdtIMG from '../../public/images/payment/usdt.png'
 interface IUserEditProps {
   updateModal: (arg: string) => void
 }
@@ -45,6 +48,9 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
   const [crop, setCrop] = useState({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(1)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
+  const [coinNFTID, handleNFTCoin] = useState('0')
+  const [coinTokenID, handleTokenCoin] = useState('0')
+
 
   const dispatch = useDispatch()
   const user = useSelector(selectUser)
@@ -285,9 +291,6 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                 <div className="grid grid-cols-3 gap-4 w-full">
                   <div>
                     <div className="border-[#B444F9] mb-5 relative cursor-pointer" onClick={onClickBanner_1}>
-                      <div className="absolute -right-2 -top-2 z-10 ">
-                        <Image src={Close} alt="close" width={15} height={15} />
-                      </div>
                       <div
                         className="absolute z-10 top-[50%] mt-[-20px] left-[50%] ml-[-20px] bg-[#E9ECEF99] rounded-full w-[40px] h-[40px] p-2"
                       >
@@ -309,9 +312,6 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                   </div>
                   <div>
                     <div className="border-[#B444F9] mb-5 relative cursor-pointer" onClick={onClickBanner_2}>
-                      <div className="absolute -right-2 -top-2 z-10 ">
-                        <Image src={Close} alt="close" width={15} height={15} />
-                      </div>
                       <div
                         className="absolute z-10 top-[50%] mt-[-20px] left-[50%] ml-[-20px] bg-[#E9ECEF99] rounded-full w-[40px] h-[40px] p-2"
                       >
@@ -333,9 +333,6 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                   </div>
                   <div>
                     <div className="border-[#B444F9] mb-5 relative cursor-pointer" onClick={onClickBanner_3}>
-                      <div className="absolute -right-2 -top-2 z-10 ">
-                        <Image src={Close} alt="close" width={15} height={15} />
-                      </div>
                       <div
                         className="absolute z-10 top-[50%] mt-[-20px] left-[50%] ml-[-20px] bg-[#E9ECEF99] rounded-full w-[40px] h-[40px] p-2"
                       >
@@ -437,7 +434,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
               <div className="flex space-x-2 justify-end mb-5">
                 <button
                   type="submit"
-                  className="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out absolute right-[1rem] bottom-[50px]"
+                  className="inline-block px-6 py-2.5 bg-[#B444F9] text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out absolute right-[1rem] bottom-[50px]"
                 >
                   Save
                 </button>
@@ -456,7 +453,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                     <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]" type="checkbox"/>
                   </div>
                   <div className="inline-block align-middle ml-4">
-                    <p className='text-black text-lg leading-6 font-medium'>Item Sold</p>
+                    <p className='text-[#ADB5BD] text-lg leading-6 font-medium'>Item Sold</p>
                     <p className='text-[#ADB5BD] text-base leading-5'>an NFT of yours is purchased</p>
                   </div>
                 </div>
@@ -465,7 +462,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                     <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]" type="checkbox"/>
                   </div>
                   <div className="inline-block align-middle ml-4">
-                    <p className='text-black text-lg leading-6 font-medium'>Bids</p>
+                    <p className='text-[#ADB5BD] text-lg leading-6 font-medium'>Bids</p>
                     <p className='text-[#ADB5BD] text-base leading-5'>a bid is placed on your NFT</p>
                   </div>
                 </div>
@@ -474,7 +471,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                     <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]" type="checkbox"/>
                   </div>
                   <div className="inline-block align-middle ml-4">
-                    <p className='text-black text-lg leading-6 font-medium'>Outbid</p>
+                    <p className='text-[#ADB5BD] text-lg leading-6 font-medium'>Outbid</p>
                     <p className='text-[#ADB5BD] text-base leading-5'>a user exceeds your offer on an NFT you bid on</p>
                   </div>
                 </div>
@@ -483,18 +480,18 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                     <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]" type="checkbox"/>
                   </div>
                   <div className="inline-block align-middle ml-4">
-                    <p className='text-black text-lg leading-6 font-medium'>Succesful Purchase</p>
+                    <p className='text-[#ADB5BD] text-lg leading-6 font-medium'>Succesful Purchase</p>
                     <p className='text-[#ADB5BD] text-base leading-5'>an NFT is succesfully bought</p>
                   </div>
                 </div>
                 <div className='flex flex-row my-4'>
                   <div className="w-[22px]"></div>
                   <div className="inline-block align-middle ml-4">
-                    <p className='text-black text-lg leading-6 font-medium'>Minimum Bid</p>
+                    <p className='text-[#ADB5BD] text-lg leading-6 font-medium'>Minimum Bid</p>
                     <p className='text-[#ADB5BD] text-base leading-5'>no alerts unless bid exceeds this value:</p>
                     
                     <span className={classNames('basis-1/6',editStyle.etherspan)}>
-                      <input className="w-32 my-4" type="text" />
+                      <input className="w-32 my-4" type="text" placeholder='0.005' />
                     </span>
                   </div>
                 </div>
@@ -502,7 +499,92 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
               <div className="flex space-x-2 justify-end mb-5">
                 <button
                   type="submit"
-                  className="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out absolute right-[1rem] bottom-[50px]"
+                  className="inline-block px-6 py-2.5 bg-[#ADB5BD] text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out absolute right-[1rem] bottom-[50px]"
+                >
+                  Save
+                </button>
+              </div>
+            </form>
+          }
+          {
+            selectedTab == 2 &&
+            <form 
+              ref={updateProfileFormRef}
+              onSubmit={updateProfile}
+            >
+              <div className="flex flex-col p-4">
+                <div className='flex flex-row'>
+                  <div className="flex items-center">
+                    <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]" type="checkbox"/>
+                  </div>
+                  <div className="inline-block align-middle ml-4">
+                    <p className='text-[#ADB5BD] text-lg leading-6 font-medium'>Accept Credit Card Payments</p>
+                    <p className='text-[#ADB5BD] text-base leading-5'>KYC verification required</p>
+                  </div>
+                </div>
+                <div className='flex flex-row my-4'>
+                  <div className="flex items-center">
+                    <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]" type="checkbox"/>
+                  </div>
+                  <div className="inline-block align-middle ml-4">
+                    <p className='text-[#ADB5BD] text-lg leading-6 font-medium'>Set Default Token for Payments</p>
+                    <p className='text-[#ADB5BD] text-base leading-5'>preferred token is default payment option</p>
+                  </div>
+                </div>
+                <div className='flex flex-row my-4'>
+                  <div className='w-[22px]'></div>
+                  <div className={editStyle.tokenOption}>
+                    <div className={editStyle.chainIcon}>
+                      {coinTokenID==='0' &&  <Image src={OmniIMG} alt='Omni logo'/>}
+                      {coinTokenID==='1' &&  <Image src={UsdcIMG} alt='Usdc logo'/>}
+                      {coinTokenID==='2' &&  <Image src={UsdtIMG} alt='Usdt logo'/>}
+                      {coinTokenID==='3' &&  <Image src={EthIMG} alt='Eth logo'/>}
+                    </div>
+                    <select onChange={(e) => {
+                      handleTokenCoin(e.target.value)
+                    }}>
+                      <option value={'0'}>OMNI</option>
+                      <option value={'1'}>USDC</option>
+                      <option value={'2'}>USDT</option>
+                      <option value={'3'}>ETH</option>
+                    </select>
+                  </div>
+
+                </div>
+                <div className='flex flex-row my-4'>
+                  <div className="flex items-center">
+                    <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]" type="checkbox"/>
+                  </div>
+                  <div className="inline-block align-middle ml-4">
+                    <p className='text-[#ADB5BD] text-lg leading-6 font-medium'>List Prices by Default in:</p>
+                    <p className='text-[#ADB5BD] text-base leading-5'>a user exceeds your offer on an NFT you bid on</p>
+                  </div>
+                </div>
+                <div className='flex flex-row my-4'>
+                  <div className='w-[22px]'></div>
+                  <div className={editStyle.tokenOption}>
+                    <div className={editStyle.chainIcon}>
+                      {coinNFTID==='0' &&  <Image src={OmniIMG} alt='Omni logo'/>}
+                      {coinNFTID==='1' &&  <Image src={UsdcIMG} alt='Usdc logo'/>}
+                      {coinNFTID==='2' &&  <Image src={UsdtIMG} alt='Usdt logo'/>}
+                      {coinNFTID==='3' &&  <Image src={EthIMG} alt='Eth logo'/>}
+                    </div>
+                    <select onChange={(e) => {
+                      handleNFTCoin(e.target.value)
+                    }}>
+                      <option value={'0'}>OMNI</option>
+                      <option value={'1'}>USDC</option>
+                      <option value={'2'}>USDT</option>
+                      <option value={'3'}>ETH</option>
+                    </select>
+                  </div>
+
+                </div>
+              </div>
+              <div className='flex space-x-2 justify-end mb-5'>
+                <button
+                  type='submit'
+                  className='inline-block px-6 py-2.5 bg-[#ADB5BD] text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out absolute right-[1rem] bottom-[50px]'
                 >
                   Save
                 </button>

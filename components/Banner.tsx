@@ -71,9 +71,9 @@ const Banner = ({ slides, blur, menu }: BannerProps): JSX.Element => {
                   height={200}
                 />
               </div>
-              <div className="flex flex-col ml-[20rem]">
-                <div className="text-[26px] text-slate-800">{user.username}</div>
-                <div className="text-[#6C757D] text-[16px] ml-3 mt-3">
+              <div className="flex flex-col ml-[20rem] mt-[10px]">
+                <div className="text-[26px] text-slate-800 font-semibold">{user.username ? user.username : 'username'}</div>
+                <div className="text-[#6C757D] text-[16px] text-slate-800">
                   {user.bio}
                 </div>
               </div>
