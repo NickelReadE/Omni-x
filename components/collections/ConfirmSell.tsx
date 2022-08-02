@@ -7,6 +7,7 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 
 import CustomSelect from './CustomSelect'
 import Select from 'react-select'
+import { IListingData } from '../../interface/interface'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,6 +34,7 @@ const data1 = [
 
 interface IConfirmSellProps {
   handleSellDlgClose: () => void,
+  handleListing: (listingData: IListingData) => void,
   openSellDlg: boolean,
   nftImage: string,
   nftTitle: string,
@@ -40,12 +42,22 @@ interface IConfirmSellProps {
 
 const ConfirmSell: React.FC<IConfirmSellProps> = ({
   handleSellDlgClose,
+  handleListing,
   openSellDlg,
   nftImage,
   nftTitle,
 }) => {
   const classes = useStyles()
   const [sellType, setSellType] = useState('fixed')
+  const onListing = () => {
+    if (handleListing) {
+      handleListing({
+        price: '0.01',
+        currency: 'OMNI1',
+        isAuction: sellType !== 'fixed'
+      });
+    }
+  }
   return (
     <Dialog open={openSellDlg} onClose={handleSellDlgClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
       <DialogTitle id="form-dialog-title" className={classes.root}>
@@ -104,7 +116,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
             </div>
             <div className="grid grid-cols-4 mt-10 flex items-end">
               <div className="col-span-1">
-                <button className='bg-[#B00000] rounded text-[#fff] w-[95px] h-[35px]'>list</button>
+                <button className='bg-[#B00000] rounded text-[#fff] w-[95px] h-[35px]' onClick={onListing}>list</button>
               </div>
               <div className="col-span-3">
                 <div className='flex justify-end'>
@@ -163,7 +175,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
             
             <div className="grid grid-cols-4 mt-20 flex items-end">
               <div className="col-span-1">
-                <button className='bg-[#B00000] rounded text-[#fff] w-[95px] h-[35px]'>list</button>
+                <button className='bg-[#B00000] rounded text-[#fff] w-[95px] h-[35px]' onClick={onListing}>list</button>
               </div>
               <div className="col-span-3">
                 <div className='flex justify-end'>

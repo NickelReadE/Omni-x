@@ -33,8 +33,9 @@ import { postMakerOrder } from '../../../utils/makeOrder'
 import { addressesByNetwork } from '../../../constants'
 import { SupportedChainId } from '../../../types'
 import { getOrders, selectOrders } from '../../../redux/reducers/ordersReducer'
-import { IGetOrderRequest, IOrder } from '../../../interface/interface'
+import { IGetOrderRequest, IListingData, IOrder } from '../../../interface/interface'
 import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
+import { getOmnixExchangeInstance } from '../../../utils/contracts'
 
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
@@ -45,6 +46,7 @@ const Item: NextPage = () => {
 
   const {
     provider,
+    signer,
     address
   } = useWallet()
   const [openSellDlg, setOpenSellDlg] = React.useState(false)
@@ -57,6 +59,7 @@ const Item: NextPage = () => {
   const token_id = router.query.Item as string
 
   const nftInfo = useSelector(selectNFTInfo)
+  const isAuction = false;
 
   useEffect(() => {
     const getNFTOwnership = async(col_url: string, token_id: string) => {
@@ -96,7 +99,10 @@ const Item: NextPage = () => {
   }, [orders])
 
   const onBuy = async () => {
+    const omnixExchange = getOmnixExchangeInstance(provider?._network?.chainId || 0, signer)
 
+    console.log('-buy--', order, nftInfo);
+    // omnixExchange
   }
 
   const onBid = async () => {
@@ -128,8 +134,11 @@ const Item: NextPage = () => {
     dispatch(openSnackBar({ message: `Make Offer Success`, status: 'success' }))
   }
 
-  const onListing = async () => {
-    const price = ethers.utils.parseEther("1")
+  const onListing = async (listingData: IListingData) => {
+    const price = ethers.utils.parseEther(listingData.price)
+    const amount = ethers.utils.parseUnits("1", 1);
+    const protocalFees = ethers.utils.parseUnits("2", 2);
+    const creatorFees = ethers.utils.parseUnits("2", 2);
     const chainId = 4
     
     const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
@@ -139,10 +148,10 @@ const Item: NextPage = () => {
       true,
       nftInfo.collection.address,
       addresses.STRATEGY_STANDARD_SALE,
-      ethers.utils.parseUnits("1", 1),
+      amount,
       price,
-      ethers.utils.parseUnits("2", 2),
-      ethers.utils.parseUnits("2", 2),
+      protocalFees,
+      creatorFees,
       addresses.WETH,
       {
         tokenId: token_id,
@@ -155,7 +164,8 @@ const Item: NextPage = () => {
       nftInfo.collection.chain
     )
 
-    dispatch(openSnackBar({ message: `Listing Success`, status: 'success' }))
+    dispatch(openSnackBar({ message: `  Success`, status: 'success' }))
+    setOpenSellDlg(false);
   }
   const truncate = (str: string) => {
     return str.length > 12 ? str.substring(0, 9) + '...' : str
@@ -169,6 +179,35 @@ const Item: NextPage = () => {
     {account: '', chain: 'eth', bid: '', bidtype: '', owner: ''},
     {account: '', chain: 'eth', bid: '', bidtype: '', owner: ''},
   ]
+
+  console.log('---owner && address-----', owner, address, orders, order);
+
+  const buttons = <>
+    {owner?.toLowerCase() === address?.toLowerCase() && (
+      <button
+        className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD]"
+        onClick={() => {setOpenSellDlg(true)}}
+      >
+        Sell
+      </button>
+    )}
+    {owner !== address && !isAuction && (
+      <button
+        className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD]"
+        onClick={onBuy}
+      >
+        Buy
+      </button>
+    )}
+    {owner !== address && isAuction && (
+      <button
+        className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD]"
+        onClick={() => {setOpenBidDlg(true)}}
+      >
+        Bid
+      </button>
+    )}
+  </>
 
   return (
     <>
@@ -208,7 +247,7 @@ const Item: NextPage = () => {
                       <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-semibold">Highest Bid: <span className="font-normal">45</span></h1><Image src={PngEther} width={15} height={16} alt="chain  logo" /></div>
                       <div className="flex justify-start items-center"><h1 className="mr-3 font-semibold">Last Sale: <span className="font-normal">42</span></h1><Image src={PngEther} width={15} height={16} alt="chain logo" /></div>
                       <div className="flex justify-end items-center">
-                        <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD]" onClick={() => {setOpenBidDlg(true)}}>bid</button>
+                        {buttons}
                       </div>
                     </div>
                   </div>
@@ -269,7 +308,7 @@ const Item: NextPage = () => {
               </div>
             </div>
           </div>
-          <ConfirmSell handleSellDlgClose={() => {setOpenSellDlg(false)}} openSellDlg={openSellDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} />
+          <ConfirmSell handleListing={onListing} handleSellDlgClose={() => {setOpenSellDlg(false)}} openSellDlg={openSellDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} />
           <ConfirmBid handleBidDlgClose={() => {setOpenBidDlg(false)}} openBidDlg={openBidDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} />
         </div>
       }

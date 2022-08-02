@@ -97,3 +97,9 @@ export interface IOrder {
   s: string,
   status: string
 }
+
+export interface IListingData {
+  price: string,
+  currency: string,
+  isAuction: boolean
+}
