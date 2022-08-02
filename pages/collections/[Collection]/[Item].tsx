@@ -41,6 +41,9 @@ const Item: NextPage = () => {
 
   const nftInfo = useSelector(selectNFTInfo)
 
+  console.log(col_url)
+  console.log(token_id)
+
   useEffect(() => {
     if ( col_url && token_id ) {
       dispatch(getNFTInfo(col_url, token_id) as any)
@@ -108,10 +111,10 @@ const Item: NextPage = () => {
                       <div className="text-center font-bold text-[18px]">chain</div>
                       <div className="font-bold text-[18px]">bid</div>
                       <div></div>
-                      {
+                      {/* {
                         bidData.map((item, index) => {
                           return <>
-                            <div className='break-all mt-3'>{truncate('0x0F20E363294b858507aA7C84EF525E5700d93999')}</div>
+                            <div key={index} className='break-all mt-3'>{truncate('0x0F20E363294b858507aA7C84EF525E5700d93999')}</div>
                             <div className="text-center mt-3"><Image src={PngEther}  className='mt-[22px]'/></div>
                             <div className='flex justify-start items-center mt-3'>
                               <Image src={PngIcon1}  className='mt-[22px]'/>
@@ -120,7 +123,7 @@ const Item: NextPage = () => {
                             <div className='text-right mt-3'><button className='bg-[#ADB5BD] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5'>accept</button></div>
                           </>
                         })
-                      }
+                      } */}
                     </div>
                   </div>
                 </div>
