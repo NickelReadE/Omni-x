@@ -19,7 +19,7 @@ import {getChainIdFromName, getLayerzeroChainId} from '../utils/constants'
 import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
 import useBridge from '../hooks/useBridge'
-import useProgress from "../hooks/useProgress";
+import useProgress from '../hooks/useProgress'
 
 interface RefObject {
   offsetHeight: number
