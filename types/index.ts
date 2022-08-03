@@ -4,7 +4,6 @@ export { SupportedChainId } from "./enum";
 export type { ChainInfo, Addresses } from "./constants";
 export type {
   MakerOrder,
-  MakerOrderWithEncodedParams,
   MakerOrderWithSignature,
   MakerOrderWithVRS,
   TakerOrder,

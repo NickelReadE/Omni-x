@@ -30,7 +30,7 @@ import image_25 from '../../../public/images/image 25.png'
 import useWallet from '../../../hooks/useWallet'
 import { ethers } from 'ethers'
 import { postMakerOrder } from '../../../utils/makeOrder'
-import { TakerOrderWithEncodedParams } from '../../../types'
+import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../../../types'
 import { getOrders, selectOrders } from '../../../redux/reducers/ordersReducer'
 import { IGetOrderRequest, IListingData, IOrder } from '../../../interface/interface'
 import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
@@ -94,30 +94,52 @@ const Item: NextPage = () => {
 
   useEffect(() => {
     if ( orders.length > 0 ) {
-      setOrder(orders[0])
+      setOrder(orders[orders.length - 1])
     }
   }, [orders])
 
   const onBuy = async () => {
-    
     console.log('-buy--', order, provider);
 
+    if (!order) {
+      dispatch(openSnackBar({ message: `Not listed`, status: 'warning' }))
+      return
+    }
+
     const omnixExchange = getOmnixExchangeInstance(provider?._network?.chainId || 0, signer)
-    const makerAsk = order;
+    const makerAsk : MakerOrderWithSignature = {
+      isOrderAsk: order.isOrderAsk,
+      signer: order?.signer,
+      collection: order?.collectionAddress,
+      price: order?.price,
+      tokenId: order?.tokenId,
+      amount: order?.amount,
+      strategy: order?.strategy,
+      currency: order?.currencyAddress,
+      nonce: order?.nonce,
+      startTime: order?.startTime,
+      endTime: order?.endTime,
+      minPercentageToAsk: order?.minPercentageToAsk,
+      params: ethers.utils.defaultAbiCoder.encode(['uint16'], order?.params),
+      signature: order?.signature
+    };
     const takerBid : TakerOrderWithEncodedParams = {
       isOrderAsk: false,
       taker: address || '0x',
       price: order?.price || '0',
       tokenId: order?.tokenId || '0',
       minPercentageToAsk: order?.minPercentageToAsk || '0',
-      params: ethers.utils.arrayify(
-        ethers.utils.defaultAbiCoder.encode(['uint16'], [provider?.network.chainId])
-      )
+      params: ethers.utils.defaultAbiCoder.encode(['uint16'], [provider?.network.chainId])
     }
 
-    const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
+    console.log('--buy----', makerAsk, takerBid);
 
-    await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
+    console.log('--omnixExchange-', await omnixExchange.owner(), await omnixExchange.remoteAddrManager())
+
+    // const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
+
+    // console.log('--lzFee----', lzFee);
+    // await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
   }
 
   const onBid = async () => {
@@ -150,7 +172,7 @@ const Item: NextPage = () => {
 
   const onListing = async (listingData: IListingData) => {
     const price = ethers.utils.parseEther(listingData.price)
-    const amount = ethers.utils.parseUnits("1", 1);
+    const amount = ethers.utils.parseUnits("1", 0);
     const protocalFees = ethers.utils.parseUnits("2", 2);
     const creatorFees = ethers.utils.parseUnits("2", 2);
     const chainId = provider?.network.chainId || 4

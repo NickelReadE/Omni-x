@@ -92,6 +92,7 @@ export const getOmnixExchangeInstance = (chainId: number, signer: any) => {
       provider
     )
   }
+  console.log('----omnix contract----')
   return new ethers.Contract(
     address,
     OmnixExchangeABI,
