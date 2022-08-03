@@ -35,7 +35,7 @@ import { getOrders, selectOrders } from '../../../redux/reducers/ordersReducer'
 import { IGetOrderRequest, IListingData, IOrder } from '../../../interface/interface'
 import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
 import { getOmnixExchangeInstance } from '../../../utils/contracts'
-import { getAddressByName } from '../../../utils/constants'
+import { getAddressByName, getLayerzeroChainId } from '../../../utils/constants'
 
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
@@ -106,7 +106,10 @@ const Item: NextPage = () => {
       return
     }
 
-    const omnixExchange = getOmnixExchangeInstance(provider?._network?.chainId || 0, signer)
+    const chainId = provider?.network.chainId || 4
+    const lzChainId = getLayerzeroChainId(chainId)
+
+    const omnixExchange = getOmnixExchangeInstance(chainId, signer)
     const makerAsk : MakerOrderWithSignature = {
       isOrderAsk: order.isOrderAsk,
       signer: order?.signer,
@@ -129,22 +132,23 @@ const Item: NextPage = () => {
       price: order?.price || '0',
       tokenId: order?.tokenId || '0',
       minPercentageToAsk: order?.minPercentageToAsk || '0',
-      params: ethers.utils.defaultAbiCoder.encode(['uint16'], [provider?.network.chainId])
+      params: ethers.utils.defaultAbiCoder.encode(['uint16'], [lzChainId])
     }
 
     console.log('--buy----', makerAsk, takerBid);
 
     console.log('--omnixExchange-', await omnixExchange.owner(), await omnixExchange.remoteAddrManager())
 
-    // const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
+    const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
 
-    // console.log('--lzFee----', lzFee);
+    console.log('--lzFee----', lzFee);
     // await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
   }
 
   const onBid = async () => {
     const price = ethers.utils.parseEther("1")
     const chainId = provider?.network.chainId || 4
+    const lzChainId = getLayerzeroChainId(chainId)
     
     await postMakerOrder(
       provider as any,
@@ -161,7 +165,7 @@ const Item: NextPage = () => {
         tokenId: token_id,
         startTime: Date.now(),
         params: {
-          values: [chainId],
+          values: [lzChainId],
           types: ["uint256"],
         },
       },
@@ -176,6 +180,7 @@ const Item: NextPage = () => {
     const protocalFees = ethers.utils.parseUnits("2", 2);
     const creatorFees = ethers.utils.parseUnits("2", 2);
     const chainId = provider?.network.chainId || 4
+    const lzChainId = getLayerzeroChainId(chainId)
     
     await postMakerOrder(
       provider as any,
@@ -192,7 +197,7 @@ const Item: NextPage = () => {
         tokenId: token_id,
         startTime: Date.now(),
         params: {
-          values: [chainId],
+          values: [lzChainId],
           types: ["uint256"],
         },
       },
