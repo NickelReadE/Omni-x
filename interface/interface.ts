@@ -71,7 +71,7 @@ export interface IGetOrderRequest {
   price?: any,
   startTime?: string,
   endTime?: string,
-  status?: [string],
+  status?: string[],
   pagination?: any,
   sort?: string
 }
