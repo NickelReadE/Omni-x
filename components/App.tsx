@@ -1,20 +1,23 @@
 import React from 'react'
 import {DndContext} from '@dnd-kit/core'
-import { WalletProvider } from './WalletProvider'
-import {BridgeProvider} from './BridgeProvider'
+import {WalletProvider} from './WalletProvider'
+import {BridgeProvider} from './providers/BridgeProvider'
+import {ProgressProvider} from './providers/ProgressProvider'
 import Layout from './Layout'
 
 type AppProps = {
-  children?: React.ReactNode
+    children?: React.ReactNode
 }
 
-function App({ children }: AppProps) {
+function App({children}: AppProps) {
   return (
     <WalletProvider>
       <BridgeProvider>
-        <DndContext>
-          <Layout>{children}</Layout>
-        </DndContext>
+        <ProgressProvider>
+          <DndContext>
+            <Layout>{children}</Layout>
+          </DndContext>
+        </ProgressProvider>
       </BridgeProvider>
     </WalletProvider>
   )

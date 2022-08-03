@@ -19,6 +19,7 @@ import {getChainIdFromName, getLayerzeroChainId} from '../utils/constants'
 import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
 import useBridge from '../hooks/useBridge'
+import useProgress from "../hooks/useProgress";
 
 interface RefObject {
   offsetHeight: number
@@ -35,6 +36,7 @@ const SideBar: React.FC = () => {
     switchNetwork
   } = useWallet()
   const { estimateGasFee, estimateGasFeeONFTCore, unwrapInfo, selectedUnwrapInfo, validateOwNFT, validateONFT } = useBridge()
+  const { setPendingTxInfo } = useProgress()
 
   const dispatch = useDispatch()
   const ref = useRef(null)
@@ -296,7 +298,15 @@ const SideBar: React.FC = () => {
         const tx = await contractInstance.wrap(lzTargetChainId, selectedNFTItem.token_address, BigNumber.from(selectedNFTItem.token_id), adapterParams, {
           value: estimatedFee
         })
+        await setPendingTxInfo({
+          txHash: tx.hash,
+          type: 'bridge',
+          senderChainId: provider?._network?.chainId,
+          targetChainId: targetChain,
+          itemName: selectedNFTItem.name
+        })
         await tx.wait()
+        await setPendingTxInfo(null)
         setSelectedNFTItem(undefined)
       } else if (selectedNFTItem.contract_type === 'ERC1155') {
         const contractInstance = getOmnixBridge1155Instance(provider?._network?.chainId, signer)

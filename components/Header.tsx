@@ -2,8 +2,20 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import headerStyle from '../styles/header.module.scss'
 import classNames from '../helpers/classNames'
+import useProgress from '../hooks/useProgress'
 import Image from 'next/image'
 import logo from '../public/images/logo.png'
+import arrowUp from '../public/images/arrowUp.png'
+import arrowDown from '../public/images/arrowDown.png'
+import arrowRight from '../public/images/arrowRight.png'
+import loading from '../public/images/loading.gif'
+import optimism from '../public/sidebar/optimism.png'
+import ethereum from '../public/sidebar/ethereum.png'
+import binance from '../public/sidebar/binance.png'
+import polygon from '../public/sidebar/polygon.png'
+import avax from '../public/sidebar/avax.png'
+import arbitrum from '../public/sidebar/arbitrum.png'
+import fantom from '../public/sidebar/fantom.png'
 
 type HeaderProps = {
   menu: string
@@ -20,6 +32,8 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
     hoverMenu: menu,
     isHover: false
   })
+  const [expand, setExpand] = useState(false)
+  const { txInfo, pending } = useProgress()
 
   const handleMouseOver = (hoverMenu: string) => {
     setHovering({
@@ -50,7 +64,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
           'w-full',
         )}
       >
-        <div className='flex flex-wrap items-start'>
+        <div className='flex flex-wrap items-center justify-around'>
           {
             !isSearch && 
             <button
@@ -66,7 +80,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
           {
             isSearch && 
             <input autoFocus type="text" placeholder='Acquire Your Desires' className="flex items-center bg-[#F8F9FA] bg-[url('../public/images/search.png')] w-[472px] h-[88px] border-0 focus:outline-0 focus:shadow-none focus:ring-offset-0 focus:ring-0 px-[85px]" onBlur={() => setSearch(false)}/>
-          }  
+          }
 
           <div className='hidden justify-between items-center w-full md:flex md:w-auto mx-auto md:order-2' id='mobile-menu-3'>
             <ul className="flex flex-col md:flex-row md:space-x-8 md:text-sm md:font-medium" >
@@ -105,6 +119,92 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
               </li>
             </ul>
           </div>
+
+          {
+            pending &&
+            <div className={'rounded-[8px] w-[200px] md:order-2 mr-[70px] px-4 flex flex-col justify-center shadow-md ' + (expand ? 'h-[80px]' : 'h-[40px]')}>
+              <div className="flex items-center justify-between">
+                <span className="text-lg">Processing</span>
+                <Image src={loading} alt="loading" width={30} height={30} />
+                {
+                  expand
+                    ?
+                    <Image src={arrowUp} alt="arrowUp" onClick={() => setExpand(!expand)} />
+                    :
+                    <Image src={arrowDown} alt="arrowDown" onClick={() => setExpand(!expand)} />
+                }
+              </div>
+              {
+                expand &&
+                (
+                  txInfo?.type === 'bridge'
+                    ?
+                    <div className='flex items-center justify-between'>
+                      {
+                        (txInfo?.senderChainId === 4 || txInfo?.senderChainId === 4) &&
+                          <Image src={ethereum} alt="ethereum" width={20} height={20} />
+                      }
+                      {
+                        (txInfo?.senderChainId === 97 || txInfo?.senderChainId === 97) &&
+                          <Image src={binance} alt="binance" width={20} height={20} />
+                      }
+                      {
+                        (txInfo?.senderChainId === 43113 || txInfo?.senderChainId === 43113) &&
+                          <Image src={avax} alt="avax" width={20} height={20} />
+                      }
+                      {
+                        (txInfo?.senderChainId === 80001 || txInfo?.senderChainId === 80001) &&
+                          <Image src={polygon} alt="polygon" width={20} height={20} />
+                      }
+                      {
+                        (txInfo?.senderChainId === 421611 || txInfo?.senderChainId === 421611) &&
+                          <Image src={arbitrum} alt="arbitrum" width={20} height={20} />
+                      }
+                      {
+                        (txInfo?.senderChainId === 69 || txInfo?.senderChainId === 69) &&
+                          <Image src={optimism} alt="optimism" width={20} height={20} />
+                      }
+                      {
+                        (txInfo?.senderChainId === 4002 || txInfo?.senderChainId === 4002) &&
+                          <Image src={fantom} alt="fantom" width={20} height={20} />
+                      }
+                      <Image src={arrowRight} alt="arrowRight" />
+                      {
+                        (txInfo?.targetChainId === 4 || txInfo?.targetChainId === 4) &&
+                        <Image src={ethereum} alt="ethereum" width={20} height={20} />
+                      }
+                      {
+                        (txInfo?.targetChainId === 97 || txInfo?.targetChainId === 97) &&
+                        <Image src={binance} alt="binance" width={20} height={20} />
+                      }
+                      {
+                        (txInfo?.targetChainId === 43113 || txInfo?.targetChainId === 43113) &&
+                        <Image src={avax} alt="avax" width={20} height={20} />
+                      }
+                      {
+                        (txInfo?.targetChainId === 80001 || txInfo?.targetChainId === 80001) &&
+                        <Image src={polygon} alt="polygon" width={20} height={20} />
+                      }
+                      {
+                        (txInfo?.targetChainId === 421611 || txInfo?.targetChainId === 421611) &&
+                        <Image src={arbitrum} alt="arbitrum" width={20} height={20} />
+                      }
+                      {
+                        (txInfo?.targetChainId === 69 || txInfo?.targetChainId === 69) &&
+                        <Image src={optimism} alt="optimism" width={20} height={20} />
+                      }
+                      {
+                        (txInfo?.targetChainId === 4002 || txInfo?.targetChainId === 4002) &&
+                        <Image src={fantom} alt="fantom" width={20} height={20} />
+                      }
+                      <span className="text-md text-gray-500 w-[87px] truncate">{txInfo?.itemName}</span>
+                    </div>
+                    :
+                    <div />
+                )
+              }
+            </div>
+          }
         </div>
       </nav>
     </>

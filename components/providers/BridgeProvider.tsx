@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from 'react'
 import {BigNumber, ethers} from 'ethers'
-import {BridgeContext, UnwrapInfo} from '../contexts/bridge'
-import useWallet from '../hooks/useWallet'
+import {BridgeContext, UnwrapInfo} from '../../contexts/bridge'
+import useWallet from '../../hooks/useWallet'
 import {
   getERC1155Instance,
   getERC721Instance,
   getLayerZeroEndpointInstance,
   getOmnixBridge1155Instance,
   getOmnixBridgeInstance, getONFTCore721Instance, validateContract
-} from '../utils/contracts'
+} from '../../utils/contracts'
 import {
   ERC1155_INTERFACE_ID,
   ERC712_INTERFACE_ID,
@@ -16,10 +16,10 @@ import {
   getChainIdFromName,
   getLayerzeroChainId, ONFT1155_CORE_INTERFACE_ID,
   ONFT_CORE_INTERFACE_ID
-} from '../utils/constants'
-import {NFTItem} from '../interface/interface'
+} from '../../utils/constants'
+import {NFTItem} from '../../interface/interface'
 import {useDispatch, useSelector} from 'react-redux'
-import {getUserNFTs, selectUserNFTs} from '../redux/reducers/userReducer'
+import {getUserNFTs, selectUserNFTs} from '../../redux/reducers/userReducer'
 
 type BridgeProviderProps = {
   children?: React.ReactNode
