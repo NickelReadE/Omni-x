@@ -30,12 +30,12 @@ import image_25 from '../../../public/images/image 25.png'
 import useWallet from '../../../hooks/useWallet'
 import { ethers } from 'ethers'
 import { postMakerOrder } from '../../../utils/makeOrder'
-import { addressesByNetwork } from '../../../constants'
-import { SupportedChainId } from '../../../types'
+import { TakerOrderWithEncodedParams } from '../../../types'
 import { getOrders, selectOrders } from '../../../redux/reducers/ordersReducer'
 import { IGetOrderRequest, IListingData, IOrder } from '../../../interface/interface'
 import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
 import { getOmnixExchangeInstance } from '../../../utils/contracts'
+import { getAddressByName } from '../../../utils/constants'
 
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
@@ -99,33 +99,47 @@ const Item: NextPage = () => {
   }, [orders])
 
   const onBuy = async () => {
-    const omnixExchange = getOmnixExchangeInstance(provider?._network?.chainId || 0, signer)
+    
+    console.log('-buy--', order, provider);
 
-    console.log('-buy--', order, nftInfo);
-    // omnixExchange
+    const omnixExchange = getOmnixExchangeInstance(provider?._network?.chainId || 0, signer)
+    const makerAsk = order;
+    const takerBid : TakerOrderWithEncodedParams = {
+      isOrderAsk: false,
+      taker: address || '0x',
+      price: order?.price || '0',
+      tokenId: order?.tokenId || '0',
+      minPercentageToAsk: order?.minPercentageToAsk || '0',
+      params: ethers.utils.arrayify(
+        ethers.utils.defaultAbiCoder.encode(['uint16'], [provider?.network.chainId])
+      )
+    }
+
+    const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
+
+    await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
   }
 
   const onBid = async () => {
     const price = ethers.utils.parseEther("1")
-    const chainId = 4
+    const chainId = provider?.network.chainId || 4
     
-    const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
     await postMakerOrder(
       provider as any,
       chainId,
       false,
       nftInfo.collection.address,
-      addresses.STRATEGY_STANDARD_SALE,
+      getAddressByName('Strategy', chainId),
       ethers.utils.parseUnits("1", 1),
       price,
       ethers.utils.parseUnits("2", 2),
       ethers.utils.parseUnits("2", 2),
-      addresses.WETH,
+      getAddressByName('OFT', chainId),
       {
         tokenId: token_id,
         startTime: Date.now(),
         params: {
-          values: [4],
+          values: [chainId],
           types: ["uint256"],
         },
       },
@@ -139,25 +153,24 @@ const Item: NextPage = () => {
     const amount = ethers.utils.parseUnits("1", 1);
     const protocalFees = ethers.utils.parseUnits("2", 2);
     const creatorFees = ethers.utils.parseUnits("2", 2);
-    const chainId = 4
+    const chainId = provider?.network.chainId || 4
     
-    const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
     await postMakerOrder(
       provider as any,
       chainId,
       true,
       nftInfo.collection.address,
-      addresses.STRATEGY_STANDARD_SALE,
+      getAddressByName('Strategy', chainId),
       amount,
       price,
       protocalFees,
       creatorFees,
-      addresses.WETH,
+      getAddressByName('OFT', chainId),
       {
         tokenId: token_id,
         startTime: Date.now(),
         params: {
-          values: [4],
+          values: [chainId],
           types: ["uint256"],
         },
       },

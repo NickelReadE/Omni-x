@@ -2,9 +2,9 @@ import { providers, BigNumber, ethers } from 'ethers'
 import addTime from 'date-fns/add'
 import { userService } from '../services/users'
 import { orderService } from '../services/orders'
-import { addressesByNetwork, minNetPriceRatio } from '../constants'
-import { MakerOrder, signMakerOrder, SupportedChainId, SolidityType } from "@looksrare/sdk"
-import { useDispatch } from 'react-redux'
+import { minNetPriceRatio } from '../constants'
+import { MakerOrder, signMakerOrder, SolidityType } from "@looksrare/sdk"
+import { getAddressByName } from './constants'
 
 interface PostMakerOrderOptionalParams {
     tokenId?: string
@@ -34,7 +34,6 @@ const prepareMakerOrder = async(
   const paramsValue = params ? params.values : []
   const paramsTypes = params ? params.types : []
   const netPriceRatio = BigNumber.from(10000).sub(protocolFees.add(creatorFees)).toNumber()
-  const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
 
   const makerOrder: MakerOrder = {
     isOrderAsk,
@@ -52,7 +51,7 @@ const prepareMakerOrder = async(
     params: paramsValue,
   }
   console.log(makerOrder)
-  const signatureHash = await signMakerOrder(signer, chainId, addresses.EXCHANGE, makerOrder, paramsTypes)
+  const signatureHash = await signMakerOrder(signer, chainId, getAddressByName('OmnixExchange', chainId), makerOrder, paramsTypes)
 
   const data = {
     ...makerOrder,
