@@ -248,7 +248,15 @@ const SideBar: React.FC = () => {
             dispatch(getUserNFTs(address) as any)
           }, 30000)
         })
+        await setPendingTxInfo({
+          txHash: tx.hash,
+          type: 'bridge',
+          senderChainId: provider?._network?.chainId,
+          targetChainId: targetChain,
+          itemName: selectedNFTItem.name
+        })
         await tx.wait()
+        await setPendingTxInfo(null)
       } else if (selectedNFTItem.contract_type === 'ERC1155') {
         const onft1155CoreInstance = getONFTCore1155Instance(selectedNFTItem.token_address, provider?._network?.chainId, signer)
         const targetONFT1155CoreAddress = await onft1155CoreInstance.trustedRemoteLookup(lzTargetChainId)
@@ -264,12 +272,20 @@ const SideBar: React.FC = () => {
           '0x',
           { value: estimatedFee }
         )
+        await setPendingTxInfo({
+          txHash: tx.hash,
+          type: 'bridge',
+          senderChainId: provider?._network?.chainId,
+          targetChainId: targetChain,
+          itemName: selectedNFTItem.name
+        })
         targetCoreInstance.on('ReceiveFromChain', (/*srcChainId, srcAddress, toAddress, tokenId, nonce*/) => {
           setTimeout(() => {
             dispatch(getUserNFTs(address) as any)
           }, 30000)
         })
         await tx.wait()
+        await setPendingTxInfo(null)
       }
     } else {
       if (selectedNFTItem.contract_type === 'ERC721') {
@@ -341,7 +357,15 @@ const SideBar: React.FC = () => {
         const tx = await contractInstance.wrap(lzTargetChainId, selectedNFTItem.token_address, BigNumber.from(selectedNFTItem.token_id), BigNumber.from(selectedNFTItem.amount), adapterParams, {
           value: estimatedFee.nativeFee
         })
+        await setPendingTxInfo({
+          txHash: tx.hash,
+          type: 'bridge',
+          senderChainId: provider?._network?.chainId,
+          targetChainId: targetChain,
+          itemName: selectedNFTItem.name
+        })
         await tx.wait()
+        await setPendingTxInfo(null)
         setSelectedNFTItem(undefined)
       }
     }
