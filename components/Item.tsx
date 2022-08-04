@@ -4,40 +4,45 @@ import Image from 'next/image'
 
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
-import ConfirmSell from '../../../components/collections/ConfirmSell'
-import ConfirmBid from '../../../components/collections/ConfirmBid'
+import ConfirmSell from './collections/ConfirmSell'
+import ConfirmBid from './collections/ConfirmBid'
 
-import { getNFTInfo, selectNFTInfo } from '../../../redux/reducers/collectionsReducer'
-import { collectionsService } from '../../../services/collections'
+import { getNFTInfo, selectNFTInfo } from '../redux/reducers/collectionsReducer'
+import { collectionsService } from '../services/collections'
 import LazyLoad from 'react-lazyload'
 
-import PngAlert from '../../../public/images/collections/alert.png'
-import PngLike from '../../../public/images/collections/like.png'
-import PngLink from '../../../public/images/collections/link.png'
-import PngView from '../../../public/images/collections/view.png'
+import PngAlert from '../public/images/collections/alert.png'
+import PngLike from '../public/images/collections/like.png'
+import PngLink from '../public/images/collections/link.png'
+import PngView from '../public/images/collections/view.png'
 
-import PngCheck from '../../../public/images/check.png' 
-import PngSub from '../../../public/images/subButton.png'
+import PngCheck from '../public/images/check.png' 
+import PngSub from '../public/images/subButton.png'
 
-import PngEtherBg from '../../../public/images/collections/ethereum_bg.png'
-import PngEther from '../../../public/images/collections/ethereum.png'
-import PngEtherSvg from '../../../public/images/collections/ethereum.svg'
-import PngIcon1 from '../../../public/images/collections/dbanner1.png'
-import PngIcon2 from '../../../public/images/collections/dbanner2.png'
-import PngIcon3 from '../../../public/images/collections/dbanner3.png'
+import PngEtherBg from '../public/images/collections/ethereum_bg.png'
+import PngEther from '../public/images/collections/ethereum.png'
+import PngEtherSvg from '../public/images/collections/ethereum.svg'
+import PngIcon1 from '../public/images/collections/dbanner1.png'
+import PngIcon2 from '../public/images/collections/dbanner2.png'
+import PngIcon3 from '../public/images/collections/dbanner3.png'
 
-import image_25 from '../../../public/images/image 25.png'
-import useWallet from '../../../hooks/useWallet'
+import image_25 from '../public/images/image 25.png'
+import useWallet from '../hooks/useWallet'
 import { ethers } from 'ethers'
-import { postMakerOrder } from '../../../utils/makeOrder'
-import { addressesByNetwork } from '../../../constants'
-import { SupportedChainId } from '../../../types'
-import { getOrders, selectOrders } from '../../../redux/reducers/ordersReducer'
-import { IGetOrderRequest, IOrder } from '../../../interface/interface'
-import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
+import { postMakerOrder } from '../utils/makeOrder'
+import { addressesByNetwork } from '../constants'
+import { SupportedChainId } from '../types'
+import { getOrders, selectOrders } from '../redux/reducers/ordersReducer'
+import { IGetOrderRequest, IOrder } from '../interface/interface'
+import { openSnackBar } from '../redux/reducers/snackBarReducer'
 import { addDays } from 'date-fns'
 
-const Item: NextPage = () => {
+type Props = {
+  col_url: string,
+  token_id: string
+}
+
+const Item = ({col_url, token_id}: Props) => {
   const [imageError, setImageError] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('items')
   const [owner, setOwner] = useState('')
@@ -51,17 +56,8 @@ const Item: NextPage = () => {
     address
   } = useWallet()
 
-  console.log(provider)
-
-
   const router = useRouter()
   const dispatch = useDispatch()
-
-  const col_url = router.query.collection as string
-  const token_id = router.query.item as string
-
-  console.log(col_url)
-  console.log(token_id)
 
   const nftInfo = useSelector(selectNFTInfo)
 
