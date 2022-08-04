@@ -34,7 +34,7 @@ const data1 = [
 
 interface IConfirmSellProps {
   handleSellDlgClose: () => void,
-  handleListing: (listingData: IListingData) => void,
+  handleListing?: (listingData: IListingData) => void,
   openSellDlg: boolean,
   nftImage: string,
   nftTitle: string,
@@ -55,7 +55,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
         price: '0.01',
         currency: 'OMNI1',
         isAuction: sellType !== 'fixed'
-      });
+      })
     }
   }
   return (

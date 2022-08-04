@@ -59,7 +59,7 @@ const Item: NextPage = () => {
   const token_id = router.query.Item as string
 
   const nftInfo = useSelector(selectNFTInfo)
-  const isAuction = false;
+  const isAuction = false
 
   useEffect(() => {
     const getNFTOwnership = async(col_url: string, token_id: string) => {
@@ -99,7 +99,7 @@ const Item: NextPage = () => {
   }, [orders])
 
   const onBuy = async () => {
-    console.log('-buy--', order, provider);
+    console.log('-buy--', order, provider)
 
     if (!order) {
       dispatch(openSnackBar({ message: `Not listed`, status: 'warning' }))
@@ -125,7 +125,7 @@ const Item: NextPage = () => {
       minPercentageToAsk: order?.minPercentageToAsk,
       params: ethers.utils.defaultAbiCoder.encode(['uint16'], order?.params),
       signature: order?.signature
-    };
+    }
     const takerBid : TakerOrderWithEncodedParams = {
       isOrderAsk: false,
       taker: address || '0x',
@@ -135,13 +135,13 @@ const Item: NextPage = () => {
       params: ethers.utils.defaultAbiCoder.encode(['uint16'], [lzChainId])
     }
 
-    console.log('--buy----', makerAsk, takerBid);
+    console.log('--buy----', makerAsk, takerBid)
 
     console.log('--omnixExchange-', await omnixExchange.owner(), await omnixExchange.remoteAddrManager())
 
     const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
 
-    console.log('--lzFee----', lzFee);
+    console.log('--lzFee----', lzFee)
     // await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
   }
 
@@ -176,9 +176,9 @@ const Item: NextPage = () => {
 
   const onListing = async (listingData: IListingData) => {
     const price = ethers.utils.parseEther(listingData.price)
-    const amount = ethers.utils.parseUnits("1", 0);
-    const protocalFees = ethers.utils.parseUnits("2", 2);
-    const creatorFees = ethers.utils.parseUnits("2", 2);
+    const amount = ethers.utils.parseUnits("1", 0)
+    const protocalFees = ethers.utils.parseUnits("2", 2)
+    const creatorFees = ethers.utils.parseUnits("2", 2)
     const chainId = provider?.network.chainId || 4
     const lzChainId = getLayerzeroChainId(chainId)
     
@@ -205,7 +205,7 @@ const Item: NextPage = () => {
     )
 
     dispatch(openSnackBar({ message: `  Success`, status: 'success' }))
-    setOpenSellDlg(false);
+    setOpenSellDlg(false)
   }
   const truncate = (str: string) => {
     return str.length > 12 ? str.substring(0, 9) + '...' : str
@@ -220,7 +220,7 @@ const Item: NextPage = () => {
     {account: '', chain: 'eth', bid: '', bidtype: '', owner: ''},
   ]
 
-  console.log('---owner && address-----', owner, address, orders, order);
+  console.log('---owner && address-----', owner, address, orders, order)
 
   const buttons = <>
     {owner?.toLowerCase() === address?.toLowerCase() && (
