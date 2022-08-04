@@ -60,6 +60,9 @@ const Item: NextPage = () => {
   const col_url = router.query.collection as string
   const token_id = router.query.item as string
 
+  console.log(col_url)
+  console.log(token_id)
+
   const nftInfo = useSelector(selectNFTInfo)
 
   useEffect(() => {
