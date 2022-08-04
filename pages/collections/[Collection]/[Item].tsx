@@ -87,7 +87,7 @@ const Item: NextPage = () => {
         startTime: Math.floor(Date.now() / 1000).toString(),
         endTime: Math.floor(Date.now() / 1000).toString(),
         status: ['VALID'],
-        sort: "PRICE_ASC"
+        sort: 'PRICE_ASC'
       }
       dispatch(getOrders(request) as any)
     }
@@ -98,10 +98,6 @@ const Item: NextPage = () => {
       setOrder(orders[0])
     }
   }, [orders])
-
-  const onBuy = async () => {
-
-  }
 
   const onBid = async (currency: string, price: number, period: number) => {
     const chainId = provider?.network.chainId as number
@@ -116,10 +112,10 @@ const Item: NextPage = () => {
         false,
         nftInfo.collection.address,
         addresses.STRATEGY_STANDARD_SALE,
-        ethers.utils.parseUnits("1", 1),
+        ethers.utils.parseUnits('1', 1),
         ethers.utils.parseEther(price.toString()),
-        ethers.utils.parseUnits("2", 2),
-        ethers.utils.parseUnits("2", 2),
+        ethers.utils.parseUnits('2', 2),
+        ethers.utils.parseUnits('2', 2),
         currency,
         {
           tokenId: token_id,
@@ -127,13 +123,13 @@ const Item: NextPage = () => {
           endTime: addDays(startTime, period).getTime(),
           params: {
             values: [10001],
-            types: ["uint256"],
+            types: ['uint256'],
           },
         },
         nftInfo.collection.chain
       )
       setOpenBidDlg(false)
-      dispatch(openSnackBar({ message: `Make Offer Success`, status: 'success' }))
+      dispatch(openSnackBar({ message: 'Make Offer Success', status: 'success' }))
     } catch (err: any) {
       dispatch(openSnackBar({ message: err.message, status: 'error' }))
     }
@@ -152,10 +148,10 @@ const Item: NextPage = () => {
         true,
         nftInfo.collection.address,
         addresses.STRATEGY_STANDARD_SALE,
-        ethers.utils.parseUnits("1", 1),
+        ethers.utils.parseUnits('1', 1),
         ethers.utils.parseEther(price.toString()),
-        ethers.utils.parseUnits("2", 2),
-        ethers.utils.parseUnits("2", 2),
+        ethers.utils.parseUnits('2', 2),
+        ethers.utils.parseUnits('2', 2),
         currency,
         {
           tokenId: token_id,
@@ -163,13 +159,13 @@ const Item: NextPage = () => {
           endTime: addDays(startTime, period).getTime(),
           params: {
             values: [10001],
-            types: ["uint256"],
+            types: ['uint256'],
           },
         },
         nftInfo.collection.chain
       )
       setOpenSellDlg(false)
-      dispatch(openSnackBar({ message: `Listing Success`, status: 'success' }))
+      dispatch(openSnackBar({ message: 'Listing Success', status: 'success' }))
     } catch (err: any) {
       dispatch(openSnackBar({ message: err.message, status: 'error' }))
     }
@@ -221,7 +217,7 @@ const Item: NextPage = () => {
                       <h1 className="text-[#B444F9] text-[20px] font-normal underline ml-4 break-all lg:ml-1">BOOBA.ETH</h1>
                     </div>
                     <div className="flex justify-between items-center mt-6">
-                    <h1 className="text-[#1E1C21] text-[60px] font-normal">{order && order.price && ethers.utils.formatEther(order.price)}</h1>
+                      <h1 className="text-[#1E1C21] text-[60px] font-normal">{order && order.price && ethers.utils.formatEther(order.price)}</h1>
                       <div className="mr-5"><PngEtherSvg /></div>
                     </div>
                     <div className="mb-3">

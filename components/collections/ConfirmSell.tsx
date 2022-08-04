@@ -95,7 +95,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                 </div>
                 <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Reserve Price</p>
                 <div className="flex justify-start items-center mt-5">
-                  <CustomSelect optionData={currencies_list} value={currency} onChange={(value: any) => setCurrency(value)} />tionData={currencies_list} />
+                  <CustomSelect optionData={currencies_list} value={currency} onChange={(value: any) => setCurrency(value)} />
                   <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F8F9FA] border-[2px] border-[#E9ECEF] rounded-lg"/>
                   <span className="px-4 text-[#ADB5BD] font-light">~ $60.00 USD</span>
                 </div>
@@ -111,7 +111,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                         width: '170px'
                       })
                     }}
-                    options={period_list}
+                    options={period_list as any}
                     isSearchable={ false }
                     getOptionLabel={(e:any) => e?.text}
                     getOptionValue={(e:any) => e?.value}
@@ -171,7 +171,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                         width: '170px'
                       })
                     }}
-                    options={period_list}
+                    options={period_list as any}
                     isSearchable={ false }
                     getOptionLabel={(e:any) => e?.text}
                     getOptionValue={(e:any) => e?.value}
