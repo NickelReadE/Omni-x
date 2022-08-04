@@ -73,7 +73,7 @@ export const postMakerOrder = async(
   protocolFees: BigNumber,
   creatorFees: BigNumber,
   currency: string,
-  optionalParams: PostMakerOrderOptionalParams = {},
+  optionalParams: any = {},
   chain: string
 ) => {
     

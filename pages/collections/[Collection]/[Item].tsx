@@ -86,7 +86,7 @@ const Item: NextPage = () => {
         startTime: Math.floor(Date.now() / 1000).toString(),
         endTime: Math.floor(Date.now() / 1000).toString(),
         status: ['VALID'],
-        sort: "PRICE_ASC"
+        sort: 'PRICE_ASC'
       }
       dispatch(getOrders(request) as any)
     }
@@ -102,7 +102,7 @@ const Item: NextPage = () => {
     console.log('-buy--', order, provider)
 
     if (!order) {
-      dispatch(openSnackBar({ message: `Not listed`, status: 'warning' }))
+      dispatch(openSnackBar({ message: 'Not listed', status: 'warning' }))
       return
     }
 
@@ -146,7 +146,7 @@ const Item: NextPage = () => {
   }
 
   const onBid = async () => {
-    const price = ethers.utils.parseEther("1")
+    const price = ethers.utils.parseEther('1')
     const chainId = provider?.network.chainId || 4
     const lzChainId = getLayerzeroChainId(chainId)
     
@@ -156,29 +156,29 @@ const Item: NextPage = () => {
       false,
       nftInfo.collection.address,
       getAddressByName('Strategy', chainId),
-      ethers.utils.parseUnits("1", 1),
+      ethers.utils.parseUnits('1', 1),
       price,
-      ethers.utils.parseUnits("2", 2),
-      ethers.utils.parseUnits("2", 2),
+      ethers.utils.parseUnits('2', 2),
+      ethers.utils.parseUnits('2', 2),
       getAddressByName('OFT', chainId),
       {
         tokenId: token_id,
         startTime: Date.now(),
         params: {
           values: [lzChainId],
-          types: ["uint256"],
+          types: ['uint16'],
         },
       },
       nftInfo.collection.chain
     )
-    dispatch(openSnackBar({ message: `Make Offer Success`, status: 'success' }))
+    dispatch(openSnackBar({ message: 'Make Offer Success', status: 'success' }))
   }
 
   const onListing = async (listingData: IListingData) => {
     const price = ethers.utils.parseEther(listingData.price)
-    const amount = ethers.utils.parseUnits("1", 0)
-    const protocalFees = ethers.utils.parseUnits("2", 2)
-    const creatorFees = ethers.utils.parseUnits("2", 2)
+    const amount = ethers.utils.parseUnits('1', 0)
+    const protocalFees = ethers.utils.parseUnits('2', 2)
+    const creatorFees = ethers.utils.parseUnits('2', 2)
     const chainId = provider?.network.chainId || 4
     const lzChainId = getLayerzeroChainId(chainId)
     
@@ -198,13 +198,13 @@ const Item: NextPage = () => {
         startTime: Date.now(),
         params: {
           values: [lzChainId],
-          types: ["uint256"],
+          types: ['uint16'],
         },
       },
       nftInfo.collection.chain
     )
 
-    dispatch(openSnackBar({ message: `  Success`, status: 'success' }))
+    dispatch(openSnackBar({ message: '  Success', status: 'success' }))
     setOpenSellDlg(false)
   }
   const truncate = (str: string) => {
