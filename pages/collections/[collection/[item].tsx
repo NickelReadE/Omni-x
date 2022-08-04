@@ -57,8 +57,8 @@ const Item: NextPage = () => {
   const router = useRouter()
   const dispatch = useDispatch()
 
-  const col_url = router.query.Collection as string
-  const token_id = router.query.Item as string
+  const col_url = router.query.collection as string
+  const token_id = router.query.item as string
 
   const nftInfo = useSelector(selectNFTInfo)
 
