@@ -59,11 +59,11 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
   }, [address])
 
   useEffect(() => {
-    if ( menu === 'home' && user.banners && user.banners.length == 3 ) {
+    if ( menu === 'home' && user.banners ) {
       const new_slides:Array<React.ReactNode> = []
-      new_slides.push(<img src={process.env.API_URL + user.banners[0]} alt="banner - 1" className={'banner-slider'} />)
-      new_slides.push(<img src={process.env.API_URL + user.banners[1]} alt="banner - 2" className={'banner-slider'} />)
-      new_slides.push(<img src={process.env.API_URL + user.banners[2]} alt="banner - 3" className={'banner-slider'} />)
+      new_slides.push(<img src={process.env.API_URL + (user.banners[0]?user.banners[0]:'default_banner.png')} alt="banner - 1" className={'banner-slider'} />)
+      new_slides.push(<img src={process.env.API_URL + (user.banners[1]?user.banners[1]:'default_banner.png')} alt="banner - 2" className={'banner-slider'} />)
+      new_slides.push(<img src={process.env.API_URL + (user.banners[2]?user.banners[2]:'default_banner.png')} alt="banner - 3" className={'banner-slider'} />)
       setCurrentSlides(new_slides)
     }
   }, [menu, user.banners])
@@ -77,14 +77,10 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
       setCurrentSlides(new_slides)
     } else if ( menu === 'home' ) {
       const new_slides:Array<React.ReactNode> = []
-      if ( user.banners && user.banners.length == 3 ) {
-        new_slides.push(<img src={process.env.API_URL + user.banners[0]} alt="banner - 1" />)
-        new_slides.push(<img src={process.env.API_URL + user.banners[1]} alt="banner - 2" />)
-        new_slides.push(<img src={process.env.API_URL + user.banners[2]} alt="banner - 3" />)
-      } else {
-        new_slides.push(<img src='/images/banner-1.png' alt="banner - 1" />)
-        new_slides.push(<img src='/images/banner-2.png' alt="banner - 2" />)
-        new_slides.push(<img src='/images/banner-3.png' alt="banner - 3" />)
+      if ( user.banners ) {
+        new_slides.push(<img src={process.env.API_URL + (user.banners[0]?user.banners[0]:'default_banner.png')} alt="banner - 1" className={'banner-slider'} />)
+        new_slides.push(<img src={process.env.API_URL + (user.banners[1]?user.banners[1]:'default_banner.png')} alt="banner - 2" className={'banner-slider'} />)
+        new_slides.push(<img src={process.env.API_URL + (user.banners[2]?user.banners[2]:'default_banner.png')} alt="banner - 3" className={'banner-slider'} />)
       }
       setCurrentSlides(new_slides)
     }

@@ -3,8 +3,12 @@ import addTime from 'date-fns/add'
 import { userService } from '../services/users'
 import { orderService } from '../services/orders'
 import { addressesByNetwork, minNetPriceRatio } from '../constants'
-import { MakerOrder, signMakerOrder, SupportedChainId, SolidityType } from "@looksrare/sdk"
+import { SupportedChainId, SolidityType, MakerOrder } from '../types'
+import { signMakerOrder } from '../sign/signMakerOrder'
+// import { MakerOrder, signMakerOrder, SupportedChainId, SolidityType } from "@looksrare/sdk"
 import { useDispatch } from 'react-redux'
+import { TypedDataUtils } from 'ethers-eip712'
+import { generateMakerOrderTypedData } from '../sign/generateMakerOrderTypedData'
 
 interface PostMakerOrderOptionalParams {
     tokenId?: string
@@ -51,9 +55,7 @@ const prepareMakerOrder = async(
     minPercentageToAsk: Math.min(netPriceRatio, minNetPriceRatio),
     params: paramsValue,
   }
-  console.log(makerOrder)
   const signatureHash = await signMakerOrder(signer, chainId, addresses.EXCHANGE, makerOrder, paramsTypes)
-
   const data = {
     ...makerOrder,
     signature: signatureHash,
@@ -62,6 +64,21 @@ const prepareMakerOrder = async(
 
   return data
 }
+
+const zeroPad = (value: any, length: number) => {
+  return ethers.utils.arrayify(ethers.utils.hexZeroPad(ethers.utils.hexlify(value), length))
+}
+
+/*const signMakerOrder = async(
+  signer: providers.JsonRpcSigner,
+  chainId: SupportedChainId,
+  verifyingContractAddress: string,
+  order: MakerOrder,
+  paramsTypes: SolidityType[]) => {
+
+  const signerAddress = await signer.getAddress();
+  const { domain, type, value } = generateMakerOrderTypedData(signerAddress, chainId, order, verifyingContractAddress);
+}*/
 
 export const postMakerOrder = async(
   library: providers.Web3Provider,
