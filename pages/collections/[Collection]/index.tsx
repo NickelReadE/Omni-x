@@ -251,7 +251,7 @@ const Collection: NextPage = () => {
             <div>
               <p className="text-[#1E1C21] font-['Roboto Mono'] text-3xl uppercase font-bold">{collectionInfo?collectionInfo.name:''}</p>
             </div>
-            <div className="flex justify-start mt-5">
+            <div className="flex justify-start mt-5 mb-5">
               <div>
                 <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-normal underline">items</p>
                 <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-bold mt-3">{collectionInfo?collectionInfo.count:0}</p>
@@ -262,9 +262,9 @@ const Collection: NextPage = () => {
               </div>
               <div className="xl:ml-20 lg:ml-10 md:ml-10">
                 <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-normal underline">floor</p>
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-bold mt-3">
-                  <span className='mr-3'>0</span><Image src={Ethereum} height={25} width={23} alt="" />
-                </p>
+                <div className="flex justify-center text-[#1E1C21] font-['Roboto Mono'] text-xl font-bold mt-3">
+                  <span className='mr-3'>0</span><Image src={Ethereum} height={20} width={23} alt="" />
+                </div>
               </div>
               <div className="xl:ml-20 lg:ml-10 md:ml-10">
                 <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-normal underline">royalty fee</p>
@@ -298,25 +298,26 @@ const Collection: NextPage = () => {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className='w-full mt-8 border-b-2 border-[#E9ECEF]'>
-        <div className="flex">
-          <div className="w-[320px] min-w-[320px]">
-          </div>
-          <div className="px-12">
-            <ul className="flex relative justify-item-stretch text-xl font-bold text-center">
-              <li
-                className={`select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer z-30 ${currentTab === 'items' ? 'bg-[#E9ECEF] text-[#1E1C21] shadow-[1px_-1px_4px_1px_rgba(233,236,239,1)]' : 'bg-[#F8F9FA] text-[#ADB5BD] shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)]'} `}
-                onClick={() => setCurrentTab('items')}>
-                items
-              </li>
-              <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-20 bg-[#F8F9FA] text-[#ADB5BD]'}>activity</li>
-              <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-10 bg-[#F8F9FA] text-[#ADB5BD]'}>stats</li>
-            </ul>
+        
+        <div className='w-full mt-8 border-b-2 border-[#E9ECEF]'>
+          <div className="flex">
+            <div className="w-[320px] min-w-[320px]">
+            </div>
+            <div className="px-12">
+              <ul className="flex relative justify-item-stretch text-xl font-bold text-center">
+                <li
+                  className={`select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer z-30 ${currentTab === 'items' ? 'bg-[#E9ECEF] text-[#1E1C21] shadow-[1px_-1px_4px_1px_rgba(233,236,239,1)]' : 'bg-[#F8F9FA] text-[#ADB5BD] shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)]'} `}
+                  onClick={() => setCurrentTab('items')}>
+                  items
+                </li>
+                <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-20 bg-[#F8F9FA] text-[#ADB5BD]'}>activity</li>
+                <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-10 bg-[#F8F9FA] text-[#ADB5BD]'}>stats</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
+
 
       <div className="w-full pr-[70px]">
         <div className="flex">

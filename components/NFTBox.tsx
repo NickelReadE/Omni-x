@@ -5,6 +5,8 @@ import { IPropsNFTItem } from '../interface/interface'
 import LazyLoad from 'react-lazyload'
 import {useDraggable} from '@dnd-kit/core'
 import ConfirmSell from './collections/ConfirmSell'
+import editStyle from '../styles/nftbox.module.scss'
+import classNames from '../helpers/classNames'
 
 const NFTBox = ({nft, index}: IPropsNFTItem) => {
 
@@ -42,12 +44,12 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     updateImage()
   }, [])
   return (
-  	<div className='border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]'>
+    <div className={classNames('border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]', editStyle.nftContainer)}>
       <div className="nft-image-container" ref={setNodeRef} style={style} {...listeners} {...attributes}>
         <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
           <img className='nft-image' src={imageError?'/images/omnix_logo_black_1.png':image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={image} />
         </LazyLoad>
-        <div className="absolute top-[8px] right-[9px] p-[12px]" style={{background: 'radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.2) 0%, rgba(254, 254, 255, 0) 100%)'}}>
+        <div className={classNames('absolute top-[8px] right-[9px] p-[12px]', editStyle.ellipseBtn)}>
           <div className="bg-[url('/images/ellipse.png')] hover:bg-[url('/images/ellipse_hover.png')] bg-cover w-[21px] h-[21px]"></div>
         </div>
       </div>

@@ -58,7 +58,7 @@ type TabProps = {
 
 const useStyles = makeStyles({
   paper: {
-    padding: '2rem',
+    padding: '1rem 2rem 2rem 0rem',
     width: '90%',
     maxWidth: '100%',
   },
@@ -87,9 +87,9 @@ const Tabs = ({blur}: TabProps) => {
   }
 
   return (
-    <>
-      <div className={`w-full mt-20 px-32 ${blur ? 'blur-sm' : ''} mb-20`}>
-        <div className="px-12">
+    <div className="flex justify-center">
+      <div className={`flex justify-center mt-20 w-[90%] ${blur ? 'blur-sm' : ''} mb-20`}>
+        <div className="w-[90%]">
           <ul
             className="flex relative justify-item-stretch text-xl font-bold text-center border-b-2 border-[#E9ECEF]">
             <li
@@ -112,7 +112,7 @@ const Tabs = ({blur}: TabProps) => {
       <Dialog open={bOpenModal} onClose={() => setOpenModal(false)} aria-labelledby='simple-dialog-title' maxWidth={'xl'} classes={{ paper: classes.paper }}>
         <UserEdit updateModal={updateModal} />
       </Dialog>
-    </>
+    </div>
   )
 }
 

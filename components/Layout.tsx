@@ -25,7 +25,7 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
   const updatingUser = useSelector(selectUpdatingUser)
 
   const [isBlur, setIsBlur] = useState<boolean>(false)
-  const [currentSlides, setCurrentSlides] = useState(default_slides)
+  const [currentSlides, setCurrentSlides] = useState<any>([])
   const user = useSelector(selectUser)
 
   const [collectionMenu, setCollectionMenu] = useState<boolean>(false)
@@ -81,8 +81,8 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
         new_slides.push(<img src={process.env.API_URL + (user.banners[0]?user.banners[0]:'default_banner.png')} alt="banner - 1" className={'banner-slider'} />)
         new_slides.push(<img src={process.env.API_URL + (user.banners[1]?user.banners[1]:'default_banner.png')} alt="banner - 2" className={'banner-slider'} />)
         new_slides.push(<img src={process.env.API_URL + (user.banners[2]?user.banners[2]:'default_banner.png')} alt="banner - 3" className={'banner-slider'} />)
+        setCurrentSlides(new_slides)
       }
-      setCurrentSlides(new_slides)
     }
   }, [menu])
 
@@ -96,7 +96,7 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
         />
       </Head>
       <SnackbarComponent />
-      <main className='w-full flex flex-col'>
+      <main className='w-full flex flex-col pr-[70px]'>
         <SideBar />
         <Header menu={menu}/>
         <div className={menu==='home'||(menu==='collections'&&collectionMenu)?'':'hidden'}>

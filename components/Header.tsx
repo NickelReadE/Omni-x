@@ -3,7 +3,6 @@ import Link from 'next/link'
 import headerStyle from '../styles/header.module.scss'
 import classNames from '../helpers/classNames'
 import Image from 'next/image'
-import logo from '../public/images/logo.png'
 
 type HeaderProps = {
   menu: string
@@ -51,24 +50,27 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
         )}
       >
         <div className='flex flex-wrap items-start'>
-          {
-            !isSearch && 
-            <button
-              onClick={() => setSearch(true)}
-              className='flex items-center'>
-              <Image
-                src={logo}
-                className='mr-3'
-                alt="logo"
-              />
-            </button>
-          }
-          {
-            isSearch && 
-            <input autoFocus type="text" placeholder='Acquire Your Desires' className="flex items-center bg-[#F8F9FA] bg-[url('../public/images/search.png')] w-[472px] h-[88px] border-0 focus:outline-0 focus:shadow-none focus:ring-offset-0 focus:ring-0 px-[85px]" onBlur={() => setSearch(false)}/>
-          }  
-
-          <div className='hidden justify-between items-center w-full md:flex md:w-auto mx-auto md:order-2' id='mobile-menu-3'>
+          <div className='absolute'>
+            {
+              !isSearch && 
+              <button
+                onClick={() => setSearch(true)}
+                className='flex items-center'>
+                <img
+                  src={'/images/logo.svg'}
+                  className='mr-3 hover:bg-[url("../public/images/logo_hover.svg")]'
+                  alt="logo"
+                />
+              </button>
+            }
+            {
+              isSearch && 
+              <input autoFocus type="text" placeholder='Acquire Your Desires' className="flex items-center bg-[#F8F9FA] bg-[url('../public/images/search.png')] w-[472px] h-[88px] border-0 focus:outline-0 focus:shadow-none focus:ring-offset-0 focus:ring-0 px-[85px]" onBlur={() => setSearch(false)} onClick={() => setSearch(false)}/>
+            }
+          </div>
+          
+          <div className='min-w-[200px]'></div>
+          <div className='justify-between items-center w-full md:flex md:w-auto mx-auto md:order-2' id='mobile-menu-3'>
             <ul className="flex flex-col md:flex-row md:space-x-8 md:text-sm md:font-medium" >
               <li onMouseOver={() => handleMouseOver('home')} onMouseOut={handleMouseOut}>
                 <Link href='/'>
