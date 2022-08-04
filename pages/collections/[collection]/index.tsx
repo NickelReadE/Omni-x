@@ -4,15 +4,15 @@ import Image from 'next/image'
 import type { NextPage } from 'next'
 import { Listbox, Transition, Switch } from '@headlessui/react'
 
-import Discord from '../public/images/discord.png'
-import Twitter from '../public/images/twitter.png'
-import Web from '../public/images/web.png'
-import Ethereum from '../public/sidebar/ethereum.png'
+import Discord from '../../../public/images/discord.png'
+import Twitter from '../../../public/images/twitter.png'
+import Web from '../../../public/images/web.png'
+import Ethereum from '../../../public/sidebar/ethereum.png'
 
-import { getCollectionNFTs, selectCollectionNFTs, getCollectionInfo, selectCollectionInfo, clearCollectionNFTs, selectGetNFTs, getCollectionOwners, selectCollectionOwners } from '../redux/reducers/collectionsReducer'
+import { getCollectionNFTs, selectCollectionNFTs, getCollectionInfo, selectCollectionInfo, clearCollectionNFTs, selectGetNFTs, getCollectionOwners, selectCollectionOwners } from '../../../redux/reducers/collectionsReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
-import NFTBox from './collections/NFTBox'
+import NFTBox from '../../../components/collections/NFTBox'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
@@ -29,8 +29,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import InputBase from '@material-ui/core/InputBase'
 import SearchIcon from '@material-ui/icons/Search'
 import Chip from '@material-ui/core/Chip'
-import classNames from '../helpers/classNames'
-import editStyle from '../styles/collection.module.scss'
+import classNames from '../../../helpers/classNames'
+import editStyle from '../../../styles/collection.module.scss'
 import { info } from 'console'
 
 const sort_fields = [
@@ -118,12 +118,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-
-type Props = {
-  col_url: string,
-}
-
-const Collection = ({col_url}: Props) => {
+const Collection: NextPage = () => {
   const [currentTab, setCurrentTab] = useState<string>('items')
   const [expandedMenu, setExpandedMenu] = useState(0)
   const [selected, setSelected] = useState(sort_fields[0])
@@ -133,6 +128,7 @@ const Collection = ({col_url}: Props) => {
 
   const router = useRouter()
   
+  const col_url = router.query.collection as string
   const display_per_page = 20
   const [page, setPage] = useState(0)
 
