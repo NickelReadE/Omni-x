@@ -3,6 +3,7 @@ import {getAddressByName, getProvider, rpcProviders} from './constants'
 import OmnixBridgeABI from '../constants/abis/OmnixBridge.json'
 import OmnixBridge1155ABI from '../constants/abis/OmnixBridge1155.json'
 import OmnixExchangeABI from '../constants/abis/OmnixExchange.json'
+import OmniABI from '../constants/abis/Omni.json'
 import ERC721ABI from '../constants/abis/ERC721.json'
 import ERC1155ABI from '../constants/abis/ERC1155.json'
 import LZEndpointABI from '../constants/abis/LayerzeroEndpoint.json'
@@ -96,6 +97,24 @@ export const getOmnixExchangeInstance = (chainId: number, signer: any) => {
   return new ethers.Contract(
     address,
     OmnixExchangeABI,
+    signer
+  )
+}
+
+export const getOmniInstance = (chainId: number, signer: any) => {
+  const address = getAddressByName('OFT', chainId)
+  if (signer === null) {
+    const provider = getProvider(chainId)
+    return new ethers.Contract(
+      address,
+      OmniABI,
+      provider
+    )
+  }
+  console.log('----omnix contract----')
+  return new ethers.Contract(
+    address,
+    OmniABI,
     signer
   )
 }

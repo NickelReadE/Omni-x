@@ -34,7 +34,7 @@ import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../../../t
 import { getOrders, selectOrders } from '../../../redux/reducers/ordersReducer'
 import { IGetOrderRequest, IListingData, IOrder } from '../../../interface/interface'
 import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
-import { getOmnixExchangeInstance } from '../../../utils/contracts'
+import { getOmniInstance, getOmnixExchangeInstance } from '../../../utils/contracts'
 import { getAddressByName, getLayerzeroChainId } from '../../../utils/constants'
 
 const Item: NextPage = () => {
@@ -109,6 +109,7 @@ const Item: NextPage = () => {
     const chainId = provider?.network.chainId || 4
     const lzChainId = getLayerzeroChainId(chainId)
 
+    const omni = getOmniInstance(chainId, signer)
     const omnixExchange = getOmnixExchangeInstance(chainId, signer)
     const makerAsk : MakerOrderWithSignature = {
       isOrderAsk: order.isOrderAsk,
@@ -123,7 +124,7 @@ const Item: NextPage = () => {
       startTime: order?.startTime,
       endTime: order?.endTime,
       minPercentageToAsk: order?.minPercentageToAsk,
-      params: ethers.utils.defaultAbiCoder.encode(['uint16'], order?.params),
+      params: order?.params?.[0] as any,
       signature: order?.signature
     }
     const takerBid : TakerOrderWithEncodedParams = {
@@ -137,12 +138,10 @@ const Item: NextPage = () => {
 
     console.log('--buy----', makerAsk, takerBid)
 
-    console.log('--omnixExchange-', await omnixExchange.owner(), await omnixExchange.remoteAddrManager())
-
     const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
 
-    console.log('--lzFee----', lzFee)
-    // await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
+    await omni.approve(omnixExchange.address, takerBid.price)
+    await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
   }
 
   const onBid = async () => {
@@ -152,7 +151,6 @@ const Item: NextPage = () => {
     
     await postMakerOrder(
       provider as any,
-      chainId,
       false,
       nftInfo.collection.address,
       getAddressByName('Strategy', chainId),
@@ -184,7 +182,6 @@ const Item: NextPage = () => {
     
     await postMakerOrder(
       provider as any,
-      chainId,
       true,
       nftInfo.collection.address,
       getAddressByName('Strategy', chainId),

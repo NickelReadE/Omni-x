@@ -90,7 +90,7 @@ export interface IOrder {
   startTime: number,
   endTime: number,
   minPercentageToAsk: number,
-  params: [],
+  params: any[],
   signature: string,
   v: number,
   r: string,
