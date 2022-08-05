@@ -1,3 +1,3 @@
 export enum SupportedChainId {
-    RINKEBY = 4,
+    RINKEBY = 10001,
 }

@@ -3,7 +3,12 @@ import addTime from 'date-fns/add'
 import { userService } from '../services/users'
 import { orderService } from '../services/orders'
 import { addressesByNetwork, minNetPriceRatio } from '../constants'
-import { MakerOrder, signMakerOrder, SupportedChainId, SolidityType } from "@looksrare/sdk"
+import { SupportedChainId, SolidityType, MakerOrder } from '../types'
+import { signMakerOrder } from '../sign/signMakerOrder'
+// import { MakerOrder, signMakerOrder, SupportedChainId, SolidityType } from "@looksrare/sdk"
+import { useDispatch } from 'react-redux'
+import { TypedDataUtils } from 'ethers-eip712'
+import { generateMakerOrderTypedData } from '../sign/generateMakerOrderTypedData'
 
 interface PostMakerOrderOptionalParams {
     tokenId?: string
@@ -25,7 +30,8 @@ const prepareMakerOrder = async(
     protocolFees: BigNumber,
     creatorFees: BigNumber,
     currency: string,
-    optionalParams: PostMakerOrderOptionalParams = {}
+    optionalParams: PostMakerOrderOptionalParams = {},
+    chain: string
 ) => {
   const now = Date.now()
   const { tokenId, params, startTime, endTime } = optionalParams
@@ -43,21 +49,36 @@ const prepareMakerOrder = async(
     amount: amount.toString(),
     strategy: strategyAddress,
     currency,
-    nonce: nonce.toNumber(),
+    nonce,
     startTime: startTime ? Math.floor(startTime / 1000) : Math.floor(now / 1000),
     endTime: endTime ? Math.floor(endTime / 1000) : Math.floor(addTime(now, { months: 1 }).getTime() / 1000),
     minPercentageToAsk: Math.min(netPriceRatio, minNetPriceRatio),
     params: paramsValue,
   }
   const signatureHash = await signMakerOrder(signer, chainId, addresses.EXCHANGE, makerOrder, paramsTypes)
-
   const data = {
     ...makerOrder,
     signature: signatureHash,
+    chain
   }
 
   return data
 }
+
+const zeroPad = (value: any, length: number) => {
+  return ethers.utils.arrayify(ethers.utils.hexZeroPad(ethers.utils.hexlify(value), length))
+}
+
+/*const signMakerOrder = async(
+  signer: providers.JsonRpcSigner,
+  chainId: SupportedChainId,
+  verifyingContractAddress: string,
+  order: MakerOrder,
+  paramsTypes: SolidityType[]) => {
+
+  const signerAddress = await signer.getAddress();
+  const { domain, type, value } = generateMakerOrderTypedData(signerAddress, chainId, order, verifyingContractAddress);
+}*/
 
 export const postMakerOrder = async(
   library: providers.Web3Provider,
@@ -70,7 +91,8 @@ export const postMakerOrder = async(
   protocolFees: BigNumber,
   creatorFees: BigNumber,
   currency: string,
-  optionalParams: PostMakerOrderOptionalParams = {}
+  optionalParams: PostMakerOrderOptionalParams = {},
+  chain: string
 ) => {
     
   const signer = library.getSigner()
@@ -90,7 +112,8 @@ export const postMakerOrder = async(
     protocolFees,
     creatorFees,
     currency,
-    optionalParams
+    optionalParams,
+    chain
   )
 
   const order = await orderService.createOrder(data)
@@ -115,7 +138,8 @@ export const postMakerOrder = async(
   protocolFees: BigNumber,
   creatorFees: BigNumber,
   currency: string,
-  optionalParams: PostMakerOrderOptionalParams = {}
+  optionalParams: PostMakerOrderOptionalParams = {},
+  chain: string
 ) => {
   const signer = library.getSigner()
   const signerAddress = await signer.getAddress()
@@ -133,7 +157,8 @@ export const postMakerOrder = async(
     protocolFees,
     creatorFees,
     currency,
-    optionalParams
+    optionalParams,
+    chain
   )
 
   const order = await orderService.createOrder(data)
