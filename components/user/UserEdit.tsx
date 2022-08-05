@@ -32,10 +32,14 @@ interface IUserEditProps {
 }
 const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
   const updateProfileFormRef = useRef<HTMLFormElement>(null)
-  const [avatar, setAvatar] = useState(process.env.API_URL + 'uploads\\default_avatar.png')
-  const [banner_1, setBanner_1] = useState(process.env.API_URL + 'uploads\\default_banner.png')
-  const [banner_2, setBanner_2] = useState(process.env.API_URL + 'uploads\\default_banner.png')
-  const [banner_3, setBanner_3] = useState(process.env.API_URL + 'uploads\\default_banner.png')
+
+  const DEFAULT_BANNER = 'uploads/default_banner.png'
+  const DEFAULT_AVATAR = 'uploads/default_avatar.png'
+
+  const [avatar, setAvatar] = useState(process.env.API_URL + 'uploads/default_avatar.png')
+  const [banner_1, setBanner_1] = useState(process.env.API_URL + DEFAULT_BANNER)
+  const [banner_2, setBanner_2] = useState(process.env.API_URL + DEFAULT_BANNER)
+  const [banner_3, setBanner_3] = useState(process.env.API_URL + DEFAULT_BANNER)
   const [bannerSelected, setBannerSelect] = useState(0)
   const [username, setUserName] = useState('')
   const [bio, setBio] = useState('')
@@ -66,10 +70,11 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
 
   useEffect(() => {
     if ( user.address != undefined ) {
-      setAvatar(process.env.API_URL + user.avatar)
-      setBanner_1(process.env.API_URL + user.banners[0])
-      setBanner_2(process.env.API_URL + user.banners[1])
-      setBanner_3(process.env.API_URL + user.banners[2])
+      console.log(user)
+      setAvatar(user.avatar === undefined || user.avatar === DEFAULT_AVATAR ? '/images/default_avatar.png': (process.env.API_URL + user.avatar))
+      setBanner_1(user.banners[0] === undefined || user.banners[0] === DEFAULT_BANNER ? '/images/default_banner.png' : (process.env.API_URL + user.banners[0]))
+      setBanner_2(user.banners[1] === undefined || user.banners[1] === DEFAULT_BANNER ? '/images/default_banner.png' : (process.env.API_URL + user.banners[1]))
+      setBanner_3(user.banners[2] === undefined || user.banners[2] === DEFAULT_BANNER ? '/images/default_banner.png' : (process.env.API_URL + user.banners[2]))
       setUserName(user.username)
       setBio(user.bio)
       setTwitter(user.twitter)
@@ -132,16 +137,24 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
     e.stopPropagation()
 
     if ( updateProfileFormRef.current !== null ) {
-      const fileBanner_1 = await getFileFromUrl(banner_1, 'banner1.png')
-      const fileBanner_2 = await getFileFromUrl(banner_2, 'banner2.png')
-      const fileBanner_3 = await getFileFromUrl(banner_3, 'banner3.png')
 
       const formData = new FormData(updateProfileFormRef.current)
       const address = context.address?context.address:''
       formData.append('address', address)
-      formData.append('banner_1', fileBanner_1 as any)
-      formData.append('banner_2', fileBanner_2 as any)
-      formData.append('banner_3', fileBanner_3 as any)
+
+      console.log(banner_1)
+      console.log(banner_2)
+      console.log(banner_3)
+
+      if ( banner_1 != process.env.API_URL + DEFAULT_BANNER && banner_1 != '/images/default_banner.png' ) {
+        formData.append('banner_1', (await getFileFromUrl(banner_1, 'banner1.png')) as any)
+      }
+      if ( banner_2 != process.env.API_URL + DEFAULT_BANNER && banner_2 != '/images/default_banner.png' ) {
+        formData.append('banner_2', (await getFileFromUrl(banner_2, 'banner2.png')) as any)
+      }
+      if ( banner_3 != process.env.API_URL + DEFAULT_BANNER && banner_3 != '/images/default_banner.png' ) {
+        formData.append('banner_3', (await getFileFromUrl(banner_3, 'banner3.png')) as any)
+      }
       
       dispatch(updateUser(formData) as any)
       // router.push('/')

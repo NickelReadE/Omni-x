@@ -17,7 +17,7 @@ const IconOption = (props: any) => (
 const CustomSelectValue = (props: any) => (
   <div className='flex justify-start items-center'>
     <img
-      src={'/images/omnixcoin.svg'}
+      src={`/images/${props.data.icon}`}
       className='mr-[8px] w-[21px]'
       alt={props.data.text}
     />
@@ -27,10 +27,14 @@ const CustomSelectValue = (props: any) => (
 
 interface ICustomSelectProps {
   optionData: any[],
+  value: object,
+  onChange: any,
 }
 
 const CustomSelect: React.FC<ICustomSelectProps> = ({
   optionData,
+  value,
+  onChange
 }) => {
   return (
     <Select
@@ -46,10 +50,10 @@ const CustomSelect: React.FC<ICustomSelectProps> = ({
           display: 'flex',
         }),
       }}
-      // value={selectedOption}
+      value={value}
       options={optionData}
       isSearchable={ false }
-      // onChange={handleChange}
+      onChange={onChange}
       components={{ Option: IconOption, SingleValue: CustomSelectValue }}
     />
   )
