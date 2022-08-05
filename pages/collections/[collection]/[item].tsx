@@ -8,6 +8,7 @@ import ConfirmSell from '../../../components/collections/ConfirmSell'
 import ConfirmBid from '../../../components/collections/ConfirmBid'
 
 import { getNFTInfo, selectNFTInfo } from '../../../redux/reducers/collectionsReducer'
+import { collectionsService } from '../../../services/collections'
 import LazyLoad from 'react-lazyload'
 
 import PngAlert from '../../../public/images/collections/alert.png'
@@ -26,26 +27,152 @@ import PngIcon2 from '../../../public/images/collections/dbanner2.png'
 import PngIcon3 from '../../../public/images/collections/dbanner3.png'
 
 import image_25 from '../../../public/images/image 25.png'
+import useWallet from '../../../hooks/useWallet'
+import { ethers } from 'ethers'
+import { postMakerOrder } from '../../../utils/makeOrder'
+import { addressesByNetwork } from '../../../constants'
+import { SupportedChainId } from '../../../types'
+import { getOrders, selectOrders } from '../../../redux/reducers/ordersReducer'
+import { IGetOrderRequest, IOrder } from '../../../interface/interface'
+import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
+import { addDays } from 'date-fns'
 
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('items')
+  const [owner, setOwner] = useState('')
+  const orders = useSelector(selectOrders)
+  const [order, setOrder] = useState<IOrder>()
   const [openSellDlg, setOpenSellDlg] = React.useState(false)
   const [openBidDlg, setOpenBidDlg] = React.useState(false)
+
+  const {
+    provider,
+    address
+  } = useWallet()
+
+  console.log(provider)
+
 
   const router = useRouter()
   const dispatch = useDispatch()
 
-  const col_url = router.query.Collection as string
-  const token_id = router.query.Item as string
+  const col_url = router.query.collection as string
+  const token_id = router.query.item as string
+
+  console.log(col_url)
+  console.log(token_id)
 
   const nftInfo = useSelector(selectNFTInfo)
 
   useEffect(() => {
+    const getNFTOwnership = async(col_url: string, token_id: string) => {
+      const tokenIdOwner = await collectionsService.getNFTOwner(col_url, token_id)
+      if ( tokenIdOwner.length > 0 ) {
+        setOwner(tokenIdOwner)
+      }
+    }
     if ( col_url && token_id ) {
       dispatch(getNFTInfo(col_url, token_id) as any)
+      getNFTOwnership(col_url, token_id)
     }
   }, [col_url, token_id])
+
+  useEffect(() => {
+    if ( nftInfo && nftInfo.collection && owner ) {
+      
+      const request: IGetOrderRequest = {
+        isOrderAsk: true,
+        chain: nftInfo.collection.chain,
+        collection: nftInfo.collection.address,
+        tokenId: nftInfo.nft.token_id,
+        signer: owner,
+        startTime: Math.floor(Date.now() / 1000).toString(),
+        endTime: Math.floor(Date.now() / 1000).toString(),
+        status: ['VALID'],
+        sort: 'PRICE_ASC'
+      }
+      dispatch(getOrders(request) as any)
+    }
+  }, [nftInfo, owner])
+
+  useEffect(() => {
+    if ( orders.length > 0 ) {
+      setOrder(orders[0])
+    }
+  }, [orders])
+
+  const onBid = async (currency: string, price: number, period: number) => {
+    const chainId = provider?.network.chainId as number
+    
+    const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
+    const startTime = Date.now()
+
+    try {
+      await postMakerOrder(
+        provider as any,
+        chainId,
+        false,
+        nftInfo.collection.address,
+        addresses.STRATEGY_STANDARD_SALE,
+        ethers.utils.parseUnits('1', 1),
+        ethers.utils.parseEther(price.toString()),
+        ethers.utils.parseUnits('2', 2),
+        ethers.utils.parseUnits('2', 2),
+        currency,
+        {
+          tokenId: token_id,
+          startTime: startTime,
+          endTime: addDays(startTime, period).getTime(),
+          params: {
+            values: [10001],
+            types: ['uint256'],
+          },
+        },
+        nftInfo.collection.chain
+      )
+      setOpenBidDlg(false)
+      dispatch(openSnackBar({ message: 'Make Offer Success', status: 'success' }))
+    } catch (err: any) {
+      dispatch(openSnackBar({ message: err.message, status: 'error' }))
+    }
+  }
+
+  const onListing = async (currency: string, price: number, period: number) => {
+    const chainId = provider?.network.chainId as number
+    
+    const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
+    const startTime = Date.now()
+
+    try {
+      await postMakerOrder(
+        provider as any,
+        chainId,
+        true,
+        nftInfo.collection.address,
+        addresses.STRATEGY_STANDARD_SALE,
+        ethers.utils.parseUnits('1', 1),
+        ethers.utils.parseEther(price.toString()),
+        ethers.utils.parseUnits('2', 2),
+        ethers.utils.parseUnits('2', 2),
+        currency,
+        {
+          tokenId: token_id,
+          startTime: startTime,
+          endTime: addDays(startTime, period).getTime(),
+          params: {
+            values: [10001],
+            types: ['uint256'],
+          },
+        },
+        nftInfo.collection.chain
+      )
+      setOpenSellDlg(false)
+      dispatch(openSnackBar({ message: 'Listing Success', status: 'success' }))
+    } catch (err: any) {
+      dispatch(openSnackBar({ message: err.message, status: 'error' }))
+    }
+  }
 
   const truncate = (str: string) => {
     return str.length > 12 ? str.substring(0, 9) + '...' : str
@@ -59,6 +186,9 @@ const Item: NextPage = () => {
     {account: '', chain: 'eth', bid: '', bidtype: '', owner: ''},
     {account: '', chain: 'eth', bid: '', bidtype: '', owner: ''},
   ]
+
+  console.log(owner)
+  console.log(address)
 
   return (
     <>
@@ -90,7 +220,7 @@ const Item: NextPage = () => {
                       <h1 className="text-[#B444F9] text-[20px] font-normal underline ml-4 break-all lg:ml-1">BOOBA.ETH</h1>
                     </div>
                     <div className="flex justify-between items-center mt-6">
-                      <h1 className="text-[#1E1C21] text-[60px] font-normal leading-[4rem]">69.5</h1>
+                      <h1 className="text-[#1E1C21] text-[60px] font-normal">{order && order.price && ethers.utils.formatEther(order.price)}</h1>
                       <div className="mr-5"><PngEtherSvg /></div>
                     </div>
                     <div className="mb-3">
@@ -98,7 +228,15 @@ const Item: NextPage = () => {
                       <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-semibold">Highest Bid: <span className="font-normal">45</span></h1><Image src={PngEther} width={15} height={16} alt="chain  logo" /></div>
                       <div className="flex justify-start items-center"><h1 className="mr-3 font-semibold">Last Sale: <span className="font-normal">42</span></h1><Image src={PngEther} width={15} height={16} alt="chain logo" /></div>
                       <div className="flex justify-end items-center">
-                        <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD]" onClick={() => {setOpenBidDlg(true)}}>bid</button>
+                        { order && owner && address && owner.toLowerCase() != address.toLowerCase() && 
+                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD]">buy</button>
+                        }
+                        { owner && address && owner.toLowerCase() != address.toLowerCase() && 
+                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD]" onClick={() => {setOpenBidDlg(true)}}>bid</button>
+                        }
+                        { address && owner && owner.toLowerCase() == address.toLowerCase() && 
+                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD]" onClick={() => {setOpenSellDlg(true)}}>sell</button>
+                        }
                       </div>
                     </div>
                   </div>
@@ -148,7 +286,7 @@ const Item: NextPage = () => {
                           <p className="text-[#B444F9] text-[12px] font-bold">{item[0]}</p>
                           <div className="flex justify-start items-center mt-2">
                             <p className="text-[#1E1C21] text-[18px] font-bold">{item[1]}<span className="ml-3 font-normal">[{trait[1]}%]</span></p>
-                            <p className="ml-5 mr-3 text-[#1E1C21] text-[18px] ml-auto">{nftInfo.price}</p>
+                            <p className="ml-5 mr-3 text-[#1E1C21] text-[18px] ml-auto">{order && order.price && ethers.utils.formatEther(order.price)}</p>
                             <Image src={PngEther} alt="" />
                           </div>
                         </div>
@@ -159,8 +297,8 @@ const Item: NextPage = () => {
               </div>
             </div>
           </div>
-          <ConfirmSell handleSellDlgClose={() => {setOpenSellDlg(false)}} openSellDlg={openSellDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} />
-          <ConfirmBid handleBidDlgClose={() => {setOpenBidDlg(false)}} openBidDlg={openBidDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} />
+          <ConfirmSell handleSellDlgClose={() => {setOpenSellDlg(false)}} openSellDlg={openSellDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} onSubmit={onListing} />
+          <ConfirmBid handleBidDlgClose={() => {setOpenBidDlg(false)}} openBidDlg={openBidDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} onSubmit={onBid}/>
         </div>
       }
     </>
