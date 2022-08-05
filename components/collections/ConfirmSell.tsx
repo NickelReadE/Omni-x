@@ -35,11 +35,10 @@ const period_list = [
 
 interface IConfirmSellProps {
   handleSellDlgClose: () => void,
-  handleListing?: (listingData: IListingData) => void,
+  onSubmit?: (listingData: IListingData) => void,
   openSellDlg: boolean,
   nftImage: string,
-  nftTitle: string,
-  onSubmit?: any,
+  nftTitle: string
 }
 
 const ConfirmSell: React.FC<IConfirmSellProps> = ({
@@ -69,7 +68,14 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
   }, [price])
 
   const onListing = () => {
-    onSubmit(currency.address, price, period.period)
+    if (onSubmit) {
+      onSubmit({
+        currency: currency.address,
+        price,
+        period: period.period,
+        isAuction: sellType != 'fixed'
+      })
+    }
   }
 
   return (

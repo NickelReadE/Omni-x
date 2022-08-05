@@ -37,7 +37,7 @@ interface IConfirmBidProps {
   openBidDlg: boolean,
   nftImage: string,
   nftTitle: string,
-  onSubmit: any
+  onSubmit?: any
 }
 
 const ConfirmBid: React.FC<IConfirmBidProps> = ({
@@ -67,7 +67,9 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
   }, [price])
 
   const onBid = () => {
-    onSubmit(currency.address, price, period.period)
+    if (onSubmit) {
+      onSubmit(currency.address, price, period.period)
+    }
   }
 
   return (

@@ -99,7 +99,8 @@ export interface IOrder {
 }
 
 export interface IListingData {
-  price: string,
+  price: number,
   currency: string,
+  period: number,
   isAuction: boolean
 }

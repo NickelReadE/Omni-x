@@ -3,6 +3,7 @@ import OmnixBridge from '../constants/OmnixBridge.json'
 import OmnixBridge1155 from '../constants/OmnixBridge1155.json'
 import OmnixExchange from '../constants/OmnixExchange.json'
 import Strategy from '../constants/Strategy.json'
+import TransferManagerERC721 from '../constants/TransferManagerERC721.json'
 import OFT from '../constants/OFT.json'
 import LZEndpoint from '../constants/LayerzeroEndpoints.json'
 import ChainIds from '../constants/chainIds.json'
@@ -12,6 +13,7 @@ const omnixBridge: any = OmnixBridge
 const omnixBridge1155: any = OmnixBridge1155
 const omnixExchange: any = OmnixExchange
 const strategy: any = Strategy
+const transferManagerErc721: any = TransferManagerERC721
 const oft: any = OFT
 const lzEndpoint: any = LZEndpoint
 const chainIds: any = ChainIds
@@ -21,7 +23,7 @@ const environments: any = {
   testnet: ['rinkeby', 'bsc-testnet', 'fuji', 'mumbai', 'arbitrum-rinkeby', 'optimism-kovan', 'fantom-testnet']
 }
 
-export type ContractName = 'Omnix' | 'Omnix1155' | 'LayerZeroEndpoint' | 'OmnixExchange' | 'Strategy' | 'OFT'
+export type ContractName = 'Omnix' | 'Omnix1155' | 'LayerZeroEndpoint' | 'OmnixExchange' | 'Strategy' | 'OFT' | 'TransferManagerERC721'
 
 export const rpcProviders: { [key: number]: string } = {
   4: 'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
@@ -113,6 +115,8 @@ export const getAddressByName = (name: ContractName, chainId: number) => {
     return strategy[chainInfos[chainId].name]
   } else if (name === 'OFT') {
     return oft[chainInfos[chainId].name]
+  } else if (name === 'TransferManagerERC721') {
+    return transferManagerErc721[chainInfos[chainId].name]
   }
 }
 
