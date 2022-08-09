@@ -217,7 +217,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
     <>
       <div className="w-full flex flex-row min-h-[750px]">
         <div className={classNames('basis-1/6', editStyle.sidemenu)}>
-          <ul>
+          <ul className='mt-[1rem]'>
             <li className={selectedTab == 0 ? classNames(editStyle.current) : ''}>
               <button onClick={() => setSelectedTab(0)} className='flex justify-start'>
                 <div><UserSVG className="inline"/></div>
@@ -272,7 +272,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
             </div>
           </div>
         </Dialog>
-        <div className="basis-5/6 pl-4" style={{position: 'relative'}}>
+        <div className="basis-5/6 pl-4  mt-[1rem]" style={{position: 'relative'}}>
           {
             selectedTab == 0 &&
             <form 

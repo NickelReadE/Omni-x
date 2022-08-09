@@ -58,7 +58,7 @@ type TabProps = {
 
 const useStyles = makeStyles({
   paper: {
-    padding: '1rem 2rem 2rem 0rem',
+    padding: '0rem 2rem 0rem 0rem',
     width: '90%',
     maxWidth: '100%',
   },

@@ -68,6 +68,7 @@ module.exports = {
       fontFamily: {
         sans: ['Inter', ...fontFamily.sans],
         mono: ['Inconsolata', ...fontFamily.mono],
+        circular:['Circular Std']
       },
       fontSize: {
         xs: '10px',
@@ -78,6 +79,9 @@ module.exports = {
       },
       gridTemplateColumns: {
         '13': 'repeat(13, minmax(0, 1fr))',
+      },
+      rotate: {
+        '52': '52deg',
       }
     },
   },

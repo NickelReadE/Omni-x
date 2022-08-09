@@ -488,11 +488,12 @@ const SideBar: React.FC = () => {
               </div>
             </div>
           </div>
+          
         </div>
       }
       <div
         ref={ref}
-        className={`right-0 right-0 w-[450px] bg-white px-[24px] py-10 fixed h-full z-[98] ease-in-out duration-300 ${
+        className={`right-0 right-0 w-[450px] bg-white py-10 fixed h-full z-[98] ease-in-out duration-300 ${
           showSidebar || onMenu ? 'translate-x-0' : 'translate-x-full'
         }`}
         onMouseEnter={() => setOnMenu(true)}
@@ -790,6 +791,7 @@ const SideBar: React.FC = () => {
             }
           </li>
         </ul>
+        
         <div
           className='top-0 right-0 w-[70px] py-10 bg-white fixed h-full z-[99]'
         >
@@ -877,8 +879,26 @@ const SideBar: React.FC = () => {
               }
             </div>
           </div>
+          
+        </div>
+        <div className="absolute bottom-[0px]">
+          <div className="flex space-y-4 mr-[70px] bottom-[10px] bg-[#E9ECEF] py-[12px] px-[30px] text-xl font-mono">
+            <div className="m-auto flex gap-2 ">
+                <span>ETH GAS: 56 &nbsp;</span>                
+                <span> USDC/OMNI: $12.43 </span>  
+            </div>            
+          </div>
+
+          <div className="flex space-y-4 mt-[57px] mr-[70px] mb-[40px] py-[12px] px-[30px] text-2xl font-mono">
+            <div className="m-auto flex gap-2 text-2xl">
+              <span>Help</span>  
+            </div>              
+          </div>
+       
         </div>
       </div>
+        
+      
       <div className="w-full md:w-auto">
         <Dialog open={confirmTransfer} onClose={() => setConfirmTransfer(false)}>
           <ConfirmTransfer
