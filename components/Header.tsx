@@ -95,14 +95,14 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
                 </Link>
               </li>
               <li onMouseOver={() => handleMouseOver('analytics')} onMouseOut={handleMouseOut}>
-               <Link href='/analytics'> 
-                <a>
-                  <div className="w-[219px] h-[90px] bg-no-repeat bg-center" style={{backgroundImage: `url('/navbar/analytics${menu == 'analytics' ? '_active' : (hover.isHover && hover.hoverMenu == 'analytics' ? '_hover' : '')}.svg')`}}>
-                    <div className="relative top-full text-center">
-                      <span className={`px-10 py-2 text-lg bg-[#f1f1f1] rounded-[25px] ${hover.isHover && hover.hoverMenu == 'analytics'?'text-[#1E1C21] font-bold':'text-[#ADB5BD]'} ${hover.isHover && hover.hoverMenu != menu?'':'hidden'}`} >LAUNCHPAD</span>
+                <Link href='/analytics'> 
+                  <a>
+                    <div className="w-[219px] h-[90px] bg-no-repeat bg-center" style={{backgroundImage: `url('/navbar/analytics${menu == 'analytics' ? '_active' : (hover.isHover && hover.hoverMenu == 'analytics' ? '_hover' : '')}.svg')`}}>
+                      <div className="relative top-full text-center">
+                        <span className={`px-10 py-2 text-lg bg-[#f1f1f1] rounded-[25px] ${hover.isHover && hover.hoverMenu == 'analytics'?'text-[#1E1C21] font-bold':'text-[#ADB5BD]'} ${hover.isHover && hover.hoverMenu != menu?'':'hidden'}`} >LAUNCHPAD</span>
+                      </div>
                     </div>
-                  </div>
-                </a>
+                  </a>
                 </Link> 
               </li>
             </ul>
