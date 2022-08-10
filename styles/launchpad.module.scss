@@ -4,3 +4,35 @@
 .bgImg1{
     background-image: url(/images/launchpadBg1.png);    
 }
+.poponhover{
+     
+    &:before {
+        opacity: 0;
+        bottom: 10px;
+      }
+      &:hover {
+        
+        &:before {
+          bottom: -7px;
+          opacity: 1;
+          filter: blur(20px);
+        }
+        span {
+          transform: scale(1.04);
+        }
+        &:active {
+          
+          span {
+            filter: brightness(1) contrast(1);
+            transform: scale(1);
+            transition: all 0.15s ease-out;
+          }
+          &:before {
+            bottom: 0;
+            filter: blur(10px) brightness(0.95);
+            transition: all 0.2s ease-out;
+          }
+        }
+      }
+    
+}
