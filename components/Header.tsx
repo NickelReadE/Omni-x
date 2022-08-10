@@ -95,7 +95,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
                 </Link>
               </li>
               <li onMouseOver={() => handleMouseOver('analytics')} onMouseOut={handleMouseOut}>
-                <Link href='/analytics'> 
+                <Link href='/launchpad'> 
                   <a>
                     <div className="w-[219px] h-[90px] bg-no-repeat bg-center" style={{backgroundImage: `url('/navbar/analytics${menu == 'analytics' ? '_active' : (hover.isHover && hover.hoverMenu == 'analytics' ? '_hover' : '')}.svg')`}}>
                       <div className="relative top-full text-center">
