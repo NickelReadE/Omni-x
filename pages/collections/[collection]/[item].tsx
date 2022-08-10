@@ -75,13 +75,13 @@ const Item: NextPage = () => {
 
       if ( tokenIdOwner.length > 0 ) {
         const user_info = await userService.getUserByAddress(tokenIdOwner)
-        if(user_info.username == ""){
+        if(user_info.username == ''){
 
           setOwner(tokenIdOwner)
-          setOwnerType("address")
+          setOwnerType('address')
         } else {
           setOwner(user_info.username)
-          setOwnerType("username")
+          setOwnerType('username')
         }
       }
     }
@@ -93,11 +93,11 @@ const Item: NextPage = () => {
 
   useEffect(() => {
     if ( nftInfo && nftInfo.collection && owner && ownerType ) {
-      if(nftInfo.collection.chain=="rinkeby" ) {
-        if(ownerType=="address") {
-          const profile_link = "https://rinkeby.etherscan.io/address/" + owner
+      if(nftInfo.collection.chain=='rinkeby' ) {
+        if(ownerType=='address') {
+          const profile_link = 'https://rinkeby.etherscan.io/address/' + owner
           setProfileLink(profile_link)
-        } else if (ownerType=="username") {
+        } else if (ownerType=='username') {
           setProfileLink('')
         }
       }
@@ -119,8 +119,6 @@ const Item: NextPage = () => {
 
   useEffect(() => {
     if ( orders.length > 0 ) {
-      console.log("***************")
-      console.log(orders)
       setOrder(orders[0])
     }
   }, [orders])
@@ -238,8 +236,8 @@ const Item: NextPage = () => {
                     <div className="flex justify-start items-center">
                       <h1 className="text-[#1E1C21] text-[20px] font-bold">owner:</h1>
                       {
-                        owner && ownerType=="address" && <h1 className="text-[#B444F9] text-[20px] font-normal underline ml-4 break-all lg:ml-1">
-                        <Link href={profileLink}><a target="_blank">{truncate(owner)}</a></Link></h1>
+                        owner && ownerType=='address' && <h1 className="text-[#B444F9] text-[20px] font-normal underline ml-4 break-all lg:ml-1">
+                          <Link href={profileLink}><a target='_blank'>{truncate(owner)}</a></Link></h1>
                       }
                       
                     </div>
