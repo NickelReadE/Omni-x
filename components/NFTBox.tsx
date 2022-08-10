@@ -5,6 +5,18 @@ import { IPropsNFTItem } from '../interface/interface'
 import LazyLoad from 'react-lazyload'
 import {useDraggable} from '@dnd-kit/core'
 import ConfirmSell from './collections/ConfirmSell'
+import { prependOnceListener } from 'process'
+
+import useWallet from '../hooks/useWallet'
+import { addressesByNetwork } from '../constants'
+import { SupportedChainId } from '../types'
+import { postMakerOrder } from '../utils/makeOrder'
+import { ethers } from 'ethers'
+import { addDays } from 'date-fns'
+import { openSnackBar } from '../redux/reducers/snackBarReducer'
+
+
+import { useDispatch, useSelector } from 'react-redux'
 
 const NFTBox = ({nft, index}: IPropsNFTItem) => {
 
@@ -12,6 +24,15 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   const [image, setImage] = useState('/images/omnix_logo_black_1.png')
   const [imageError, setImageError] = useState(false)
   const [openSellDlg, setOpenSellDlg] = React.useState(false)
+  ///only in the beta version
+  const [islisted,setList] = useState(false)
+
+  const {
+    provider,
+    address
+  } = useWallet()
+
+  const dispatch = useDispatch()
 
   const {attributes, listeners, setNodeRef, transform} = useDraggable({
     id: `draggable-${index}`,
@@ -37,10 +58,54 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
           console.log('NFTBox err? ', err)
         }
       }
+
+      ///only in the beta version
+      const collection_name = nft.name
+      if (collection_name == 'Gregs ETH Test' || collection_name == 'Fake Bored Ape Yacht Club' || collection_name == 'Azuki God' || collection_name == 'Kith Friends' || collection_name == 'MyNFTHaHa'|| collection_name == 'MMLMT7') {
+        setList(true)
+      }
+
     }
 
     updateImage()
   }, [])
+
+  const onListing = async (currency: string, price: number, period: number) => {
+    const chainId = provider?.network.chainId as number
+    
+    const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
+    const startTime = Date.now()
+
+    try {
+      await postMakerOrder(
+        provider as any,
+        chainId,
+        true,
+        nft.token_address,
+        addresses.STRATEGY_STANDARD_SALE,
+        ethers.utils.parseUnits('1', 1),
+        ethers.utils.parseEther(price.toString()),
+        ethers.utils.parseUnits('2', 2),
+        ethers.utils.parseUnits('2', 2),
+        currency,
+        {
+          tokenId: String(nft.token_id),
+          startTime: startTime,
+          endTime: addDays(startTime, period).getTime(),
+          params: {
+            values: [10001],
+            types: ['uint256'],
+          },
+        },
+        nft.chain
+      )
+      setOpenSellDlg(false)
+      dispatch(openSnackBar({ message: 'Listing Success', status: 'success' }))
+    } catch (err: any) {
+      dispatch(openSnackBar({ message: err.message, status: 'error' }))
+    }
+  }
+  
   return (
   	<div className='border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]'>
       <div className="nft-image-container" ref={setNodeRef} style={style} {...listeners} {...attributes}>
@@ -61,9 +126,9 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       </div>
       <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle">
         <div className="flex items-center">
-          <div className="ml-3 py-[1px] px-5 bg-[#ADB5BD] rounded-lg text-[14px] text-[#F8F9FA] font-medium cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
+          {islisted && <div className="ml-3 py-[1px] px-5 bg-[#ADB5BD] rounded-lg text-[14px] text-[#F8F9FA] font-medium cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
             {'Sell'}
-          </div>
+          </div>}
         </div>
         <div className="mr-3 flex items-center">
           <div className="mr-3 flex items-center cursor-pointer bg-[url('/images/round-refresh.png')] hover:bg-[url('/images/round-refresh_hover.png')] bg-cover w-[20px] h-[20px]">
@@ -93,7 +158,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
           </div>
         </div>
       </div>
-      <ConfirmSell handleSellDlgClose={() => {setOpenSellDlg(false)}} openSellDlg={openSellDlg} nftImage={image} nftTitle={nft.name} />
+      <ConfirmSell handleSellDlgClose={() => {setOpenSellDlg(false)}} openSellDlg={openSellDlg} nftImage={image} nftTitle={nft.name} onSubmit={onListing} />
     </div>
   )
 }
