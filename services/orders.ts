@@ -1,3 +1,4 @@
+import { IGetOrderRequest } from "../interface/interface"
 import { MakerOrderWithSignature } from "../types"
 import API from "./api"
 
@@ -6,6 +7,14 @@ const createOrder = async (data: MakerOrderWithSignature) => {
     return res.data.data
 }
 
+const getOrders = async (request: IGetOrderRequest) => {
+    const res = await API.get("orders", {
+        params: request
+    })
+    return res.data
+}
+
 export const orderService = {
-    createOrder
+    createOrder,
+    getOrders
 }

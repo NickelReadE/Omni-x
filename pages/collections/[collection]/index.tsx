@@ -128,7 +128,7 @@ const Collection: NextPage = () => {
 
   const router = useRouter()
   
-  const col_url = router.query.Collection as string
+  const col_url = router.query.collection as string
   const display_per_page = 20
   const [page, setPage] = useState(0)
 

@@ -33,6 +33,11 @@ const getCollections = async () => {
     return res.data
 }
 
+const getNFTOwner = async (col_url: string, token_id: string) => {
+    const res = await API.get(`collections/owner/${col_url}/${token_id}`)
+    return res.data.owner
+}
+
 
 export const collectionsService = {
     getCollectionNFTs,
@@ -40,4 +45,5 @@ export const collectionsService = {
     getCollectionOwners,
     getNFTInfo,
     getCollections,
+    getNFTOwner,
 }

@@ -312,7 +312,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                       <div className="border-image">
                         <Image
                           src={(typeof banner_1 == 'string')?banner_1:URL.createObjectURL(banner_1)}
-                          alt="first image"
+                          alt="first image1"
                           layout="responsive"
                           width={200}
                           height={100}
