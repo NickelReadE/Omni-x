@@ -161,11 +161,15 @@ const SideBar: React.FC = () => {
 
   const onLeaveMenu = () => {
     if (!fixed) {
-      setExpandedMenu(0)
-      setOffsetMenu(0)
-      setShowSidebar(false)
-      setOnMenu(false)
+      onLeave()
     }
+  }
+
+  const onLeave = () => {
+    setExpandedMenu(0)
+    setOffsetMenu(0)
+    setShowSidebar(false)
+    setOnMenu(false)
   }
 
   const toggleMenu = (menu: number) => {
@@ -248,6 +252,7 @@ const SideBar: React.FC = () => {
             dispatch(getUserNFTs(address) as any)
           }, 30000)
         })
+        onLeave()
         await setPendingTxInfo({
           txHash: tx.hash,
           type: 'bridge',
@@ -272,6 +277,7 @@ const SideBar: React.FC = () => {
           '0x',
           { value: estimatedFee }
         )
+        onLeave()
         await setPendingTxInfo({
           txHash: tx.hash,
           type: 'bridge',
@@ -314,6 +320,7 @@ const SideBar: React.FC = () => {
         const tx = await contractInstance.wrap(lzTargetChainId, selectedNFTItem.token_address, BigNumber.from(selectedNFTItem.token_id), adapterParams, {
           value: estimatedFee
         })
+        onLeave()
         await setPendingTxInfo({
           txHash: tx.hash,
           type: 'bridge',
@@ -357,6 +364,7 @@ const SideBar: React.FC = () => {
         const tx = await contractInstance.wrap(lzTargetChainId, selectedNFTItem.token_address, BigNumber.from(selectedNFTItem.token_id), BigNumber.from(selectedNFTItem.amount), adapterParams, {
           value: estimatedFee.nativeFee
         })
+        onLeave()
         await setPendingTxInfo({
           txHash: tx.hash,
           type: 'bridge',
