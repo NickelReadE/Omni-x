@@ -881,7 +881,7 @@ const SideBar: React.FC = () => {
           </div>
           
         </div>
-        <div className="absolute bottom-[0px]">
+        {/* <div className="absolute bottom-[0px]">
           <div className="flex space-y-4 mr-[70px] bottom-[10px] bg-[#E9ECEF] py-[12px] px-[30px] text-xl font-mono">
             <div className="m-auto flex gap-2 ">
               <span>ETH GAS: 56 &nbsp;</span>                
@@ -895,7 +895,7 @@ const SideBar: React.FC = () => {
             </div>              
           </div>
        
-        </div>
+        </div> */}
       </div>
         
       

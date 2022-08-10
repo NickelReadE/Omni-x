@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import type { NextPage } from 'next'
+import Link from 'next/link'
 import Image from 'next/image'
 
 import { useRouter } from 'next/router'
@@ -9,6 +10,7 @@ import ConfirmBid from '../../../components/collections/ConfirmBid'
 
 import { getNFTInfo, selectNFTInfo } from '../../../redux/reducers/collectionsReducer'
 import { collectionsService } from '../../../services/collections'
+import { userService } from '../../../services/users'
 import LazyLoad from 'react-lazyload'
 
 import PngAlert from '../../../public/images/collections/alert.png'
@@ -41,17 +43,19 @@ const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('items')
   const [owner, setOwner] = useState('')
+  const [ownerType, setOwnerType] = useState('')
   const orders = useSelector(selectOrders)
   const [order, setOrder] = useState<IOrder>()
   const [openSellDlg, setOpenSellDlg] = React.useState(false)
   const [openBidDlg, setOpenBidDlg] = React.useState(false)
+  const [profileLink, setProfileLink] = React.useState('')
 
   const {
     provider,
     address
   } = useWallet()
 
-  console.log(provider)
+  // console.log(provider)
 
 
   const router = useRouter()
@@ -60,8 +64,8 @@ const Item: NextPage = () => {
   const col_url = router.query.collection as string
   const token_id = router.query.item as string
 
-  console.log(col_url)
-  console.log(token_id)
+  // console.log(col_url)
+  // console.log(token_id)
 
   const nftInfo = useSelector(selectNFTInfo)
 
@@ -71,8 +75,17 @@ const Item: NextPage = () => {
   useEffect(() => {
     const getNFTOwnership = async(col_url: string, token_id: string) => {
       const tokenIdOwner = await collectionsService.getNFTOwner(col_url, token_id)
+
       if ( tokenIdOwner.length > 0 ) {
-        setOwner(tokenIdOwner)
+        const user_info = await userService.getUserByAddress(tokenIdOwner)
+        if(user_info.username == ''){
+
+          setOwner(tokenIdOwner)
+          setOwnerType('address')
+        } else {
+          setOwner(user_info.username)
+          setOwnerType('username')
+        }
       }
     }
     if ( col_url && token_id ) {
@@ -82,8 +95,16 @@ const Item: NextPage = () => {
   }, [col_url, token_id])
 
   useEffect(() => {
-    if ( nftInfo && nftInfo.collection && owner ) {
-      
+    if ( nftInfo && nftInfo.collection && owner && ownerType ) {
+      if(nftInfo.collection.chain=='rinkeby' ) {
+        if(ownerType=='address') {
+          const profile_link = 'https://rinkeby.etherscan.io/address/' + owner
+          setProfileLink(profile_link)
+        } else if (ownerType=='username') {
+          setProfileLink('')
+        }
+      }
+
       const request: IGetOrderRequest = {
         isOrderAsk: true,
         chain: nftInfo.collection.chain,
@@ -97,7 +118,7 @@ const Item: NextPage = () => {
       }
       dispatch(getOrders(request) as any)
     }
-  }, [nftInfo, owner])
+  }, [nftInfo, owner, ownerType])
 
   useEffect(() => {
     if ( orders.length > 0 ) {
@@ -190,9 +211,6 @@ const Item: NextPage = () => {
     {account: '', chain: 'eth', bid: '', bidtype: '', owner: ''},
   ]
 
-  console.log(owner)
-  console.log(address)
-
   return (
     <>
       {nftInfo && nftInfo.nft && 
@@ -220,7 +238,11 @@ const Item: NextPage = () => {
                   <div className="">
                     <div className="flex justify-start items-center">
                       <h1 className="text-[#1E1C21] text-[20px] font-bold">owner:</h1>
-                      <h1 className="text-[#B444F9] text-[20px] font-normal underline ml-4 break-all lg:ml-1">BOOBA.ETH</h1>
+                      {
+                        owner && ownerType=='address' && <h1 className="text-[#B444F9] text-[20px] font-normal underline ml-4 break-all lg:ml-1">
+                          <Link href={profileLink}><a target='_blank'>{truncate(owner)}</a></Link></h1>
+                      }
+                      
                     </div>
                     <div className="flex justify-between items-center mt-6">
                       <h1 className="text-[#1E1C21] text-[60px] font-normal">{order && order.price && ethers.utils.formatEther(order.price)}</h1>
