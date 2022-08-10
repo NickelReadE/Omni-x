@@ -58,12 +58,17 @@ export const WalletProvider = ({
   }, [web3Modal])
 
   const handleAccountsChanged = useCallback(
-    async (accounts: string[]) => {
-      if (address && accounts.indexOf(address) < 0) {
-        await disconnect()
-      }
+    () => {
+      window.location.reload()
     },
-    [address, disconnect]
+    []
+  )
+
+  const handleChainChanged = useCallback(
+    () => { 
+      window.location.reload()
+    },
+    []
   )
 
   const connect = useCallback(async () => {
@@ -72,6 +77,7 @@ export const WalletProvider = ({
       const instance = await web3Modal.connect()
       if (!instance) return
       instance.on('accountsChanged', handleAccountsChanged)
+      instance.on('chainChanged', handleChainChanged)
       const provider = new ethers.providers.Web3Provider(instance)
       const signer = provider.getSigner()
       setSigner(signer)
@@ -168,9 +174,7 @@ export const WalletProvider = ({
       const instance = await web3Modal.connectTo(cachedProviderName)
       if (!instance) return
       instance.on('accountsChanged', handleAccountsChanged)
-      instance.on('chainChanged', (chainId: any) => {
-        console.log(chainId)
-      })
+      instance.on('chainChanged', handleChainChanged)
       const provider = new ethers.providers.Web3Provider(instance, 'any')
       const signer = provider.getSigner()
       setProvider(provider)
