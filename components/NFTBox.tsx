@@ -61,7 +61,6 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
 
       ///only in the beta version
       const collection_name = nft.name
-      console.log("collection name->",nft.name)
       if (collection_name == 'Gregs (ETH)' || collection_name == 'Fake Bored Ape Yacht Club' || collection_name == 'Azuki God' || collection_name == 'Kith Friends' || collection_name == 'MyNFTHaHa'|| collection_name == 'MMLMT7') {
         setList(true)
       }

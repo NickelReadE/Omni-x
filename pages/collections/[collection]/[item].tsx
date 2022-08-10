@@ -161,8 +161,8 @@ const Item: NextPage = () => {
 
   useEffect(() => {
     if ( bidOrders.length > 0 ) {
-      let temp_bidOrders: any = []
-      let bid_balance = 0;
+      const temp_bidOrders: any = []
+      let bid_balance = 0
       for(let i=0; i<bidOrders.length;i++){
         temp_bidOrders.push(bidOrders[i])
         if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
@@ -292,9 +292,9 @@ const Item: NextPage = () => {
                             return(
                               <div className="mr-5">
                                 <img
-                                src={`/images/${currency.icon}`}
-                                className='mr-[8px] w-[21px]'
-                                alt="icon"
+                                  src={`/images/${currency.icon}`}
+                                  className='mr-[8px] w-[21px]'
+                                  alt="icon"
                                 />
                               </div>
                             )
@@ -335,9 +335,9 @@ const Item: NextPage = () => {
                                   if(chain.chain==item?.chain){
                                     return(
                                       <img
-                                      src={chain.img_url}
-                                      className='mr-[8px] w-[21px]'
-                                      alt="icon"
+                                        src={chain.img_url}
+                                        className='mr-[8px] w-[21px]'
+                                        alt="icon"
                                       />
                                     )
                                   }
@@ -350,9 +350,9 @@ const Item: NextPage = () => {
                                   return(
                                     <div className="mr-5">
                                       <img
-                                      src={`/images/${currency.icon}`}
-                                      className='mr-[8px] w-[21px]'
-                                      alt="icon"
+                                        src={`/images/${currency.icon}`}
+                                        className='mr-[8px] w-[21px]'
+                                        alt="icon"
                                       />
                                     </div>
                                   )
