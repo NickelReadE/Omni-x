@@ -78,6 +78,7 @@ const Tabs = ({blur}: TabProps) => {
 
   useEffect(() => {
     if (address) {
+      
       dispatch(getUserNFTs(address) as any)
     }
   }, [address])

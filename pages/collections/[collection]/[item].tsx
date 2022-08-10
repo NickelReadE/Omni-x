@@ -34,7 +34,7 @@ import { ethers } from 'ethers'
 import { postMakerOrder } from '../../../utils/makeOrder'
 import { addressesByNetwork } from '../../../constants'
 import { SupportedChainId } from '../../../types'
-import { getOrders, selectOrders } from '../../../redux/reducers/ordersReducer'
+import { getOrders, selectOrders, selectBidOrders } from '../../../redux/reducers/ordersReducer'
 import { IGetOrderRequest, IOrder } from '../../../interface/interface'
 import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
 import { addDays } from 'date-fns'
@@ -44,16 +44,40 @@ const Item: NextPage = () => {
   const [currentTab, setCurrentTab] = useState<string>('items')
   const [owner, setOwner] = useState('')
   const [ownerType, setOwnerType] = useState('')
+
   const orders = useSelector(selectOrders)
+  const bidOrders = useSelector(selectBidOrders)
+
   const [order, setOrder] = useState<IOrder>()
+  const [bidOrder, setBidOrder] = useState<IOrder[]>()
   const [openSellDlg, setOpenSellDlg] = React.useState(false)
   const [openBidDlg, setOpenBidDlg] = React.useState(false)
   const [profileLink, setProfileLink] = React.useState('')
+
+  const [highestBid, setHighestBid] = React.useState(0)
+  const [lastSale, setLastSale] = React.useState(0)
 
   const {
     provider,
     address
   } = useWallet()
+
+  const currencies_list = [
+    { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0x49fB1b5550AFFdFF32CffF03c1A8168f992296eF' },
+    { value: 1, text: 'USDC', icon: 'payment/usdc.png', address: '0xeb8f08a975ab53e34d8a0330e0d34de942c95926' },
+    { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad' },
+  ]
+
+  const chainList = [
+    { chain: 'all', img_url: '/svgs/all_chain.svg', title: 'all NFTs', disabled: false},
+    { chain: 'rinkeby', img_url: '/svgs/ethereum.svg', title: 'Ethereum', disabled: false},
+    { chain: 'arbitrum', img_url: '/svgs/arbitrum.svg', title: 'Arbitrum', disabled: true},
+    { chain: 'avalanche testnet', img_url: '/svgs/avax.svg', title: 'Avalanche', disabled: false},
+    { chain: 'bsc testnet', img_url: '/svgs/binance.svg', title: 'BNB Chain', disabled: false},
+    { chain: 'fantom', img_url: '/svgs/fantom.svg', title: 'Fantom', disabled: true},
+    { chain: 'optimism', img_url: '/svgs/optimism.svg', title: 'Optimism', disabled: true},
+    { chain: 'mumbai', img_url: '/svgs/polygon.svg', title: 'Polygon', disabled: false},
+  ]
 
   // console.log(provider)
 
@@ -76,7 +100,6 @@ const Item: NextPage = () => {
       if ( tokenIdOwner.length > 0 ) {
         const user_info = await userService.getUserByAddress(tokenIdOwner)
         if(user_info.username == ''){
-
           setOwner(tokenIdOwner)
           setOwnerType('address')
         } else {
@@ -114,6 +137,19 @@ const Item: NextPage = () => {
         sort: 'PRICE_ASC'
       }
       dispatch(getOrders(request) as any)
+
+      
+      const bidRequest: IGetOrderRequest = {
+        isOrderAsk: false,
+        chain: nftInfo.collection.chain,
+        collection: nftInfo.collection.address,
+        tokenId: nftInfo.nft.token_id,
+        startTime: Math.floor(Date.now() / 1000).toString(),
+        endTime: Math.floor(Date.now() / 1000).toString(),
+        status: ['VALID'],
+        sort: 'PRICE_ASC'
+      }
+      dispatch(getOrders(bidRequest) as any)
     }
   }, [nftInfo, owner, ownerType])
 
@@ -122,6 +158,21 @@ const Item: NextPage = () => {
       setOrder(orders[0])
     }
   }, [orders])
+
+  useEffect(() => {
+    if ( bidOrders.length > 0 ) {
+      let temp_bidOrders: any = []
+      let bid_balance = 0;
+      for(let i=0; i<bidOrders.length;i++){
+        temp_bidOrders.push(bidOrders[i])
+        if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
+          bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
+        }
+      }
+      setBidOrder(temp_bidOrders)
+      setHighestBid(bid_balance)
+    }
+  }, [bidOrders])
 
   const onBid = async (currency: string, price: number, period: number) => {
     const chainId = provider?.network.chainId as number
@@ -199,14 +250,6 @@ const Item: NextPage = () => {
     return str.length > 12 ? str.substring(0, 9) + '...' : str
   }
 
-  const bidData = [
-    {account: '', chain: 'eth', bid: '', bidtype: '', owner: ''},
-    {account: '', chain: 'eth', bid: '', bidtype: '', owner: ''},
-    {account: '', chain: 'eth', bid: '', bidtype: '', owner: ''},
-    {account: '', chain: 'eth', bid: '', bidtype: '', owner: ''},
-    {account: '', chain: 'eth', bid: '', bidtype: '', owner: ''},
-    {account: '', chain: 'eth', bid: '', bidtype: '', owner: ''},
-  ]
 
   return (
     <>
@@ -243,12 +286,26 @@ const Item: NextPage = () => {
                     </div>
                     <div className="flex justify-between items-center mt-6">
                       <h1 className="text-[#1E1C21] text-[60px] font-normal">{order && order.price && ethers.utils.formatEther(order.price)}</h1>
-                      <div className="mr-5"><PngEtherSvg /></div>
+                      {
+                        currencies_list.map((currency,index) => {
+                          if(currency.address==order?.currencyAddress){
+                            return(
+                              <div className="mr-5">
+                                <img
+                                src={`/images/${currency.icon}`}
+                                className='mr-[8px] w-[21px]'
+                                alt="icon"
+                                />
+                              </div>
+                            )
+                          }
+                        })
+                      }
                     </div>
                     <div className="mb-3">
-                      <h1>$175,743.58</h1>
-                      <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-semibold">Highest Bid: <span className="font-normal">45</span></h1><Image src={PngEther} width={15} height={16} alt="chain  logo" /></div>
-                      <div className="flex justify-start items-center"><h1 className="mr-3 font-semibold">Last Sale: <span className="font-normal">42</span></h1><Image src={PngEther} width={15} height={16} alt="chain logo" /></div>
+                      <h1>${order && order.price && ethers.utils.formatEther(order.price)}</h1>
+                      <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-semibold">Highest Bid: <span className="font-normal">${highestBid}</span></h1><Image src={PngEther} width={15} height={16} alt="chain  logo" /></div>
+                      <div className="flex justify-start items-center"><h1 className="mr-3 font-semibold">Last Sale: <span className="font-normal">${lastSale}</span></h1><Image src={PngEther} width={15} height={16} alt="chain logo" /></div>
                       <div className="flex justify-end items-center">
                         { order && owner && address && owner.toLowerCase() != address.toLowerCase() && 
                           <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD]">buy</button>
@@ -265,17 +322,43 @@ const Item: NextPage = () => {
                   <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
                     <div className="overflow-x-hidden overflow-y-auto grid 2xl:grid-cols-[30%_25%_25%_20%] lg:grid-cols-[30%_18%_32%_20%] xl:grid-cols-[30%_18%_32%_20%] max-h-[285px]">
                       <div className="font-bold text-[18px]">account</div>
-                      <div className="text-center font-bold text-[18px]">chain</div>
+                      <div className="font-bold text-[18px]">chain</div>
                       <div className="font-bold text-[18px]">bid</div>
                       <div></div>
                       {
-                        bidData.map((item, index) => {
+                        bidOrder && bidOrder.map((item) => {
                           return <>
-                            <div className='break-all mt-3'>{truncate('0x0F20E363294b858507aA7C84EF525E5700d93999')}</div>
-                            <div className="text-center mt-3"><Image src={PngEther}  className='mt-[22px]'/></div>
+                            <div className='break-all mt-3'>{truncate(item.signer)}</div>
+                            <div className="text-center mt-3">
+                              {
+                                chainList.map((chain,index) => {
+                                  if(chain.chain==item?.chain){
+                                    return(
+                                      <img
+                                      src={chain.img_url}
+                                      className='mr-[8px] w-[21px]'
+                                      alt="icon"
+                                      />
+                                    )
+                                  }
+                                })
+                              }
+                            </div>
                             <div className='flex justify-start items-center mt-3'>
-                              <Image src={PngIcon1}  className='mt-[22px]'/>
-                              <p className='ml-3'>45,700.00</p>
+                              {currencies_list.map((currency,index) => {
+                                if(currency.address==item?.currencyAddress){
+                                  return(
+                                    <div className="mr-5">
+                                      <img
+                                      src={`/images/${currency.icon}`}
+                                      className='mr-[8px] w-[21px]'
+                                      alt="icon"
+                                      />
+                                    </div>
+                                  )
+                                }
+                              })}
+                              <p className='ml-3'>${item && item.price && ethers.utils.formatEther(item.price)}</p>
                             </div>
                             <div className='text-right mt-3'><button className='bg-[#ADB5BD] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5'>accept</button></div>
                           </>
