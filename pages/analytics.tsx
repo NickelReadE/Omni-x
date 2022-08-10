@@ -13,13 +13,13 @@ const Analytics: NextPage = () => {
           <div className='w-[640px] m-auto'>
             <div className='flex justify-between items-center	'>
               <div className='flex justify-center items-center w-[140px] h-[140px] mt-[4px] border-2 border-solid rounded-[50%] border-black text-center	font-circular'>Super UX</div>
-              <div className='w-[299px] h-[0px]  border-dashed border-2 border-black'/>
+              <div className='w-[299px] h-[0px]  border-dashed border-b-2 border-black'/>
               <div className='flex justify-center items-center w-[140px] h-[140px] mt-[4px] border-2 border-solid	 rounded-[50%] border-black text-center	font-circular'>Unparalleled Liquidity</div>
             </div>     
-            <div className='relative left-[225px] top-[43px]'>
+            <div className='relative w-fit left-[225px] top-[43px]'>
               <Link href={'https://docs.google.com/forms/d/e/1FAIpQLSfI5CzFHlVFADyPvr1OxQRW9A6iUHzSe6mMFOaWCKKMnNi6iA/viewform?embedded=true'}>
                 <a target="_blank">
-                  <button className='flex justify-center bg-[#B444F9] text-xl text-white rounded-lg pl-4 pr-4 pt-2 pb-2 items-center font-circular   transition-all duration-300 ease-in-out hover:scale-105 hover:drop-shadow-[0_10px_10px_rgba(180,68,249,0.7)] active:scale-100 active:drop-shadow-[0_5px_5px_rgba(180,68,249,0.8)]' >apply to launchpad</button>
+                  <button className='flex justify-center  bg-[#B444F9] text-xl text-white rounded-lg pl-4 pr-4 pt-2 pb-2 items-center font-circular   transition-all duration-300 ease-in-out hover:scale-105 hover:drop-shadow-[0_10px_10px_rgba(180,68,249,0.7)] active:scale-100 active:drop-shadow-[0_5px_5px_rgba(180,68,249,0.8)]' >apply to launchpad</button>
                 </a>
                 
               </Link>
@@ -27,8 +27,8 @@ const Analytics: NextPage = () => {
 
             </div>
             <div className='flex justify-between items-center w-[535px] m-auto mt-[72px]	'>
-              <div className='w-[245px] h-[0px] border-dashed border-2 border-black  transform rotate-52'/>              
-              <div className='w-[245px] h-[0px] border-dashed border-2 border-black  transform -rotate-52'/>
+              <div className='w-[245px] h-[0px] border-dashed border-b-2 border-black  transform rotate-52'/>              
+              <div className='w-[245px] h-[0px] border-dashed border-b-2 border-black  transform -rotate-52'/>
             </div>      
             <div className='mt-[122px]'>              
               <div className='flex justify-center items-center m-auto w-[140px] h-[140px] mt-[4px] border-2 border-solid rounded-[50%] border-black text-center	font-circular'>Extensive<br/> Support</div>              
