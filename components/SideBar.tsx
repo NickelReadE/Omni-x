@@ -46,7 +46,6 @@ const SideBar: React.FC = () => {
   const [fixed, setFixed] = useState(false)
   const [confirmTransfer, setConfirmTransfer] = useState(false)
   const [chainId, setChainID] = useState(parseInt(window.ethereum.networkVersion))
-
   const DEFAULT_AVATAR = 'uploads\\default_avatar.png'
 
   const menu_profile = useRef<HTMLUListElement>(null)
