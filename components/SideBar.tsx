@@ -468,8 +468,7 @@ const SideBar: React.FC = () => {
     }
   })
   if(window.ethereum){
-    window.ethereum.on('networkChanged', function (networkId:string) {
-      console.log(networkId, env)
+    window.ethereum.on('networkChanged', function (networkId:string) {      
       setChainID(parseInt(networkId))
     }) 
   }
