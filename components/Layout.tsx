@@ -10,6 +10,7 @@ import SnackbarComponent from './SnackBar'
 import Banner from './Banner'
 import default_slides from '../utils/defaultSlides'
 import Link from 'next/link'
+import PriceFeed from './PriceFeed'
 
 type LayoutProps = {
   children?: React.ReactNode
@@ -103,6 +104,8 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
           <Banner slides={currentSlides} blur={isBlur} menu={menu} />
         </div>
         {children}
+        <PriceFeed/>
+        
       </main>
     </>
   )
