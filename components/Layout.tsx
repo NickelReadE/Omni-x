@@ -98,6 +98,7 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
       <SnackbarComponent />
       <main className='w-full flex flex-col pr-[70px]'>
         
+        <Header menu={menu}/>
         <div className={menu==='home'||(menu==='collections'&&collectionMenu)?'':'hidden'}>
           <Banner slides={currentSlides} blur={isBlur} menu={menu} />
         </div>
