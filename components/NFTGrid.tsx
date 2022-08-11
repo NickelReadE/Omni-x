@@ -13,7 +13,7 @@ const chainList = [
   { chain: 'mumbai', img_url: '/svgs/polygon.svg', title: 'Polygon', disabled: false},
 ]
 const NFTGrid = ({ nfts }: IPropsImage) => {
-  const [chain, setChain] = useState('rinkeby')
+  const [chain, setChain] = useState('all')
 
   return (
     <>
