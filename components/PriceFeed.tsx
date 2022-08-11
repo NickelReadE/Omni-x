@@ -73,8 +73,8 @@ const PriceFeed = () => {
 
   return (
     <div className=" absolute w-full mr-[70px]">
-      <div className=' flex justify-between w-full px-10 z-50 bg-[#F6F8FC] mt-[91px] text-center'>
-        <div className='flex'>
+      <div className=' flex justify-center w-full px-10 z-50 bg-[#F6F8FC] mt-[91px] text-center'>
+        <div className='flex mr-3'>
           <div>
             <span className='text-sm font-bold font-mono mr-1.5	'>
               24hr Volume
@@ -85,7 +85,7 @@ const PriceFeed = () => {
           </div>
 
         </div>
-        <div className='flex'>
+        <div className='flex  mr-3'>
           {price.map((item, index) => (
             <div key={index}>
               <span className='text-sm font-bold font-mono mr-1.5	'>
@@ -110,10 +110,10 @@ const PriceFeed = () => {
                 {item.chain}
               </span>
               <span className='text-sm font-normal font-mono mr-1.5	'>
-                ${item.price}
+                {item.price}
               </span>
               <span className='text-sm font-normal font-mono mr-1.5	'>
-                ${item.unit}
+                {item.unit}
               </span>
 
               {gas.length - 2 > index &&
