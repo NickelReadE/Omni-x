@@ -20,6 +20,7 @@ import fashion from '../../public/images/fashion.png'
 
 import ImageList from '../../components/ImageList'
 import Slider from '../../components/Slider'
+import PriceFeed from '../../components/PriceFeed'
 
 const serviceSlides: Array<React.ReactNode> = []
 serviceSlides.push(<Image src={pfp} alt="image - 25" layout='responsive' width={230} height={263} />)
@@ -65,6 +66,7 @@ const Collections: NextPage = () => {
         <Slider title="Beta Collections" images={omniSlides} />
         {/* <Slider title="Trending Collection" images={omniSlides} /> */}
         {/* <ImageList title="" images={serviceSlides} /> */}
+        <PriceFeed/>
       </div>
     </>
   )

@@ -101,7 +101,7 @@ export const WalletProvider = ({
             method: 'wallet_switchEthereumChain',
             params: [{ chainId: ethers.utils.hexValue(CHAIN_ID) }]
           })
-          //window.location.reload()
+          window.location.reload()
         } catch (e: any) {
           console.log('WalletProvider switchNetwork error', e)
           if (e.code === 4902) {

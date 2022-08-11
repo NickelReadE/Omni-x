@@ -468,8 +468,8 @@ const SideBar: React.FC = () => {
     }
   })
   if(window.ethereum){
-    window.ethereum.on('networkChanged', function (networkId:string) {      
-      setChainID(parseInt(networkId))
+    window.ethereum.on('chainChanged', function (networkId:string) {      
+      window.location.reload()
     }) 
   }
   const updateModal = (status: boolean) => {
@@ -949,21 +949,7 @@ const SideBar: React.FC = () => {
           </div>
           
         </div>
-        {/* <div className="absolute bottom-[0px]">
-          <div className="flex space-y-4 mr-[70px] bottom-[10px] bg-[#E9ECEF] py-[12px] px-[30px] text-xl font-mono">
-            <div className="m-auto flex gap-2 ">
-              <span>ETH GAS: 56 &nbsp;</span>                
-              <span> USDC/OMNI: $12.43 </span>  
-            </div>            
-          </div>
-
-          <div className="flex space-y-4 mt-[57px] mr-[70px] mb-[40px] py-[12px] px-[30px] text-2xl font-mono">
-            <div className="m-auto flex gap-2 text-2xl">
-              <span>Help</span>  
-            </div>              
-          </div>
-       
-        </div> */}
+   
       </div>
         
       
