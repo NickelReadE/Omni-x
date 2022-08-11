@@ -467,10 +467,10 @@ const SideBar: React.FC = () => {
     setConfirmTransfer(status)
   }
 
-  window.ethereum.on('networkChanged', function (networkId:string) {
-    console.log(networkId, env)
-    setChainID(parseInt(networkId))
-  }) 
+  // window.ethereum.on('networkChanged', function (networkId:string) {
+  //   console.log(networkId, env)
+  //   setChainID(parseInt(networkId))
+  // }) 
  
 
   return (
