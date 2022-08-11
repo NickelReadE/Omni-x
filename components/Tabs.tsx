@@ -68,19 +68,8 @@ const Tabs = ({blur}: TabProps) => {
   const [currentTab, setCurrentTable] = React.useState<string>('NFTs')
   const [bOpenModal, setOpenModal] = React.useState(false)
   const classes = useStyles()
-  const dispatch = useDispatch()
-
-  const {
-    address
-  } = useWallet()
 
   const nfts = useSelector(selectUserNFTs)
-
-  useEffect(() => {
-    if (address) {
-      dispatch(getUserNFTs(address) as any)
-    }
-  }, [address])
 
   const updateModal = (name: string):void => {
     setOpenModal(false)
