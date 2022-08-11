@@ -155,6 +155,7 @@ const Item: NextPage = () => {
 
   useEffect(() => {
     if ( orders.length > 0 ) {
+      console.log(orders)
       setOrder(orders[0])
     }
   }, [orders])
