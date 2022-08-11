@@ -462,7 +462,11 @@ const SideBar: React.FC = () => {
     })()
   }, [handleUnwrap, unwrapInfo])
  
-  
+  useEffect(()=>{
+    if(window.ethereum){
+      setChainID(parseInt(window.ethereum.networkVersion))
+    }
+  })
   if(window.ethereum){
     window.ethereum.on('networkChanged', function (networkId:string) {
       console.log(networkId, env)
