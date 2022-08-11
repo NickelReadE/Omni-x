@@ -18,14 +18,19 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
   return (
     <>
       <div className="w-full mb-5 ">
-        <div className="flex justify-start bg-[#F8F9FA]   p-2 w-fit">
+        <div className="flex relative justify-start bg-[#F8F9FA] p-2 w-fit" style={{'width':'100%'}}>
           {
             chainList.map((item, index) => {
-              return <div key={index} className={`grid justify-items-center content-center p-3 font-medium cursor-pointer m-[1px] min-w-[96px]  ${chain == item.chain ? 'border-b-2 border-black' : ''} ${item.disabled ? 'bg-[#e8e8e8] rounded-lg cursor-default' : ''}`} onClick={() =>{item.disabled ? undefined : setChain(item.chain)}}>
+              return <div key={index} className={`grid justify-items-center content-center p-3 font-medium cursor-pointer m-[1px] min-w-[80px]  ${chain == item.chain ? 'border-b-2 border-black' : ''} ${item.disabled ? 'bg-[#e8e8e8] rounded-lg cursor-default' : ''}`} onClick={() =>{item.disabled ? undefined : setChain(item.chain)}}>
                 <img src={item.img_url} className="w-[21px] h-[22px] " />
               </div>
             })
           }
+          <div className="flex p-3 font-medium cursor-pointer text-[#6C757D] absolute right-0">
+            <img src='/images/listing.png' className="w-[21px] h-[22px]"/>
+            <span>active listing</span>
+            <img src='/images/downArrow.png' className="w-[10px] h-[7px] ml-5 mt-auto mb-auto"/>
+          </div>
         </div>
         <div className="grid grid-cols-5 gap-10 mt-4">
           {nfts.map((item, index) => {
