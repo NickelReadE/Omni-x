@@ -462,14 +462,13 @@ const SideBar: React.FC = () => {
     })()
   }, [handleUnwrap, unwrapInfo])
  
-  useEffect(()=>{
-    if(window.ethereum){
-      window.ethereum.on('networkChanged', function (networkId:string) {
-        console.log(networkId, env)
-        setChainID(parseInt(networkId))
-      }) 
-    }
-  },[window.ethereum])
+  
+  if(window.ethereum){
+    window.ethereum.on('networkChanged', function (networkId:string) {
+      console.log(networkId, env)
+      setChainID(parseInt(networkId))
+    }) 
+  }
   const updateModal = (status: boolean) => {
     setConfirmTransfer(status)
   }
