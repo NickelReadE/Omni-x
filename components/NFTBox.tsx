@@ -69,8 +69,8 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       }
 
       ///only in the beta version
-      const collection_name = nft.name
-      if (collection_name == 'Gregs (ETH)' || collection_name == 'Fake Bored Ape Yacht Club' || collection_name == 'Azuki God' || collection_name == 'Kith Friends' || collection_name == 'MyNFTHaHa'|| collection_name == 'MMLMT7') {
+      const collection_address = nft.token_address
+      if (collection_address == '0xb7b0d9849579d14845013ef9d8421ae58e9b9369' || collection_address == '0x7470ea065e50e3862cd9b8fb7c77712165da80e5' || collection_address == '0xb74bf94049d2c01f8805b8b15db0909168cabf46' || collection_address == '0x7f04504ae8db0689a0526d99074149fe6ddf838c' || collection_address == '0xa783cc101a0e38765540ea66aeebe38beebf7756'|| collection_address == '0x316dc98ed120130daf1771ca577fad2156c275e5') {
         setList(true)
         for(let i=0;i<orders.length;i++){
           if(orders[i].tokenId==nft.token_id && orders[i].collectionAddress==nft.token_address && orders[i].chain==nft.chain) {
