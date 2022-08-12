@@ -471,14 +471,10 @@ const SideBar: React.FC = () => {
   if(window.ethereum){
     window.ethereum.on('chainChanged', function (networkId:string) {      
       setChainID(parseInt(networkId))
-      console.log('networkrealID',provider?._network?.chainId)
-      //window.location.reload()
+     
     }) 
   }
-  useEffect(()=>{
-    console.log('networkrealIDinProvider',provider?._network?.chainId)
-   
-  },[provider])
+
   const updateModal = (status: boolean) => {
     setConfirmTransfer(status)
   }
