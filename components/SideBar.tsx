@@ -201,8 +201,6 @@ const SideBar: React.FC = () => {
     if (!chainId) return    
     const senderChainId = getChainIdFromName(selectedNFTItem.chain)
     if (chainId !== senderChainId) {
-      // dispatch(openSnackBar({ message: 'Need to switch network', status: 'warning' }))
-      console.log("different")
       return await switchNetwork(senderChainId)
     }
     if (chainId === targetChain) return
