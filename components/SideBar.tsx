@@ -469,7 +469,8 @@ const SideBar: React.FC = () => {
   })
   if(window.ethereum){
     window.ethereum.on('chainChanged', function (networkId:string) {      
-      window.location.reload()
+      setChainID(parseInt(networkId))
+      //window.location.reload()
     }) 
   }
   const updateModal = (status: boolean) => {

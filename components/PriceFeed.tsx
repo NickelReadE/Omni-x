@@ -49,7 +49,7 @@ const gas: Array<GAS> = [
     unit: 'Gwei'
   },
   {
-    chain: 'BNB Chain',
+    chain: 'BNBChain',
     price: 12,
     unit: 'Gwei'
   },
@@ -77,7 +77,7 @@ const PriceFeed = () => {
         <div className='flex mr-3'>
           <div>
             <span className='text-sm font-bold font-mono mr-1.5	'>
-              24hr Volume
+              24hrVolume
             </span>
             <span className='text-sm font-normal font-mono'>
               ${volume24}
