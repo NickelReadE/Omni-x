@@ -151,10 +151,19 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
           {islisted && price=='' && <div className="ml-3 py-[1px] px-5 bg-[#ADB5BD] rounded-lg text-[14px] text-[#F8F9FA] font-medium cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
             {'Sell'}
           </div>}
-          {islisted && price!='' && <div className="flex ml-3 py-[1px] px-5  text-[14px] text-[#000000] font-medium cursor-pointer " onClick={() => setOpenSellDlg(true)}>
+          {/* {islisted && price!='' && <div className="flex ml-3 py-[1px] px-5  text-[14px] text-[#000000] font-medium cursor-pointer " onClick={() => setOpenSellDlg(true)}>
             <img src={img_url} className="w-[16px] h-[16px]" alt="icon" />
             <span className='mt-[-2px]'>{price}</span>
-          </div>}
+          </div>} */}
+          {islisted && price!='' && 
+            <div className='flex'>
+              <img src={img_url} className="w-[16px] h-[16px]" alt="icon" />
+              <span className='mt-[-2px]'>{price}</span>
+              <div className="ml-3 py-[1px] px-5 bg-[#ADB5BD] rounded-lg text-[14px] text-[#F8F9FA] font-medium cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
+                {'Sell'}
+              </div>
+            </div>
+          }
         </div>
         <div className="mr-3 flex items-center">
           <div className="mr-3 flex items-center cursor-pointer bg-[url('/images/round-refresh.png')]  hover:bg-[url('/images/round-refresh_hover.png')] bg-cover w-[20px] h-[20px]">

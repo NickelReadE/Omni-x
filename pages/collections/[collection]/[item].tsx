@@ -56,6 +56,8 @@ const Item: NextPage = () => {
 
   const [highestBid, setHighestBid] = React.useState(0)
   const [lastSale, setLastSale] = React.useState(0)
+  const [highestBidCoin, setHighestBidCoin] = React.useState('')
+  const [lastSaleCoin, setLastSaleCoin] = React.useState('')
 
   const {
     provider,
@@ -168,6 +170,11 @@ const Item: NextPage = () => {
         temp_bidOrders.push(bidOrders[i])
         if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
           bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
+          for(let j=0;j<currencies_list.length;j++){
+            if(currencies_list[j].address==bidOrders[i].currencyAddress){
+              setHighestBidCoin(`/images/${currencies_list[j].icon}`)
+            }
+          }
         }
       }
       setBidOrder(temp_bidOrders)
@@ -305,17 +312,17 @@ const Item: NextPage = () => {
                     </div>
                     <div className="mb-3">
                       <h1>${order && order.price && ethers.utils.formatEther(order.price)}</h1>
-                      <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-semibold">Highest Bid: <span className="font-normal">${highestBid}</span></h1><Image src={PngEther} width={15} height={16} alt="chain  logo" /></div>
+                      <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-semibold">Highest Bid: <span className="font-normal">${highestBid}</span></h1><Image src={highestBidCoin} width={15} height={16} alt="chain  logo" /></div>
                       <div className="flex justify-start items-center"><h1 className="mr-3 font-semibold">Last Sale: <span className="font-normal">${lastSale}</span></h1><Image src={PngEther} width={15} height={16} alt="chain logo" /></div>
                       <div className="flex justify-end items-center">
                         { order && owner && address && owner.toLowerCase() != address.toLowerCase() && 
-                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#e53e3e] hover:border-[#e53e3e]">buy</button>
+                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]">buy</button>
                         }
                         { owner && address && owner.toLowerCase() != address.toLowerCase() && 
-                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#e53e3e] hover:border-[#e53e3e]" onClick={() => {setOpenBidDlg(true)}}>bid</button>
+                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]" onClick={() => {setOpenBidDlg(true)}}>bid</button>
                         }
                         { address && owner && owner.toLowerCase() == address.toLowerCase() && 
-                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#e53e3e] hover:border-[#e53e3e]" onClick={() => {setOpenSellDlg(true)}}>sell</button>
+                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={() => {setOpenSellDlg(true)}}>sell</button>
                         }
                       </div>
                     </div>
