@@ -134,7 +134,7 @@ const Item: NextPage = () => {
         startTime: Math.floor(Date.now() / 1000).toString(),
         endTime: Math.floor(Date.now() / 1000).toString(),
         status: ['VALID'],
-        sort: 'PRICE_ASC'
+        sort: 'NEWEST'
       }
       dispatch(getOrders(request) as any)
 

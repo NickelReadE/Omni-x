@@ -11,6 +11,7 @@ export const ordersSlice = createSlice({
 	initialState: {
 		orders: [],
 		bidOrders: [],
+		listOrders: [],
 	},
 	reducers: {
         setOrders: (state, action) => {
@@ -39,6 +40,7 @@ export const getOrders = (request: IGetOrderRequest) => async (dispatch: Dispatc
 		console.log("getOrders error ? ", error)
 	}
 }
+
 
 
 export const createOrder = (data: MakerOrderWithSignature) => async (dispatch: Dispatch<any>) => {

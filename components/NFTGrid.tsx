@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import NFTBox from './NFTBox'
 import { IPropsImage } from '../interface/interface'
+import { getOrders, selectOrders } from '../redux/reducers/ordersReducer'
+import { IGetOrderRequest } from '../interface/interface'
+import useWallet from '../hooks/useWallet'
+import { useDispatch, useSelector } from 'react-redux'
 
 const chainList = [
   { chain: 'all', img_url: '/svgs/all_chain.svg', title: 'all NFTs', disabled: false},
@@ -14,6 +18,28 @@ const chainList = [
 ]
 const NFTGrid = ({ nfts }: IPropsImage) => {
   const [chain, setChain] = useState('rinkeby')
+
+  const {
+    provider,
+    address
+  } = useWallet()
+  const dispatch = useDispatch()
+
+  useEffect(()=> {
+    if(nfts){
+      const request: IGetOrderRequest = {
+        isOrderAsk: true,
+        chain: provider?.network.name,
+        signer: address,
+        startTime: Math.floor(Date.now() / 1000).toString(),
+        endTime: Math.floor(Date.now() / 1000).toString(),
+        status: ['VALID'],
+        sort: 'OLDEST'
+      }
+      dispatch(getOrders(request) as any)
+    }
+  },[nfts])
+
 
   return (
     <>
@@ -34,9 +60,10 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
         </div>
         <div className="grid grid-cols-5 gap-10 mt-4">
           {nfts.map((item, index) => {
+
             if(chain == 'all'){
               return (
-                <NFTBox nft={item} index={index} key={index} />
+                <NFTBox nft={item} index={index} key={index}/>
               )
             } else {
               if(chain == item.chain) {

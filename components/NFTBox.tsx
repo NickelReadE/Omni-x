@@ -11,10 +11,10 @@ import useWallet from '../hooks/useWallet'
 import { addressesByNetwork } from '../constants'
 import { SupportedChainId } from '../types'
 import { postMakerOrder } from '../utils/makeOrder'
-import { ethers } from 'ethers'
 import { addDays } from 'date-fns'
 import { openSnackBar } from '../redux/reducers/snackBarReducer'
-
+import { selectOrders } from '../redux/reducers/ordersReducer'
+import { ethers } from 'ethers'
 
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -26,6 +26,15 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   const [openSellDlg, setOpenSellDlg] = React.useState(false)
   ///only in the beta version
   const [islisted,setList] = useState(false)
+  const [price, setPrice] = useState('')
+  const [img_url, setImageURL] = useState('')
+  const orders = useSelector(selectOrders)
+
+  const currencies_list = [
+    { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0x49fB1b5550AFFdFF32CffF03c1A8168f992296eF' },
+    { value: 1, text: 'USDC', icon: 'payment/usdc.png', address: '0xeb8f08a975ab53e34d8a0330e0d34de942c95926' },
+    { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad' },
+  ]
 
   const {
     provider,
@@ -63,12 +72,25 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       const collection_name = nft.name
       if (collection_name == 'Gregs (ETH)' || collection_name == 'Fake Bored Ape Yacht Club' || collection_name == 'Azuki God' || collection_name == 'Kith Friends' || collection_name == 'MyNFTHaHa'|| collection_name == 'MMLMT7') {
         setList(true)
+        for(let i=0;i<orders.length;i++){
+          if(orders[i].tokenId==nft.token_id && orders[i].collectionAddress==nft.token_address && orders[i].chain==nft.chain) {
+            setPrice(ethers.utils.formatEther(orders[i].price))
+            currencies_list.map((item,index) => {
+              if(item.address==orders[i].currencyAddress){
+                setImageURL(`/images/${item.icon}`)
+              }
+            })
+          }
+        }
+
       }
+
 
     }
 
     updateImage()
   }, [])
+
 
   const onListing = async (currency: string, price: number, period: number) => {
     const chainId = provider?.network.chainId as number
@@ -126,12 +148,16 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       </div>
       <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle">
         <div className="flex items-center">
-          {islisted && <div className="ml-3 py-[1px] px-5 bg-[#ADB5BD] rounded-lg text-[14px] text-[#F8F9FA] font-medium cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
+          {islisted && price=='' && <div className="ml-3 py-[1px] px-5 bg-[#ADB5BD] rounded-lg text-[14px] text-[#F8F9FA] font-medium cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
             {'Sell'}
+          </div>}
+          {islisted && price!='' && <div className="flex ml-3 py-[1px] px-5  text-[14px] text-[#000000] font-medium cursor-pointer " onClick={() => setOpenSellDlg(true)}>
+            <img src={img_url} className="w-[16px] h-[16px]" alt="icon" />
+            <span className='mt-[-2px]'>{price}</span>
           </div>}
         </div>
         <div className="mr-3 flex items-center">
-          <div className="mr-3 flex items-center cursor-pointer bg-[url('/images/round-refresh.png')] hover:bg-[url('/images/round-refresh_hover.png')] bg-cover w-[20px] h-[20px]">
+          <div className="mr-3 flex items-center cursor-pointer bg-[url('/images/round-refresh.png')]  hover:bg-[url('/images/round-refresh_hover.png')] bg-cover w-[20px] h-[20px]">
           </div>
           <div className="flex items-center ml-1">
             {chain === 'eth' &&
