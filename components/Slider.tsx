@@ -9,7 +9,7 @@ import { IPropsSlider } from '../interface/interface'
 const Slider = (props: IPropsSlider) => {
   return (
     <>
-      <div className="mt-2 pl-12 pr-20">
+      <div className="mt-2 pl-12 pr-20 mb-20">
         <div className="relative w-full mt-20 pr-4 pt-12 slide">
           <div
             className={`px-12 py-4 text-2xl font-bold underline mb-5 z-10 absolute top-1 ${
