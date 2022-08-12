@@ -78,7 +78,7 @@ const Banner = ({ slides, blur, menu }: BannerProps): JSX.Element => {
                   <div className="text-[26px] text-[#000000] font-semibold">
                     {user.username ? user.username : 'username'}
                   </div>
-                  <div className="flex ml-[260px]">
+                  <div className="flex ml-[50px] 2xl:ml-[460px] xl:ml-[300px] lg:ml-[160px]">
                     <Link href={user.twitter?user.twitter:''}>
                       <a>
                         <div className="mr-6 mt-2">
