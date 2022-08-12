@@ -72,7 +72,7 @@ const gas: Array<GAS> = [
 const PriceFeed = () => {
 
   return (
-    <div className=" w-full">
+    <div className="fixed bottom-0 w-full">
       <div className=' flex justify-center w-full px-10 z-50 bg-[#F6F8FC]  text-center'>
         <div className='flex mr-3'>
           <div>

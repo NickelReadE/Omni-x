@@ -35,6 +35,8 @@ const SideBar: React.FC = () => {
     connect: connectWallet,
     switchNetwork
   } = useWallet()
+  
+
   const { estimateGasFee, estimateGasFeeONFTCore, unwrapInfo, selectedUnwrapInfo, validateOwNFT, validateONFT } = useBridge()
   const { setPendingTxInfo } = useProgress()
 
@@ -196,22 +198,23 @@ const SideBar: React.FC = () => {
     if (!targetChain) return
     if (!user) return
     if (!signer) return
-    if (!provider?._network?.chainId) return
+    if (!chainId) return    
     const senderChainId = getChainIdFromName(selectedNFTItem.chain)
-    if (provider?._network?.chainId !== senderChainId) {
+    if (chainId !== senderChainId) {
       // dispatch(openSnackBar({ message: 'Need to switch network', status: 'warning' }))
+      console.log("different")
       return await switchNetwork(senderChainId)
     }
-    if (provider?._network?.chainId === targetChain) return
+    if (chainId === targetChain) return
 
     const isONFTCore = await validateONFT(selectedNFTItem)
     setIsONFTCore(isONFTCore)
     try {
       let gasFee
       if (isONFTCore) {
-        gasFee = await estimateGasFeeONFTCore(selectedNFTItem, provider?._network?.chainId, targetChain)
+        gasFee = await estimateGasFeeONFTCore(selectedNFTItem, chainId, targetChain)
       } else {
-        gasFee = await estimateGasFee(selectedNFTItem, provider?._network?.chainId, targetChain)
+        gasFee = await estimateGasFee(selectedNFTItem, chainId, targetChain)
       }
       setEstimatedFee(gasFee)
       setConfirmTransfer(true)
@@ -470,9 +473,14 @@ const SideBar: React.FC = () => {
   if(window.ethereum){
     window.ethereum.on('chainChanged', function (networkId:string) {      
       setChainID(parseInt(networkId))
+      console.log('networkrealID',provider?._network?.chainId)
       //window.location.reload()
     }) 
   }
+  useEffect(()=>{
+    console.log('networkrealIDinProvider',provider?._network?.chainId)
+   
+  },[provider])
   const updateModal = (status: boolean) => {
     setConfirmTransfer(status)
   }
@@ -961,7 +969,7 @@ const SideBar: React.FC = () => {
             onTransfer={onTransfer}
             selectedNFTItem={selectedNFTItem}
             estimatedFee={estimatedFee}
-            senderChain={provider?._network?.chainId || 4}
+            senderChain={chainId || 4}
             targetChain={targetChain}
             image={image}
           />
