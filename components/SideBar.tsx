@@ -188,7 +188,7 @@ const SideBar: React.FC = () => {
       await switchNetwork(chainId)
       window.location.reload()
     }catch(error){
-      console.log("error:", error)
+      console.log('error:', error)
     }
   }
 
