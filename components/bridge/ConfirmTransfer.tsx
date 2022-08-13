@@ -24,10 +24,6 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
   estimatedFee,
   image
 }) => {
-  const {
-    provider,
-    signer
-  } = useWallet()
 
   const [imageError, setImageError] = useState(false)
 

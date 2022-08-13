@@ -34,8 +34,7 @@ const SideBar: React.FC = () => {
     address,
     connect: connectWallet,
     switchNetwork
-  } = useWallet()
-  
+  } = useWallet()  
 
   const { estimateGasFee, estimateGasFeeONFTCore, unwrapInfo, selectedUnwrapInfo, validateOwNFT, validateONFT } = useBridge()
   const { setPendingTxInfo } = useProgress()
@@ -185,8 +184,12 @@ const SideBar: React.FC = () => {
 
   const onClickNetwork = async (chainId: number) => {
     await connectWallet()
-    await switchNetwork(chainId)
-    setChainID(chainId)
+    try{
+      await switchNetwork(chainId)
+      window.location.reload()
+    }catch(error){
+      console.log("error:", error)
+    }
   }
 
   const handleTargetChainChange = (networkIndex: number) => {
@@ -471,7 +474,8 @@ const SideBar: React.FC = () => {
   if(window.ethereum){
     window.ethereum.on('chainChanged', function (networkId:string) {      
       setChainID(parseInt(networkId))
-     
+      //window.location.reload()
+
     }) 
   }
 
