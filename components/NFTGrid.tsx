@@ -37,6 +37,15 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
         sort: 'OLDEST'
       }
       dispatch(getOrders(request) as any)
+
+      const bidRequest: IGetOrderRequest = {
+        isOrderAsk: false,
+        startTime: Math.floor(Date.now() / 1000).toString(),
+        endTime: Math.floor(Date.now() / 1000).toString(),
+        status: ['VALID'],
+        sort: 'PRICE_ASC'
+      }
+      dispatch(getOrders(bidRequest) as any)
     }
   },[nfts])
 

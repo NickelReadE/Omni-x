@@ -14,7 +14,7 @@ import { postMakerOrder } from '../utils/makeOrder'
 import { addDays } from 'date-fns'
 import { openSnackBar } from '../redux/reducers/snackBarReducer'
 import { ethers } from 'ethers'
-import { getOrders, selectOrders } from '../redux/reducers/ordersReducer'
+import { getOrders, selectOrders,selectBidOrders } from '../redux/reducers/ordersReducer'
 import { IGetOrderRequest } from '../interface/interface'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -28,7 +28,10 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   const [islisted,setList] = useState(false)
   const [price, setPrice] = useState('')
   const [img_url, setImageURL] = useState('')
+  const [highestBid, setHighestBid] = useState(0)
+  const [highestBidCoin, setHighestBidCoin] = useState('')
   const orders = useSelector(selectOrders)
+  const bidOrders = useSelector(selectBidOrders)
 
   const currencies_list = [
     { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0x49fB1b5550AFFdFF32CffF03c1A8168f992296eF' },
@@ -74,6 +77,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   }, [])
 
   useEffect(()=>{
+    let flag = false
     if(orders.length>0){
       ///only in the beta version
       const collection_address = nft.token_address
@@ -87,11 +91,33 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
                 setImageURL(`/images/${item.icon}`)
               }
             })
+            flag=true
           }
         }
       }
+    }else if(!flag){
+      if(bidOrders.length>0) {
+        console.log(bidOrders)
+        if ( bidOrders.length > 0 ) {
+          let bid_balance = 0
+          for(let i=0; i<bidOrders.length;i++){
+            console.log(bidOrders[i].tokenId)
+            if(bidOrders[i].tokenId==nft.token_id && bidOrders[i].collectionAddress==nft.token_address && bidOrders[i].chain==nft.chain){
+              if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
+                bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
+                for(let j=0;j<currencies_list.length;j++){
+                  if(currencies_list[j].address==bidOrders[i].currencyAddress){
+                    setHighestBidCoin(`/images/${currencies_list[j].icon}`)
+                  }
+                }
+              }
+            }
+          }
+          setHighestBid(bid_balance)
+        }
+      }
     }
-  },[orders])
+  },[orders,bidOrders])
 
 
   const onListing = async (currency: string, price: number, period: number) => {
@@ -162,9 +188,18 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       </div>
       <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle">
         <div className="flex items-center">
-          {islisted && price=='' && <div className="ml-3 py-[1px] px-5 bg-[#ADB5BD] rounded-lg text-[14px] text-[#F8F9FA] font-medium cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
+          {islisted && price==''&& highestBid==0 && <div className="ml-3 py-[1px] px-5 bg-[#ADB5BD] rounded-lg text-[14px] text-[#F8F9FA] font-medium cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
             {'Sell'}
           </div>}
+          {islisted && price==''&& highestBid>0 &&  
+            <div className='flex'>
+              <img src={highestBidCoin} className="w-[16px] h-[16px]" alt="icon" />
+              <span className='mt-[-2px]'>{highestBid}</span>
+              <div className="ml-3 py-[1px] px-5 bg-[#ADB5BD] rounded-lg text-[14px] text-[#F8F9FA] font-medium cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
+                {'Sell'}
+              </div>
+            </div>
+          }
           {/* {islisted && price!='' && <div className="flex ml-3 py-[1px] px-5  text-[14px] text-[#000000] font-medium cursor-pointer " onClick={() => setOpenSellDlg(true)}>
             <img src={img_url} className="w-[16px] h-[16px]" alt="icon" />
             <span className='mt-[-2px]'>{price}</span>
