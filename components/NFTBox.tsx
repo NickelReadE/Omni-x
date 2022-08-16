@@ -13,9 +13,9 @@ import { SupportedChainId } from '../types'
 import { postMakerOrder } from '../utils/makeOrder'
 import { addDays } from 'date-fns'
 import { openSnackBar } from '../redux/reducers/snackBarReducer'
-import { selectOrders } from '../redux/reducers/ordersReducer'
 import { ethers } from 'ethers'
-
+import { getOrders, selectOrders } from '../redux/reducers/ordersReducer'
+import { IGetOrderRequest } from '../interface/interface'
 import { useDispatch, useSelector } from 'react-redux'
 
 const NFTBox = ({nft, index}: IPropsNFTItem) => {
@@ -68,6 +68,13 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
         }
       }
 
+      
+    }
+    updateImage()
+  }, [])
+
+  useEffect(()=>{
+    if(orders.length>0){
       ///only in the beta version
       const collection_address = nft.token_address
       if (collection_address == '0xb7b0d9849579d14845013ef9d8421ae58e9b9369' || collection_address == '0x7470ea065e50e3862cd9b8fb7c77712165da80e5' || collection_address == '0xb74bf94049d2c01f8805b8b15db0909168cabf46' || collection_address == '0x7f04504ae8db0689a0526d99074149fe6ddf838c' || collection_address == '0xa783cc101a0e38765540ea66aeebe38beebf7756'|| collection_address == '0x316dc98ed120130daf1771ca577fad2156c275e5') {
@@ -82,14 +89,9 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
             })
           }
         }
-
       }
-
-
     }
-
-    updateImage()
-  }, [])
+  },[orders])
 
 
   const onListing = async (currency: string, price: number, period: number) => {
@@ -123,6 +125,18 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       )
       setOpenSellDlg(false)
       dispatch(openSnackBar({ message: 'Listing Success', status: 'success' }))
+
+      const request: IGetOrderRequest = {
+        isOrderAsk: true,
+        chain: provider?.network.name,
+        signer: address,
+        startTime: Math.floor(Date.now() / 1000).toString(),
+        endTime: Math.floor(Date.now() / 1000).toString(),
+        status: ['VALID'],
+        sort: 'OLDEST'
+      }
+      dispatch(getOrders(request) as any)
+
     } catch (err: any) {
       dispatch(openSnackBar({ message: err.message, status: 'error' }))
     }

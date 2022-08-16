@@ -59,6 +59,10 @@ const Item: NextPage = () => {
   const [highestBidCoin, setHighestBidCoin] = React.useState('')
   const [lastSaleCoin, setLastSaleCoin] = React.useState('')
 
+  const [order_flag, setOrderFlag] = React.useState(false)
+  const [bid_flag, setBidFlag] = React.useState(false)
+
+
   const {
     provider,
     address
@@ -152,18 +156,22 @@ const Item: NextPage = () => {
         sort: 'PRICE_ASC'
       }
       dispatch(getOrders(bidRequest) as any)
+      setOrderFlag(true)
+      setBidFlag(true)
     }
   }, [nftInfo, owner, ownerType])
 
   useEffect(() => {
-    if ( orders.length > 0 ) {
-      console.log(orders)
+    if (orders.length > 0 && order_flag ) {
+      setOrderFlag(false)
       setOrder(orders[0])
+    } else {
+      setOrder(undefined)
     }
   }, [orders])
 
   useEffect(() => {
-    if ( bidOrders.length > 0 ) {
+    if ( bidOrders.length > 0  && bid_flag) {
       const temp_bidOrders: any = []
       let bid_balance = 0
       for(let i=0; i<bidOrders.length;i++){
@@ -179,6 +187,11 @@ const Item: NextPage = () => {
       }
       setBidOrder(temp_bidOrders)
       setHighestBid(bid_balance)
+      setBidFlag(false)
+    } else {
+      setBidOrder(undefined)
+      setHighestBid(0)
+      setHighestBidCoin('')
     }
   }, [bidOrders])
 
@@ -213,6 +226,19 @@ const Item: NextPage = () => {
       )
       setOpenBidDlg(false)
       dispatch(openSnackBar({ message: 'Make Offer Success', status: 'success' }))
+
+      const bidRequest: IGetOrderRequest = {
+        isOrderAsk: false,
+        chain: nftInfo.collection.chain,
+        collection: nftInfo.collection.address,
+        tokenId: nftInfo.nft.token_id,
+        startTime: Math.floor(Date.now() / 1000).toString(),
+        endTime: Math.floor(Date.now() / 1000).toString(),
+        status: ['VALID'],
+        sort: 'PRICE_ASC'
+      }
+      dispatch(getOrders(bidRequest) as any)
+
     } catch (err: any) {
       dispatch(openSnackBar({ message: err.message, status: 'error' }))
     }
@@ -311,9 +337,9 @@ const Item: NextPage = () => {
                       }
                     </div>
                     <div className="mb-3">
-                      <h1>${order && order.price && ethers.utils.formatEther(order.price)}</h1>
-                      <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-semibold">Highest Bid: <span className="font-normal">${highestBid}</span></h1><Image src={highestBidCoin} width={15} height={16} alt="chain  logo" /></div>
-                      <div className="flex justify-start items-center"><h1 className="mr-3 font-semibold">Last Sale: <span className="font-normal">${lastSale}</span></h1><Image src={PngEther} width={15} height={16} alt="chain logo" /></div>
+                      <h1>{order && order.price && ethers.utils.formatEther(order.price)}</h1>
+                      <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-semibold">Highest Bid: <span className="font-normal">${highestBid}</span></h1>{highestBidCoin!=''&&<Image src={highestBidCoin} width={15} height={16} alt="chain  logo" />}</div>
+                      <div className="flex justify-start items-center"><h1 className="mr-3 font-semibold">Last Sale: <span className="font-normal">${lastSale}</span></h1>{lastSaleCoin!=''&&<Image src={PngEther} width={15} height={16} alt="chain logo" />}</div>
                       <div className="flex justify-end items-center">
                         { order && owner && address && owner.toLowerCase() != address.toLowerCase() && 
                           <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]">buy</button>

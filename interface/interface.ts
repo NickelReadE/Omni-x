@@ -17,6 +17,7 @@ export interface IPropsNFTItem {
   nft: NFTItem,
   col_url?: string,
   chain?: string,
+  col_address?:string,
   index: number
 }
 

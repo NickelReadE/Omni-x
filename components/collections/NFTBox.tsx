@@ -5,11 +5,71 @@ import { IPropsNFTItem } from '../../interface/interface'
 import LazyLoad from 'react-lazyload'
 import USD from '../../public/images/USD.png'
 import { ethers } from 'ethers'
+import { selectOrders, selectBidOrders } from '../../redux/reducers/ordersReducer'
+import { useDispatch, useSelector } from 'react-redux'
+import useWallet from '../../hooks/useWallet'
 
 
-const NFTBox = ({nft, col_url, chain}: IPropsNFTItem) => {
+const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
-  
+  const [islisted,setList] = useState(false)
+  const [price, setPrice] = useState('')
+  const [img_url, setImageURL] = useState('')
+  const [highestBid, setHighestBid] = useState(0)
+  const [highestBidCoin, setHighestBidCoin] = useState('')
+  const orders = useSelector(selectOrders)
+  const bidOrders = useSelector(selectBidOrders)
+
+  const {
+    provider,
+    address
+  } = useWallet()
+
+  const currencies_list = [
+    { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0x49fB1b5550AFFdFF32CffF03c1A8168f992296eF' },
+    { value: 1, text: 'USDC', icon: 'payment/usdc.png', address: '0xeb8f08a975ab53e34d8a0330e0d34de942c95926' },
+    { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad' },
+  ]
+
+  useEffect(() => {
+    if(nft){
+      if (col_address == '0xb7b0d9849579d14845013ef9d8421ae58e9b9369' || col_address == '0x7470ea065e50e3862cd9b8fb7c77712165da80e5' || col_address == '0xb74bf94049d2c01f8805b8b15db0909168cabf46' || col_address == '0x7f04504ae8db0689a0526d99074149fe6ddf838c' || col_address == '0xa783cc101a0e38765540ea66aeebe38beebf7756'|| col_address == '0x316dc98ed120130daf1771ca577fad2156c275e5') {
+        let flag = false
+        for(let i=0;i<orders.length;i++){
+          if(orders[i].tokenId==nft.token_id && orders[i].collectionAddress==col_address && orders[i].chain==chain) {
+            flag = true
+            setPrice(ethers.utils.formatEther(orders[i].price))
+            setList(true)
+            currencies_list.map((item,index) => {
+              if(item.address==orders[i].currencyAddress){
+                setImageURL(`/images/${item.icon}`)
+              }
+            })
+          }
+        }
+        if(!flag) {
+          
+          if ( bidOrders.length > 0 ) {
+            let bid_balance = 0
+            for(let i=0; i<bidOrders.length;i++){
+              console.log(bidOrders[i].tokenId)
+              if(bidOrders[i].tokenId==nft.token_id && bidOrders[i].collectionAddress==col_address && bidOrders[i].chain==chain){
+                if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
+                  bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
+                  for(let j=0;j<currencies_list.length;j++){
+                    if(currencies_list[j].address==bidOrders[i].currencyAddress){
+                      setHighestBidCoin(`/images/${currencies_list[j].icon}`)
+                    }
+                  }
+                }
+              }
+            }
+            setHighestBid(bid_balance)
+          }
+        }
+      }
+    }
+  },[nft])
 
   return (
     <div className="w-full border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]">
@@ -28,8 +88,13 @@ const NFTBox = ({nft, col_url, chain}: IPropsNFTItem) => {
           </div>
           <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle">
             <div className="flex items-center ml-3">
-              <img src="/svgs/ethereum.svg" className="w-[18px] h-[18px]" />
-              <span className="text-[#1E1C21] text-sm ml-2"> {nft.price && ethers.utils.formatEther(nft.price)}</span>
+              {!islisted &&highestBid==0&&<><img src="/svgs/ethereum.svg" className="w-[18px] h-[18px]" />
+                <span className="text-[#1E1C21] text-sm ml-2"> {nft.price && ethers.utils.formatEther(nft.price)}</span></>}
+              {!islisted &&highestBid!=0&&<><img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>
+                <span className="text-[#1E1C21] text-sm ml-2"> {highestBid}</span></>}
+              {islisted &&<><img src={img_url} className="w-[18px] h-[18px]" />
+                <span className="text-[#1E1C21] text-sm ml-2"> {price}</span></>}
+              
             </div>
             <div className="mr-3 flex items-center">
               <div className="mr-3 flex items-center cursor-pointer bg-[url('/images/round-refresh.png')] hover:bg-[url('/images/round-refresh_hover.png')] bg-cover w-[20px] h-[20px]">
