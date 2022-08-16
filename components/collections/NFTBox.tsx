@@ -5,21 +5,21 @@ import { IPropsNFTItem } from '../../interface/interface'
 import LazyLoad from 'react-lazyload'
 import USD from '../../public/images/USD.png'
 import { ethers } from 'ethers'
-
+import editStyle from '../../styles/nftbox.module.scss'
+import classNames from '../../helpers/classNames'
 
 const NFTBox = ({nft, col_url, chain}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
   
-
   return (
-    <div className="w-full border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]">
+    <div className={classNames('w-full border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]', editStyle.nftContainer)}>
       <Link href={`/collections/${col_url}/${nft.token_id}`}>
         <a>
           <div className="relative w-full">
             <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
               <img className='collection-nft-image-item' src={imageError||nft.image==null?'/images/omnix_logo_black_1.png':nft.image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={nft.image} />
             </LazyLoad>
-            <div className="absolute top-[8px] right-[9px] p-[12px]" style={{background: 'radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.2) 0%, rgba(254, 254, 255, 0) 100%)'}}>
+            <div className={classNames('absolute top-[8px] right-[9px] p-[12px]', editStyle.ellipseBtn)}>
               <div className="bg-[url('/images/ellipse.png')] hover:bg-[url('/images/ellipse_hover.png')] bg-cover w-[21px] h-[21px]"></div>
             </div>
           </div>
@@ -32,8 +32,7 @@ const NFTBox = ({nft, col_url, chain}: IPropsNFTItem) => {
               <span className="text-[#1E1C21] text-sm ml-2"> {nft.price && ethers.utils.formatEther(nft.price)}</span>
             </div>
             <div className="mr-3 flex items-center">
-              <div className="mr-3 flex items-center cursor-pointer bg-[url('/images/round-refresh.png')] hover:bg-[url('/images/round-refresh_hover.png')] bg-cover w-[20px] h-[20px]">
-              </div>
+              <div className={classNames("mr-3 flex items-center cursor-pointer bg-[url('/images/round-refresh.png')] hover:bg-[url('/images/round-refresh_hover.png')] bg-cover w-[20px] h-[20px]", editStyle.refreshBtn)}></div>
               <div className="flex items-center ml-1">
                 {(chain === 'eth' || chain === 'rinkeby') &&
                   <img src="/svgs/ethereum.svg" className="w-[16px] h-[16px]" />

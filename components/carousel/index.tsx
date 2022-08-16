@@ -42,9 +42,11 @@ const Carousel = (props: any): JSX.Element => {
         const height = document.getElementsByClassName(`${Style.sliderSingle} ${Style.active}`)[0].clientHeight
         setHeight(`${height  }px`)
       }
-      setTimeout(() => {
-        slideRight()
-      }, 100)
+      if(slides && slides.length) {
+        setTimeout(() => {
+          slideRight()
+        }, 100)
+      }
     }
   },[slides,slideCurrent])
 

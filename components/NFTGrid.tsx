@@ -1,19 +1,20 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import NFTBox from './NFTBox'
 import { IPropsImage } from '../interface/interface'
 
 const chainList = [
   { chain: 'all', img_url: '/svgs/all_chain.svg', title: 'all NFTs', disabled: false},
-  { chain: 'eth', img_url: '/svgs/ethereum.svg', title: 'Ethereum', disabled: false},
+  { chain: 'rinkeby', img_url: '/svgs/ethereum.svg', title: 'Ethereum', disabled: false},
   { chain: 'arbitrum', img_url: '/svgs/arbitrum.svg', title: 'Arbitrum', disabled: true},
-  { chain: 'avalanche', img_url: '/svgs/avax.svg', title: 'Avalanche', disabled: false},
-  { chain: 'bsc', img_url: '/svgs/binance.svg', title: 'BNB Chain', disabled: false},
+  { chain: 'avalanche testnet', img_url: '/svgs/avax.svg', title: 'Avalanche', disabled: false},
+  { chain: 'bsc testnet', img_url: '/svgs/binance.svg', title: 'BNB Chain', disabled: false},
   { chain: 'fantom', img_url: '/svgs/fantom.svg', title: 'Fantom', disabled: true},
   { chain: 'optimism', img_url: '/svgs/optimism.svg', title: 'Optimism', disabled: true},
-  { chain: 'matic', img_url: '/svgs/polygon.svg', title: 'Polygon', disabled: false},
+  { chain: 'mumbai', img_url: '/svgs/polygon.svg', title: 'Polygon', disabled: false},
 ]
 const NFTGrid = ({ nfts }: IPropsImage) => {
-  const [chain, setChain] = React.useState('eth')
+  const [chain, setChain] = useState('all')
+
   return (
     <>
       <div className="w-full mb-5 mt-4">
@@ -29,9 +30,17 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
         </div>
         <div className="grid grid-cols-5 gap-10 mt-4">
           {nfts.map((item, index) => {
-            return (
-              <NFTBox nft={item} index={index} key={index} />
-            )
+            if(chain == 'all'){
+              return (
+                <NFTBox nft={item} index={index} key={index} />
+              )
+            } else {
+              if(chain == item.chain) {
+                return (
+                  <NFTBox nft={item} index={index} key={index} />
+                )
+              }
+            }
           })}
         </div>
       </div>
