@@ -63,37 +63,44 @@ const Banner = ({ slides, blur, menu }: BannerProps): JSX.Element => {
                   </a>
                 </div>
               } */}
-              <div className="-top-[10rem] left-[5rem] absolute">
+              <div className="bottom-[0rem] left-[4rem]  absolute">
                 <Image 
                   src={avatarError||user.avatar===undefined||user.avatar===DEFAULT_AVATAR?'/images/default_avatar.png':(process.env.API_URL + user.avatar)} 
                   alt="avatar" 
                   onError={(e)=>{user.avatar&&setAvatarError(true)}} 
                   width={200}
                   height={200}
+                  className={'rounded-[8px]'}
                 />
               </div>
-              <div className="flex flex-col ml-[20rem] mt-[10px]">
-                <div className="text-[26px] text-slate-800 font-semibold">{user.username ? user.username : 'username'}</div>
-                <div className="text-[#6C757D] text-[16px] text-slate-800">
+              <div className="flex flex-col ml-[18rem]  bg-[#F8F9FA] w-full">
+                <div className='flex px-2'>
+                  <div className="text-[26px] text-[#000000] font-semibold">
+                    {user.username ? user.username : 'username'}
+                  </div>
+                  <div className="flex ml-[50px] 2xl:ml-[460px] xl:ml-[300px] lg:ml-[160px]">
+                    <Link href={user.twitter?user.twitter:''}>
+                      <a>
+                        <div className="mr-6 mt-2">
+                          <Image src={Twitter} alt='twitter' width={'20px'} height={'20px'} />
+                        </div>
+                      </a>
+                    </Link>
+                    <Link href={user.website?user.website:''}>
+                      <a>
+                        <div className="mr-6 mt-2">
+                          <Image src={Web} alt='website'  width={'20px'} height={'20px'} />
+                        </div>
+                      </a>
+                    </Link>
+                  </div>
+                </div>
+
+                <div className="text-[#6C757D] text-[15px] text-[#6C757D] px-2">
                   {user.bio}
                 </div>
               </div>
-              <div className="flex ml-[]">
-                <Link href={user.twitter?user.twitter:''}>
-                  <a>
-                    <div className="mr-6">
-                      <Image src={Twitter} alt='twitter' />
-                    </div>
-                  </a>
-                </Link>
-                <Link href={user.website?user.website:''}>
-                  <a>
-                    <div className="mr-6">
-                      <Image src={Web} alt='website' />
-                    </div>
-                  </a>
-                </Link>
-              </div>
+
             </div>
           </div>
         )}

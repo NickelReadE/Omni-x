@@ -32,6 +32,9 @@ import Chip from '@material-ui/core/Chip'
 import classNames from '../../../helpers/classNames'
 import editStyle from '../../../styles/collection.module.scss'
 import { info } from 'console'
+import { getOrders } from '../../../redux/reducers/ordersReducer'
+import { IGetOrderRequest } from '../../../interface/interface'
+
 
 const sort_fields = [
   { id: 1, name: 'price: low to high', value: 'price', unavailable: false },
@@ -144,6 +147,7 @@ const Collection: NextPage = () => {
   const [filterObj, setFilterObj] = useState<any>({})
   const [clearFilter, setClearFilter] = useState(false)
 
+
   const finishedGetting = useSelector(selectGetNFTs)
 
   useEffect(() => {
@@ -153,6 +157,30 @@ const Collection: NextPage = () => {
       setPage(0)
     }
   }, [col_url])
+
+  useEffect(()=>{
+    if(nfts.length>0){
+      const request: IGetOrderRequest = {
+        isOrderAsk: true,
+        startTime: Math.floor(Date.now() / 1000).toString(),
+        endTime: Math.floor(Date.now() / 1000).toString(),
+        status: ['VALID'],
+        sort: 'OLDEST'
+      }
+      dispatch(getOrders(request) as any)
+
+      const bidRequest: IGetOrderRequest = {
+        isOrderAsk: false,
+        collection: collectionInfo.address,
+        startTime: Math.floor(Date.now() / 1000).toString(),
+        endTime: Math.floor(Date.now() / 1000).toString(),
+        status: ['VALID'],
+        sort: 'PRICE_ASC'
+      }
+      dispatch(getOrders(bidRequest) as any)
+    }
+  },[nfts])
+  
 
   const onChangeSort = (item: any) => {
     setSelected(item)
@@ -536,9 +564,8 @@ const Collection: NextPage = () => {
                 >
                   <div className="grid 2xl:grid-cols-5 gap-4 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 p-1">
                     { nfts.map((item, index) => {
-                      console.log(item)
                       return (
-                        <NFTBox nft={item} index={index} key={index} col_url={col_url} chain={collectionInfo?collectionInfo.chain:'eth'}/>
+                        <NFTBox nft={item} index={index} key={index}  col_url={col_url} col_address={collectionInfo.address}  chain={collectionInfo?collectionInfo.chain:'eth'}/>
                       )
                     })}
                   </div>

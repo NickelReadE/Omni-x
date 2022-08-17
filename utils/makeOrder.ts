@@ -81,7 +81,6 @@ const prepareMakerOrder = async(
     signature: signatureHash,
     chain
   }
-
   return data
 }
 
