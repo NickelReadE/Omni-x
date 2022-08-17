@@ -95,14 +95,13 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
           }
         }
       }
-    }else if(!flag){
+    }
+    if(!flag){
       if(bidOrders.length>0) {
-        console.log(bidOrders)
         if ( bidOrders.length > 0 ) {
           let bid_balance = 0
           for(let i=0; i<bidOrders.length;i++){
-            console.log(bidOrders[i].tokenId)
-            if(bidOrders[i].tokenId==nft.token_id && bidOrders[i].collectionAddress==nft.token_address && bidOrders[i].chain==nft.chain){
+            if(bidOrders[i].tokenId==nft.token_id && bidOrders[i].collectionAddress==nft.token_address){
               if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
                 bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
                 for(let j=0;j<currencies_list.length;j++){
@@ -117,6 +116,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
         }
       }
     }
+    console.log(flag)
   },[orders,bidOrders])
 
 

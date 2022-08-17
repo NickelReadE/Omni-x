@@ -171,7 +171,6 @@ const Collection: NextPage = () => {
 
       const bidRequest: IGetOrderRequest = {
         isOrderAsk: false,
-        chain: collectionInfo.chain,
         collection: collectionInfo.address,
         startTime: Math.floor(Date.now() / 1000).toString(),
         endTime: Math.floor(Date.now() / 1000).toString(),

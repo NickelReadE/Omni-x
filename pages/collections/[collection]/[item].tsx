@@ -77,12 +77,12 @@ const Item: NextPage = () => {
   const chainList = [
     { chain: 'all', img_url: '/svgs/all_chain.svg', title: 'all NFTs', disabled: false},
     { chain: 'rinkeby', img_url: '/svgs/ethereum.svg', title: 'Ethereum', disabled: false},
-    { chain: 'arbitrum', img_url: '/svgs/arbitrum.svg', title: 'Arbitrum', disabled: true},
+    { chain: 'arbitrum-rinkeby', img_url: '/svgs/arbitrum.svg', title: 'Arbitrum', disabled: true},
     { chain: 'avalanche testnet', img_url: '/svgs/avax.svg', title: 'Avalanche', disabled: false},
-    { chain: 'bsc testnet', img_url: '/svgs/binance.svg', title: 'BNB Chain', disabled: false},
+    { chain: 'bnbt', img_url: '/svgs/binance.svg', title: 'BNB Chain', disabled: false},
     { chain: 'fantom', img_url: '/svgs/fantom.svg', title: 'Fantom', disabled: true},
-    { chain: 'optimism', img_url: '/svgs/optimism.svg', title: 'Optimism', disabled: true},
-    { chain: 'mumbai', img_url: '/svgs/polygon.svg', title: 'Polygon', disabled: false},
+    { chain: 'optimism-kovan', img_url: '/svgs/optimism.svg', title: 'Optimism', disabled: true},
+    { chain: 'maticmum', img_url: '/svgs/polygon.svg', title: 'Polygon', disabled: false},
   ]
 
   // console.log(provider)
@@ -147,7 +147,6 @@ const Item: NextPage = () => {
       
       const bidRequest: IGetOrderRequest = {
         isOrderAsk: false,
-        chain: nftInfo.collection.chain,
         collection: nftInfo.collection.address,
         tokenId: nftInfo.nft.token_id,
         startTime: Math.floor(Date.now() / 1000).toString(),
@@ -155,9 +154,10 @@ const Item: NextPage = () => {
         status: ['VALID'],
         sort: 'PRICE_ASC'
       }
-      dispatch(getOrders(bidRequest) as any)
       setOrderFlag(true)
       setBidFlag(true)
+
+      dispatch(getOrders(bidRequest) as any)
     }
   }, [nftInfo, owner, ownerType])
 
@@ -197,10 +197,17 @@ const Item: NextPage = () => {
 
   const onBid = async (currency: string, price: number, period: number) => {
     const chainId = provider?.network.chainId as number
-    
+    let chain = provider?._network.name as string
+    if(chain=='unknown'){
+      if(chainId==4002){
+        chain='fantom'
+      } else if(chainId==43113){
+        chain='avalanche testnet'
+      }
+    }
     const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
     const startTime = Date.now()
-
+    console.log(provider)
     try {
       await postMakerOrder(
         provider as any,
@@ -222,14 +229,13 @@ const Item: NextPage = () => {
             types: ['uint256'],
           },
         },
-        nftInfo.collection.chain
+        chain
       )
       setOpenBidDlg(false)
       dispatch(openSnackBar({ message: 'Make Offer Success', status: 'success' }))
 
       const bidRequest: IGetOrderRequest = {
         isOrderAsk: false,
-        chain: nftInfo.collection.chain,
         collection: nftInfo.collection.address,
         tokenId: nftInfo.nft.token_id,
         startTime: Math.floor(Date.now() / 1000).toString(),
@@ -238,6 +244,7 @@ const Item: NextPage = () => {
         sort: 'PRICE_ASC'
       }
       dispatch(getOrders(bidRequest) as any)
+      setBidFlag(true)
 
     } catch (err: any) {
       dispatch(openSnackBar({ message: err.message, status: 'error' }))
@@ -275,6 +282,8 @@ const Item: NextPage = () => {
       )
       setOpenSellDlg(false)
       dispatch(openSnackBar({ message: 'Listing Success', status: 'success' }))
+      setOrderFlag(true)
+
     } catch (err: any) {
       dispatch(openSnackBar({ message: err.message, status: 'error' }))
     }
@@ -337,7 +346,7 @@ const Item: NextPage = () => {
                       }
                     </div>
                     <div className="mb-3">
-                      <h1>{order && order.price && ethers.utils.formatEther(order.price)}</h1>
+                      <h1>{order && order.price && '$'}{order && order.price && ethers.utils.formatEther(order.price)}</h1>
                       <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-semibold">Highest Bid: <span className="font-normal">${highestBid}</span></h1>{highestBidCoin!=''&&<Image src={highestBidCoin} width={15} height={16} alt="chain  logo" />}</div>
                       <div className="flex justify-start items-center"><h1 className="mr-3 font-semibold">Last Sale: <span className="font-normal">${lastSale}</span></h1>{lastSaleCoin!=''&&<Image src={PngEther} width={15} height={16} alt="chain logo" />}</div>
                       <div className="flex justify-end items-center">
