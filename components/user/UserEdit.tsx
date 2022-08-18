@@ -512,7 +512,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
               <div className="flex space-x-2 justify-end mb-5">
                 <button
                   type='submit'
-                  className="inline-block absolute right-[2rem] bottom-[20px] px-10 py-1 bg-[#B444F9] hover:bg-[#9557bb] text-white font-['Circular_Std'] font-medium text-[18px] rounded-[4px] cursor-pointer"
+                  className="inline-block absolute right-[2rem] bottom-[20px] px-10 py-1 bg-[#B444F9] hover:bg-[#9557bb] text-white  font-medium text-[18px] rounded-[4px] cursor-pointer"
                 >
                   save
                 </button>
@@ -578,7 +578,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                 <button
                   type='submit'
                   disabled={true}
-                  className="inline-block absolute right-[2rem] bottom-[20px] px-10 py-1 bg-[#B444F9] hover:bg-[#9557bb] text-white font-['Circular_Std'] font-medium text-[18px] rounded-[4px] disabled:bg-[#a1a1a1]"
+                  className="inline-block absolute right-[2rem] bottom-[20px] px-10 py-1 bg-[#B444F9] hover:bg-[#9557bb] text-white  font-medium text-[18px] rounded-[4px] disabled:bg-[#a1a1a1]"
                 >
                   save
                 </button>
@@ -664,7 +664,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                 <button
                   type='submit'
                   disabled={true}
-                  className="inline-block absolute right-[2rem] bottom-[20px] px-10 py-1 bg-[#B444F9] hover:bg-[#9557bb] text-white font-['Circular_Std'] font-medium text-[18px] rounded-[4px] disabled:bg-[#a1a1a1]"
+                  className="inline-block absolute right-[2rem] bottom-[20px] px-10 py-1 bg-[#B444F9] hover:bg-[#9557bb] text-white  font-medium text-[18px] rounded-[4px] disabled:bg-[#a1a1a1]"
                 >
                   save
                 </button>
