@@ -1,4 +1,5 @@
 import { SupportedChainId, Addresses } from "../types";
+
 const rinkebyAddresses: Addresses = {
   EXECUTION_MANAGER: "0x288d35d00e07Ab7eCF32BB5c44FF1c7c73c154b3",
   EXCHANGE: "0x8405eA012aC6a3Ac998e42793e3275e011cf8E4e",
@@ -16,9 +17,11 @@ const rinkebyAddresses: Addresses = {
   CURRENCY_MANAGER: "0x931CacCa180ab3d78aCD8459eEdd60EDe5dB7469",
   REMOTE_ADDRESS_MANAGER: "0xdA0c422fC4C1c876C5355ED679ac4B709A2750AD",
 };
+
 export const addressesByNetwork: { [chainId in SupportedChainId]: Addresses } = {
   [SupportedChainId.RINKEBY]: rinkebyAddresses,
 };
+
 export const GregContractAddress:{[key:string]:string} = {
   'bsc testnet':'0xbd240ef6b388a5e270709ca51e6367fc238703f2',
   'rinkeby':'0xc8759d18d5c96cce77074249330b9b41a618e51a',
