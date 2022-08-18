@@ -101,12 +101,12 @@ export interface IOrder {
 
 export interface IListingData {
   price: number,
-  currency: string,
+  currencyName: string,
   period: number,
   isAuction: boolean
 }
 
 export interface IBidData {
   price: number,
-  currency: string
+  currencyName: string
 }

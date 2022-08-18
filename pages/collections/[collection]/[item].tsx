@@ -22,7 +22,7 @@ import useWallet from '../../../hooks/useWallet'
 import { postMakerOrder } from '../../../utils/makeOrder'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../../../types'
 import { IBidData, IGetOrderRequest, IListingData, IOrder } from '../../../interface/interface'
-import { CREATOR_FEE, getAddressByName, getChainInfo, getLayerzeroChainId, PROTOCAL_FEE } from '../../../utils/constants'
+import { ContractName, CREATOR_FEE, CURRENCIES_LIST, getAddressByName, getChainInfo, getLayerzeroChainId, PROTOCAL_FEE } from '../../../utils/constants'
 import { getCurrencyInstance, getERC721Instance, getTransferSelectorNftInstance, getOmniInstance, getOmnixExchangeInstance } from '../../../utils/contracts'
 
 import PngCheck from '../../../public/images/check.png' 
@@ -57,12 +57,6 @@ const Item: NextPage = () => {
     signer,
     address
   } = useWallet()
-
-  const currencies_list = [
-    { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0x49fB1b5550AFFdFF32CffF03c1A8168f992296eF' },
-    { value: 1, text: 'USDC', icon: 'payment/usdc.png', address: '0xeb8f08a975ab53e34d8a0330e0d34de942c95926' },
-    { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad' },
-  ]
 
   const chainList = [
     { chain: 'all', img_url: '/svgs/all_chain.svg', title: 'all NFTs', disabled: false},
@@ -165,10 +159,10 @@ const Item: NextPage = () => {
         temp_bidOrders.push(bidOrders[i])
         if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
           bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
-          for(let j=0;j<currencies_list.length;j++){
-            if(currencies_list[j].address==bidOrders[i].currencyAddress){
-              setHighestBidCoin(`/images/${currencies_list[j].icon}`)
-            }
+          for(let j=0;j<CURRENCIES_LIST.length;j++){
+            // if(CURRENCIES_LIST[j].address==bidOrders[i].currencyAddress){
+              setHighestBidCoin(`/images/${CURRENCIES_LIST[j].icon}`)
+            // }
           }
         }
       }
@@ -200,7 +194,7 @@ const Item: NextPage = () => {
       price,
       protocalFees,
       creatorFees,
-      getAddressByName('OFT', chainId),
+      getAddressByName(listingData.currencyName as ContractName, chainId),
       {
         tokenId: token_id,
         startTime,
@@ -278,13 +272,13 @@ const Item: NextPage = () => {
       return
     }
 
-    const currency = bidData.currency
+    const chainId = provider?.network.chainId as number
+    const lzChainId = getLayerzeroChainId(chainId)
+
+    const currency = getAddressByName(bidData.currencyName as ContractName, chainId)
     const price = bidData.price
     const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
     const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
-
-    const chainId = provider?.network.chainId as number
-    const lzChainId = getLayerzeroChainId(chainId)
 
     try {
       await postMakerOrder(
@@ -410,8 +404,8 @@ const Item: NextPage = () => {
                     <div className="flex justify-between items-center mt-6">
                       <h1 className="text-[#1E1C21] text-[60px] font-normal">{order && order.price && ethers.utils.formatEther(order.price)}</h1>
                       {
-                        currencies_list.map((currency,index) => {
-                          if(currency.address==order?.currencyAddress){
+                        CURRENCIES_LIST.map((currency,index) => {
+                          // if(currency.address==order?.currencyAddress){
                             return(
                               <div className="mr-5">
                                 <img
@@ -421,7 +415,7 @@ const Item: NextPage = () => {
                                 />
                               </div>
                             )
-                          }
+                          // }
                         })
                       }
                     </div>
@@ -468,8 +462,8 @@ const Item: NextPage = () => {
                               }
                             </div>
                             <div className='flex justify-start items-center mt-3'>
-                              {currencies_list.map((currency,index) => {
-                                if(currency.address==item?.currencyAddress){
+                              {CURRENCIES_LIST.map((currency,index) => {
+                                // if(currency.address==item?.currencyAddress){
                                   return(
                                     <div className="mr-5">
                                       <img
@@ -479,7 +473,7 @@ const Item: NextPage = () => {
                                       />
                                     </div>
                                   )
-                                }
+                                // }
                               })}
                               <p className='ml-3'>${item && item.price && ethers.utils.formatEther(item.price)}</p>
                             </div>

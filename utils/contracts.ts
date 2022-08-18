@@ -70,7 +70,7 @@ export const getOmnixExchangeInstance = (chainId: number, signer: any) => {
 }
 
 export const getOmniInstance = (chainId: number, signer: any) => {
-  return getContractInstance('OFT', OmniABI, chainId, signer);
+  return getContractInstance('OMNI', OmniABI, chainId, signer);
 }
 
 export const getTransferSelectorNftInstance = (chainId: number, signer: any) => {

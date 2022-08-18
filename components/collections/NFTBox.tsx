@@ -9,6 +9,7 @@ import { selectOrders, selectBidOrders } from '../../redux/reducers/ordersReduce
 import { useDispatch, useSelector } from 'react-redux'
 import useWallet from '../../hooks/useWallet'
 import { isYesterday } from 'date-fns'
+import { CURRENCIES_LIST } from '../../utils/constants'
 
 
 const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
@@ -29,12 +30,6 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
     address
   } = useWallet()
 
-  const currencies_list = [
-    { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0x49fB1b5550AFFdFF32CffF03c1A8168f992296eF' },
-    { value: 1, text: 'USDC', icon: 'payment/usdc.png', address: '0xeb8f08a975ab53e34d8a0330e0d34de942c95926' },
-    { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad' },
-  ]
-
   useEffect(() => {
     if(nft){
       if (col_address == '0xb7b0d9849579d14845013ef9d8421ae58e9b9369' || col_address == '0x7470ea065e50e3862cd9b8fb7c77712165da80e5' || col_address == '0xb74bf94049d2c01f8805b8b15db0909168cabf46' || col_address == '0x7f04504ae8db0689a0526d99074149fe6ddf838c' || col_address == '0xa783cc101a0e38765540ea66aeebe38beebf7756'|| col_address == '0x316dc98ed120130daf1771ca577fad2156c275e5') {
@@ -42,10 +37,10 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
           if(orders[i].tokenId==nft.token_id && orders[i].collectionAddress==col_address && orders[i].chain==chain) {
             setPrice(ethers.utils.formatEther(orders[i].price))
             setList(true)
-            currencies_list.map((item,index) => {
-              if(item.address==orders[i].currencyAddress){
+            CURRENCIES_LIST.map((item,index) => {
+              // if(item.address==orders[i].currencyAddress){
                 setImageURL(`/images/${item.icon}`)
-              }
+              // }
             })
             setIsOwner(true)
           }
@@ -57,10 +52,10 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
             if(bidOrders[i].tokenId==nft.token_id && bidOrders[i].collectionAddress==col_address){
               if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
                 bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
-                for(let j=0;j<currencies_list.length;j++){
-                  if(currencies_list[j].address==bidOrders[i].currencyAddress){
-                    setHighestBidCoin(`/images/${currencies_list[j].icon}`)
-                  }
+                for(let j=0;j<CURRENCIES_LIST.length;j++){
+                  // if(CURRENCIES_LIST[j].address==bidOrders[i].currencyAddress){
+                    setHighestBidCoin(`/images/${CURRENCIES_LIST[j].icon}`)
+                  // }
                 }
               }
             }

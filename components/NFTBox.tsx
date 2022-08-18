@@ -1,15 +1,12 @@
 import React from 'react'
 import { useEffect, useState } from 'react'
 import { chain_list } from '../utils/utils'
-import { IPropsNFTItem } from '../interface/interface'
+import { IListingData, IPropsNFTItem } from '../interface/interface'
 import LazyLoad from 'react-lazyload'
 import {useDraggable} from '@dnd-kit/core'
 import ConfirmSell from './collections/ConfirmSell'
-import { prependOnceListener } from 'process'
 
 import useWallet from '../hooks/useWallet'
-import { addressesByNetwork } from '../constants'
-import { SupportedChainId } from '../types'
 import { postMakerOrder } from '../utils/makeOrder'
 import { addDays } from 'date-fns'
 import { openSnackBar } from '../redux/reducers/snackBarReducer'
@@ -17,6 +14,7 @@ import { ethers } from 'ethers'
 import { getOrders, selectOrders,selectBidOrders } from '../redux/reducers/ordersReducer'
 import { IGetOrderRequest } from '../interface/interface'
 import { useDispatch, useSelector } from 'react-redux'
+import { ContractName, CREATOR_FEE, CURRENCIES_LIST, getAddressByName, PROTOCAL_FEE } from '../utils/constants'
 
 const NFTBox = ({nft, index}: IPropsNFTItem) => {
 
@@ -32,12 +30,6 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   const [highestBidCoin, setHighestBidCoin] = useState('')
   const orders = useSelector(selectOrders)
   const bidOrders = useSelector(selectBidOrders)
-
-  const currencies_list = [
-    { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0x49fB1b5550AFFdFF32CffF03c1A8168f992296eF' },
-    { value: 1, text: 'USDC', icon: 'payment/usdc.png', address: '0xeb8f08a975ab53e34d8a0330e0d34de942c95926' },
-    { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad' },
-  ]
 
   const {
     provider,
@@ -86,10 +78,10 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
         for(let i=0;i<orders.length;i++){
           if(orders[i].tokenId==nft.token_id && orders[i].collectionAddress==nft.token_address && orders[i].chain==nft.chain) {
             setPrice(ethers.utils.formatEther(orders[i].price))
-            currencies_list.map((item,index) => {
-              if(item.address==orders[i].currencyAddress){
+            CURRENCIES_LIST.map((item,index) => {
+              // if(item.address==orders[i].currencyAddress){
                 setImageURL(`/images/${item.icon}`)
-              }
+              // }
             })
             flag=true
           }
@@ -104,10 +96,10 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
             if(bidOrders[i].tokenId==nft.token_id && bidOrders[i].collectionAddress==nft.token_address){
               if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
                 bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
-                for(let j=0;j<currencies_list.length;j++){
-                  if(currencies_list[j].address==bidOrders[i].currencyAddress){
-                    setHighestBidCoin(`/images/${currencies_list[j].icon}`)
-                  }
+                for(let j=0;j<CURRENCIES_LIST.length;j++){
+                  // if(CURRENCIES_LIST[j].address==bidOrders[i].currencyAddress){
+                    setHighestBidCoin(`/images/${CURRENCIES_LIST[j].icon}`)
+                  // }
                 }
               }
             }
@@ -120,34 +112,36 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   },[orders,bidOrders])
 
 
-  const onListing = async (currency: string, price: number, period: number) => {
+  const onListing = async (listingData: IListingData) => {
     const chainId = provider?.network.chainId as number
-    
-    const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
+    const amount = ethers.utils.parseUnits('1', 0)
+    const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
+    const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
+
     const startTime = Date.now()
 
     try {
       await postMakerOrder(
         provider as any,
-        chainId,
         true,
         nft.token_address,
-        addresses.STRATEGY_STANDARD_SALE,
-        ethers.utils.parseUnits('1', 1),
-        ethers.utils.parseEther(price.toString()),
-        ethers.utils.parseUnits('2', 2),
-        ethers.utils.parseUnits('2', 2),
-        currency,
+        getAddressByName('Strategy', chainId),
+        amount,
+        ethers.utils.parseEther(listingData.price.toString()),
+        protocalFees,
+        creatorFees,
+        getAddressByName(listingData.currencyName as ContractName, chainId),
         {
           tokenId: String(nft.token_id),
-          startTime: startTime,
-          endTime: addDays(startTime, period).getTime(),
+          startTime,
+          endTime: addDays(startTime, listingData.period).getTime(),
           params: {
             values: [10001],
             types: ['uint256'],
           },
         },
-        nft.chain
+        nft.chain,
+        true
       )
       setOpenSellDlg(false)
       dispatch(openSnackBar({ message: 'Listing Success', status: 'success' }))

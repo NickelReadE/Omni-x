@@ -6,6 +6,8 @@ import Strategy from '../constants/Strategy.json'
 import TransferSelectorNFT from '../constants/TransferSelectorNFT.json'
 import FundManager from '../constants/FundManager.json'
 import OFT from '../constants/OFT.json'
+import USDC from '../constants/USDC.json'
+import USDT from '../constants/USDT.json'
 import LZEndpoint from '../constants/LayerzeroEndpoints.json'
 import ChainIds from '../constants/chainIds.json'
 import CHAINS from '../constants/chains.json'
@@ -17,6 +19,8 @@ const strategy: any = Strategy
 const transferSelectorNFT: any = TransferSelectorNFT
 const fundManager: any = FundManager
 const oft: any = OFT
+const usdc: any = USDC
+const usdt: any = USDT
 const lzEndpoint: any = LZEndpoint
 const chainIds: any = ChainIds
 
@@ -28,13 +32,21 @@ const environments: any = {
   testnet: ['rinkeby', 'bsc-testnet', 'fuji', 'mumbai', 'arbitrum-rinkeby', 'optimism-kovan', 'fantom-testnet']
 }
 
+export const CURRENCIES_LIST = [
+  { value: 0, text: 'OMNI', icon: 'payment/omni.png' },
+  { value: 1, text: 'USDC', icon: 'payment/usdc.png' },
+  { value: 2, text: 'USDT', icon: 'payment/usdt.png' },
+]
+
 export type ContractName = 
   'Omnix' | 
   'Omnix1155' | 
   'LayerZeroEndpoint' | 
   'OmnixExchange' | 
   'Strategy' | 
-  'OFT' | 
+  'OMNI' | 
+  'USDC' |
+  'USDT' |
   'TransferSelectorNFT' |
   'FundManager'
 
@@ -126,8 +138,12 @@ export const getAddressByName = (name: ContractName, chainId: number) => {
     return omnixExchange[chainInfos[chainId].name]
   } else if (name === 'Strategy') {
     return strategy[chainInfos[chainId].name]
-  } else if (name === 'OFT') {
+  } else if (name === 'OMNI') {
     return oft[chainInfos[chainId].name]
+  } else if (name === 'USDC') {
+    return usdc[chainInfos[chainId].name]
+  } else if (name === 'USDT') {
+    return usdt[chainInfos[chainId].name]
   } else if (name === 'TransferSelectorNFT') {
     return transferSelectorNFT[chainInfos[chainId].name]
   } else if (name === 'FundManager') {
