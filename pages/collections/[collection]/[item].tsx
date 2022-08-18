@@ -223,7 +223,7 @@ const Item: NextPage = () => {
                 </LazyLoad>
               </div>
               <div className="col-span-2">
-                <div className="px-6 py-3 bg-[#F8F9FA]">
+                <div className="px-6 py-3 bg-[#F6F8FC]">
                   <div className='flex items-center'>
                     <h1 className="text-[#1E1C21] text-[32px] font-bold mr-8">{nftInfo.collection.name}</h1>
                     <div className='h-[22px]'><Image src={PngCheck} alt="checkpng"/></div>
@@ -292,13 +292,13 @@ const Item: NextPage = () => {
             <div className="mt-10">
               <div className="ml-10">
                 <ul className="flex flex-wrap relative justify-item-stretch text-sm font-medium text-center text-gray-500">
-                  <li className={`select-none inline-block border-x-2 border-t-2 border-zince-800 text-xl px-10 py-2 rounded-t-lg ${currentTab==='items'?'bg-[#E9ECEF] text-[#1E1C21]':'bg-[#F8F9FA] text-[#6C757D]'}`} onClick={()=>setCurrentTab('items')}>properties</li>
-                  <li className={`select-none inline-block border-x-2 border-t-2 border-zince-800 text-xl px-10 py-2 rounded-t-lg ${currentTab==='activity'?'bg-[#E9ECEF] text-[#1E1C21]':'bg-[#F8F9FA] text-[#6C757D]'}`} onClick={()=>setCurrentTab('activity')}>activity</li>
-                  <li className={`select-none inline-block border-x-2 border-t-2 border-zince-800 text-xl px-10 py-2 rounded-t-lg ${currentTab==='stats'?'bg-[#E9ECEF] text-[#1E1C21]':'bg-[#F8F9FA] text-[#6C757D]'}`} onClick={()=>setCurrentTab('stats')}>info</li>
-                  <li className={`select-none inline-block border-x-2 border-t-2 border-zince-800 text-xl px-10 py-2 rounded-t-lg ${currentTab==='stats'?'bg-[#E9ECEF] text-[#1E1C21]':'bg-[#F8F9FA] text-[#6C757D]'}`} onClick={()=>setCurrentTab('stats')}>stats</li>
+                  <li className={`select-none inline-block border-x-2 border-t-2 border-zince-800 text-xl px-10 py-2 rounded-t-lg ${currentTab==='items'?'bg-[#E9ECEF] text-[#1E1C21]':'bg-[#F6F8FC] text-[#6C757D]'}`} onClick={()=>setCurrentTab('items')}>properties</li>
+                  <li className={`select-none inline-block border-x-2 border-t-2 border-zince-800 text-xl px-10 py-2 rounded-t-lg ${currentTab==='activity'?'bg-[#E9ECEF] text-[#1E1C21]':'bg-[#F6F8FC] text-[#6C757D]'}`} onClick={()=>setCurrentTab('activity')}>activity</li>
+                  <li className={`select-none inline-block border-x-2 border-t-2 border-zince-800 text-xl px-10 py-2 rounded-t-lg ${currentTab==='stats'?'bg-[#E9ECEF] text-[#1E1C21]':'bg-[#F6F8FC] text-[#6C757D]'}`} onClick={()=>setCurrentTab('stats')}>info</li>
+                  <li className={`select-none inline-block border-x-2 border-t-2 border-zince-800 text-xl px-10 py-2 rounded-t-lg ${currentTab==='stats'?'bg-[#E9ECEF] text-[#1E1C21]':'bg-[#F6F8FC] text-[#6C757D]'}`} onClick={()=>setCurrentTab('stats')}>stats</li>
                 </ul>
               </div>
-              <div className="border-2 border-[#E9ECEF] bg-[#F8F9FA] px-10 py-8">
+              <div className="border-2 border-[#E9ECEF] bg-[#F6F8FC] px-10 py-8">
                 {
                   currentTab == 'items' &&
                   <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 gap-4">

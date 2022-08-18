@@ -12,6 +12,8 @@ import Dialog from '@material-ui/core/Dialog'
 import { makeStyles } from '@material-ui/core/styles'
 import Carousel from './carousel'
 
+import Hgreg from '../public/images/gregs/hgreg1.png'
+
 type BannerProps = {
   slides: Array<React.ReactNode>
   blur: boolean
@@ -71,11 +73,15 @@ const Banner = ({ slides, blur, menu }: BannerProps): JSX.Element => {
                   width={200}
                   height={200}
                 />
-              </div>
+              </div>              
               <div className="flex flex-col ml-[20rem] mt-[10px]">
-                <div className="text-[26px] text-slate-800 font-semibold">{user.username ? user.username : 'username'}</div>
+                <div className="flex flex-row h-8">
+                  <div className="flex items-center text-[26px] text-slate-800 font-semibold mr-[16px]">{user.username ? user.username : 'username'}</div>
+                  <Image src={Hgreg} />
+                </div>
+                
                 <div className="text-[#6C757D] text-[16px] text-slate-800">
-                  {user.bio}
+                  {user.bio?user.bio:'You can see the short description about your account'}
                 </div>
               </div>
               <div className="flex ml-[]">

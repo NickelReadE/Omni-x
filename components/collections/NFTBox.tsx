@@ -12,7 +12,7 @@ const NFTBox = ({nft, col_url, chain}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
   
   return (
-    <div className={classNames('w-full border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]', editStyle.nftContainer)}>
+    <div className={classNames('w-full border-[2px] border-[#F6F8FC] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F6F8FC]', editStyle.nftContainer)}>
       <Link href={`/collections/${col_url}/${nft.token_id}`}>
         <a>
           <div className="relative w-full">

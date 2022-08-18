@@ -48,7 +48,7 @@ button.sidebar {
 }
 
 .fade-left{
-    background: linear-gradient(to right, #F8F9FA, #f8f9fa00);
+    background: linear-gradient(to right, #F6F8FC, #F6F8FC00);
     border-radius: 14px;
     z-index:2;
     width: 15%;
@@ -56,7 +56,7 @@ button.sidebar {
     left:40px;
 }
 .fade-right{
-    background: linear-gradient(to left, #F8F9FA, #f8f9fa00);
+    background: linear-gradient(to left, #F6F8FC, #F6F8FC00);
     border-radius: 14px;
     z-index:2;
     width: 15%;
@@ -64,7 +64,7 @@ button.sidebar {
     right:40px;
 }
 .slide{
-    background: #F8F9FA;
+    background: #F6F8FC;
     border-radius: 14px;
     z-index:2;
     width: 100%;
@@ -77,7 +77,7 @@ button.sidebar {
 .user-input {
     height: 50px;
     width: 50%;
-    background-color: #F8F9FA;
+    background-color: #F6F8FC;
     border: 2px solid #E9ECEF;
     &:focus{
         outline: none;
@@ -87,7 +87,7 @@ button.sidebar {
 .user-textarea {
     height: 75px;
     width: 100%;
-    background-color: #F8F9FA;
+    background-color: #F6F8FC;
     border: 2px solid #E9ECEF;
     &:focus{
         outline: none;

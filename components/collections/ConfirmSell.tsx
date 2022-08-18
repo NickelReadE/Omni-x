@@ -76,8 +76,8 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
         <div className="columns-2 mt-5">
           <div className="text-[#1E1C21] text-[28px] font-semibold">list item for sale</div>
           <div className="flex justify-end">
-            <button className={`w-[132px] px-5 py-2 text-[#ADB5BD] font-['Roboto Mono'] font-semibold text-[16px] rounded-[8px] border-2 border-[#ADB5BD] ${sellType=='fixed'?'z-10 bg-[#E9ECEF]':'bg-[#F8F9FA]'}`} onClick={() => setSellType('fixed')}>fixed price</button>
-            <button className={`w-[132px] px-5 py-2 text-[#6C757D] font-['Roboto Mono'] font-semibold text-[16px] rounded-[8px] border-2 border-[#ADB5BD] relative -left-2.5 ${sellType=='auction'?'z-10 bg-[#E9ECEF]':'bg-[#F8F9FA]'}`}>auction</button>
+            <button className={`w-[132px] px-5 py-2 text-[#ADB5BD] font-['Roboto Mono'] font-semibold text-[16px] rounded-[8px] border-2 border-[#ADB5BD] ${sellType=='fixed'?'z-10 bg-[#E9ECEF]':'bg-[#F6F8FC]'}`} onClick={() => setSellType('fixed')}>fixed price</button>
+            <button className={`w-[132px] px-5 py-2 text-[#6C757D] font-['Roboto Mono'] font-semibold text-[16px] rounded-[8px] border-2 border-[#ADB5BD] relative -left-2.5 ${sellType=='auction'?'z-10 bg-[#E9ECEF]':'bg-[#F6F8FC]'}`}>auction</button>
           </div>
         </div>
       </DialogTitle>
@@ -90,13 +90,13 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                 <p className="text-[#6C757D] text-[18px] font-semibold">Starting Price</p>
                 <div className="flex justify-start items-center mt-5">
                   <CustomSelect optionData={currencies_list} value={currency} onChange={(value: any) => setCurrency(value)} />
-                  <input type="text" value="40.50" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F8F9FA] border-[2px] border-[#E9ECEF] rounded-lg"/>
+                  <input type="text" value="40.50" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg"/>
                   <span className="px-4 text-[#ADB5BD] font-light">~ $40.50 USD</span>
                 </div>
                 <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Reserve Price</p>
                 <div className="flex justify-start items-center mt-5">
                   <CustomSelect optionData={currencies_list} value={currency} onChange={(value: any) => setCurrency(value)} />
-                  <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F8F9FA] border-[2px] border-[#E9ECEF] rounded-lg"/>
+                  <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg"/>
                   <span className="px-4 text-[#ADB5BD] font-light">~ $60.00 USD</span>
                 </div>
                 <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Duration</p>
@@ -106,7 +106,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                     styles={{
                       control: (styles:any) => ({ ...styles,
                         borderRadius: '8px',
-                        backgroundColor: '#F8F9FA',
+                        backgroundColor: '#F6F8FC',
                         border: '2px solid #E9ECEF',
                         width: '170px'
                       })
@@ -117,7 +117,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                     getOptionValue={(e:any) => e?.value}
                     value={0}
                   />
-                  <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F8F9FA] border-[2px] border-[#E9ECEF] rounded-lg"/>
+                  <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg"/>
                   <span className="px-4 text-[#ADB5BD] font-light">~ $60.00 USD</span>
                 </div>
               </div>
@@ -155,7 +155,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                 <p className="text-[#6C757D] text-[18px] font-semibold">Sale Price</p>
                 <div className="flex justify-start items-center mt-5">
                   <CustomSelect optionData={currencies_list} value={currency} onChange={(value: any) => setCurrency(value)} />
-                  <input type="text" value={price} className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F8F9FA] border-[2px] border-[#E9ECEF] rounded-lg" onChange={onChangePrice}/>
+                  <input type="text" value={price} className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg" onChange={onChangePrice}/>
                   <span className="px-4 text-[#ADB5BD] font-light">{price_in_usd}</span>
                 </div>
                 <p className="text-[#ADB5BD] text-[14px] font-light italic leading-6 w-[435px] mt-10">*sale funds are recieved on the blockchain the NFT is currently hosted on</p>
@@ -166,7 +166,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                     styles={{
                       control: (styles:any) => ({ ...styles,
                         borderRadius: '8px',
-                        backgroundColor: '#F8F9FA',
+                        backgroundColor: '#F6F8FC',
                         border: '2px solid #E9ECEF',
                         width: '170px'
                       })
@@ -178,7 +178,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                     value={period}
                     onChange={(value: any) => setPeriod(value)}
                   />
-                  {/* <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F8F9FA] border-[2px] border-[#E9ECEF] rounded-lg"/>
+                  {/* <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg"/>
                   <span className="px-4 text-[#ADB5BD] font-light">~ $60.00 USD</span> */}
                 </div>
               </div>
