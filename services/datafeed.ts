@@ -19,7 +19,6 @@ const getPriceforUSD = async( chain:string, crypto:string) => {
 const getGasOnChain = async(chain:string) => {
   const provider = new ethers.providers.JsonRpcProvider(rpcDatafeedProvider[chain])
   const gasPrice = ethers.utils.formatUnits(await provider.getGasPrice(), "gwei")
-  console.log('startGasprice')
   return parseFloat(gasPrice).toFixed(3)
 }
 

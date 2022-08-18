@@ -6,7 +6,7 @@ import Setting from '../public/images/setting.png'
 import Twitter from '../public/images/twitter.png'
 import Web from '../public/images/web.png'
 import { useSelector } from 'react-redux'
-import { selectUser } from '../redux/reducers/userReducer'
+import { selectUser ,selectIsGregHolder} from '../redux/reducers/userReducer'
 import UserEdit from './user/UserEdit'
 import Dialog from '@material-ui/core/Dialog'
 import { makeStyles } from '@material-ui/core/styles'
@@ -35,7 +35,7 @@ const Banner = ({ slides, blur, menu }: BannerProps): JSX.Element => {
   const [bOpenModal, setOpenModal] = React.useState(false)
   const [bShowSettingIcon, setShowSettingIcon] = React.useState(false)
   const DEFAULT_AVATAR = 'uploads\\default_avatar.png'
-
+  
   const updateModal = (name: string):void => {
     setOpenModal(false)
   }
@@ -75,10 +75,13 @@ const Banner = ({ slides, blur, menu }: BannerProps): JSX.Element => {
                 />
               </div>              
               <div className="flex flex-col ml-[20rem] mt-[10px]">
-                <div className="flex flex-row h-8">
-                  <div className="flex items-center text-[26px] text-slate-800 font-semibold mr-[16px]">{user.username ? user.username : 'username'}</div>
-                  <Image src={Hgreg} />
-                </div>
+                {
+                  useSelector(selectIsGregHolder)&&
+                    <div className="flex flex-row h-8">
+                      <div className="flex items-center text-[26px] text-slate-800 font-semibold mr-[16px]">{user.username ? user.username : 'username'}</div>
+                      <Image src={Hgreg} />
+                    </div>
+                }                
                 
                 <div className="text-[#6C757D] text-[16px] text-slate-800">
                   {user.bio?user.bio:'You can see the short description about your account'}

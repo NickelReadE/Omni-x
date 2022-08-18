@@ -21,3 +21,9 @@ const rinkebyAddresses: Addresses = {
 export const addressesByNetwork: { [chainId in SupportedChainId]: Addresses } = {
   [SupportedChainId.RINKEBY]: rinkebyAddresses,
 };
+export const GregContractAddress:{[key:string]:string} = {
+  'bsc testnet':'0xbd240ef6b388a5e270709ca51e6367fc238703f2',
+  'rinkeby':'0xc8759d18d5c96cce77074249330b9b41a618e51a',
+  'mumbai' :'0xf0168e6892fcbee199d3ac2373f286b08b71a201',
+  'avalanche testnet':'0x181007d7a690a04ad34a2b612f211e39d6091f06'
+}
