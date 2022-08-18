@@ -22,7 +22,7 @@ import useWallet from '../../../hooks/useWallet'
 import { postMakerOrder } from '../../../utils/makeOrder'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../../../types'
 import { IBidData, IGetOrderRequest, IListingData, IOrder } from '../../../interface/interface'
-import { ContractName, CREATOR_FEE, CURRENCIES_LIST, getAddressByName, getChainInfo, getCurrencyIconByAddress, getLayerzeroChainId, PROTOCAL_FEE } from '../../../utils/constants'
+import { ContractName, CREATOR_FEE, CURRENCIES_LIST, getAddressByName, getChainInfo, getChainNameById, getCurrencyIconByAddress, getLayerzeroChainId, PROTOCAL_FEE } from '../../../utils/constants'
 import { getCurrencyInstance, getERC721Instance, getTransferSelectorNftInstance, getOmniInstance, getOmnixExchangeInstance } from '../../../utils/contracts'
 
 import PngCheck from '../../../public/images/check.png' 
@@ -129,8 +129,8 @@ const Item: NextPage = () => {
         isOrderAsk: false,
         collection: nftInfo.collection.address,
         tokenId: nftInfo.nft.token_id,
-        startTime: Math.floor(Date.now() / 1000).toString(),
-        endTime: Math.floor(Date.now() / 1000).toString(),
+        // startTime: Math.floor(Date.now() / 1000).toString(),
+        // endTime: Math.floor(Date.now() / 1000).toString(),
         status: ['VALID'],
         sort: 'PRICE_ASC'
       }
@@ -204,7 +204,7 @@ const Item: NextPage = () => {
         },
       },
       nftInfo.collection.chain,
-      !listingData.isAuction
+      true
     )
 
     if (!listingData.isAuction) {
@@ -277,7 +277,7 @@ const Item: NextPage = () => {
     const lzChainId = getLayerzeroChainId(chainId)
 
     const currency = getAddressByName(bidData.currencyName as ContractName, chainId)
-    const price = bidData.price
+    const price = ethers.utils.parseEther(bidData.price.toString())
     const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
     const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
 
@@ -288,7 +288,7 @@ const Item: NextPage = () => {
         nftInfo.collection.address,
         order?.strategy,
         order?.amount,
-        ethers.utils.parseEther(price.toString()),
+        price,
         protocalFees,
         creatorFees,
         currency,
@@ -301,7 +301,7 @@ const Item: NextPage = () => {
             types: ['uint16'],
           },
         },
-        getChainInfo(chainId)?.chain || nftInfo.collection.chain,
+        getChainNameById(chainId),
         true
       )
 
@@ -329,7 +329,7 @@ const Item: NextPage = () => {
     
     const omnixExchange = getOmnixExchangeInstance(chainId, signer)
     const makerBid : MakerOrderWithSignature = {
-      isOrderAsk: true,
+      isOrderAsk: false,
       signer: bidOrder.signer,
       collection: bidOrder.collectionAddress,
       price: bidOrder.price,
@@ -360,9 +360,9 @@ const Item: NextPage = () => {
     const nftContract = getERC721Instance(nftInfo.collection.address, chainId, signer)
     await nftContract.approve(transferManagerAddr, token_id)
 
-    const lzFee = await omnixExchange.connect(signer as any).getLzFeesForBidWithTakerAsk(takerAsk, makerBid)
+    const lzFee = 0 // await omnixExchange.connect(signer as any).getLzFeesForBidWithTakerAsk(takerAsk, makerBid)
     
-    await omnixExchange.connect(signer as any).matchBidWithMakerBid(takerAsk, makerBid, { value: lzFee })
+    await omnixExchange.connect(signer as any).matchBidWithTakerAsk(takerAsk, makerBid, { value: lzFee })
   }
 
   const truncate = (str: string) => {
@@ -470,7 +470,13 @@ const Item: NextPage = () => {
                               </div>
                               <p className='ml-3'>${item && item.price && ethers.utils.formatEther(item.price)}</p>
                             </div>
-                            <div className='text-right mt-3'><button className='bg-[#ADB5BD] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5' onClick={() => onAccept(item)}>accept</button></div>
+                            <div className='text-right mt-3'>
+                              {address && owner && owner.toLowerCase() == address.toLowerCase() &&
+                                <button className='bg-[#ADB5BD] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5' onClick={() => onAccept(item)}>
+                                  accept
+                                </button>
+                              }
+                            </div>
                           </>
                         })
                       }

@@ -188,3 +188,7 @@ export const getCurrencyIconByAddress = (address?: string) => {
   
   return null
 }
+
+export const getChainNameById = (chainId: number) => {
+  return chainInfos[chainId].name
+}
