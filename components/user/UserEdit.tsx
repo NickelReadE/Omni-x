@@ -6,7 +6,7 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import Dialog from '@material-ui/core/Dialog'
 import Slider from '@material-ui/core/Slider'
 
-import { getCroppedImg } from './CanvasUtils'
+import { getCroppedImg} from './CanvasUtils'
 
 import Image from 'next/image'
 import Close from '../../public/images/close.png'
@@ -27,7 +27,7 @@ import EthIMG from '../../public/images/payment/eth.png'
 import OmniIMG from '../../public/images/payment/omni.png'
 import UsdcIMG from '../../public/images/payment/usdc.png'
 import UsdtIMG from '../../public/images/payment/usdt.png'
-import Alien_base from '../../public/images/gregs/Alien_base.png'
+import {heroGregSkins, skinNames} from '../../constants/gregSkin'
 interface IUserEditProps {
   updateModal: (arg: string) => void
 }
@@ -43,7 +43,8 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
   const DEFAULT_AVATAR = 'uploads/default_avatar.png'
 
   const [avatar, setAvatar] = useState(process.env.API_URL + 'uploads/default_avatar.png')
-  const [greg, setGreg] = useState(Alien_base)
+  const [greg, setGreg] = useState(heroGregSkins['base'])
+  const [gregName, setGregName] = useState('base')
   const [banner_1, setBanner_1] = useState(process.env.API_URL + DEFAULT_BANNER)
   const [banner_2, setBanner_2] = useState(process.env.API_URL + DEFAULT_BANNER)
   const [banner_3, setBanner_3] = useState(process.env.API_URL + DEFAULT_BANNER)
@@ -438,18 +439,18 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                           height={190}
                         />
                       </div>
-                      <Listbox value={'selected'} onChange={()=> null }>
+                      <Listbox value={'selected'} onChange={(val)=> {setGreg(heroGregSkins[val]); setGregName(val) } }>
                         <div className="relative">
                           <Listbox.Button className="relative w-full height-[25px] cursor-default rounded-lg bg-[#E9ECEF]  pl-3 pr-10 text-lg text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 xl:text-[18px] lg:text-[14px]">
-                            <span className="block truncate">{'Alien Base'}</span>
+                            <span className="block truncate">{gregName}</span>
                             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                               <i className="fa fa-chevron-down"></i>
                             </span>
                           </Listbox.Button>
                           <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-[#E9ECEF] py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                            {sort_fields.map((sort_item, sortIdx) => (
+                            {skinNames.map((sort_item, index) => (
                               <Listbox.Option
-                                key={sortIdx}
+                                key={index}
                                 className={({ active }) =>
                                   `relative cursor-default select-none py-2 pl-10 pr-4 ${
                                     active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
@@ -464,7 +465,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                                         selected ? 'font-medium' : 'font-normal'
                                       }`}
                                     >
-                                      {sort_item.name}
+                                      {sort_item}
                                     </span>
                                     {selected ? (
                                       <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
