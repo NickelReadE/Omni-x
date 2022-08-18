@@ -22,7 +22,7 @@ import useWallet from '../../../hooks/useWallet'
 import { postMakerOrder } from '../../../utils/makeOrder'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../../../types'
 import { IBidData, IGetOrderRequest, IListingData, IOrder } from '../../../interface/interface'
-import { ContractName, CREATOR_FEE, CURRENCIES_LIST, getAddressByName, getChainInfo, getLayerzeroChainId, PROTOCAL_FEE } from '../../../utils/constants'
+import { ContractName, CREATOR_FEE, CURRENCIES_LIST, getAddressByName, getChainInfo, getCurrencyIconByAddress, getLayerzeroChainId, PROTOCAL_FEE } from '../../../utils/constants'
 import { getCurrencyInstance, getERC721Instance, getTransferSelectorNftInstance, getOmniInstance, getOmnixExchangeInstance } from '../../../utils/contracts'
 
 import PngCheck from '../../../public/images/check.png' 
@@ -79,7 +79,6 @@ const Item: NextPage = () => {
   // console.log(token_id)
 
   const nftInfo = useSelector(selectNFTInfo)
-  const isAuction = false
 
   useEffect(() => {
     const getNFTOwnership = async(col_url: string, token_id: string) => {
@@ -152,7 +151,7 @@ const Item: NextPage = () => {
   }, [orders])
 
   useEffect(() => {
-    if ( bidOrders.length > 0  && bid_flag) {
+    if (bidOrders.length > 0  && bid_flag) {
       const temp_bidOrders: any = []
       let bid_balance = 0
       for(let i=0; i<bidOrders.length;i++){
@@ -261,6 +260,8 @@ const Item: NextPage = () => {
 
     const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
 
+    console.log('---lzFee---', lzFee)
+
     await omni.approve(omnixExchange.address, takerBid.price)
     await omni.approve(getAddressByName('FundManager', chainId), takerBid.price)
     await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
@@ -368,6 +369,8 @@ const Item: NextPage = () => {
     return str.length > 12 ? str.substring(0, 9) + '...' : str
   }
 
+  const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
+
   return (
     <>
       {nftInfo && nftInfo.nft && 
@@ -403,21 +406,15 @@ const Item: NextPage = () => {
                     </div>
                     <div className="flex justify-between items-center mt-6">
                       <h1 className="text-[#1E1C21] text-[60px] font-normal">{order && order.price && ethers.utils.formatEther(order.price)}</h1>
-                      {
-                        CURRENCIES_LIST.map((currency,index) => {
-                          // if(currency.address==order?.currencyAddress){
-                          return(
-                            <div className="mr-5" key={index}>
-                              <img
-                                src={`/images/${currency.icon}`}
-                                className='mr-[8px] w-[21px]'
-                                alt="icon"
-                              />
-                            </div>
-                          )
-                          // }
-                        })
-                      }
+                      <div className="mr-5">
+                        {currencyIcon && 
+                          <img
+                            src={`/images/${currencyIcon}`}
+                            className='mr-[8px] w-[21px]'
+                            alt="icon"
+                          />
+                        }
+                      </div>
                     </div>
                     <div className="mb-3">
                       <h1>{order && order.price && '$'}{order && order.price && ethers.utils.formatEther(order.price)}</h1>
@@ -462,19 +459,15 @@ const Item: NextPage = () => {
                               }
                             </div>
                             <div className='flex justify-start items-center mt-3'>
-                              {CURRENCIES_LIST.map((currency, index) => {
-                                // if(currency.address==item?.currencyAddress){
-                                return(
-                                  <div className="mr-5" key={index}>
-                                    <img
-                                      src={`/images/${currency.icon}`}
-                                      className='mr-[8px] w-[21px]'
-                                      alt="icon"
-                                    />
-                                  </div>
-                                )
-                                // }
-                              })}
+                              <div className="mr-5">
+                                {currencyIcon &&
+                                  <img
+                                    src={`/images/${currencyIcon}`}
+                                    className='mr-[8px] w-[21px]'
+                                    alt="icon"
+                                  />
+                                }
+                              </div>
                               <p className='ml-3'>${item && item.price && ethers.utils.formatEther(item.price)}</p>
                             </div>
                             <div className='text-right mt-3'><button className='bg-[#ADB5BD] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5' onClick={() => onAccept(item)}>accept</button></div>

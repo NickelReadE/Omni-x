@@ -169,3 +169,22 @@ export const getChainInfo = (chainId: number) => {
   }
   return null
 }
+
+export const getCurrencyIconByAddress = (address?: string) => {
+  const loopCurrencies = (currencies: any, idx: number) => {
+    if (Object.values(currencies).indexOf(address) != -1) {
+      return CURRENCIES_LIST[idx].icon
+    }
+    return null
+  }
+
+  const currency_addr_list = [oft, usdc, usdt]
+  for (let idx = 0; idx < currency_addr_list.length; idx++) {
+    const icon = loopCurrencies(currency_addr_list[idx], idx)
+    if (icon) {
+      return icon
+    }
+  }
+  
+  return null
+}
