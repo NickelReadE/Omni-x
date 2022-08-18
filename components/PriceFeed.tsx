@@ -94,138 +94,138 @@ const PriceFeed = () => {
         
         <div className='flex  mr-3'>          
           <div className='flex  mr-3'>
-            <span className='text-md font-bold font-mono mr-1	'>
+            <span className='text-md font-bold  mr-1	'>
               {'ETH'}
             </span>
-            <span className='text-md font-normal font-mono mr-1	'>
+            <span className='text-md font-normal  mr-1	'>
               ${assetPrices.eth}
             </span>              
                          
           </div>
           <div className='flex  mr-3'>
-            <span className='text-md font-bold font-mono mr-1	'>
+            <span className='text-md font-bold  mr-1	'>
               {'BNB'}
             </span>
-            <span className='text-md font-normal font-mono mr-1	'>
+            <span className='text-md font-normal  mr-1	'>
               ${assetPrices.bnb}
             </span>              
                          
           </div>
           <div className='flex  mr-3'>
-            <span className='text-md font-bold font-mono mr-1	'>
+            <span className='text-md font-bold  mr-1	'>
               {'AVAX'}
             </span>
-            <span className='text-md font-normal font-mono mr-1	'>
+            <span className='text-md font-normal  mr-1	'>
               ${assetPrices.avax}
             </span>              
                          
           </div>
           <div className='flex  mr-3'>
-            <span className='text-md font-bold font-mono mr-1	'>
+            <span className='text-md font-bold  mr-1	'>
               {'FTM'}
             </span>
-            <span className='text-md font-normal font-mono mr-1	'>
+            <span className='text-md font-normal  mr-1	'>
               ${assetPrices.ftm}
             </span>              
                          
           </div>
           <div className='flex  mr-3'>
-            <span className='text-md font-bold font-mono mr-1	'>
+            <span className='text-md font-bold  mr-1	'>
               {'MATIC'}
             </span>
-            <span className='text-md font-normal font-mono mr-1	'>
+            <span className='text-md font-normal  mr-1	'>
               ${assetPrices.matic}
             </span>           
           </div>         
         </div>   
         <div  className='flex mr-3'>
           <div className="flex">
-            <span className='text-md font-bold font-mono mr-1'>|</span>
+            <span className='text-md font-bold  mr-1'>|</span>
           
           </div>
             
         </div>     
         <div className='flex'>          
           <div className="flex mr-3">
-            <span className='text-md font-bold font-mono mr-1	'>
+            <span className='text-md font-bold  mr-1	'>
               {'Ethereum'}
             </span>
-            <span className='text-md font-normal font-mono mr-1	'>
+            <span className='text-md font-normal  mr-1	'>
               {gasPrices.eth}
             </span>
-            <span className='text-md font-normal font-mono mr-1	'>
+            <span className='text-md font-normal  mr-1	'>
               {'Gwei'}
             </span>            
                      
           </div>
           <div className="flex mr-3">
-            <span className='text-md font-bold font-mono mr-1	'>
+            <span className='text-md font-bold  mr-1	'>
               {'Avalanche'}
             </span>
-            <span className='text-md font-normal font-mono mr-1	'>
+            <span className='text-md font-normal  mr-1	'>
               {gasPrices.avalanche}
             </span>
-            <span className='text-md font-normal font-mono mr-1	'>
+            <span className='text-md font-normal  mr-1	'>
               {'nAVAX'}
             </span>            
                      
           </div>
           <div className="flex mr-3">
-            <span className='text-md font-bold font-mono mr-1	'>
+            <span className='text-md font-bold  mr-1	'>
               {'Arbitrum'}
             </span>
-            <span className='text-md font-normal font-mono mr-1	'>
+            <span className='text-md font-normal  mr-1	'>
               {gasPrices.arbitrm}
             </span>
-            <span className='text-md font-normal font-mono mr-1	'>
+            <span className='text-md font-normal  mr-1	'>
               {'Gwei'}
             </span>            
                      
           </div>
           <div className="flex mr-3">
-            <span className='text-md font-bold font-mono mr-1	'>
+            <span className='text-md font-bold  mr-1	'>
               {'Binance'}
             </span>
-            <span className='text-md font-normal font-mono mr-1	'>
+            <span className='text-md font-normal  mr-1	'>
               {gasPrices.bsc}
             </span>
-            <span className='text-md font-normal font-mono mr-1	'>
+            <span className='text-md font-normal  mr-1	'>
               {'Gwei'}
             </span>            
                      
           </div>
           <div className="flex mr-3">
-            <span className='text-md font-bold font-mono mr-1	'>
+            <span className='text-md font-bold  mr-1	'>
               {'Fantom'}
             </span>
-            <span className='text-md font-normal font-mono mr-1	'>
+            <span className='text-md font-normal  mr-1	'>
               {gasPrices.fantom}
             </span>
-            <span className='text-md font-normal font-mono mr-1	'>
+            <span className='text-md font-normal  mr-1	'>
               {'Gwei'}
             </span>            
                      
           </div>
           <div className="flex mr-3">
-            <span className='text-md font-bold font-mono mr-1	'>
+            <span className='text-md font-bold  mr-1	'>
               {'Optimism'}
             </span>
-            <span className='text-md font-normal font-mono mr-1	'>
+            <span className='text-md font-normal  mr-1	'>
               {gasPrices.optimism}
             </span>
-            <span className='text-md font-normal font-mono mr-1	'>
+            <span className='text-md font-normal  mr-1	'>
               {'Gwei'}
             </span>            
                      
           </div>
           <div className="flex mr-3">
-            <span className='text-md font-bold font-mono mr-1	'>
+            <span className='text-md font-bold  mr-1	'>
               {'Polygon'}
             </span>
-            <span className='text-md font-normal font-mono mr-1	'>
+            <span className='text-md font-normal  mr-1	'>
               {gasPrices.polygon}
             </span>
-            <span className='text-md font-normal font-mono mr-1	'>
+            <span className='text-md font-normal  mr-1	'>
               {'Gwei'}
             </span>       
           </div>

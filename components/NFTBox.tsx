@@ -119,10 +119,10 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
         </div>
       </div>
       <div className="flex flex-row mt-2.5 justify-start">
-        <div className="ml-3 text-[#6C757D] text-[14px] font-medium font-['Roboto_Mono']">
+        <div className="ml-3 text-[#6C757D] text-[14px] font-medium ">
           {nft.name}
         </div>
-        <div className="ml-1 text-[#6C757D] text-[14px] font-medium font-['Roboto_Mono']">
+        <div className="ml-1 text-[#6C757D] text-[14px] font-medium ">
           {`#${nft.token_id}`}
         </div>
       </div>
