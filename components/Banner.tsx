@@ -39,7 +39,7 @@ const Banner = ({ slides, blur, menu }: BannerProps): JSX.Element => {
   const updateModal = (name: string):void => {
     setOpenModal(false)
   }
-
+  const isGregHolder = useSelector(selectIsGregHolder)
   return (
     <>
       <div
@@ -76,7 +76,7 @@ const Banner = ({ slides, blur, menu }: BannerProps): JSX.Element => {
               </div>              
               <div className="flex flex-col ml-[20rem] mt-[10px]">
                 {
-                  useSelector(selectIsGregHolder)&&
+                  isGregHolder&&
                     <div className="flex flex-row h-8">
                       <div className="flex items-center text-[26px] text-slate-800 font-semibold mr-[16px]">{user.username ? user.username : 'username'}</div>
                       <Image src={Hgreg} />
