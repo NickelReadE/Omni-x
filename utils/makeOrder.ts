@@ -4,7 +4,7 @@ import { TypedDataUtils } from 'ethers-eip712'
 import { userService } from '../services/users'
 import { orderService } from '../services/orders'
 import { minNetPriceRatio } from '../constants'
-import { SolidityType, MakerOrderWithEncodedParams } from '../types'
+import { SolidityType, MakerOrderWithEncodedParams, MakerOrder } from '../types'
 
 const MAKE_ORDER_SIGN_TYPES = {
   EIP712Domain: [
@@ -58,7 +58,7 @@ const prepareMakerOrder = async(
   const paramsTypes = params ? params.types : []
   const netPriceRatio = BigNumber.from(10000).sub(protocolFees.add(creatorFees)).toNumber()
 
-  const makerOrder: MakerOrderWithEncodedParams = {
+  const makerOrder: MakerOrder = {
     isOrderAsk,
     signer: signerAddress,
     collection: collectionAddress,
@@ -71,12 +71,12 @@ const prepareMakerOrder = async(
     startTime: startTime ? Math.floor(startTime / 1000) : Math.floor(now / 1000),
     endTime: endTime ? Math.floor(endTime / 1000) : Math.floor(addTime(now, { months: 1 }).getTime() / 1000),
     minPercentageToAsk: Math.min(netPriceRatio, minNetPriceRatio),
-    params: ethers.utils.defaultAbiCoder.encode(paramsTypes, paramsValue),
+    params: paramsValue,
   }
 
   let signatureHash = '0x0'
   if (signer) {
-    signatureHash = await signMakerOrder(signer, makerOrder)
+    signatureHash = await signMakerOrder(signer, makerOrder, paramsTypes)
   }
 
   const data = {
@@ -174,6 +174,14 @@ const zeroPad = (value: any, length: number) => {
   return ethers.utils.arrayify(ethers.utils.hexZeroPad(ethers.utils.hexlify(value), length))
 }
 
+export const encodeMakerOrder = (order: MakerOrder, paramsTypes: SolidityType[]) : MakerOrderWithEncodedParams => {
+  const encodedOrder = {
+    ...order,
+    params: ethers.utils.defaultAbiCoder.encode(paramsTypes, order.params)
+  }
+  return encodedOrder
+}
+
 /**
  * Create a signature for a maker order
  * @param signer user signer
@@ -183,12 +191,13 @@ const zeroPad = (value: any, length: number) => {
  * @param paramsTypes contains an array of solidity types mapping the params array types
  * @returns String signature
  */
- const signMakerOrder = async (signer: providers.JsonRpcSigner, order: MakerOrderWithEncodedParams): Promise<string> => {
+ const signMakerOrder = async (signer: providers.JsonRpcSigner, order: MakerOrder, paramsTypes: SolidityType[]): Promise<string> => {
+  const encodedOrder = encodeMakerOrder(order, paramsTypes)
   const typedData = {
     domain: {},
     types: MAKE_ORDER_SIGN_TYPES,
     primaryType: 'MakerOrder',
-    message: order
+    message: encodedOrder
   }
 
   const eip191Header = ethers.utils.arrayify('0x1901')

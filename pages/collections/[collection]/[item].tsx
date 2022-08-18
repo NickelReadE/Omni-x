@@ -145,7 +145,7 @@ const Item: NextPage = () => {
   useEffect(() => {
     if (orders.length > 0 && order_flag ) {
       setOrderFlag(false)
-      setOrder(orders[orders.length - 1])
+      setOrder(orders[0])
     } else {
       setOrder(undefined)
     }
@@ -245,7 +245,7 @@ const Item: NextPage = () => {
       startTime: order?.startTime,
       endTime: order?.endTime,
       minPercentageToAsk: order?.minPercentageToAsk,
-      params: order?.params?.[0] as any,
+      params: ethers.utils.defaultAbiCoder.encode(['uint16'], order?.params),
       signature: order?.signature
     }
     const takerBid : TakerOrderWithEncodedParams = {
@@ -340,7 +340,7 @@ const Item: NextPage = () => {
       startTime: bidOrder.startTime,
       endTime: bidOrder.endTime,
       minPercentageToAsk: bidOrder.minPercentageToAsk,
-      params: bidOrder.params?.[0] as any,
+      params: ethers.utils.defaultAbiCoder.encode(['uint16'], bidOrder.params),
       signature: bidOrder.signature
     }
     const takerAsk : TakerOrderWithEncodedParams = {
