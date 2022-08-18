@@ -161,7 +161,7 @@ const Item: NextPage = () => {
           bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
           for(let j=0;j<CURRENCIES_LIST.length;j++){
             // if(CURRENCIES_LIST[j].address==bidOrders[i].currencyAddress){
-              setHighestBidCoin(`/images/${CURRENCIES_LIST[j].icon}`)
+            setHighestBidCoin(`/images/${CURRENCIES_LIST[j].icon}`)
             // }
           }
         }
@@ -406,15 +406,15 @@ const Item: NextPage = () => {
                       {
                         CURRENCIES_LIST.map((currency,index) => {
                           // if(currency.address==order?.currencyAddress){
-                            return(
-                              <div className="mr-5">
-                                <img
-                                  src={`/images/${currency.icon}`}
-                                  className='mr-[8px] w-[21px]'
-                                  alt="icon"
-                                />
-                              </div>
-                            )
+                          return(
+                            <div className="mr-5" key={index}>
+                              <img
+                                src={`/images/${currency.icon}`}
+                                className='mr-[8px] w-[21px]'
+                                alt="icon"
+                              />
+                            </div>
+                          )
                           // }
                         })
                       }
@@ -448,8 +448,8 @@ const Item: NextPage = () => {
                             <div className='break-all mt-3'>{truncate(item.signer)}</div>
                             <div className="text-center mt-3">
                               {
-                                chainList.map((chain,index) => {
-                                  if(chain.chain==item?.chain){
+                                chainList.map((chain, index) => {
+                                  if (chain.chain == item?.chain){
                                     return(
                                       <img
                                         src={chain.img_url}
@@ -462,17 +462,17 @@ const Item: NextPage = () => {
                               }
                             </div>
                             <div className='flex justify-start items-center mt-3'>
-                              {CURRENCIES_LIST.map((currency,index) => {
+                              {CURRENCIES_LIST.map((currency, index) => {
                                 // if(currency.address==item?.currencyAddress){
-                                  return(
-                                    <div className="mr-5">
-                                      <img
-                                        src={`/images/${currency.icon}`}
-                                        className='mr-[8px] w-[21px]'
-                                        alt="icon"
-                                      />
-                                    </div>
-                                  )
+                                return(
+                                  <div className="mr-5" key={index}>
+                                    <img
+                                      src={`/images/${currency.icon}`}
+                                      className='mr-[8px] w-[21px]'
+                                      alt="icon"
+                                    />
+                                  </div>
+                                )
                                 // }
                               })}
                               <p className='ml-3'>${item && item.price && ethers.utils.formatEther(item.price)}</p>

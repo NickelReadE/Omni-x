@@ -80,7 +80,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
             setPrice(ethers.utils.formatEther(orders[i].price))
             CURRENCIES_LIST.map((item,index) => {
               // if(item.address==orders[i].currencyAddress){
-                setImageURL(`/images/${item.icon}`)
+              setImageURL(`/images/${item.icon}`)
               // }
             })
             flag=true
@@ -98,7 +98,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
                 bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
                 for(let j=0;j<CURRENCIES_LIST.length;j++){
                   // if(CURRENCIES_LIST[j].address==bidOrders[i].currencyAddress){
-                    setHighestBidCoin(`/images/${CURRENCIES_LIST[j].icon}`)
+                  setHighestBidCoin(`/images/${CURRENCIES_LIST[j].icon}`)
                   // }
                 }
               }

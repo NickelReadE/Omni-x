@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { IPropsNFTItem } from '../../interface/interface'
 import LazyLoad from 'react-lazyload'
-import USD from '../../public/images/USD.png'
 import { ethers } from 'ethers'
 import { selectOrders, selectBidOrders } from '../../redux/reducers/ordersReducer'
 import { useDispatch, useSelector } from 'react-redux'
@@ -39,7 +38,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
             setList(true)
             CURRENCIES_LIST.map((item,index) => {
               // if(item.address==orders[i].currencyAddress){
-                setImageURL(`/images/${item.icon}`)
+              setImageURL(`/images/${item.icon}`)
               // }
             })
             setIsOwner(true)
@@ -54,7 +53,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
                 bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
                 for(let j=0;j<CURRENCIES_LIST.length;j++){
                   // if(CURRENCIES_LIST[j].address==bidOrders[i].currencyAddress){
-                    setHighestBidCoin(`/images/${CURRENCIES_LIST[j].icon}`)
+                  setHighestBidCoin(`/images/${CURRENCIES_LIST[j].icon}`)
                   // }
                 }
               }
