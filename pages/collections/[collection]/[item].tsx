@@ -36,10 +36,10 @@ const Item: NextPage = () => {
   const [ownerType, setOwnerType] = useState('')
 
   const orders = useSelector(selectOrders)
-  const bidOrders = useSelector(selectBidOrders)
+  const bidOrders = useSelector(selectBidOrders) as IOrder[]
 
   const [order, setOrder] = useState<IOrder>()
-  const [bidOrder, setBidOrder] = useState<IOrder[]>()
+  const [bidOrder, setBidOrder] = useState<IOrder>()
   const [openSellDlg, setOpenSellDlg] = React.useState(false)
   const [openBidDlg, setOpenBidDlg] = React.useState(false)
   const [profileLink, setProfileLink] = React.useState('')
@@ -76,7 +76,7 @@ const Item: NextPage = () => {
   const token_id = router.query.item as string
 
   // console.log(col_url)
-  // console.log(token_id)
+  console.log(orders)
 
   const nftInfo = useSelector(selectNFTInfo)
 
@@ -118,8 +118,8 @@ const Item: NextPage = () => {
         collection: nftInfo.collection.address,
         tokenId: nftInfo.nft.token_id,
         signer: owner,
-        startTime: Math.floor(Date.now() / 1000).toString(),
-        endTime: Math.floor(Date.now() / 1000).toString(),
+        // startTime: Math.floor(Date.now() / 1000).toString(),
+        // endTime: Math.floor(Date.now() / 1000).toString(),
         status: ['VALID'],
         sort: 'NEWEST'
       }
@@ -165,7 +165,7 @@ const Item: NextPage = () => {
           }
         }
       }
-      setBidOrder(temp_bidOrders)
+      setBidOrder(bidOrders[0])
       setHighestBid(bid_balance)
       setBidFlag(false)
     } else {
@@ -268,7 +268,7 @@ const Item: NextPage = () => {
   }
 
   const onBid = async (bidData: IBidData) => {
-    if (!order) {
+    if (!bidOrder) {
       dispatch(openSnackBar({ message: '  Please list first to place a bid', status: 'warning' }))
       return
     }
@@ -286,16 +286,16 @@ const Item: NextPage = () => {
         provider as any,
         false,
         nftInfo.collection.address,
-        order?.strategy,
-        order?.amount,
+        bidOrder?.strategy,
+        bidOrder?.amount,
         price,
         protocalFees,
         creatorFees,
         currency,
         {
           tokenId: token_id,
-          startTime: order.startTime,
-          endTime: order.endTime,
+          startTime: bidOrder.startTime,
+          endTime: bidOrder.endTime,
           params: {
             values: [lzChainId],
             types: ['uint16'],
@@ -317,13 +317,6 @@ const Item: NextPage = () => {
   }
 
   const onAccept = async (bidOrder: IOrder) => {
-    console.log('-buy--', order, provider)
-
-    if (!order) {
-      dispatch(openSnackBar({ message: 'Not listed', status: 'warning' }))
-      return
-    }
-
     const chainId = provider?.network.chainId || 4
     const lzChainId = getLayerzeroChainId(chainId)
     
@@ -360,7 +353,7 @@ const Item: NextPage = () => {
     const nftContract = getERC721Instance(nftInfo.collection.address, chainId, signer)
     await nftContract.approve(transferManagerAddr, token_id)
 
-    const lzFee = 0 // await omnixExchange.connect(signer as any).getLzFeesForBidWithTakerAsk(takerAsk, makerBid)
+    const lzFee = 0; // await omnixExchange.connect(signer as any).getLzFeesForBidWithTakerAsk(takerAsk, makerBid)
     
     await omnixExchange.connect(signer as any).matchBidWithTakerAsk(takerAsk, makerBid, { value: lzFee })
   }
@@ -440,7 +433,7 @@ const Item: NextPage = () => {
                       <div className="font-bold text-[18px]">bid</div>
                       <div></div>
                       {
-                        bidOrder && bidOrder.map((item) => {
+                        bidOrders && bidOrders.map((item) => {
                           return <>
                             <div className='break-all mt-3'>{truncate(item.signer)}</div>
                             <div className="text-center mt-3">
