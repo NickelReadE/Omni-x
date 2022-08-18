@@ -306,18 +306,18 @@ const Item: NextPage = () => {
                 </LazyLoad>
               </div>
               <div className="col-span-2">
-                <div className="px-6 py-3 bg-[#F8F9FA]">
+                <div className="px-6 py-3 bg-[#F6F8FC]">
                   <div className='flex items-center'>
                     <h1 className="text-[#1E1C21] text-[32px] font-bold mr-8">{nftInfo.collection.name}</h1>
                     <div className='h-[22px]'><Image src={PngCheck} alt="checkpng"/></div>
                   </div>
                   <div className="flex justify-between items-center mt-5">
-                    <h1 className="text-[#1E1C21] text-[23px] font-normal underline">{nftInfo.nft.name}</h1>
+                    <h1 className="text-[#1E1C21] text-[24px] font-normal">{nftInfo.nft.token_id}</h1>
                     <Image src={PngSub} alt=""/>
                   </div>
                 </div>
 
-                <div className="grid 2xl:grid-cols-3 lg:grid-cols-[200px_1fr_1fr] xl:grid-cols-[230px_1fr_1fr] px-6 py-3 mt-6">
+                <div className="grid 2xl:grid-cols-3 lg:grid-cols-[200px_1fr_1fr] xl:grid-cols-[230px_1fr_1fr] px-6 pt-3 mt-6 bg-[#F6F8FC] rounded-[2px]">
                   <div className="">
                     <div className="flex justify-start items-center">
                       <h1 className="text-[#1E1C21] text-[20px] font-bold">owner:</h1>
@@ -348,22 +348,19 @@ const Item: NextPage = () => {
                     <div className="mb-3">
                       <h1>{order && order.price && '$'}{order && order.price && ethers.utils.formatEther(order.price)}</h1>
                       <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-semibold">Highest Bid: <span className="font-normal">${highestBid}</span></h1>{highestBidCoin!=''&&<Image src={highestBidCoin} width={15} height={16} alt="chain  logo" />}</div>
-                      <div className="flex justify-start items-center"><h1 className="mr-3 font-semibold">Last Sale: <span className="font-normal">${lastSale}</span></h1>{lastSaleCoin!=''&&<Image src={PngEther} width={15} height={16} alt="chain logo" />}</div>
-                      <div className="flex justify-end items-center">
+                      <div className="flex justify-start items-center"><h1 className="mr-3 font-semibold">Last Sale: <span className="font-normal">{lastSale!=0&&'$'+lastSale}</span></h1>{lastSaleCoin!=''&&<Image src={PngEther} width={15} height={16} alt="chain logo" />}</div>
+                      {/* <div className="">
                         { order && owner && address && owner.toLowerCase() != address.toLowerCase() && 
                           <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]">buy</button>
-                        }
-                        { owner && address && owner.toLowerCase() != address.toLowerCase() && 
-                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]" onClick={() => {setOpenBidDlg(true)}}>bid</button>
                         }
                         { address && owner && owner.toLowerCase() == address.toLowerCase() && 
                           <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={() => {setOpenSellDlg(true)}}>sell</button>
                         }
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                   <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
-                    <div className="overflow-x-hidden overflow-y-auto grid 2xl:grid-cols-[30%_25%_25%_20%] lg:grid-cols-[30%_18%_32%_20%] xl:grid-cols-[30%_18%_32%_20%] max-h-[285px]">
+                    <div className="overflow-x-hidden overflow-y-auto grid 2xl:grid-cols-[30%_25%_25%_20%] lg:grid-cols-[30%_18%_32%_20%] xl:grid-cols-[30%_18%_32%_20%] max-h-[230px]">
                       <div className="font-bold text-[18px]">account</div>
                       <div className="font-bold text-[18px]">chain</div>
                       <div className="font-bold text-[18px]">bid</div>
@@ -408,6 +405,28 @@ const Item: NextPage = () => {
                         })
                       }
                     </div>
+                    {/* { owner && address && owner.toLowerCase() != address.toLowerCase() && 
+                      <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]" onClick={() => {setOpenBidDlg(true)}}>bid</button>
+                    } */}
+                  </div>
+                </div>
+                <div className="grid 2xl:grid-cols-3 lg:grid-cols-[200px_1fr_1fr] xl:grid-cols-[230px_1fr_1fr] px-6 pb-3  bg-[#F6F8FC] rounded-[2px]">
+                  <div className="">
+                    <div className="mb-3">
+                      <div className="">
+                        { order && owner && address && owner.toLowerCase() != address.toLowerCase() && 
+                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]">buy</button>
+                        }
+                        { address && owner && owner.toLowerCase() == address.toLowerCase() && 
+                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={() => {setOpenSellDlg(true)}}>sell</button>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                  <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
+                    { owner && address && owner.toLowerCase() != address.toLowerCase() && 
+                      <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]" onClick={() => {setOpenBidDlg(true)}}>bid</button>
+                    }
                   </div>
                 </div>
               </div>

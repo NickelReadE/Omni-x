@@ -116,7 +116,6 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
         }
       }
     }
-    console.log(flag)
   },[orders,bidOrders])
 
 

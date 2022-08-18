@@ -26,7 +26,7 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
   const dispatch = useDispatch()
 
   useEffect(()=> {
-    if(nfts){
+    if(nfts.length>0){
       const request: IGetOrderRequest = {
         isOrderAsk: true,
         chain: provider?.network.name,
