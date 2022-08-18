@@ -21,9 +21,9 @@ import { collectionsService } from '../../../services/collections'
 import useWallet from '../../../hooks/useWallet'
 import { postMakerOrder } from '../../../utils/makeOrder'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../../../types'
-import { IGetOrderRequest, IListingData, IOrder } from '../../../interface/interface'
-import { getAddressByName, getLayerzeroChainId } from '../../../utils/constants'
-import { getERC721Instance, getOmniInstance, getOmnixExchangeInstance } from '../../../utils/contracts'
+import { IBidData, IGetOrderRequest, IListingData, IOrder } from '../../../interface/interface'
+import { CREATOR_FEE, getAddressByName, getChainInfo, getLayerzeroChainId, PROTOCAL_FEE } from '../../../utils/constants'
+import { getCurrencyInstance, getERC721Instance, getTransferSelectorNftInstance, getOmniInstance, getOmnixExchangeInstance } from '../../../utils/contracts'
 
 import PngCheck from '../../../public/images/check.png' 
 import PngSub from '../../../public/images/subButton.png'
@@ -185,15 +185,15 @@ const Item: NextPage = () => {
   const onListing = async (listingData: IListingData) => {
     const price = ethers.utils.parseEther(listingData.price.toString())
     const amount = ethers.utils.parseUnits('1', 0)
-    const protocalFees = ethers.utils.parseUnits('2', 2)
-    const creatorFees = ethers.utils.parseUnits('2', 2)
+    const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
+    const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
     const chainId = provider?.network.chainId || 4
     const lzChainId = getLayerzeroChainId(chainId)
     const startTime = Date.now()
     
     await postMakerOrder(
       provider as any,
-      true,
+      !listingData.isAuction,
       nftInfo.collection.address,
       getAddressByName('Strategy', chainId),
       amount,
@@ -210,11 +210,16 @@ const Item: NextPage = () => {
           types: ['uint16'],
         },
       },
-      nftInfo.collection.chain
+      nftInfo.collection.chain,
+      !listingData.isAuction
     )
 
-    const nftContract = getERC721Instance(nftInfo.collection.address, chainId, signer)
-    await nftContract.approve(getAddressByName('TransferManagerERC721', chainId), token_id)
+    if (!listingData.isAuction) {
+      const transferSelector = getTransferSelectorNftInstance(chainId, signer)
+      const transferManagerAddr = await transferSelector.checkTransferManagerForToken(nftInfo.collection.address)
+      const nftContract = getERC721Instance(nftInfo.collection.address, chainId, signer)
+      await nftContract.approve(transferManagerAddr, token_id)
+    }
 
     dispatch(openSnackBar({ message: '  Success', status: 'success' }))
     setOpenSellDlg(false)
@@ -231,7 +236,7 @@ const Item: NextPage = () => {
     const chainId = provider?.network.chainId || 4
     const lzChainId = getLayerzeroChainId(chainId)
 
-    const omni = getOmniInstance(chainId, signer)
+    const omni = getCurrencyInstance(order.currencyAddress, chainId, signer)
     const omnixExchange = getOmnixExchangeInstance(chainId, signer)
     const makerAsk : MakerOrderWithSignature = {
       isOrderAsk: order.isOrderAsk,
@@ -263,40 +268,54 @@ const Item: NextPage = () => {
     const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
 
     await omni.approve(omnixExchange.address, takerBid.price)
+    await omni.approve(getAddressByName('FundManager', chainId), takerBid.price)
     await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
   }
 
-  const onBid = async (bidOrder: IOrder) => {
-    const currency = bidOrder.currencyAddress
-    const price = bidOrder.price
-    const period = bidOrder.endTime - bidOrder.startTime
+  const onBid = async (bidData: IBidData) => {
+    if (!order) {
+      dispatch(openSnackBar({ message: '  Please list first to place a bid', status: 'warning' }))
+      return
+    }
+
+    const currency = bidData.currency
+    const price = bidData.price
+    const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
+    const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
+
     const chainId = provider?.network.chainId as number
-    const startTime = Date.now()
+    const lzChainId = getLayerzeroChainId(chainId)
 
     try {
       await postMakerOrder(
         provider as any,
         false,
         nftInfo.collection.address,
-        getAddressByName('Strategy', chainId),
-        ethers.utils.parseUnits('1', 1),
+        order?.strategy,
+        order?.amount,
         ethers.utils.parseEther(price.toString()),
-        ethers.utils.parseUnits('2', 2),
-        ethers.utils.parseUnits('2', 2),
+        protocalFees,
+        creatorFees,
         currency,
         {
           tokenId: token_id,
-          startTime,
-          endTime: addDays(startTime, period).getTime(),
+          startTime: order.startTime,
+          endTime: order.endTime,
           params: {
-            values: [10001],
-            types: ['uint256'],
+            values: [lzChainId],
+            types: ['uint16'],
           },
         },
-        nftInfo.collection.chain
+        getChainInfo(chainId)?.chain || nftInfo.collection.chain,
+        true
       )
+
+      const omni = getCurrencyInstance(currency, chainId, signer)
+      await omni.approve(getAddressByName('OmnixExchange', chainId), price)
+      await omni.approve(getAddressByName('FundManager', chainId), price)
+
       setOpenBidDlg(false)
-      dispatch(openSnackBar({ message: 'Make Offer Success', status: 'success' }))
+      dispatch(openSnackBar({ message: 'Place a bid Success', status: 'success' }))
     } catch (err: any) {
       dispatch(openSnackBar({ message: err.message, status: 'error' }))
     }
@@ -312,46 +331,48 @@ const Item: NextPage = () => {
 
     const chainId = provider?.network.chainId || 4
     const lzChainId = getLayerzeroChainId(chainId)
-
-    const omni = getOmniInstance(chainId, signer)
+    
     const omnixExchange = getOmnixExchangeInstance(chainId, signer)
-    const makerAsk : MakerOrderWithSignature = {
-      isOrderAsk: order.isOrderAsk,
-      signer: order?.signer,
-      collection: order?.collectionAddress,
-      price: order?.price,
-      tokenId: order?.tokenId,
-      amount: order?.amount,
-      strategy: order?.strategy,
-      currency: order?.currencyAddress,
-      nonce: order?.nonce,
-      startTime: order?.startTime,
-      endTime: order?.endTime,
-      minPercentageToAsk: order?.minPercentageToAsk,
-      params: order?.params?.[0] as any,
-      signature: order?.signature
+    const makerBid : MakerOrderWithSignature = {
+      isOrderAsk: true,
+      signer: bidOrder.signer,
+      collection: bidOrder.collectionAddress,
+      price: bidOrder.price,
+      tokenId: bidOrder.tokenId,
+      amount: bidOrder.amount,
+      strategy: bidOrder.strategy,
+      currency: bidOrder.currencyAddress,
+      nonce: bidOrder.nonce,
+      startTime: bidOrder.startTime,
+      endTime: bidOrder.endTime,
+      minPercentageToAsk: bidOrder.minPercentageToAsk,
+      params: bidOrder.params?.[0] as any,
+      signature: bidOrder.signature
     }
-    const takerBid : TakerOrderWithEncodedParams = {
-      isOrderAsk: false,
+    const takerAsk : TakerOrderWithEncodedParams = {
+      isOrderAsk: true,
       taker: address || '0x',
-      price: order?.price || '0',
-      tokenId: order?.tokenId || '0',
-      minPercentageToAsk: order?.minPercentageToAsk || '0',
+      price: bidOrder.price || '0',
+      tokenId: bidOrder.tokenId || '0',
+      minPercentageToAsk: bidOrder.minPercentageToAsk || '0',
       params: ethers.utils.defaultAbiCoder.encode(['uint16'], [lzChainId])
     }
 
-    console.log('--buy----', makerAsk, takerBid)
+    console.log('--accept a bid----', makerBid, takerAsk)
 
-    const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
+    const transferSelector = getTransferSelectorNftInstance(chainId, signer)
+    const transferManagerAddr = await transferSelector.checkTransferManagerForToken(nftInfo.collection.address)
+    const nftContract = getERC721Instance(nftInfo.collection.address, chainId, signer)
+    await nftContract.approve(transferManagerAddr, token_id)
 
-    await omni.approve(omnixExchange.address, takerBid.price)
-    await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
+    const lzFee = await omnixExchange.connect(signer as any).getLzFeesForBidWithTakerAsk(takerAsk, makerBid)
+    
+    await omnixExchange.connect(signer as any).matchBidWithMakerBid(takerAsk, makerBid, { value: lzFee })
   }
 
   const truncate = (str: string) => {
     return str.length > 12 ? str.substring(0, 9) + '...' : str
   }
-
 
   return (
     <>
@@ -412,7 +433,7 @@ const Item: NextPage = () => {
                         { order && owner && address && owner.toLowerCase() != address.toLowerCase() && 
                           <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD]" onClick={onBuy}>buy</button>
                         }
-                        { owner && address && owner.toLowerCase() != address.toLowerCase() && 
+                        { owner && address && 
                           <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD]" onClick={() => {setOpenBidDlg(true)}}>bid</button>
                         }
                         { address && owner && owner.toLowerCase() == address.toLowerCase() && 
@@ -505,7 +526,7 @@ const Item: NextPage = () => {
             </div>
           </div>
           <ConfirmSell onSubmit={onListing} handleSellDlgClose={() => {setOpenSellDlg(false)}} openSellDlg={openSellDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} />
-          <ConfirmBid handleBidDlgClose={() => {setOpenBidDlg(false)}} openBidDlg={openBidDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} />
+          <ConfirmBid onSubmit={onBid} handleBidDlgClose={() => {setOpenBidDlg(false)}} openBidDlg={openBidDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} />
         </div>
       }
     </>

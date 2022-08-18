@@ -3,7 +3,8 @@ import OmnixBridge from '../constants/OmnixBridge.json'
 import OmnixBridge1155 from '../constants/OmnixBridge1155.json'
 import OmnixExchange from '../constants/OmnixExchange.json'
 import Strategy from '../constants/Strategy.json'
-import TransferManagerERC721 from '../constants/TransferManagerERC721.json'
+import TransferSelectorNFT from '../constants/TransferSelectorNFT.json'
+import FundManager from '../constants/FundManager.json'
 import OFT from '../constants/OFT.json'
 import LZEndpoint from '../constants/LayerzeroEndpoints.json'
 import ChainIds from '../constants/chainIds.json'
@@ -13,17 +14,29 @@ const omnixBridge: any = OmnixBridge
 const omnixBridge1155: any = OmnixBridge1155
 const omnixExchange: any = OmnixExchange
 const strategy: any = Strategy
-const transferManagerErc721: any = TransferManagerERC721
+const transferSelectorNFT: any = TransferSelectorNFT
+const fundManager: any = FundManager
 const oft: any = OFT
 const lzEndpoint: any = LZEndpoint
 const chainIds: any = ChainIds
+
+export const PROTOCAL_FEE = 2
+export const CREATOR_FEE = 2
 
 const environments: any = {
   mainnet: ['ethereum', 'bsc', 'avalanche', 'polygon', 'arbitrum', 'optimism', 'fantom'],
   testnet: ['rinkeby', 'bsc-testnet', 'fuji', 'mumbai', 'arbitrum-rinkeby', 'optimism-kovan', 'fantom-testnet']
 }
 
-export type ContractName = 'Omnix' | 'Omnix1155' | 'LayerZeroEndpoint' | 'OmnixExchange' | 'Strategy' | 'OFT' | 'TransferManagerERC721'
+export type ContractName = 
+  'Omnix' | 
+  'Omnix1155' | 
+  'LayerZeroEndpoint' | 
+  'OmnixExchange' | 
+  'Strategy' | 
+  'OFT' | 
+  'TransferSelectorNFT' |
+  'FundManager'
 
 export const rpcProviders: { [key: number]: string } = {
   4: 'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
@@ -115,8 +128,10 @@ export const getAddressByName = (name: ContractName, chainId: number) => {
     return strategy[chainInfos[chainId].name]
   } else if (name === 'OFT') {
     return oft[chainInfos[chainId].name]
-  } else if (name === 'TransferManagerERC721') {
-    return transferManagerErc721[chainInfos[chainId].name]
+  } else if (name === 'TransferSelectorNFT') {
+    return transferSelectorNFT[chainInfos[chainId].name]
+  } else if (name === 'FundManager') {
+    return fundManager[chainInfos[chainId].name]
   }
 }
 

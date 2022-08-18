@@ -6,6 +6,7 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 
 import CustomSelect from './CustomSelect'
 import Select from 'react-select'
+import { IBidData } from '../../interface/interface'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -37,7 +38,7 @@ interface IConfirmBidProps {
   openBidDlg: boolean,
   nftImage: string,
   nftTitle: string,
-  onSubmit?: any
+  onSubmit?: (bidData: IBidData) => void
 }
 
 const ConfirmBid: React.FC<IConfirmBidProps> = ({
@@ -68,7 +69,10 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
 
   const onBid = () => {
     if (onSubmit) {
-      onSubmit(currency.address, price, period.period)
+      onSubmit({
+        currency: currency.address,
+        price
+      })
     }
   }
 
@@ -88,7 +92,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
               <input type="text" value={price} className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F8F9FA] border-[2px] border-[#E9ECEF] rounded-lg" onChange={onChangePrice}/>
               <span className="px-4 text-[#ADB5BD] font-light">{price_in_usd}</span>
             </div>
-            <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Duration</p>
+            {/* <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Duration</p>
             <div className="flex justify-start items-center mt-5">
               <Select
                 placeholder="Select"
@@ -107,7 +111,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
                 value={period}
                 onChange={(value: any) => setPeriod(value)}
               />
-            </div>
+            </div> */}
           </div>
           <div>
             <img className='rounded-[8px] max-w-[250px]' src={nftImage} />

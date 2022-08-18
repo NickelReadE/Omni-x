@@ -1,4 +1,4 @@
-import { providers, BigNumber, ethers } from 'ethers'
+import { providers, BigNumber, ethers, BigNumberish } from 'ethers'
 import addTime from 'date-fns/add'
 import { TypedDataUtils } from 'ethers-eip712'
 import { userService } from '../services/users'
@@ -38,7 +38,7 @@ interface PostMakerOrderOptionalParams {
 }
 
 const prepareMakerOrder = async(
-    signer: ethers.providers.JsonRpcSigner,
+    signer: ethers.providers.JsonRpcSigner | undefined,
     signerAddress: string,
     isOrderAsk: boolean,
     collectionAddress: string,
@@ -73,8 +73,11 @@ const prepareMakerOrder = async(
     minPercentageToAsk: Math.min(netPriceRatio, minNetPriceRatio),
     params: ethers.utils.defaultAbiCoder.encode(paramsTypes, paramsValue),
   }
-  console.log(makerOrder)
-  const signatureHash = await signMakerOrder(signer, makerOrder)
+
+  let signatureHash = '0x0'
+  if (signer) {
+    signatureHash = await signMakerOrder(signer, makerOrder)
+  }
 
   const data = {
     ...makerOrder,
@@ -89,13 +92,14 @@ export const postMakerOrder = async(
   isOrderAsk: boolean,
   collectionAddress: string,
   strategyAddress: string,
-  amount: BigNumber,
-  price: BigNumber,
-  protocolFees: BigNumber,
-  creatorFees: BigNumber,
+  amount: BigNumberish,
+  price: BigNumberish,
+  protocolFees: BigNumberish,
+  creatorFees: BigNumberish,
   currency: string,
   optionalParams: PostMakerOrderOptionalParams = {},
-  chain: string
+  chain: string,
+  needSign: boolean
 ) => {
     
   const signer = library.getSigner()
@@ -103,16 +107,16 @@ export const postMakerOrder = async(
   let nonce = await userService.getUserNonce(signerAddress)
 
   const data = await prepareMakerOrder(
-    signer,
+    needSign ? signer : undefined,
     signerAddress,
     isOrderAsk,
     collectionAddress,
     strategyAddress,
-    amount,
-    price,
+    BigNumber.from(amount),
+    BigNumber.from(price),
     nonce,
-    protocolFees,
-    creatorFees,
+    BigNumber.from(protocolFees),
+    BigNumber.from(creatorFees),
     currency,
     optionalParams,
     chain

@@ -1,0 +1,17 @@
+{
+  "ethereum": "",
+  "bsc": "",
+  "avalanche": "",
+  "polygon": "",
+  "arbitrum": "",
+  "optimism": "",
+  "fantom": "",
+
+  "rinkeby": "0x09183238E034A40451eF916B43E00fd862853302",
+  "bsc-testnet": "",
+  "fuji": "",
+  "mumbai": "",
+  "arbitrum-rinkeby": "",
+  "optimism-kovan": "",
+  "fantom-testnet": ""
+}

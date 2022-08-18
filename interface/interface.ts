@@ -105,3 +105,8 @@ export interface IListingData {
   period: number,
   isAuction: boolean
 }
+
+export interface IBidData {
+  price: number,
+  currency: string
+}
