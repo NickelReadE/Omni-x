@@ -7,6 +7,11 @@ export type PendingTxType = {
   type: 'bridge' | 'buy' | 'sell' | 'bid',
   senderChainId: number | undefined,
   targetChainId: number | undefined,
+  targetAddress: string | undefined,
+  isONFTCore: boolean,
+  nftItem: NFTItem,
+  contractType: 'ERC721' | 'ERC1155',
+  targetBlockNumber: number,
   itemName: string | undefined
 }
 

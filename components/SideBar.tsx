@@ -15,7 +15,7 @@ import {
   getOmnixBridge1155Instance,
   getOmnixBridgeInstance, getONFTCore721Instance, getONFTCore1155Instance,
 } from '../utils/contracts'
-import {getChainIdFromName, getLayerzeroChainId} from '../utils/constants'
+import {getChainIdFromName, getLayerzeroChainId, getProvider} from '../utils/constants'
 import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
 import useBridge from '../hooks/useBridge'
@@ -235,6 +235,7 @@ const SideBar: React.FC = () => {
     const lzTargetChainId = getLayerzeroChainId(targetChain)
     const _signerAddress = address
 
+    const targetProvider = getProvider(targetChain)
     if (isONFTCore) {
       if (selectedNFTItem.contract_type === 'ERC721') {
         const onftCoreInstance = getONFTCore721Instance(selectedNFTItem.token_address, provider?._network?.chainId, signer)
@@ -257,11 +258,17 @@ const SideBar: React.FC = () => {
           }, 30000)
         })
         onLeave()
+        const blockNumber = await targetProvider.getBlockNumber()
         await setPendingTxInfo({
           txHash: tx.hash,
           type: 'bridge',
           senderChainId: provider?._network?.chainId,
           targetChainId: targetChain,
+          targetAddress: targetONFTCoreAddress,
+          isONFTCore: true,
+          contractType: 'ERC721',
+          nftItem: selectedNFTItem,
+          targetBlockNumber: blockNumber,
           itemName: selectedNFTItem.name
         })
         await tx.wait()
@@ -281,11 +288,17 @@ const SideBar: React.FC = () => {
           { value: estimatedFee }
         )
         onLeave()
+        const blockNumber = await targetProvider.getBlockNumber()
         await setPendingTxInfo({
           txHash: tx.hash,
           type: 'bridge',
           senderChainId: provider?._network?.chainId,
           targetChainId: targetChain,
+          targetAddress: targetONFT1155CoreAddress,
+          targetBlockNumber: blockNumber,
+          isONFTCore: true,
+          contractType: 'ERC1155',
+          nftItem: selectedNFTItem,
           itemName: selectedNFTItem.name
         })
         targetCoreInstance.on('ReceiveFromChain', (/*srcChainId, srcAddress, toAddress, tokenId, nonce*/) => {
@@ -325,11 +338,17 @@ const SideBar: React.FC = () => {
           value: estimatedFee
         })
         onLeave()
+        const blockNumber = await targetProvider.getBlockNumber()
         await setPendingTxInfo({
           txHash: tx.hash,
           type: 'bridge',
           senderChainId: provider?._network?.chainId,
           targetChainId: targetChain,
+          targetAddress: '',
+          isONFTCore: false,
+          contractType: 'ERC721',
+          nftItem: selectedNFTItem,
+          targetBlockNumber: blockNumber,
           itemName: selectedNFTItem.name
         })
         await tx.wait()
@@ -369,11 +388,17 @@ const SideBar: React.FC = () => {
           value: estimatedFee.nativeFee
         })
         onLeave()
+        const blockNumber = await targetProvider.getBlockNumber()
         await setPendingTxInfo({
           txHash: tx.hash,
           type: 'bridge',
           senderChainId: provider?._network?.chainId,
           targetChainId: targetChain,
+          targetAddress: '',
+          isONFTCore: false,
+          contractType: 'ERC1155',
+          nftItem: selectedNFTItem,
+          targetBlockNumber: blockNumber,
           itemName: selectedNFTItem.name
         })
         await tx.wait()
