@@ -427,7 +427,7 @@ const Item: NextPage = () => {
                         { order && owner && address && owner.toLowerCase() != address.toLowerCase() && 
                           <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD]" onClick={onBuy}>buy</button>
                         }
-                        { owner && address && 
+                        { owner && address && owner.toLowerCase() != address.toLowerCase() && 
                           <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD]" onClick={() => {setOpenBidDlg(true)}}>bid</button>
                         }
                         { address && owner && owner.toLowerCase() == address.toLowerCase() && 
