@@ -75,6 +75,7 @@ module.exports = {
         sm: '12px',
         md: '14px',
         lg: '16px',
+        xg: '18px',
         xl: '20px',
       },
       gridTemplateColumns: {
@@ -82,6 +83,9 @@ module.exports = {
       },
       rotate: {
         '52': '52deg',
+      },
+      boxShadow:{
+        'ml':'0 0 10px rgba(0,0,0,0.25)'
       }
     },
   },
