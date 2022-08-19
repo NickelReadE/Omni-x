@@ -17,10 +17,5 @@ module.exports = {
         destination: '/collections/:path*', // The :path parameter is used here so will not be automatically passed in the query
       },
     ]
-  },
-  resolve: {
-    fallback: {
-        "fs": false
-    },
   }
 }

@@ -52,7 +52,6 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
         }
         if ( bidOrders.length > 0 ) {
           let bid_balance = 0
-          console.log(bidOrders)
           for(let i=0; i<bidOrders.length;i++){
             if(bidOrders[i].tokenId==nft.token_id && bidOrders[i].collectionAddress==col_address){
               if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
