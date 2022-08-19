@@ -6,7 +6,7 @@ import classNames from '../helpers/classNames'
 const Analytics: NextPage = () => {
   return (
     <div>
-      <div className="mt-[90px] w-full">
+      <div className="mt-[75px] w-full">
         <div className={classNames(styles.bgImg, 'pt-[155px] pl-52 pr-52')}>
           <div className='flex justify-center text-6xl	font-circular'>OMNI X LAUNCHPAD</div>
           <div className='flex justify-center text-3xl mt-4	mb-10	 font-circular'>art for everyone, everywhere</div>

@@ -18,12 +18,12 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
   return (
     <>
       <div className="w-full mb-5 mt-4">
-        <div className="flex justify-start bg-[#F8F9FA] border-2 border-[#E9ECEF] rounded-lg p-2 w-fit">
+        <div className="flex justify-start bg-[#F6F8FC] border-2 border-[#E9ECEF] rounded-lg p-2 w-fit">
           {
             chainList.map((item, index) => {
               return <div key={index} className={`grid justify-items-center content-center p-3 font-medium cursor-pointer m-[1px] min-w-[96px] ${chain == item.chain ? 'bg-[#E9ECEF] border-2 border-[#ADB5BD] rounded-lg text-[#1E1C21]' : ''} ${item.disabled ? 'bg-[#e8e8e8] rounded-lg cursor-default' : ''}`} onClick={() =>{item.disabled ? undefined : setChain(item.chain)}}>
                 <img src={item.img_url} className="w-[21px] h-[22px]" />
-                <p className="mt-1 font-['Circular_Std'] leading-[18px] text-[14px]">{item.title}</p>
+                <p className="mt-1  leading-[18px] text-[14px]">{item.title}</p>
               </div>
             })
           }

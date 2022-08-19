@@ -12,7 +12,7 @@ const NFTBox = ({nft, col_url, chain}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
   
   return (
-    <div className={classNames('w-full border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]', editStyle.nftContainer)}>
+    <div className={classNames('w-full border-[2px] border-[#F6F8FC] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F6F8FC]', editStyle.nftContainer)}>
       <Link href={`/collections/${col_url}/${nft.token_id}`}>
         <a>
           <div className="relative w-full">
@@ -23,7 +23,7 @@ const NFTBox = ({nft, col_url, chain}: IPropsNFTItem) => {
               <div className="bg-[url('/images/ellipse.png')] hover:bg-[url('/images/ellipse_hover.png')] bg-cover w-[21px] h-[21px]"></div>
             </div>
           </div>
-          <div className="text-[#6C757D] text-[14px] font-medium font-['Roboto_Mono'] mt-3 ml-3">
+          <div className="text-[#6C757D] text-[14px] font-medium  mt-3 ml-3">
             {nft.name}
           </div>
           <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle">

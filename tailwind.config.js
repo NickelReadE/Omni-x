@@ -68,7 +68,7 @@ module.exports = {
       fontFamily: {
         sans: ['Inter', ...fontFamily.sans],
         mono: ['Inconsolata', ...fontFamily.mono],
-        circular:['Circular Std']
+        RetniSans:['RetniSans']
       },
       fontSize: {
         xs: '10px',

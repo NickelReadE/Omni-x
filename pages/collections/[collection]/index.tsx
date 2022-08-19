@@ -249,26 +249,26 @@ const Collection: NextPage = () => {
           </div>
           <div className="2xl:col-span-9 xl:col-span-8 md:col-span-8 px-8 pt-3">
             <div>
-              <p className="text-[#1E1C21] font-['Roboto Mono'] text-3xl uppercase font-bold">{collectionInfo?collectionInfo.name:''}</p>
+              <p className="text-[#1E1C21]  text-3xl uppercase font-bold">{collectionInfo?collectionInfo.name:''}</p>
             </div>
             <div className="flex justify-start mt-5 mb-5">
               <div>
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-normal underline">items</p>
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-bold mt-3">{collectionInfo?collectionInfo.count:0}</p>
+                <p className="text-[#1E1C21]  text-xl font-normal underline">items</p>
+                <p className="text-[#1E1C21]  text-xl font-bold mt-3">{collectionInfo?collectionInfo.count:0}</p>
               </div>
               <div className="xl:ml-20 lg:ml-10 md:ml-10">
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-normal underline">holders</p>
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-bold mt-3">{collectionOwners}</p>
+                <p className="text-[#1E1C21] text-xl font-normal underline">holders</p>
+                <p className="text-[#1E1C21]  text-xl font-bold mt-3">{collectionOwners}</p>
               </div>
               <div className="xl:ml-20 lg:ml-10 md:ml-10">
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-normal underline">floor</p>
-                <div className="flex justify-center text-[#1E1C21] font-['Roboto Mono'] text-xl font-bold mt-3">
+                <p className="text-[#1E1C21]  text-xl font-normal underline">floor</p>
+                <div className="flex justify-center text-[#1E1C21] f text-xl font-bold mt-3">
                   <span className='mr-3'>0</span><Image src={Ethereum} height={20} width={23} alt="" />
                 </div>
               </div>
               <div className="xl:ml-20 lg:ml-10 md:ml-10">
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-normal underline">royalty fee</p>
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-bold mt-3">0%</p>
+                <p className="text-[#1E1C21] text-xl font-normal underline">royalty fee</p>
+                <p className="text-[#1E1C21] text-xl font-bold mt-3">0%</p>
               </div>
             </div>
           </div>
@@ -306,12 +306,12 @@ const Collection: NextPage = () => {
             <div className="px-12">
               <ul className="flex relative justify-item-stretch text-xl font-bold text-center">
                 <li
-                  className={`select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer z-30 ${currentTab === 'items' ? 'bg-[#E9ECEF] text-[#1E1C21] shadow-[1px_-1px_4px_1px_rgba(233,236,239,1)]' : 'bg-[#F8F9FA] text-[#ADB5BD] shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)]'} `}
+                  className={`select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer z-30 ${currentTab === 'items' ? 'bg-[#E9ECEF] text-[#1E1C21] shadow-[1px_-1px_4px_1px_rgba(233,236,239,1)]' : 'bg-[#F6F8FC] text-[#ADB5BD] shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)]'} `}
                   onClick={() => setCurrentTab('items')}>
                   items
                 </li>
-                <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-20 bg-[#F8F9FA] text-[#ADB5BD]'}>activity</li>
-                <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-10 bg-[#F8F9FA] text-[#ADB5BD]'}>stats</li>
+                <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-20 bg-[#F6F8FC] text-[#ADB5BD]'}>activity</li>
+                <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-10 bg-[#F6F8FC] text-[#ADB5BD]'}>stats</li>
               </ul>
             </div>
           </div>
@@ -352,7 +352,7 @@ const Collection: NextPage = () => {
                       aria-controls="panel1a-content"
                       id="panel1a-header"
                     >
-                      <Typography className={classes.heading}>{key}</Typography>
+                      <Typography className={classNames(classes.heading,'font-RetniSans') } style={{fontFamily:'RetniSans'}}>{key}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                       <div>
@@ -446,7 +446,7 @@ const Collection: NextPage = () => {
           <div className="px-12 py-6 border-l-2 border-[#E9ECEF] w-full">
             <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 p-1 gap-4">
               <div className="2xl:col-start-4 xl:col-start-3 lg:col-start-2 md:col-start-1">
-                <button className="rounded-lg bg-[#38B000] text-[#F8F9FA] py-2 xl:text-[18px] lg:text-[14px] w-full">make a collection bid</button>
+                <button className="rounded-lg bg-[#38B000] text-[#F6F8FC] py-2 xl:text-[18px] lg:text-[14px] w-full">make a collection bid</button>
               </div>
               <div className="min-w-[180px] z-10 2xl:col-start-5 xl:col-start-4 lg:col-start-3 md:col-start-2">
                 <Listbox value={selected} onChange={onChangeSort}>

@@ -1,5 +1,5 @@
 .sidemenu {
-    background-color: #f8f9fa;
+    background-color: #F6F8FC;
     padding-left: 10px;
     ul {
         li {
@@ -34,7 +34,7 @@
 }
 .tokenOption{
     display: flex;
-    background: #F8F9FA;
+    background: #F6F8FC;
     border-radius: 8px;
     // padding-right: 32px;
     // padding-left: 32px;
@@ -44,7 +44,7 @@
     select{
         outline: none;
         border: none;
-        font-family: 'Circular Std';
+        // font-family: 'Circular Std';
         background: transparent;
         font-size: 16px;
         color: #ADB5BD;
@@ -73,7 +73,7 @@
     position: relative;
     input {
         padding-right: 40px;
-        background: #F8F9FA;
+        background: #F6F8FC;
         border: 2px solid #ADB5BD;
         border-radius: 4px;
     }
@@ -82,7 +82,7 @@
         top: 0;
         content: "ETH";
         right: 5px;
-        font-family: 'Circular Std';
+        // font-family: 'Circular Std';
         font-style: normal;
         font-weight: 500;
         font-size: 16px;
