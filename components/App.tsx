@@ -3,7 +3,7 @@ import {DndContext} from '@dnd-kit/core'
 import {WalletProvider} from './WalletProvider'
 import {BridgeProvider} from './providers/BridgeProvider'
 import {ProgressProvider} from './providers/ProgressProvider'
-import { MoralisProvider } from 'react-moralis';
+import { MoralisProvider } from 'react-moralis'
 import Layout from './Layout'
 
 type AppProps = {

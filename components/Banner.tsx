@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import useWallet  from '../hooks/useWallet'
- import { useMoralisWeb3Api, useMoralis } from "react-moralis"
+import { useMoralisWeb3Api, useMoralis } from 'react-moralis'
 import classNames from '../helpers/classNames'
 import Setting from '../public/images/setting.png'
 import Twitter from '../public/images/twitter.png'
@@ -32,7 +32,7 @@ const useStyles = makeStyles({
   },
 })
 const timeout = (delay: number) =>{
-  return new Promise( res => setTimeout(res, delay) );
+  return new Promise( res => setTimeout(res, delay) )
 }
 const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
   const disptach = useDispatch()  
@@ -58,17 +58,16 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
   } 
   useEffect(() => {
     if (isInitialized && address) {
-        fetchNFTByAddress('eth',String(GregContractAddress['eth']))
-        fetchNFTByAddress('bsc',String(GregContractAddress['bsc']))
-        fetchNFTByAddress('polygon',String(GregContractAddress['polygon']))
-        fetchNFTByAddress('avalanche',String(GregContractAddress['avalanche'])) 
-        fetchNFTByAddress('fantom',String(GregContractAddress['fantom']))       
+      fetchNFTByAddress('eth',String(GregContractAddress['eth']))
+      fetchNFTByAddress('bsc',String(GregContractAddress['bsc']))
+      fetchNFTByAddress('polygon',String(GregContractAddress['polygon']))
+      fetchNFTByAddress('avalanche',String(GregContractAddress['avalanche'])) 
+      fetchNFTByAddress('fantom',String(GregContractAddress['fantom']))       
     }
   }, [isInitialized, Moralis, address])
 
   useEffect(()=>{
-   console.log(isGregHolder)
-   disptach(updateIsGregHolder(isGregHolder) as any)
+    disptach(updateIsGregHolder(isGregHolder) as any)
   },[isGregHolder])
   
   return (
