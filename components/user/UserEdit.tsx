@@ -29,17 +29,6 @@ import UsdcIMG from '../../public/images/payment/usdc.png'
 import UsdtIMG from '../../public/images/payment/usdt.png'
 import {heroGregSkins, skinNames} from '../../constants/gregSkin'
 
-import Alien_base from '../public/images/gregs/Alien_base.png'
-import Alien_1a from '../public/images/gregs/Alien_1a.png'
-import Alien_1b from '../public/images/gregs/Alien_1b.png'
-import Alien_2a from '../public/images/gregs/Alien_2a.png'
-import Alien_2b from '../public/images/gregs/Alien_2b.png'
-import Alien_3a from '../public/images/gregs/Alien_3a.png'
-import Alien_3b from '../public/images/gregs/Alien_3b.png'
-import Alien_4a from '../public/images/gregs/Alien_4a.png'
-import Alien_4b from '../public/images/gregs/Alien_4b.png'
-import Alien_5a from '../public/images/gregs/Alien_5a.png'
-import Alien_5b from '../public/images/gregs/Alien_5b.png'
 
 interface IUserEditProps {
   updateModal: (arg: string) => void
@@ -56,7 +45,6 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
   const DEFAULT_AVATAR = 'uploads/default_avatar.png'
 
   const [avatar, setAvatar] = useState(process.env.API_URL + 'uploads/default_avatar.png')
-  const [greg, setGreg] = useState(heroGregSkins['base'])
   const [gregName, setGregName] = useState(useSelector(selectHeroSkin))
   const [banner_1, setBanner_1] = useState(process.env.API_URL + DEFAULT_BANNER)
   const [banner_2, setBanner_2] = useState(process.env.API_URL + DEFAULT_BANNER)
@@ -690,6 +678,17 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
           }
         </div>
       </div>
+      <img src={`/images/gregs/Alien_1a.png`} className=' w-[0px] hidden'/>
+      <img src={`/images/gregs/Alien_1b.png`} className=' w-[0px] hidden'/>
+      <img src={`/images/gregs/Alien_2a.png`} className=' w-[0px] hidden'/>
+      <img src={`/images/gregs/Alien_2b.png`} className=' w-[0px] hidden'/>
+      <img src={`/images/gregs/Alien_3a.png`} className=' w-[0px] hidden'/>
+      <img src={`/images/gregs/Alien_3b.png`} className=' w-[0px] hidden'/>
+      <img src={`/images/gregs/Alien_4a.png`} className=' w-[0px] hidden'/>
+      <img src={`/images/gregs/Alien_4b.png`} className=' w-[0px] hidden'/>
+      <img src={`/images/gregs/Alien_5a.png`} className=' w-[0px] hidden'/>
+      <img src={`/images/gregs/Alien_5b.png`} className=' w-[0px] hidden'/>
+
     </>
   )
 }
