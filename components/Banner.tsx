@@ -109,7 +109,7 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
                   isGregHolder&&
                     <div className="flex flex-row h-8">
                       <div className="flex items-center text-[26px] text-slate-800 font-semibold mr-[16px]">{cuser.username ? cuser.username : 'username'}</div>
-                      <img src={`/images/gregs/Alien_${skinName}.png`} alt="avatar" className=' w-[30px]' />
+                      <Image src={Hgreg} alt="avatar" width='30px' height='30px' />
                     </div>
                 }                
                 

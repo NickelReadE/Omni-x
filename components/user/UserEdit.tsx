@@ -64,7 +64,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
   const [coinNFTID, handleNFTCoin] = useState('0')
   const [coinTokenID, handleTokenCoin] = useState('0')
 
-  const isGregHolder = useSelector(selectIsGregHolder)
+  const isGregHolder = false //useSelector(selectIsGregHolder)
 
   const dispatch = useDispatch()
   const user = useSelector(selectUser)
