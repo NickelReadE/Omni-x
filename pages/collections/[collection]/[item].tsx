@@ -353,7 +353,7 @@ const Item: NextPage = () => {
     const nftContract = getERC721Instance(nftInfo.collection.address, chainId, signer)
     await nftContract.approve(transferManagerAddr, token_id)
 
-    const lzFee = 0; // await omnixExchange.connect(signer as any).getLzFeesForBidWithTakerAsk(takerAsk, makerBid)
+    const lzFee = 0 // await omnixExchange.connect(signer as any).getLzFeesForBidWithTakerAsk(takerAsk, makerBid)
     
     await omnixExchange.connect(signer as any).matchBidWithTakerAsk(takerAsk, makerBid, { value: lzFee })
   }
