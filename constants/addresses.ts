@@ -22,9 +22,14 @@ export const addressesByNetwork: { [chainId in SupportedChainId]: Addresses } = 
   [SupportedChainId.RINKEBY]: rinkebyAddresses,
 };
 
+
+export const chains = ['eth', 'bsc', 'polygon', 'avalanche', 'fantom', 'optimism', 'arbitrum']
 export const GregContractAddress:{[key:string]:string} = {
-  'bsc testnet':'0xbd240ef6b388a5e270709ca51e6367fc238703f2',
-  'rinkeby':'0xc8759d18d5c96cce77074249330b9b41a618e51a',
-  'mumbai' :'0xf0168e6892fcbee199d3ac2373f286b08b71a201',
-  'avalanche testnet':'0x181007d7a690a04ad34a2b612f211e39d6091f06'
+  'eth':'0x7FFE2672C100bFb0094ad0B4d592Dd9f9416f1AC',
+  'bsc':'0xc5F4f67442E688Bc4Da2d9D8a055374e642490a4',
+  'polygon' :'0x54417f05c4D5E08B079bd671d0158Ff2854a4a88',
+  'avalanche':'0x018BB96D00309236E6D56046BBD8E9e083cC8CE9',
+  'arbitrum':'0x6c25c2c42928Ee8D65D2C3b0a29571BD4549A96B',
+  'optimism':'0xbb2e4B6e10FE9cCEBFDCa805cdCF9fA9fb65248F',
+  'fantom' :'0x165865de32bA3d9552FF814C2F283964c2B61a7D'
 }

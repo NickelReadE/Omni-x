@@ -3,6 +3,7 @@ import {DndContext} from '@dnd-kit/core'
 import {WalletProvider} from './WalletProvider'
 import {BridgeProvider} from './providers/BridgeProvider'
 import {ProgressProvider} from './providers/ProgressProvider'
+import { MoralisProvider } from 'react-moralis';
 import Layout from './Layout'
 
 type AppProps = {
@@ -11,15 +12,20 @@ type AppProps = {
 
 function App({children}: AppProps) {
   return (
-    <WalletProvider>
-      <BridgeProvider>
-        <ProgressProvider>
-          <DndContext>
-            <Layout>{children}</Layout>
-          </DndContext>
-        </ProgressProvider>
-      </BridgeProvider>
-    </WalletProvider>
+    <React.StrictMode>
+      <MoralisProvider serverUrl='https://bbxcpkwdxpay.usemoralis.com:2053/server' appId="rhzWnBuSjhbxwz3Fwho5CYJBW7ecyUrjo17TV8ye" jsKey="l9SXYutcus034DMhALJjh6RFA26tu9Il0NJkFwYg">
+        <WalletProvider>
+          <BridgeProvider>
+            <ProgressProvider>
+              <DndContext>
+                <Layout>{children}</Layout>
+              </DndContext>
+            </ProgressProvider>
+          </BridgeProvider>
+        </WalletProvider>
+      </MoralisProvider>
+    </React.StrictMode>
+    
   )
 }
 

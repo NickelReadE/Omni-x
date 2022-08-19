@@ -12,7 +12,8 @@ export const userSlice = createSlice({
         gettingUser: true,
         user: {},
         nfts: [],
-        isGregHolder:false
+        isGregHolder:false,
+        heroSkin:'base'
     },
     reducers: {
         setUser: (state, action) => {
@@ -29,12 +30,15 @@ export const userSlice = createSlice({
         },
         setIsGregHolder: (state, action) => {
             state.isGregHolder = action.payload === undefined?false : action.payload
+        },
+        setHeroSkin: (state, action) => {
+            state.heroSkin = action.payload === undefined?false : action.payload
         }
     }
 })
 
 //actions
-export const { setUser, setUpdatingUser, setGettingUser, setUserNFTs, setIsGregHolder } = userSlice.actions
+export const { setUser, setUpdatingUser, setGettingUser, setUserNFTs, setIsGregHolder, setHeroSkin } = userSlice.actions
 
 export const getUser = (address: string) => async (dispatch: Dispatch<any>) => {
     dispatch(setGettingUser(true))
@@ -75,12 +79,28 @@ export const getUserNFTs = (address: string) => async (dispatch: Dispatch<any>) 
     } catch (error) {
     }
 }
-
+export const updateIsGregHolder = (flag: boolean) => async (dispatch: Dispatch<any>) => {
+    try {
+       
+        dispatch(setIsGregHolder(flag))
+    } catch (error) {
+        console.log("failed to update Isgregholder")
+    }
+}
+export const updateHeroSkin = (name: String) => async (dispatch: Dispatch<any>) => {
+    try {
+       
+        dispatch(setHeroSkin(name))
+    } catch (error) {
+        console.log("failed to update heroSkin")
+    }
+}
 //selectors
 export const selectUser = (state: any) => state.userState.user
 export const selectUpdatingUser = (state: any) => state.userState.updatingUser
 export const selectGettingUser = (state: any) => state.userState.gettingUser
 export const selectUserNFTs = (state: any) => state.userState.nfts
 export const selectIsGregHolder = (state: any) => state.userState.isGregHolder
+export const selectHeroSkin = (state: any) => state.userState.heroSkin
 
 export default userSlice.reducer

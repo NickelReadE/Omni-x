@@ -169,6 +169,7 @@ export const WalletProvider = ({
       const cachedProviderJson = localStorage.getItem(
         'WEB3_CONNECT_CACHED_PROVIDER'
       )
+      console.log(cachedProviderJson);
       if (!cachedProviderJson) return
       const cachedProviderName = JSON.parse(cachedProviderJson)
       const instance = await web3Modal.connectTo(cachedProviderName)
