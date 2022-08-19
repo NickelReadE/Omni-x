@@ -169,7 +169,7 @@ const SideBar: React.FC = () => {
     setExpandedMenu(0)
     setOffsetMenu(0)
     setShowSidebar(false)
-    setOnMenu(true)
+    setOnMenu(false)
   }
 
   const toggleMenu = (menu: number) => {
@@ -606,7 +606,7 @@ const SideBar: React.FC = () => {
                 <li className="w-full">
                   <button className="w-full hover:bg-l-50 pl-[70px] py-[17px] " onClick={() => onClickNetwork(env === 'testnet' ? 4 : 1)}>
                     <div className="flex flex-row w-[130px]">
-                      <div className="flex items-center w-[36px] h-[36px] m-auto">
+                      <div className="flex items-center w-[36px] h-[36px]">
                         <img src="/svgs/ethereum.svg" width={24} height={28} />
                       </div>
                       <span className="flex items-center ml-4 " >Ethereum</span>
