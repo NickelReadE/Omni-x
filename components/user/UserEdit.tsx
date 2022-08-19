@@ -448,7 +448,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                           onClick={onClickAvatar}
                         >                        
                           <img
-                            src={`Alien_${gregName}`}
+                            src={`/images/gregs/Alien_${gregName}.png`}
                             alt="avatar"
                             className=' w-[190px]'
                           />
