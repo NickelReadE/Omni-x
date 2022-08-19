@@ -169,7 +169,7 @@ const SideBar: React.FC = () => {
     setExpandedMenu(0)
     setOffsetMenu(0)
     setShowSidebar(false)
-    setOnMenu(true)
+    setOnMenu(false)
   }
 
   const toggleMenu = (menu: number) => {
