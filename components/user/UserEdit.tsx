@@ -28,6 +28,19 @@ import OmniIMG from '../../public/images/payment/omni.png'
 import UsdcIMG from '../../public/images/payment/usdc.png'
 import UsdtIMG from '../../public/images/payment/usdt.png'
 import {heroGregSkins, skinNames} from '../../constants/gregSkin'
+
+import Alien_base from '../public/images/gregs/Alien_base.png'
+import Alien_1a from '../public/images/gregs/Alien_1a.png'
+import Alien_1b from '../public/images/gregs/Alien_1b.png'
+import Alien_2a from '../public/images/gregs/Alien_2a.png'
+import Alien_2b from '../public/images/gregs/Alien_2b.png'
+import Alien_3a from '../public/images/gregs/Alien_3a.png'
+import Alien_3b from '../public/images/gregs/Alien_3b.png'
+import Alien_4a from '../public/images/gregs/Alien_4a.png'
+import Alien_4b from '../public/images/gregs/Alien_4b.png'
+import Alien_5a from '../public/images/gregs/Alien_5a.png'
+import Alien_5b from '../public/images/gregs/Alien_5b.png'
+
 interface IUserEditProps {
   updateModal: (arg: string) => void
 }
@@ -435,7 +448,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                           onClick={onClickAvatar}
                         >                        
                           <img
-                            src={`/images/gregs/Alien_${gregName}.png`}
+                            src={`Alien_${gregName}`}
                             alt="avatar"
                             className=' w-[190px]'
                           />
