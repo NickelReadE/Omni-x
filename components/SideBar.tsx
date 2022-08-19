@@ -169,7 +169,7 @@ const SideBar: React.FC = () => {
     setExpandedMenu(0)
     setOffsetMenu(0)
     setShowSidebar(false)
-    setOnMenu(false)
+    setOnMenu(true)
   }
 
   const toggleMenu = (menu: number) => {
@@ -569,7 +569,7 @@ const SideBar: React.FC = () => {
         <ul className='flex flex-col space-y-4 mr-[70px]'>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px] py-[24px] text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl sidebar ${expandedMenu==1?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px] py-[24px] text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==1?'active':''}`}
               onClick={() => toggleMenu(1)}
             >
               My Profile

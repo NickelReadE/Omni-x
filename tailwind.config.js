@@ -82,6 +82,9 @@ module.exports = {
       },
       rotate: {
         '52': '52deg',
+      },
+      boxShadow:{
+        'ml':'0 0 10px rgba(0,0,0,0.25)'
       }
     },
   },

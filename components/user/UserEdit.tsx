@@ -151,6 +151,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
       const formData = new FormData(updateProfileFormRef.current)
       const address = context.address?context.address:''
       formData.append('address', address)
+      formData.append('greg',gregName)
       console.log(formData)
       console.log(banner_1)
       console.log(banner_2)
@@ -678,16 +679,16 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
           }
         </div>
       </div>
-      <img src={`/images/gregs/Alien_1a.png`} className=' w-[0px] hidden'/>
-      <img src={`/images/gregs/Alien_1b.png`} className=' w-[0px] hidden'/>
-      <img src={`/images/gregs/Alien_2a.png`} className=' w-[0px] hidden'/>
-      <img src={`/images/gregs/Alien_2b.png`} className=' w-[0px] hidden'/>
-      <img src={`/images/gregs/Alien_3a.png`} className=' w-[0px] hidden'/>
-      <img src={`/images/gregs/Alien_3b.png`} className=' w-[0px] hidden'/>
-      <img src={`/images/gregs/Alien_4a.png`} className=' w-[0px] hidden'/>
-      <img src={`/images/gregs/Alien_4b.png`} className=' w-[0px] hidden'/>
-      <img src={`/images/gregs/Alien_5a.png`} className=' w-[0px] hidden'/>
-      <img src={`/images/gregs/Alien_5b.png`} className=' w-[0px] hidden'/>
+      <img src={'/images/gregs/Alien_1a.png'} className=' w-[0px] hidden'/>
+      <img src={'/images/gregs/Alien_1b.png'} className=' w-[0px] hidden'/>
+      <img src={'/images/gregs/Alien_2a.png'} className=' w-[0px] hidden'/>
+      <img src={'/images/gregs/Alien_2b.png'} className=' w-[0px] hidden'/>
+      <img src={'/images/gregs/Alien_3a.png'} className=' w-[0px] hidden'/>
+      <img src={'/images/gregs/Alien_3b.png'} className=' w-[0px] hidden'/>
+      <img src={'/images/gregs/Alien_4a.png'} className=' w-[0px] hidden'/>
+      <img src={'/images/gregs/Alien_4b.png'} className=' w-[0px] hidden'/>
+      <img src={'/images/gregs/Alien_5a.png'} className=' w-[0px] hidden'/>
+      <img src={'/images/gregs/Alien_5b.png'} className=' w-[0px] hidden'/>
 
     </>
   )

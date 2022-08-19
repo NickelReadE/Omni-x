@@ -45,9 +45,14 @@ export const getUser = (address: string) => async (dispatch: Dispatch<any>) => {
     try {
         const user = await userService.getUserByAddress(address)
         dispatch(setUser(user))
+        console.log(user)
+        if(user.greg){
+            dispatch(setHeroSkin(user.greg))
+        }
+        
         dispatch(setGettingUser(false))
     } catch (error) {
-        dispatch(setUser({}))
+        //dispatch(setUser({}))
         dispatch(setGettingUser(false))
     }
 }
