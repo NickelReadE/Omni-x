@@ -228,7 +228,7 @@ const SideBar: React.FC = () => {
     } else if (selectedNFTItem.contract_type === 'ERC1155') {
       const contractInstance = getOmnixBridge1155Instance(provider?._network?.chainId, signer)
       const noSignerOmniX1155Instance = getOmnixBridge1155Instance(targetChain, null)
-      const erc1155Instance = getERC1155Instance(selectedNFTItem.token_address, signer)
+      const erc1155Instance = getERC1155Instance(selectedNFTItem.token_address, provider?._network?.chainId, signer)
       const dstAddress = await noSignerOmniX1155Instance.persistentAddresses(selectedNFTItem.token_address)
       let adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 3500000])
       if (dstAddress !== ethers.constants.AddressZero) {
@@ -331,7 +331,7 @@ const SideBar: React.FC = () => {
       } else if (selectedNFTItem.contract_type === 'ERC1155') {
         const contractInstance = getOmnixBridge1155Instance(provider?._network?.chainId, signer)
         const noSignerOmniX1155Instance = getOmnixBridge1155Instance(targetChain, null)
-        const erc1155Instance = getERC1155Instance(selectedNFTItem.token_address, signer)
+        const erc1155Instance = getERC1155Instance(selectedNFTItem.token_address, provider?._network?.chainId, signer)
         const dstAddress = await noSignerOmniX1155Instance.persistentAddresses(selectedNFTItem.token_address)
         let adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 3500000])
         if (dstAddress !== ethers.constants.AddressZero) {
