@@ -301,7 +301,7 @@ const Item: NextPage = () => {
           <div className="w-full 2xl:px-[10%] xl:px-[5%] lg:px-[2%] md:px-[2%] ">
             <div className="grid grid-cols-3 2xl:gap-12 lg:gap-1 xl:gap-4">
               <div className="col-span-1">
-                <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" height={50} />}>
+                <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image"/>}>
                   <img className='rounded-[8px]' src={imageError?'/images/omnix_logo_black_1.png':nftInfo.nft.image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={nftInfo.nft.image} />
                 </LazyLoad>
               </div>
