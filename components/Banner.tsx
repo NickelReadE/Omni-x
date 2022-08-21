@@ -15,7 +15,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Carousel from './carousel'
 import {chains, GregContractAddress} from '../constants/addresses'
 
-import Hgreg from '../public/images/gregs/hgreg1.png'
+import Hgreg from '../public/images/gregs/logo.png'
 import { _fetchData } from 'ethers/lib/utils'
 
 type BannerProps = {
