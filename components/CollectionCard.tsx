@@ -86,57 +86,56 @@ const CollectionCard = (props:any) => {
       </div>
       <div className="grid grid-rows-6 grid-flow-col gap-1 p-2">
         <div className={classNames('row-span-6 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
-            <div className='text-[15px] font-extrabold  mb-1'>Floor</div>
-            <div className='flex flex-col space-y-2' >
-              <div className='text-[15px] flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
-                  <span className='font-medium'>65.22</span>
-                  <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img>
-              </div>
-              <div className='flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
-                  <span className='font-medium' >69.22K</span>
-                  <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img>
-              </div>
-              <div className='flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
-                  <span className='font-medium'>65.22K</span>
-                  <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img>
-              </div>
+          <div className='text-[15px] font-extrabold  mb-1'>Floor</div>
+          <div className='flex flex-col space-y-2' >
+            <div className='text-[15px] flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
+              <span className='font-medium'>65.22</span>
+              <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img>
             </div>
-            
+            <div className='flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
+              <span className='font-medium' >69.22K</span>
+              <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img>
+            </div>
+            <div className='flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
+              <span className='font-medium'>65.22K</span>
+              <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img>
+            </div>
+          </div>            
         </div>
         <div className={classNames('row-span-2 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)}>
-            <div className='text-[15px] flex flex-row justify-between'>
-                <span className='font-extrabold mr-[10px]'>Items</span>
-                <span className='font-medium'>10K</span>
-            </div>
+          <div className='text-[15px] flex flex-row justify-between'>
+            <span className='font-extrabold mr-[10px]'>Items</span>
+            <span className='font-medium'>10K</span>
+          </div>
         </div>
         <div  className={classNames('row-span-2 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
-            <div className='text-[15px] flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
-                <span className='font-extrabold mr-[10px]'>Owners</span>
-                <span className='font-medium'>10K</span>
-            </div>
+          <div className='text-[15px] flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
+            <span className='font-extrabold mr-[10px]'>Owners</span>
+            <span className='font-medium'>10K</span>
+          </div>
         </div>
         <div className={classNames('row-span-2 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
-            <div className='text-[15px] flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
-                <span className='font-extrabold mr-[10px]'>Listed</span>
-                <span className='font-medium'>10K</span>
-            </div>
+          <div className='text-[15px] flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
+            <span className='font-extrabold mr-[10px]'>Listed</span>
+            <span className='font-medium'>10K</span>
+          </div>
         </div>
         <div className={classNames('row-span-3 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
-            <div className='text-[14px] font-extrabold mb-1'>Volume(Total)</div>
-            <div className='text-[15px] flex flex-row '>
-                <span className='mr-1'>65.22</span>
-                <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img>
-            </div>
+          <div className='text-[14px] font-extrabold mb-1'>Volume(Total)</div>
+          <div className='text-[15px] flex flex-row '>
+            <span className='mr-1'>65.22</span>
+            <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img>
+          </div>
         </div>
         <div className={classNames('row-span-3 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
-            <div className='text-[14px] font-extrabold mb-1'>Volume(7d)</div>
-            <div className='text-[15px] flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
-                <div className='flex flex-row mr-4'>
-                  <span className='font-medium mr-1'>65.22</span>
-                  <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img>
-                </div>               
-                <span className='font-medium text-[#38B000]'> +25%</span>
-            </div>
+          <div className='text-[14px] font-extrabold mb-1'>Volume(7d)</div>
+          <div className='text-[15px] flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
+            <div className='flex flex-row mr-4'>
+              <span className='font-medium mr-1'>65.22</span>
+              <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img>
+            </div>               
+            <span className='font-medium text-[#38B000]'> +25%</span>
+          </div>
         </div>
       </div>
       
