@@ -125,3 +125,11 @@ export const getChainInfo = (chainId: number) => {
   }
   return null
 }
+
+export const getBlockExplorer = (chainId: number) => {
+  const chainInfo = getChainInfo(chainId)
+  if (chainInfo) {
+    return chainInfo.explorers?.[0]?.url
+  }
+  return null
+}

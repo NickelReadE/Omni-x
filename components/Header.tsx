@@ -9,6 +9,7 @@ import arrowUp from '../public/images/arrowUp.png'
 import arrowDown from '../public/images/arrowDown.png'
 import arrowRight from '../public/images/arrowRight.png'
 import loading from '../public/images/loading.gif'
+import viewExplorer from '../public/images/viewExplorer.png'
 import optimism from '../public/sidebar/optimism.png'
 import ethereum from '../public/sidebar/ethereum.png'
 import binance from '../public/sidebar/binance.png'
@@ -16,6 +17,7 @@ import polygon from '../public/sidebar/polygon.png'
 import avax from '../public/sidebar/avax.png'
 import arbitrum from '../public/sidebar/arbitrum.png'
 import fantom from '../public/sidebar/fantom.png'
+import { getBlockExplorer } from '../utils/constants'
 
 type HeaderProps = {
   menu: string
@@ -48,6 +50,16 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
       isHover: false
     })
   }
+
+  const onViewExplorer = () => {
+    if (pending && txInfo && txInfo.txHash && txInfo.senderChainId) {
+      const explorer = getBlockExplorer(txInfo.senderChainId)
+      if (explorer) {
+        window.open(`${explorer}/tx/${txInfo.txHash}`, '_blank')
+      }
+    }
+  }
+
   return (
     <>
       <nav className={
@@ -143,6 +155,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
                   txInfo?.type === 'bridge'
                     ?
                     <div className='flex items-center justify-between'>
+                      <Image src={viewExplorer} alt="view Explorer" width={20} height={20} style={{cursor: 'pointer'}} onClick={onViewExplorer} />
                       {
                         (txInfo?.senderChainId === 4 || txInfo?.senderChainId === 4) &&
                           <Image src={ethereum} alt="ethereum" width={20} height={20} />
