@@ -1,11 +1,12 @@
 import React from 'react'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { chain_list } from '../utils/utils'
 import { IPropsNFTItem } from '../interface/interface'
 import LazyLoad from 'react-lazyload'
 import {useDraggable} from '@dnd-kit/core'
 import ConfirmSell from './collections/ConfirmSell'
-import { prependOnceListener } from 'process'
+import { cpuUsage, prependOnceListener } from 'process'
 
 import useWallet from '../hooks/useWallet'
 import { addressesByNetwork } from '../constants'
@@ -15,8 +16,11 @@ import { addDays } from 'date-fns'
 import { openSnackBar } from '../redux/reducers/snackBarReducer'
 import { ethers } from 'ethers'
 import { getOrders, selectOrders,selectBidOrders } from '../redux/reducers/ordersReducer'
+import { selectCollections } from '../redux/reducers/collectionsReducer'
 import { IGetOrderRequest } from '../interface/interface'
 import { useDispatch, useSelector } from 'react-redux'
+
+import Router from 'next/router'
 
 const NFTBox = ({nft, index}: IPropsNFTItem) => {
 
@@ -32,6 +36,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   const [highestBidCoin, setHighestBidCoin] = useState('')
   const orders = useSelector(selectOrders)
   const bidOrders = useSelector(selectBidOrders)
+  const collections = useSelector(selectCollections)
 
   const currencies_list = [
     { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0x49fB1b5550AFFdFF32CffF03c1A8168f992296eF' },
@@ -118,6 +123,20 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     }
   },[orders,bidOrders])
 
+  const doubleClickToSetDetailLink = () => {
+    const collection_address = nft.token_address
+    if (collection_address == '0xb7b0d9849579d14845013ef9d8421ae58e9b9369' || collection_address == '0x7470ea065e50e3862cd9b8fb7c77712165da80e5' || collection_address == '0xb74bf94049d2c01f8805b8b15db0909168cabf46' || collection_address == '0x7f04504ae8db0689a0526d99074149fe6ddf838c' || collection_address == '0xa783cc101a0e38765540ea66aeebe38beebf7756'|| collection_address == '0x316dc98ed120130daf1771ca577fad2156c275e5') {
+      for(let i = 0;i<collections.length;i++){
+        if(collection_address == collections[i].address){
+          const {pathname} = Router
+          if(pathname == '/' ){
+            Router.push(`/collections/${collections[i].col_url}/${nft.token_id}`)
+          }
+        }
+      }
+    }
+  }
+
 
   const onListing = async (currency: string, price: number, period: number) => {
     const chainId = provider?.network.chainId as number
@@ -141,7 +160,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
           startTime: startTime,
           endTime: addDays(startTime, period).getTime(),
           params: {
-            values: [10001],
+            values: [10001,1],
             types: ['uint256'],
           },
         },
@@ -167,11 +186,17 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   }
   
   return (
-  	<div className='border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]'>
+    <div className='border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]'>
       <div className="nft-image-container" ref={setNodeRef} style={style} {...listeners} {...attributes}>
-        <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
-          <img className='nft-image' src={imageError?'/images/omnix_logo_black_1.png':image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={image} />
-        </LazyLoad>
+        {islisted?
+          <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
+            <img className='nft-image' src={imageError?'/images/omnix_logo_black_1.png':image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={image} onDoubleClick={() => doubleClickToSetDetailLink()}/>
+          </LazyLoad>
+          :
+          <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
+            <img className='nft-image' src={imageError?'/images/omnix_logo_black_1.png':image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={image}/>
+          </LazyLoad>
+        }
         <div className="absolute top-[8px] right-[9px] p-[12px]" style={{background: 'radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.2) 0%, rgba(254, 254, 255, 0) 100%)'}}>
           <div className="bg-[url('/images/ellipse.png')] hover:bg-[url('/images/ellipse_hover.png')] bg-cover w-[21px] h-[21px]"></div>
         </div>

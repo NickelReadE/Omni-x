@@ -5,6 +5,7 @@ import { getOrders, selectOrders } from '../redux/reducers/ordersReducer'
 import { IGetOrderRequest } from '../interface/interface'
 import useWallet from '../hooks/useWallet'
 import { useDispatch, useSelector } from 'react-redux'
+import { getCollections } from '../redux/reducers/collectionsReducer'
 
 const chainList = [
   { chain: 'all', img_url: '/svgs/all_chain.svg', title: 'all NFTs', disabled: false},
@@ -24,6 +25,10 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
     address
   } = useWallet()
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(getCollections() as any)
+  }, [])
 
   useEffect(()=> {
     if(nfts.length>0){

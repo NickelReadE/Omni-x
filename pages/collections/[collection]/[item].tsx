@@ -422,12 +422,12 @@ const Item: NextPage = () => {
             </div>
 
             <div className="mt-10">
-              <div className="ml-10">
+              <div>
                 <ul className="flex flex-wrap relative justify-item-stretch text-sm font-medium text-center text-gray-500">
-                  <li className={`select-none inline-block border-x-2 border-t-2 border-zince-800 text-xl px-10 py-2 rounded-t-lg ${currentTab==='items'?'bg-[#E9ECEF] text-[#1E1C21]':'bg-[#F8F9FA] text-[#6C757D]'}`} onClick={()=>setCurrentTab('items')}>properties</li>
-                  <li className={`select-none inline-block border-x-2 border-t-2 border-zince-800 text-xl px-10 py-2 rounded-t-lg ${currentTab==='activity'?'bg-[#E9ECEF] text-[#1E1C21]':'bg-[#F8F9FA] text-[#6C757D]'}`} >activity</li>
-                  <li className={`select-none inline-block border-x-2 border-t-2 border-zince-800 text-xl px-10 py-2 rounded-t-lg ${currentTab==='info'?'bg-[#E9ECEF] text-[#1E1C21]':'bg-[#F8F9FA] text-[#6C757D]'}`} >info</li>
-                  <li className={`select-none inline-block border-x-2 border-t-2 border-zince-800 text-xl px-10 py-2 rounded-t-lg ${currentTab==='stats'?'bg-[#E9ECEF] text-[#1E1C21]':'bg-[#F8F9FA] text-[#6C757D]'}`} >stats</li>
+                  <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='items'?' text-[#1E1C21] border-b-2 border-black':' text-[#A0B3CC]'}`} onClick={()=>setCurrentTab('items')}>properties</li>
+                  <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='activity'?' text-[#1E1C21]':' text-[#A0B3CC]'}`} >activity</li>
+                  <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='info'?' text-[#1E1C21]':' text-[#A0B3CC]'}`} >info</li>
+                  <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='stats'?' text-[#1E1C21]':' text-[#A0B3CC]'}`} >stats</li>
                 </ul>
               </div>
               <div className="border-2 border-[#E9ECEF] bg-[#F8F9FA] px-10 py-8">
