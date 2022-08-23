@@ -129,7 +129,7 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
                     isGregHolder&&<div className='mr-2'><Image src={Hgreg} alt="avatar" width='30px' height='30px' /></div>
                   }
                   {
-                  isStgStacker&&<Image src={Stg} alt="avatar" width='30px' height='30px' />
+                    isStgStacker&&<Image src={Stg} alt="avatar" width='30px' height='30px' />
                   }
                 </div>                                
                
