@@ -32,7 +32,7 @@ import Chip from '@material-ui/core/Chip'
 import classNames from '../../../helpers/classNames'
 import editStyle from '../../../styles/collection.module.scss'
 import { info } from 'console'
-import { getOrders } from '../../../redux/reducers/ordersReducer'
+import { getOrders, getLastSaleOrders } from '../../../redux/reducers/ordersReducer'
 import { IGetOrderRequest } from '../../../interface/interface'
 
 
@@ -178,6 +178,13 @@ const Collection: NextPage = () => {
         sort: 'PRICE_ASC'
       }
       dispatch(getOrders(bidRequest) as any)
+
+      const excutedRequest: IGetOrderRequest = {
+        collection: collectionInfo.address,
+        status: ['EXECUTED'],
+        sort: 'UPDATE_OLDEST'
+      }
+      dispatch(getLastSaleOrders(excutedRequest) as any)
     }
   },[nfts])
   

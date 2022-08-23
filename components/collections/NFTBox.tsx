@@ -5,7 +5,7 @@ import { IPropsNFTItem } from '../../interface/interface'
 import LazyLoad from 'react-lazyload'
 import USD from '../../public/images/USD.png'
 import { ethers } from 'ethers'
-import { selectOrders, selectBidOrders } from '../../redux/reducers/ordersReducer'
+import { selectOrders, selectBidOrders, selectLastSaleOrders } from '../../redux/reducers/ordersReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import useWallet from '../../hooks/useWallet'
 import { isYesterday } from 'date-fns'
@@ -23,6 +23,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
   const [isOwner, setIsOwner] = useState(false)
   const orders = useSelector(selectOrders)
   const bidOrders = useSelector(selectBidOrders)
+  const executedOrders = useSelector(selectLastSaleOrders)
 
   const {
     provider,
@@ -49,6 +50,20 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
             })
             setIsOwner(true)
           }
+        }
+        if(executedOrders.length > 0) {
+          let lastprice = 0
+          for(let i=0;i<executedOrders.length;i++){
+            if(executedOrders[i].tokenId==nft.token_id && executedOrders[i].collectionAddress==col_address){
+              lastprice = Number(ethers.utils.formatEther(executedOrders[i].price))
+              for(let j=0;j<currencies_list.length;j++){
+                if(currencies_list[j].address==executedOrders[i].currencyAddress){
+                  setLastSaleCoin(`/images/${currencies_list[j].icon}`)
+                }
+              }
+            }
+          }
+          setLastSale(lastprice)
         }
         if ( bidOrders.length > 0 ) {
           let bid_balance = 0
