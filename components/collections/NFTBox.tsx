@@ -84,11 +84,11 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
           </div>
           <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle">
             <div className="text-[#6C757D] text-[14px] font-medium font-['Roboto_Mono'] mt-3 ml-3">
-              {nft.name}
+              {nft.token_id}
             </div>
             <div className="mr-3 flex items-center">
-              <div className="mr-3 flex items-center cursor-pointer bg-[url('/images/round-refresh.png')] hover:bg-[url('/images/round-refresh_hover.png')] bg-cover w-[20px] h-[20px]">
-              </div>
+              {/* <div className="mr-3 flex items-center cursor-pointer bg-[url('/images/round-refresh.png')] hover:bg-[url('/images/round-refresh_hover.png')] bg-cover w-[20px] h-[20px]">
+              </div> */}
               <div className="flex items-center ml-1">
                 {(chain === 'eth' || chain === 'rinkeby') &&
                   <img src="/svgs/ethereum.svg" className="w-[16px] h-[16px]" />
@@ -116,10 +116,10 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
           </div>
           <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle">
             <div className="flex items-center ml-3">
-              {!islisted &&highestBid==0&&<><img src="/svgs/ethereum.svg" className="w-[18px] h-[18px]" />
+              {/* {!islisted &&highestBid==0&&<><img src="/svgs/ethereum.svg" className="w-[18px] h-[18px]" />
                 <span className="text-[#1E1C21] text-sm ml-2"> {nft.price && ethers.utils.formatEther(nft.price)}</span></>}
               {!islisted &&highestBid!=0&&<><img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>
-                <span className="text-[#1E1C21] text-sm ml-2"> {highestBid}</span></>}
+                <span className="text-[#1E1C21] text-sm ml-2"> {highestBid}</span></>} */}
               {islisted &&<><img src={img_url} className="w-[18px] h-[18px]" />
                 <span className="text-[#1E1C21] text-sm ml-2"> {price}</span></>}
               
@@ -141,6 +141,8 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
                 <span className="text-[#1E1C21] text-sm ml-2"><span className="text-[#1E1C21] text-sm ml-2">last sale: &nbsp;</span>{lastSale}</span></>}
               {lastSale==0&&highestBid!=0&&<><span className="text-[#1E1C21] text-sm ml-2">highest offer: &nbsp;</span><img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>
                 <span className="text-[#1E1C21] text-sm ml-2">{highestBid}</span></>}
+              {lastSale==0&&highestBid==0&&<><span className="text-[#1E1C21] text-sm ml-2">last sale: &nbsp;</span>
+              <span className="text-[#1E1C21] text-sm ml-2">${lastSale}</span></>}
             </div>
           </div>
         </a>
