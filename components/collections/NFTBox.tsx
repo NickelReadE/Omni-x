@@ -142,7 +142,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
               {lastSale==0&&highestBid!=0&&<><span className="text-[#1E1C21] text-sm ml-2">highest offer: &nbsp;</span><img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>
                 <span className="text-[#1E1C21] text-sm ml-2">{highestBid}</span></>}
               {lastSale==0&&highestBid==0&&<><span className="text-[#1E1C21] text-sm ml-2">last sale: &nbsp;</span>
-              <span className="text-[#1E1C21] text-sm ml-2">${lastSale}</span></>}
+                <span className="text-[#1E1C21] text-sm ml-2">${lastSale}</span></>}
             </div>
           </div>
         </a>
