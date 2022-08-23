@@ -13,9 +13,10 @@ import UserEdit from './user/UserEdit'
 import Dialog from '@material-ui/core/Dialog'
 import { makeStyles } from '@material-ui/core/styles'
 import Carousel from './carousel'
-import {chains, GregContractAddress} from '../constants/addresses'
+import {chainsFroSTG, GregContractAddress, veSTGContractAddress, veSTGContractAddresses} from '../constants/addresses'
 
 import Hgreg from '../public/images/gregs/logo.png'
+import Stg from '../public/images/stg/stg.png'
 import { _fetchData } from 'ethers/lib/utils'
 
 type BannerProps = {
@@ -45,6 +46,7 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
   const [bOpenModal, setOpenModal] = React.useState(false)
   const [bShowSettingIcon, setShowSettingIcon] = React.useState(false)
   const [isGregHolder, setIsGregHolder] = useState(false)
+  const [isStgStacker, setIsStgStacker] = useState(false)
   const DEFAULT_AVATAR = 'uploads\\default_avatar.png'
   const updateModal = (name: string):void => {
     setOpenModal(false)
@@ -56,13 +58,28 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
       setIsGregHolder(true)
     }
   } 
+  const fetchToken =async(chain:'eth' |'bsc'|'polygon'| 'fantom')=>{
+    const balances = await Moralis.Web3API.account.getTokenBalances({
+      chain: chain, token_addresses: veSTGContractAddress[chain],
+      address: address?address:''
+    }) 
+    if(balances.length>0){
+      setIsStgStacker(true)
+    }
+    console.log('tokens:',balances)   
+  }
+
   useEffect(() => {
     if (isInitialized && address) {
       fetchNFTByAddress('eth',String(GregContractAddress['eth']))
       fetchNFTByAddress('bsc',String(GregContractAddress['bsc']))
       fetchNFTByAddress('polygon',String(GregContractAddress['polygon']))
       fetchNFTByAddress('avalanche',String(GregContractAddress['avalanche'])) 
-      fetchNFTByAddress('fantom',String(GregContractAddress['fantom']))       
+      fetchNFTByAddress('fantom',String(GregContractAddress['fantom']))
+      fetchToken('eth')
+      fetchToken('bsc')
+      fetchToken('polygon')
+      fetchToken('fantom')
     }
   }, [isInitialized, Moralis, address])
 
@@ -104,15 +121,18 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
                   height={200}
                 />
               </div>              
-              <div className="flex flex-col ml-[20rem] mt-[10px]">
-                {
-                  isGregHolder&&
-                    <div className="flex flex-row h-8">
-                      <div className="flex items-center text-[26px] text-slate-800 font-semibold mr-[16px]">{cuser.username ? cuser.username : 'username'}</div>
-                      <Image src={Hgreg} alt="avatar" width='30px' height='30px' />
-                    </div>
-                }                
-                
+              <div className="flex flex-col ml-[20rem] mt-[10px]">                
+                  
+                <div className="flex flex-row h-8">
+                  <div className="flex items-center text-[26px] text-slate-800 font-semibold mr-[16px]">{cuser.username ? cuser.username : 'username'}</div>
+                  {
+                    isGregHolder&&<div className='mr-2'><Image src={Hgreg} alt="avatar" width='30px' height='30px' /></div>
+                  }
+                  {
+                  isStgStacker&&<Image src={Stg} alt="avatar" width='30px' height='30px' />
+                  }
+                </div>                                
+               
                 <div className="text-[#6C757D] text-[16px] text-slate-800">
                   {cuser.bio?cuser.bio:'You can see the short description about your account'}
                 </div>
