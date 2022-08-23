@@ -20,6 +20,7 @@ import fashion from '../../public/images/fashion.png'
 
 import ImageList from '../../components/ImageList'
 import Slider from '../../components/Slider'
+import CollectionCard from '../../components/CollectionCard'
 
 
 const serviceSlides: Array<React.ReactNode> = []
@@ -49,21 +50,17 @@ const Collections: NextPage = () => {
 
     collections && collections.map((item: any) => {
       slides.push(
-        <Link href={`/collections/${item.col_url}`}>
-          <a>
-            <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt={item.name} />}>
-              <img src={imageError?'/images/omnix_logo_black_1.png':(item.profile_image ? item.profile_image : '/images/omnix_logo_black_1.png')} alt={item.name} onError={(e)=>{setImageError(true)}} data-src={item.profile_image ? item.profile_image : ''} className='w-[100%]' />
-            </LazyLoad>
-          </a>
-        </Link>
+                   
+        <CollectionCard collection={item}/>
+         
       )
     })
     setOmniSlides(slides)
   }, [collections])
   return (
     <>
-      <div>
-        <Slider title="Beta Collections" images={omniSlides} />
+      <div className='pt-10'>
+        <Slider title="Beta Collections" cards={omniSlides} />
         {/* <Slider title="Trending Collection" images={omniSlides} /> */}
         {/* <ImageList title="" images={serviceSlides} /> */}
         
