@@ -445,16 +445,20 @@ const Item: NextPage = () => {
                       
                     </div>
                     <div className="flex justify-between items-center mt-6">
-                      <h1 className="text-[#1E1C21] text-[60px] font-normal">{order && order.price && ethers.utils.formatEther(order.price)}</h1>
-                      <div className="mr-5">
-                        {currencyIcon && 
-                          <img
-                            src={`/images/${currencyIcon}`}
-                            className='mr-[8px] w-[21px]'
-                            alt="icon"
-                          />
-                        }
-                      </div>
+                      {order && (
+                        <>
+                          <h1 className="text-[#1E1C21] text-[60px] font-normal">{order.price && ethers.utils.formatEther(order.price)}</h1>
+                          <div className="mr-5">
+                            {currencyIcon && 
+                              <img
+                                src={`/images/${currencyIcon}`}
+                                className='mr-[8px] w-[21px]'
+                                alt="icon"
+                              />
+                            }
+                          </div>
+                        </>
+                      )}
                     </div>
                     <div className="mb-3">
                       <h1>{order && order.price && '$'}{order && order.price && ethers.utils.formatEther(order.price)}</h1>
@@ -490,13 +494,11 @@ const Item: NextPage = () => {
                             </div>
                             <div className='flex justify-start items-center mt-3'>
                               <div className="mr-5">
-                                {currencyIcon &&
-                                  <img
-                                    src={`/images/${currencyIcon}`}
-                                    className='mr-[8px] w-[21px]'
-                                    alt="icon"
-                                  />
-                                }
+                                <img
+                                  src={`/images/${getCurrencyIconByAddress(item.currencyAddress)}`}
+                                  className='mr-[8px] w-[21px]'
+                                  alt="icon"
+                                />
                               </div>
                               <p className='ml-3'>${item && item.price && ethers.utils.formatEther(item.price)}</p>
                             </div>
