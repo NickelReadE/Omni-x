@@ -137,16 +137,16 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
 
           {
             pending &&
-            <div className={'rounded-[8px] w-[200px] md:order-2 mr-[70px] px-4 flex flex-col justify-center shadow-md ' + (expand ? 'h-[80px]' : 'h-[40px]')}>
+            <div className={'rounded-[8px] w-[250px] md:order-2 mr-[70px] px-4 flex flex-col justify-center shadow-md ' + (expand ? 'h-[80px]' : 'h-[40px]')}>
               <div className="flex items-center justify-between">
-                <span className="text-lg">Processing</span>
+                <span className="text-lg">processing</span>
                 <Image src={loading} alt="loading" width={30} height={30} />
                 {
                   expand
                     ?
-                    <Image src={arrowUp} alt="arrowUp" onClick={() => setExpand(!expand)} />
+                    <Image src={arrowUp} alt="arrowUp" style={{cursor: 'pointer'}} onClick={() => setExpand(!expand)} />
                     :
-                    <Image src={arrowDown} alt="arrowDown" onClick={() => setExpand(!expand)} />
+                    <Image src={arrowDown} alt="arrowDown" style={{cursor: 'pointer'}} onClick={() => setExpand(!expand)} />
                 }
               </div>
               {
@@ -213,7 +213,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
                         (txInfo?.targetChainId === 4002 || txInfo?.targetChainId === 4002) &&
                         <Image src={fantom} alt="fantom" width={20} height={20} />
                       }
-                      <span className="text-md text-gray-500 w-[87px] truncate">{txInfo?.itemName}</span>
+                      <span className="text-md text-gray-500 w-[90px] truncate">{txInfo?.itemName}</span>
                     </div>
                     :
                     <div />

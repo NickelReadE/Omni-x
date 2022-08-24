@@ -1,13 +1,13 @@
-import {useState, ReactNode, useEffect} from 'react'
-import {BigNumber, Contract} from 'ethers'
-import {PendingTxType, ProgressContext} from '../../contexts/progress'
+import { useState, ReactNode, useEffect } from 'react'
+import { BigNumber, Contract } from 'ethers'
+import { PendingTxType, ProgressContext } from '../../contexts/progress'
 import { getOmnixBridge1155Instance, getOmnixBridgeInstance, getONFTCore1155Instance, getONFTCore721Instance } from '../../utils/contracts'
 import { useDispatch } from 'react-redux'
 import { getUserNFTs } from '../../redux/reducers/userReducer'
 import useWallet from '../../hooks/useWallet'
 
 type ProgressProviderProps = {
-    children?: ReactNode
+  children?: ReactNode
 }
 
 export const ProgressProvider = ({
