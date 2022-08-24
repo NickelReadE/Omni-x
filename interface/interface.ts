@@ -96,12 +96,14 @@ export interface IOrder {
   v: number,
   r: string,
   s: string,
-  status: string
+  hash: string,
+  status: OrderStatus
 }
 
+export type OrderStatus = 'EXECUTED' | 'EXPIRED'
 export interface IAcceptOrderRequest {
   hash: string,
-  status: string
+  status: OrderStatus
 }
 
 export interface IListingData {

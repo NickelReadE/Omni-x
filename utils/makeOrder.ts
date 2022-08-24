@@ -5,6 +5,7 @@ import { userService } from '../services/users'
 import { orderService } from '../services/orders'
 import { minNetPriceRatio } from '../constants'
 import { SolidityType, MakerOrderWithEncodedParams, MakerOrder } from '../types'
+import { OrderStatus } from '../interface/interface'
 
 const MAKE_ORDER_SIGN_TYPES = {
   EIP712Domain: [
@@ -170,11 +171,11 @@ export const postMakerOrder = async(
 };
 
 export const acceptOrder = async (
-  hash:string, status:string
+  hash: string, status: OrderStatus
 ) => {
   const data  = {
     hash: hash,
-    status: status
+    status
   }
   try{
     await orderService.acceptOrder(data)

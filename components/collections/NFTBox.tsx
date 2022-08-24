@@ -5,10 +5,8 @@ import { IPropsNFTItem } from '../../interface/interface'
 import LazyLoad from 'react-lazyload'
 import { ethers } from 'ethers'
 import { selectOrders, selectBidOrders, selectLastSaleOrders } from '../../redux/reducers/ordersReducer'
-import { useDispatch, useSelector } from 'react-redux'
-import useWallet from '../../hooks/useWallet'
-import { isYesterday } from 'date-fns'
-import { CURRENCIES_LIST } from '../../utils/constants'
+import { useSelector } from 'react-redux'
+import { getCurrencyIconByAddress } from '../../utils/constants'
 
 
 const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
@@ -25,11 +23,6 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
   const bidOrders = useSelector(selectBidOrders)
   const executedOrders = useSelector(selectLastSaleOrders)
 
-  const {
-    provider,
-    address
-  } = useWallet()
-
   useEffect(() => {
     if(nft){
       if (col_address == '0xb7b0d9849579d14845013ef9d8421ae58e9b9369' || col_address == '0x7470ea065e50e3862cd9b8fb7c77712165da80e5' || col_address == '0xb74bf94049d2c01f8805b8b15db0909168cabf46' || col_address == '0x7f04504ae8db0689a0526d99074149fe6ddf838c' || col_address == '0xa783cc101a0e38765540ea66aeebe38beebf7756'|| col_address == '0x316dc98ed120130daf1771ca577fad2156c275e5') {
@@ -37,11 +30,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
           if(orders[i].tokenId==nft.token_id && orders[i].collectionAddress==col_address && orders[i].chain==chain) {
             setPrice(ethers.utils.formatEther(orders[i].price))
             setList(true)
-            CURRENCIES_LIST.map((item,index) => {
-              // if(item.address==orders[i].currencyAddress){
-              setImageURL(`/images/${item.icon}`)
-              // }
-            })
+            setImageURL(`/images/${getCurrencyIconByAddress(orders[i].currencyAddress)}`)
             setIsOwner(true)
           }
         }
@@ -50,11 +39,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
           for(let i=0;i<executedOrders.length;i++){
             if(executedOrders[i].tokenId==nft.token_id && executedOrders[i].collectionAddress==col_address){
               lastprice = Number(ethers.utils.formatEther(executedOrders[i].price))
-              for(let j=0;j<currencies_list.length;j++){
-                if(currencies_list[j].address==executedOrders[i].currencyAddress){
-                  setLastSaleCoin(`/images/${currencies_list[j].icon}`)
-                }
-              }
+              setLastSaleCoin(`/images/${getCurrencyIconByAddress(executedOrders[i].currencyAddress)}`)
             }
           }
           setLastSale(lastprice)
@@ -65,11 +50,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
             if(bidOrders[i].tokenId==nft.token_id && bidOrders[i].collectionAddress==col_address){
               if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
                 bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
-                for(let j=0;j<CURRENCIES_LIST.length;j++){
-                  // if(CURRENCIES_LIST[j].address==bidOrders[i].currencyAddress){
-                  setHighestBidCoin(`/images/${CURRENCIES_LIST[j].icon}`)
-                  // }
-                }
+                setHighestBidCoin(`/images/${getCurrencyIconByAddress(bidOrders[i].currencyAddress)}`)
               }
             }
           }

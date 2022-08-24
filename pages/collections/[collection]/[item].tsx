@@ -19,9 +19,9 @@ import { userService } from '../../../services/users'
 import { collectionsService } from '../../../services/collections'
 
 import useWallet from '../../../hooks/useWallet'
-import { postMakerOrder } from '../../../utils/makeOrder'
+import { acceptOrder, postMakerOrder } from '../../../utils/makeOrder'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../../../types'
-import { IBidData, IGetOrderRequest, IListingData, IOrder } from '../../../interface/interface'
+import { IBidData, IGetOrderRequest, IListingData, IOrder, OrderStatus } from '../../../interface/interface'
 import { ContractName, CREATOR_FEE, CURRENCIES_LIST, getAddressByName, getChainInfo, getChainNameById, getCurrencyIconByAddress, getLayerzeroChainId, PROTOCAL_FEE } from '../../../utils/constants'
 import { getCurrencyInstance, getERC721Instance, getTransferSelectorNftInstance, getOmniInstance, getOmnixExchangeInstance } from '../../../utils/contracts'
 
@@ -217,6 +217,13 @@ const Item: NextPage = () => {
     dispatch(getLastSaleOrders(excutedRequest) as any)
   }
 
+  const updateOrderStatus = async (order: IOrder, status: OrderStatus) => {
+    await acceptOrder(
+      order.hash,
+      status
+    )
+  }
+
   const onListing = async (listingData: IListingData) => {
     const price = ethers.utils.parseEther(listingData.price.toString())
     const amount = ethers.utils.parseUnits('1', 0)
@@ -307,6 +314,13 @@ const Item: NextPage = () => {
     await omni.approve(omnixExchange.address, takerBid.price)
     await omni.approve(getAddressByName('FundManager', chainId), takerBid.price)
     await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
+
+    await updateOrderStatus(order, 'EXECUTED')
+
+    dispatch(openSnackBar({ message: 'Bought an NFT', status: 'success' }))
+    getBidOrders()
+    getListOrders()
+    getNFTOwnership(col_url, token_id)
   }
 
   const onBid = async (bidData: IBidData) => {
@@ -388,16 +402,21 @@ const Item: NextPage = () => {
       params: ethers.utils.defaultAbiCoder.encode(['uint16'], [lzChainId])
     }
 
-    console.log('--accept a bid----', makerBid, takerAsk)
-
     const transferSelector = getTransferSelectorNftInstance(chainId, signer)
     const transferManagerAddr = await transferSelector.checkTransferManagerForToken(nftInfo.collection.address)
     const nftContract = getERC721Instance(nftInfo.collection.address, chainId, signer)
     await nftContract.approve(transferManagerAddr, token_id)
 
-    const lzFee = 0 // await omnixExchange.connect(signer as any).getLzFeesForBidWithTakerAsk(takerAsk, makerBid)
+    const lzFee = await omnixExchange.connect(signer as any).getLzFeesForBidWithTakerAsk(takerAsk, makerBid)
     
     await omnixExchange.connect(signer as any).matchBidWithTakerAsk(takerAsk, makerBid, { value: lzFee })
+
+    await updateOrderStatus(bidOrder, 'EXECUTED')
+
+    dispatch(openSnackBar({ message: 'Accepted a Bid', status: 'success' }))
+    getBidOrders()
+    getListOrders()
+    getNFTOwnership(col_url, token_id)
   }
 
   const truncate = (str: string) => {
@@ -506,7 +525,13 @@ const Item: NextPage = () => {
                               </div>
                               <p className='ml-3'>${item && item.price && ethers.utils.formatEther(item.price)}</p>
                             </div>
-                            <div className='text-right mt-3'><button className='bg-[#ADB5BD] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5'>accept</button></div>
+                            <div className='text-right mt-3'>
+                              {address && owner && owner.toLowerCase() == address.toLowerCase() &&
+                                <button className='bg-[#ADB5BD] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5' onClick={() => onAccept(item)}>
+                                  accept
+                                </button>
+                              }
+                            </div>
                           </div>
                         })
                       }
