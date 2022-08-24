@@ -560,7 +560,7 @@ const SideBar: React.FC = () => {
       }
       <div
         ref={ref}
-        className={`right-0 right-0 w-[450px] bg-w-600/[.95] backdrop-blur-sm pl-5 pr-2 py-6 fixed h-full z-[97] opacity-0.95 ease-in-out duration-300 ${
+        className={`right-0 right-0 w-[450px] bg-w-600/[.8] backdrop-blur-sm pl-5 pr-2 py-6 fixed h-full z-[97] opacity-0.95 ease-in-out duration-300 ${
           showSidebar || onMenu ? 'translate-x-0' : 'translate-x-full'
         }`}
         onMouseEnter={() => setOnMenu(true)}
