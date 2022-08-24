@@ -63,7 +63,7 @@ const Collections: NextPage = () => {
   return (
     <>
       <div>
-        <Slider title="Beta Collections" images={omniSlides} />
+        <Slider title="Beta Collections" cards={omniSlides} />
         {/* <Slider title="Trending Collection" images={omniSlides} /> */}
         {/* <ImageList title="" images={serviceSlides} /> */}
         

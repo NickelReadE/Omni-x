@@ -6,7 +6,7 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import Dialog from '@material-ui/core/Dialog'
 import Slider from '@material-ui/core/Slider'
 
-import { getCroppedImg } from './CanvasUtils'
+import { getCroppedImg} from './CanvasUtils'
 
 import Image from 'next/image'
 import Close from '../../public/images/close.png'
@@ -17,7 +17,7 @@ import Photo from '../../public/images/photo.png'
 import useWallet from '../../hooks/useWallet'
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
-import { updateUser, getUser, selectUser } from '../../redux/reducers/userReducer'
+import { updateUser, getUser, selectUser, selectIsGregHolder, selectHeroSkin, updateHeroSkin} from '../../redux/reducers/userReducer'
 import classNames from '../../helpers/classNames'
 import editStyle from '../../styles/useredit.module.scss'
 import UserSVG from '../../public/svgs/user.svg'
@@ -27,7 +27,9 @@ import EthIMG from '../../public/images/payment/eth.png'
 import OmniIMG from '../../public/images/payment/omni.png'
 import UsdcIMG from '../../public/images/payment/usdc.png'
 import UsdtIMG from '../../public/images/payment/usdt.png'
-import Alien_base from '../../public/images/gregs/Alien_base.png'
+import {heroGregSkins, skinNames} from '../../constants/gregSkin'
+
+
 interface IUserEditProps {
   updateModal: (arg: string) => void
 }
@@ -43,7 +45,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
   const DEFAULT_AVATAR = 'uploads/default_avatar.png'
 
   const [avatar, setAvatar] = useState(process.env.API_URL + 'uploads/default_avatar.png')
-  const [greg, setGreg] = useState(Alien_base)
+  const [gregName, setGregName] = useState(useSelector(selectHeroSkin))
   const [banner_1, setBanner_1] = useState(process.env.API_URL + DEFAULT_BANNER)
   const [banner_2, setBanner_2] = useState(process.env.API_URL + DEFAULT_BANNER)
   const [banner_3, setBanner_3] = useState(process.env.API_URL + DEFAULT_BANNER)
@@ -62,6 +64,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
   const [coinNFTID, handleNFTCoin] = useState('0')
   const [coinTokenID, handleTokenCoin] = useState('0')
 
+  const isGregHolder = false //useSelector(selectIsGregHolder)
 
   const dispatch = useDispatch()
   const user = useSelector(selectUser)
@@ -148,7 +151,8 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
       const formData = new FormData(updateProfileFormRef.current)
       const address = context.address?context.address:''
       formData.append('address', address)
-
+      formData.append('greg',gregName)
+      console.log(formData)
       console.log(banner_1)
       console.log(banner_2)
       console.log(banner_3)
@@ -162,7 +166,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
       if ( banner_3 != process.env.API_URL + DEFAULT_BANNER && banner_3 != '/images/default_banner.png' ) {
         formData.append('banner_3', (await getFileFromUrl(banner_3, 'banner3.png')) as any)
       }
-      
+      dispatch(updateHeroSkin(gregName) as any)
       dispatch(updateUser(formData) as any)
       // router.push('/')
       updateModal('Micheal')
@@ -426,59 +430,61 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                         />
                       </div>
                     </div>
-                    <div>
-                      <div 
-                        className="relative cursor-pointer"
-                        onClick={onClickAvatar}
-                      >                        
-                        <Image
-                          src={greg}
-                          alt="avatar"
-                          width={190}
-                          height={190}
-                        />
-                      </div>
-                      <Listbox value={'selected'} onChange={()=> null }>
-                        <div className="relative">
-                          <Listbox.Button className="relative w-full height-[25px] cursor-default rounded-lg bg-[#E9ECEF]  pl-3 pr-10 text-lg text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 xl:text-[18px] lg:text-[14px]">
-                            <span className="block truncate">{'Alien Base'}</span>
-                            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                              <i className="fa fa-chevron-down"></i>
-                            </span>
-                          </Listbox.Button>
-                          <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-[#E9ECEF] py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                            {sort_fields.map((sort_item, sortIdx) => (
-                              <Listbox.Option
-                                key={sortIdx}
-                                className={({ active }) =>
-                                  `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                    active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
-                                  }`
-                                }
-                                value={sort_item}
-                              >
-                                {({ selected }) => (
-                                  <>
-                                    <span
-                                      className={`block truncate ${
-                                        selected ? 'font-medium' : 'font-normal'
-                                      }`}
-                                    >
-                                      {sort_item.name}
-                                    </span>
-                                    {selected ? (
-                                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                                        <i className="fa fa-chevron-down h-5 w-5"></i>
-                                      </span>
-                                    ) : null}
-                                  </>
-                                )}
-                              </Listbox.Option>
-                            ))}
-                          </Listbox.Options>
+                    {isGregHolder&&
+                      <div>
+                        <div 
+                          className="relative cursor-pointer"
+                          onClick={onClickAvatar}
+                        >                        
+                          <img
+                            src={`/images/gregs/Alien_${gregName}.png`}
+                            alt="avatar"
+                            className=' w-[190px]'
+                          />
                         </div>
-                      </Listbox>
-                    </div>
+                        <Listbox value={'selected'} onChange={(val)=> {setGregName(val) } }>
+                          <div className="relative z-50">
+                            <Listbox.Button className="relative w-full height-[25px] cursor-default rounded-lg bg-[#E9ECEF]  pl-3 pr-10 text-lg text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 xl:text-[18px] lg:text-[14px]">
+                              <span className="block truncate">{gregName}</span>
+                              <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                                <i className="fa fa-chevron-down"></i>
+                              </span>
+                            </Listbox.Button>
+                            <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-[#E9ECEF] py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                              {skinNames.map((sort_item, index) => (
+                                <Listbox.Option
+                                  key={index}
+                                  className={({ active }) =>
+                                    `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                                      active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
+                                    }`
+                                  }
+                                  value={sort_item}
+                                >
+                                  {({ selected }) => (
+                                    <>
+                                      <span
+                                        className={`block truncate ${
+                                          selected ? 'font-medium' : 'font-normal'
+                                        }`}
+                                      >
+                                        {sort_item}
+                                      </span>
+                                      {selected ? (
+                                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                                          <i className="fa fa-chevron-down h-5 w-5"></i>
+                                        </span>
+                                      ) : null}
+                                    </>
+                                  )}
+                                </Listbox.Option>
+                              ))}
+                            </Listbox.Options>
+                          </div>
+                        </Listbox>
+                      </div>
+                    }
+                    
                   </div>
                   
                   <div className="w-full mb-3 mt-3 flex items-center">
@@ -673,6 +679,17 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
           }
         </div>
       </div>
+      <img src={'/images/gregs/Alien_1a.png'} className=' w-[0px] hidden'/>
+      <img src={'/images/gregs/Alien_1b.png'} className=' w-[0px] hidden'/>
+      <img src={'/images/gregs/Alien_2a.png'} className=' w-[0px] hidden'/>
+      <img src={'/images/gregs/Alien_2b.png'} className=' w-[0px] hidden'/>
+      <img src={'/images/gregs/Alien_3a.png'} className=' w-[0px] hidden'/>
+      <img src={'/images/gregs/Alien_3b.png'} className=' w-[0px] hidden'/>
+      <img src={'/images/gregs/Alien_4a.png'} className=' w-[0px] hidden'/>
+      <img src={'/images/gregs/Alien_4b.png'} className=' w-[0px] hidden'/>
+      <img src={'/images/gregs/Alien_5a.png'} className=' w-[0px] hidden'/>
+      <img src={'/images/gregs/Alien_5b.png'} className=' w-[0px] hidden'/>
+
     </>
   )
 }

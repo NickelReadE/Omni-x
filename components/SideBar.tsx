@@ -47,6 +47,7 @@ const SideBar: React.FC = () => {
   const [fixed, setFixed] = useState(false)
   const [confirmTransfer, setConfirmTransfer] = useState(false)
   const [chainId, setChainID] = useState(4)
+  const [isFirstDrag, setIsFirstDrag] = useState(true)
   const DEFAULT_AVATAR = 'uploads\\default_avatar.png'
 
   const menu_profile = useRef<HTMLUListElement>(null)
@@ -94,7 +95,7 @@ const SideBar: React.FC = () => {
     },
     onDragEnd(event) {
       const { active: { id } } = event
-      if (id.toString().length > 0 && event.over !== null) {
+      if (id.toString().length > 0 && (event.over !== null || isFirstDrag)) {
         const index = id.toString().split('-')[1]
         setSelectedNFTItem(nfts[index])
         validateOwNFT(nfts[index]).then((res) => {
@@ -180,6 +181,7 @@ const SideBar: React.FC = () => {
   const fixMenu = (menu: number) => {
     setExpandedMenu(menu == expandedMenu ? 0 : menu)
     setFixed(!fixed)
+    setIsFirstDrag(!isFirstDrag)
   }
 
   const onClickNetwork = async (chainId: number) => {
@@ -560,7 +562,7 @@ const SideBar: React.FC = () => {
       }
       <div
         ref={ref}
-        className={`right-0 right-0 w-[450px] bg-[#FEFEFF] py-10 fixed h-full z-[97] ease-in-out duration-300 ${
+        className={`right-0 right-0 w-[450px] bg-[#FEFEFF] pl-5 pr-2 py-10 fixed h-full z-[97] ease-in-out duration-300 ${
           showSidebar || onMenu ? 'translate-x-0' : 'translate-x-full'
         }`}
         onMouseEnter={() => setOnMenu(true)}
@@ -569,7 +571,7 @@ const SideBar: React.FC = () => {
         <ul className='flex flex-col space-y-4 mr-[70px]'>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px] py-[24px] text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl sidebar ${expandedMenu==1?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px] py-[24px] pr-[70px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==1?'active':''}`}
               onClick={() => toggleMenu(1)}
             >
               My Profile
@@ -578,22 +580,22 @@ const SideBar: React.FC = () => {
               </span>
             </button>
             { expandedMenu == 1 &&
-              <ul className='flex flex-col w-full space-y-4 p-6 pl-[100px] pt-8 pb-0 text-g-600' ref={menu_profile}>
+              <ul className='flex  flex-col w-full space-y-4  pt-8 pb-0 text-g-600' ref={menu_profile}>
                 <li className="w-full">
-                  <button>My Dashboard</button>
+                  <button className="w-full flex justify-start py-[17px] pl-[100px] hover:bg-l-50">My Dashboard</button>
                 </li>
                 <li className="w-full">
-                  <button>Account Settings</button>
+                  <button className="w-full flex justify-start py-[17px] pl-[100px] hover:bg-l-50">Account Settings</button>
                 </li>
                 <li className="w-full">
-                  <button>Logout</button>
+                  <button className="w-full flex justify-start py-[17px] pl-[100px] hover:bg-l-50">Logout</button>
                 </li>
               </ul>
             }
           </li>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px] py-[24px] text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl sidebar ${expandedMenu==2?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px] py-[24px] pr-[70px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==2?'active':''}`}
               onClick={() => toggleMenu(2)}
             >
               Network
@@ -602,61 +604,76 @@ const SideBar: React.FC = () => {
               </span>
             </button>
             { expandedMenu == 2 &&
-              <ul className='flex flex-col w-full space-y-4 p-6 pl-[80px] pt-8 pb-0 text-g-600' ref={menu_ethereum}>
+              <ul className='flex flex-col w-full space-y-4  pt-8 pb-0 text-g-600' ref={menu_ethereum}>
                 <li className="w-full">
-                  <button className="flex flex-row" onClick={() => onClickNetwork(env === 'testnet' ? 4 : 1)}>
-                    <div className="w-[36px] h-[36px] m-auto">
-                      <img src="/svgs/ethereum.svg" width={24} height={28} />
-                    </div>
-                    <span className="ml-4">Ethereum</span>
+                  <button className="w-full hover:bg-l-50 pl-[70px] py-[17px] " onClick={() => onClickNetwork(env === 'testnet' ? 4 : 1)}>
+                    <div className="flex flex-row w-[130px]">
+                      <div className="flex items-center w-[36px] h-[36px]">
+                        <img src="/svgs/ethereum.svg" width={24} height={28} />
+                      </div>
+                      <span className="flex items-center ml-4 " >Ethereum</span>
+                    </div>                   
                   </button>
                 </li>
                 <li className="w-full">
-                  <button className="flex flex-row" onClick={() => onClickNetwork(env === 'testnet' ? 421611 : 1)}>
-                    <div className="w-[36px] h-[36px] m-auto">
-                      <img src="/svgs/arbitrum.svg" width={35} height={30} />
+                  <button className="w-full hover:bg-l-50 pl-[70px] py-[17px]" onClick={() => onClickNetwork(env === 'testnet' ? 421611 : 1)}>
+                    <div className="flex flex-row w-[130px]">
+                      <div className="flex items-center w-[36px] h-[36px] ">
+                        <img src="/svgs/arbitrum.svg" width={24} height={28} />
+                      </div>
+                      <span className=" flex items-center ml-4 ">Arbitrum</span>
+                    </div>  
+                  </button>
+                  
+                </li>
+                <li className="w-full">
+                  <button className="w-full hover:bg-l-50 pl-[70px] py-[17px]" onClick={() => onClickNetwork(env === 'testnet' ? 43113 : 1)}>
+                    <div className="flex flex-row w-[130px]">
+                      <div className="flex items-center w-[36px] h-[36px] m-auto">
+                        <img src="/svgs/avax.svg" width={24} height={28} />
+                      </div>
+                      <span className="flex items-center ml-4 w-[80px]">Avalanche</span>
                     </div>
-                    <span className="ml-4">Arbitrum</span>
                   </button>
                 </li>
                 <li className="w-full">
-                  <button className="flex flex-row" onClick={() => onClickNetwork(env === 'testnet' ? 43113 : 1)}>
-                    <div className="w-[36px] h-[36px] m-auto">
-                      <img src="/svgs/avax.svg" width={23} height={35} />
+                  <button className="w-full hover:bg-l-50 pl-[70px] py-[17px]" onClick={() => onClickNetwork(env === 'testnet' ? 97 : 1)}>
+                    <div className="flex flex-row w-[130px]">
+                      <div className="flex items-center w-[36px] h-[36px] m-auto">
+                        <img src="/svgs/binance.svg" width={24} height={28} />
+                      </div>
+                      <span className="flex items-center ml-4 w-[80px]">BNB Chain</span>
                     </div>
-                    <span className="ml-4">Avalanche</span>
                   </button>
                 </li>
                 <li className="w-full">
-                  <button className="flex flex-row" onClick={() => onClickNetwork(env === 'testnet' ? 97 : 1)}>
-                    <div className="w-[36px] h-[36px] m-auto">
-                      <img src="/svgs/binance.svg" width={29} height={30} />
+                  <button className="w-full hover:bg-l-50 pl-[70px] py-[17px]" onClick={() => onClickNetwork(env === 'testnet' ? 4002 : 1)}>
+                    <div className="flex flex-row w-[130px]">
+                      <div className="flex items-center w-[36px] h-[36px] m-auto">
+                        <img src="/svgs/fantom.svg" width={24} height={28} />
+                      </div>
+                      <span className="flex items-center ml-4 w-[80px]">Fantom</span>
                     </div>
-                    <span className="ml-4">BNB Chain</span>
                   </button>
                 </li>
                 <li className="w-full">
-                  <button className="flex flex-row" onClick={() => onClickNetwork(env === 'testnet' ? 4002 : 1)}>
-                    <div className="w-[36px] h-[36px] m-auto">
-                      <img src="/svgs/fantom.svg" width={25} height={25} />
+                  <button className="w-full hover:bg-l-50 pl-[70px] py-[17px]" onClick={() => onClickNetwork(env === 'testnet' ? 69 : 1)}>
+                    <div className="flex flex-row w-[130px]">
+                      <div className=" flex items-center w-[36px] h-[36px] m-auto">
+                        <img src="/svgs/optimism.svg" width={24} height={28} />
+                      </div>
+                      <span className="flex items-center ml-4 w-[80px]">Optimism</span>
                     </div>
-                    <span className="ml-4">Fantom</span>
                   </button>
                 </li>
                 <li className="w-full">
-                  <button className="flex flex-row" onClick={() => onClickNetwork(env === 'testnet' ? 69 : 1)}>
-                    <div className="w-[36px] h-[36px] m-auto">
-                      <img src="/svgs/optimism.svg" width={25} height={25} />
+                  <button className="flex items-center w-full hover:bg-l-50 pl-[70px] py-[17px]" onClick={() => onClickNetwork(env === 'testnet' ? 80001 : 1)}>
+                    <div className="flex flex-row w-[130px]">
+                      <div className="flex items-center w-[36px] h-[36px] m-auto">
+                        <img src="/svgs/polygon.svg" width={24} height={28} />
+                      </div>
+                      <span className="ml-4 w-[80px] flex items-center">Polygon</span>
                     </div>
-                    <span className="ml-4">Optimism</span>
-                  </button>
-                </li>
-                <li className="w-full">
-                  <button className="flex flex-row" onClick={() => onClickNetwork(env === 'testnet' ? 80001 : 1)}>
-                    <div className="w-[36px] h-[36px] m-auto">
-                      <img src="/svgs/polygon.svg" width={34} height={30} />
-                    </div>
-                    <span className="ml-4">Polygon</span>
                   </button>
                 </li>
               </ul>
@@ -664,7 +681,7 @@ const SideBar: React.FC = () => {
           </li>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px] py-[24px] text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl sidebar ${expandedMenu==3?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px] py-[24px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==3?'active':''}`}
               onClick={() => toggleMenu(3)}
             >
               Wallet
@@ -673,7 +690,7 @@ const SideBar: React.FC = () => {
               </span>
             </button>
             { expandedMenu == 3 &&
-              <div className='flex flex-col w-full space-y-4 p-6 pt-8 pb-0' ref={menu_wallets}>
+              <div className='flex flex-col w-full space-y-4 p-6 pl-10 pt-8 pb-0' ref={menu_wallets}>
                 <span className="font-semibold w-auto text-[16px]">OMNI balance:</span>
                 <span className="font-semibold w-auto text-[16px]">USDC balance:</span>
                 <span className="font-semibold w-auto text-[16px]">USDT balance:</span>
@@ -757,7 +774,7 @@ const SideBar: React.FC = () => {
           </li>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px] py-[24px] text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl sidebar ${expandedMenu==4?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px]  py-[24px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==4?'active':''}`}
               onClick={() => toggleMenu(4)}
             >
               Watchlist
@@ -778,7 +795,7 @@ const SideBar: React.FC = () => {
           </li>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full p-6 text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl sidebar ${expandedMenu==5?'active':''}`}
+              className={`w-full text-left rounded-full p-6  pr-[70px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==5?'active':''}`}
               onClick={() => fixMenu(5)}
             >
               Send/Bridge
@@ -846,7 +863,7 @@ const SideBar: React.FC = () => {
           </li>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px] py-[24px] text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl sidebar ${expandedMenu==6?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px] py-[24px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==6?'active':''}`}
               onClick={() => toggleMenu(6)}
             >
               Cart
