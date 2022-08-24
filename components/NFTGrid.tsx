@@ -5,6 +5,7 @@ import { getOrders, selectOrders } from '../redux/reducers/ordersReducer'
 import { IGetOrderRequest } from '../interface/interface'
 import useWallet from '../hooks/useWallet'
 import { useDispatch, useSelector } from 'react-redux'
+import { getCollections } from '../redux/reducers/collectionsReducer'
 
 const chainList = [
   { chain: 'all', img_url: '/svgs/all_chain.svg', title: 'all NFTs', disabled: false},
@@ -25,8 +26,12 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
   } = useWallet()
   const dispatch = useDispatch()
 
+  useEffect(() => {
+    dispatch(getCollections() as any)
+  }, [])
+
   useEffect(()=> {
-    if(nfts){
+    if(nfts.length>0){
       const request: IGetOrderRequest = {
         isOrderAsk: true,
         chain: provider?.network.name,
@@ -53,10 +58,10 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
   return (
     <>
       <div className="w-full mb-5 ">
-        <div className="flex relative justify-start bg-[#F8F9FA] p-2 w-fit" style={{'width':'100%'}}>
+        <div className="flex relative justify-start bg-[#F8F9FA] pl-2 pr-2 w-fit" style={{'width':'100%'}}>
           {
             chainList.map((item, index) => {
-              return <div key={index} className={`grid justify-items-center content-center p-3 font-medium cursor-pointer m-[1px] min-w-[80px]  ${chain == item.chain ? 'border-b-2 border-black' : ''} ${item.disabled ? 'bg-[#e8e8e8] rounded-lg cursor-default' : ''}`} onClick={() =>{item.disabled ? undefined : setChain(item.chain)}}>
+              return <div key={index} className={`grid justify-items-center content-center p-3 font-medium cursor-pointer m-[1px] min-w-[80px]  ${chain == item.chain ? 'bg-[#C8D6E8]' : ''} `} onClick={() =>{item.disabled ? undefined : setChain(item.chain)}}>
                 <img src={item.img_url} className="w-[21px] h-[22px] " />
               </div>
             })

@@ -14,7 +14,7 @@ import ConfirmBid from '../../../components/collections/ConfirmBid'
 
 import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
 import { getNFTInfo, selectNFTInfo } from '../../../redux/reducers/collectionsReducer'
-import { getOrders, selectOrders, selectBidOrders } from '../../../redux/reducers/ordersReducer'
+import { getOrders, getLastSaleOrders, selectOrders, selectBidOrders, selectLastSaleOrders } from '../../../redux/reducers/ordersReducer'
 import { userService } from '../../../services/users'
 import { collectionsService } from '../../../services/collections'
 
@@ -29,14 +29,13 @@ import PngCheck from '../../../public/images/check.png'
 import PngSub from '../../../public/images/subButton.png'
 import PngEther from '../../../public/images/collections/ethereum.png'
 
+
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('items')
   const [owner, setOwner] = useState('')
   const [ownerType, setOwnerType] = useState('')
 
-  const orders = useSelector(selectOrders)
-  const bidOrders = useSelector(selectBidOrders) as IOrder[]
 
   const [order, setOrder] = useState<IOrder>()
   const [bidOrder, setBidOrder] = useState<IOrder>()
@@ -52,11 +51,21 @@ const Item: NextPage = () => {
   const [order_flag, setOrderFlag] = React.useState(false)
   const [bid_flag, setBidFlag] = React.useState(false)
 
+  const orders = useSelector(selectOrders)
+  const bidOrders = useSelector(selectBidOrders) as IOrder[]
+  const lastSaleOrders = useSelector(selectLastSaleOrders)
+
   const {
     provider,
     signer,
     address
   } = useWallet()
+
+  const currencies_list = [
+    { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0x49fB1b5550AFFdFF32CffF03c1A8168f992296eF' },
+    { value: 1, text: 'USDC', icon: 'payment/usdc.png', address: '0xeb8f08a975ab53e34d8a0330e0d34de942c95926' },
+    { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad' },
+  ]
 
   const chainList = [
     { chain: 'all', img_url: '/svgs/all_chain.svg', title: 'all NFTs', disabled: false},
@@ -81,25 +90,23 @@ const Item: NextPage = () => {
   const nftInfo = useSelector(selectNFTInfo)
 
   useEffect(() => {
-    const getNFTOwnership = async(col_url: string, token_id: string) => {
-      const tokenIdOwner = await collectionsService.getNFTOwner(col_url, token_id)
-
-      if ( tokenIdOwner.length > 0 ) {
-        const user_info = await userService.getUserByAddress(tokenIdOwner)
-        if(user_info.username == ''){
-          setOwner(tokenIdOwner)
-          setOwnerType('address')
-        } else {
-          setOwner(user_info.username)
-          setOwnerType('username')
-        }
-      }
-    }
     if ( col_url && token_id ) {
       dispatch(getNFTInfo(col_url, token_id) as any)
       getNFTOwnership(col_url, token_id)
     }
   }, [col_url, token_id])
+
+  useEffect(() => {
+    console.log(lastSaleOrders)
+    if(lastSaleOrders.length>0){
+      setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[0].price)))
+      for(let j=0;j<currencies_list.length;j++){
+        if(currencies_list[j].address==lastSaleOrders[0].currencyAddress){
+          setLastSaleCoin(`/images/${currencies_list[j].icon}`)
+        }
+      }
+    }
+  },[lastSaleOrders])
 
   useEffect(() => {
     if ( nftInfo && nftInfo.collection && owner && ownerType ) {
@@ -112,32 +119,14 @@ const Item: NextPage = () => {
         }
       }
 
-      const request: IGetOrderRequest = {
-        isOrderAsk: true,
-        chain: nftInfo.collection.chain,
-        collection: nftInfo.collection.address,
-        tokenId: nftInfo.nft.token_id,
-        signer: owner,
-        // startTime: Math.floor(Date.now() / 1000).toString(),
-        // endTime: Math.floor(Date.now() / 1000).toString(),
-        status: ['VALID'],
-        sort: 'NEWEST'
-      }
-      dispatch(getOrders(request) as any)
+      getListOrders()
 
-      const bidRequest: IGetOrderRequest = {
-        isOrderAsk: false,
-        collection: nftInfo.collection.address,
-        tokenId: nftInfo.nft.token_id,
-        // startTime: Math.floor(Date.now() / 1000).toString(),
-        // endTime: Math.floor(Date.now() / 1000).toString(),
-        status: ['VALID'],
-        sort: 'PRICE_ASC'
-      }
+      getBidOrders()
+
+      getLastSaleOrder()
+
       setOrderFlag(true)
       setBidFlag(true)
-
-      dispatch(getOrders(bidRequest) as any)
     }
   }, [nftInfo, owner, ownerType])
 
@@ -174,6 +163,59 @@ const Item: NextPage = () => {
       setHighestBidCoin('')
     }
   }, [bidOrders])
+
+  const getNFTOwnership = async(col_url: string, token_id: string) => {
+    const tokenIdOwner = await collectionsService.getNFTOwner(col_url, token_id)
+
+    if ( tokenIdOwner.length > 0 ) {
+      const user_info = await userService.getUserByAddress(tokenIdOwner)
+      if(user_info.username == ''){
+        setOwner(tokenIdOwner)
+        setOwnerType('address')
+      } else {
+        setOwner(user_info.username)
+        setOwnerType('username')
+      }
+    }
+  }
+
+  const getListOrders = () => {
+    const request: IGetOrderRequest = {
+      isOrderAsk: true,
+      chain: nftInfo.collection.chain,
+      collection: nftInfo.collection.address,
+      tokenId: nftInfo.nft.token_id,
+      signer: owner,
+      startTime: Math.floor(Date.now() / 1000).toString(),
+      endTime: Math.floor(Date.now() / 1000).toString(),
+      status: ['VALID'],
+      sort: 'NEWEST'
+    }
+    dispatch(getOrders(request) as any)
+  }
+
+  const getBidOrders = () => {
+    const bidRequest: IGetOrderRequest = {
+      isOrderAsk: false,
+      collection: nftInfo.collection.address,
+      tokenId: nftInfo.nft.token_id,
+      startTime: Math.floor(Date.now() / 1000).toString(),
+      endTime: Math.floor(Date.now() / 1000).toString(),
+      status: ['VALID'],
+      sort: 'PRICE_ASC'
+    }
+    dispatch(getOrders(bidRequest) as any)
+  }
+
+  const getLastSaleOrder = () => {
+    const excutedRequest: IGetOrderRequest = {
+      collection: nftInfo.collection.address,
+      tokenId: nftInfo.nft.token_id,
+      status: ['EXECUTED'],
+      sort: 'UPDATE_NEWEST'
+    }
+    dispatch(getLastSaleOrders(excutedRequest) as any)
+  }
 
   const onListing = async (listingData: IListingData) => {
     const price = ethers.utils.parseEther(listingData.price.toString())
@@ -371,23 +413,23 @@ const Item: NextPage = () => {
           <div className="w-full 2xl:px-[10%] xl:px-[5%] lg:px-[2%] md:px-[2%] ">
             <div className="grid grid-cols-3 2xl:gap-12 lg:gap-1 xl:gap-4">
               <div className="col-span-1">
-                <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
+                <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image"/>}>
                   <img className='rounded-[8px]' src={imageError?'/images/omnix_logo_black_1.png':nftInfo.nft.image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={nftInfo.nft.image} />
                 </LazyLoad>
               </div>
               <div className="col-span-2">
-                <div className="px-6 py-3 bg-[#F8F9FA]">
+                <div className="px-6 py-3 bg-[#F6F8FC]">
                   <div className='flex items-center'>
                     <h1 className="text-[#1E1C21] text-[32px] font-bold mr-8">{nftInfo.collection.name}</h1>
                     <div className='h-[22px]'><Image src={PngCheck} alt="checkpng"/></div>
                   </div>
                   <div className="flex justify-between items-center mt-5">
-                    <h1 className="text-[#1E1C21] text-[23px] font-normal underline">{nftInfo.nft.name}</h1>
+                    <h1 className="text-[#1E1C21] text-[24px] font-normal">{nftInfo.nft.token_id}</h1>
                     <Image src={PngSub} alt=""/>
                   </div>
                 </div>
 
-                <div className="grid 2xl:grid-cols-3 lg:grid-cols-[200px_1fr_1fr] xl:grid-cols-[230px_1fr_1fr] px-6 py-3 mt-6">
+                <div className="grid 2xl:grid-cols-3 lg:grid-cols-[200px_1fr_1fr] xl:grid-cols-[230px_1fr_1fr] px-6 pt-3 mt-6 bg-[#F6F8FC] rounded-[2px]">
                   <div className="">
                     <div className="flex justify-start items-center">
                       <h1 className="text-[#1E1C21] text-[20px] font-bold">owner:</h1>
@@ -415,36 +457,37 @@ const Item: NextPage = () => {
                       <div className="flex justify-start items-center"><h1 className="mr-3 font-semibold">Last Sale: <span className="font-normal">${lastSale}</span></h1>{lastSaleCoin!=''&&<Image src={PngEther} width={15} height={16} alt="chain logo" />}</div>
                       <div className="flex justify-end items-center">
                         { order && owner && address && owner.toLowerCase() != address.toLowerCase() && 
-                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD]" onClick={onBuy}>buy</button>
+                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]">buy</button>
                         }
                         { owner && address && owner.toLowerCase() != address.toLowerCase() && 
-                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD]" onClick={() => {setOpenBidDlg(true)}}>bid</button>
+                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]" onClick={() => {setOpenBidDlg(true)}}>bid</button>
                         }
                         { address && owner && owner.toLowerCase() == address.toLowerCase() && 
-                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD]" onClick={() => {setOpenSellDlg(true)}}>sell</button>
+                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={() => {setOpenSellDlg(true)}}>sell</button>
                         }
                       </div>
                     </div>
                   </div>
                   <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
-                    <div className="overflow-x-hidden overflow-y-auto grid 2xl:grid-cols-[30%_25%_25%_20%] lg:grid-cols-[30%_18%_32%_20%] xl:grid-cols-[30%_18%_32%_20%] max-h-[285px]">
+                    <div className="overflow-x-hidden overflow-y-auto grid 2xl:grid-cols-[30%_25%_25%_20%] lg:grid-cols-[30%_18%_32%_20%] xl:grid-cols-[30%_18%_32%_20%] max-h-[130px]">
                       <div className="font-bold text-[18px]">account</div>
                       <div className="font-bold text-[18px]">chain</div>
                       <div className="font-bold text-[18px]">bid</div>
                       <div></div>
                       {
-                        bidOrders && bidOrders.map((item) => {
-                          return <>
+                        bidOrders && bidOrders.map((item, index) => {
+                          return <div key={index}>
                             <div className='break-all mt-3'>{truncate(item.signer)}</div>
                             <div className="text-center mt-3">
                               {
-                                chainList.map((chain, index) => {
+                                chainList.map((chain, chainIdx) => {
                                   if (chain.chain == item?.chain){
                                     return(
                                       <img
                                         src={chain.img_url}
                                         className='mr-[8px] w-[21px]'
                                         alt="icon"
+                                        key={chainIdx}
                                       />
                                     )
                                   }
@@ -463,28 +506,42 @@ const Item: NextPage = () => {
                               </div>
                               <p className='ml-3'>${item && item.price && ethers.utils.formatEther(item.price)}</p>
                             </div>
-                            <div className='text-right mt-3'>
-                              {address && owner && owner.toLowerCase() == address.toLowerCase() &&
-                                <button className='bg-[#ADB5BD] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5' onClick={() => onAccept(item)}>
-                                  accept
-                                </button>
-                              }
-                            </div>
-                          </>
+                            <div className='text-right mt-3'><button className='bg-[#ADB5BD] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5'>accept</button></div>
+                          </div>
                         })
                       }
                     </div>
                   </div>
                 </div>
+                <div className="grid 2xl:grid-cols-3 lg:grid-cols-[200px_1fr_1fr] xl:grid-cols-[230px_1fr_1fr] px-6 pb-3  bg-[#F6F8FC] rounded-[2px]">
+                  <div className="">
+                    <div className="mb-3">
+                      <div className="">
+                        { order && owner && address && owner.toLowerCase() != address.toLowerCase() && 
+                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={()=>onBuy()}>buy</button>
+                        }
+                        { address && owner && owner.toLowerCase() == address.toLowerCase() && 
+                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={() => {setOpenSellDlg(true)}}>sell</button>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                  <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
+                    { owner && address && owner.toLowerCase() != address.toLowerCase() && 
+                      <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]" onClick={() => {setOpenBidDlg(true)}}>bid</button>
+                    }
+                  </div>
+                </div>
               </div>
             </div>
+
             <div className="mt-10">
-              <div className="ml-10">
+              <div>
                 <ul className="flex flex-wrap relative justify-item-stretch text-sm font-medium text-center text-gray-500">
-                  <li className={`select-none inline-block border-x-2 border-t-2 border-zince-800 text-xl px-10 py-2 rounded-t-lg ${currentTab==='items'?'bg-[#E9ECEF] text-[#1E1C21]':'bg-[#F8F9FA] text-[#6C757D]'}`} onClick={()=>setCurrentTab('items')}>properties</li>
-                  <li className={`select-none inline-block border-x-2 border-t-2 border-zince-800 text-xl px-10 py-2 rounded-t-lg ${currentTab==='activity'?'bg-[#E9ECEF] text-[#1E1C21]':'bg-[#F8F9FA] text-[#6C757D]'}`} >activity</li>
-                  <li className={`select-none inline-block border-x-2 border-t-2 border-zince-800 text-xl px-10 py-2 rounded-t-lg ${currentTab==='info'?'bg-[#E9ECEF] text-[#1E1C21]':'bg-[#F8F9FA] text-[#6C757D]'}`} >info</li>
-                  <li className={`select-none inline-block border-x-2 border-t-2 border-zince-800 text-xl px-10 py-2 rounded-t-lg ${currentTab==='stats'?'bg-[#E9ECEF] text-[#1E1C21]':'bg-[#F8F9FA] text-[#6C757D]'}`} >stats</li>
+                  <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='items'?' text-[#1E1C21] border-b-2 border-black':' text-[#A0B3CC]'}`} onClick={()=>setCurrentTab('items')}>properties</li>
+                  <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='activity'?' text-[#1E1C21]':' text-[#A0B3CC]'}`} >activity</li>
+                  <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='info'?' text-[#1E1C21]':' text-[#A0B3CC]'}`} >info</li>
+                  <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='stats'?' text-[#1E1C21]':' text-[#A0B3CC]'}`} >stats</li>
                 </ul>
               </div>
               <div className="border-2 border-[#E9ECEF] bg-[#F8F9FA] px-10 py-8">

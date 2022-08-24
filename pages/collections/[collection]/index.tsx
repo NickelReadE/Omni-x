@@ -32,7 +32,7 @@ import Chip from '@material-ui/core/Chip'
 import classNames from '../../../helpers/classNames'
 import editStyle from '../../../styles/collection.module.scss'
 import { info } from 'console'
-import { getOrders } from '../../../redux/reducers/ordersReducer'
+import { getOrders, getLastSaleOrders } from '../../../redux/reducers/ordersReducer'
 import { IGetOrderRequest } from '../../../interface/interface'
 
 
@@ -178,6 +178,13 @@ const Collection: NextPage = () => {
         sort: 'PRICE_ASC'
       }
       dispatch(getOrders(bidRequest) as any)
+
+      const excutedRequest: IGetOrderRequest = {
+        collection: collectionInfo.address,
+        status: ['EXECUTED'],
+        sort: 'UPDATE_OLDEST'
+      }
+      dispatch(getLastSaleOrders(excutedRequest) as any)
     }
   },[nfts])
   
@@ -265,17 +272,17 @@ const Collection: NextPage = () => {
     <>
       <div className={classNames('w-full', 'mt-20', 'pr-[70px]', 'relative', editStyle.collection)}>
         <div className="w-[100%] h-[100%] mt-20">
-          <img className={classNames(editStyle.bannerImg)} src={collectionInfo&&collectionInfo.banner_image ? collectionInfo.banner_image : ''} />
-          <div className={classNames(editStyle.bannerOpacity)} />
+          {/* <img className={classNames(editStyle.bannerImg)} src={collectionInfo&&collectionInfo.banner_image ? collectionInfo.banner_image : ''} />
+          <div className={classNames(editStyle.bannerOpacity)} /> */}
         </div>
         <div className="grid grid-cols-13 mt-20">
           <div className="col-span-1"></div>
-          <div className="2xl:col-span-1 xl:col-span-2 md:col-span-2">
+          <div className="2xl:col-span-1 xl:col-span-2 md:col-span-2 bg-[#F6F8FC]">
             <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="logo" />}>
               <img src={imageError?'/images/omnix_logo_black_1.png':(collectionInfo&&collectionInfo.profile_image ? collectionInfo.profile_image : '/images/omnix_logo_black_1.png')} alt="logo" onError={(e)=>{setImageError(true)}} data-src={collectionInfo&&collectionInfo.profile_image ? collectionInfo.profile_image : ''} />
             </LazyLoad>
           </div>
-          <div className="2xl:col-span-9 xl:col-span-8 md:col-span-8 px-8 pt-3">
+          <div className="2xl:col-span-8 xl:col-span-7 md:col-span-7 px-8 pt-3 bg-[#F6F8FC]">
             <div>
               <p className="text-[#1E1C21] font-['Roboto Mono'] text-3xl uppercase font-bold">{collectionInfo?collectionInfo.name:''}</p>
             </div>
@@ -300,31 +307,44 @@ const Collection: NextPage = () => {
               </div>
             </div>
           </div>
-          <div className="col-span-2">
-            <div className="mt-7">
-              { collectionInfo&&collectionInfo.discord &&
+          <div className="col-span-2 bg-[#F6F8FC]">
+            <div className="mt-28">
+              { collectionInfo&&collectionInfo.discord?
                 <Link href={collectionInfo.discord}>
                   <a className="p-2">
                     <Image src={Discord} width={25} height={21} alt='discord' />
                   </a>
                 </Link>
+                :
+                <a className="p-2">
+                  <Image src={Discord} width={25} height={21} alt='discord' />
+                </a>
               }
-              { collectionInfo&&collectionInfo.twitter &&
+              { collectionInfo&&collectionInfo.twitter?
                 <Link href={collectionInfo.twitter}>
                   <a className="p-2">
                     <Image src={Twitter} alt='twitter' />
                   </a>
                 </Link>
+                :
+                <a className="p-2">
+                  <Image src={Twitter} alt='twitter' />
+                </a>
               }
-              { collectionInfo&&collectionInfo.website &&
+              { collectionInfo&&collectionInfo.website?
                 <Link href={collectionInfo.website}>
                   <a className="p-2">
                     <Image src={Web} alt='website' />
                   </a>
                 </Link>
+                :
+                <a className="p-2">
+                  <Image src={Web} alt='website' />
+                </a>
               }
             </div>
           </div>
+          <div className="col-span-1"></div>
         </div>
       </div>
 
@@ -332,15 +352,15 @@ const Collection: NextPage = () => {
         <div className="flex">
           <div className="w-[320px] min-w-[320px]">
           </div>
-          <div className="px-12">
+          <div >
             <ul className="flex relative justify-item-stretch text-xl font-bold text-center">
               <li
-                className={`select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer z-30 ${currentTab === 'items' ? 'bg-[#E9ECEF] text-[#1E1C21] shadow-[1px_-1px_4px_1px_rgba(233,236,239,1)]' : 'bg-[#F8F9FA] text-[#ADB5BD] shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)]'} `}
+                className={`select-none inline-block p-4  w-40 cursor-pointer z-30 ${currentTab === 'items' ? 'text-[#1E1C21] border-b-2 border-black': ' text-[#A0B3CC]'} `}
                 onClick={() => setCurrentTab('items')}>
                 items
               </li>
-              <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-20 bg-[#F8F9FA] text-[#ADB5BD]'}>activity</li>
-              <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-10 bg-[#F8F9FA] text-[#ADB5BD]'}>stats</li>
+              <li className={'select-none inline-block p-4  w-40 cursor-pointer  z-20  text-[#A0B3CC]'}>activity</li>
+              <li className={'select-none inline-block p-4  w-40 cursor-pointer  z-10  text-[#A0B3CC]'}>stats</li>
             </ul>
           </div>
         </div>

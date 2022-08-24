@@ -11,7 +11,7 @@ export const ordersSlice = createSlice({
 	initialState: {
 		orders: [],
 		bidOrders: [],
-		listOrders: [],
+		lastSaleOrders: [],
 	},
 	reducers: {
         setOrders: (state, action) => {
@@ -20,17 +20,22 @@ export const ordersSlice = createSlice({
 		setBidOrders: (state, action) => {
             state.bidOrders = action.payload === undefined ? {} : action.payload.data
         },
+		setLastSaleOrder: (state, action) => {
+			state.lastSaleOrders = action.payload === undefined? {}: action.payload.data
+		}
 	}
 })
 
 //actions
 export const { setOrders } = ordersSlice.actions
 export const { setBidOrders } = ordersSlice.actions
+export const { setLastSaleOrder } = ordersSlice.actions
 
 
 export const getOrders = (request: IGetOrderRequest) => async (dispatch: Dispatch<any>) => {
 	try {
         const orders = await orderService.getOrders(request)
+		
 		if(request.isOrderAsk){
 			dispatch(setOrders(orders))
 		} else {
@@ -40,6 +45,17 @@ export const getOrders = (request: IGetOrderRequest) => async (dispatch: Dispatc
 		console.log("getOrders error ? ", error)
 	}
 }
+
+export const getLastSaleOrders = (request: IGetOrderRequest) => async (dispatch: Dispatch<any>) => {
+	try {
+        const orders = await orderService.getOrders(request)
+		console.log(orders)
+		dispatch(setLastSaleOrder(orders))
+	} catch (error) {
+		console.log("getLastSaleOrders error ? ", error)
+	}
+}
+
 
 
 
@@ -54,5 +70,6 @@ export const createOrder = (data: MakerOrderWithSignature) => async (dispatch: D
 //selectors
 export const selectOrders = (state: any) => state.ordersState.orders
 export const selectBidOrders = (state: any) => state.ordersState.bidOrders
+export const selectLastSaleOrders = (state:any) => state.ordersState.lastSaleOrders
 
 export default ordersSlice.reducer

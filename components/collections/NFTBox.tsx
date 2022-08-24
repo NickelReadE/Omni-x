@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { IPropsNFTItem } from '../../interface/interface'
 import LazyLoad from 'react-lazyload'
 import { ethers } from 'ethers'
-import { selectOrders, selectBidOrders } from '../../redux/reducers/ordersReducer'
+import { selectOrders, selectBidOrders, selectLastSaleOrders } from '../../redux/reducers/ordersReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import useWallet from '../../hooks/useWallet'
 import { isYesterday } from 'date-fns'
@@ -23,6 +23,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
   const [isOwner, setIsOwner] = useState(false)
   const orders = useSelector(selectOrders)
   const bidOrders = useSelector(selectBidOrders)
+  const executedOrders = useSelector(selectLastSaleOrders)
 
   const {
     provider,
@@ -44,9 +45,22 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
             setIsOwner(true)
           }
         }
+        if(executedOrders.length > 0) {
+          let lastprice = 0
+          for(let i=0;i<executedOrders.length;i++){
+            if(executedOrders[i].tokenId==nft.token_id && executedOrders[i].collectionAddress==col_address){
+              lastprice = Number(ethers.utils.formatEther(executedOrders[i].price))
+              for(let j=0;j<currencies_list.length;j++){
+                if(currencies_list[j].address==executedOrders[i].currencyAddress){
+                  setLastSaleCoin(`/images/${currencies_list[j].icon}`)
+                }
+              }
+            }
+          }
+          setLastSale(lastprice)
+        }
         if ( bidOrders.length > 0 ) {
           let bid_balance = 0
-          console.log(bidOrders)
           for(let i=0; i<bidOrders.length;i++){
             if(bidOrders[i].tokenId==nft.token_id && bidOrders[i].collectionAddress==col_address){
               if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
@@ -79,11 +93,11 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
           </div>
           <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle">
             <div className="text-[#6C757D] text-[14px] font-medium font-['Roboto_Mono'] mt-3 ml-3">
-              {nft.name}
+              {nft.token_id}
             </div>
             <div className="mr-3 flex items-center">
-              <div className="mr-3 flex items-center cursor-pointer bg-[url('/images/round-refresh.png')] hover:bg-[url('/images/round-refresh_hover.png')] bg-cover w-[20px] h-[20px]">
-              </div>
+              {/* <div className="mr-3 flex items-center cursor-pointer bg-[url('/images/round-refresh.png')] hover:bg-[url('/images/round-refresh_hover.png')] bg-cover w-[20px] h-[20px]">
+              </div> */}
               <div className="flex items-center ml-1">
                 {(chain === 'eth' || chain === 'rinkeby') &&
                   <img src="/svgs/ethereum.svg" className="w-[16px] h-[16px]" />
@@ -111,10 +125,10 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
           </div>
           <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle">
             <div className="flex items-center ml-3">
-              {!islisted &&highestBid==0&&<><img src="/svgs/ethereum.svg" className="w-[18px] h-[18px]" />
+              {/* {!islisted &&highestBid==0&&<><img src="/svgs/ethereum.svg" className="w-[18px] h-[18px]" />
                 <span className="text-[#1E1C21] text-sm ml-2"> {nft.price && ethers.utils.formatEther(nft.price)}</span></>}
               {!islisted &&highestBid!=0&&<><img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>
-                <span className="text-[#1E1C21] text-sm ml-2"> {highestBid}</span></>}
+                <span className="text-[#1E1C21] text-sm ml-2"> {highestBid}</span></>} */}
               {islisted &&<><img src={img_url} className="w-[18px] h-[18px]" />
                 <span className="text-[#1E1C21] text-sm ml-2"> {price}</span></>}
               
@@ -136,6 +150,8 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
                 <span className="text-[#1E1C21] text-sm ml-2"><span className="text-[#1E1C21] text-sm ml-2">last sale: &nbsp;</span>{lastSale}</span></>}
               {lastSale==0&&highestBid!=0&&<><span className="text-[#1E1C21] text-sm ml-2">highest offer: &nbsp;</span><img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>
                 <span className="text-[#1E1C21] text-sm ml-2">{highestBid}</span></>}
+              {lastSale==0&&highestBid==0&&<><span className="text-[#1E1C21] text-sm ml-2">last sale: &nbsp;</span>
+                <span className="text-[#1E1C21] text-sm ml-2">${lastSale}</span></>}
             </div>
           </div>
         </a>

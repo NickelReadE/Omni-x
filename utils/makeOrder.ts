@@ -29,7 +29,6 @@ const MAKE_ORDER_SIGN_TYPES = {
     { name: 'params', type: 'bytes' }
   ]
 }
-
 interface PostMakerOrderOptionalParams {
     tokenId?: string
     startTime?: number
@@ -169,6 +168,20 @@ export const postMakerOrder = async(
 
   return data
 };
+
+export const acceptOrder = async (
+  hash:string, status:string
+) => {
+  const data  = {
+    hash: hash,
+    status: status
+  }
+  try{
+    await orderService.acceptOrder(data)
+   } catch(error) {
+    console.log(error)
+  }
+}
 
 const zeroPad = (value: any, length: number) => {
   return ethers.utils.arrayify(ethers.utils.hexZeroPad(ethers.utils.hexlify(value), length))
