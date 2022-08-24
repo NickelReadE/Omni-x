@@ -7,11 +7,11 @@
   "optimism": "",
   "fantom": "",
 
-  "rinkeby": "0xEEe98d31332154026a4aD6e95c4ce702aF7b1B20",
-  "bsc-testnet": "0x8B8993D8dc3aBb105b42C4Ef03E948E9e7733fa6",
-  "fuji": "0x4163F6c6A97634701641Becb3E9DB466E7E9D633",
-  "mumbai": "0x6ee39B7ef7F4a9A923dAA3010FC9A0B961229243",
-  "arbitrum-rinkeby": "0x0c3248BEcdfd5F1a49e28a4E526dB25496aB7E68",
+  "rinkeby": "0x6B3D2f943375980de1Ba4bf5287c8bb51020a136",
+  "bsc-testnet": "0xFa44F9cb391aC60F8bac7B8Da2B8f28d80a8dfF8",
+  "fuji": "0x2Cf73Bdc21C4270598deda399b68BBDeC9060cce",
+  "mumbai": "0x3Ea0941cdda62FA6b3AF95698DcbF1cA4f204b9e",
+  "arbitrum-rinkeby": "0x3Cff1472a9C33C23447997414c61b8E715e5564C",
   "optimism-kovan": "",
-  "fantom-testnet": "0x7F813128Bf0F5Db7320B0052AFC19cCEe551223d"
+  "fantom-testnet": "0x6ee39B7ef7F4a9A923dAA3010FC9A0B961229243"
 }
