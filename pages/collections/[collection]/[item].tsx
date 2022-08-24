@@ -112,7 +112,8 @@ const Item: NextPage = () => {
   }, [col_url, token_id])
 
   useEffect(() => {
-    console.log(lastSaleOrders)
+    setLastSale(0)
+    setLastSaleCoin('')
     if(lastSaleOrders.length>0){
       setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[0].price)))
       for(let j=0;j<currencies_list.length;j++){

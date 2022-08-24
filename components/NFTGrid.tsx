@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import NFTBox from './NFTBox'
 import { IPropsImage } from '../interface/interface'
-import { getOrders, selectOrders } from '../redux/reducers/ordersReducer'
+import { getOrders,getLastSaleOrders, selectOrders } from '../redux/reducers/ordersReducer'
 import { IGetOrderRequest } from '../interface/interface'
 import useWallet from '../hooks/useWallet'
 import { useDispatch, useSelector } from 'react-redux'
@@ -51,6 +51,12 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
         sort: 'PRICE_ASC'
       }
       dispatch(getOrders(bidRequest) as any)
+
+      const excutedRequest: IGetOrderRequest = {
+        status: ['EXECUTED'],
+        sort: 'UPDATE_OLDEST'
+      }
+      dispatch(getLastSaleOrders(excutedRequest) as any)
     }
   },[nfts])
 

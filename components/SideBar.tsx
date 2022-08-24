@@ -83,6 +83,7 @@ const SideBar: React.FC = () => {
 
   // Drag and drop event monitor
   useDndMonitor({
+    
     onDragStart(event) {
       setDragOver(true)
       setDragEnd(false)
@@ -97,6 +98,7 @@ const SideBar: React.FC = () => {
     },
     onDragEnd(event) {
       const { active: { id } } = event
+      console.log(event)
       if (id.toString().length > 0 && event.over !== null) {
         const index = id.toString().split('-')[1]
         setSelectedNFTItem(nfts[index])
