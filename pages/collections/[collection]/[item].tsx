@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import LazyLoad from 'react-lazyload'
 import type { NextPage } from 'next'
 import Link from 'next/link'
@@ -6,7 +6,7 @@ import Image from 'next/image'
 
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import { addDays } from 'date-fns'
 
 import ConfirmSell from '../../../components/collections/ConfirmSell'
@@ -28,6 +28,7 @@ import { getCurrencyInstance, getERC721Instance, getTransferSelectorNftInstance,
 import PngCheck from '../../../public/images/check.png' 
 import PngSub from '../../../public/images/subButton.png'
 import PngEther from '../../../public/images/collections/ethereum.png'
+import { SaleType } from '../../../types/enum'
 
 
 const Item: NextPage = () => {
@@ -38,7 +39,7 @@ const Item: NextPage = () => {
 
 
   const [order, setOrder] = useState<IOrder>()
-  const [bidOrder, setBidOrder] = useState<IOrder>()
+  // const [bidOrder, setBidOrder] = useState<IOrder>()
   const [openSellDlg, setOpenSellDlg] = React.useState(false)
   const [openBidDlg, setOpenBidDlg] = React.useState(false)
   const [profileLink, setProfileLink] = React.useState('')
@@ -61,12 +62,6 @@ const Item: NextPage = () => {
     address
   } = useWallet()
 
-  const currencies_list = [
-    { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0x49fB1b5550AFFdFF32CffF03c1A8168f992296eF' },
-    { value: 1, text: 'USDC', icon: 'payment/usdc.png', address: '0xeb8f08a975ab53e34d8a0330e0d34de942c95926' },
-    { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad' },
-  ]
-
   const chainList = [
     { chain: 'all', img_url: '/svgs/all_chain.svg', title: 'all NFTs', disabled: false},
     { chain: 'rinkeby', img_url: '/svgs/ethereum.svg', title: 'Ethereum', disabled: false},
@@ -84,9 +79,6 @@ const Item: NextPage = () => {
   const col_url = router.query.collection as string
   const token_id = router.query.item as string
 
-  // console.log(col_url)
-  console.log(orders)
-
   const nftInfo = useSelector(selectNFTInfo)
 
   useEffect(() => {
@@ -98,13 +90,9 @@ const Item: NextPage = () => {
 
   useEffect(() => {
     console.log(lastSaleOrders)
-    if(lastSaleOrders.length>0){
+    if (lastSaleOrders.length>0) {
       setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[0].price)))
-      for(let j=0;j<currencies_list.length;j++){
-        if(currencies_list[j].address==lastSaleOrders[0].currencyAddress){
-          setLastSaleCoin(`/images/${currencies_list[j].icon}`)
-        }
-      }
+      setLastSaleCoin(`/images/${getCurrencyIconByAddress(lastSaleOrders[0].currencyAddress)}`)
     }
   },[lastSaleOrders])
 
@@ -141,24 +129,19 @@ const Item: NextPage = () => {
 
   useEffect(() => {
     if (bidOrders.length > 0  && bid_flag) {
-      const temp_bidOrders: any = []
-      let bid_balance = 0
-      for(let i=0; i<bidOrders.length;i++){
-        temp_bidOrders.push(bidOrders[i])
-        if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
-          bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
-          for(let j=0;j<CURRENCIES_LIST.length;j++){
-            // if(CURRENCIES_LIST[j].address==bidOrders[i].currencyAddress){
-            setHighestBidCoin(`/images/${CURRENCIES_LIST[j].icon}`)
-            // }
-          }
-        }
-      }
-      setBidOrder(bidOrders[0])
-      setHighestBid(bid_balance)
+      const sortedBids = [...bidOrders]
+      sortedBids
+        .sort((o1, o2) => {
+          const p1 = BigNumber.from(o1.price)
+          const p2 = BigNumber.from(o2.price)
+          if (p1.eq(p2)) return 0
+          return p2.sub(p1).isNegative() ? -1 : 1
+        })
+      
+      setHighestBidCoin(`/images/${getCurrencyIconByAddress(sortedBids[0].currencyAddress)}`)
+      setHighestBid(Number(ethers.utils.formatEther(sortedBids[0].price)))
       setBidFlag(false)
     } else {
-      setBidOrder(undefined)
       setHighestBid(0)
       setHighestBidCoin('')
     }
@@ -235,7 +218,7 @@ const Item: NextPage = () => {
     
     await postMakerOrder(
       provider as any,
-      !listingData.isAuction,
+      true,
       nftInfo.collection.address,
       getAddressByName('Strategy', chainId),
       amount,
@@ -248,8 +231,8 @@ const Item: NextPage = () => {
         startTime,
         endTime: addDays(startTime, listingData.period).getTime(),
         params: {
-          values: [lzChainId],
-          types: ['uint16'],
+          values: [lzChainId, listingData.isAuction ? SaleType.AUCTION : SaleType.FIXED],
+          types: ['uint16', 'uint16'],
         },
       },
       nftInfo.collection.chain,
@@ -324,7 +307,7 @@ const Item: NextPage = () => {
   }
 
   const onBid = async (bidData: IBidData) => {
-    if (!bidOrder) {
+    if (!order) {
       dispatch(openSnackBar({ message: '  Please list first to place a bid', status: 'warning' }))
       return
     }
@@ -342,16 +325,16 @@ const Item: NextPage = () => {
         provider as any,
         false,
         nftInfo.collection.address,
-        bidOrder?.strategy,
-        bidOrder?.amount,
+        order?.strategy,
+        order?.amount,
         price,
         protocalFees,
         creatorFees,
         currency,
         {
           tokenId: token_id,
-          startTime: bidOrder.startTime,
-          endTime: bidOrder.endTime,
+          startTime: order.startTime,
+          endTime: order.endTime,
           params: {
             values: [lzChainId],
             types: ['uint16'],
@@ -424,7 +407,10 @@ const Item: NextPage = () => {
   }
 
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
+  const isListed = !!order
+  const isAuction = order?.params?.[2] == SaleType.AUCTION
 
+  console.log('--------', isListed, isAuction, owner, address)
   return (
     <>
       {nftInfo && nftInfo.nft && 
@@ -474,17 +460,6 @@ const Item: NextPage = () => {
                       <h1>{order && order.price && '$'}{order && order.price && ethers.utils.formatEther(order.price)}</h1>
                       <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-semibold">Highest Bid: <span className="font-normal">${highestBid}</span></h1>{highestBidCoin!=''&&<Image src={highestBidCoin} width={15} height={16} alt="chain  logo" />}</div>
                       <div className="flex justify-start items-center"><h1 className="mr-3 font-semibold">Last Sale: <span className="font-normal">${lastSale}</span></h1>{lastSaleCoin!=''&&<Image src={PngEther} width={15} height={16} alt="chain logo" />}</div>
-                      <div className="flex justify-end items-center">
-                        { order && owner && address && owner.toLowerCase() != address.toLowerCase() && 
-                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]">buy</button>
-                        }
-                        { owner && address && owner.toLowerCase() != address.toLowerCase() && 
-                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]" onClick={() => {setOpenBidDlg(true)}}>bid</button>
-                        }
-                        { address && owner && owner.toLowerCase() == address.toLowerCase() && 
-                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={() => {setOpenSellDlg(true)}}>sell</button>
-                        }
-                      </div>
                     </div>
                   </div>
                   <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
@@ -495,7 +470,7 @@ const Item: NextPage = () => {
                       <div></div>
                       {
                         bidOrders && bidOrders.map((item, index) => {
-                          return <div key={index}>
+                          return <Fragment key={index}>
                             <div className='break-all mt-3'>{truncate(item.signer)}</div>
                             <div className="text-center mt-3">
                               {
@@ -532,7 +507,7 @@ const Item: NextPage = () => {
                                 </button>
                               }
                             </div>
-                          </div>
+                          </Fragment>
                         })
                       }
                     </div>
@@ -542,17 +517,17 @@ const Item: NextPage = () => {
                   <div className="">
                     <div className="mb-3">
                       <div className="">
-                        { order && owner && address && owner.toLowerCase() != address.toLowerCase() && 
+                        { isListed && !isAuction && owner?.toLowerCase() != address?.toLowerCase() && 
                           <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={()=>onBuy()}>buy</button>
                         }
-                        { address && owner && owner.toLowerCase() == address.toLowerCase() && 
+                        { !isListed && owner?.toLowerCase() == address?.toLowerCase() && 
                           <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={() => {setOpenSellDlg(true)}}>sell</button>
                         }
                       </div>
                     </div>
                   </div>
                   <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
-                    { owner && address && owner.toLowerCase() != address.toLowerCase() && 
+                    { isListed && isAuction && owner?.toLowerCase() != address?.toLowerCase() && 
                       <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]" onClick={() => {setOpenBidDlg(true)}}>bid</button>
                     }
                   </div>
