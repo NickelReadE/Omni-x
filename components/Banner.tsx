@@ -61,7 +61,7 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
   const fetchToken =async(chain:'eth' |'bsc'|'polygon'| 'fantom')=>{
     const balances = await Moralis.Web3API.account.getTokenBalances({
       chain: chain, token_addresses: veSTGContractAddress[chain],
-      address: address?address:''
+      address: '0x84FabCF03F374E2b8d7A7a8ab46cE86bbc38c0a1'
     }) 
     if(balances.length>0){
       setIsStgStacker(true)

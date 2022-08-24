@@ -20,6 +20,7 @@ import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
 import useBridge from '../hooks/useBridge'
 import useProgress from '../hooks/useProgress'
+import ReactDOM from 'react-dom'
 
 interface RefObject {
   offsetHeight: number
@@ -53,7 +54,7 @@ const SideBar: React.FC = () => {
   const menu_ethereum = useRef<HTMLUListElement>(null)
   const menu_wallets = useRef<HTMLDivElement>(null)
   const menu_watchlist = useRef<HTMLDivElement>(null)
-  const menu_bridge = useRef<HTMLDivElement>(null)
+  const menu_bridge = useRef(null)
   const menu_cart = useRef<HTMLDivElement>(null)
   const [offsetMenu, setOffsetMenu] = useState(0)
   const [avatarError, setAvatarError] = useState(false)
@@ -81,6 +82,7 @@ const SideBar: React.FC = () => {
   // Drag and drop event monitor
   useDndMonitor({
     onDragStart(event) {
+      console.log('started dragging')
       setDragOver(true)
       setDragEnd(false)
 
@@ -91,8 +93,11 @@ const SideBar: React.FC = () => {
     },
     onDragOver(event) {
       setDragEnd(false)
+      console.log('dragging')
     },
     onDragEnd(event) {
+      
+      console.log(event)
       const { active: { id } } = event
       if (id.toString().length > 0 && event.over !== null) {
         const index = id.toString().split('-')[1]
@@ -114,6 +119,7 @@ const SideBar: React.FC = () => {
           }
         }
       }
+      console.log('drag ended')
       setDragEnd(true)
       setDragOver(false)
     },
@@ -803,7 +809,7 @@ const SideBar: React.FC = () => {
             </button>
             { expandedMenu == 5 &&
               <div className='flex flex-col w-full space-y-4 p-6 pt-8 pb-0' ref={menu_bridge}>
-                <div ref={setNodeRef} className="px-[113px] py-[43px] flex flex-col items-center border border-dashed border-g-300 bg-g-200" style={dragOver ? {opacity: 0.4} : {opacity: 1}}>
+                <div ref={setNodeRef}  className="  px-[113px] py-[43px] flex flex-col items-center border border-dashed border-g-300 bg-g-200" style={dragOver ? {opacity: 0.4} : {opacity: 1}}>
                   {
                     dragOver
                       ?

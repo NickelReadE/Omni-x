@@ -21,9 +21,9 @@ const Slider = (props: IPropsSlider) => {
           </div>
           
           <div className="py-4 mt-5">           
-            <div className="w-full grid grid-cols-4 gap-12">
+            <div className="w-full flex flex-wrap justify-center gap-12">
               {props.cards.map((item, index) => (
-                <div key={index} >
+                <div className='w-[340px]' key={index} >
                   {item}
                 </div>
               ))}
