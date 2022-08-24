@@ -2,7 +2,7 @@ import React from 'react'
 
 export interface IPropsSlider {
   title?: string
-  images: Array<React.ReactNode>
+  cards: Array<React.ReactNode>
 }
 
 export interface IPropsImage {
