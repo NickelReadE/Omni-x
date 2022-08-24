@@ -72,6 +72,7 @@ const SideBar: React.FC = () => {
   const [estimatedFee, setEstimatedFee] = useState<BigNumber>(BigNumber.from('0'))
   const [isONFT, setIsONFT] = useState(false)
   const [unwrap, setUnwrap] = useState(false)
+  const [isDragFirst, setIsDragFirst] = useState(true)
   const {setNodeRef} = useDroppable({
     id: 'droppable',
     data: {
@@ -85,7 +86,7 @@ const SideBar: React.FC = () => {
       console.log('started dragging')
       setDragOver(true)
       setDragEnd(false)
-
+      console.log("First?", isDragFirst)
       setShowSidebar(true)
       setOnMenu(true)
       setFixed(true)
@@ -99,7 +100,7 @@ const SideBar: React.FC = () => {
       
       console.log(event)
       const { active: { id } } = event
-      if (id.toString().length > 0 && event.over !== null) {
+      if (id.toString().length > 0 && (event.over !== null || isDragFirst)) {
         const index = id.toString().split('-')[1]
         setSelectedNFTItem(nfts[index])
         validateOwNFT(nfts[index]).then((res) => {
@@ -185,6 +186,7 @@ const SideBar: React.FC = () => {
 
   const fixMenu = (menu: number) => {
     setExpandedMenu(menu == expandedMenu ? 0 : menu)
+    setIsDragFirst(!isDragFirst)
     setFixed(!fixed)
   }
 
@@ -477,6 +479,11 @@ const SideBar: React.FC = () => {
       setChainID(parseInt(window.ethereum.networkVersion))
     }
   })
+  // useEffect(()=>{
+  //   if(showSidebar){
+  //     setIsDragFirst(false)
+  //   }else{setIsDragFirst(true)}
+  // },[showSidebar])
   if(window.ethereum){
     window.ethereum.on('chainChanged', function (networkId:string) {      
       setChainID(parseInt(networkId))
