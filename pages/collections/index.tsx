@@ -62,7 +62,7 @@ const Collections: NextPage = () => {
   return (
     <>
       <div className='pt-10'>
-        <Slider title="Beta Collections" cards={omniSlides} />    
+        <Slider  title="Beta Collections" cards={omniSlides} />    
 
       </div>
     </>
