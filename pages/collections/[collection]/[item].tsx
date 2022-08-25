@@ -39,6 +39,11 @@ import { IGetOrderRequest, IOrder } from '../../../interface/interface'
 import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
 import { addDays } from 'date-fns'
 
+import usd from '../../../constants/abis/USD.json'
+import omni from '../../../constants/abis/omni.json'
+import usdc from '../../../constants/USDC.json'
+import usdt from '../../../constants/USDT.json'
+
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('items')
@@ -245,6 +250,56 @@ const Item: NextPage = () => {
     }
     const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
     const startTime = Date.now()
+
+    const Provider = new ethers.providers.Web3Provider(window.ethereum)
+    const signer = Provider.getSigner()
+    let usdContract = null
+    let contractAddress =''
+
+    if(currency==='0x49fB1b5550AFFdFF32CffF03c1A8168f992296eF'){
+      contractAddress= '0xEEe98d31332154026a4aD6e95c4ce702aF7b1B20'
+      if(chainId===4){
+        usdContract =  new ethers.Contract(contractAddress, omni, signer)
+      }
+    } else if (currency==='0xeb8f08a975ab53e34d8a0330e0d34de942c95926'){
+      if(chainId===4){
+        contractAddress = usdc['rinkeby']
+        usdContract =  new ethers.Contract(contractAddress, usd, signer)
+      } else if(chainId===43113) {
+        contractAddress = usdc['fuji']
+        usdContract =  new ethers.Contract(contractAddress, usd, signer)
+      } else if(chainId===80001) {
+        contractAddress = usdc['mumbai']
+        usdContract =  new ethers.Contract(contractAddress, usd, signer)
+      } else if(chainId===421611) {
+        contractAddress = usdc['arbitrum-rinkeby']
+        usdContract =  new ethers.Contract(contractAddress, usd, signer)
+      } else if(chainId===69) {
+        contractAddress = usdc['optimism-kovan']
+        usdContract =  new ethers.Contract(contractAddress, usd, signer)
+      } else if(chainId===4002) {
+        contractAddress = usdc['fantom-testnet']
+        usdContract =  new ethers.Contract(contractAddress, usd, signer)
+      }
+    } else if (currency==='0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad') {
+      contractAddress = usdt['bsc-testnet']
+      if(chainId===97){
+        usdContract =  new ethers.Contract(contractAddress, usd, signer)
+      }
+    }
+
+    if(usdContract===null){
+      dispatch(openSnackBar({ message: "This network doesn't support this coin", status: 'error' }))
+      setOpenBidDlg(false)
+      return
+    }
+
+    const balance = await usdContract?.balanceOf(address)
+    if(Number(ethers.utils.formatEther(balance)) < Number(price)) {
+      dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))
+      setOpenBidDlg(false)
+      return
+    }
 
     try {
       await postMakerOrder(
