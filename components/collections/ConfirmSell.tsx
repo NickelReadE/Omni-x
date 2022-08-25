@@ -111,7 +111,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                     styles={{
                       control: (styles:any) => ({ ...styles,
                         borderRadius: '8px',
-                        backgroundColor: '#F8F9FA',
+                        backgroundColor: '#F6F8FC',
                         border: '2px solid #E9ECEF',
                         width: '170px'
                       })
@@ -172,7 +172,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                     styles={{
                       control: (styles:any) => ({ ...styles,
                         borderRadius: '8px',
-                        backgroundColor: '#F8F9FA',
+                        backgroundColor: '#F6F8FC',
                         border: '2px solid #E9ECEF',
                         width: '170px'
                       })
@@ -184,7 +184,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                     value={period}
                     onChange={(value: any) => setPeriod(value)}
                   />
-                  {/* <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F8F9FA] border-[2px] border-[#E9ECEF] rounded-lg"/>
+                  {/* <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg"/>
                   <span className="px-4 text-[#ADB5BD] font-light">~ $60.00 USD</span> */}
                 </div>
               </div>

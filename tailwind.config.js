@@ -36,6 +36,7 @@ module.exports = {
           100: '#38B000',
         },
         l: {
+          50:  '#F6F8FC',
           100: '#ffaa85',
           200: '#ff7658',
           300: '#FC4F37',
@@ -68,16 +69,24 @@ module.exports = {
       fontFamily: {
         sans: ['Inter', ...fontFamily.sans],
         mono: ['Inconsolata', ...fontFamily.mono],
+        RetniSans:['RetniSans']
       },
       fontSize: {
         xs: '10px',
         sm: '12px',
         md: '14px',
         lg: '16px',
+        xg: '18px',
         xl: '20px',
       },
       gridTemplateColumns: {
         '13': 'repeat(13, minmax(0, 1fr))',
+      },
+      rotate: {
+        '52': '52deg',
+      },
+      boxShadow:{
+        'ml':'0 0 10px rgba(0,0,0,0.25)'
       }
     },
   },

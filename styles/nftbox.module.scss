@@ -1,0 +1,17 @@
+.nftContainer {
+    &:hover {
+        .ellipseBtn {
+            display: block;
+        }
+        .refreshBtn {
+            display: block;
+        }
+    }
+    .ellipseBtn {
+        background: radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.2) 0%, rgba(254, 254, 255, 0) 100%);
+        display: none;
+    }
+    .refreshBtn {
+        display: none;
+    }
+}

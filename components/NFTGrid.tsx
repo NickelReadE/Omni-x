@@ -57,27 +57,22 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
 
   return (
     <>
-      <div className="w-full mb-5 ">
-        <div className="flex relative justify-start bg-[#F8F9FA] pl-2 pr-2 w-fit" style={{'width':'100%'}}>
+      <div className="w-full mb-5 mt-4">
+        <div className="flex justify-start bg-[#F6F8FC] border-2 border-[#E9ECEF] rounded-lg p-2 w-fit">
           {
             chainList.map((item, index) => {
-              return <div key={index} className={`grid justify-items-center content-center p-3 font-medium cursor-pointer m-[1px] min-w-[80px]  ${chain == item.chain ? 'bg-[#C8D6E8]' : ''} `} onClick={() =>{item.disabled ? undefined : setChain(item.chain)}}>
-                <img src={item.img_url} className="w-[21px] h-[22px] " />
+              return <div key={index} className={`grid justify-items-center content-center p-3 font-medium cursor-pointer m-[1px] min-w-[96px] ${chain == item.chain ? 'bg-[#E9ECEF] border-2 border-[#ADB5BD] rounded-lg text-[#1E1C21]' : ''} ${item.disabled ? 'bg-[#e8e8e8] rounded-lg cursor-default' : ''}`} onClick={() =>{item.disabled ? undefined : setChain(item.chain)}}>
+                <img src={item.img_url} className="w-[21px] h-[22px]" />
+                <p className="mt-1  leading-[18px] text-[14px]">{item.title}</p>
               </div>
             })
           }
-          <div className="flex p-3 font-medium cursor-pointer text-[#6C757D] absolute right-0">
-            <img src='/images/listing.png' className="w-[21px] h-[22px]"/>
-            <span>active listing</span>
-            <img src='/images/downArrow.png' className="w-[10px] h-[7px] ml-5 mt-auto mb-auto"/>
-          </div>
         </div>
         <div className="grid grid-cols-5 gap-10 mt-4">
           {nfts.map((item, index) => {
-
             if(chain == 'all'){
               return (
-                <NFTBox nft={item} index={index} key={index}/>
+                <NFTBox nft={item} index={index} key={index} />
               )
             } else {
               if(chain == item.chain) {

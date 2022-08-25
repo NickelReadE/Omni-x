@@ -24,10 +24,6 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
   estimatedFee,
   image
 }) => {
-  const {
-    provider,
-    signer
-  } = useWallet()
 
   const [imageError, setImageError] = useState(false)
 
@@ -89,7 +85,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
               <div className="flex items-center justify-around mt-1">
                 <div className="flex flex-col">
                   <p>From:</p>
-                  <div className="flex flex-col items-center px-[15px] py-[10px] bg-[#F8F9FA] rounded-md border-2 border-[#E9ECEF] min-w-[95px] min-h-[78px]">
+                  <div className="flex flex-col items-center px-[15px] py-[10px] bg-[#F6F8FC] rounded-md border-2 border-[#E9ECEF] min-w-[95px] min-h-[78px]">
                     <p>
                       <img src={chainInfos[senderChain].logo} width={30} height={30} style={{width: 30, height: 30}} alt={'Sender chain'} />
                     </p>
@@ -98,7 +94,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
                 </div>
                 <div className="flex flex-col">
                   <p>To:</p>
-                  <div className="flex flex-col items-center px-[15px] py-[10px] bg-[#F8F9FA] rounded-md border-2 border-[#E9ECEF] min-w-[95px] min-h-[78px]">
+                  <div className="flex flex-col items-center px-[15px] py-[10px] bg-[#F6F8FC] rounded-md border-2 border-[#E9ECEF] min-w-[95px] min-h-[78px]">
                     <p>
                       <img src={chainInfos[targetChain].logo} width={30} height={30} style={{width: 30, height: 30}} alt={'Target chain'} />
                     </p>

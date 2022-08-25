@@ -15,12 +15,12 @@ const Feed = ({ feed }: IPropsFeed) => {
         {feed.map((item: FeedItem, index: number) => {
           return (
             <div className="w-5/12 justify-self-center mx-auto" key={index}>
-              <div className="p-4 bg-[#F8F9FA] text-slate-500 font-bold mb-3 flex content-center">
+              <div className="p-4 bg-[#F6F8FC] text-slate-500 font-bold mb-3 flex content-center">
                 <Image src={Refresh} alt="refresh" />
                 <div className="ml-3">{item.postedby}</div>
               </div>
               {item.image}
-              <div className="p-5 px-8 flex justify-between bg-[#F8F9FA]">
+              <div className="p-5 px-8 flex justify-between bg-[#F6F8FC]">
                 <div>
                   <div className="flex mb-2">
                     <span className="text-slate-800 font-bold text-2xl mr-3">
@@ -81,7 +81,7 @@ const Feed = ({ feed }: IPropsFeed) => {
                   </div>
                 </div>
               </div>
-              {item.alert &&<div className="p-4 bg-[#F8F9FA] text-slate-500 font-bold mt-20 mb-20">
+              {item.alert &&<div className="p-4 bg-[#F6F8FC] text-slate-500 font-bold mt-20 mb-20">
                 <div className="flex">
                   <Image src={Alert} alt="alert" />
                   <div className="ml-3">{item.alert?.content}</div>
