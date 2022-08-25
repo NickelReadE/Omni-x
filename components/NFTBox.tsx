@@ -251,15 +251,16 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
         <div className="flex items-center ml-3">
           <div className='flex'>
             {islisted && price>0&&<img src={img_url} className="w-[16px] h-[16px]" alt="icon" />}
-            {islisted && price>0&&  <span className="text-[#1E1C21] text-sm ml-2"> {price}</span>}
+            {islisted && price>0&&<span className="text-[#000000] text-[18px] font-bold ml-2">{price}</span>}
           </div>
         </div>
       </div>
       <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle">
         <div className="flex items-center ml-3">
           {lastSale!=0&&<><img src={lastSaleCoin} className="w-[18px] h-[18px]" />
-            <span className="text-[#1E1C21] text-sm">last sale: &nbsp;{lastSale}</span></>}
-          {lastSale==0&&highestBid!=0&&<><span className="text-[#1E1C21] text-sm">highest offer: &nbsp;</span><img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>{highestBid}</>}  
+            <span className="text-[#6C757D] text-sm">last sale: &nbsp;{lastSale}</span></>}
+          {lastSale==0&&highestBid!=0&&<><span className="text-[#6C757D] text-sm">highest offer: &nbsp;</span><img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>
+            <span className="text-[#6C757D] text-sm">{highestBid}</span></>}  
         </div>
         {islisted&&<div className="ml-2 mr-3 py-[1px] px-5 bg-[#ADB5BD] rounded-lg text-[14px] text-[#F8F9FA] font-medium cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
           {'Sell'}
