@@ -59,7 +59,7 @@ export const getCollectionNFTs = (col_url: string, page: Number, display_per_pag
 
 export const getCollectionInfo = (col_url: string) => async (dispatch: Dispatch<any>) => {
 	try {
-		const info = await collectionsService.getCollectionInfo(col_url)
+		const info = await collectionsService.getCollectionInfo( col_url )
 		dispatch(setCollectionInfo(info))
 	} catch (error) {
 		console.log("getCollectionInfo error ? ", error)

@@ -39,7 +39,7 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
   const disptach = useDispatch()  
   const cuser = useSelector(selectUser)
   const skinName = useSelector(selectHeroSkin)
-  const { isInitialized, Moralis } = useMoralis()
+  const {isInitialized, Moralis} = useMoralis()
   const { address } = useWallet()
   const classes = useStyles()
   const [avatarError, setAvatarError] = useState(false)
