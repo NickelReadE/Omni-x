@@ -77,7 +77,7 @@ const Tabs = ({blur}: TabProps) => {
 
   return (
     <div className="flex justify-center">
-      <div className={`flex justify-center mt-20 w-[90%] ${blur ? 'blur-sm' : ''} mb-20`}>
+      <div className={`flex justify-center mt-36 w-[90%] ${blur ? 'blur-sm' : ''} mb-20`}>
         <div className="w-[90%]">
           <ul
             className="flex relative justify-item-stretch text-xl font-bold text-center border-b-2 border-[#E9ECEF]">
