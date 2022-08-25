@@ -317,26 +317,26 @@ const Collection: NextPage = () => {
           </div>
           <div className="2xl:col-span-8 xl:col-span-7 md:col-span-7 px-8 pt-3 bg-[#F6F8FC]">
             <div>
-              <p className="text-[#1E1C21] font-['Roboto Mono'] text-3xl uppercase font-bold">{collectionInfo?collectionInfo.name:''}</p>
+              <p className="text-[#1E1C21]  text-3xl uppercase font-bold">{collectionInfo?collectionInfo.name:''}</p>
             </div>
-            <div className="flex justify-start mt-5">
+            <div className="flex justify-start mt-5 mb-5">
               <div>
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-normal underline">items</p>
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-bold mt-3">{collectionInfo?collectionInfo.count:0}</p>
+                <p className="text-[#1E1C21]  text-xl font-normal underline">items</p>
+                <p className="text-[#1E1C21]  text-xl font-bold mt-3">{collectionInfo?collectionInfo.count:0}</p>
               </div>
               <div className="xl:ml-20 lg:ml-10 md:ml-10">
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-normal underline">holders</p>
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-bold mt-3">{collectionOwners}</p>
+                <p className="text-[#1E1C21] text-xl font-normal underline">holders</p>
+                <p className="text-[#1E1C21]  text-xl font-bold mt-3">{collectionOwners}</p>
               </div>
               <div className="xl:ml-20 lg:ml-10 md:ml-10">
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-normal underline">floor</p>
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-bold mt-3">
-                  <span className='mr-3'>0</span><Image src={Ethereum} height={25} width={23} alt="" />
-                </p>
+                <p className="text-[#1E1C21]  text-xl font-normal underline">floor</p>
+                <div className="flex justify-center text-[#1E1C21] f text-xl font-bold mt-3">
+                  <span className='mr-3'>0</span><Image src={Ethereum} height={20} width={23} alt="" />
+                </div>
               </div>
               <div className="xl:ml-20 lg:ml-10 md:ml-10">
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-normal underline">royalty fee</p>
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-bold mt-3">0%</p>
+                <p className="text-[#1E1C21] text-xl font-normal underline">royalty fee</p>
+                <p className="text-[#1E1C21] text-xl font-bold mt-3">0%</p>
               </div>
             </div>
           </div>
@@ -399,6 +399,7 @@ const Collection: NextPage = () => {
         </div>
       </div>
 
+
       <div className="w-full pr-[70px]">
         <div className="flex">
           <div className="w-[320px] min-w-[320px]">
@@ -432,7 +433,7 @@ const Collection: NextPage = () => {
                       aria-controls="panel1a-content"
                       id="panel1a-header"
                     >
-                      <Typography className={classes.heading}>{key}</Typography>
+                      <Typography className={classNames(classes.heading,'font-RetniSans') } style={{fontFamily:'RetniSans'}}>{key}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                       <div>
@@ -523,15 +524,15 @@ const Collection: NextPage = () => {
               </li> */}
             </ul>
           </div>
-          <div className="px-12 py-6 border-l-2 border-[#E9ECEF]">
+          <div className="px-12 py-6 border-l-2 border-[#E9ECEF] w-full">
             <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 p-1 gap-4">
               <div className="2xl:col-start-4 xl:col-start-3 lg:col-start-2 md:col-start-1">
-                <button className="rounded-lg bg-[#38B000] text-[#F8F9FA] text-lg px-6 py-2 sm:text-sm w-full">make a collection bid</button>
+                <button className="rounded-lg bg-[#38B000] text-[#F6F8FC] py-2 xl:text-[18px] lg:text-[14px] w-full">make a collection bid</button>
               </div>
               <div className="min-w-[180px] z-10 2xl:col-start-5 xl:col-start-4 lg:col-start-3 md:col-start-2">
                 <Listbox value={selected} onChange={onChangeSort}>
                   <div className="relative">
-                    <Listbox.Button className="relative w-full cursor-default rounded-lg bg-[#E9ECEF] py-2 pl-3 pr-10 text-lg text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                    <Listbox.Button className="relative w-full cursor-default rounded-lg bg-[#E9ECEF] py-2 pl-3 pr-10 text-lg text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 xl:text-[18px] lg:text-[14px]">
                       <span className="block truncate">{selected.name}</span>
                       <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                         <i className="fa fa-chevron-down"></i>

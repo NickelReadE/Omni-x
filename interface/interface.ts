@@ -2,7 +2,7 @@ import React from 'react'
 
 export interface IPropsSlider {
   title?: string
-  images: Array<React.ReactNode>
+  cards: Array<React.ReactNode>
 }
 
 export interface IPropsImage {
@@ -29,7 +29,7 @@ export interface NFTItem {
   token: string,
   score: number,
   rank: number,
-  token_id: number,
+  token_id: string,
   name1: string,
   price: number,
   metadata: string,

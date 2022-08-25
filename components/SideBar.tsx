@@ -1,4 +1,4 @@
-import React, {useRef, useLayoutEffect, useState, useEffect} from 'react'
+import React, {useRef, useLayoutEffect, useState, useEffect, useCallback} from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {BigNumber, ethers} from 'ethers'
 import Image from 'next/image'
@@ -6,19 +6,20 @@ import {useDndMonitor, useDroppable} from '@dnd-kit/core'
 import LazyLoad from 'react-lazyload'
 import {Dialog} from '@material-ui/core'
 import useWallet from '../hooks/useWallet'
-import {selectUser, selectUserNFTs} from '../redux/reducers/userReducer'
+import {getUserNFTs, selectUser, selectUserNFTs} from '../redux/reducers/userReducer'
 import {NFTItem} from '../interface/interface'
 import {
   getLayerZeroEndpointInstance,
   getERC721Instance,
   getERC1155Instance,
   getOmnixBridge1155Instance,
-  getOmnixBridgeInstance, validateContract
+  getOmnixBridgeInstance, getONFTCore721Instance, getONFTCore1155Instance,
 } from '../utils/contracts'
-import {getAddressByName, getChainIdFromName, getLayerzeroChainId} from '../utils/constants'
+import {getChainIdFromName, getLayerzeroChainId} from '../utils/constants'
 import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
-import {openSnackBar} from '../redux/reducers/snackBarReducer'
+import useBridge from '../hooks/useBridge'
+import useProgress from '../hooks/useProgress'
 
 
 import usd from '../constants/abis/USD.json'
@@ -30,14 +31,6 @@ interface RefObject {
   offsetHeight: number
 }
 
-type UnwrapInfo = {
-  type: 'ERC721' | 'ERC1155',
-  chainId: number,
-  originAddress: string,
-  persistentAddress: string,
-  tokenId: number
-}
-
 const env = process.env.NEXT_PUBLICE_ENVIRONMENT || 'testnet'
 
 const SideBar: React.FC = () => {
@@ -47,7 +40,10 @@ const SideBar: React.FC = () => {
     address,
     connect: connectWallet,
     switchNetwork
-  } = useWallet()
+  } = useWallet()  
+
+  const { estimateGasFee, estimateGasFeeONFTCore, unwrapInfo, selectedUnwrapInfo, validateOwNFT, validateONFT } = useBridge()
+  const { setPendingTxInfo } = useProgress()
 
   const dispatch = useDispatch()
   const ref = useRef(null)
@@ -57,7 +53,7 @@ const SideBar: React.FC = () => {
   const [fixed, setFixed] = useState(false)
   const [confirmTransfer, setConfirmTransfer] = useState(false)
   const [chainId, setChainID] = useState(4)
-
+  const [isFirstDrag, setIsFirstDrag] = useState(true)
   const DEFAULT_AVATAR = 'uploads\\default_avatar.png'
 
   const menu_profile = useRef<HTMLUListElement>(null)
@@ -78,14 +74,15 @@ const SideBar: React.FC = () => {
   const user = useSelector(selectUser)
 
   const [selectedNFTItem, setSelectedNFTItem] = useState<NFTItem>()
+  const [isONFTCore, setIsONFTCore] = useState(false)
   const [image, setImage] = useState('/images/omnix_logo_black_1.png')
   const [imageError, setImageError] = useState(false)
   const [dragOver, setDragOver] = useState(false)
   const [dragEnd, setDragEnd] = useState(false)
-  const [targetChain, setTargetChain] = useState(0)
-  const [estimatedFee, setEstimatedFee] = useState(BigNumber.from('0'))
+  const [targetChain, setTargetChain] = useState(97)
+  const [estimatedFee, setEstimatedFee] = useState<BigNumber>(BigNumber.from('0'))
+  const [isONFT, setIsONFT] = useState(false)
   const [unwrap, setUnwrap] = useState(false)
-  const [unwrapInfo, setUnwrapInfo] = useState<UnwrapInfo | null>(null)
   const {setNodeRef} = useDroppable({
     id: 'droppable',
     data: {
@@ -110,10 +107,12 @@ const SideBar: React.FC = () => {
     },
     onDragEnd(event) {
       const { active: { id } } = event
-      console.log(event)
-      if (id.toString().length > 0 && event.over !== null) {
+      if (id.toString().length > 0 && (event.over !== null || isFirstDrag)) {
         const index = id.toString().split('-')[1]
         setSelectedNFTItem(nfts[index])
+        validateOwNFT(nfts[index]).then((res) => {
+          setIsONFT(res)
+        })
         const metadata = nfts[index].metadata
         setImageError(false)
         // setChain(chain_list[nfts[index].chain])
@@ -175,11 +174,15 @@ const SideBar: React.FC = () => {
 
   const onLeaveMenu = () => {
     if (!fixed) {
-      setExpandedMenu(0)
-      setOffsetMenu(0)
-      setShowSidebar(false)
-      setOnMenu(false)
+      onLeave()
     }
+  }
+
+  const onLeave = () => {
+    setExpandedMenu(0)
+    setOffsetMenu(0)
+    setShowSidebar(false)
+    setOnMenu(false)
   }
 
   const toggleMenu = (menu: number) => {
@@ -190,12 +193,17 @@ const SideBar: React.FC = () => {
   const fixMenu = (menu: number) => {
     setExpandedMenu(menu == expandedMenu ? 0 : menu)
     setFixed(!fixed)
+    setIsFirstDrag(!isFirstDrag)
   }
 
   const onClickNetwork = async (chainId: number) => {
     await connectWallet()
-    await switchNetwork(chainId)
-    setChainID(chainId)
+    try{
+      await switchNetwork(chainId)
+      window.location.reload()
+    }catch(error){
+      console.log('error:', error)
+    }
   }
 
   const handleTargetChainChange = (networkIndex: number) => {
@@ -207,115 +215,114 @@ const SideBar: React.FC = () => {
     if (!targetChain) return
     if (!user) return
     if (!signer) return
-    if (!provider?._network?.chainId) return
-    if (provider?._network?.chainId === targetChain) return
+    if (!chainId) return    
     const senderChainId = getChainIdFromName(selectedNFTItem.chain)
-    if (provider?._network?.chainId !== senderChainId) {
-      dispatch(openSnackBar({ message: 'Successfully updated', status: 'success' }))
+    if (chainId !== senderChainId) {
+      return await switchNetwork(senderChainId)
     }
+    if (chainId === targetChain) return
 
-    const lzEndpointInstance = getLayerZeroEndpointInstance(provider?._network?.chainId, provider)
-    const lzTargetChainId = getLayerzeroChainId(targetChain)
-    const _signerAddress = await signer.getAddress()
-
-    if (selectedNFTItem.contract_type === 'ERC721') {
-      const contractInstance = getOmnixBridgeInstance(provider?._network?.chainId, signer)
-      const erc721Instance = getERC721Instance(selectedNFTItem.token_address, 0, signer)
-      const noSignerOmniXInstance = getOmnixBridgeInstance(targetChain, null)
-      const dstAddress = await noSignerOmniXInstance.persistentAddresses(selectedNFTItem.token_address)
-      let adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 3500000])
-      if (dstAddress !== ethers.constants.AddressZero) {
-        adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 2000000])
+    const isONFTCore = await validateONFT(selectedNFTItem)
+    setIsONFTCore(isONFTCore)
+    try {
+      let gasFee
+      if (isONFTCore) {
+        gasFee = await estimateGasFeeONFTCore(selectedNFTItem, chainId, targetChain)
+      } else {
+        gasFee = await estimateGasFee(selectedNFTItem, chainId, targetChain)
       }
-      // Estimate fee from layerzero endpoint
-      const _name = await erc721Instance.name()
-      const _symbol = await erc721Instance.symbol()
-      const _tokenURI = await erc721Instance.tokenURI(selectedNFTItem.token_id)
-      const _payload = ethers.utils.defaultAbiCoder.encode(
-        ['address', 'address', 'string', 'string', 'string', 'uint256'],
-        [selectedNFTItem.token_address, _signerAddress, _name, _symbol, _tokenURI, selectedNFTItem.token_id]
-      )
-      const estimatedFee = await lzEndpointInstance.estimateFees(lzTargetChainId, contractInstance.address, _payload, false, adapterParams)
-      setEstimatedFee(estimatedFee.nativeFee)
-    } else if (selectedNFTItem.contract_type === 'ERC1155') {
-      const contractInstance = getOmnixBridge1155Instance(provider?._network?.chainId, signer)
-      const noSignerOmniX1155Instance = getOmnixBridge1155Instance(targetChain, null)
-      const erc1155Instance = getERC1155Instance(selectedNFTItem.token_address, signer)
-      const dstAddress = await noSignerOmniX1155Instance.persistentAddresses(selectedNFTItem.token_address)
-      let adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 3500000])
-      if (dstAddress !== ethers.constants.AddressZero) {
-        adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 2000000])
-      }
-      // Estimate fee from layerzero endpoint
-      const _tokenURI = await erc1155Instance.uri(selectedNFTItem.token_id)
-      const _payload = ethers.utils.defaultAbiCoder.encode(
-        ['address', 'address', 'string', 'uint256', 'uint256'],
-        [selectedNFTItem.token_address, _signerAddress, _tokenURI, selectedNFTItem.token_id, selectedNFTItem.amount]
-      )
-      const estimatedFee = await lzEndpointInstance.estimateFees(lzTargetChainId, contractInstance.address, _payload, false, adapterParams)
-      setEstimatedFee(estimatedFee.nativeFee)
+      setEstimatedFee(gasFee)
+      setConfirmTransfer(true)
+    } catch (e) {
+      console.error(e)
     }
-
-    setConfirmTransfer(true)
   }
 
   const onTransfer = async () => {
     if (!selectedNFTItem) return
     if (!signer) return
+    if (!provider?._network?.chainId) return
+    if (provider?._network?.chainId === targetChain) return
+    if (!address) return
 
-    if (provider?._network?.chainId) {
-      if (provider?._network?.chainId === targetChain) return
-      const lzEndpointInstance = getLayerZeroEndpointInstance(provider?._network?.chainId, provider)
-      const lzTargetChainId = getLayerzeroChainId(targetChain)
-      const _signerAddress = await signer.getAddress()
+    const lzEndpointInstance = getLayerZeroEndpointInstance(provider?._network?.chainId, provider)
+    const lzTargetChainId = getLayerzeroChainId(targetChain)
+    const _signerAddress = address
 
+    if (isONFTCore) {
+      if (selectedNFTItem.contract_type === 'ERC721') {
+        const onftCoreInstance = getONFTCore721Instance(selectedNFTItem.token_address, provider?._network?.chainId, signer)
+        const targetONFTCoreAddress = await onftCoreInstance.trustedRemoteLookup(lzTargetChainId)
+        const targetCoreInstance = getONFTCore721Instance(targetONFTCoreAddress, targetChain, null)
+        const tx = await onftCoreInstance.sendFrom(
+          _signerAddress,
+          lzTargetChainId,
+          _signerAddress,
+          selectedNFTItem.token_id,
+          _signerAddress,
+          ethers.constants.AddressZero,
+          '0x',
+          { value: estimatedFee }
+        )
+        targetCoreInstance.on('ReceiveFromChain', (/*srcChainId, srcAddress, toAddress, tokenId, nonce*/) => {
+          setTimeout(() => {
+            dispatch(getUserNFTs(address) as any)
+          }, 30000)
+        })
+        onLeave()
+        await setPendingTxInfo({
+          txHash: tx.hash,
+          type: 'bridge',
+          senderChainId: provider?._network?.chainId,
+          targetChainId: targetChain,
+          itemName: selectedNFTItem.name
+        })
+        await tx.wait()
+        await setPendingTxInfo(null)
+      } else if (selectedNFTItem.contract_type === 'ERC1155') {
+        const onft1155CoreInstance = getONFTCore1155Instance(selectedNFTItem.token_address, provider?._network?.chainId, signer)
+        const targetONFT1155CoreAddress = await onft1155CoreInstance.trustedRemoteLookup(lzTargetChainId)
+        const targetCoreInstance = getONFTCore1155Instance(targetONFT1155CoreAddress, targetChain, null)
+        const tx = await onft1155CoreInstance.sendFrom(
+          _signerAddress,
+          lzTargetChainId,
+          _signerAddress,
+          selectedNFTItem.token_id,
+          selectedNFTItem.amount,
+          _signerAddress,
+          ethers.constants.AddressZero,
+          '0x',
+          { value: estimatedFee }
+        )
+        onLeave()
+        await setPendingTxInfo({
+          txHash: tx.hash,
+          type: 'bridge',
+          senderChainId: provider?._network?.chainId,
+          targetChainId: targetChain,
+          itemName: selectedNFTItem.name
+        })
+        targetCoreInstance.on('ReceiveFromChain', (/*srcChainId, srcAddress, toAddress, tokenId, nonce*/) => {
+          setTimeout(() => {
+            dispatch(getUserNFTs(address) as any)
+          }, 30000)
+        })
+        await tx.wait()
+        await setPendingTxInfo(null)
+      }
+    } else {
       if (selectedNFTItem.contract_type === 'ERC721') {
         const contractInstance = getOmnixBridgeInstance(provider?._network?.chainId, signer)
         const erc721Instance = getERC721Instance(selectedNFTItem.token_address, 0, signer)
         const noSignerOmniXInstance = getOmnixBridgeInstance(targetChain, null)
         const dstAddress = await noSignerOmniXInstance.persistentAddresses(selectedNFTItem.token_address)
 
-        noSignerOmniXInstance.on('LzReceive', async (ercAddress, toAddress, tokenId, payload, persistentAddress) => {
-          console.log(selectedNFTItem)
-          console.log(ercAddress, toAddress, tokenId, payload, persistentAddress)
-          await switchNetwork(targetChain)
-          if (
-            parseInt(selectedNFTItem.token_id.toString()) === tokenId.toNumber() &&
-            _signerAddress === toAddress
-          ) {
-
-            const targetERC721Instance = getERC721Instance(ercAddress, targetChain, null)
-            const validate = await validateContract(targetChain, ercAddress)
-            console.log(validate)
-            if (validate) {
-              const isERC721 = await targetERC721Instance.supportsInterface('0x80ac58cd')
-              console.log(isERC721)
-              if (isERC721) {
-                const owner = await targetERC721Instance.ownerOf(tokenId.toNumber())
-                const bridgeAddress = getAddressByName('Omnix', targetChain)
-                console.log('Owner: ', owner)
-                console.log('BridgeAddress: ', bridgeAddress)
-                if (owner === bridgeAddress) {
-                  setUnwrapInfo({
-                    type: 'ERC721',
-                    chainId: targetChain,
-                    originAddress: ercAddress,
-                    persistentAddress: persistentAddress,
-                    tokenId: tokenId.toNumber(),
-                  })
-                  console.log({
-                    type: 'ERC721',
-                    chainId: targetChain,
-                    originAddress: ercAddress,
-                    persistentAddress: persistentAddress,
-                    tokenId: tokenId.toNumber(),
-                  })
-                  setUnwrap(true)
-                  await switchNetwork(targetChain)
-                }
-              }
-            }
-          }
+        noSignerOmniXInstance.on('LzReceive', async () => {
+          // After 30 seconds from receiving the token on Target Chain, refresh user NFT items
+          setTimeout(() => {
+            dispatch(getUserNFTs(address) as any)
+          }, 30000)
+          // await switchNetwork(targetChain)
         })
 
         let adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 3500000])
@@ -326,25 +333,35 @@ const SideBar: React.FC = () => {
         if (operator !== contractInstance.address) {
           await (await erc721Instance.approve(contractInstance.address, BigNumber.from(selectedNFTItem.token_id))).wait()
         }
-        // Estimate fee from layerzero endpoint
-        const _name = await erc721Instance.name()
-        const _symbol = await erc721Instance.symbol()
-        const _tokenURI = await erc721Instance.tokenURI(selectedNFTItem.token_id)
-        const _payload = ethers.utils.defaultAbiCoder.encode(
-          ['address', 'address', 'string', 'string', 'string', 'uint256'],
-          [selectedNFTItem.token_address, _signerAddress, _name, _symbol, _tokenURI, selectedNFTItem.token_id]
-        )
-        const estimatedFee = await lzEndpointInstance.estimateFees(lzTargetChainId, contractInstance.address, _payload, false, adapterParams)
 
         const tx = await contractInstance.wrap(lzTargetChainId, selectedNFTItem.token_address, BigNumber.from(selectedNFTItem.token_id), adapterParams, {
-          value: estimatedFee.nativeFee
+          value: estimatedFee
+        })
+        onLeave()
+        await setPendingTxInfo({
+          txHash: tx.hash,
+          type: 'bridge',
+          senderChainId: provider?._network?.chainId,
+          targetChainId: targetChain,
+          itemName: selectedNFTItem.name
         })
         await tx.wait()
+        await setPendingTxInfo(null)
+        setSelectedNFTItem(undefined)
       } else if (selectedNFTItem.contract_type === 'ERC1155') {
         const contractInstance = getOmnixBridge1155Instance(provider?._network?.chainId, signer)
         const noSignerOmniX1155Instance = getOmnixBridge1155Instance(targetChain, null)
-        const erc1155Instance = getERC1155Instance(selectedNFTItem.token_address, signer)
+        const erc1155Instance = getERC1155Instance(selectedNFTItem.token_address, 0, signer)
         const dstAddress = await noSignerOmniX1155Instance.persistentAddresses(selectedNFTItem.token_address)
+
+        noSignerOmniX1155Instance.on('LzReceive', async () => {
+          // After 30 seconds from receiving the token on Target Chain, refresh user NFT items
+          setTimeout(() => {
+            dispatch(getUserNFTs(address) as any)
+          }, 30000)
+          // await switchNetwork(targetChain)
+        })
+
         let adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 3500000])
         if (dstAddress !== ethers.constants.AddressZero) {
           adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 2000000])
@@ -364,70 +381,117 @@ const SideBar: React.FC = () => {
         const tx = await contractInstance.wrap(lzTargetChainId, selectedNFTItem.token_address, BigNumber.from(selectedNFTItem.token_id), BigNumber.from(selectedNFTItem.amount), adapterParams, {
           value: estimatedFee.nativeFee
         })
-        await tx.wait()
-
-        noSignerOmniX1155Instance.on('LzReceive', async (ercAddress, toAddress, tokenId,/* amount,*/ payload, onftaddress) => {
-          if (
-            selectedNFTItem.token_address === ercAddress &&
-            selectedNFTItem.token_id === tokenId &&
-            _signerAddress === toAddress
-          ) {
-            const persistAddress = onftaddress
-            console.log('persistAddress', persistAddress)
-
-            const originAddress = await noSignerOmniX1155Instance.originAddresses(persistAddress)
-            if (originAddress !== ethers.constants.AddressZero) {
-              console.log('originAddress', originAddress)
-              setUnwrap(true)
-            }
-          }
+        onLeave()
+        await setPendingTxInfo({
+          txHash: tx.hash,
+          type: 'bridge',
+          senderChainId: provider?._network?.chainId,
+          targetChainId: targetChain,
+          itemName: selectedNFTItem.name
         })
+        await tx.wait()
+        await setPendingTxInfo(null)
+        setSelectedNFTItem(undefined)
       }
-
-      setConfirmTransfer(false)
     }
+
+    setConfirmTransfer(false)
   }
 
-  const onUnwrap = async () => {
-    if (provider?._network?.chainId && unwrapInfo !== null) {
+  const handleUnwrap = useCallback(async () => {
+    if (provider?._network?.chainId && unwrapInfo) {
       try {
-        const contractInstance = getOmnixBridgeInstance(provider?._network?.chainId, signer)
-        const erc721Instance = getERC721Instance(unwrapInfo.persistentAddress, 0, signer)
-        const operator = await erc721Instance.getApproved(BigNumber.from(unwrapInfo.tokenId))
-        if (operator !== contractInstance.address) {
-          await (await erc721Instance.approve(contractInstance.address, BigNumber.from(unwrapInfo.tokenId))).wait()
-        }
-        const tx = await contractInstance.withdraw(unwrapInfo.persistentAddress, unwrapInfo.tokenId)
-        await tx.wait()
+        if (unwrapInfo.type === 'ERC721') {
+          const contractInstance = getOmnixBridgeInstance(unwrapInfo.chainId, signer)
+          const erc721Instance = getERC721Instance(unwrapInfo.persistentAddress, unwrapInfo.chainId, signer)
+          const operator = await erc721Instance.getApproved(BigNumber.from(unwrapInfo.tokenId))
+          if (operator !== contractInstance.address) {
+            await (await erc721Instance.approve(contractInstance.address, BigNumber.from(unwrapInfo.tokenId))).wait()
+          }
+          const tx = await contractInstance.withdraw(unwrapInfo.persistentAddress, unwrapInfo.tokenId)
+          await tx.wait()
+        } else if (unwrapInfo.type === 'ERC1155') {
+          const bridgeInstance = getOmnixBridge1155Instance(unwrapInfo.chainId, signer)
+          const erc1155Instance = getERC1155Instance(unwrapInfo.persistentAddress, unwrapInfo.chainId, signer)
 
+          const operator = await erc1155Instance.isApprovedForAll(address, bridgeInstance.address)
+          if (!operator) {
+            await (await erc1155Instance.setApprovalForAll(bridgeInstance.address, true)).wait()
+          }
+
+          const tx = await bridgeInstance.withdraw(unwrapInfo.persistentAddress, unwrapInfo.tokenId, unwrapInfo.amount)
+          await tx.wait()
+        }
+
+        setTimeout(() => {
+          if (address) {
+            dispatch(getUserNFTs(address) as any)
+          }
+        }, 30000)
+      } catch (e: any) {
+        console.log(e)
+      } finally {
         setUnwrap(false)
+      }
+    }
+  }, [provider?._network?.chainId, unwrapInfo, signer, address, dispatch])
+
+  const onUnwrap = async () => {
+    if (provider?._network?.chainId && selectedUnwrapInfo) {
+      try {
+        if (selectedUnwrapInfo.type === 'ERC721') {
+          const contractInstance = getOmnixBridgeInstance(selectedUnwrapInfo.chainId, signer)
+          const erc721Instance = getERC721Instance(selectedUnwrapInfo.persistentAddress, selectedUnwrapInfo.chainId, signer)
+          const operator = await erc721Instance.getApproved(BigNumber.from(selectedUnwrapInfo.tokenId))
+          if (operator !== contractInstance.address) {
+            await (await erc721Instance.approve(contractInstance.address, BigNumber.from(selectedUnwrapInfo.tokenId))).wait()
+          }
+          const tx = await contractInstance.withdraw(selectedUnwrapInfo.persistentAddress, selectedUnwrapInfo.tokenId)
+          await tx.wait()
+        } else if (selectedUnwrapInfo.type === 'ERC1155') {
+          const bridgeInstance = getOmnixBridge1155Instance(selectedUnwrapInfo.chainId, signer)
+          const erc1155Instance = getERC1155Instance(selectedUnwrapInfo.persistentAddress, selectedUnwrapInfo.chainId, signer)
+
+          const operator = await erc1155Instance.isApprovedForAll(address, bridgeInstance.address)
+          if (!operator) {
+            await (await erc1155Instance.setApprovalForAll(bridgeInstance.address, true)).wait()
+          }
+
+          const tx = await bridgeInstance.withdraw(selectedUnwrapInfo.persistentAddress, selectedUnwrapInfo.tokenId, selectedUnwrapInfo.amount)
+          await tx.wait()
+        }
+        setTimeout(() => {
+          if (address) {
+            dispatch(getUserNFTs(address) as any)
+          }
+        }, 30000)
       } catch (e: any) {
         console.log(e)
       }
     }
   }
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const ercAddress = '0x08a8Cf2c9aE7599811308F92EB9c1c58BB622C34'
-  //     const targetERC721Instance = getERC721Instance(ercAddress, 97, null)
-  //     const validate = await validateContract(97, ercAddress)
-  //     console.log(validate)
-  //     if (validate) {
-  //       console.log(targetERC721Instance)
-  //       const isERC721 = await targetERC721Instance.supportsInterface('0x80ac58cd')
-  //       console.log(isERC721)
-  //       const owner = await targetERC721Instance.ownerOf(1)
-  //       const bridgeAddress = getAddressByName('Omnix', 97)
-  //       console.log(owner)
-  //       console.log(bridgeAddress)
-  //       if (owner === bridgeAddress) {
-  //         console.log('ercAddress', ercAddress)
-  //         setUnwrap(true)
-  //       }
-  //     }
-  //   })()
-  // }, [])
+  useEffect(() => {
+    (async () => {
+      if (unwrapInfo) {
+        setUnwrap(true)
+        await handleUnwrap()
+      }
+    })()
+  }, [handleUnwrap, unwrapInfo])
+ 
+  useEffect(()=>{
+    if(window.ethereum){
+      setChainID(parseInt(window.ethereum.networkVersion))
+    }
+  })
+  if(window.ethereum){
+    window.ethereum.on('chainChanged', function (networkId:string) {      
+      setChainID(parseInt(networkId))
+      //window.location.reload()
+
+    }) 
+  }
 
   const updateModal = (status: boolean) => {
     setConfirmTransfer(status)
@@ -496,7 +560,7 @@ const SideBar: React.FC = () => {
     <>
       { !onMenu &&
         <div
-          className='right-0 right-0 w-[70px] py-10 bg-[#F8F9FA] fixed h-full z-[99]'
+          className='right-0 right-0 w-[70px] py-10 bg-[#F6F8FC] fixed h-full z-[98]'
           onMouseEnter={() => setShowSidebar(true)}
           onMouseLeave={() => hideSidebar()}
         >
@@ -517,27 +581,27 @@ const SideBar: React.FC = () => {
             <div className="w-full py-[8px]">
               <div className="sidebar-icon">
                 {
-                  chainId === (env === 'testnet' ? 4 : 1) && <img src="/sidebar/ethereum.png" className="m-auto h-full" />
+                  chainId === (env === 'testnet' ? 4 : 1) && <img src="/sidebar/ethereum.png" className="m-auto h-[45px]" />
                 }
                 {
-                  chainId === (env === 'testnet' ? 421611 : 1) && <img src="/sidebar/arbitrum.png" className="m-auto h-full" />
+                  chainId === (env === 'testnet' ? 421611 : 1) && <img src="/sidebar/arbitrum.png" className="m-auto h-[45px]" />
                 }
                 {
-                  chainId === (env === 'testnet' ? 43113 : 1) && <img src="/sidebar/avax.png" className="m-auto h-full" />
+                  chainId === (env === 'testnet' ? 43113 : 1) && <img src="/sidebar/avax.png" className="m-auto h-[45px]" />
                 }
                 {
-                  chainId === (env === 'testnet' ? 97 : 1) && <img src="/sidebar/binance.png" className="m-auto h-full" />
+                  chainId === (env === 'testnet' ? 97 : 1) && <img src="/sidebar/binance.png" className="m-auto h-[45px]" />
                 }
                 {
-                  chainId === (env === 'testnet' ? 4002 : 1) && <img src="/sidebar/fantom.png" className="m-auto h-full" />
+                  chainId === (env === 'testnet' ? 4002 : 1) && <img src="/sidebar/fantom.png" className="m-auto h-[45px]" />
                 }
                 {
-                  chainId === (env === 'testnet' ? 69 : 1) && <img src="/sidebar/optimism.png" className="m-auto h-full" />
+                  chainId === (env === 'testnet' ? 69 : 1) && <img src="/sidebar/optimism.png" className="m-auto h-[45px]" />
                 }
                 {
-                  chainId === (env === 'testnet' ? 80001 : 1) && <img src="/sidebar/polygon.png" className="m-auto h-full" />
+                  chainId === 80001 && <img src="/sidebar/polygon.png" className="m-auto h-[45px]" />
                 }
-                
+
               </div>
             </div>
             <div className="w-full py-[8px]">
@@ -561,11 +625,12 @@ const SideBar: React.FC = () => {
               </div>
             </div>
           </div>
+          
         </div>
       }
       <div
         ref={ref}
-        className={`right-0 right-0 w-[450px] bg-white px-[24px] py-10 fixed h-full z-[98] ease-in-out duration-300 ${
+        className={`right-0 right-0 w-[450px] bg-[#FEFEFF] pl-5 pr-2 py-10 fixed h-full z-[97] ease-in-out duration-300 ${
           showSidebar || onMenu ? 'translate-x-0' : 'translate-x-full'
         }`}
         onMouseEnter={() => setOnMenu(true)}
@@ -574,7 +639,7 @@ const SideBar: React.FC = () => {
         <ul className='flex flex-col space-y-4 mr-[70px]'>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px] py-[24px] text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl sidebar ${expandedMenu==1?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px] py-[24px] pr-[70px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==1?'active':''}`}
               onClick={() => toggleMenu(1)}
             >
               My Profile
@@ -583,22 +648,22 @@ const SideBar: React.FC = () => {
               </span>
             </button>
             { expandedMenu == 1 &&
-              <ul className='flex flex-col w-full space-y-4 p-6 pl-[100px] pt-8 pb-0 text-g-600' ref={menu_profile}>
+              <ul className='flex  flex-col w-full space-y-4  pt-8 pb-0 text-g-600' ref={menu_profile}>
                 <li className="w-full">
-                  <button>My Dashboard</button>
+                  <button className="w-full flex justify-start py-[17px] pl-[100px] hover:bg-l-50">My Dashboard</button>
                 </li>
                 <li className="w-full">
-                  <button>Account Settings</button>
+                  <button className="w-full flex justify-start py-[17px] pl-[100px] hover:bg-l-50">Account Settings</button>
                 </li>
                 <li className="w-full">
-                  <button>Logout</button>
+                  <button className="w-full flex justify-start py-[17px] pl-[100px] hover:bg-l-50">Logout</button>
                 </li>
               </ul>
             }
           </li>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px] py-[24px] text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl sidebar ${expandedMenu==2?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px] py-[24px] pr-[70px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==2?'active':''}`}
               onClick={() => toggleMenu(2)}
             >
               Network
@@ -607,61 +672,76 @@ const SideBar: React.FC = () => {
               </span>
             </button>
             { expandedMenu == 2 &&
-              <ul className='flex flex-col w-full space-y-4 p-6 pl-[80px] pt-8 pb-0 text-g-600' ref={menu_ethereum}>
+              <ul className='flex flex-col w-full space-y-4  pt-8 pb-0 text-g-600' ref={menu_ethereum}>
                 <li className="w-full">
-                  <button className="flex flex-row" onClick={() => onClickNetwork(env === 'testnet' ? 4 : 1)}>
-                    <div className="w-[36px] h-[36px] m-auto">
-                      <img src="/svgs/ethereum.svg" width={24} height={28} />
-                    </div>
-                    <span className="ml-4">Ethereum</span>
+                  <button className="w-full hover:bg-l-50 pl-[70px] py-[17px] " onClick={() => onClickNetwork(env === 'testnet' ? 4 : 1)}>
+                    <div className="flex flex-row w-[130px]">
+                      <div className="flex items-center w-[36px] h-[36px]">
+                        <img src="/svgs/ethereum.svg" width={24} height={28} />
+                      </div>
+                      <span className="flex items-center ml-4 " >Ethereum</span>
+                    </div>                   
                   </button>
                 </li>
                 <li className="w-full">
-                  <button className="flex flex-row" onClick={() => onClickNetwork(env === 'testnet' ? 421611 : 1)}>
-                    <div className="w-[36px] h-[36px] m-auto">
-                      <img src="/svgs/arbitrum.svg" width={35} height={30} />
+                  <button className="w-full hover:bg-l-50 pl-[70px] py-[17px]" onClick={() => onClickNetwork(env === 'testnet' ? 421611 : 1)}>
+                    <div className="flex flex-row w-[130px]">
+                      <div className="flex items-center w-[36px] h-[36px] ">
+                        <img src="/svgs/arbitrum.svg" width={24} height={28} />
+                      </div>
+                      <span className=" flex items-center ml-4 ">Arbitrum</span>
+                    </div>  
+                  </button>
+                  
+                </li>
+                <li className="w-full">
+                  <button className="w-full hover:bg-l-50 pl-[70px] py-[17px]" onClick={() => onClickNetwork(env === 'testnet' ? 43113 : 1)}>
+                    <div className="flex flex-row w-[130px]">
+                      <div className="flex items-center w-[36px] h-[36px] m-auto">
+                        <img src="/svgs/avax.svg" width={24} height={28} />
+                      </div>
+                      <span className="flex items-center ml-4 w-[80px]">Avalanche</span>
                     </div>
-                    <span className="ml-4">Arbitrum</span>
                   </button>
                 </li>
                 <li className="w-full">
-                  <button className="flex flex-row" onClick={() => onClickNetwork(env === 'testnet' ? 43113 : 1)}>
-                    <div className="w-[36px] h-[36px] m-auto">
-                      <img src="/svgs/avax.svg" width={23} height={35} />
+                  <button className="w-full hover:bg-l-50 pl-[70px] py-[17px]" onClick={() => onClickNetwork(env === 'testnet' ? 97 : 1)}>
+                    <div className="flex flex-row w-[130px]">
+                      <div className="flex items-center w-[36px] h-[36px] m-auto">
+                        <img src="/svgs/binance.svg" width={24} height={28} />
+                      </div>
+                      <span className="flex items-center ml-4 w-[80px]">BNB Chain</span>
                     </div>
-                    <span className="ml-4">Avalanche</span>
                   </button>
                 </li>
                 <li className="w-full">
-                  <button className="flex flex-row" onClick={() => onClickNetwork(env === 'testnet' ? 97 : 1)}>
-                    <div className="w-[36px] h-[36px] m-auto">
-                      <img src="/svgs/binance.svg" width={29} height={30} />
+                  <button className="w-full hover:bg-l-50 pl-[70px] py-[17px]" onClick={() => onClickNetwork(env === 'testnet' ? 4002 : 1)}>
+                    <div className="flex flex-row w-[130px]">
+                      <div className="flex items-center w-[36px] h-[36px] m-auto">
+                        <img src="/svgs/fantom.svg" width={24} height={28} />
+                      </div>
+                      <span className="flex items-center ml-4 w-[80px]">Fantom</span>
                     </div>
-                    <span className="ml-4">BNB Chain</span>
                   </button>
                 </li>
                 <li className="w-full">
-                  <button className="flex flex-row" onClick={() => onClickNetwork(env === 'testnet' ? 4002 : 1)}>
-                    <div className="w-[36px] h-[36px] m-auto">
-                      <img src="/svgs/fantom.svg" width={25} height={25} />
+                  <button className="w-full hover:bg-l-50 pl-[70px] py-[17px]" onClick={() => onClickNetwork(env === 'testnet' ? 69 : 1)}>
+                    <div className="flex flex-row w-[130px]">
+                      <div className=" flex items-center w-[36px] h-[36px] m-auto">
+                        <img src="/svgs/optimism.svg" width={24} height={28} />
+                      </div>
+                      <span className="flex items-center ml-4 w-[80px]">Optimism</span>
                     </div>
-                    <span className="ml-4">Fantom</span>
                   </button>
                 </li>
                 <li className="w-full">
-                  <button className="flex flex-row" onClick={() => onClickNetwork(env === 'testnet' ? 69 : 1)}>
-                    <div className="w-[36px] h-[36px] m-auto">
-                      <img src="/svgs/optimism.svg" width={25} height={25} />
+                  <button className="flex items-center w-full hover:bg-l-50 pl-[70px] py-[17px]" onClick={() => onClickNetwork(env === 'testnet' ? 80001 : 1)}>
+                    <div className="flex flex-row w-[130px]">
+                      <div className="flex items-center w-[36px] h-[36px] m-auto">
+                        <img src="/svgs/polygon.svg" width={24} height={28} />
+                      </div>
+                      <span className="ml-4 w-[80px] flex items-center">Polygon</span>
                     </div>
-                    <span className="ml-4">Optimism</span>
-                  </button>
-                </li>
-                <li className="w-full">
-                  <button className="flex flex-row" onClick={() => onClickNetwork(env === 'testnet' ? 80001 : 1)}>
-                    <div className="w-[36px] h-[36px] m-auto">
-                      <img src="/svgs/polygon.svg" width={34} height={30} />
-                    </div>
-                    <span className="ml-4">Polygon</span>
                   </button>
                 </li>
               </ul>
@@ -669,7 +749,7 @@ const SideBar: React.FC = () => {
           </li>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px] py-[24px] text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl sidebar ${expandedMenu==3?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px] py-[24px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==3?'active':''}`}
               onClick={() => toggleMenu(3)}
             >
               Wallet
@@ -683,7 +763,8 @@ const SideBar: React.FC = () => {
                 <span className="font-semibold w-auto text-[16px]">USDC balance: {usdcBalance}</span>
                 <span className="font-semibold w-auto text-[16px]">USDT balance: {usdtBalance}</span>
 
-                <span className="w-auto text-[16px]">Staking: comming soon</span>
+
+                <span className="w-auto text-[16px]">Staking: coming soon</span>
                 {/* <div className="w-full flex flex-row font-semibold text-[14px]">
                   <div className="bg-g-200 w-[88px] px-[11px] py-[9px]">
                     APR
@@ -762,7 +843,7 @@ const SideBar: React.FC = () => {
           </li>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px] py-[24px] text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl sidebar ${expandedMenu==4?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px]  py-[24px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==4?'active':''}`}
               onClick={() => toggleMenu(4)}
             >
               Watchlist
@@ -776,14 +857,14 @@ const SideBar: React.FC = () => {
                   {/* <span className="text-[14px] text-g-300">Drag & Drop</span>
                   <span className="text-[14px] text-g-300">an NFT or NFT Collection</span>
                   <span className="text-[14px] text-g-300">to add your watch list</span> */}
-                  <span className="text-[14px] text-g-300">comming soon</span>
+                  <span className="text-[14px] text-g-300">coming soon</span>
                 </div>
               </div>
             }
           </li>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full p-6 text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl sidebar ${expandedMenu==5?'active':''}`}
+              className={`w-full text-left rounded-full p-6  pr-[70px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==5?'active':''}`}
               onClick={() => fixMenu(5)}
             >
               Send/Bridge
@@ -835,15 +916,23 @@ const SideBar: React.FC = () => {
                     <img src="/svgs/fantom.svg" width={25} height={25} />
                   </button>
                 </div>
-                <button className="bg-g-400 text-white w-[172px] py-[10px] rounded-full m-auto" onClick={handleTransfer}>
-                  Transfer
-                </button>
+                {
+                  isONFT
+                    ?
+                    <button className="bg-g-400 text-white w-[172px] py-[10px] rounded-full m-auto" onClick={onUnwrap}>
+                      Unwrap
+                    </button>
+                    :
+                    <button className="bg-g-400 text-white w-[172px] py-[10px] rounded-full m-auto" onClick={handleTransfer}>
+                      Transfer
+                    </button>
+                }
               </div>
             }
           </li>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px] py-[24px] text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl sidebar ${expandedMenu==6?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px] py-[24px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==6?'active':''}`}
               onClick={() => toggleMenu(6)}
             >
               Cart
@@ -863,6 +952,7 @@ const SideBar: React.FC = () => {
             }
           </li>
         </ul>
+        
         <div
           className='top-0 right-0 w-[70px] py-10 bg-white fixed h-full z-[99]'
         >
@@ -887,25 +977,25 @@ const SideBar: React.FC = () => {
             <div className="w-full py-[8px]">
               <div className="sidebar-icon">
                 {
-                  chainId === (env === 'testnet' ? 4 : 1) && <img src="/sidebar/ethereum.png" className="m-auto h-full" />
+                  chainId === (env === 'testnet' ? 4 : 1) && <img src="/sidebar/ethereum.png" className="m-auto h-[45px]" />
                 }
                 {
-                  chainId === (env === 'testnet' ? 421611 : 1) && <img src="/sidebar/arbitrum.png" className="m-auto h-full" />
+                  chainId === (env === 'testnet' ? 421611 : 1) && <img src="/sidebar/arbitrum.png" className="m-auto h-[45px]" />
                 }
                 {
-                  chainId === (env === 'testnet' ? 43113 : 1) && <img src="/sidebar/avax.png" className="m-auto h-full" />
+                  chainId === (env === 'testnet' ? 43113 : 1) && <img src="/sidebar/avax.png" className="m-auto h-[45px]" />
                 }
                 {
-                  chainId === (env === 'testnet' ? 97 : 1) && <img src="/sidebar/binance.png" className="m-auto h-full" />
+                  chainId === (env === 'testnet' ? 97 : 1) && <img src="/sidebar/binance.png" className="m-auto h-[45px]" />
                 }
                 {
-                  chainId === (env === 'testnet' ? 4002 : 1) && <img src="/sidebar/fantom.png" className="m-auto h-full" />
+                  chainId === (env === 'testnet' ? 4002 : 1) && <img src="/sidebar/fantom.png" className="m-auto h-[45px]" />
                 }
                 {
-                  chainId === (env === 'testnet' ? 69 : 1) && <img src="/sidebar/optimism.png" className="m-auto h-full" />
+                  chainId === (env === 'testnet' ? 69 : 1) && <img src="/sidebar/optimism.png" className="m-auto h-[45px]" />
                 }
                 {
-                  chainId === (env === 'testnet' ? 80001 : 1) && <img src="/sidebar/polygon.png" className="m-auto h-full" />
+                  chainId === (env === 'testnet' ? 80001 : 1) && <img src="/sidebar/polygon.png" className="m-auto h-[45px]" />
                 }
               </div>
               { expandedMenu == 2 &&
@@ -950,8 +1040,12 @@ const SideBar: React.FC = () => {
               }
             </div>
           </div>
+          
         </div>
+   
       </div>
+        
+      
       <div className="w-full md:w-auto">
         <Dialog open={confirmTransfer} onClose={() => setConfirmTransfer(false)}>
           <ConfirmTransfer
@@ -959,7 +1053,7 @@ const SideBar: React.FC = () => {
             onTransfer={onTransfer}
             selectedNFTItem={selectedNFTItem}
             estimatedFee={estimatedFee}
-            senderChain={provider?._network?.chainId || 4}
+            senderChain={chainId || 4}
             targetChain={targetChain}
             image={image}
           />

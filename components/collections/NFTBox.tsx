@@ -10,6 +10,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import useWallet from '../../hooks/useWallet'
 import { isYesterday } from 'date-fns'
 
+import editStyle from '../../styles/nftbox.module.scss'
+import classNames from '../../helpers/classNames'
 
 const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
@@ -88,7 +90,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
   },[nft])
 
   return (
-    <div className="w-full border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]">
+    <div className={classNames('w-full border-[2px] border-[#F6F8FC] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F6F8FC]', editStyle.nftContainer)}>
       <Link href={`/collections/${col_url}/${nft.token_id}`}>
         <a>
           <div className="relative w-full">

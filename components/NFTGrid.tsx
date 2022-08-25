@@ -18,7 +18,7 @@ const chainList = [
   { chain: 'arbitrum', img_url: '/svgs/arbitrum.svg', title: 'Arbitrum', disabled: false},
 ]
 const NFTGrid = ({ nfts }: IPropsImage) => {
-  const [chain, setChain] = useState('rinkeby')
+  const [chain, setChain] = useState('all')
 
   const {
     provider,
@@ -80,7 +80,6 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
         </div>
         <div className="grid grid-cols-4 gap-6 2xl:grid-cols-5 2xl:gap-10 mt-4">
           {nfts.map((item, index) => {
-
             if(chain == 'all'){
               return (
                 <NFTBox nft={item} index={index} key={index}/>

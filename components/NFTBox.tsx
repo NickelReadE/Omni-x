@@ -19,6 +19,8 @@ import { getOrders, selectOrders,selectBidOrders, selectLastSaleOrders } from '.
 import { selectCollections } from '../redux/reducers/collectionsReducer'
 import { IGetOrderRequest } from '../interface/interface'
 import { useDispatch, useSelector } from 'react-redux'
+import editStyle from '../styles/nftbox.module.scss'
+import classNames from '../helpers/classNames'
 
 import Router from 'next/router'
 
