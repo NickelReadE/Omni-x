@@ -86,7 +86,6 @@ const SideBar: React.FC = () => {
       console.log('started dragging')
       setDragOver(true)
       setDragEnd(false)
-      console.log("First?", isDragFirst)
       setShowSidebar(true)
       setOnMenu(true)
       setFixed(true)
