@@ -4,9 +4,12 @@ import MetaMaskConnect from '../components/MetaMaskConnect'
 import Tabs from '../components/Tabs'
 import useWallet from '../hooks/useWallet'
 
+
 const Home: NextPage = () => {
   const context = useWallet()
   const [isBlur, setIsBlur] = React.useState<boolean>(false)
+
+  
 
   React.useEffect(() => {
     setIsBlur(context.address ? false : true)
