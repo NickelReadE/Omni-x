@@ -77,7 +77,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   }, [])
 
   useEffect(() => {
-    let flag = false
+    // let flag = false
     if(orders.length>0) {
       ///only in the beta version
       const collection_address = nft.token_address

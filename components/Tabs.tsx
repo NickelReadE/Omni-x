@@ -71,6 +71,12 @@ const Tabs = ({blur}: TabProps) => {
 
   const nfts = useSelector(selectUserNFTs)
 
+  const dispatch = useDispatch()
+
+  const {
+    address
+  } = useWallet()
+  
   useEffect(() => {
     if (address) {
       

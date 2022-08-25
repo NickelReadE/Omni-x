@@ -61,6 +61,14 @@ export const getOmnixExchangeInstance = (chainId: number, signer: any) => {
   return getContractInstance('OmnixExchange', OmnixExchangeABI, chainId, signer);
 }
 
+export const getOmniInstance = (chainId: number, signer: any) => {
+  return getContractInstance('OMNI', OmniABI, chainId, signer);
+}
+
+export const getTransferSelectorNftInstance = (chainId: number, signer: any) => {
+  return getContractInstance('TransferSelectorNFT', TransferSelectorNFTABI, chainId, signer);
+}
+
 export const getLayerZeroEndpointInstance = (chainId: number, provider: any) => {
   const address = getAddressByName('LayerZeroEndpoint', chainId)
   return new ethers.Contract(
