@@ -216,13 +216,10 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
           <div className="bg-[url('/images/ellipse.png')] hover:bg-[url('/images/ellipse_hover.png')] bg-cover w-[21px] h-[21px]"></div>
         </div> */}
       </div>
-      <div className="flex flex-row mt-2.5 justify-between align-middle">
-        <div className="ml-3 text-[#6C757D] text-[14px] font-medium font-['Roboto_Mono']">
-          {nft.name}
+      <div className="flex flex-row mt-2.5 justify-between align-middle font-['Retni_Sans']">
+        <div className="ml-3 text-[#000000] text-[14px] font-bold">
+          {JSON.parse(nft.metadata)?.name}
         </div>
-        {/* <div className="ml-1 text-[#6C757D] text-[14px] font-medium font-['Roboto_Mono']">
-          {`#${nft.token_id}`}
-        </div> */}
         <div className="mr-3 flex items-center">
           <div className="flex items-center ml-1">
             {chain === 'eth' &&
@@ -249,22 +246,18 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
           </div>
         </div>
       </div>
-      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle">
+      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['Retni_Sans']">
         <div className="flex items-center ml-3">
-          <div className='flex'>
-            {islisted && price>0&&<img src={img_url} className="w-[16px] h-[16px]" alt="icon" />}
-            {islisted && price>0&&<span className="text-[#000000] text-[18px] font-bold ml-2">{price}</span>}
-          </div>
+          {islisted && price>0&&<img src={img_url} className="w-[18px] h-[18px]" alt="icon" />}
+          {islisted && price>0&&<span className="text-[#000000] text-[18px] font-extrabold ml-2">{price}</span>}
         </div>
       </div>
-      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle">
+      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['Retni_Sans']">
         <div className="flex items-center ml-3">
-          {lastSale!=0&&<><img src={lastSaleCoin} className="w-[18px] h-[18px]" />
-            <span className="text-[#6C757D] text-sm">last sale: &nbsp;{lastSale}</span></>}
-          {lastSale==0&&highestBid!=0&&<><span className="text-[#6C757D] text-sm">highest offer: &nbsp;</span><img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>
-            <span className="text-[#6C757D] text-sm">{highestBid}</span></>}  
+          {lastSale!=0&&<><span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span><img src={lastSaleCoin} className="w-[18px] h-[18px]" />&nbsp;<span className="text-[#6C757D] text-[14px]font-bold">{lastSale}</span></>}
+          {lastSale==0&&highestBid!=0&&<><span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span><img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;<span className="text-[#6C757D] text-[14px] font-bold">{highestBid}</span></>}  
         </div>
-        {islisted&&<div className="ml-2 mr-3 py-[1px] px-5 bg-[#ADB5BD] rounded-lg text-[14px] text-[#F8F9FA] font-medium cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
+        {islisted&&<div className="ml-2 mr-3 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-bold cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
           {'Sell'}
         </div>}
       </div>

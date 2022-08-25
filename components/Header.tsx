@@ -86,7 +86,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
             }
           </div>
           
-          <div className='min-w-[200px]'></div>
+          {/* <div className='min-w-[200px]'></div> */}
           <div className='justify-between h-[90px] items-center w-full md:flex md:w-auto mx-auto md:order-2' id='mobile-menu-3'>
             <ul className="flex flex-col justify-between w-[500px] md:flex-row md:space-x-8 md:text-sm md:font-medium" >
               <li className="flex items-center" onMouseOver={() => handleMouseOver('home')} onMouseOut={handleMouseOut}>

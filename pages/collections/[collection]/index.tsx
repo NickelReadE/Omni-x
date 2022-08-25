@@ -32,7 +32,7 @@ import Chip from '@material-ui/core/Chip'
 import classNames from '../../../helpers/classNames'
 import editStyle from '../../../styles/collection.module.scss'
 import { info } from 'console'
-import ordersReducer, { getOrders,selectOrders, getLastSaleOrders } from '../../../redux/reducers/ordersReducer'
+import ordersReducer, { getOrders,selectOrders, getLastSaleOrders,selectBidOrders,selectLastSaleOrders } from '../../../redux/reducers/ordersReducer'
 import { IGetOrderRequest } from '../../../interface/interface'
 
 
@@ -142,7 +142,9 @@ const Collection: NextPage = () => {
 
   const collectionInfo = useSelector(selectCollectionInfo)
   const collectionOwners = useSelector(selectCollectionOwners)
+
   const orders = useSelector(selectOrders)
+
 
   const [imageError, setImageError] = useState(false)
   const classes = useStyles()
@@ -278,11 +280,13 @@ const Collection: NextPage = () => {
   }
 
   const buyComponet = () => {
+    const temp = []
     for(let i = 0;i<listNFTs.length;i++){
-      return (
+      temp.push(
         <NFTBox nft={listNFTs[i]} index={i} key={i}  col_url={col_url} col_address={collectionInfo.address}  chain={collectionInfo?collectionInfo.chain:'eth'}/>
       )
     }
+    return temp
   }
 
   useEffect(()=>{
@@ -291,7 +295,9 @@ const Collection: NextPage = () => {
       for(let i=0;i<allNFTs.length;i++){
         for(let j=0; j<orders.length;j++){
           if(collectionInfo.address==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
+            console.log(allNFTs[i])
             temp.push(allNFTs[i])
+            break
           }
         }
       }

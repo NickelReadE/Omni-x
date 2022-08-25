@@ -74,7 +74,6 @@ export const updateUser = (user: FormData) => async (dispatch: Dispatch<any>) =>
 export const getUserNFTs = (address: string) => async (dispatch: Dispatch<any>) => {
     try {
         const nfts = await userService.getUserNFTs(address)
-        console.log(nfts)
         nfts.map((nft:any)=>{
             if(nft.token_address===GregContractAddress[nft.chain]){
                 dispatch(setIsGregHolder(true))

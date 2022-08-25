@@ -66,7 +66,6 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
     if(balances.length>0){
       setIsStgStacker(true)
     }
-    console.log('tokens:',balances)   
   }
 
   useEffect(() => {

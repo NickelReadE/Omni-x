@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import NFTBox from './NFTBox'
 import { IPropsImage } from '../interface/interface'
-import { getOrders,getLastSaleOrders, selectOrders } from '../redux/reducers/ordersReducer'
+import { getOrders,getLastSaleOrders } from '../redux/reducers/ordersReducer'
 import { IGetOrderRequest } from '../interface/interface'
 import useWallet from '../hooks/useWallet'
 import { useDispatch, useSelector } from 'react-redux'
@@ -26,11 +26,13 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
   } = useWallet()
   const dispatch = useDispatch()
 
+
   useEffect(() => {
     dispatch(getCollections() as any)
   }, [])
 
   useEffect(()=> {
+    console.log(nfts)
     if(nfts.length>0){
       const request: IGetOrderRequest = {
         isOrderAsk: true,
