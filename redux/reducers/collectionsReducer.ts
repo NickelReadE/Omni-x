@@ -1,8 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { Dispatch } from 'react'
+import { useSelector } from 'react-redux'
 import { collectionsService } from '../../services/collections'
 import { openSnackBar } from './snackBarReducer'
-
+interface CollectionState{
+	nfts:any[],
+	info:{},
+	nftInfo:{},
+	finishedGetting:boolean,
+	owners:number,
+	collections:any[],
+	collectionsForCard:any[]
+}
 //reducers
 export const collectionsSlice = createSlice({
 	name: 'collections',
@@ -13,7 +22,8 @@ export const collectionsSlice = createSlice({
 		finishedGetting: false,
 		owners: 0,
 		collections: [],
-	},
+		collectionsForCard:[]
+	} as CollectionState,
 	reducers: {
 		setCollectionNFTs: (state, action) => {
 			state.nfts = (action.payload === undefined || action.payload.data === undefined) ? state.nfts : state.nfts.concat(action.payload.data)
@@ -37,11 +47,15 @@ export const collectionsSlice = createSlice({
 		setCollections: (state, action) => {
 			state.collections = action.payload === undefined ? 0 : action.payload.data
 		},
+		setCollectionsForCard:(state, action)=>{
+			console.log(action.payload)
+			state.collectionsForCard = action.payload === undefined ? '' : action.payload
+		}
 	}
 })
 
 //actions
-export const { setCollectionNFTs, setCollectionInfo, setNFTInfo, clearCollections, startGetNFTs, setCollectionOwners, setCollections } = collectionsSlice.actions
+export const { setCollectionNFTs, setCollectionInfo, setNFTInfo, clearCollections, startGetNFTs, setCollectionOwners, setCollections, setCollectionsForCard } = collectionsSlice.actions
 
 export const clearCollectionNFTs = () => (dispatch: Dispatch<any>) => {
 	dispatch(clearCollections())
@@ -92,7 +106,36 @@ export const getCollections = () => async (dispatch: Dispatch<any>) => {
 		console.log("getNFTInfo error ? ", error)
 	}
 }
-
+export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, getState: () => any) => {
+	try {		
+		let collectionsF : any[] = []
+		const info = await collectionsService.getCollections()		
+		await info.data.map(async (element:any, index:number)=>{
+			console.log('start')
+			setTimeout(async function(){
+				const ownerCnt = await collectionsService.getCollectionOwners(element.col_url as string)
+				setTimeout(
+					async function(){												
+						console.log(ownerCnt)
+						const items = await collectionsService.getCollectionInfo(element.col_url as string)	
+						collectionsF.push({col_url:element.col_url, itemsCnt:items.data.count, ownerCnt:ownerCnt.data})		
+						if(collectionsF.length===info.data.length){
+							console.log(collectionsF)
+							dispatch(setCollectionsForCard(collectionsF))			
+						}
+					}
+					,1000*index)
+			},1000*index)
+				
+				
+			
+			
+		})
+				
+	} catch (error) {
+		console.log("updateCollectionsForCard error ? ", error)
+	}
+}
 
 //selectors
 export const selectCollectionNFTs = (state: any) => state.collectionsState.nfts
@@ -101,5 +144,6 @@ export const selectNFTInfo = (state: any) => state.collectionsState.nftInfo
 export const selectGetNFTs = (state: any) => state.collectionsState.finishedGetting
 export const selectCollectionOwners = (state: any) => state.collectionsState.owners
 export const selectCollections = (state: any) => state.collectionsState.collections
+export const selectCollectionsForCard = (state: any) => state.collectionsState.collectionsForCard
 
 export default collectionsSlice.reducer

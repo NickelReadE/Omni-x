@@ -36,6 +36,8 @@ export const GregContractAddress:{[key:string]:string} = {
 export const chainsFroSTG = ['eth', 'bsc', 'polygon', 'fantom', 'optimism', 'arbitrum']
 export const veSTGContractAddress:{[key:string]:string[]}={
   'eth':['0x0e42acBD23FAee03249DAFF896b78d7e79fBD58E'],
+  //'eth':['0xdAC17F958D2ee523a2206206994597C13D831ec7'],
+  //'eth':['0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'],
   'bsc':['0xD4888870C8686c748232719051b677791dBDa26D'],
   'polygon' :['0x3AB2DA31bBD886A7eDF68a6b60D3CDe657D3A15D'],
   'arbitrum':['0xfBd849E6007f9BC3CC2D6Eb159c045B8dc660268'],

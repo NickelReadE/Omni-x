@@ -84,7 +84,6 @@ const SideBar: React.FC = () => {
     onDragStart(event) {
       setDragOver(true)
       setDragEnd(false)
-
       setShowSidebar(true)
       setOnMenu(true)
       setFixed(true)

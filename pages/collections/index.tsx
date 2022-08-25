@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import LazyLoad from 'react-lazyload'
 
-import { getCollections, selectCollections } from '../../redux/reducers/collectionsReducer'
+import { getCollections, selectCollections, updateCollectionsForCard, selectCollectionsForCard} from '../../redux/reducers/collectionsReducer'
 
 import pfp from '../../public/images/pfp.png'
 import photography from '../../public/images/photography.png'
@@ -20,6 +20,7 @@ import fashion from '../../public/images/fashion.png'
 
 import ImageList from '../../components/ImageList'
 import Slider from '../../components/Slider'
+import CollectionCard from '../../components/CollectionCard'
 
 
 const serviceSlides: Array<React.ReactNode> = []
@@ -35,38 +36,34 @@ serviceSlides.push(<Image src={fashion} alt="image - 29" layout='responsive' wid
 
 const Collections: NextPage = () => {
   const [omniSlides, setOmniSlides] = useState<Array<React.ReactNode>>([])
-  const [imageError, setImageError] = useState(false)
-
+  
   const dispatch = useDispatch()
   const collections = useSelector(selectCollections)
-
+  const collectionsForCard = useSelector(selectCollectionsForCard)
   useEffect(() => {
     dispatch(getCollections() as any)
+    dispatch(updateCollectionsForCard() as any)
   }, [])
 
   useEffect(() => {
     const slides: Array<React.ReactNode> = []
-
-    collections && collections.map((item: any) => {
-      slides.push(
-        <Link href={`/collections/${item.col_url}`}>
-          <a>
-            <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt={item.name} />}>
-              <img src={imageError?'/images/omnix_logo_black_1.png':(item.profile_image ? item.profile_image : '/images/omnix_logo_black_1.png')} alt={item.name} onError={(e)=>{setImageError(true)}} data-src={item.profile_image ? item.profile_image : ''} className='w-[100%]' />
-            </LazyLoad>
-          </a>
-        </Link>
-      )
-    })
+    if(collections.length>0 && collectionsForCard.length>0){
+      collections.map((item: any,index:number) => {
+        slides.push(
+                     
+          <CollectionCard collection={item} card={collectionsForCard[index]}/>
+           
+        )
+      })
+    }
+    
     setOmniSlides(slides)
-  }, [collections])
+  }, [collections ,collectionsForCard])
   return (
     <>
-      <div>
-        <Slider title="Beta Collections" cards={omniSlides} />
-        {/* <Slider title="Trending Collection" images={omniSlides} /> */}
-        {/* <ImageList title="" images={serviceSlides} /> */}
-        
+      <div className='pt-10'>
+        <Slider  title="Beta Collections" cards={omniSlides} />    
+
       </div>
     </>
   )
