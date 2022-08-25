@@ -47,6 +47,7 @@ const SideBar: React.FC = () => {
   const [fixed, setFixed] = useState(false)
   const [confirmTransfer, setConfirmTransfer] = useState(false)
   const [chainId, setChainID] = useState(4)
+  const [isFirstDrag, setIsFirstDrag] = useState(true)
   const DEFAULT_AVATAR = 'uploads\\default_avatar.png'
 
   const menu_profile = useRef<HTMLUListElement>(null)
@@ -94,7 +95,7 @@ const SideBar: React.FC = () => {
     },
     onDragEnd(event) {
       const { active: { id } } = event
-      if (id.toString().length > 0 && event.over !== null) {
+      if (id.toString().length > 0 && (event.over !== null || isFirstDrag)) {
         const index = id.toString().split('-')[1]
         setSelectedNFTItem(nfts[index])
         validateOwNFT(nfts[index]).then((res) => {
@@ -180,6 +181,7 @@ const SideBar: React.FC = () => {
   const fixMenu = (menu: number) => {
     setExpandedMenu(menu == expandedMenu ? 0 : menu)
     setFixed(!fixed)
+    setIsFirstDrag(!isFirstDrag)
   }
 
   const onClickNetwork = async (chainId: number) => {

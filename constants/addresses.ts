@@ -33,3 +33,20 @@ export const GregContractAddress:{[key:string]:string} = {
   'optimism':'0xbb2e4B6e10FE9cCEBFDCa805cdCF9fA9fb65248F',
   'fantom' :'0x165865de32bA3d9552FF814C2F283964c2B61a7D'
 }
+export const chainsFroSTG = ['eth', 'bsc', 'polygon', 'fantom', 'optimism', 'arbitrum']
+export const veSTGContractAddress:{[key:string]:string[]}={
+  'eth':['0x0e42acBD23FAee03249DAFF896b78d7e79fBD58E'],
+  'bsc':['0xD4888870C8686c748232719051b677791dBDa26D'],
+  'polygon' :['0x3AB2DA31bBD886A7eDF68a6b60D3CDe657D3A15D'],
+  'arbitrum':['0xfBd849E6007f9BC3CC2D6Eb159c045B8dc660268'],
+  'optimism':['0x43d2761ed16C89A2C4342e2B16A3C61Ccf88f05B'],
+  'fantom' :['0x933421675cDC8c280e5F21f0e061E77849293dba']
+}
+export const veSTGContractAddresses:string[]=[
+  '0x0e42acBD23FAee03249DAFF896b78d7e79fBD58E',
+  '0xD4888870C8686c748232719051b677791dBDa26D',
+  '0x3AB2DA31bBD886A7eDF68a6b60D3CDe657D3A15D',
+  '0xfBd849E6007f9BC3CC2D6Eb159c045B8dc660268',
+  '0x43d2761ed16C89A2C4342e2B16A3C61Ccf88f05B',
+  '0x933421675cDC8c280e5F21f0e061E77849293dba'
+]
