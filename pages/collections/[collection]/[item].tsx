@@ -403,7 +403,7 @@ const Item: NextPage = () => {
                         currencies_list.map((currency,index) => {
                           if(currency.address==order?.currencyAddress){
                             return(
-                              <div className="mr-5">
+                              <div className="mr-5" key={index}>
                                 <img
                                   src={`/images/${currency.icon}`}
                                   className='mr-[8px] w-[21px]'
@@ -440,6 +440,7 @@ const Item: NextPage = () => {
                                         src={chain.img_url}
                                         className='mr-[8px] w-[21px]'
                                         alt="icon"
+                                        key={index}
                                       />
                                     )
                                   }
@@ -450,7 +451,7 @@ const Item: NextPage = () => {
                               {currencies_list.map((currency,index) => {
                                 if(currency.address==item?.currencyAddress){
                                   return(
-                                    <div className="mr-5">
+                                    <div className="mr-5" key={index}>
                                       <img
                                         src={`/images/${currency.icon}`}
                                         className='mr-[8px] w-[21px]'
