@@ -281,22 +281,14 @@ const Item: NextPage = () => {
   }
 
   const onBuy = async() => {
-    let hash = orders[0].hash
+    const hash = orders[0].hash
     
     try {
       await acceptOrder(
         hash,
         'EXECUTED'
       )
-      for(let i=0;i<bidOrders.length;i++){
-        hash = bidOrders[i].hash
-        await acceptOrder(
-          hash,
-          'EXPIRED'
-        )
-      }
-      
-      dispatch(openSnackBar({ message: 'ACCEPT Success', status: 'success' }))
+      dispatch(openSnackBar({ message: 'BUY Success', status: 'success' }))
 
       getBidOrders()
       getListOrders()
@@ -308,27 +300,12 @@ const Item: NextPage = () => {
   }
 
   const onAccept = async(index:number) => {
-    let hash = bidOrders[index].hash
+    const hash = bidOrders[index].hash
     
     try {
       await acceptOrder(
         hash,
         'EXECUTED'
-      )
-      for(let i=0;i<bidOrders.length;i++){
-        if(i!=index){
-          hash = bidOrders[i].hash
-          await acceptOrder(
-            hash,
-            'EXPIRED'
-          )
-        }
-      }
-
-      hash = orders[0].hash
-      await acceptOrder(
-        hash,
-        'EXPIRED'
       )
 
       dispatch(openSnackBar({ message: 'ACCEPT Success', status: 'success' }))

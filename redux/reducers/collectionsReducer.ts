@@ -8,6 +8,7 @@ export const collectionsSlice = createSlice({
 	name: 'collections',
 	initialState: {
 		nfts: [],
+		allNFTs: {},
 		info: {},
 		nftInfo: {},
 		finishedGetting: false,
@@ -25,6 +26,9 @@ export const collectionsSlice = createSlice({
 		setCollectionInfo: (state, action) => {
 			state.info = action.payload === undefined ? {} : action.payload.data
 		},
+		setCollectionAllNFTs: (state, action) => {
+			state.allNFTs = action.payload === undefined ? {} : action.payload.data
+		},
 		setNFTInfo: (state, action) => {
 			state.nftInfo = action.payload === undefined ? {} : action.payload.data
 		},
@@ -41,7 +45,7 @@ export const collectionsSlice = createSlice({
 })
 
 //actions
-export const { setCollectionNFTs, setCollectionInfo, setNFTInfo, clearCollections, startGetNFTs, setCollectionOwners, setCollections } = collectionsSlice.actions
+export const { setCollectionNFTs, setCollectionAllNFTs,setCollectionInfo, setNFTInfo, clearCollections, startGetNFTs, setCollectionOwners, setCollections } = collectionsSlice.actions
 
 export const clearCollectionNFTs = () => (dispatch: Dispatch<any>) => {
 	dispatch(clearCollections())
@@ -54,6 +58,16 @@ export const getCollectionNFTs = (col_url: string, page: Number, display_per_pag
 		dispatch(setCollectionNFTs(nfts))
 	} catch (error) {
 		console.log("getCollectionNFTs error ? ", error)
+	}
+}
+
+export const getCollectionAllNFTs = (col_url: string,sort: String, searchObj: Object) => async (dispatch: Dispatch<any>) => {
+	dispatch(startGetNFTs())
+	try {
+		const nfts = await collectionsService.getCollectionAllNFTs(col_url, sort, searchObj)
+		dispatch(setCollectionAllNFTs(nfts))
+	} catch (error) {
+		console.log("getCollectionAllNFTs error ? ", error)
 	}
 }
 
@@ -101,5 +115,6 @@ export const selectNFTInfo = (state: any) => state.collectionsState.nftInfo
 export const selectGetNFTs = (state: any) => state.collectionsState.finishedGetting
 export const selectCollectionOwners = (state: any) => state.collectionsState.owners
 export const selectCollections = (state: any) => state.collectionsState.collections
+export const selectCollectionAllNFTs = (state: any) => state.collectionsState.allNFTs
 
 export default collectionsSlice.reducer

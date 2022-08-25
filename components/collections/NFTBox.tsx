@@ -48,7 +48,9 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
                 setImageURL(`/images/${item.icon}`)
               }
             })
-            setIsOwner(true)
+            if(orders[i].signer==address){
+              setIsOwner(true)
+            }
           }
         }
         if(executedOrders.length > 0) {
@@ -99,7 +101,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
           </div>
           <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle">
             <div className="text-[#6C757D] text-[14px] font-medium font-['Roboto_Mono'] mt-3 ml-3">
-              {nft.token_id}
+              {nft.name}
             </div>
             <div className="mr-3 flex items-center">
               <div className="flex items-center ml-1">
@@ -131,7 +133,14 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
             <div className="flex items-center ml-3">
               {islisted &&<><img src={img_url} className="w-[18px] h-[18px]" />
                 <span className="text-[#1E1C21] text-sm ml-2"> {price}</span></>}
-              
+            </div>
+          </div>
+          <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle">
+            <div className="flex items-center ml-3">
+              {lastSale!=0&&<><img src={lastSaleCoin} className="w-[18px] h-[18px]" />
+                <span className="text-[#1E1C21] text-sm">last sale: &nbsp;{lastSale}</span></>}
+              {lastSale==0&&highestBid!=0&&<><span className="text-[#1E1C21] text-sm">highest offer: &nbsp;</span><img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>
+                {highestBid}</>}
             </div>
             {
               isOwner&&<div className="ml-2 mr-2 py-[1px] px-5 bg-[#ADB5BD] rounded-lg text-[14px] text-[#F8F9FA] font-medium cursor-pointer hover:bg-[#B00000]">
@@ -143,14 +152,6 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
                 {'Buy now'}
               </div>
             }
-          </div>
-          <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle">
-            <div className="flex items-center ml-3">
-              {lastSale!=0&&<><img src={lastSaleCoin} className="w-[18px] h-[18px]" />
-                <span className="text-[#1E1C21] text-sm ml-2"><span className="text-[#1E1C21] text-sm ml-2">last sale: &nbsp;</span>{lastSale}</span></>}
-              {lastSale==0&&highestBid!=0&&<><span className="text-[#1E1C21] text-sm ml-2">highest offer: &nbsp;</span><img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>
-                <span className="text-[#1E1C21] text-sm ml-2">{highestBid}</span></>}
-            </div>
           </div>
         </a>
       </Link>

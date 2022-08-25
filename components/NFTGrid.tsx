@@ -78,7 +78,7 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
             <img src='/images/downArrow.png' className="w-[10px] h-[7px] ml-5 mt-auto mb-auto"/>
           </div>
         </div>
-        <div className="grid grid-cols-5 gap-10 mt-4">
+        <div className="grid grid-cols-4 gap-6 2xl:grid-cols-5 2xl:gap-10 mt-4">
           {nfts.map((item, index) => {
 
             if(chain == 'all'){
