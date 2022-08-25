@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import LazyLoad from 'react-lazyload'
 
-import { getCollections, selectCollections } from '../../redux/reducers/collectionsReducer'
+import { getCollections, selectCollections, updateCollectionsForCard, selectCollectionsForCard} from '../../redux/reducers/collectionsReducer'
 
 import pfp from '../../public/images/pfp.png'
 import photography from '../../public/images/photography.png'
@@ -39,23 +39,26 @@ const Collections: NextPage = () => {
   
   const dispatch = useDispatch()
   const collections = useSelector(selectCollections)
-
+  const collectionsForCard = useSelector(selectCollectionsForCard)
   useEffect(() => {
     dispatch(getCollections() as any)
+    dispatch(updateCollectionsForCard() as any)
   }, [])
 
   useEffect(() => {
     const slides: Array<React.ReactNode> = []
-
-    collections && collections.map((item: any) => {
-      slides.push(
-                   
-        <CollectionCard collection={item}/>
-         
-      )
-    })
+    if(collections.length>0 && collectionsForCard.length>0){
+      collections.map((item: any,index:number) => {
+        slides.push(
+                     
+          <CollectionCard collection={item} card={collectionsForCard[index]}/>
+           
+        )
+      })
+    }
+    
     setOmniSlides(slides)
-  }, [collections])
+  }, [collections ,collectionsForCard])
   return (
     <>
       <div className='pt-10'>

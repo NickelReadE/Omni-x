@@ -14,7 +14,7 @@ import { SupportedChainId } from '../types'
 import { postMakerOrder } from '../utils/makeOrder'
 import { ethers } from 'ethers'
 import { addDays } from 'date-fns'
-import { openSnackBar } from '../redux/reducers/snackBarReducer'
+import { getCollectionInfo, selectCollectionInfo, getCollectionOwners, selectCollectionOwners } from '../redux/reducers/collectionsReducer'
 
 
 import { useDispatch, useSelector } from 'react-redux'
@@ -31,14 +31,15 @@ const CollectionCard = (props:any) => {
   const [openSellDlg, setOpenSellDlg] = React.useState(false)
   ///only in the beta version
   const [islisted,setList] = useState(false)
-
+  const [itemCounts, setItemCounts] = useState(0)
+  const [ownerNum, setOwnerNum] = useState(0)
+  console.log(props)
   const {
     provider,
     address
   } = useWallet()
 
   const dispatch = useDispatch()
-
   const {attributes, listeners, setNodeRef, transform} = useDraggable({
     id: `draggable-${1}`,
     data: {
@@ -48,11 +49,7 @@ const CollectionCard = (props:any) => {
   const style = transform ? {
     transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
     zIndex: 99
-  } : undefined
-
-  useEffect(() => {
-    console.log(props.collection.profile_image)
-  }, [])
+  } : undefined  
 
   const onListing = async (currency: string, price: number, period: number) => {
     const chainId = provider?.network.chainId as number
@@ -61,7 +58,6 @@ const CollectionCard = (props:any) => {
     const startTime = Date.now()
   
   }
-  
   return (
     <div className={classNames(' border-[2px] border-[#F6F8FC] w-[340px] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F6F8FC]', editStyle.nftContainer)}>
       <div className='relative'  style={style} >
@@ -105,13 +101,13 @@ const CollectionCard = (props:any) => {
         <div className={classNames('row-span-2 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)}>
           <div className='text-[14px] flex flex-row justify-between'>
             <span className='font-extrabold mr-[1px]'>Items</span>
-            <span className='font-medium text-[12px]'>10K</span>
+            <span className='font-medium text-[12px]'>{props.card?.itemsCnt}</span>
           </div>
         </div>
         <div  className={classNames('row-span-2 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
           <div className='text-[14px] flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
             <span className='font-extrabold mr-[1px]'>Owners</span>
-            <span className='font-medium text-[12px]'>10K</span>
+            <span className='font-medium text-[12px]'>{props.card?.ownerCnt}</span>
           </div>
         </div>
         <div className={classNames('row-span-2 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
