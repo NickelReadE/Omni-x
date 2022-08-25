@@ -61,8 +61,16 @@ const Collections: NextPage = () => {
   }, [collections ,collectionsForCard])
   return (
     <>
+<<<<<<< HEAD
       <div className='pt-10'>
         <Slider title="Beta Collections" cards={omniSlides} />      
+=======
+      <div>
+        <Slider title="Beta Collections" cards={omniSlides} />
+        {/* <Slider title="Trending Collection" images={omniSlides} /> */}
+        {/* <ImageList title="" images={serviceSlides} /> */}
+        
+>>>>>>> 6e47a5677a78efe1e0ea3c19bd972c74c831fe4e
       </div>
     </>
   )

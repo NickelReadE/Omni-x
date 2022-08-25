@@ -20,7 +20,6 @@ import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
 import useBridge from '../hooks/useBridge'
 import useProgress from '../hooks/useProgress'
-import ReactDOM from 'react-dom'
 
 interface RefObject {
   offsetHeight: number
@@ -48,13 +47,14 @@ const SideBar: React.FC = () => {
   const [fixed, setFixed] = useState(false)
   const [confirmTransfer, setConfirmTransfer] = useState(false)
   const [chainId, setChainID] = useState(4)
+  const [isFirstDrag, setIsFirstDrag] = useState(true)
   const DEFAULT_AVATAR = 'uploads\\default_avatar.png'
 
   const menu_profile = useRef<HTMLUListElement>(null)
   const menu_ethereum = useRef<HTMLUListElement>(null)
   const menu_wallets = useRef<HTMLDivElement>(null)
   const menu_watchlist = useRef<HTMLDivElement>(null)
-  const menu_bridge = useRef(null)
+  const menu_bridge = useRef<HTMLDivElement>(null)
   const menu_cart = useRef<HTMLDivElement>(null)
   const [offsetMenu, setOffsetMenu] = useState(0)
   const [avatarError, setAvatarError] = useState(false)
@@ -72,7 +72,6 @@ const SideBar: React.FC = () => {
   const [estimatedFee, setEstimatedFee] = useState<BigNumber>(BigNumber.from('0'))
   const [isONFT, setIsONFT] = useState(false)
   const [unwrap, setUnwrap] = useState(false)
-  const [isDragFirst, setIsDragFirst] = useState(true)
   const {setNodeRef} = useDroppable({
     id: 'droppable',
     data: {
@@ -83,7 +82,6 @@ const SideBar: React.FC = () => {
   // Drag and drop event monitor
   useDndMonitor({
     onDragStart(event) {
-      console.log('started dragging')
       setDragOver(true)
       setDragEnd(false)
       setShowSidebar(true)
@@ -93,13 +91,10 @@ const SideBar: React.FC = () => {
     },
     onDragOver(event) {
       setDragEnd(false)
-      console.log('dragging')
     },
     onDragEnd(event) {
-      
-      console.log(event)
       const { active: { id } } = event
-      if (id.toString().length > 0 && (event.over !== null || isDragFirst)) {
+      if (id.toString().length > 0 && (event.over !== null || isFirstDrag)) {
         const index = id.toString().split('-')[1]
         setSelectedNFTItem(nfts[index])
         validateOwNFT(nfts[index]).then((res) => {
@@ -119,7 +114,6 @@ const SideBar: React.FC = () => {
           }
         }
       }
-      console.log('drag ended')
       setDragEnd(true)
       setDragOver(false)
     },
@@ -185,8 +179,8 @@ const SideBar: React.FC = () => {
 
   const fixMenu = (menu: number) => {
     setExpandedMenu(menu == expandedMenu ? 0 : menu)
-    setIsDragFirst(!isDragFirst)
     setFixed(!fixed)
+    setIsFirstDrag(!isFirstDrag)
   }
 
   const onClickNetwork = async (chainId: number) => {
@@ -478,11 +472,6 @@ const SideBar: React.FC = () => {
       setChainID(parseInt(window.ethereum.networkVersion))
     }
   })
-  // useEffect(()=>{
-  //   if(showSidebar){
-  //     setIsDragFirst(false)
-  //   }else{setIsDragFirst(true)}
-  // },[showSidebar])
   if(window.ethereum){
     window.ethereum.on('chainChanged', function (networkId:string) {      
       setChainID(parseInt(networkId))
@@ -815,7 +804,7 @@ const SideBar: React.FC = () => {
             </button>
             { expandedMenu == 5 &&
               <div className='flex flex-col w-full space-y-4 p-6 pt-8 pb-0' ref={menu_bridge}>
-                <div ref={setNodeRef}  className="  px-[113px] py-[43px] flex flex-col items-center border border-dashed border-g-300 bg-g-200" style={dragOver ? {opacity: 0.4} : {opacity: 1}}>
+                <div ref={setNodeRef} className="px-[113px] py-[43px] flex flex-col items-center border border-dashed border-g-300 bg-g-200" style={dragOver ? {opacity: 0.4} : {opacity: 1}}>
                   {
                     dragOver
                       ?
