@@ -36,8 +36,7 @@ serviceSlides.push(<Image src={fashion} alt="image - 29" layout='responsive' wid
 
 const Collections: NextPage = () => {
   const [omniSlides, setOmniSlides] = useState<Array<React.ReactNode>>([])
-  const [imageError, setImageError] = useState(false)
-
+  
   const dispatch = useDispatch()
   const collections = useSelector(selectCollections)
 
@@ -60,10 +59,7 @@ const Collections: NextPage = () => {
   return (
     <>
       <div className='pt-10'>
-        <Slider title="Beta Collections" cards={omniSlides} />
-        {/* <Slider title="Trending Collection" images={omniSlides} /> */}
-        {/* <ImageList title="" images={serviceSlides} /> */}
-        
+        <Slider title="Beta Collections" cards={omniSlides} />      
       </div>
     </>
   )
