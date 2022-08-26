@@ -151,6 +151,7 @@ const Item: NextPage = () => {
   }, [bidOrders])
 
   const getNFTOwnership = async(col_url: string, token_id: string) => {
+    console.log('--getNFTOwnership---')
     const tokenIdOwner = await collectionsService.getNFTOwner(col_url, token_id)
 
     if ( tokenIdOwner.length > 0 ) {
@@ -279,7 +280,7 @@ const Item: NextPage = () => {
       startTime: order?.startTime,
       endTime: order?.endTime,
       minPercentageToAsk: order?.minPercentageToAsk,
-      params: ethers.utils.defaultAbiCoder.encode(['uint16'], order?.params),
+      params: ethers.utils.defaultAbiCoder.encode(['uint16','uint16'], order?.params),
       signature: order?.signature
     }
     const takerBid : TakerOrderWithEncodedParams = {
@@ -297,9 +298,12 @@ const Item: NextPage = () => {
 
     console.log('---lzFee---', lzFee)
 
-    await omni.approve(omnixExchange.address, takerBid.price)
-    await omni.approve(getAddressByName('FundManager', chainId), takerBid.price)
-    await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
+    await omni.approve(omnixExchange.address, takerBid.price, { gasLimit: '300000' })
+    await omni.approve(getAddressByName('FundManager', chainId), takerBid.price, { gasLimit: '300000' })
+
+    console.log('--approved----')
+
+    await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee, gasLimit: '300000' })
 
     await updateOrderStatus(order, 'EXECUTED')
 
