@@ -16,6 +16,10 @@ import polygon from '../public/sidebar/polygon.png'
 import avax from '../public/sidebar/avax.png'
 import arbitrum from '../public/sidebar/arbitrum.png'
 import fantom from '../public/sidebar/fantom.png'
+import { getOmniInstance } from '../utils/contracts'
+import useWallet from '../hooks/useWallet'
+import { useDispatch } from 'react-redux'
+import { openSnackBar } from '../redux/reducers/snackBarReducer'
 
 type HeaderProps = {
   menu: string
@@ -34,6 +38,12 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
   })
   const [expand, setExpand] = useState(false)
   const { txInfo, pending } = useProgress()
+  const dispatch = useDispatch()
+  const {
+    provider,
+    signer,
+    address
+  } = useWallet()
 
   const handleMouseOver = (hoverMenu: string) => {
     setHovering({
@@ -48,6 +58,16 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
       isHover: false
     })
   }
+
+  const onOmniFaucet = async () => {
+    const chainId = provider?.network.chainId as number
+    const omni = getOmniInstance(chainId, signer)
+
+    await omni.mint({ gasLimit: '300000' })
+
+    dispatch(openSnackBar({ message: 'You received an 1000 $OMNI', status: 'success' }))
+  }
+
   return (
     <>
       <nav className={
@@ -85,7 +105,11 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
               <input autoFocus type="text" placeholder='Acquire Your Desires' className="flex items-center bg-[#F6F8FC] bg-[url('../public/images/search.png')] bg-contain bg-no-repeat	 w-[472px] h-[75px] border-0 focus:outline-0 focus:shadow-none focus:ring-offset-0 focus:ring-0 px-[85px]" onBlur={() => setSearch(false)} onClick={() => setSearch(false)}/>
             }
           </div>
-          
+
+          <div className='absolute right-[100px] top-[20px]'>
+            <button className='bg-[#ADB5BD] rounded text-[#fff] p-2' onClick={() => onOmniFaucet()}>Omni Faucet</button>
+          </div>
+
           {/* <div className='min-w-[200px]'></div> */}
           <div className='justify-between h-[90px] items-center w-full md:flex md:w-auto mx-auto md:order-2' id='mobile-menu-3'>
             <ul className="flex flex-col justify-between w-[500px] md:flex-row md:space-x-8 md:text-sm md:font-medium" >
