@@ -202,14 +202,14 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   
   return (
     <div className='border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]'>
-      <div className="nft-image-container" ref={setNodeRef} style={style} {...listeners} {...attributes}>
+      <div className="nft-image-container group relative flex justify-center text-center overflow-hidden rounded-md" ref={setNodeRef} style={style} {...listeners} {...attributes}>
         {islisted?
           <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
-            <img className='nft-image' src={imageError?'/images/omnix_logo_black_1.png':image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={image} onDoubleClick={() => doubleClickToSetDetailLink()}/>
+            <img className='nft-image rounded-md object-cover ease-in-out duration-500 group-hover:scale-110' src={imageError?'/images/omnix_logo_black_1.png':image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={image} onDoubleClick={() => doubleClickToSetDetailLink()}/>
           </LazyLoad>
           :
           <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
-            <img className='nft-image' src={imageError?'/images/omnix_logo_black_1.png':image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={image}/>
+            <img className='nft-image rounded-md object-cover ease-in-out duration-500 group-hover:scale-110' src={imageError?'/images/omnix_logo_black_1.png':image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={image}/>
           </LazyLoad>
         }
         {/* <div className="absolute top-[8px] right-[9px] p-[12px]" style={{background: 'radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.2) 0%, rgba(254, 254, 255, 0) 100%)'}}>

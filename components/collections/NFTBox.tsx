@@ -221,69 +221,75 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
   }
 
   return (
-    <div className={classNames('w-full border-[2px] border-[#F6F8FC] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F6F8FC]', editStyle.nftContainer)}>
-      <div className="relative w-full">
-        <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
-          <img className='collection-nft-image-item' src={imageError||nft.image==null?'/images/omnix_logo_black_1.png':nft.image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={nft.image} />
-        </LazyLoad>
-      </div>
-      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['Retni_Sans']">
-        <div className="text-[#000000] text-[14px] font-bold  mt-3 ml-3">
-          {nft.name}
-        </div>
-        <div className="mr-3 flex items-center">
-          <div className="flex items-center ml-1">
-            {(chain === 'eth' || chain === 'rinkeby') &&
-              <img src="/svgs/ethereum.svg" className="w-[16px] h-[16px]" />
-            }
-            {chain === 'bsc' &&
-              <img src="/svgs/binance.svg" className="w-[16px] h-[16px]" />
-            }
-            {chain === 'matic' &&
-              <img src="/svgs/polygon.svg" className="w-[16px] h-[16px]" />
-            }
-            {chain === 'avalanche' &&
-              <img src="/svgs/avax.svg" className="w-[16px] h-[16px]" />
-            }
-            {chain === 'fantom' &&
-              <img src="/svgs/fantom.svg" className="w-[16px] h-[16px]" />
-            }
-            {chain === 'optimism' &&
-              <img src="/svgs/optimism.svg" className="w-[16px] h-[16px]" />
-            }
-            {chain === 'arbitrum' &&
-              <img src="/svgs/arbitrum.svg" className="w-[16px] h-[16px]" />
-            }
+    <div className={classNames('w-full border-[2px] border-[#F6F8FC] rounded-[8px] cursor-pointer hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F6F8FC]', editStyle.nftContainer)}>
+      <Link href={`/collections/${col_url}/${nft.token_id}`}>
+        <a>
+          <div className="group relative flex justify-center text-center overflow-hidden rounded-md">
+            <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
+              <img className='collection-nft-image-item rounded-md object-cover ease-in-out duration-500 group-hover:scale-110' src={imageError||nft.image==null?'/images/omnix_logo_black_1.png':nft.image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={nft.image} />
+            </LazyLoad>
           </div>
-        </div>
-      </div>
+          <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['Retni_Sans']">
+            <div className="text-[#000000] text-[14px] font-bold  mt-3 ml-3">
+              {nft.name}
+            </div>
+            <div className="mr-3 flex items-center">
+              <div className="flex items-center ml-1">
+                {(chain === 'eth' || chain === 'rinkeby') &&
+                  <img src="/svgs/ethereum.svg" className="w-[16px] h-[16px]" />
+                }
+                {chain === 'bsc' &&
+                  <img src="/svgs/binance.svg" className="w-[16px] h-[16px]" />
+                }
+                {chain === 'matic' &&
+                  <img src="/svgs/polygon.svg" className="w-[16px] h-[16px]" />
+                }
+                {chain === 'avalanche' &&
+                  <img src="/svgs/avax.svg" className="w-[16px] h-[16px]" />
+                }
+                {chain === 'fantom' &&
+                  <img src="/svgs/fantom.svg" className="w-[16px] h-[16px]" />
+                }
+                {chain === 'optimism' &&
+                  <img src="/svgs/optimism.svg" className="w-[16px] h-[16px]" />
+                }
+                {chain === 'arbitrum' &&
+                  <img src="/svgs/arbitrum.svg" className="w-[16px] h-[16px]" />
+                }
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['Retni_Sans']">
+            <div className="flex items-center ml-3">
+              {islisted && img_url==''&&<><img src={'/svgs/ethereum.svg'} className="w-[18px] h-[18px]" alt='icon'/><span className="text-[#000000] text-[18px] font-extrabold ml-2">{price}</span></>}
+              {islisted && img_url!=''&&<><img src={img_url} className="w-[18px] h-[18px]" alt='icon'/><span className="text-[#000000] text-[18px] font-extrabold ml-2">{price}</span></>}
+            </div>
+          </div>
+        </a>
+      </Link>
       <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['Retni_Sans']">
-        <div className="flex items-center ml-3">
-          {islisted && img_url==''&&<><img src={'/svgs/ethereum.svg'} className="w-[18px] h-[18px]" alt='icon'/><span className="text-[#000000] text-[18px] font-extrabold ml-2">{price}</span></>}
-          {islisted && img_url!=''&&<><img src={img_url} className="w-[18px] h-[18px]" alt='icon'/><span className="text-[#000000] text-[18px] font-extrabold ml-2">{price}</span></>}
-        </div>
-      </div>
-      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['Retni_Sans']">
-        <div className="flex items-center ml-3">
+        <Link href={`/collections/${col_url}/${nft.token_id}`}><a><div className="flex items-center ml-3">
           {lastSale!=0&&<><span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span><img src={lastSaleCoin} className="w-[18px] h-[18px]" />&nbsp;<span className="text-[#6C757D] text-[14px]font-bold">{lastSale}</span></>}
           {lastSale==0&&highestBid!=0&&<><span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span><img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;<span className="text-[#6C757D] text-[14px] font-bold">{highestBid}</span></>} 
-        </div>
+        </div></a></Link>
         {
-          isOwner&&<Link href={`/collections/${col_url}/${nft.token_id}`}><a><div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod cursor-pointer hover:bg-[#B00000]">
+          isOwner&&<Link href={`/collections/${col_url}/${nft.token_id}`}><a><div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#B00000]">
             {'Sell'}
           </div></a></Link>
         }
         {
-          !isOwner&& islisted &&<Link href={`/collections/${col_url}/${nft.token_id}`}><a><div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod cursor-pointer hover:bg-[#38B000]">
+          !isOwner&& islisted &&<Link href={`/collections/${col_url}/${nft.token_id}`}><a><div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]">
             {'Buy now'}
           </div></a></Link>
         }
         {
-          !isOwner&& !islisted &&<div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod cursor-pointer hover:bg-[#38B000]" onClick={() => setOpenBidDlg(true)}>
+          !isOwner&& !islisted &&<div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]" onClick={() => setOpenBidDlg(true)}>
             {'Bid'}
           </div>
         }
       </div>
+
+
       <ConfirmBid handleBidDlgClose={() => {setOpenBidDlg(false)}} openBidDlg={openSellDlg} nftImage={image} nftTitle={nft.name} onSubmit={onBid} />
     </div>
   )
