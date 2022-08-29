@@ -68,6 +68,7 @@ const SideBar: React.FC = () => {
   const [omniBalance, setOmniBalance] = useState(0)
   const [usdcBalance, setUsdcBalance] = useState(0)
   const [usdtBalance, setUsdtBalance] = useState(0)
+  const [nativeBalance,setNativeBalance] = useState('0')
 
 
   const nfts = useSelector(selectUserNFTs)
@@ -546,12 +547,14 @@ const SideBar: React.FC = () => {
           const balance = await usdTContract.balanceOf(address)
           setUsdtBalance(Number(ethers.utils.formatEther(balance)))
         }
+        //Native Token
+        const balance = await provider?.getBalance(address!)
+        setNativeBalance((Number(balance)/Math.pow(10,18)).toFixed(4))
       } catch (error) {
         console.log(error)
       }
-      
     }
-    if(signer!=undefined && address){
+    if(signer!=undefined && address!=undefined){
       getBalance()
     }
   },[signer,address])
@@ -762,6 +765,7 @@ const SideBar: React.FC = () => {
                 <span className="font-semibold w-auto text-[16px]">OMNI balance: {omniBalance}</span>
                 <span className="font-semibold w-auto text-[16px]">USDC balance: {usdcBalance}</span>
                 <span className="font-semibold w-auto text-[16px]">USDT balance: {usdtBalance}</span>
+                <span className="font-semibold w-auto text-[16px]">NATIVE balance: {nativeBalance}</span>
 
 
                 <span className="w-auto text-[16px]">Staking: coming soon</span>
