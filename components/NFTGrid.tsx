@@ -32,7 +32,6 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
   }, [])
 
   useEffect(()=> {
-    console.log(nfts)
     if(nfts.length>0){
       const request: IGetOrderRequest = {
         isOrderAsk: true,
