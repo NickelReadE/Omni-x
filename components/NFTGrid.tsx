@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import NFTBox from './NFTBox'
 import { IPropsImage } from '../interface/interface'
-import { getOrders, selectOrders } from '../redux/reducers/ordersReducer'
+import { getOrders,getLastSaleOrders } from '../redux/reducers/ordersReducer'
 import { IGetOrderRequest } from '../interface/interface'
 import useWallet from '../hooks/useWallet'
 import { useDispatch, useSelector } from 'react-redux'
@@ -18,7 +18,7 @@ const chainList = [
   { chain: 'arbitrum', img_url: '/svgs/arbitrum.svg', title: 'Arbitrum', disabled: false},
 ]
 const NFTGrid = ({ nfts }: IPropsImage) => {
-  const [chain, setChain] = useState('rinkeby')
+  const [chain, setChain] = useState('all')
 
   const {
     provider,
@@ -26,11 +26,13 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
   } = useWallet()
   const dispatch = useDispatch()
 
+
   useEffect(() => {
     dispatch(getCollections() as any)
   }, [])
 
   useEffect(()=> {
+    console.log(nfts)
     if(nfts.length>0){
       const request: IGetOrderRequest = {
         isOrderAsk: true,
@@ -51,6 +53,12 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
         sort: 'PRICE_ASC'
       }
       dispatch(getOrders(bidRequest) as any)
+
+      const excutedRequest: IGetOrderRequest = {
+        status: ['EXECUTED'],
+        sort: 'UPDATE_OLDEST'
+      }
+      dispatch(getLastSaleOrders(excutedRequest) as any)
     }
   },[nfts])
 
@@ -68,7 +76,7 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
             })
           }
         </div>
-        <div className="grid grid-cols-5 gap-10 mt-4">
+        <div className="grid grid-cols-4 gap-6 2xl:grid-cols-5 2xl:gap-10 mt-4">
           {nfts.map((item, index) => {
             if(chain == 'all'){
               return (

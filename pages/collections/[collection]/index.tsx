@@ -9,7 +9,7 @@ import Twitter from '../../../public/images/twitter.png'
 import Web from '../../../public/images/web.png'
 import Ethereum from '../../../public/sidebar/ethereum.png'
 
-import { getCollectionNFTs, selectCollectionNFTs, getCollectionInfo, selectCollectionInfo, clearCollectionNFTs, selectGetNFTs, getCollectionOwners, selectCollectionOwners } from '../../../redux/reducers/collectionsReducer'
+import { getCollectionNFTs, selectCollectionNFTs, getCollectionInfo,getCollectionAllNFTs,selectCollectionInfo, clearCollectionNFTs, selectGetNFTs, getCollectionOwners, selectCollectionOwners,selectCollectionAllNFTs } from '../../../redux/reducers/collectionsReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import NFTBox from '../../../components/collections/NFTBox'
@@ -32,7 +32,7 @@ import Chip from '@material-ui/core/Chip'
 import classNames from '../../../helpers/classNames'
 import editStyle from '../../../styles/collection.module.scss'
 import { info } from 'console'
-import { getOrders, getLastSaleOrders } from '../../../redux/reducers/ordersReducer'
+import ordersReducer, { getOrders,selectOrders, getLastSaleOrders,selectBidOrders,selectLastSaleOrders } from '../../../redux/reducers/ordersReducer'
 import { IGetOrderRequest } from '../../../interface/interface'
 
 
@@ -126,6 +126,7 @@ const Collection: NextPage = () => {
   const [expandedMenu, setExpandedMenu] = useState(0)
   const [selected, setSelected] = useState(sort_fields[0])
   const [enabled, setEnabled] = useState(false)
+  // const [nfts,setNFTs] = useState<any>({})
 
   const [hasMoreNFTs, setHasMoreNFTs] = useState(true)
 
@@ -137,8 +138,13 @@ const Collection: NextPage = () => {
 
   const dispatch = useDispatch()
   const nfts = useSelector(selectCollectionNFTs)
+  const allNFTs = useSelector(selectCollectionAllNFTs)
+
   const collectionInfo = useSelector(selectCollectionInfo)
   const collectionOwners = useSelector(selectCollectionOwners)
+
+  const orders = useSelector(selectOrders)
+
 
   const [imageError, setImageError] = useState(false)
   const classes = useStyles()
@@ -146,6 +152,9 @@ const Collection: NextPage = () => {
   const [searchObj, setSearchObj] = useState<any>({})
   const [filterObj, setFilterObj] = useState<any>({})
   const [clearFilter, setClearFilter] = useState(false)
+
+  const [isActiveBuyNow, setIsActiveBuyNow] = useState<boolean>(false)
+  const [listNFTs, setListNFTs] = useState<any>([])
 
 
   const finishedGetting = useSelector(selectGetNFTs)
@@ -156,7 +165,7 @@ const Collection: NextPage = () => {
       dispatch(getCollectionOwners(col_url) as any)
       setPage(0)
     }
-  }, [col_url])
+  }, [col_url]) 
 
   useEffect(()=>{
     if(nfts.length>0){
@@ -193,6 +202,7 @@ const Collection: NextPage = () => {
     setSelected(item)
     dispatch(clearCollectionNFTs() as any)
     dispatch(getCollectionNFTs(col_url, 0, display_per_page, item.value, searchObj) as any)
+    dispatch(getCollectionAllNFTs(col_url,selected.value, searchObj) as any)
     setPage(0)
   }
 
@@ -206,6 +216,7 @@ const Collection: NextPage = () => {
     if ( collectionInfo ) {
       dispatch(clearCollectionNFTs() as any)
       dispatch(getCollectionNFTs(col_url, 0, display_per_page, selected.value, searchObj) as any)
+      dispatch(getCollectionAllNFTs(col_url,selected.value, searchObj) as any)
       setPage(0)
     }
   }, [searchObj])
@@ -267,6 +278,34 @@ const Collection: NextPage = () => {
       return {...prevState, ...newObj}
     })
   }
+
+  const buyComponet = () => {
+    const temp = []
+    for(let i = 0;i<listNFTs.length;i++){
+      temp.push(
+        <NFTBox nft={listNFTs[i]} index={i} key={i}  col_url={col_url} col_address={collectionInfo.address}  chain={collectionInfo?collectionInfo.chain:'eth'}/>
+      )
+    }
+    return temp
+  }
+
+  useEffect(()=>{
+    if(isActiveBuyNow && collectionInfo && allNFTs.length>0){
+      const temp = []
+      for(let i=0;i<allNFTs.length;i++){
+        for(let j=0; j<orders.length;j++){
+          if(collectionInfo.address==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
+            console.log(allNFTs[i])
+            temp.push(allNFTs[i])
+            break
+          }
+        }
+      }
+      setListNFTs(temp)
+    } 
+  },[isActiveBuyNow,collectionInfo,allNFTs])
+
+
 
   return (
     <>
@@ -373,7 +412,7 @@ const Collection: NextPage = () => {
             <ul className='flex flex-col space-y-4'>
               <li className="w-full">
                 <div
-                  className={`w-full px-4 py-4 text-left text-g-600  font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`}
+                  className={`w-full px-4 py-4 text-left text-g-600  font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`} onClick={()=>setIsActiveBuyNow(!isActiveBuyNow)}
                 >
                   Buy Now
                   <Switch
@@ -575,7 +614,7 @@ const Collection: NextPage = () => {
                   loader={
                     <div className='flex justify-center items-center'>
                       <div className="flex justify-center items-center w-[90%] h-[100px]">
-                        <CircularProgress />
+                        {!isActiveBuyNow&&<CircularProgress />}
                       </div>
                     </div>
                   }
@@ -583,12 +622,13 @@ const Collection: NextPage = () => {
                     <div></div>
                   }
                 >
-                  <div className="grid 2xl:grid-cols-5 gap-4 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 p-1">
-                    { nfts.map((item, index) => {
+                  <div className="grid 2xl:grid-cols-5 gap-4 xl:grid-cols-3 md:grid-cols-2 p-1">
+                    { !isActiveBuyNow && nfts.map((item, index) => {
                       return (
                         <NFTBox nft={item} index={index} key={index}  col_url={col_url} col_address={collectionInfo.address}  chain={collectionInfo?collectionInfo.chain:'eth'}/>
                       )
                     })}
+                    { isActiveBuyNow && listNFTs && buyComponet()}
                   </div>
                 </InfiniteScroll>
               }

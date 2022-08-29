@@ -13,9 +13,9 @@ import {
   getERC721Instance,
   getERC1155Instance,
   getOmnixBridge1155Instance,
-  getOmnixBridgeInstance, getONFTCore721Instance, getONFTCore1155Instance,
+  getOmnixBridgeInstance, getONFTCore721Instance, getONFTCore1155Instance, getCurrencyInstance,
 } from '../utils/contracts'
-import {getChainIdFromName, getLayerzeroChainId} from '../utils/constants'
+import {getAddressByName, getChainIdFromName, getLayerzeroChainId} from '../utils/constants'
 import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
 import useBridge from '../hooks/useBridge'
@@ -58,6 +58,11 @@ const SideBar: React.FC = () => {
   const menu_cart = useRef<HTMLDivElement>(null)
   const [offsetMenu, setOffsetMenu] = useState(0)
   const [avatarError, setAvatarError] = useState(false)
+
+  const [omniBalance, setOmniBalance] = useState(0)
+  const [usdcBalance, setUsdcBalance] = useState(0)
+  const [usdtBalance, setUsdtBalance] = useState(0)
+
 
   const nfts = useSelector(selectUserNFTs)
   const user = useSelector(selectUser)
@@ -485,8 +490,35 @@ const SideBar: React.FC = () => {
     setConfirmTransfer(status)
   }
 
-  
- 
+  useEffect(()=>{
+    const getBalance = async() => {
+      try {
+        {
+          const omniContract = getCurrencyInstance(getAddressByName('OMNI', chainId), chainId, signer)
+          const balance = await omniContract.balanceOf(address)
+          setOmniBalance(Number(ethers.utils.formatEther(balance)))
+        }
+
+        {
+          const usdContract = getCurrencyInstance(getAddressByName('USDC', chainId), chainId, signer)
+          const balance = await usdContract.balanceOf(address)
+          setUsdcBalance(Number(ethers.utils.formatEther(balance)))
+        }
+        
+        {
+          const usdContract = getCurrencyInstance(getAddressByName('USDT', chainId), chainId, signer)
+          const balance = await usdContract.balanceOf(address)
+          setUsdtBalance(Number(ethers.utils.formatEther(balance)))
+        }
+      } catch (error) {
+        console.log(error)
+      }
+      
+    }
+    if(signer!=undefined && address){
+      getBalance()
+    }
+  },[signer,address])
 
   return (
     <>
@@ -690,10 +722,11 @@ const SideBar: React.FC = () => {
               </span>
             </button>
             { expandedMenu == 3 &&
-              <div className='flex flex-col w-full space-y-4 p-6 pl-10 pt-8 pb-0' ref={menu_wallets}>
-                <span className="font-semibold w-auto text-[16px]">OMNI balance:</span>
-                <span className="font-semibold w-auto text-[16px]">USDC balance:</span>
-                <span className="font-semibold w-auto text-[16px]">USDT balance:</span>
+              <div className='flex flex-col w-full space-y-4 p-6 pt-8 pb-0' ref={menu_wallets}>
+                <span className="font-semibold w-auto text-[16px]">OMNI balance: {omniBalance}</span>
+                <span className="font-semibold w-auto text-[16px]">USDC balance: {usdcBalance}</span>
+                <span className="font-semibold w-auto text-[16px]">USDT balance: {usdtBalance}</span>
+
 
                 <span className="w-auto text-[16px]">Staking: coming soon</span>
                 {/* <div className="w-full flex flex-row font-semibold text-[14px]">

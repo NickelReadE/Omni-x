@@ -13,7 +13,7 @@ import { postMakerOrder } from '../utils/makeOrder'
 import { addDays } from 'date-fns'
 import { openSnackBar } from '../redux/reducers/snackBarReducer'
 import { ethers } from 'ethers'
-import { getOrders, selectOrders,selectBidOrders } from '../redux/reducers/ordersReducer'
+import { getOrders, selectOrders,selectBidOrders, selectLastSaleOrders } from '../redux/reducers/ordersReducer'
 import { selectCollections } from '../redux/reducers/collectionsReducer'
 import { IGetOrderRequest } from '../interface/interface'
 import { useDispatch, useSelector } from 'react-redux'
@@ -31,12 +31,15 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   const [openSellDlg, setOpenSellDlg] = React.useState(false)
   ///only in the beta version
   const [islisted,setList] = useState(false)
-  const [price, setPrice] = useState('')
+  const [price, setPrice] = useState(0)
   const [img_url, setImageURL] = useState('')
   const [highestBid, setHighestBid] = useState(0)
   const [highestBidCoin, setHighestBidCoin] = useState('')
+  const [lastSale,setLastSale] = useState(0)
+  const [lastSaleCoin, setLastSaleCoin] = useState('')
   const orders = useSelector(selectOrders)
   const bidOrders = useSelector(selectBidOrders)
+  const lastSaleOrders = useSelector(selectLastSaleOrders)
   const collections = useSelector(selectCollections)
 
   const {
@@ -164,49 +167,15 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
             <img className='nft-image' src={imageError?'/images/omnix_logo_black_1.png':image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={image}/>
           </LazyLoad>
         }
-        <div className={classNames('absolute top-[8px] right-[9px] p-[12px]', editStyle.ellipseBtn)}>
+        {/* <div className="absolute top-[8px] right-[9px] p-[12px]" style={{background: 'radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.2) 0%, rgba(254, 254, 255, 0) 100%)'}}>
           <div className="bg-[url('/images/ellipse.png')] hover:bg-[url('/images/ellipse_hover.png')] bg-cover w-[21px] h-[21px]"></div>
-        </div>
+        </div> */}
       </div>
-      <div className="flex flex-row mt-2.5 justify-start">
-        <div className="ml-3 text-[#6C757D] text-[14px] font-medium ">
-          {nft.name}
-        </div>
-        <div className="ml-1 text-[#6C757D] text-[14px] font-medium ">
-          {`#${nft.token_id}`}
-        </div>
-      </div>
-      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle">
-        <div className="flex items-center">
-          {islisted && <div className="ml-3 py-[1px] px-5 bg-[#ADB5BD] rounded-lg text-[14px] text-[#F8F9FA] font-medium cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
-            {'Sell'}
-          </div>}
-          {islisted && price==''&& highestBid>0 &&  
-            <div className='flex'>
-              <img src={highestBidCoin} className="w-[16px] h-[16px]" alt="icon" />
-              <span className='mt-[-2px]'>{highestBid}</span>
-              <div className="ml-3 py-[1px] px-5 bg-[#ADB5BD] rounded-lg text-[14px] text-[#F8F9FA] font-medium cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
-                {'Sell'}
-              </div>
-            </div>
-          }
-          {/* {islisted && price!='' && <div className="flex ml-3 py-[1px] px-5  text-[14px] text-[#000000] font-medium cursor-pointer " onClick={() => setOpenSellDlg(true)}>
-            <img src={img_url} className="w-[16px] h-[16px]" alt="icon" />
-            <span className='mt-[-2px]'>{price}</span>
-          </div>} */}
-          {islisted && price!='' && 
-            <div className='flex'>
-              <img src={img_url} className="w-[16px] h-[16px]" alt="icon" />
-              <span className='mt-[-2px]'>{price}</span>
-              <div className="ml-3 py-[1px] px-5 bg-[#ADB5BD] rounded-lg text-[14px] text-[#F8F9FA] font-medium cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
-                {'Sell'}
-              </div>
-            </div>
-          }
+      <div className="flex flex-row mt-2.5 justify-between align-middle font-['Retni_Sans']">
+        <div className="ml-3 text-[#000000] text-[14px] font-bold">
+          {JSON.parse(nft.metadata)?.name}
         </div>
         <div className="mr-3 flex items-center">
-          <div className="mr-3 flex items-center cursor-pointer bg-[url('/images/round-refresh.png')]  hover:bg-[url('/images/round-refresh_hover.png')] bg-cover w-[20px] h-[20px]">
-          </div>
           <div className="flex items-center ml-1">
             {chain === 'eth' &&
               <img src="/svgs/ethereum.svg" className="w-[16px] h-[16px]" />
@@ -231,6 +200,21 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
             }
           </div>
         </div>
+      </div>
+      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['Retni_Sans']">
+        <div className="flex items-center ml-3">
+          {islisted && price>0&&<img src={img_url} className="w-[18px] h-[18px]" alt="icon" />}
+          {islisted && price>0&&<span className="text-[#000000] text-[18px] font-extrabold ml-2">{price}</span>}
+        </div>
+      </div>
+      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['Retni_Sans']">
+        <div className="flex items-center ml-3">
+          {lastSale!=0&&<><span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span><img src={lastSaleCoin} className="w-[18px] h-[18px]" />&nbsp;<span className="text-[#6C757D] text-[14px]font-bold">{lastSale}</span></>}
+          {lastSale==0&&highestBid!=0&&<><span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span><img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;<span className="text-[#6C757D] text-[14px] font-bold">{highestBid}</span></>}  
+        </div>
+        {islisted&&<div className="ml-2 mr-3 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-bold cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
+          {'Sell'}
+        </div>}
       </div>
       <ConfirmSell handleSellDlgClose={() => {setOpenSellDlg(false)}} openSellDlg={openSellDlg} nftImage={image} nftTitle={nft.name} onSubmit={onListing} />
     </div>

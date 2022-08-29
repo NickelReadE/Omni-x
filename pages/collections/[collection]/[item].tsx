@@ -49,9 +49,6 @@ const Item: NextPage = () => {
   const [highestBidCoin, setHighestBidCoin] = React.useState('')
   const [lastSaleCoin, setLastSaleCoin] = React.useState('')
 
-  const [order_flag, setOrderFlag] = React.useState(false)
-  const [bid_flag, setBidFlag] = React.useState(false)
-
   const orders = useSelector(selectOrders)
   const bidOrders = useSelector(selectBidOrders) as IOrder[]
   const lastSaleOrders = useSelector(selectLastSaleOrders)
@@ -79,10 +76,12 @@ const Item: NextPage = () => {
   const col_url = router.query.collection as string
   const token_id = router.query.item as string
 
+  // console.log(col_url)
+  // console.log(token_id)
+
   const nftInfo = useSelector(selectNFTInfo)
 
-  console.log(col_url)
-  console.log(token_id)
+
 
   useEffect(() => {
     if ( col_url && token_id ) {
@@ -109,29 +108,20 @@ const Item: NextPage = () => {
           setProfileLink('')
         }
       }
-
       getListOrders()
-
       getBidOrders()
-
       getLastSaleOrder()
-
-      setOrderFlag(true)
-      setBidFlag(true)
     }
   }, [nftInfo, owner, ownerType])
 
   useEffect(() => {
-    if (orders.length > 0 && order_flag ) {
-      setOrderFlag(false)
+    if (orders.length > 0) {
       setOrder(orders[0])
-    } else {
-      setOrder(undefined)
-    }
+    } 
   }, [orders])
 
   useEffect(() => {
-    if (bidOrders.length > 0  && bid_flag) {
+    if (bidOrders.length > 0) {
       const sortedBids = [...bidOrders]
       sortedBids
         .sort((o1, o2) => {
@@ -143,17 +133,24 @@ const Item: NextPage = () => {
       
       setHighestBidCoin(`/images/${getCurrencyIconByAddress(sortedBids[0].currencyAddress)}`)
       setHighestBid(Number(ethers.utils.formatEther(sortedBids[0].price)))
-      setBidFlag(false)
     } else {
       setHighestBid(0)
       setHighestBidCoin('')
     }
   }, [bidOrders])
 
+  useEffect(() => {
+    setLastSale(0)
+    setLastSaleCoin('')
+    if(lastSaleOrders.length>0){
+      setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[0].price)))
+      setLastSaleCoin(`/images/${getCurrencyIconByAddress(lastSaleOrders[0].currencyAddress)}`)
+    } 
+  },[lastSaleOrders])
+
   const getNFTOwnership = async(col_url: string, token_id: string) => {
     console.log('--getNFTOwnership---')
     const tokenIdOwner = await collectionsService.getNFTOwner(col_url, token_id)
-
     if ( tokenIdOwner.length > 0 ) {
       const user_info = await userService.getUserByAddress(tokenIdOwner)
       if(user_info.username == ''){
@@ -421,7 +418,7 @@ const Item: NextPage = () => {
   return (
     <>
       {nftInfo && nftInfo.nft && 
-        <div className="w-full mt-40 pr-[70px] pb-[120px]">
+        <div className="w-full mt-40 pr-[70px] pb-[120px] font-[Retni_Sans]">
           <div className="w-full 2xl:px-[10%] xl:px-[5%] lg:px-[2%] md:px-[2%] ">
             <div className="grid grid-cols-3 2xl:gap-12 lg:gap-1 xl:gap-4">
               <div className="col-span-1">
@@ -432,11 +429,11 @@ const Item: NextPage = () => {
               <div className="col-span-2">
                 <div className="px-6 py-3 bg-[#F6F8FC]">
                   <div className='flex items-center'>
-                    <h1 className="text-[#1E1C21] text-[32px] font-bold mr-8">{nftInfo.collection.name}</h1>
+                    <h1 className="text-[#1E1C21] text-[32px] font-extrabold mr-8">{nftInfo.collection.name}</h1>
                     <div className='h-[22px]'><Image src={PngCheck} alt="checkpng"/></div>
                   </div>
                   <div className="flex justify-between items-center mt-5">
-                    <h1 className="text-[#1E1C21] text-[24px] font-normal">{nftInfo.nft.token_id}</h1>
+                    <h1 className="text-[#1E1C21] text-[24px] font-medium">{nftInfo.nft.token_id}</h1>
                     <Image src={PngSub} alt=""/>
                   </div>
                 </div>
@@ -444,7 +441,7 @@ const Item: NextPage = () => {
                 <div className="grid 2xl:grid-cols-3 lg:grid-cols-[200px_1fr_1fr] xl:grid-cols-[230px_1fr_1fr] px-6 pt-3 mt-6 bg-[#F6F8FC] rounded-[2px]">
                   <div className="">
                     <div className="flex justify-start items-center">
-                      <h1 className="text-[#1E1C21] text-[20px] font-bold">owner:</h1>
+                      <h1 className="text-[#1E1C21] text-[18px] font-bold">owner:</h1>
                       {
                         owner && ownerType=='address' && <h1 className="text-[#B444F9] text-[20px] font-normal underline ml-4 break-all lg:ml-1">
                           <Link href={profileLink}><a target='_blank'>{truncate(owner)}</a></Link></h1>
@@ -468,16 +465,16 @@ const Item: NextPage = () => {
                       )}
                     </div>
                     <div className="mb-3">
-                      <h1>{order && order.price && '$'}{order && order.price && ethers.utils.formatEther(order.price)}</h1>
-                      <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-semibold">Highest Bid: <span className="font-normal">${highestBid}</span></h1>{highestBidCoin!=''&&<Image src={highestBidCoin} width={15} height={16} alt="chain  logo" />}</div>
-                      <div className="flex justify-start items-center"><h1 className="mr-3 font-semibold">Last Sale: <span className="font-normal">${lastSale}</span></h1>{lastSaleCoin!=''&&<Image src={PngEther} width={15} height={16} alt="chain logo" />}</div>
+                      <span className='font-normal font-[16px]'>{order && order.price && '$'}{order && order.price && ethers.utils.formatEther(order.price)}</span>
+                      <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-bold">Highest Bid: <span className="font-bold">{highestBid}</span></h1>{highestBidCoin!=''&&<Image src={highestBidCoin} width={15} height={16} alt="chain  logo" />}</div>
+                      <div className="flex justify-start items-center"><h1 className="mr-3 font-bold">Last Sale: <span className="font-bold">{lastSale!=0&&lastSale}</span></h1>{lastSaleCoin!=''&&<Image src={lastSaleCoin} width={15} height={16} alt="chain logo" />}</div>
                     </div>
                   </div>
                   <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
                     <div className="overflow-x-hidden overflow-y-auto grid 2xl:grid-cols-[30%_25%_25%_20%] lg:grid-cols-[30%_18%_32%_20%] xl:grid-cols-[30%_18%_32%_20%] max-h-[130px]">
-                      <div className="font-bold text-[18px]">account</div>
-                      <div className="font-bold text-[18px]">chain</div>
-                      <div className="font-bold text-[18px]">bid</div>
+                      <div className="font-bold text-[18px] text-[#000000]">account</div>
+                      <div className="font-bold text-[18px] text-[#000000]">chain</div>
+                      <div className="font-bold text-[18px] text-[#000000]">bid</div>
                       <div></div>
                       {
                         bidOrders && bidOrders.map((item, index) => {
@@ -509,13 +506,7 @@ const Item: NextPage = () => {
                               </div>
                               <p className='ml-3'>${item && item.price && ethers.utils.formatEther(item.price)}</p>
                             </div>
-                            <div className='text-right mt-3'>
-                              {address && owner && owner.toLowerCase() == address.toLowerCase() &&
-                                <button className='bg-[#ADB5BD] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5' onClick={() => onAccept(item)}>
-                                  accept
-                                </button>
-                              }
-                            </div>
+                            <div className='text-right mt-3'>{owner.toLowerCase()==address?.toLowerCase()&&<button className='bg-[#ADB5BD] hover:bg-[#38B000] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5' onClick={() => onAccept(item)}>accept</button>}</div>
                           </Fragment>
                         })
                       }
@@ -547,10 +538,11 @@ const Item: NextPage = () => {
             <div className="mt-10">
               <div>
                 <ul className="flex flex-wrap relative justify-item-stretch text-sm font-medium text-center text-gray-500">
-                  <li className={`select-none inline-block border-x-2 border-t-2 border-zince-800 text-xl px-10 py-2 rounded-t-lg ${currentTab==='items'?'bg-[#E9ECEF] text-[#1E1C21]':'bg-[#F8F9FA] text-[#6C757D]'}`} onClick={()=>setCurrentTab('items')}>properties</li>
-                  <li className={`select-none inline-block border-x-2 border-t-2 border-zince-800 text-xl px-10 py-2 rounded-t-lg ${currentTab==='activity'?'bg-[#E9ECEF] text-[#1E1C21]':'bg-[#F8F9FA] text-[#6C757D]'}`} onClick={()=>setCurrentTab('activity')}>activity</li>
-                  <li className={`select-none inline-block border-x-2 border-t-2 border-zince-800 text-xl px-10 py-2 rounded-t-lg ${currentTab==='stats'?'bg-[#E9ECEF] text-[#1E1C21]':'bg-[#F8F9FA] text-[#6C757D]'}`} onClick={()=>setCurrentTab('stats')}>info</li>
-                  <li className={`select-none inline-block border-x-2 border-t-2 border-zince-800 text-xl px-10 py-2 rounded-t-lg ${currentTab==='stats'?'bg-[#E9ECEF] text-[#1E1C21]':'bg-[#F8F9FA] text-[#6C757D]'}`} onClick={()=>setCurrentTab('stats')}>stats</li>
+                  <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='items'?' text-[#1E1C21] border-b-2 border-black':' text-[#A0B3CC]'}`} onClick={()=>setCurrentTab('items')}>properties</li>
+                  <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='activity'?' text-[#1E1C21]':' text-[#A0B3CC]'}`} >activity</li>
+                  <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='info'?' text-[#1E1C21]':' text-[#A0B3CC]'}`} >info</li>
+                  <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='stats'?' text-[#1E1C21]':' text-[#A0B3CC]'}`} >stats</li>
+
                 </ul>
               </div>
               <div className="border-2 border-[#E9ECEF] bg-[#F6F8FC] px-10 py-8">

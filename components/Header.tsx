@@ -86,8 +86,8 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
             }
           </div>
           
-          <div className='min-w-[200px]'></div>
-          <div className='justify-between h-[75px] items-center w-full md:flex md:w-auto mx-auto md:order-2' id='mobile-menu-3'>
+          {/* <div className='min-w-[200px]'></div> */}
+          <div className='justify-between h-[90px] items-center w-full md:flex md:w-auto mx-auto md:order-2' id='mobile-menu-3'>
             <ul className="flex flex-col justify-between w-[500px] md:flex-row md:space-x-8 md:text-sm md:font-medium" >
               <li className="flex items-center" onMouseOver={() => handleMouseOver('home')} onMouseOut={handleMouseOut}>
                 <Link href='/'>
@@ -103,20 +103,20 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
               <li className="flex items-center" onMouseOver={() => handleMouseOver('collections')} onMouseOut={handleMouseOut}>
                 <Link href='/collections'>
                   <a>
-                    <div className="w-[219px] h-[90px] bg-no-repeat bg-center" style={{backgroundImage: `url('/navbar/collections${menu == 'collections' ? '_active' : (hover.isHover && hover.hoverMenu == 'collections' ? '_hover' : '')}.svg')`}}>
-                      <div className="relative top-full text-center">
-                        <span className={`px-10 py-2 text-lg bg-[#f1f1f1] rounded-[25px] ${hover.isHover && hover.hoverMenu == 'collections'?'text-[#1E1C21] font-bold':'text-[#ADB5BD]'} ${hover.isHover && hover.hoverMenu != menu?'':'hidden'}`} >MARKET</span>
+                    <div className="w-[219px] h-[90px] bg-no-repeat bg-center" style={{backgroundImage: `url('/navbar/collections${menu == 'collections' ? '_active' : ''}.svg')`}}>
+                      <div className="relative top-3/4 text-center">
+                        <span className={` text-lg  ${hover.isHover && hover.hoverMenu == 'collections'?'text-[#000000] font-bold':'text-[#ADB5BD]'} ${hover.isHover && hover.hoverMenu != menu?'':'hidden'} ${menu == 'collections' && 'hidden'}` }>MARKET</span>
                       </div>
                     </div>
                   </a>
                 </Link>
               </li>
-              <li className="flex items-center" onMouseOver={() => handleMouseOver('analytics')} onMouseOut={handleMouseOut}>
-                <Link href='/launchpad'> 
+              <li onMouseOver={() => handleMouseOver('analytics')} onMouseOut={handleMouseOut}>
+                <Link href='/launchpad'>
                   <a>
-                    <div className="w-[100px] h-[40px]   bg-no-repeat bg-center rounded-[50px]" style={{backgroundImage: `url('/navbar/analytics${menu == 'analytics' ? '_active' : (hover.isHover && hover.hoverMenu == 'analytics' ? '_hover' : '')}.svg')`}}>
-                      <div className="relative top-full text-center h-[36px] w-[180px] -left-8">
-                        <span className={`absolute left-0 px-10 py-2 text-lg bg-[#f1f1f1] rounded-[50px] ${hover.isHover && hover.hoverMenu == 'analytics'?'text-[#1E1C21] font-bold':'text-[#ADB5BD]'} ${hover.isHover && hover.hoverMenu != menu?'':'hidden'}`} >LAUNCHPAD</span>
+                    <div className="w-[219px] h-[90px] bg-no-repeat bg-center" style={{backgroundImage: `url('/navbar/analytics${menu == 'analytics' ? '_active' : ''}.svg')`}}>
+                      <div className="relative top-3/4 text-center">
+                        <span className={`text-lg ${hover.isHover && hover.hoverMenu == 'analytics'?'text-[#000000] font-bold':'text-[#ADB5BD]'} ${hover.isHover && hover.hoverMenu != menu?'':'hidden'} {menu == 'analytics' && 'hidden'}`} >LAUNCHPAD</span>
                       </div>
                     </div>
                   </a>
