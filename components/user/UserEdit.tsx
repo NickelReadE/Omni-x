@@ -80,7 +80,6 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
 
   useEffect(() => {
     if ( user.address != undefined ) {
-      console.log(user)
       setAvatar(user.avatar === undefined || user.avatar === DEFAULT_AVATAR ? '/images/default_avatar.png': (process.env.API_URL + user.avatar))
       setBanner_1(user.banners[0] === undefined || user.banners[0] === DEFAULT_BANNER ? '/images/default_banner.png' : (process.env.API_URL + user.banners[0]))
       setBanner_2(user.banners[1] === undefined || user.banners[1] === DEFAULT_BANNER ? '/images/default_banner.png' : (process.env.API_URL + user.banners[1]))
