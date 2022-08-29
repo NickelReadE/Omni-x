@@ -11,7 +11,6 @@ import useWallet from '../../hooks/useWallet'
 import { isYesterday } from 'date-fns'
 import ConfirmBid from './ConfirmBid'
 
-
 import { IGetOrderRequest } from '../../interface/interface'
 
 import usd from '../../constants/abis/USD.json'
@@ -228,12 +227,19 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
             <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
               <img className='collection-nft-image-item rounded-md object-cover ease-in-out duration-500 group-hover:scale-110' src={imageError||nft.image==null?'/images/omnix_logo_black_1.png':nft.image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={nft.image} />
             </LazyLoad>
+            {/* <div className={classNames('absolute top-[8px] right-[9px] p-[12px]', editStyle.ellipseBtn)}>
+              <div className="bg-[url('/images/ellipse.png')] hover:bg-[url('/images/ellipse_hover.png')] bg-cover w-[21px] h-[21px]"></div>
+            </div> */}
+          </div>
+          <div className="text-[#6C757D] text-[14px] font-medium  mt-3 ml-3">
+            {nft.name}
           </div>
           <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['Retni_Sans']">
             <div className="text-[#000000] text-[14px] font-bold  mt-3 ml-3">
               {nft.name}
             </div>
             <div className="mr-3 flex items-center">
+              {/* <div className={classNames("mr-3 flex items-center cursor-pointer bg-[url('/images/round-refresh.png')] hover:bg-[url('/images/round-refresh_hover.png')] bg-cover w-[20px] h-[20px]", editStyle.refreshBtn)}></div> */}
               <div className="flex items-center ml-1">
                 {(chain === 'eth' || chain === 'rinkeby') &&
                   <img src="/svgs/ethereum.svg" className="w-[16px] h-[16px]" />

@@ -21,7 +21,6 @@ import ConfirmUnwrap from './bridge/ConfirmUnwrap'
 import useBridge from '../hooks/useBridge'
 import useProgress from '../hooks/useProgress'
 
-
 import usd from '../constants/abis/USD.json'
 import omni from '../constants/abis/omni.json'
 import usdc from '../constants/USDC.json'
@@ -97,7 +96,6 @@ const SideBar: React.FC = () => {
     onDragStart(event) {
       setDragOver(true)
       setDragEnd(false)
-
       setShowSidebar(true)
       setOnMenu(true)
       setFixed(true)
@@ -558,17 +556,17 @@ const SideBar: React.FC = () => {
       getBalance()
     }
   },[signer,address])
-
+  
   return (
     <>
       { !onMenu &&
         <div
-          className='right-0 right-0 w-[70px] py-10 bg-[#F6F8FC] fixed h-full z-[98]'
+          className='right-0 right-0 w-[70px] py-6 bg-[#F6F8FC] fixed h-full z-[98]'
           onMouseEnter={() => setShowSidebar(true)}
           onMouseLeave={() => hideSidebar()}
         >
-          <div className="flex flex-col items-center space-y-4">
-            <div className="w-full py-[8px]">
+          <div className="flex flex-col items-center space-y-8">
+            <div className="w-full 0">
               <div className="sidebar-icon">
                 <div className="m-auto">
                   <Image
@@ -581,7 +579,7 @@ const SideBar: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="w-full py-[8px]">
+            <div className="w-full 0">
               <div className="sidebar-icon">
                 {
                   chainId === (env === 'testnet' ? 4 : 1) && <img src="/sidebar/ethereum.png" className="m-auto h-[45px]" />
@@ -607,22 +605,22 @@ const SideBar: React.FC = () => {
 
               </div>
             </div>
-            <div className="w-full py-[8px]">
+            <div className="w-full 0">
               <div className="sidebar-icon">
                 <img src="/sidebar/wallets.svg" className="m-auto" />
               </div>
             </div>
-            <div className="w-full py-[8px]">
+            <div className="w-full 0">
               <div className="sidebar-icon">
                 <img src="/sidebar/watchlist.svg" className="m-auto" />
               </div>
             </div>
-            <div className="w-full py-[8px]">
+            <div className="w-full 0">
               <div className="sidebar-icon">
                 <img src="/sidebar/bridge.svg" className="m-auto" />
               </div>
             </div>
-            <div className="w-full py-[8px]">
+            <div className="w-full 0">
               <div className="sidebar-icon">
                 <img src="/sidebar/cart.svg" className="m-auto" />
               </div>
@@ -633,16 +631,16 @@ const SideBar: React.FC = () => {
       }
       <div
         ref={ref}
-        className={`right-0 right-0 w-[450px] bg-[#FEFEFF] pl-5 pr-2 py-10 fixed h-full z-[97] ease-in-out duration-300 ${
+        className={`right-0 right-0 w-[450px] bg-w-600/[.8] backdrop-blur-sm pl-5 pr-2 py-6 fixed h-full z-[97] opacity-0.95 ease-in-out duration-300 ${
           showSidebar || onMenu ? 'translate-x-0' : 'translate-x-full'
         }`}
         onMouseEnter={() => setOnMenu(true)}
         onMouseLeave={() => onLeaveMenu()}
       >
-        <ul className='flex flex-col space-y-4 mr-[70px]'>
+        <ul className='flex flex-col space-y-8 mr-[70px]'>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px] py-[24px] pr-[70px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==1?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px] py-[12px] pr-[70px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==1?'active':''}`}
               onClick={() => toggleMenu(1)}
             >
               My Profile
@@ -651,22 +649,22 @@ const SideBar: React.FC = () => {
               </span>
             </button>
             { expandedMenu == 1 &&
-              <ul className='flex  flex-col w-full space-y-4  pt-8 pb-0 text-g-600' ref={menu_profile}>
+              <ul className='flex  flex-col w-full   pt-4 pb-0 text-g-600' ref={menu_profile}>
                 <li className="w-full">
-                  <button className="w-full flex justify-start py-[17px] pl-[100px] hover:bg-l-50">My Dashboard</button>
+                  <button className="w-full flex justify-start py-[13px] pl-[100px] hover:bg-l-50">My Dashboard</button>
                 </li>
                 <li className="w-full">
-                  <button className="w-full flex justify-start py-[17px] pl-[100px] hover:bg-l-50">Account Settings</button>
+                  <button className="w-full flex justify-start py-[13px] pl-[100px] hover:bg-l-50">Account Settings</button>
                 </li>
                 <li className="w-full">
-                  <button className="w-full flex justify-start py-[17px] pl-[100px] hover:bg-l-50">Logout</button>
+                  <button className="w-full flex justify-start py-[13px] pl-[100px] hover:bg-l-50">Logout</button>
                 </li>
               </ul>
             }
           </li>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px] py-[24px] pr-[70px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==2?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px] py-[12px] pr-[70px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==2?'active':''}`}
               onClick={() => toggleMenu(2)}
             >
               Network
@@ -675,9 +673,9 @@ const SideBar: React.FC = () => {
               </span>
             </button>
             { expandedMenu == 2 &&
-              <ul className='flex flex-col w-full space-y-4  pt-8 pb-0 text-g-600' ref={menu_ethereum}>
+              <ul className='flex flex-col w-full   pt-4 pb-0 text-g-600' ref={menu_ethereum}>
                 <li className="w-full">
-                  <button className="w-full hover:bg-l-50 pl-[70px] py-[17px] " onClick={() => onClickNetwork(env === 'testnet' ? 4 : 1)}>
+                  <button className="w-full hover:bg-l-50 pl-[70px] py-[7px] " onClick={() => onClickNetwork(env === 'testnet' ? 4 : 1)}>
                     <div className="flex flex-row w-[130px]">
                       <div className="flex items-center w-[36px] h-[36px]">
                         <img src="/svgs/ethereum.svg" width={24} height={28} />
@@ -687,7 +685,7 @@ const SideBar: React.FC = () => {
                   </button>
                 </li>
                 <li className="w-full">
-                  <button className="w-full hover:bg-l-50 pl-[70px] py-[17px]" onClick={() => onClickNetwork(env === 'testnet' ? 421611 : 1)}>
+                  <button className="w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(env === 'testnet' ? 421611 : 1)}>
                     <div className="flex flex-row w-[130px]">
                       <div className="flex items-center w-[36px] h-[36px] ">
                         <img src="/svgs/arbitrum.svg" width={24} height={28} />
@@ -698,7 +696,7 @@ const SideBar: React.FC = () => {
                   
                 </li>
                 <li className="w-full">
-                  <button className="w-full hover:bg-l-50 pl-[70px] py-[17px]" onClick={() => onClickNetwork(env === 'testnet' ? 43113 : 1)}>
+                  <button className="w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(env === 'testnet' ? 43113 : 1)}>
                     <div className="flex flex-row w-[130px]">
                       <div className="flex items-center w-[36px] h-[36px] m-auto">
                         <img src="/svgs/avax.svg" width={24} height={28} />
@@ -708,7 +706,7 @@ const SideBar: React.FC = () => {
                   </button>
                 </li>
                 <li className="w-full">
-                  <button className="w-full hover:bg-l-50 pl-[70px] py-[17px]" onClick={() => onClickNetwork(env === 'testnet' ? 97 : 1)}>
+                  <button className="w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(env === 'testnet' ? 97 : 1)}>
                     <div className="flex flex-row w-[130px]">
                       <div className="flex items-center w-[36px] h-[36px] m-auto">
                         <img src="/svgs/binance.svg" width={24} height={28} />
@@ -718,7 +716,8 @@ const SideBar: React.FC = () => {
                   </button>
                 </li>
                 <li className="w-full">
-                  <button className="w-full hover:bg-l-50 pl-[70px] py-[17px]" onClick={() => onClickNetwork(env === 'testnet' ? 4002 : 1)}>
+
+                  <button className="w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(env === 'testnet' ? 4002 : 1)}>
                     <div className="flex flex-row w-[130px]">
                       <div className="flex items-center w-[36px] h-[36px] m-auto">
                         <img src="/svgs/fantom.svg" width={24} height={28} />
@@ -728,7 +727,7 @@ const SideBar: React.FC = () => {
                   </button>
                 </li>
                 <li className="w-full">
-                  <button className="w-full hover:bg-l-50 pl-[70px] py-[17px]" onClick={() => onClickNetwork(env === 'testnet' ? 69 : 1)}>
+                  <button className="w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(env === 'testnet' ? 69 : 1)}>
                     <div className="flex flex-row w-[130px]">
                       <div className=" flex items-center w-[36px] h-[36px] m-auto">
                         <img src="/svgs/optimism.svg" width={24} height={28} />
@@ -738,7 +737,7 @@ const SideBar: React.FC = () => {
                   </button>
                 </li>
                 <li className="w-full">
-                  <button className="flex items-center w-full hover:bg-l-50 pl-[70px] py-[17px]" onClick={() => onClickNetwork(env === 'testnet' ? 80001 : 1)}>
+                  <button className="flex items-center w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(env === 'testnet' ? 80001 : 1)}>
                     <div className="flex flex-row w-[130px]">
                       <div className="flex items-center w-[36px] h-[36px] m-auto">
                         <img src="/svgs/polygon.svg" width={24} height={28} />
@@ -752,7 +751,7 @@ const SideBar: React.FC = () => {
           </li>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px] py-[24px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==3?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px] py-[12px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==3?'active':''}`}
               onClick={() => toggleMenu(3)}
             >
               Wallet
@@ -766,7 +765,6 @@ const SideBar: React.FC = () => {
                 <span className="font-semibold w-auto text-[16px]">USDC balance: {usdcBalance}</span>
                 <span className="font-semibold w-auto text-[16px]">USDT balance: {usdtBalance}</span>
                 <span className="font-semibold w-auto text-[16px]">NATIVE balance: {nativeBalance}</span>
-
 
                 <span className="w-auto text-[16px]">Staking: coming soon</span>
                 {/* <div className="w-full flex flex-row font-semibold text-[14px]">
@@ -847,7 +845,7 @@ const SideBar: React.FC = () => {
           </li>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px]  py-[24px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==4?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px]  py-[12px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==4?'active':''}`}
               onClick={() => toggleMenu(4)}
             >
               Watchlist
@@ -868,7 +866,7 @@ const SideBar: React.FC = () => {
           </li>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full p-6  pr-[70px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==5?'active':''}`}
+              className={`w-full text-left rounded-full p-6  pr-[70px]  py-[12px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==5?'active':''}`}
               onClick={() => fixMenu(5)}
             >
               Send/Bridge
@@ -936,7 +934,7 @@ const SideBar: React.FC = () => {
           </li>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px] py-[24px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==6?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px] py-[12px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==6?'active':''}`}
               onClick={() => toggleMenu(6)}
             >
               Cart
@@ -958,10 +956,10 @@ const SideBar: React.FC = () => {
         </ul>
         
         <div
-          className='top-0 right-0 w-[70px] py-10 bg-white fixed h-full z-[99]'
+          className='top-0 right-0 w-[70px] py-6 bg-white fixed h-full z-[99]'
         >
-          <div className="flex flex-col items-center space-y-4">
-            <div className="w-full py-[8px]">
+          <div className="flex flex-col items-center space-y-8">
+            <div className="w-full 0">
               <div className="sidebar-icon">
                 <div className="m-auto">
                   <Image
@@ -978,7 +976,7 @@ const SideBar: React.FC = () => {
                 </ul>
               }
             </div>
-            <div className="w-full py-[8px]">
+            <div className="w-full 0">
               <div className="sidebar-icon">
                 {
                   chainId === (env === 'testnet' ? 4 : 1) && <img src="/sidebar/ethereum.png" className="m-auto h-[45px]" />
@@ -1007,7 +1005,7 @@ const SideBar: React.FC = () => {
                 </ul>
               }
             </div>
-            <div className="w-full py-[8px]">
+            <div className="w-full 0">
               <div className="sidebar-icon">
                 <img src="/sidebar/wallets.svg" className="m-auto" />
               </div>
@@ -1016,7 +1014,7 @@ const SideBar: React.FC = () => {
                 </ul>
               }
             </div>
-            <div className="w-full py-[8px]">
+            <div className="w-full 0">
               <div className="sidebar-icon">
                 <img src="/sidebar/watchlist.svg" className="m-auto" />
               </div>
@@ -1025,7 +1023,7 @@ const SideBar: React.FC = () => {
                 </ul>
               }
             </div>
-            <div className="w-full py-[8px]">
+            <div className="w-full 0">
               <div className="sidebar-icon">
                 <img src="/sidebar/bridge.svg" className="m-auto" />
               </div>
@@ -1034,7 +1032,7 @@ const SideBar: React.FC = () => {
                 </ul>
               }
             </div>
-            <div className="w-full py-[8px]">
+            <div className="w-full 0">
               <div className="sidebar-icon">
                 <img src="/sidebar/cart.svg" className="m-auto" />
               </div>

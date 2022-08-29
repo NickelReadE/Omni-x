@@ -6,6 +6,18 @@
         .refreshBtn {
             display: block;
         }
+        .valuePanel{
+            border: 1px solid #A0B3CC;
+        }
+        .actionBtn{
+            display: flex;
+            backdrop-filter: blur(20px);
+
+        }
+        
+    }
+    .valuePanel{
+        border: 1px solid transparent;
     }
     .ellipseBtn {
         background: radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.2) 0%, rgba(254, 254, 255, 0) 100%);
@@ -14,4 +26,8 @@
     .refreshBtn {
         display: none;
     }
+}
+.actionBtn{
+    top: 0px;
+    display:none;
 }

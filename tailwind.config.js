@@ -12,6 +12,9 @@ module.exports = {
         84: '21rem',
       },
       colors: {
+        w:{
+          600:'#FEFEFF'
+        },
         b: {
           100: '#BFCEFF',
           200: '#90A9FF',

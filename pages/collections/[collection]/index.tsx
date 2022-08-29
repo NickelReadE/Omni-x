@@ -386,7 +386,6 @@ const Collection: NextPage = () => {
           <div className="col-span-1"></div>
         </div>
       </div>
-
       <div className='w-full mt-8 border-b-2 border-[#E9ECEF]'>
         <div className="flex">
           <div className="w-[320px] min-w-[320px]">

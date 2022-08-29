@@ -75,13 +75,8 @@ const Tabs = ({blur}: TabProps) => {
     address
   } = useWallet()
 
-  const nfts = useSelector(selectUserNFTs)
 
-  useEffect(() => {
-    if (address) {
-      dispatch(getUserNFTs(address) as any)
-    }
-  }, [address])
+  const nfts = useSelector(selectUserNFTs)
 
   const updateModal = (name: string):void => {
     setOpenModal(false)
@@ -89,7 +84,7 @@ const Tabs = ({blur}: TabProps) => {
 
   return (
     <div className="flex justify-center">
-      <div className={`flex justify-center mt-20 w-[90%] ${blur ? 'blur-sm' : ''} mb-20`}>
+      <div className={`flex justify-center mt-36 w-[90%] ${blur ? 'blur-sm' : ''} mb-20`}>
         <div className="w-[90%]">
           <ul
             className="flex relative justify-item-stretch text-[16px] font-medium text-center border-b-2 border-[#E9ECEF]">

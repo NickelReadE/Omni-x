@@ -78,7 +78,6 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
           <div className="flex justify-end">
             <button className={`w-[132px] px-5 py-2 text-[#ADB5BD] font-['Roboto Mono'] font-semibold text-[16px] rounded-[8px] border-2 border-[#ADB5BD] ${sellType=='fixed'?'z-10 bg-[#E9ECEF]':'bg-[#F8F9FA]'}`} onClick={() => setSellType('fixed')}>fixed price</button>
             <button className={`w-[132px] px-5 py-2 text-[#6C757D] font-['Roboto Mono'] font-semibold text-[16px] rounded-[8px] border-2 border-[#ADB5BD] relative -left-2.5 ${sellType=='auction'?'z-10 bg-[#E9ECEF]':'bg-[#F8F9FA]'}`}onClick={() => setSellType('auction')}>auction</button>
-
           </div>
         </div>
       </DialogTitle>

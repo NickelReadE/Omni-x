@@ -24,6 +24,7 @@ import classNames from '../helpers/classNames'
 
 import Router from 'next/router'
 
+
 const NFTBox = ({nft, index}: IPropsNFTItem) => {
 
   const [chain, setChain] = useState('eth')

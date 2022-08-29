@@ -99,6 +99,9 @@ const Item: NextPage = () => {
 
   const nftInfo = useSelector(selectNFTInfo)
 
+  console.log(col_url)
+  console.log(token_id)
+
   useEffect(() => {
     const getNFTOwner = async(col_url:string, token_id:string) => {
       const tokenIdOwner = await collectionsService.getNFTOwner(col_url, token_id)
@@ -437,7 +440,7 @@ const Item: NextPage = () => {
                   <img className='rounded-[8px]' src={imageError?'/images/omnix_logo_black_1.png':nftInfo.nft.image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={nftInfo.nft.image} />
                 </LazyLoad>
               </div>
-              <div className="col-span-2 h-full">
+              <div className="col-span-2">
                 <div className="px-6 py-3 bg-[#F6F8FC]">
                   <div className='flex items-center'>
                     <h1 className="text-[#1E1C21] text-[32px] font-extrabold mr-8">{nftInfo.collection.name}</h1>
@@ -560,7 +563,6 @@ const Item: NextPage = () => {
                   <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='activity'?' text-[#1E1C21]':' text-[#A0B3CC]'}`} >activity</li>
                   <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='info'?' text-[#1E1C21]':' text-[#A0B3CC]'}`} >info</li>
                   <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='stats'?' text-[#1E1C21]':' text-[#A0B3CC]'}`} >stats</li>
-
                 </ul>
               </div>
               <div className="border-2 border-[#E9ECEF] bg-[#F6F8FC] px-10 py-8">
