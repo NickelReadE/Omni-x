@@ -22,7 +22,7 @@ import useWallet from '../../../hooks/useWallet'
 import { acceptOrder, postMakerOrder } from '../../../utils/makeOrder'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../../../types'
 import { IBidData, IGetOrderRequest, IListingData, IOrder, OrderStatus } from '../../../interface/interface'
-import { ContractName, CREATOR_FEE, CURRENCIES_LIST, getAddressByName, getChainInfo, getChainNameById, getCurrencyIconByAddress, getLayerzeroChainId, PROTOCAL_FEE } from '../../../utils/constants'
+import { ContractName, CREATOR_FEE, CURRENCIES_LIST, getAddressByName, getChainInfo, getChainNameById, getCurrencyIconByAddress, getCurrencyNameAddress, getLayerzeroChainId, PROTOCAL_FEE } from '../../../utils/constants'
 import { getCurrencyInstance, getERC721Instance, getTransferSelectorNftInstance, getOmniInstance, getOmnixExchangeInstance } from '../../../utils/contracts'
 
 import PngCheck from '../../../public/images/check.png' 
@@ -264,8 +264,8 @@ const Item: NextPage = () => {
 
     const chainId = provider?.network.chainId || 4
     const lzChainId = getLayerzeroChainId(chainId)
-
-    const omni = getCurrencyInstance(order.currencyAddress, chainId, signer)
+    const omniAddress = getAddressByName(getCurrencyNameAddress(order.currencyAddress) as ContractName, chainId)
+    const omni = getCurrencyInstance(omniAddress, chainId, signer)
     const omnixExchange = getOmnixExchangeInstance(chainId, signer)
     const makerAsk : MakerOrderWithSignature = {
       isOrderAsk: order.isOrderAsk,
@@ -303,14 +303,14 @@ const Item: NextPage = () => {
 
     console.log('--approved----')
 
-    await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee, gasLimit: '300000' })
+    await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee, gasLimit: '3000000' })
 
-    await updateOrderStatus(order, 'EXECUTED')
+    // await updateOrderStatus(order, 'EXECUTED')
 
     dispatch(openSnackBar({ message: 'Bought an NFT', status: 'success' }))
-    getBidOrders()
-    getListOrders()
-    getNFTOwnership(col_url, token_id)
+    // getBidOrders()
+    // getListOrders()
+    // getNFTOwnership(col_url, token_id)
   }
 
   const onBid = async (bidData: IBidData) => {

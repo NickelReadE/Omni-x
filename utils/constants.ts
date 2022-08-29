@@ -197,3 +197,22 @@ export const getCurrencyIconByAddress = (address?: string) => {
 export const getChainNameById = (chainId: number) => {
   return chainInfos[chainId].name
 }
+
+export const getCurrencyNameAddress = (address: string) => {
+  const loopCurrencies = (currencies: any, idx: number) => {
+    if (Object.values(currencies).indexOf(address) != -1) {
+      return CURRENCIES_LIST[idx].text
+    }
+    return null
+  }
+
+  const currency_addr_list = [oft, usdc, usdt]
+  for (let idx = 0; idx < currency_addr_list.length; idx++) {
+    const text = loopCurrencies(currency_addr_list[idx], idx)
+    if (text) {
+      return text
+    }
+  }
+  
+  return CURRENCIES_LIST[0].text
+}
