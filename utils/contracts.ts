@@ -7,7 +7,7 @@ import ERC1155ABI from '../constants/abis/ERC1155.json'
 import ONFTCore721 from '../constants/abis/ONFTCore721.json'
 import ONFTCore1155 from '../constants/abis/ONFTCore1155.json'
 import LZEndpointABI from '../constants/abis/LayerzeroEndpoint.json'
-
+import veSTG from '../constants/abis/veSTG.json'
 export const getOmnixBridgeInstance = (chainId: number, signer: any) => {
   const address = getAddressByName('Omnix', chainId)
   if (signer === null) {
@@ -102,6 +102,21 @@ export const getERC1155Instance = (contractAddress: string, chainId: number, sig
   return new ethers.Contract(
     contractAddress,
     ERC1155ABI,
+    signer
+  )
+}
+export const getVeSTGInstance = (contractAddress: string, chainId: number, signer: any) => {
+  if (signer === null) {
+    const provider = getProvider(chainId)
+    return new ethers.Contract(
+      contractAddress,
+      veSTG,
+      provider
+    )
+  }
+  return new ethers.Contract(
+    contractAddress,
+    veSTG,
     signer
   )
 }

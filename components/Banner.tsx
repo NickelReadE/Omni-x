@@ -14,7 +14,8 @@ import Dialog from '@material-ui/core/Dialog'
 import { makeStyles } from '@material-ui/core/styles'
 import Carousel from './carousel'
 import {chainsFroSTG, GregContractAddress, veSTGContractAddress, veSTGContractAddresses} from '../constants/addresses'
-
+import { getChainIdFromName } from '../utils/constants'
+import { getVeSTGInstance } from '../utils/contracts'
 import Hgreg from '../public/images/gregs/logo.png'
 import Stg from '../public/images/stg/stg.png'
 import { _fetchData } from 'ethers/lib/utils'
@@ -36,6 +37,7 @@ const timeout = (delay: number) =>{
   return new Promise( res => setTimeout(res, delay) )
 }
 const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
+  
   const disptach = useDispatch()  
   const cuser = useSelector(selectUser)
   const skinName = useSelector(selectHeroSkin)
@@ -47,10 +49,8 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
   const [bShowSettingIcon, setShowSettingIcon] = React.useState(false)
   const [isGregHolder, setIsGregHolder] = useState(false)
   const [isStgStacker, setIsStgStacker] = useState(false)
+  const [balances, setBalanceSTG] = useState(0)
   const DEFAULT_AVATAR = 'uploads\\default_avatar.png'
-  const updateModal = (name: string):void => {
-    setOpenModal(false)
-  }
   const fetchNFTByAddress = async(chain:'eth'|'bsc'|'polygon'|'avalanche'|'fantom',contractAddress:string) =>{
     timeout(1000)
     const nft= await Moralis.Web3API.account.getNFTsForContract({chain: chain, address:address?address:'',token_address: contractAddress})
@@ -58,14 +58,9 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
       setIsGregHolder(true)
     }
   } 
-  const fetchToken =async(chain:'eth' |'bsc'|'polygon'| 'fantom')=>{
-    const balances = await Moralis.Web3API.account.getTokenBalances({
-      chain: chain, token_addresses: veSTGContractAddress[chain],
-      address: '0x84FabCF03F374E2b8d7A7a8ab46cE86bbc38c0a1'
-    }) 
-    if(balances.length>0){
-      setIsStgStacker(true)
-    }   
+  const fetchToken =async(chain:string)=>{
+    const veSTGInstance = getVeSTGInstance(veSTGContractAddress[chain], getChainIdFromName(chain) , null)   
+    setBalanceSTG(await veSTGInstance.balanceOf(address))      
   }
 
   useEffect(() => {
@@ -75,17 +70,21 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
       fetchNFTByAddress('polygon',String(GregContractAddress['polygon']))
       fetchNFTByAddress('avalanche',String(GregContractAddress['avalanche'])) 
       fetchNFTByAddress('fantom',String(GregContractAddress['fantom']))
-      fetchToken('eth')
-      fetchToken('bsc')
-      fetchToken('polygon')
-      fetchToken('fantom')
+      chainsFroSTG.map((chain)=>{
+        console.log(chain)
+        fetchToken(chain)
+      })
     }
   }, [isInitialized, Moralis, address])
 
   useEffect(()=>{
     disptach(updateIsGregHolder(isGregHolder) as any)
   },[isGregHolder])
-  
+  useEffect(()=>{
+    if(balances>0){
+      setIsStgStacker(true)
+    }
+  },[balances])
   return (
     <>
       <div

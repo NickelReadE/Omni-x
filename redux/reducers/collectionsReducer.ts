@@ -1,7 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { Dispatch } from 'react'
 import { useSelector } from 'react-redux'
+import { IGetOrderRequest } from '../../interface/interface'
 import { collectionsService } from '../../services/collections'
+import { getOrders } from './ordersReducer'
 import { openSnackBar } from './snackBarReducer'
 interface CollectionState{
 	nfts:any[],
@@ -107,22 +109,38 @@ export const getCollections = () => async (dispatch: Dispatch<any>) => {
 	}
 }
 export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, getState: () => any) => {
-	try {		
+	try {
+		const request: IGetOrderRequest = {
+			isOrderAsk: true,      
+			status: ['VALID'],
+			sort: 'PRICE_ASC'
+		}
+	  	await dispatch(getOrders(request))
+		const orders = getState().ordersState.orders		
 		let collectionsF : any[] = []
 		const info = await collectionsService.getCollections()		
 		await info.data.map(async (element:any, index:number)=>{
-			console.log('start')
+			
 			setTimeout(async function(){
 				const ownerCnt = await collectionsService.getCollectionOwners(element.col_url as string)
 				setTimeout(
-					async function(){												
-						console.log(ownerCnt)
-						const items = await collectionsService.getCollectionInfo(element.col_url as string)	
-						collectionsF.push({col_url:element.col_url, itemsCnt:items.data.count, ownerCnt:ownerCnt.data})		
-						if(collectionsF.length===info.data.length){
-							console.log(collectionsF)
-							dispatch(setCollectionsForCard(collectionsF))			
-						}
+					async function(){				
+						let orderCnt = 0	
+						const items = await collectionsService.getCollectionInfo(element.col_url as string)
+						setTimeout(async function(){
+							orders.map((element:any)=>{
+								console.log(element.collectionAddress, items.data.address )
+								if(element.collectionAddress===items.data.address){
+									orderCnt++
+								}
+							})
+							console.log(orderCnt)
+							collectionsF.push({col_url:element.col_url, itemsCnt:items.data.count, ownerCnt:ownerCnt.data, orderCnt:orderCnt})		
+							if(collectionsF.length===info.data.length){
+								dispatch(setCollectionsForCard(collectionsF))			
+							}
+						},2000*index)
+						
 					}
 					,1000*index)
 			},1000*index)

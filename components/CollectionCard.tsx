@@ -33,7 +33,6 @@ const CollectionCard = (props:any) => {
   const [islisted,setList] = useState(false)
   const [itemCounts, setItemCounts] = useState(0)
   const [ownerNum, setOwnerNum] = useState(0)
-  console.log(props)
   const {
     provider,
     address
@@ -86,15 +85,15 @@ const CollectionCard = (props:any) => {
           <div className='flex flex-col space-y-2' >
             <div className=' flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
               <span className='font-medium text-[12px] mr-[4px]'>65.22</span>
-              <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img>
+              <img src='/svgs/eth_asset.svg' className='w-[16px]' alt='asset img'></img>
             </div>
             <div className='flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
               <span className='font-medium text-[12px] mr-[4px]' >69.22K</span>
-              <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img>
+              <img src='/svgs/usd_asset.svg' className='w-[16px]' alt='asset img'></img>
             </div>
             <div className='flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
               <span className='font-medium text-[12px] mr-[px]'>65.22K</span>
-              <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img>
+              <img src='/svgs/omni_asset.svg' className='w-[16px]' alt='asset img'></img>
             </div>
           </div>            
         </div>
@@ -113,7 +112,7 @@ const CollectionCard = (props:any) => {
         <div className={classNames('row-span-2 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
           <div className='text-[14px] flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
             <span className='font-extrabold mr-[1px]'>Listed</span>
-            <span className='font-medium text-[12px]'>10K</span>
+            <span className='font-medium text-[12px]'>{props.card?.orderCnt}</span>
           </div>
         </div>
         <div className={classNames('row-span-3 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
