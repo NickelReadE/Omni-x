@@ -14,6 +14,20 @@ export const ProgressProvider = ({
   children,
 }: ProgressProviderProps): JSX.Element => {
 
+  // const [pending, setPending] = useState<boolean>(true)
+  // const [txInfo, setTxInfo] = useState<PendingTxType | null>({
+  //   txHash: '0xe1be988ec3be15a6382c337724dd80757b456664c3d9fb1326f38339ecaea5a5',
+  //   destTxHash: '0xe1be988ec3be15a6382c337724dd80757b456664c3d9fb1326f38339ecaea5a5',
+  //   type: 'bridge',
+  //   senderChainId: 4,
+  //   targetChainId: 97,
+  //   targetAddress: 'string | undefined',
+  //   isONFTCore: false,
+  //   nftItem: null,
+  //   contractType: 'ERC721',
+  //   targetBlockNumber: 1111,
+  //   itemName: 'asdf'
+  // })
   const [pending, setPending] = useState<boolean>(false)
   const [txInfo, setTxInfo] = useState<PendingTxType | null>(null)
   const dispatch = useDispatch()
@@ -53,9 +67,22 @@ export const ProgressProvider = ({
                   && ev.args?._tokenId === txInfo.nftItem.token_id
               })
               if (eventExist.length === 0) {
-                targetCoreInstance.on('ReceiveFromChain', () => {
-                  setPendingTxInfo(null)
+                targetCoreInstance.on('ReceiveFromChain', async () => {
                   if (address) {
+                    const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber)
+                    const eventExist = events.filter((ev) => {
+                      return ev.args?._toAddress.toLowerCase() === address?.toLowerCase()
+                        && ev.args?._tokenId === txInfo.nftItem.token_id
+                    })
+                    const pendingTxInfo = localStorage.getItem('pendingTxInfo')
+                    if (eventExist.length > 0 && pendingTxInfo) {
+                      setPendingTxInfo({
+                        ...JSON.parse(pendingTxInfo),
+                        ...{
+                          destTxHash: eventExist[0].transactionHash
+                        }
+                      })
+                    }
                     setTimeout(() => {
                       dispatch(getUserNFTs(address) as any)
                     }, 30000)
@@ -76,9 +103,23 @@ export const ProgressProvider = ({
                   && ev.args?._amount === txInfo.nftItem.amount
               })
               if (eventExist.length === 0) {
-                targetCoreInstance.on('ReceiveFromChain', () => {
-                  setPendingTxInfo(null)
+                targetCoreInstance.on('ReceiveFromChain', async () => {
                   if (address) {
+                    const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber)
+                    const eventExist = events.filter((ev) => {
+                      return ev.args?._toAddress.toLowerCase() === address?.toLowerCase()
+                        && ev.args?._tokenId === txInfo.nftItem.token_id
+                        && ev.args?._amount === txInfo.nftItem.amount
+                    })
+                    const pendingTxInfo = localStorage.getItem('pendingTxInfo')
+                    if (eventExist.length > 0 && pendingTxInfo) {
+                      setPendingTxInfo({
+                        ...JSON.parse(pendingTxInfo),
+                        ...{
+                          destTxHash: eventExist[0].transactionHash
+                        }
+                      })
+                    }
                     setTimeout(() => {
                       dispatch(getUserNFTs(address) as any)
                     }, 30000)
@@ -93,14 +134,26 @@ export const ProgressProvider = ({
               const noSignerOmniXInstance = getOmnixBridgeInstance(txInfo.targetChainId, null)
               const events = await noSignerOmniXInstance.queryFilter(noSignerOmniXInstance.filters.LzReceive(), txInfo.targetBlockNumber)
               const eventExist = events.filter((ev) => {
-                return ev.args?.ercAddress.toLowerCase() === txInfo.nftItem.token_address.toLowerCase()
-                  && ev.args?.toAddress === address
+                return ev.args?.toAddress.toLowerCase() === address?.toLowerCase()
                   && ev.args?.tokenId.toString() === txInfo.nftItem.token_id
               })
 
               if (eventExist.length === 0) {
                 noSignerOmniXInstance.on('LzReceive', async () => {
-                  setPendingTxInfo(null)
+                  const events = await noSignerOmniXInstance.queryFilter(noSignerOmniXInstance.filters.LzReceive(), txInfo.targetBlockNumber)
+                  const eventExist = events.filter((ev) => {
+                    return ev.args?.toAddress.toLowerCase() === address?.toLowerCase()
+                      && ev.args?.tokenId.toString() === txInfo.nftItem.token_id
+                  })
+                  const pendingTxInfo = localStorage.getItem('pendingTxInfo')
+                  if (eventExist.length > 0 && pendingTxInfo) {
+                    setPendingTxInfo({
+                      ...JSON.parse(pendingTxInfo),
+                      ...{
+                        destTxHash: eventExist[0].transactionHash
+                      }
+                    })
+                  }
                   if (address) {
                     setTimeout(() => {
                       dispatch(getUserNFTs(address) as any)
@@ -110,7 +163,11 @@ export const ProgressProvider = ({
                 setPending(true)
                 setTxInfo(txInfo)
               } else {
-                localStorage.removeItem('pendingTxInfo')
+                setTxInfo({
+                  ...txInfo, ...{
+                    destTxHash: eventExist[0].transactionHash
+                  }
+                })
               }
             } else if (txInfo.contractType === 'ERC1155') {
               const noSignerOmniX1155Instance = getOmnixBridge1155Instance(txInfo.targetChainId, null)
@@ -124,7 +181,21 @@ export const ProgressProvider = ({
 
               if (eventExist.length === 0) {
                 noSignerOmniX1155Instance.on('LzReceive', async () => {
-                  setPendingTxInfo(null)
+                  const events = await noSignerOmniX1155Instance.queryFilter(noSignerOmniX1155Instance.filters.LzReceive(), txInfo.targetBlockNumber)
+                  const eventExist = events.filter((ev) => {
+                    return ev.args?.toAddress.toLowerCase() === address?.toLowerCase()
+                      && ev.args?.tokenId.toString() === txInfo.nftItem.token_id
+                      && ev.args?.amount.toString() === txInfo.nftItem.amount
+                  })
+                  const pendingTxInfo = localStorage.getItem('pendingTxInfo')
+                  if (eventExist.length > 0 && pendingTxInfo) {
+                    setPendingTxInfo({
+                      ...JSON.parse(pendingTxInfo),
+                      ...{
+                        destTxHash: eventExist[0].transactionHash
+                      }
+                    })
+                  }
                   if (address) {
                     setTimeout(() => {
                       dispatch(getUserNFTs(address) as any)
@@ -141,7 +212,7 @@ export const ProgressProvider = ({
         }
       }
     })()
-  }, [])
+  }, [address, dispatch])
 
   return (
     <ProgressContext.Provider

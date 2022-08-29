@@ -4,6 +4,7 @@ import {BigNumber} from 'ethers'
 
 export type PendingTxType = {
   txHash: string,
+  destTxHash?: string | undefined,
   type: 'bridge' | 'buy' | 'sell' | 'bid',
   senderChainId: number | undefined,
   targetChainId: number | undefined,
