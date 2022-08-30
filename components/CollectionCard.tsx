@@ -9,7 +9,6 @@ import ConfirmSell from './collections/ConfirmSell'
 import { prependOnceListener } from 'process'
 
 import useWallet from '../hooks/useWallet'
-import { addressesByNetwork } from '../constants'
 import { SupportedChainId } from '../types'
 import { postMakerOrder } from '../utils/makeOrder'
 import { ethers } from 'ethers'
@@ -50,13 +49,13 @@ const CollectionCard = (props:any) => {
     zIndex: 99
   } : undefined  
 
-  const onListing = async (currency: string, price: number, period: number) => {
-    const chainId = provider?.network.chainId as number
+  // const onListing = async (currency: string, price: number, period: number) => {
+  //   const chainId = provider?.network.chainId as number
     
-    const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
-    const startTime = Date.now()
+  //   const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
+  //   const startTime = Date.now()
   
-  }
+  // }
   return (
     <div className={classNames(' border-[2px] border-[#F6F8FC] w-[340px] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F6F8FC]', editStyle.nftContainer)}>
       <div className='relative'  style={style} >
