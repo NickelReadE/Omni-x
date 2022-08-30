@@ -259,12 +259,12 @@ const Item: NextPage = () => {
     let usdContract = null
     let contractAddress =''
 
-    if(currency==='0x49fB1b5550AFFdFF32CffF03c1A8168f992296eF'){
+    if(currency==='0x49fB1b5550AFFdFF32CffF03c1A8168f992296eF'){//OMNI
       contractAddress= '0xEEe98d31332154026a4aD6e95c4ce702aF7b1B20'
       if(chainId===4){
         usdContract =  new ethers.Contract(contractAddress, omni, signer)
       }
-    } else if (currency==='0xeb8f08a975ab53e34d8a0330e0d34de942c95926'){
+    } else if (currency==='0xeb8f08a975ab53e34d8a0330e0d34de942c95926'){//USDC
       if(chainId===4){
         contractAddress = usdc['rinkeby']
         usdContract =  new ethers.Contract(contractAddress, usd, signer)
@@ -284,7 +284,7 @@ const Item: NextPage = () => {
         contractAddress = usdc['fantom-testnet']
         usdContract =  new ethers.Contract(contractAddress, usd, signer)
       }
-    } else if (currency==='0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad') {
+    } else if (currency==='0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad') {//USDT
       contractAddress = usdt['bsc-testnet']
       if(chainId===97){
         usdContract =  new ethers.Contract(contractAddress, usd, signer)
