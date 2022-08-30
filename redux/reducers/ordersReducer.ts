@@ -49,7 +49,6 @@ export const getOrders = (request: IGetOrderRequest) => async (dispatch: Dispatc
 export const getLastSaleOrders = (request: IGetOrderRequest) => async (dispatch: Dispatch<any>) => {
 	try {
         const orders = await orderService.getOrders(request)
-		console.log(orders)
 		dispatch(setLastSaleOrder(orders))
 	} catch (error) {
 		console.log("getLastSaleOrders error ? ", error)

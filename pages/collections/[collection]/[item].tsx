@@ -99,9 +99,6 @@ const Item: NextPage = () => {
 
   const nftInfo = useSelector(selectNFTInfo)
 
-  console.log(col_url)
-  console.log(token_id)
-
   useEffect(() => {
     const getNFTOwner = async(col_url:string, token_id:string) => {
       const tokenIdOwner = await collectionsService.getNFTOwner(col_url, token_id)
@@ -149,7 +146,7 @@ const Item: NextPage = () => {
   useEffect(() => {
     setHighestBid(0)
     setHighestBidCoin('')
-    if ( bidOrders.length > 0) {
+    if ( bidOrders.length > 0 && nftInfo.length!={}) {
       const temp_bidOrders: any = []
       let bid_balance = 0
       for(let i=0; i<bidOrders.length;i++){
@@ -168,7 +165,7 @@ const Item: NextPage = () => {
       setBidOrder(temp_bidOrders)
       setHighestBid(bid_balance)
     } 
-  }, [bidOrders])
+  }, [bidOrders,nftInfo])
 
   useEffect(() => {
     setLastSale(0)

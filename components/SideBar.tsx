@@ -20,7 +20,6 @@ import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
 import useBridge from '../hooks/useBridge'
 import useProgress from '../hooks/useProgress'
-
 import usd from '../constants/abis/USD.json'
 import omni from '../constants/abis/omni.json'
 import usdc from '../constants/USDC.json'
@@ -716,7 +715,6 @@ const SideBar: React.FC = () => {
                   </button>
                 </li>
                 <li className="w-full">
-
                   <button className="w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(env === 'testnet' ? 4002 : 1)}>
                     <div className="flex flex-row w-[130px]">
                       <div className="flex items-center w-[36px] h-[36px] m-auto">
@@ -765,7 +763,6 @@ const SideBar: React.FC = () => {
                 <span className="font-semibold w-auto text-[16px]">USDC balance: {usdcBalance}</span>
                 <span className="font-semibold w-auto text-[16px]">USDT balance: {usdtBalance}</span>
                 <span className="font-semibold w-auto text-[16px]">NATIVE balance: {nativeBalance}</span>
-
                 <span className="w-auto text-[16px]">Staking: coming soon</span>
                 {/* <div className="w-full flex flex-row font-semibold text-[14px]">
                   <div className="bg-g-200 w-[88px] px-[11px] py-[9px]">
@@ -1064,7 +1061,7 @@ const SideBar: React.FC = () => {
       <div className="w-full md:w-auto">
         <Dialog open={unwrap} onClose={() => setUnwrap(false)}>
           <ConfirmUnwrap
-            updateModal={() => setUnwrap(false)}
+            updateModal={() => setUnwrap(false)}   
             onUnwrap={onUnwrap}
           />
         </Dialog>

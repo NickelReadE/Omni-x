@@ -129,11 +129,9 @@ export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, ge
 				const ownerCnt = await collectionsService.getCollectionOwners(element.col_url as string)
 				setTimeout(
 					async function(){												
-						console.log(ownerCnt)
 						const items = await collectionsService.getCollectionInfo(element.col_url as string)	
 						collectionsF.push({col_url:element.col_url, itemsCnt:items.data.count, ownerCnt:ownerCnt.data})		
 						if(collectionsF.length===info.data.length){
-							console.log(collectionsF)
 							dispatch(setCollectionsForCard(collectionsF))			
 						}
 					}

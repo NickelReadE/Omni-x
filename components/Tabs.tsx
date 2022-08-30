@@ -75,7 +75,6 @@ const Tabs = ({blur}: TabProps) => {
     address
   } = useWallet()
 
-
   const nfts = useSelector(selectUserNFTs)
 
   const updateModal = (name: string):void => {
