@@ -139,7 +139,6 @@ const Item: NextPage = () => {
 
   useEffect(() => {
     setOrder(undefined)
-    console.log(nftInfo)
 
     if (orders.length > 0  && nftInfo.collection!=undefined && nftInfo.nft!=undefined) {
       if(nftInfo.collection.address===orders[0].collectionAddress&&Number(nftInfo.nft.token_id)===Number(orders[0].tokenId)){
@@ -151,7 +150,6 @@ const Item: NextPage = () => {
   useEffect(() => {
     setHighestBid(0)
     setHighestBidCoin('')
-    console.log(nftInfo)
 
     if ( bidOrders.length > 0 && nftInfo.collection!=undefined && nftInfo.nft!=undefined) {
       const temp_bidOrders: any = []
