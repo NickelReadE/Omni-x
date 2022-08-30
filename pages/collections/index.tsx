@@ -48,13 +48,27 @@ const Collections: NextPage = () => {
 
   useEffect(() => {
     const slides: Array<React.ReactNode> = []
-    if(collections.length>0 && collectionsForCard.length>0){
-      collections.map((item: any,index:number) => {
-        slides.push(                     
-          <CollectionCard collection={item} card={collectionsForCard[index]}/>           
-        )
-      })
+    const  localCards = localStorage.getItem('cards') 
+    if(localCards===null){
+      if(collections.length>0 && collectionsForCard.length>0){
+        console.log(collectionsForCard)
+        localStorage.setItem('cards',JSON.stringify(collectionsForCard))
+        collections.map((item: any,index:number) => {
+          slides.push(                     
+            <CollectionCard collection={item} card={collectionsForCard[index]}/>           
+          )
+        })
+      }
+    }else{
+      if(collections.length>0){
+        collections.map((item: any,index:number) => {
+          slides.push(                     
+            <CollectionCard collection={item} card={collectionsForCard.length>0?collectionsForCard[index]:JSON.parse(localCards)[index]}/>           
+          )
+        })
+      }
     }
+    
     
     setOmniSlides(slides)
   }, [collections ,collectionsForCard])
@@ -66,10 +80,7 @@ const Collections: NextPage = () => {
     }
     dispatch(getOrders(request) as any)
   },[])
-  useEffect(()=>{
-    console.log(orders)
-  },[orders])
-
+ 
   return (
     <>
       <div className='pt-10'>

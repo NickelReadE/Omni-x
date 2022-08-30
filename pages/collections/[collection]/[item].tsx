@@ -99,7 +99,6 @@ const Item: NextPage = () => {
 
   const nftInfo = useSelector(selectNFTInfo)
 
-
   useEffect(() => {
     const getNFTOwner = async(col_url:string, token_id:string) => {
       const tokenIdOwner = await collectionsService.getNFTOwner(col_url, token_id)

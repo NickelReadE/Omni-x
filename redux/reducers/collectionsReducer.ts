@@ -141,15 +141,15 @@ export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, ge
 						let orderCnt = 0	
 						const items = await collectionsService.getCollectionInfo(element.col_url as string)
 						setTimeout(async function(){
-							orders.map((element:any)=>{
-								console.log(element.collectionAddress, items.data.address )
+							orders.map((element:any)=>{								
 								if(element.collectionAddress===items.data.address){
 									orderCnt++
 								}
 							})
-							console.log(orderCnt)
 							collectionsF.push({col_url:element.col_url, itemsCnt:items.data.count, ownerCnt:ownerCnt.data, orderCnt:orderCnt})		
 							if(collectionsF.length===info.data.length){
+								console.log('started to update localstroage')
+								localStorage.setItem('cards',JSON.stringify(collectionsF))
 								dispatch(setCollectionsForCard(collectionsF))			
 							}
 						},2000*index)
