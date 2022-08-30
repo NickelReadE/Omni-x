@@ -6,7 +6,7 @@ import 'swiper/css'
 
 import { IPropsSlider } from '../interface/interface'
 import { Divider } from '@material-ui/core'
-
+import CircularProgress from '@material-ui/core/CircularProgress'
 const Slider = (props: IPropsSlider) => {
   return (
     <>
@@ -22,6 +22,10 @@ const Slider = (props: IPropsSlider) => {
           
           <div className="py-4 mt-5">           
             <div className="w-full flex flex-wrap justify-center gap-12">
+              {
+                props.cards.length ===0 &&
+                <CircularProgress />
+              }
               {props.cards.map((item, index) => (
                 <div className='w-[340px]' key={index} >
                   {item}
