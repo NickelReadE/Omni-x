@@ -138,15 +138,17 @@ const Item: NextPage = () => {
 
   useEffect(() => {
     setOrder(undefined)
-    if (orders.length > 0) {
-      setOrder(orders[0])
+    if (orders.length > 0  && nftInfo!={}) {
+      if(nftInfo.collection.address===orders[0].collectionAddress&&Number(nftInfo.nft.token_id)===Number(orders[0].tokenId)){
+        setOrder(orders[0])
+      }
     } 
-  }, [orders])
+  }, [orders,nftInfo])
 
   useEffect(() => {
     setHighestBid(0)
     setHighestBidCoin('')
-    if ( bidOrders.length > 0 && nftInfo.length!={}) {
+    if ( bidOrders.length > 0 && nftInfo!={}) {
       const temp_bidOrders: any = []
       let bid_balance = 0
       for(let i=0; i<bidOrders.length;i++){
@@ -170,15 +172,18 @@ const Item: NextPage = () => {
   useEffect(() => {
     setLastSale(0)
     setLastSaleCoin('')
-    if(lastSaleOrders.length>0){
-      setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[0].price)))
-      for(let j=0;j<currencies_list.length;j++){
-        if(currencies_list[j].address==lastSaleOrders[0].currencyAddress){
-          setLastSaleCoin(`/images/${currencies_list[j].icon}`)
+    if(lastSaleOrders.length>0 && nftInfo!={}){
+      if(nftInfo.collection.address===lastSaleOrders[0].collectionAddress&&Number(nftInfo.nft.token_id)===Number(lastSaleOrders[0].tokenId)){
+        setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[0].price)))
+        for(let j=0;j<currencies_list.length;j++){
+          if(currencies_list[j].address==lastSaleOrders[0].currencyAddress){
+            setLastSaleCoin(`/images/${currencies_list[j].icon}`)
+          }
         }
       }
+
     } 
-  },[lastSaleOrders])
+  },[lastSaleOrders,nftInfo])
 
   const getNFTOwnership = async(col_url: string, token_id: string) => {
     const tokenIdOwner = await collectionsService.getNFTOwner(col_url, token_id)
