@@ -5,6 +5,7 @@ import Image from 'next/image'
 import {useDndMonitor, useDroppable} from '@dnd-kit/core'
 import LazyLoad from 'react-lazyload'
 import {Dialog} from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
 import useWallet from '../hooks/useWallet'
 import {getUserNFTs, selectUser, selectUserNFTs} from '../redux/reducers/userReducer'
 import {NFTItem} from '../interface/interface'
@@ -18,6 +19,7 @@ import {
 import {getChainIdFromName, getLayerzeroChainId} from '../utils/constants'
 import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
+import UserEdit from './user/UserEdit'
 import useBridge from '../hooks/useBridge'
 import useProgress from '../hooks/useProgress'
 import usd from '../constants/abis/USD.json'
@@ -30,16 +32,24 @@ interface RefObject {
 }
 
 const env = process.env.NEXT_PUBLICE_ENVIRONMENT || 'testnet'
-
+const useStyles = makeStyles({
+  paper: {
+    padding: '0rem 2rem 0rem 0rem',
+    width: '90%',
+    maxWidth: '100%',
+  },
+})
 const SideBar: React.FC = () => {
   const {
     provider,
     signer,
-    address,
+    address,    
+    disconnect,
     connect: connectWallet,
+    
     switchNetwork
   } = useWallet()  
-
+  const classes = useStyles()
   const { estimateGasFee, estimateGasFeeONFTCore, unwrapInfo, selectedUnwrapInfo, validateOwNFT, validateONFT } = useBridge()
   const { setPendingTxInfo } = useProgress()
 
@@ -82,6 +92,8 @@ const SideBar: React.FC = () => {
   const [estimatedFee, setEstimatedFee] = useState<BigNumber>(BigNumber.from('0'))
   const [isONFT, setIsONFT] = useState(false)
   const [unwrap, setUnwrap] = useState(false)
+  const [bOpenModal, setOpenModal] = React.useState(false)
+
   const {setNodeRef} = useDroppable({
     id: 'droppable',
     data: {
@@ -468,7 +480,7 @@ const SideBar: React.FC = () => {
       }
     }
   }
-
+ 
   useEffect(() => {
     (async () => {
       if (unwrapInfo) {
@@ -555,6 +567,11 @@ const SideBar: React.FC = () => {
       getBalance()
     }
   },[signer,address])
+  const setLogout = async() => {
+    console.log('clicked disconnect')
+    await disconnect()
+    window.location.reload()
+  }
   
   return (
     <>
@@ -653,10 +670,10 @@ const SideBar: React.FC = () => {
                   <button className="w-full flex justify-start py-[13px] pl-[100px] hover:bg-l-50">My Dashboard</button>
                 </li>
                 <li className="w-full">
-                  <button className="w-full flex justify-start py-[13px] pl-[100px] hover:bg-l-50">Account Settings</button>
+                  <button className="w-full flex justify-start py-[13px] pl-[100px] hover:bg-l-50" onClick={()=>setOpenModal(true)}>Account Settings</button>
                 </li>
                 <li className="w-full">
-                  <button className="w-full flex justify-start py-[13px] pl-[100px] hover:bg-l-50">Logout</button>
+                  <button className="w-full flex justify-start py-[13px] pl-[100px] hover:bg-l-50" onClick={()=>setLogout()}>Logout</button>
                 </li>
               </ul>
             }
@@ -1066,6 +1083,9 @@ const SideBar: React.FC = () => {
           />
         </Dialog>
       </div>
+      <Dialog open={bOpenModal} onClose={() => setOpenModal(false)} aria-labelledby='simple-dialog-title' maxWidth={'xl'} classes={{ paper: classes.paper }}>
+        <UserEdit updateModal={()=>setOpenModal(false)} />
+      </Dialog>
     </>
   )
 }

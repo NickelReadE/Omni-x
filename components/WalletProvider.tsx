@@ -70,7 +70,6 @@ export const WalletProvider = ({
     },
     []
   )
-
   const connect = useCallback(async () => {
     if (!web3Modal) throw new Error('web3Modal not initialized')
     try {
