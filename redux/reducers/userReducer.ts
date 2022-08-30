@@ -13,7 +13,7 @@ export const userSlice = createSlice({
         user: {},
         nfts: [],
         isGregHolder:false,
-        heroSkin:'base'
+        heroSkin:'logo'
     },
     reducers: {
         setUser: (state, action) => {
@@ -46,7 +46,7 @@ export const getUser = (address: string) => async (dispatch: Dispatch<any>) => {
         const user = await userService.getUserByAddress(address)
         dispatch(setUser(user))
         if(user.greg){
-            dispatch(setHeroSkin(user.greg))
+           // dispatch(setHeroSkin(user.greg))
         }
         
         dispatch(setGettingUser(false))

@@ -11,6 +11,7 @@ import ERC20Abi from '../constants/abis/ERC20.json'
 import ONFTCore721 from '../constants/abis/ONFTCore721.json'
 import ONFTCore1155 from '../constants/abis/ONFTCore1155.json'
 import LZEndpointABI from '../constants/abis/LayerzeroEndpoint.json'
+import veSTG from '../constants/abis/veSTG.json'
 
 export const getContractInstanceByAddr = (address: string, abi: any, chainId: number, signer: any) => {
   if (signer === null) {
@@ -67,6 +68,9 @@ export const getOmniInstance = (chainId: number, signer: any) => {
 
 export const getTransferSelectorNftInstance = (chainId: number, signer: any) => {
   return getContractInstance('TransferSelectorNFT', TransferSelectorNFTABI, chainId, signer);
+}
+export const getVeSTGInstance = (contractAddress: string, chainId: number, signer: any) => {
+  return getContractInstanceByAddr(contractAddress, veSTG, chainId, signer)
 }
 
 export const getLayerZeroEndpointInstance = (chainId: number, provider: any) => {

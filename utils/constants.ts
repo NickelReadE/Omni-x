@@ -51,6 +51,13 @@ export type ContractName =
   'FundManager'
 
 export const rpcProviders: { [key: number]: string } = {
+  1:'https://mainnet.infura.io/v3/20504cdcff23477c9ed314d042d85a74',
+  56:'https://bsc-dataseed.binance.org/',
+  137:'https://polygon-rpc.com',
+  43114:'https://api.avax.network/ext/bc/C/rpc',
+  250:'https://rpcapi.fantom.network',
+  10:'https://mainnet.optimism.io',
+  42161:'https://arb1.arbitrum.io/rpc',
   4: 'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
   97: 'https://data-seed-prebsc-1-s1.binance.org:8545',
   43113: 'https://api.avax-test.network/ext/bc/C/rpc',
@@ -66,6 +73,48 @@ export const ERC1155_INTERFACE_ID = '0xd9b67a26'
 export const ERC712_INTERFACE_ID = '0x80ac58cd'
 
 export const chainInfos: { [key: number]: { name: string; logo: string, officialName: string, currency: string } } = {
+  1: {
+    name: 'eth',
+    logo: '/svgs/fantom.svg',
+    officialName: 'Fantom',
+    currency: 'FTM'
+  },
+  56: {
+    name: 'bsc',
+    logo: '/svgs/fantom.svg',
+    officialName: 'Fantom',
+    currency: 'FTM'
+  },
+  137: {
+    name: 'polygon',
+    logo: '/svgs/fantom.svg',
+    officialName: 'Fantom',
+    currency: 'FTM'
+  },
+  43114: {
+    name: 'avalanche',
+    logo: '/svgs/fantom.svg',
+    officialName: 'Fantom',
+    currency: 'FTM'
+  },
+  250: {
+    name: 'fantom',
+    logo: '/svgs/fantom.svg',
+    officialName: 'Fantom',
+    currency: 'FTM'
+  },
+  10: {
+    name: 'optimism',
+    logo: '/svgs/fantom.svg',
+    officialName: 'Fantom',
+    currency: 'FTM'
+  },
+  42161: {
+    name: 'arbitrum',
+    logo: '/svgs/fantom.svg',
+    officialName: 'Fantom',
+    currency: 'FTM'
+  },
   4: {
     name: 'rinkeby',
     logo: '/svgs/ethereum.svg',
@@ -107,7 +156,8 @@ export const chainInfos: { [key: number]: { name: string; logo: string, official
     logo: '/svgs/fantom.svg',
     officialName: 'Fantom',
     currency: 'FTM'
-  }
+  },
+  
 }
 
 export const getLayerzeroChainId = (chainId: number): number => {
@@ -158,6 +208,8 @@ export const getAddressByName = (name: ContractName, chainId: number) => {
 
 export const getProvider = (chainId: number) => {
   const rpcURL = rpcProviders[chainId]
+  console.log(rpcURL, chainInfos[chainId].name)
+
   return new ethers.providers.JsonRpcProvider(
     rpcURL,
     {
