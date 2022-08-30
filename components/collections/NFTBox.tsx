@@ -231,9 +231,6 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
               <div className="bg-[url('/images/ellipse.png')] hover:bg-[url('/images/ellipse_hover.png')] bg-cover w-[21px] h-[21px]"></div>
             </div> */}
           </div>
-          <div className="text-[#6C757D] text-[14px] font-medium  mt-3 ml-3">
-            {nft.name}
-          </div>
           <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['Retni_Sans']">
             <div className="text-[#000000] text-[14px] font-bold  mt-3 ml-3">
               {nft.name}
