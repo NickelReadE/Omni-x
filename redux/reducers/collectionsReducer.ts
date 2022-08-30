@@ -7,6 +7,7 @@ import { getOrders } from './ordersReducer'
 import { openSnackBar } from './snackBarReducer'
 interface CollectionState{
 	nfts:any[],
+	allNFTs: {},
 	info:{},
 	nftInfo:{},
 	finishedGetting:boolean,
@@ -61,7 +62,7 @@ export const collectionsSlice = createSlice({
 })
 
 //actions
-export const { setCollectionNFTs, setCollectionAllNFTs,setCollectionInfo, setNFTInfo, clearCollections, startGetNFTs, setCollectionOwners, setCollections } = collectionsSlice.actions
+export const { setCollectionNFTs, setCollectionAllNFTs, setCollectionsForCard, setCollectionInfo, setNFTInfo, clearCollections, startGetNFTs, setCollectionOwners, setCollections } = collectionsSlice.actions
 
 export const clearCollectionNFTs = () => (dispatch: Dispatch<any>) => {
 	dispatch(clearCollections())
