@@ -16,7 +16,7 @@ import {
   getOmnixBridge1155Instance,
   getOmnixBridgeInstance, getONFTCore721Instance, getONFTCore1155Instance,
 } from '../utils/contracts'
-import {getChainIdFromName, getLayerzeroChainId} from '../utils/constants'
+import {getChainIdFromName, getLayerzeroChainId,getChainInfo} from '../utils/constants'
 import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
 import UserEdit from './user/UserEdit'
@@ -566,7 +566,7 @@ const SideBar: React.FC = () => {
     if(signer!=undefined && address!=undefined){
       getBalance()
     }
-  },[signer,address])
+  },[signer,address,chainId])
   const setLogout = async() => {
     console.log('clicked disconnect')
     await disconnect()
@@ -779,7 +779,7 @@ const SideBar: React.FC = () => {
                 <span className="font-semibold w-auto text-[16px]">OMNI balance: {omniBalance}</span>
                 <span className="font-semibold w-auto text-[16px]">USDC balance: {usdcBalance}</span>
                 <span className="font-semibold w-auto text-[16px]">USDT balance: {usdtBalance}</span>
-                <span className="font-semibold w-auto text-[16px]">NATIVE balance: {nativeBalance}</span>
+                <span className="font-semibold w-auto text-[16px]">{getChainInfo(chainId)?.nativeCurrency.symbol} balance: {nativeBalance}</span>
                 <span className="w-auto text-[16px]">Staking: coming soon</span>
                 {/* <div className="w-full flex flex-row font-semibold text-[14px]">
                   <div className="bg-g-200 w-[88px] px-[11px] py-[9px]">
