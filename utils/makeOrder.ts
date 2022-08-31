@@ -9,6 +9,7 @@ import { signMakerOrder } from '../sign/signMakerOrder'
 import { useDispatch } from 'react-redux'
 import { TypedDataUtils } from 'ethers-eip712'
 import { generateMakerOrderTypedData } from '../sign/generateMakerOrderTypedData'
+import { has } from 'immer/dist/internal'
 
 interface PostMakerOrderOptionalParams {
     tokenId?: string
@@ -61,7 +62,6 @@ const prepareMakerOrder = async(
     signature: signatureHash,
     chain
   }
-
   return data
 }
 
@@ -165,3 +165,17 @@ export const postMakerOrder = async(
 
   return data
 };
+
+export const acceptOrder = async (
+  hash:string, status:string
+) => {
+  const data  = {
+    hash: hash,
+    status: status
+  }
+  try{
+    await orderService.acceptOrder(data)
+   } catch(error) {
+    console.log(error)
+  }
+}

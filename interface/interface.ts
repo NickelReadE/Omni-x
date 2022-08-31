@@ -17,6 +17,7 @@ export interface IPropsNFTItem {
   nft: NFTItem,
   col_url?: string,
   chain?: string,
+  col_address?:string,
   index: number
 }
 
@@ -60,7 +61,7 @@ export const ItemTypes = {
 }
 
 export interface IGetOrderRequest {
-  isOrderAsk: boolean,
+  isOrderAsk?: boolean,
   chain?: string,
   collection?: string,
   tokenId?: string,
@@ -95,5 +96,10 @@ export interface IOrder {
   v: number,
   r: string,
   s: string,
+  status: string
+}
+
+export interface IAcceptOrderRequest {
+  hash: string,
   status: string
 }

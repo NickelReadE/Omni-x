@@ -41,7 +41,7 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
   const disptach = useDispatch()  
   const cuser = useSelector(selectUser)
   const skinName = useSelector(selectHeroSkin)
-  const {isInitialized, Moralis} = useMoralis()
+  const { isInitialized, Moralis } = useMoralis()
   const { address } = useWallet()
   const classes = useStyles()
   const [avatarError, setAvatarError] = useState(false)
@@ -111,13 +111,14 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
                   </a>
                 </div>
               } */}
-              <div className="-top-[10rem] left-[5rem] absolute">
+              <div className="bottom-[0rem] left-[4rem]  absolute">
                 <Image 
                   src={avatarError||cuser.avatar===undefined||cuser.avatar===DEFAULT_AVATAR?'/images/default_avatar.png':(process.env.API_URL + cuser.avatar)} 
                   alt="avatar" 
                   onError={(e)=>{cuser.avatar&&setAvatarError(true)}} 
                   width={200}
                   height={200}
+                  className={'rounded-[8px]'}
                 />
               </div>              
               <div className="flex flex-col ml-[20rem] mt-[10px]">                

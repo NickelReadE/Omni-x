@@ -22,6 +22,10 @@ import ConfirmUnwrap from './bridge/ConfirmUnwrap'
 import UserEdit from './user/UserEdit'
 import useBridge from '../hooks/useBridge'
 import useProgress from '../hooks/useProgress'
+import usd from '../constants/abis/USD.json'
+import omni from '../constants/abis/omni.json'
+import usdc from '../constants/USDC.json'
+import usdt from '../constants/USDT.json'
 
 interface RefObject {
   offsetHeight: number
@@ -69,6 +73,12 @@ const SideBar: React.FC = () => {
   const [offsetMenu, setOffsetMenu] = useState(0)
   const [avatarError, setAvatarError] = useState(false)
 
+  const [omniBalance, setOmniBalance] = useState(0)
+  const [usdcBalance, setUsdcBalance] = useState(0)
+  const [usdtBalance, setUsdtBalance] = useState(0)
+  const [nativeBalance,setNativeBalance] = useState('0')
+
+
   const nfts = useSelector(selectUserNFTs)
   const user = useSelector(selectUser)
 
@@ -93,6 +103,7 @@ const SideBar: React.FC = () => {
 
   // Drag and drop event monitor
   useDndMonitor({
+    
     onDragStart(event) {
       setDragOver(true)
       setDragEnd(false)
@@ -495,14 +506,73 @@ const SideBar: React.FC = () => {
   const updateModal = (status: boolean) => {
     setConfirmTransfer(status)
   }
+
+  useEffect(()=>{
+    const getBalance = async() => {
+      try {
+        //OMNI
+        if(chainId===4){
+          const contractOmniAddress ='0xEEe98d31332154026a4aD6e95c4ce702aF7b1B20'
+          const omniContract =  new ethers.Contract(contractOmniAddress, omni, signer)
+          const balance = await omniContract.balanceOf(address)
+          setOmniBalance(Number(ethers.utils.formatEther(balance)))
+        }
+        //USDC
+        if(chainId===4){
+          const contractAddress = usdc['rinkeby']
+          const usdContract =  new ethers.Contract(contractAddress, usd, signer)
+          const balance = await usdContract.balanceOf(address)
+          setUsdcBalance(Number(ethers.utils.formatEther(balance)))
+        } else if(chainId===43113) {
+          const contractAddress = usdc['fuji']
+          const usdContract =  new ethers.Contract(contractAddress, usd, signer)
+          const balance = await usdContract.balanceOf(address)
+          setUsdcBalance(Number(ethers.utils.formatEther(balance)))
+        } else if(chainId===80001) {
+          const contractAddress = usdc['mumbai']
+          const usdContract =  new ethers.Contract(contractAddress, usd, signer)
+          const balance = await usdContract.balanceOf(address)
+          setUsdcBalance(Number(ethers.utils.formatEther(balance)))
+        } else if(chainId===421611) {
+          const contractAddress = usdc['arbitrum-rinkeby']
+          const usdContract =  new ethers.Contract(contractAddress, usd, signer)
+          const balance = await usdContract.balanceOf(address)
+          setUsdcBalance(Number(ethers.utils.formatEther(balance)))
+        } else if(chainId===69) {
+          const contractAddress = usdc['optimism-kovan']
+          const usdContract =  new ethers.Contract(contractAddress, usd, signer)
+          const balance = await usdContract.balanceOf(address)
+          setUsdcBalance(Number(ethers.utils.formatEther(balance)))
+        } else if(chainId===4002) {
+          const contractAddress = usdc['fantom-testnet']
+          const usdContract =  new ethers.Contract(contractAddress, usd, signer)
+          const balance = await usdContract.balanceOf(address)
+          setUsdcBalance(Number(ethers.utils.formatEther(balance)))
+        }
+        // //USDT
+        if(chainId===97){
+          const contractAddress = usdt['bsc-testnet']
+          const usdTContract =  new ethers.Contract(contractAddress, usd, signer)
+          const balance = await usdTContract.balanceOf(address)
+          setUsdtBalance(Number(ethers.utils.formatEther(balance)))
+        }
+        //Native Token
+        const balance = await provider?.getBalance(address!)
+        setNativeBalance((Number(balance)/Math.pow(10,18)).toFixed(4))
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    if(signer!=undefined && address!=undefined){
+      getBalance()
+    }
+  },[signer,address])
   const setLogout = async() => {
     console.log('clicked disconnect')
     await disconnect()
     window.location.reload()
   }
   
- 
-
   return (
     <>
       { !onMenu &&
@@ -705,11 +775,11 @@ const SideBar: React.FC = () => {
               </span>
             </button>
             { expandedMenu == 3 &&
-              <div className='flex flex-col w-full space-y-4 p-6 pl-10 pt-8 pb-0' ref={menu_wallets}>
-                <span className="font-semibold w-auto text-[16px]">OMNI balance:</span>
-                <span className="font-semibold w-auto text-[16px]">USDC balance:</span>
-                <span className="font-semibold w-auto text-[16px]">USDT balance:</span>
-
+              <div className='flex flex-col w-full space-y-4 p-6 pt-8 pb-0' ref={menu_wallets}>
+                <span className="font-semibold w-auto text-[16px]">OMNI balance: {omniBalance}</span>
+                <span className="font-semibold w-auto text-[16px]">USDC balance: {usdcBalance}</span>
+                <span className="font-semibold w-auto text-[16px]">USDT balance: {usdtBalance}</span>
+                <span className="font-semibold w-auto text-[16px]">NATIVE balance: {nativeBalance}</span>
                 <span className="w-auto text-[16px]">Staking: coming soon</span>
                 {/* <div className="w-full flex flex-row font-semibold text-[14px]">
                   <div className="bg-g-200 w-[88px] px-[11px] py-[9px]">
@@ -1008,7 +1078,8 @@ const SideBar: React.FC = () => {
       <div className="w-full md:w-auto">
         <Dialog open={unwrap} onClose={() => setUnwrap(false)}>
           <ConfirmUnwrap
-            updateModal={() => setUnwrap(false)}
+            updateModal={() => setUnwrap(false)}   
+            onUnwrap={onUnwrap}
           />
         </Dialog>
       </div>
