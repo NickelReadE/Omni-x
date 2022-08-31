@@ -57,14 +57,12 @@ export const ProgressProvider = ({
 
         if (txInfo.type === 'bridge') {
           if (txInfo.isONFTCore) {
-            let targetCoreInstance: Contract
             if (txInfo.contractType === 'ERC721') {
-              targetCoreInstance = getONFTCore721Instance(txInfo.targetAddress, txInfo.targetChainId, null)
+              const targetCoreInstance = getONFTCore721Instance(txInfo.targetAddress, txInfo.targetChainId, null)
               const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber)
               const eventExist = events.filter((ev) => {
                 return ev.args?._toAddress.toLowerCase() === address?.toLowerCase()
-                  && ev.args?._srcAddress.toLowerCase() === txInfo.nftItem.token_address.toLowerCase()
-                  && ev.args?._tokenId === txInfo.nftItem.token_id
+                  && parseInt(ev.args?._tokenId) === parseInt(txInfo.nftItem.token_id)
               })
               if (eventExist.length === 0) {
                 targetCoreInstance.on('ReceiveFromChain', async () => {
@@ -72,7 +70,7 @@ export const ProgressProvider = ({
                     const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber)
                     const eventExist = events.filter((ev) => {
                       return ev.args?._toAddress.toLowerCase() === address?.toLowerCase()
-                        && ev.args?._tokenId === txInfo.nftItem.token_id
+                        && parseInt(ev.args?._tokenId) === parseInt(txInfo.nftItem.token_id)
                     })
                     const pendingTxInfo = localStorage.getItem('pendingTxInfo')
                     if (eventExist.length > 0 && pendingTxInfo) {
@@ -91,16 +89,19 @@ export const ProgressProvider = ({
                 setPending(true)
                 setTxInfo(txInfo)
               } else {
-                localStorage.removeItem('pendingTxInfo')
+                setTxInfo({
+                  ...txInfo, ...{
+                    destTxHash: eventExist[0].transactionHash
+                  }
+                })
               }
             } else if (txInfo.contractType === 'ERC1155') {
-              targetCoreInstance = getONFTCore1155Instance(txInfo.targetAddress, txInfo.targetChainId, null)
+              const targetCoreInstance = getONFTCore1155Instance(txInfo.targetAddress, txInfo.targetChainId, null)
               const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber)
               const eventExist = events.filter((ev) => {
                 return ev.args?._toAddress.toLowerCase() === address?.toLowerCase()
-                  && ev.args?._srcAddress.toLowerCase() === txInfo.nftItem.token_address.toLowerCase()
-                  && ev.args?._tokenId === txInfo.nftItem.token_id
-                  && ev.args?._amount === txInfo.nftItem.amount
+                  && parseInt(ev.args?._tokenId) === parseInt(txInfo.nftItem.token_id)
+                  && parseInt(ev.args?._amount) === parseInt(txInfo.nftItem.amount)
               })
               if (eventExist.length === 0) {
                 targetCoreInstance.on('ReceiveFromChain', async () => {
@@ -126,7 +127,11 @@ export const ProgressProvider = ({
                   }
                 })
               } else {
-                localStorage.removeItem('pendingTxInfo')
+                setTxInfo({
+                  ...txInfo, ...{
+                    destTxHash: eventExist[0].transactionHash
+                  }
+                })
               }
             }
           } else {
@@ -173,8 +178,7 @@ export const ProgressProvider = ({
               const noSignerOmniX1155Instance = getOmnixBridge1155Instance(txInfo.targetChainId, null)
               const events = await noSignerOmniX1155Instance.queryFilter(noSignerOmniX1155Instance.filters.LzReceive(), txInfo.targetBlockNumber)
               const eventExist = events.filter((ev) => {
-                return ev.args?.ercAddress.toLowerCase() === txInfo.nftItem.token_address.toLowerCase()
-                  && ev.args?.toAddress === address
+                return ev.args?.toAddress === address
                   && ev.args?.tokenId.toString() === txInfo.nftItem.token_id
                   && ev.args?.amount.toString() === txInfo.nftItem.amount
               })
@@ -205,7 +209,11 @@ export const ProgressProvider = ({
                 setPending(true)
                 setTxInfo(txInfo)
               } else {
-                localStorage.removeItem('pendingTxInfo')
+                setTxInfo({
+                  ...txInfo, ...{
+                    destTxHash: eventExist[0].transactionHash
+                  }
+                })
               }
             }
           }

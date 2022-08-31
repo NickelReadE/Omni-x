@@ -238,7 +238,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
                         alt="view Explorer"
                         width={20}
                         height={20}
-                        style={{ cursor: 'pointer', opacity: (pending && txInfo && txInfo.destTxHash) ? 1 : 0.4 }}
+                        style={{ cursor: (pending && txInfo && txInfo.destTxHash) ? 'pointer' : 'auto', opacity: (pending && txInfo && txInfo.destTxHash) ? 1 : 0.4 }}
                         onClick={onViewExplorerOnDest}
                       />
                       <span className="text-md text-gray-500 w-[90px] truncate">{txInfo?.itemName}</span>

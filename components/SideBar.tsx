@@ -256,7 +256,7 @@ const SideBar: React.FC = () => {
           const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), blockNumber)
           const eventExist = events.filter((ev) => {
             return ev.args?._toAddress.toLowerCase() === address?.toLowerCase()
-              && ev.args?._tokenId === selectedNFTItem.token_id
+            && parseInt(ev.args?._tokenId) === parseInt(selectedNFTItem.token_id)
           })
           const pendingTxInfo = localStorage.getItem('pendingTxInfo')
           if (eventExist.length > 0 && pendingTxInfo) {
@@ -319,8 +319,8 @@ const SideBar: React.FC = () => {
           const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), blockNumber)
           const eventExist = events.filter((ev) => {
             return ev.args?._toAddress.toLowerCase() === address?.toLowerCase()
-              && ev.args?._tokenId === selectedNFTItem.token_id
-              && ev.args?._amount === selectedNFTItem.amount
+            && parseInt(ev.args?._tokenId) === parseInt(selectedNFTItem.token_id)
+            && parseInt(ev.args?._amount) === parseInt(selectedNFTItem.amount)
           })
           const pendingTxInfo = localStorage.getItem('pendingTxInfo')
           if (eventExist.length > 0 && pendingTxInfo) {
