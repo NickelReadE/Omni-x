@@ -30,7 +30,7 @@ import PngIcon3 from '../../../public/images/collections/dbanner3.png'
 
 import image_25 from '../../../public/images/image 25.png'
 import useWallet from '../../../hooks/useWallet'
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import { postMakerOrder, acceptOrder } from '../../../utils/makeOrder'
 import { addressesByNetwork } from '../../../constants'
 import { SupportedChainId } from '../../../types'
@@ -96,11 +96,13 @@ const Item: NextPage = () => {
 
   const nftInfo = useSelector(selectNFTInfo)
 
+
   useEffect(() => {
     const getNFTOwner = async(col_url:string, token_id:string) => {
       const tokenIdOwner = await collectionsService.getNFTOwner(col_url, token_id)
 
       if ( tokenIdOwner.length > 0 ) {
+
         const user_info = await userService.getUserByAddress(tokenIdOwner)
         if(user_info.username == ''){
           setOwner(tokenIdOwner)
@@ -171,7 +173,6 @@ const Item: NextPage = () => {
   useEffect(() => {
     setLastSale(0)
     setLastSaleCoin('')
-    console.log(nftInfo)
     if(lastSaleOrders.length>0 && nftInfo.collection!=undefined && nftInfo.nft!=undefined){
       if(nftInfo.collection.address===lastSaleOrders[0].collectionAddress&&Number(nftInfo.nft.token_id)===Number(lastSaleOrders[0].tokenId)){
         setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[0].price)))
@@ -254,13 +255,13 @@ const Item: NextPage = () => {
     const signer = Provider.getSigner()
     let usdContract = null
     let contractAddress =''
-
-    if(currency==='0x49fB1b5550AFFdFF32CffF03c1A8168f992296eF'){//OMNI
+    
+    if(currency===currencies_list[0]['address']){//OMNI
       contractAddress= '0xEEe98d31332154026a4aD6e95c4ce702aF7b1B20'
       if(chainId===4){
         usdContract =  new ethers.Contract(contractAddress, omni, signer)
       }
-    } else if (currency==='0xeb8f08a975ab53e34d8a0330e0d34de942c95926'){//USDC
+    } else if (currency===currencies_list[1]['address']){//USDC
       if(chainId===4){
         contractAddress = usdc['rinkeby']
         usdContract =  new ethers.Contract(contractAddress, usd, signer)
@@ -280,7 +281,7 @@ const Item: NextPage = () => {
         contractAddress = usdc['fantom-testnet']
         usdContract =  new ethers.Contract(contractAddress, usd, signer)
       }
-    } else if (currency==='0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad') {//USDT
+    } else if (currency===currencies_list[2]['address']) {//USDT
       contractAddress = usdt['bsc-testnet']
       if(chainId===97){
         usdContract =  new ethers.Contract(contractAddress, usd, signer)

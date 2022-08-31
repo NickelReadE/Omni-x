@@ -559,6 +559,7 @@ const SideBar: React.FC = () => {
         //Native Token
         const balance = await provider?.getBalance(address!)
         setNativeBalance((Number(balance)/Math.pow(10,18)).toFixed(4))
+        console.log((Number(balance)/Math.pow(10,18)).toFixed(4))
       } catch (error) {
         console.log(error)
       }
