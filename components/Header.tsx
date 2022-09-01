@@ -153,7 +153,9 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
             pending &&
             <div className={'rounded-[8px] w-[250px] md:order-2 mr-[70px] px-4 flex flex-col justify-center shadow-md ' + (expand ? 'h-[80px]' : 'h-[40px]')}>
               <div className="flex items-center justify-between">
-                <span className="text-lg">processing</span>
+                <span className="text-lg">
+                  {(pending && txInfo && txInfo.destTxHash) ? 'last transaction' : 'processing'}
+                </span>
                 {
                   !(pending && txInfo && txInfo.destTxHash)
                     ?

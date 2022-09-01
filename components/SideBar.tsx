@@ -270,7 +270,7 @@ const SideBar: React.FC = () => {
 
           setTimeout(() => {
             dispatch(getUserNFTs(address) as any)
-          }, 30000)
+          }, 6000)
         })
         onLeave()
         await setPendingTxInfo({
@@ -286,6 +286,9 @@ const SideBar: React.FC = () => {
           itemName: selectedNFTItem.name
         })
         await tx.wait()
+        setTimeout(() => {
+          dispatch(getUserNFTs(address) as any)
+        }, 5000)
       } else if (selectedNFTItem.contract_type === 'ERC1155') {
         const onft1155CoreInstance = getONFTCore1155Instance(selectedNFTItem.token_address, provider?._network?.chainId, signer)
         const targetONFT1155CoreAddress = await onft1155CoreInstance.trustedRemoteLookup(lzTargetChainId)
@@ -333,9 +336,14 @@ const SideBar: React.FC = () => {
           }
           setTimeout(() => {
             dispatch(getUserNFTs(address) as any)
-          }, 30000)
+          }, 6000)
         })
         await tx.wait()
+
+        setTimeout(() => {
+          dispatch(getUserNFTs(address) as any)
+        }, 5000)
+        setSelectedNFTItem(undefined)
       }
     } else {
       if (selectedNFTItem.contract_type === 'ERC721') {
@@ -363,7 +371,8 @@ const SideBar: React.FC = () => {
           // After 30 seconds from receiving the token on Target Chain, refresh user NFT items
           setTimeout(() => {
             dispatch(getUserNFTs(address) as any)
-          }, 30000)
+          }, 6000)
+          setSelectedNFTItem(undefined)
         })
 
         let adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 3500000])
@@ -392,6 +401,9 @@ const SideBar: React.FC = () => {
           itemName: selectedNFTItem.name
         })
         await tx.wait()
+        setTimeout(() => {
+          dispatch(getUserNFTs(address) as any)
+        }, 5000)
         setSelectedNFTItem(undefined)
       } else if (selectedNFTItem.contract_type === 'ERC1155') {
         const contractInstance = getOmnixBridge1155Instance(provider?._network?.chainId, signer)
@@ -419,7 +431,7 @@ const SideBar: React.FC = () => {
           // After 30 seconds from receiving the token on Target Chain, refresh user NFT items
           setTimeout(() => {
             dispatch(getUserNFTs(address) as any)
-          }, 30000)
+          }, 6000)
         })
 
         let adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 3500000])
@@ -455,6 +467,9 @@ const SideBar: React.FC = () => {
           itemName: selectedNFTItem.name
         })
         await tx.wait()
+        setTimeout(() => {
+          dispatch(getUserNFTs(address) as any)
+        }, 5000)
         setSelectedNFTItem(undefined)
       }
     }
