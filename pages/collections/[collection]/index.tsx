@@ -316,7 +316,7 @@ const Collection: NextPage = () => {
     <>
       <div className={classNames('w-full', 'mt-20', 'pr-[70px]', 'relative', editStyle.collection)}>
         <div className="w-[100%] h-[100%] mt-20">
-           <img className={classNames(editStyle.bannerImg)} src={collectionInfo&&collectionInfo.banner_image ? collectionInfo.banner_image : ''} />
+          <img className={classNames(editStyle.bannerImg)} src={collectionInfo&&collectionInfo.banner_image ? collectionInfo.banner_image : ''} />
           <div className={classNames(editStyle.bannerOpacity)} /> 
         </div>
         <div className="flex space-x-8 items-end ml-[70px]">
@@ -324,52 +324,51 @@ const Collection: NextPage = () => {
             <img className="w-[200px] h-[200px]" src={imageError?'/images/omnix_logo_black_1.png':(collectionInfo&&collectionInfo.profile_image ? collectionInfo.profile_image : '/images/omnix_logo_black_1.png')} alt="logo" onError={(e)=>{setImageError(true)}} data-src={collectionInfo&&collectionInfo.profile_image ? collectionInfo.profile_image : ''} />
           </LazyLoad>
           <div className="flex relative  text-lg font-bold text-center items-center">
-                  <div className={'select-none inline-block p-4 text-xxl font-extrabold '}>
-                    {collectionInfo?collectionInfo.name:''}                  
-                  </div> 
-                  <div className="w-[30px] h-[30px] bg-[#B444F9] rounded-[30px] flex items-center justify-center">
-                    <div className=" w-[15px] h-[9px] border-b-[3px] border-l-[3px] border-white -rotate-45 "></div>
-                  </div> 
-                  { collectionInfo&&collectionInfo.discord?
-                    <Link href={collectionInfo.discord}>
-                      <a className="p-2 flex items-center">
-                        <Image src={Discord} width={25} height={21} alt='discord' />
-                      </a>
-                    </Link>
-                    :
-                    <a className="p-2">
-                      <Image src={Discord} width={25} height={21} alt='discord' />
-                    </a>
-                  }
-                  { collectionInfo&&collectionInfo.twitter?
-                    <Link href={collectionInfo.twitter}>
-                      <a className="p-2 flex items-center">
-                        <Image src={Twitter} alt='twitter' />
-                      </a>
-                    </Link>
-                    :
-                    <a className="p-2 flex items-center">
-                      <Image src={Twitter} alt='twitter' />
-                    </a>
-                  }
-                  { collectionInfo&&collectionInfo.website?
-                    <Link href={collectionInfo.website}>
-                      <a className="p-2">
-                        <Image src={Web} alt='website' />
-                      </a>
-                    </Link>
-                    :
-                    <a className="p-2">
-                      <Image src={Web} alt='website' />
-                    </a>
-                  }
+            <div className={'select-none inline-block p-4 text-xxl font-extrabold '}>
+              {collectionInfo?collectionInfo.name:''}                  
+            </div> 
+            <div className="w-[30px] h-[30px] bg-[#B444F9] rounded-[30px] flex items-center justify-center">
+              <div className=" w-[15px] h-[9px] border-b-[3px] border-l-[3px] border-white -rotate-45 "></div>
+            </div> 
+            { collectionInfo&&collectionInfo.discord?
+              <Link href={collectionInfo.discord}>
+                <a className="p-2 flex items-center">
+                  <Image src={Discord} width={25} height={21} alt='discord' />
+                </a>
+              </Link>
+              :
+              <a className="p-2">
+                <Image src={Discord} width={25} height={21} alt='discord' />
+              </a>
+            }
+            { collectionInfo&&collectionInfo.twitter?
+              <Link href={collectionInfo.twitter}>
+                <a className="p-2 flex items-center">
+                  <Image src={Twitter} alt='twitter' />
+                </a>
+              </Link>
+              :
+              <a className="p-2 flex items-center">
+                <Image src={Twitter} alt='twitter' />
+              </a>
+            }
+            { collectionInfo&&collectionInfo.website?
+              <Link href={collectionInfo.website}>
+                <a className="p-2">
+                  <Image src={Web} alt='website' />
+                </a>
+              </Link>
+              :
+              <a className="p-2">
+                <Image src={Web} alt='website' />
+              </a>
+            }
                     
           </div>
         </div>  
         <div className='w-full  mt-[-100px] border-b-2 border-[#E9ECEF]'>
           <div className="felx">
-            <div className="w-[320px] min-w-[320px]"/>
-              
+            <div className="w-[320px] min-w-[320px]"/>              
           </div>
           <div className="flex">
             <div className="w-[320px] min-w-[320px]">
@@ -389,40 +388,40 @@ const Collection: NextPage = () => {
               
               <ul className="flex space-x-4 relative justify-item-stretch items-end text-md font-bold text-center pb-[5px]">
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
-                    <span className="mr-[22px] ">Items</span>
-                    <span >{collectionInfoFromLocal?collectionInfoFromLocal.itemsCnt:0}</span>           
+                  <span className="mr-[22px] ">Items</span>
+                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.itemsCnt:0}</span>           
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
-                    <span className="mr-[22px] ">Owners</span>
-                    <span >{collectionInfoFromLocal?collectionInfoFromLocal.ownerCnt:0}</span>           
+                  <span className="mr-[22px] ">Owners</span>
+                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.ownerCnt:0}</span>           
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
-                    <span className="mr-[22px] ">Listed</span>
-                    <span >{collectionInfoFromLocal?collectionInfoFromLocal.orderCnt:0}</span>           
+                  <span className="mr-[22px] ">Listed</span>
+                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.orderCnt:0}</span>           
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
-                    <span className="mr-[22px] ">Royalty Fee</span>
-                    <span >20%</span>           
+                  <span className="mr-[22px] ">Royalty Fee</span>
+                  <span >20%</span>           
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex flex-col space-y-4 justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
-                    <div className="flex flex-col">
-                      <div className="flex justify-start">
-                        <span>Volume(Total)</span>
-                      </div>
-                      <div className="flex flex-row">
-                        <span className="mr-[10px] ">200</span>
-                        <img src='/svgs/eth_asset.svg' alt='asset'></img>
-                      </div>                      
+                  <div className="flex flex-col">
+                    <div className="flex justify-start">
+                      <span>Volume(Total)</span>
                     </div>
-                    <div className="flex flex-col">
-                      <div className="flex justify-start">
-                        <span >Volume(7d)</span>
-                      </div>
-                      <div className="flex flex-row">
-                        <span className="mr-[10px] ">2.8</span>
-                        <img src='/svgs/eth_asset.svg' alt='asset'></img>
-                      </div>                      
+                    <div className="flex flex-row">
+                      <span className="mr-[10px] ">200</span>
+                      <img src='/svgs/eth_asset.svg' alt='asset'></img>
+                    </div>                      
+                  </div>
+                  <div className="flex flex-col">
+                    <div className="flex justify-start">
+                      <span >Volume(7d)</span>
                     </div>
+                    <div className="flex flex-row">
+                      <span className="mr-[10px] ">2.8</span>
+                      <img src='/svgs/eth_asset.svg' alt='asset'></img>
+                    </div>                      
+                  </div>
                                
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
