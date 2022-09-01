@@ -12,6 +12,9 @@ module.exports = {
         84: '21rem',
       },
       colors: {
+        w:{
+          600:'#FEFEFF'
+        },
         b: {
           100: '#BFCEFF',
           200: '#90A9FF',
@@ -36,6 +39,7 @@ module.exports = {
           100: '#38B000',
         },
         l: {
+          50:  '#F6F8FC',
           100: '#ffaa85',
           200: '#ff7658',
           300: '#FC4F37',
@@ -68,13 +72,14 @@ module.exports = {
       fontFamily: {
         sans: ['Inter', ...fontFamily.sans],
         mono: ['Inconsolata', ...fontFamily.mono],
-        circular:['Circular Std']
+        RetniSans:['RetniSans']
       },
       fontSize: {
         xs: '10px',
         sm: '12px',
         md: '14px',
         lg: '16px',
+        xg: '18px',
         xl: '20px',
       },
       gridTemplateColumns: {
@@ -82,6 +87,9 @@ module.exports = {
       },
       rotate: {
         '52': '52deg',
+      },
+      boxShadow:{
+        'ml':'0 0 10px rgba(0,0,0,0.25)'
       }
     },
   },

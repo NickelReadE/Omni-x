@@ -19,6 +19,10 @@ import avax from '../public/sidebar/avax_small.png'
 import arbitrum from '../public/sidebar/arbitrum_small.png'
 import fantom from '../public/sidebar/fantom_small.png'
 import { getBlockExplorer } from '../utils/constants'
+import { getOmniInstance } from '../utils/contracts'
+import useWallet from '../hooks/useWallet'
+import { useDispatch } from 'react-redux'
+import { openSnackBar } from '../redux/reducers/snackBarReducer'
 
 type HeaderProps = {
   menu: string
@@ -37,6 +41,12 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
   })
   const [expand, setExpand] = useState(false)
   const { txInfo, pending, setPendingTxInfo } = useProgress()
+  const dispatch = useDispatch()
+  const {
+    provider,
+    signer,
+    address
+  } = useWallet()
 
   const handleMouseOver = (hoverMenu: string) => {
     setHovering({
@@ -74,11 +84,20 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
     setPendingTxInfo(null)
   }
 
+  const onOmniFaucet = async () => {
+    const chainId = provider?.network.chainId as number
+    const omni = getOmniInstance(chainId, signer)
+
+    await omni.mint({ gasLimit: '300000' })
+
+    dispatch(openSnackBar({ message: 'You will receive an 1000 $OMNI soon', status: 'success' }))
+  }
+
   return (
     <>
       <nav className={
         classNames(
-          'bg-[#F8F9FA]',
+          'bg-[#F6F8FC]',
           'border-gray-200',
           'px-2',
           'sm:px-4',
@@ -99,37 +118,43 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
                 className='flex items-center'>
                 <img
                   src={'/images/logo.svg'}
-                  className='mr-3 hover:bg-[url("../public/images/logo_hover.svg")]'
+                  className='mr-3 bg-contain hover:bg-[url("../public/images/logo_hover.svg")]'
                   alt="logo"
+                  width='75px'
+                  height='75px'
                 />
               </button>
             }
             {
               isSearch &&
-              <input autoFocus type="text" placeholder='Acquire Your Desires' className="flex items-center bg-[#F8F9FA] bg-[url('../public/images/search.png')] w-[472px] h-[88px] border-0 focus:outline-0 focus:shadow-none focus:ring-offset-0 focus:ring-0 px-[85px]" onBlur={() => setSearch(false)} onClick={() => setSearch(false)} />
+              <input autoFocus type="text" placeholder='Acquire Your Desires' className="flex items-center bg-[#F6F8FC] bg-[url('../public/images/search.png')] bg-contain bg-no-repeat	 w-[472px] h-[75px] border-0 focus:outline-0 focus:shadow-none focus:ring-offset-0 focus:ring-0 px-[85px]" onBlur={() => setSearch(false)} onClick={() => setSearch(false)} />
             }
           </div>
 
-          <div className='min-w-[200px]'></div>
-          <div className='justify-between items-center w-full md:flex md:w-auto mx-auto md:order-2' id='mobile-menu-3'>
-            <ul className="flex flex-col md:flex-row md:space-x-8 md:text-sm md:font-medium" >
-              <li onMouseOver={() => handleMouseOver('home')} onMouseOut={handleMouseOut}>
+          <div className='absolute right-[100px] top-[20px]'>
+            <button className='bg-[#ADB5BD] rounded text-[#fff] p-2' onClick={() => onOmniFaucet()}>Omni Faucet</button>
+          </div>
+
+          {/* <div className='min-w-[200px]'></div> */}
+          <div className='justify-between h-[90px] items-center w-full md:flex md:w-auto mx-auto md:order-2' id='mobile-menu-3'>
+            <ul className="flex flex-col justify-between w-[500px] md:flex-row md:space-x-8 md:text-sm md:font-medium" >
+              <li className="flex items-center" onMouseOver={() => handleMouseOver('home')} onMouseOut={handleMouseOut}>
                 <Link href='/'>
-                  <a>
-                    <div className="w-[219px] h-[90px] bg-no-repeat bg-center" style={{ backgroundImage: `url('/navbar/home${menu == 'home' ? '_active' : (hover.isHover && hover.hoverMenu == 'home' ? '_hover' : '')}.svg')` }}>
-                      <div className="relative top-full text-center">
-                        <span className={`px-10 py-2 text-lg bg-[#f1f1f1] rounded-[25px] ${hover.isHover && hover.hoverMenu == 'home' ? 'text-[#1E1C21] font-bold' : 'text-[#ADB5BD]'} ${hover.isHover && hover.hoverMenu != menu ? '' : 'hidden'}`} >HOME</span>
+                  <a> 
+                    <div className="w-[100px] h-[40px] bg- bg-no-repeat bg-center rounded-[50px]" style={{backgroundImage: `url('/navbar/home${menu == 'home' ? '_active' : (hover.isHover && hover.hoverMenu == 'home' ? '_hover' : '')}.svg')`}}>
+                      <div className="relative top-full text-center h-[36px] w-[130px] -left-2.5">
+                        <span className={` absolute left-0 px-10 py-2 text-lg bg-[#f1f1f1] rounded-[50px] ${hover.isHover && hover.hoverMenu == 'home'?'text-[#1E1C21] font-bold':'text-[#ADB5BD]'} ${hover.isHover && hover.hoverMenu != menu?'':'hidden'}`} >HOME</span>
                       </div>
                     </div>
                   </a>
                 </Link>
               </li>
-              <li onMouseOver={() => handleMouseOver('collections')} onMouseOut={handleMouseOut}>
+              <li className="flex items-center" onMouseOver={() => handleMouseOver('collections')} onMouseOut={handleMouseOut}>
                 <Link href='/collections'>
                   <a>
-                    <div className="w-[219px] h-[90px] bg-no-repeat bg-center" style={{ backgroundImage: `url('/navbar/collections${menu == 'collections' ? '_active' : (hover.isHover && hover.hoverMenu == 'collections' ? '_hover' : '')}.svg')` }}>
-                      <div className="relative top-full text-center">
-                        <span className={`px-10 py-2 text-lg bg-[#f1f1f1] rounded-[25px] ${hover.isHover && hover.hoverMenu == 'collections' ? 'text-[#1E1C21] font-bold' : 'text-[#ADB5BD]'} ${hover.isHover && hover.hoverMenu != menu ? '' : 'hidden'}`} >MARKET</span>
+                    <div className="w-[219px] h-[90px] bg-no-repeat bg-center" style={{backgroundImage: `url('/navbar/collections${menu == 'collections' ? '_active' : ''}.svg')`}}>
+                      <div className="relative top-3/4 text-center">
+                        <span className={` text-lg  ${hover.isHover && hover.hoverMenu == 'collections'?'text-[#000000] font-bold':'text-[#ADB5BD]'} ${hover.isHover && hover.hoverMenu != menu?'':'hidden'} ${menu == 'collections' && 'hidden'}` }>MARKET</span>
                       </div>
                     </div>
                   </a>
@@ -138,9 +163,9 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
               <li onMouseOver={() => handleMouseOver('analytics')} onMouseOut={handleMouseOut}>
                 <Link href='/launchpad'>
                   <a>
-                    <div className="w-[219px] h-[90px] bg-no-repeat bg-center" style={{ backgroundImage: `url('/navbar/analytics${menu == 'analytics' ? '_active' : (hover.isHover && hover.hoverMenu == 'analytics' ? '_hover' : '')}.svg')` }}>
-                      <div className="relative top-full text-center">
-                        <span className={`px-10 py-2 text-lg bg-[#f1f1f1] rounded-[25px] ${hover.isHover && hover.hoverMenu == 'analytics' ? 'text-[#1E1C21] font-bold' : 'text-[#ADB5BD]'} ${hover.isHover && hover.hoverMenu != menu ? '' : 'hidden'}`} >LAUNCHPAD</span>
+                    <div className="w-[219px] h-[90px] bg-no-repeat bg-center" style={{backgroundImage: `url('/navbar/analytics${menu == 'analytics' ? '_active' : ''}.svg')`}}>
+                      <div className="relative top-3/4 text-center">
+                        <span className={`text-lg ${hover.isHover && hover.hoverMenu == 'analytics'?'text-[#000000] font-bold':'text-[#ADB5BD]'} ${hover.isHover && hover.hoverMenu != menu?'':'hidden'} {menu == 'analytics' && 'hidden'}`} >LAUNCHPAD</span>
                       </div>
                     </div>
                   </a>

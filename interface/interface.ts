@@ -2,7 +2,7 @@ import React from 'react'
 
 export interface IPropsSlider {
   title?: string
-  images: Array<React.ReactNode>
+  cards: Array<React.ReactNode>
 }
 
 export interface IPropsImage {
@@ -17,6 +17,7 @@ export interface IPropsNFTItem {
   nft: NFTItem,
   col_url?: string,
   chain?: string,
+  col_address?:string,
   index: number
 }
 
@@ -60,7 +61,7 @@ export const ItemTypes = {
 }
 
 export interface IGetOrderRequest {
-  isOrderAsk: boolean,
+  isOrderAsk?: boolean,
   chain?: string,
   collection?: string,
   tokenId?: string,
@@ -71,7 +72,7 @@ export interface IGetOrderRequest {
   price?: any,
   startTime?: string,
   endTime?: string,
-  status?: [string],
+  status?: string[],
   pagination?: any,
   sort?: string
 }
@@ -90,10 +91,29 @@ export interface IOrder {
   startTime: number,
   endTime: number,
   minPercentageToAsk: number,
-  params: [],
+  params: any[],
   signature: string,
   v: number,
   r: string,
   s: string,
-  status: string
+  hash: string,
+  status: OrderStatus
+}
+
+export type OrderStatus = 'EXECUTED' | 'EXPIRED'
+export interface IAcceptOrderRequest {
+  hash: string,
+  status: OrderStatus
+}
+
+export interface IListingData {
+  price: number,
+  currencyName: string,
+  period: number,
+  isAuction: boolean
+}
+
+export interface IBidData {
+  price: number,
+  currencyName: string
 }

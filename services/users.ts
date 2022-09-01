@@ -15,6 +15,7 @@ const getUserNFTs = async (address: string) => {
     return res.data.data
 }
 
+
 const getUserNonce = async (address: string) => {
     const res = await API.get(`users/getUserNonce/${address}`)
     return res.data.data

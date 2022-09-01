@@ -46,7 +46,7 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
       if ( router.pathname == '/collections' ) {
         setCollectionMenu(true)
       }
-    } else if ( router.pathname === '/analytics' ) {
+    } else if ( router.pathname === '/launchpad' ) {
       setMenu('analytics')
     } else if ( router.pathname === '/' ) {
       setMenu('home')

@@ -9,7 +9,7 @@ import Twitter from '../../../public/images/twitter.png'
 import Web from '../../../public/images/web.png'
 import Ethereum from '../../../public/sidebar/ethereum.png'
 
-import { getCollectionNFTs, selectCollectionNFTs, getCollectionInfo, selectCollectionInfo, clearCollectionNFTs, selectGetNFTs, getCollectionOwners, selectCollectionOwners } from '../../../redux/reducers/collectionsReducer'
+import { getCollectionNFTs, selectCollectionNFTs, getCollectionInfo,getCollectionAllNFTs,selectCollectionInfo, clearCollectionNFTs, selectGetNFTs, getCollectionOwners, selectCollectionOwners,selectCollectionAllNFTs } from '../../../redux/reducers/collectionsReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import NFTBox from '../../../components/collections/NFTBox'
@@ -32,6 +32,9 @@ import Chip from '@material-ui/core/Chip'
 import classNames from '../../../helpers/classNames'
 import editStyle from '../../../styles/collection.module.scss'
 import { info } from 'console'
+import ordersReducer, { getOrders,selectOrders, getLastSaleOrders,selectBidOrders,selectLastSaleOrders } from '../../../redux/reducers/ordersReducer'
+import { IGetOrderRequest } from '../../../interface/interface'
+
 
 const sort_fields = [
   { id: 1, name: 'price: low to high', value: 'price', unavailable: false },
@@ -123,6 +126,7 @@ const Collection: NextPage = () => {
   const [expandedMenu, setExpandedMenu] = useState(0)
   const [selected, setSelected] = useState(sort_fields[0])
   const [enabled, setEnabled] = useState(false)
+  // const [nfts,setNFTs] = useState<any>({})
 
   const [hasMoreNFTs, setHasMoreNFTs] = useState(true)
 
@@ -134,8 +138,13 @@ const Collection: NextPage = () => {
 
   const dispatch = useDispatch()
   const nfts = useSelector(selectCollectionNFTs)
+  const allNFTs = useSelector(selectCollectionAllNFTs)
+
   const collectionInfo = useSelector(selectCollectionInfo)
   const collectionOwners = useSelector(selectCollectionOwners)
+
+  const orders = useSelector(selectOrders)
+
 
   const [imageError, setImageError] = useState(false)
   const classes = useStyles()
@@ -143,6 +152,10 @@ const Collection: NextPage = () => {
   const [searchObj, setSearchObj] = useState<any>({})
   const [filterObj, setFilterObj] = useState<any>({})
   const [clearFilter, setClearFilter] = useState(false)
+
+  const [isActiveBuyNow, setIsActiveBuyNow] = useState<boolean>(false)
+  const [listNFTs, setListNFTs] = useState<any>([])
+
 
   const finishedGetting = useSelector(selectGetNFTs)
 
@@ -152,12 +165,44 @@ const Collection: NextPage = () => {
       dispatch(getCollectionOwners(col_url) as any)
       setPage(0)
     }
-  }, [col_url])
+  }, [col_url]) 
+
+  useEffect(()=>{
+    if(nfts.length>0){
+      const request: IGetOrderRequest = {
+        isOrderAsk: true,
+        startTime: Math.floor(Date.now() / 1000).toString(),
+        endTime: Math.floor(Date.now() / 1000).toString(),
+        status: ['VALID'],
+        sort: 'OLDEST'
+      }
+      dispatch(getOrders(request) as any)
+
+      const bidRequest: IGetOrderRequest = {
+        isOrderAsk: false,
+        collection: collectionInfo.address,
+        startTime: Math.floor(Date.now() / 1000).toString(),
+        endTime: Math.floor(Date.now() / 1000).toString(),
+        status: ['VALID'],
+        sort: 'PRICE_ASC'
+      }
+      dispatch(getOrders(bidRequest) as any)
+
+      const excutedRequest: IGetOrderRequest = {
+        collection: collectionInfo.address,
+        status: ['EXECUTED'],
+        sort: 'UPDATE_OLDEST'
+      }
+      dispatch(getLastSaleOrders(excutedRequest) as any)
+    }
+  },[nfts])
+  
 
   const onChangeSort = (item: any) => {
     setSelected(item)
     dispatch(clearCollectionNFTs() as any)
     dispatch(getCollectionNFTs(col_url, 0, display_per_page, item.value, searchObj) as any)
+    dispatch(getCollectionAllNFTs(col_url,selected.value, searchObj) as any)
     setPage(0)
   }
 
@@ -171,6 +216,7 @@ const Collection: NextPage = () => {
     if ( collectionInfo ) {
       dispatch(clearCollectionNFTs() as any)
       dispatch(getCollectionNFTs(col_url, 0, display_per_page, selected.value, searchObj) as any)
+      dispatch(getCollectionAllNFTs(col_url,selected.value, searchObj) as any)
       setPage(0)
     }
   }, [searchObj])
@@ -233,70 +279,111 @@ const Collection: NextPage = () => {
     })
   }
 
+  const buyComponet = () => {
+    const temp = []
+    for(let i = 0;i<listNFTs.length;i++){
+      temp.push(
+        <NFTBox nft={listNFTs[i]} index={i} key={i}  col_url={col_url} col_address={collectionInfo.address}  chain={collectionInfo?collectionInfo.chain:'eth'}/>
+      )
+    }
+    return temp
+  }
+
+  useEffect(()=>{
+    if(isActiveBuyNow && collectionInfo && allNFTs.length>0){
+      const temp = []
+      for(let i=0;i<allNFTs.length;i++){
+        for(let j=0; j<orders.length;j++){
+          if(collectionInfo.address==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
+            console.log(allNFTs[i])
+            temp.push(allNFTs[i])
+            break
+          }
+        }
+      }
+      setListNFTs(temp)
+    } 
+  },[isActiveBuyNow,collectionInfo,allNFTs])
+
+
+
   return (
     <>
       <div className={classNames('w-full', 'mt-20', 'pr-[70px]', 'relative', editStyle.collection)}>
         <div className="w-[100%] h-[100%] mt-20">
-          <img className={classNames(editStyle.bannerImg)} src={collectionInfo&&collectionInfo.banner_image ? collectionInfo.banner_image : ''} />
-          <div className={classNames(editStyle.bannerOpacity)} />
+          {/* <img className={classNames(editStyle.bannerImg)} src={collectionInfo&&collectionInfo.banner_image ? collectionInfo.banner_image : ''} />
+          <div className={classNames(editStyle.bannerOpacity)} /> */}
         </div>
         <div className="grid grid-cols-13 mt-20">
           <div className="col-span-1"></div>
-          <div className="2xl:col-span-1 xl:col-span-2 md:col-span-2">
+          <div className="2xl:col-span-1 xl:col-span-2 md:col-span-2 bg-[#F6F8FC]">
             <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="logo" />}>
               <img src={imageError?'/images/omnix_logo_black_1.png':(collectionInfo&&collectionInfo.profile_image ? collectionInfo.profile_image : '/images/omnix_logo_black_1.png')} alt="logo" onError={(e)=>{setImageError(true)}} data-src={collectionInfo&&collectionInfo.profile_image ? collectionInfo.profile_image : ''} />
             </LazyLoad>
           </div>
-          <div className="2xl:col-span-9 xl:col-span-8 md:col-span-8 px-8 pt-3">
+          <div className="2xl:col-span-8 xl:col-span-7 md:col-span-7 px-8 pt-3 bg-[#F6F8FC]">
             <div>
-              <p className="text-[#1E1C21] font-['Roboto Mono'] text-3xl uppercase font-bold">{collectionInfo?collectionInfo.name:''}</p>
+              <p className="text-[#1E1C21]  text-3xl uppercase font-bold">{collectionInfo?collectionInfo.name:''}</p>
             </div>
             <div className="flex justify-start mt-5 mb-5">
               <div>
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-normal underline">items</p>
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-bold mt-3">{collectionInfo?collectionInfo.count:0}</p>
+                <p className="text-[#1E1C21]  text-xl font-normal underline">items</p>
+                <p className="text-[#1E1C21]  text-xl font-bold mt-3">{collectionInfo?collectionInfo.count:0}</p>
               </div>
               <div className="xl:ml-20 lg:ml-10 md:ml-10">
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-normal underline">holders</p>
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-bold mt-3">{collectionOwners}</p>
+                <p className="text-[#1E1C21] text-xl font-normal underline">holders</p>
+                <p className="text-[#1E1C21]  text-xl font-bold mt-3">{collectionOwners}</p>
               </div>
               <div className="xl:ml-20 lg:ml-10 md:ml-10">
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-normal underline">floor</p>
-                <div className="flex justify-center text-[#1E1C21] font-['Roboto Mono'] text-xl font-bold mt-3">
+                <p className="text-[#1E1C21]  text-xl font-normal underline">floor</p>
+                <div className="flex justify-center text-[#1E1C21] f text-xl font-bold mt-3">
                   <span className='mr-3'>0</span><Image src={Ethereum} height={20} width={23} alt="" />
                 </div>
               </div>
               <div className="xl:ml-20 lg:ml-10 md:ml-10">
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-normal underline">royalty fee</p>
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-bold mt-3">0%</p>
+                <p className="text-[#1E1C21] text-xl font-normal underline">royalty fee</p>
+                <p className="text-[#1E1C21] text-xl font-bold mt-3">0%</p>
               </div>
             </div>
           </div>
-          <div className="col-span-2">
-            <div className="mt-7">
-              { collectionInfo&&collectionInfo.discord &&
+          <div className="col-span-2 bg-[#F6F8FC]">
+            <div className="mt-28">
+              { collectionInfo&&collectionInfo.discord?
                 <Link href={collectionInfo.discord}>
                   <a className="p-2">
                     <Image src={Discord} width={25} height={21} alt='discord' />
                   </a>
                 </Link>
+                :
+                <a className="p-2">
+                  <Image src={Discord} width={25} height={21} alt='discord' />
+                </a>
               }
-              { collectionInfo&&collectionInfo.twitter &&
+              { collectionInfo&&collectionInfo.twitter?
                 <Link href={collectionInfo.twitter}>
                   <a className="p-2">
                     <Image src={Twitter} alt='twitter' />
                   </a>
                 </Link>
+                :
+                <a className="p-2">
+                  <Image src={Twitter} alt='twitter' />
+                </a>
               }
-              { collectionInfo&&collectionInfo.website &&
+              { collectionInfo&&collectionInfo.website?
                 <Link href={collectionInfo.website}>
                   <a className="p-2">
                     <Image src={Web} alt='website' />
                   </a>
                 </Link>
+                :
+                <a className="p-2">
+                  <Image src={Web} alt='website' />
+                </a>
               }
             </div>
           </div>
+          <div className="col-span-1"></div>
         </div>
         
         <div className='w-full mt-8 border-b-2 border-[#E9ECEF]'>
@@ -306,12 +393,12 @@ const Collection: NextPage = () => {
             <div className="px-12">
               <ul className="flex relative justify-item-stretch text-xl font-bold text-center">
                 <li
-                  className={`select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer z-30 ${currentTab === 'items' ? 'bg-[#E9ECEF] text-[#1E1C21] shadow-[1px_-1px_4px_1px_rgba(233,236,239,1)]' : 'bg-[#F8F9FA] text-[#ADB5BD] shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)]'} `}
+                  className={`select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer z-30 ${currentTab === 'items' ? 'bg-[#E9ECEF] text-[#1E1C21] shadow-[1px_-1px_4px_1px_rgba(233,236,239,1)]' : 'bg-[#F6F8FC] text-[#ADB5BD] shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)]'} `}
                   onClick={() => setCurrentTab('items')}>
                   items
                 </li>
-                <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-20 bg-[#F8F9FA] text-[#ADB5BD]'}>activity</li>
-                <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-10 bg-[#F8F9FA] text-[#ADB5BD]'}>stats</li>
+                <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-20 bg-[#F6F8FC] text-[#ADB5BD]'}>activity</li>
+                <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-10 bg-[#F6F8FC] text-[#ADB5BD]'}>stats</li>
               </ul>
             </div>
           </div>
@@ -325,7 +412,7 @@ const Collection: NextPage = () => {
             <ul className='flex flex-col space-y-4'>
               <li className="w-full">
                 <div
-                  className={`w-full px-4 py-4 text-left text-g-600  font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`}
+                  className={`w-full px-4 py-4 text-left text-g-600  font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`} onClick={()=>setIsActiveBuyNow(!isActiveBuyNow)}
                 >
                   Buy Now
                   <Switch
@@ -352,7 +439,7 @@ const Collection: NextPage = () => {
                       aria-controls="panel1a-content"
                       id="panel1a-header"
                     >
-                      <Typography className={classes.heading}>{key}</Typography>
+                      <Typography className={classNames(classes.heading,'font-RetniSans') } style={{fontFamily:'RetniSans'}}>{key}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                       <div>
@@ -446,7 +533,7 @@ const Collection: NextPage = () => {
           <div className="px-12 py-6 border-l-2 border-[#E9ECEF] w-full">
             <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 p-1 gap-4">
               <div className="2xl:col-start-4 xl:col-start-3 lg:col-start-2 md:col-start-1">
-                <button className="rounded-lg bg-[#38B000] text-[#F8F9FA] py-2 xl:text-[18px] lg:text-[14px] w-full">make a collection bid</button>
+                <button className="rounded-lg bg-[#38B000] text-[#F6F8FC] py-2 xl:text-[18px] lg:text-[14px] w-full">make a collection bid</button>
               </div>
               <div className="min-w-[180px] z-10 2xl:col-start-5 xl:col-start-4 lg:col-start-3 md:col-start-2">
                 <Listbox value={selected} onChange={onChangeSort}>
@@ -527,7 +614,7 @@ const Collection: NextPage = () => {
                   loader={
                     <div className='flex justify-center items-center'>
                       <div className="flex justify-center items-center w-[90%] h-[100px]">
-                        <CircularProgress />
+                        {!isActiveBuyNow&&<CircularProgress />}
                       </div>
                     </div>
                   }
@@ -535,13 +622,13 @@ const Collection: NextPage = () => {
                     <div></div>
                   }
                 >
-                  <div className="grid 2xl:grid-cols-5 gap-4 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 p-1">
-                    { nfts.map((item, index) => {
-                      console.log(item)
+                  <div className="grid 2xl:grid-cols-5 gap-4 xl:grid-cols-3 md:grid-cols-2 p-1">
+                    { !isActiveBuyNow && nfts.map((item, index) => {
                       return (
-                        <NFTBox nft={item} index={index} key={index} col_url={col_url} chain={collectionInfo?collectionInfo.chain:'eth'}/>
+                        <NFTBox nft={item} index={index} key={index}  col_url={col_url} col_address={collectionInfo.address}  chain={collectionInfo?collectionInfo.chain:'eth'}/>
                       )
                     })}
+                    { isActiveBuyNow && listNFTs && buyComponet()}
                   </div>
                 </InfiniteScroll>
               }
