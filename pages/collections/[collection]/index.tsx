@@ -226,7 +226,7 @@ const Collection: NextPage = () => {
       console.log(collectionInfo)
       const chainStr = collectionInfo.chain
       const chainInfo:any =  getChainInfo(getChainIdFromName(chainStr))
-      if(!chainInfo){
+      if(chainInfo){
         const mainUrl =chainInfo?.explorers[0]?.url+'/address/'+collectionInfo.address
         setExplorerUrl(mainUrl)
       }
@@ -381,7 +381,7 @@ const Collection: NextPage = () => {
               </a>
             }
             <Link href={explorerUrl}>
-              <a className="p-2">
+              <a target='_blank' className="p-2">
                 <Image src={Explorer} alt='website' />
               </a>
             </Link>
