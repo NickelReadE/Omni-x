@@ -64,7 +64,7 @@
         ],
         "nativeCurrency": {
             "name": "Ropsten Ether",
-            "symbol": "ROP",
+            "symbol": "ETH",
             "decimals": 18
         },
         "infoURL": "https://github.com/ethereum/ropsten",
@@ -97,7 +97,7 @@
         ],
         "nativeCurrency": {
             "name": "Rinkeby Ether",
-            "symbol": "RIN",
+            "symbol": "ETH",
             "decimals": 18
         },
         "infoURL": "https://www.rinkeby.io",
@@ -132,7 +132,7 @@
         ],
         "nativeCurrency": {
             "name": "Görli Ether",
-            "symbol": "GOR",
+            "symbol": "ETH",
             "decimals": 18
         },
         "infoURL": "https://goerli.net/#about",
@@ -159,7 +159,7 @@
         "faucets": [],
         "nativeCurrency": {
             "name": "Kotti Ether",
-            "symbol": "KOT",
+            "symbol": "ETH",
             "decimals": 18
         },
         "infoURL": "https://explorer.jade.builders/?network=kotti",
