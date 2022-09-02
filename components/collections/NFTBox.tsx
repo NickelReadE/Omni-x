@@ -272,21 +272,24 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
           {lastSale!=0&&<><span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span><img src={lastSaleCoin} className="w-[18px] h-[18px]" />&nbsp;<span className="text-[#6C757D] text-[14px]font-bold">{lastSale}</span></>}
           {lastSale==0&&highestBid!=0&&<><span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span><img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;<span className="text-[#6C757D] text-[14px] font-bold">{highestBid}</span></>} 
         </div></a></Link>
-        {
-          isShowBtn&&isOwner&&<Link href={`/collections/${col_url}/${nft.token_id}`}><a><div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#B00000]">
-            {'Sell'}
-          </div></a></Link>
-        }
-        {
-          isShowBtn&&!isOwner&& islisted &&<Link href={`/collections/${col_url}/${nft.token_id}`}><a><div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]">
-            {'Buy now'}
-          </div></a></Link>
-        }
-        {
-          isShowBtn&&!isOwner&& !islisted &&<div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]" onClick={() => setOpenBidDlg(true)}>
-            {'Bid'}
-          </div>
-        }
+        <div className="flex items-center ml-3">
+          <div>&nbsp;</div>
+          {
+            isShowBtn&&isOwner&&<Link href={`/collections/${col_url}/${nft.token_id}`}><a><div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#B00000]">
+              {'Sell'}
+            </div></a></Link>
+          }
+          {
+            isShowBtn&&!isOwner&& islisted &&<Link href={`/collections/${col_url}/${nft.token_id}`}><a><div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]">
+              {'Buy now'} 
+            </div></a></Link>
+          }
+          {
+            isShowBtn&&!isOwner&& !islisted &&<div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]" onClick={() => setOpenBidDlg(true)}>
+              {'Bid'}
+            </div>
+          }
+        </div>
       </div>
 
 
