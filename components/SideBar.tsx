@@ -23,7 +23,7 @@ import UserEdit from './user/UserEdit'
 import useBridge from '../hooks/useBridge'
 import useProgress from '../hooks/useProgress'
 import usd from '../constants/abis/USD.json'
-import omni from '../constants/abis/omni.json'
+import omni from '../constants/abis/Omni.json'
 import usdc from '../constants/USDC.json'
 import usdt from '../constants/USDT.json'
 
@@ -634,12 +634,7 @@ const SideBar: React.FC = () => {
       getBalance()
     }
   },[signer,address])
-  const setLogout = async() => {
-    console.log('clicked disconnect')
-    await disconnect()
-    window.location.reload()
-  }
-  
+
   return (
     <>
       {!onMenu &&

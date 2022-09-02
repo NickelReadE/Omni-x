@@ -131,7 +131,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
             }
           </div>
 
-          <div className='absolute right-[100px] flex items-center'>
+          <div className='absolute right-[100px] h-[80px] flex items-center'>
             {
               pending &&
               <div className={'rounded-[8px] w-[250px] mr-[10px] px-4 flex flex-col justify-center shadow-md ' + (expand ? 'h-[80px]' : 'h-[40px]')}>
