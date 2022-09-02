@@ -227,7 +227,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
               <div className="bg-[url('/images/ellipse.png')] hover:bg-[url('/images/ellipse_hover.png')] bg-cover w-[21px] h-[21px]"></div>
             </div> */}
           </div>
-          <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['Retni_Sans']">
+          <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
             <div className="text-[#000000] text-[14px] font-bold  mt-3 ml-3">
               {nft.name}
             </div>
@@ -258,7 +258,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
               </div>
             </div>
           </div>
-          <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['Retni_Sans']">
+          <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
             <div className="flex items-center ml-3">
               {islisted && img_url==''&&<><img src={'/svgs/ethereum.svg'} className="w-[18px] h-[18px]" alt='icon'/><span className="text-[#000000] text-[18px] font-extrabold ml-2">{price}</span></>}
               {islisted && img_url!=''&&<><img src={img_url} className="w-[18px] h-[18px]" alt='icon'/><span className="text-[#000000] text-[18px] font-extrabold ml-2">{price}</span></>}
@@ -266,7 +266,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
           </div>
         </a>
       </Link>
-      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['Retni_Sans']">
+      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
         <Link href={`/collections/${col_url}/${nft.token_id}`}><a><div className="flex items-center ml-3">
           {lastSale!=0&&<><span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span><img src={lastSaleCoin} className="w-[18px] h-[18px]" />&nbsp;<span className="text-[#6C757D] text-[14px]font-bold">{lastSale}</span></>}
           {lastSale==0&&highestBid!=0&&<><span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span><img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;<span className="text-[#6C757D] text-[14px] font-bold">{highestBid}</span></>} 
