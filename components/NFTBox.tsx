@@ -39,6 +39,8 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   const [highestBidCoin, setHighestBidCoin] = useState('')
   const [lastSale,setLastSale] = useState(0)
   const [lastSaleCoin, setLastSaleCoin] = useState('')
+  const [isShowBtn, SetIsShowBtn] = useState(false)
+
   const orders = useSelector(selectOrders)
   const bidOrders = useSelector(selectBidOrders)
   const lastSaleOrders = useSelector(selectLastSaleOrders)
@@ -196,7 +198,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   }
   
   return (
-    <div className='border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]'>
+    <div className='border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]'onMouseEnter={() => SetIsShowBtn(true)} onMouseLeave={() => SetIsShowBtn(false)}>
       <div className="nft-image-container group relative flex justify-center text-center overflow-hidden rounded-md" ref={setNodeRef} style={style} {...listeners} {...attributes}>
         {islisted?
           <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
@@ -252,7 +254,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
           {lastSale!=0&&<><span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span><img src={lastSaleCoin} className="w-[18px] h-[18px]" />&nbsp;<span className="text-[#6C757D] text-[14px]font-bold">{lastSale}</span></>}
           {lastSale==0&&highestBid!=0&&<><span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span><img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;<span className="text-[#6C757D] text-[14px] font-bold">{highestBid}</span></>}  
         </div>
-        {islisted&&<div className="ml-2 mr-3 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-bold cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
+        {isShowBtn&&islisted&&<div className="ml-2 mr-3 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-bold cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
           {'Sell'}
         </div>}
       </div>
