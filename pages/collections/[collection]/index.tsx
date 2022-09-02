@@ -586,10 +586,7 @@ const Collection: NextPage = () => {
               </div>
             </div>
             <div className="mt-5">
-              {
-                clearFilter &&
-                <Chip label="Clear Filters" variant="outlined" onClick={() => {setClearFilter(false), setSearchObj({})}} classes={{ root: classes.chipRoot }}/>
-              }
+            
               {
                 Object.keys(searchObj).map((attrKey, attrIndex) => {
                   return searchObj[attrKey].map((item: any, index: any) => {

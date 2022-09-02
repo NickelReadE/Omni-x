@@ -14,8 +14,12 @@ import Dialog from '@material-ui/core/Dialog'
 import { makeStyles } from '@material-ui/core/styles'
 import Carousel from './carousel'
 import {chainsFroSTG, GregContractAddress, veSTGContractAddress, veSTGContractAddresses} from '../constants/addresses'
+<<<<<<<<< Temporary merge branch 1
+
+=========
 import { getChainIdFromName } from '../utils/constants'
 import { getVeSTGInstance } from '../utils/contracts'
+>>>>>>>>> Temporary merge branch 2
 import Hgreg from '../public/images/gregs/logo.png'
 import Stg from '../public/images/stg/stg.png'
 import { _fetchData } from 'ethers/lib/utils'
@@ -41,7 +45,7 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
   const disptach = useDispatch()  
   const cuser = useSelector(selectUser)
   const skinName = useSelector(selectHeroSkin)
-  const {isInitialized, Moralis} = useMoralis()
+  const { isInitialized, Moralis } = useMoralis()
   const { address } = useWallet()
   const classes = useStyles()
   const [avatarError, setAvatarError] = useState(false)

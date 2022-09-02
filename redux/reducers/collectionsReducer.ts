@@ -55,7 +55,6 @@ export const collectionsSlice = createSlice({
 			state.collections = action.payload === undefined ? 0 : action.payload.data
 		},
 		setCollectionsForCard:(state, action)=>{
-			console.log(action.payload)
 			state.collectionsForCard = action.payload === undefined ? '' : action.payload
 		}
 	}
@@ -135,7 +134,6 @@ export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, ge
 		let collectionsF : any[] = []
 		const info = await collectionsService.getCollections()		
 		await info.data.map(async (element:any, index:number)=>{
-			
 			setTimeout(async function(){
 				const ownerCnt = await collectionsService.getCollectionOwners(element.col_url as string)
 				setTimeout(
@@ -143,26 +141,21 @@ export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, ge
 						let orderCnt = 0	
 						const items = await collectionsService.getCollectionInfo(element.col_url as string)
 						setTimeout(async function(){
-							orders.map((element:any)=>{
-								console.log(element.collectionAddress, items.data.address )
+							orders.map((element:any)=>{								
 								if(element.collectionAddress===items.data.address){
 									orderCnt++
 								}
 							})
-							console.log(orderCnt)
 							collectionsF.push({col_url:element.col_url, itemsCnt:items.data.count, ownerCnt:ownerCnt.data, orderCnt:orderCnt})		
 							if(collectionsF.length===info.data.length){
+								console.log('started to update localstroage')
+								localStorage.setItem('cards',JSON.stringify(collectionsF))
 								dispatch(setCollectionsForCard(collectionsF))			
 							}
 						},2000*index)
-						
 					}
 					,1000*index)
 			},1000*index)
-				
-				
-			
-			
 		})
 				
 	} catch (error) {

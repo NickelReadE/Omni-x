@@ -18,18 +18,17 @@ import { getOrders, getLastSaleOrders, selectOrders, selectBidOrders, selectLast
 import { userService } from '../../../services/users'
 import { collectionsService } from '../../../services/collections'
 
-import useWallet from '../../../hooks/useWallet'
 import { acceptOrder, postMakerOrder } from '../../../utils/makeOrder'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../../../types'
 import { IBidData, IGetOrderRequest, IListingData, IOrder, OrderStatus } from '../../../interface/interface'
 import { ContractName, CREATOR_FEE, CURRENCIES_LIST, getAddressByName, getChainInfo, getChainNameById, getCurrencyIconByAddress, getCurrencyNameAddress, getLayerzeroChainId, PROTOCAL_FEE } from '../../../utils/constants'
 import { getCurrencyInstance, getERC721Instance, getTransferSelectorNftInstance, getOmniInstance, getOmnixExchangeInstance } from '../../../utils/contracts'
-
-import PngCheck from '../../../public/images/check.png' 
-import PngSub from '../../../public/images/subButton.png'
-import PngEther from '../../../public/images/collections/ethereum.png'
 import { SaleType } from '../../../types/enum'
+import PngCheck from '../../../public/images/check.png'
+import PngSub from '../../../public/images/subButton.png'
 
+import PngEther from '../../../public/images/collections/ethereum.png'
+import useWallet from '../../../hooks/useWallet'
 
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
@@ -76,12 +75,7 @@ const Item: NextPage = () => {
   const col_url = router.query.collection as string
   const token_id = router.query.item as string
 
-  // console.log(col_url)
-  // console.log(token_id)
-
   const nftInfo = useSelector(selectNFTInfo)
-
-
 
   useEffect(() => {
     if ( col_url && token_id ) {
@@ -115,10 +109,14 @@ const Item: NextPage = () => {
   }, [nftInfo, owner, ownerType])
 
   useEffect(() => {
-    if (orders.length > 0) {
-      setOrder(orders[0])
-    } 
-  }, [orders])
+    setOrder(undefined)
+
+    if (orders.length > 0  && nftInfo.collection!=undefined && nftInfo.nft!=undefined) {
+      if(nftInfo.collection.address===orders[0].collectionAddress&&Number(nftInfo.nft.token_id)===Number(orders[0].tokenId)){
+        setOrder(orders[0])
+      }
+    }
+  }, [orders,nftInfo])
 
   useEffect(() => {
     if (bidOrders.length > 0) {
@@ -130,7 +128,7 @@ const Item: NextPage = () => {
           if (p1.eq(p2)) return 0
           return p2.sub(p1).isNegative() ? -1 : 1
         })
-      
+
       setHighestBidCoin(`/images/${getCurrencyIconByAddress(sortedBids[0].currencyAddress)}`)
       setHighestBid(Number(ethers.utils.formatEther(sortedBids[0].price)))
     } else {
@@ -145,7 +143,7 @@ const Item: NextPage = () => {
     if(lastSaleOrders.length>0){
       setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[0].price)))
       setLastSaleCoin(`/images/${getCurrencyIconByAddress(lastSaleOrders[0].currencyAddress)}`)
-    } 
+    }
   },[lastSaleOrders])
 
   const getNFTOwnership = async(col_url: string, token_id: string) => {
@@ -216,7 +214,7 @@ const Item: NextPage = () => {
     const chainId = provider?.network.chainId || 4
     const lzChainId = getLayerzeroChainId(chainId)
     const startTime = Date.now()
-    
+
     await postMakerOrder(
       provider as any,
       true,
@@ -362,7 +360,7 @@ const Item: NextPage = () => {
   const onAccept = async (bidOrder: IOrder) => {
     const chainId = provider?.network.chainId || 4
     const lzChainId = getLayerzeroChainId(chainId)
-    
+
     const omnixExchange = getOmnixExchangeInstance(chainId, signer)
     const makerBid : MakerOrderWithSignature = {
       isOrderAsk: false,
@@ -395,7 +393,7 @@ const Item: NextPage = () => {
     await nftContract.approve(transferManagerAddr, token_id)
 
     const lzFee = await omnixExchange.connect(signer as any).getLzFeesForBidWithTakerAsk(takerAsk, makerBid)
-    
+
     await omnixExchange.connect(signer as any).matchBidWithTakerAsk(takerAsk, makerBid, { value: lzFee })
 
     await updateOrderStatus(bidOrder, 'EXECUTED')
@@ -417,11 +415,11 @@ const Item: NextPage = () => {
   console.log('--------', isListed, isAuction, owner, address)
   return (
     <>
-      {nftInfo && nftInfo.nft && 
+      {nftInfo && nftInfo.nft &&
         <div className="w-full mt-40 pr-[70px] pb-[120px] font-[Retni_Sans]">
           <div className="w-full 2xl:px-[10%] xl:px-[5%] lg:px-[2%] md:px-[2%] ">
             <div className="grid grid-cols-3 2xl:gap-12 lg:gap-1 xl:gap-4">
-              <div className="col-span-1">
+              <div className="col-span-1 h-full">
                 <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image"/>}>
                   <img className='rounded-[8px]' src={imageError?'/images/omnix_logo_black_1.png':nftInfo.nft.image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={nftInfo.nft.image} />
                 </LazyLoad>
@@ -446,14 +444,14 @@ const Item: NextPage = () => {
                         owner && ownerType=='address' && <h1 className="text-[#B444F9] text-[20px] font-normal underline ml-4 break-all lg:ml-1">
                           <Link href={profileLink}><a target='_blank'>{truncate(owner)}</a></Link></h1>
                       }
-                      
+
                     </div>
                     <div className="flex justify-between items-center mt-6">
                       {order && (
                         <>
                           <h1 className="text-[#1E1C21] text-[60px] font-normal">{order.price && ethers.utils.formatEther(order.price)}</h1>
                           <div className="mr-5">
-                            {currencyIcon && 
+                            {currencyIcon &&
                               <img
                                 src={`/images/${currencyIcon}`}
                                 className='mr-[8px] w-[21px]'
@@ -471,7 +469,7 @@ const Item: NextPage = () => {
                     </div>
                   </div>
                   <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
-                    <div className="overflow-x-hidden overflow-y-auto grid 2xl:grid-cols-[30%_25%_25%_20%] lg:grid-cols-[30%_18%_32%_20%] xl:grid-cols-[30%_18%_32%_20%] max-h-[130px]">
+                    <div className="overflow-x-hidden overflow-y-auto grid 2xl:grid-cols-[30%_25%_25%_20%] lg:grid-cols-[30%_18%_32%_20%] xl:grid-cols-[30%_18%_32%_20%] min-h-[210px] max-h-[210px]">
                       <div className="font-bold text-[18px] text-[#000000]">account</div>
                       <div className="font-bold text-[18px] text-[#000000]">chain</div>
                       <div className="font-bold text-[18px] text-[#000000]">bid</div>
@@ -517,17 +515,17 @@ const Item: NextPage = () => {
                   <div className="">
                     <div className="mb-3">
                       <div className="">
-                        { isListed && !isAuction && owner?.toLowerCase() != address?.toLowerCase() && 
+                        { isListed && !isAuction && owner?.toLowerCase() != address?.toLowerCase() &&
                           <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={()=>onBuy()}>buy</button>
                         }
-                        { !isListed && owner?.toLowerCase() == address?.toLowerCase() && 
+                        { !isListed && owner?.toLowerCase() == address?.toLowerCase() &&
                           <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={() => {setOpenSellDlg(true)}}>sell</button>
                         }
                       </div>
                     </div>
                   </div>
                   <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
-                    { isListed && isAuction && owner?.toLowerCase() != address?.toLowerCase() && 
+                    { isListed && isAuction && owner?.toLowerCase() != address?.toLowerCase() &&
                       <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]" onClick={() => {setOpenBidDlg(true)}}>bid</button>
                     }
                   </div>
