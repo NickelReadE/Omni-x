@@ -107,7 +107,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
           </div>
 
           <div className='absolute right-[100px] top-[20px]'>
-            <button className='bg-[#ADB5BD] rounded text-[#fff] p-2' onClick={() => onOmniFaucet()}>Omni Faucet</button>
+            <button className='bg-gradient-to-br from-[#F3F9FF] to-[#DBE1E9] border-2 border-[#A0B3CC] rounded-lg text-black text-lg p-[10px]' onClick={() => onOmniFaucet()}>Get Test OMNI</button>
           </div>
 
           {/* <div className='min-w-[200px]'></div> */}
