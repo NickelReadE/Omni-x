@@ -295,19 +295,19 @@ const Item: NextPage = () => {
 
     console.log('---lzFee---', lzFee)
 
-    await omni.approve(omnixExchange.address, takerBid.price, { gasLimit: '300000' })
-    await omni.approve(getAddressByName('FundManager', chainId), takerBid.price, { gasLimit: '300000' })
+    await omni.approve(omnixExchange.address, takerBid.price)
+    await omni.approve(getAddressByName('FundManager', chainId), takerBid.price)
 
     console.log('--approved----')
 
-    await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee, gasLimit: '3000000' })
+    await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
 
-    // await updateOrderStatus(order, 'EXECUTED')
+    await updateOrderStatus(order, 'EXECUTED')
 
     dispatch(openSnackBar({ message: 'Bought an NFT', status: 'success' }))
-    // getBidOrders()
-    // getListOrders()
-    // getNFTOwnership(col_url, token_id)
+    getBidOrders()
+    getListOrders()
+    getNFTOwnership(col_url, token_id)
   }
 
   const onBid = async (bidData: IBidData) => {
@@ -520,7 +520,7 @@ const Item: NextPage = () => {
                         { isListed && !isAuction && owner?.toLowerCase() != address?.toLowerCase() && 
                           <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={()=>onBuy()}>buy</button>
                         }
-                        { !isListed && owner?.toLowerCase() == address?.toLowerCase() && 
+                        { owner?.toLowerCase() == address?.toLowerCase() && 
                           <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={() => {setOpenSellDlg(true)}}>sell</button>
                         }
                       </div>
