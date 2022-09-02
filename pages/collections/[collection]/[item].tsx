@@ -30,6 +30,11 @@ import PngSub from '../../../public/images/subButton.png'
 import PngEther from '../../../public/images/collections/ethereum.png'
 import { SaleType } from '../../../types/enum'
 
+const waitFor = (ms: number) => {
+  return new Promise((res) => {
+    setTimeout(() => res(0), ms)
+  })
+}
 
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
@@ -240,6 +245,7 @@ const Item: NextPage = () => {
       true
     )
 
+    console.log("nftInfo.collection.address", nftInfo.collection.address);
     if (!listingData.isAuction) {
       const transferSelector = getTransferSelectorNftInstance(chainId, signer)
       const transferManagerAddr = await transferSelector.checkTransferManagerForToken(nftInfo.collection.address)
@@ -291,14 +297,16 @@ const Item: NextPage = () => {
 
     console.log('--buy----', makerAsk, takerBid)
 
-    const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
-
-    console.log('---lzFee---', lzFee)
-
     await omni.approve(omnixExchange.address, takerBid.price)
     await omni.approve(getAddressByName('FundManager', chainId), takerBid.price)
 
     console.log('--approved----')
+
+    const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
+
+    console.log('---lzFee---', lzFee)
+
+    await waitFor(3000)
 
     await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
 
