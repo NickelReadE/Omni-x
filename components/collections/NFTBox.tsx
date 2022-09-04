@@ -2,7 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { IPropsNFTItem } from '../../interface/interface'
+import { IBidData, IPropsNFTItem } from '../../interface/interface'
 import LazyLoad from 'react-lazyload'
 import { ethers } from 'ethers'
 import { selectOrders, selectBidOrders, selectLastSaleOrders,getOrders } from '../../redux/reducers/ordersReducer'
@@ -28,6 +28,7 @@ import { addDays } from 'date-fns'
 
 import editStyle from '../../styles/nftbox.module.scss'
 import classNames from '../../helpers/classNames'
+import { getCurrencyIconByAddress } from '../../utils/constants'
 
 const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
@@ -102,101 +103,105 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
   }
 
 
-  const onBid = async (currency: string, price: number, period: number) => {
-    const chainId = provider?.network.chainId as number
-    let chain = provider?._network.name as string
-    if(chain=='unknown'){
-      if(chainId==4002){
-        chain='fantom'
-      } else if(chainId==43113){
-        chain='avalanche testnet'
-      }
-    }
-    const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
-    const startTime = Date.now()
+  // const onBid = async (currency: string, price: number, period: number) => {
+  //   const chainId = provider?.network.chainId as number
+  //   let chain = provider?._network.name as string
+  //   if(chain=='unknown'){
+  //     if(chainId==4002){
+  //       chain='fantom'
+  //     } else if(chainId==43113){
+  //       chain='avalanche testnet'
+  //     }
+  //   }
+  //   const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
+  //   const startTime = Date.now()
 
-    const Provider = new ethers.providers.Web3Provider(window.ethereum)
-    const signer = Provider.getSigner()
-    let usdContract = null
-    let contractAddress =''
+  //   const Provider = new ethers.providers.Web3Provider(window.ethereum)
+  //   const signer = Provider.getSigner()
+  //   let usdContract = null
+  //   let contractAddress =''
 
-    if(currency==='0x49fB1b5550AFFdFF32CffF03c1A8168f992296eF'){
-      contractAddress= '0xEEe98d31332154026a4aD6e95c4ce702aF7b1B20'
-      if(chainId===4){
-        usdContract =  new ethers.Contract(contractAddress, omni, signer)
-      }
-    } else if (currency==='0xeb8f08a975ab53e34d8a0330e0d34de942c95926'){
-      if(chainId===4){
-        contractAddress = usdc['rinkeby']
-        usdContract =  new ethers.Contract(contractAddress, usd, signer)
-      } else if(chainId===43113) {
-        contractAddress = usdc['fuji']
-        usdContract =  new ethers.Contract(contractAddress, usd, signer)
-      } else if(chainId===80001) {
-        contractAddress = usdc['mumbai']
-        usdContract =  new ethers.Contract(contractAddress, usd, signer)
-      } else if(chainId===421611) {
-        contractAddress = usdc['arbitrum-rinkeby']
-        usdContract =  new ethers.Contract(contractAddress, usd, signer)
-      } else if(chainId===69) {
-        contractAddress = usdc['optimism-kovan']
-        usdContract =  new ethers.Contract(contractAddress, usd, signer)
-      } else if(chainId===4002) {
-        contractAddress = usdc['fantom-testnet']
-        usdContract =  new ethers.Contract(contractAddress, usd, signer)
-      }
-    } else if (currency==='0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad') {
-      contractAddress = usdt['bsc-testnet']
-      if(chainId===97){
-        usdContract =  new ethers.Contract(contractAddress, usd, signer)
-      }
-    }
+  //   if(currency==='0x49fB1b5550AFFdFF32CffF03c1A8168f992296eF'){
+  //     contractAddress= '0xEEe98d31332154026a4aD6e95c4ce702aF7b1B20'
+  //     if(chainId===4){
+  //       usdContract =  new ethers.Contract(contractAddress, omni, signer)
+  //     }
+  //   } else if (currency==='0xeb8f08a975ab53e34d8a0330e0d34de942c95926'){
+  //     if(chainId===4){
+  //       contractAddress = usdc['rinkeby']
+  //       usdContract =  new ethers.Contract(contractAddress, usd, signer)
+  //     } else if(chainId===43113) {
+  //       contractAddress = usdc['fuji']
+  //       usdContract =  new ethers.Contract(contractAddress, usd, signer)
+  //     } else if(chainId===80001) {
+  //       contractAddress = usdc['mumbai']
+  //       usdContract =  new ethers.Contract(contractAddress, usd, signer)
+  //     } else if(chainId===421611) {
+  //       contractAddress = usdc['arbitrum-rinkeby']
+  //       usdContract =  new ethers.Contract(contractAddress, usd, signer)
+  //     } else if(chainId===69) {
+  //       contractAddress = usdc['optimism-kovan']
+  //       usdContract =  new ethers.Contract(contractAddress, usd, signer)
+  //     } else if(chainId===4002) {
+  //       contractAddress = usdc['fantom-testnet']
+  //       usdContract =  new ethers.Contract(contractAddress, usd, signer)
+  //     }
+  //   } else if (currency==='0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad') {
+  //     contractAddress = usdt['bsc-testnet']
+  //     if(chainId===97){
+  //       usdContract =  new ethers.Contract(contractAddress, usd, signer)
+  //     }
+  //   }
 
-    if(usdContract===null){
-      dispatch(openSnackBar({ message: "This network doesn't support this coin", status: 'error' }))
-      setOpenBidDlg(false)
-      return
-    }
+  //   if(usdContract===null){
+  //     dispatch(openSnackBar({ message: "This network doesn't support this coin", status: 'error' }))
+  //     setOpenBidDlg(false)
+  //     return
+  //   }
 
-    const balance = await usdContract?.balanceOf(address)
-    if(Number(ethers.utils.formatEther(balance)) < Number(price)) {
-      dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))
-      setOpenBidDlg(false)
-      return
-    }
+  //   const balance = await usdContract?.balanceOf(address)
+  //   if(Number(ethers.utils.formatEther(balance)) < Number(price)) {
+  //     dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))
+  //     setOpenBidDlg(false)
+  //     return
+  //   }
 
-    try {
-      await postMakerOrder(
-        provider as any,
-        chainId,
-        false,
-        col_address as any,
-        addresses.STRATEGY_STANDARD_SALE,
-        ethers.utils.parseUnits('1', 1),
-        ethers.utils.parseEther(price.toString()),
-        ethers.utils.parseUnits('2', 2),
-        ethers.utils.parseUnits('2', 2),
-        currency,
-        {
-          tokenId: nft.token_id,
-          startTime: startTime,
-          endTime: addDays(startTime, period).getTime(),
-          params: {
-            values: [10001],
-            types: ['uint256'],
-          },
-        },
-        chain
-      )
-      setOpenBidDlg(false)
-      dispatch(openSnackBar({ message: 'Make Offer Success', status: 'success' }))
+  //   try {
+  //     await postMakerOrder(
+  //       provider as any,
+  //       // chainId,
+  //       false,
+  //       col_address as any,
+  //       addresses.STRATEGY_STANDARD_SALE,
+  //       ethers.utils.parseUnits('1', 1),
+  //       ethers.utils.parseEther(price.toString()),
+  //       ethers.utils.parseUnits('2', 2),
+  //       ethers.utils.parseUnits('2', 2),
+  //       currency,
+  //       {
+  //         tokenId: nft.token_id,
+  //         startTime: startTime,
+  //         endTime: addDays(startTime, period).getTime(),
+  //         params: {
+  //           values: [10001],
+  //           types: ['uint256'],
+  //         },
+  //       },
+  //       chain,
+  //       false
+  //     )
+  //     setOpenBidDlg(false)
+  //     dispatch(openSnackBar({ message: 'Make Offer Success', status: 'success' }))
 
-      getBidOrders()
+  //     getBidOrders()
 
-    } catch (err: any) {
-      dispatch(openSnackBar({ message: err.message, status: 'error' }))
-    }
-  }
+  //   } catch (err: any) {
+  //     dispatch(openSnackBar({ message: err.message, status: 'error' }))
+  //   }
+  // }
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const onBid = async (bidData: IBidData) => {}
 
   return (
     <div className={classNames('w-full border-[2px] border-[#F6F8FC] rounded-[8px] cursor-pointer hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F6F8FC]', editStyle.nftContainer)}>
@@ -278,7 +283,3 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
 }
 
 export default NFTBox
-
-function getCurrencyIconByAddress(currencyAddress: any) {
-  throw new Error('Function not implemented.')
-}
