@@ -55,11 +55,6 @@ export const ProgressProvider = ({
       if (pendingTxInfo) {
         const txInfo = JSON.parse(pendingTxInfo)
 
-        if (txInfo.destTxHash) {
-          setPending(true)
-          setTxInfo(txInfo)
-          return
-        }
         if (txInfo.type === 'bridge') {
           if (txInfo.isONFTCore) {
             if (txInfo.contractType === 'ERC721') {
