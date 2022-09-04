@@ -81,6 +81,7 @@ module.exports = {
         lg: '16px',
         xg: '18px',
         xl: '20px',
+        xxl:'32px'
       },
       gridTemplateColumns: {
         '13': 'repeat(13, minmax(0, 1fr))',

@@ -23,7 +23,7 @@ export interface IPropsNFTItem {
 
 export interface NFTItem {
   name: string,
-  attributes: Object,
+  attributes: any,
   image: string,
   custom_id: number,
   token: string,
@@ -101,9 +101,17 @@ export interface IOrder {
 }
 
 export type OrderStatus = 'EXECUTED' | 'EXPIRED'
+
 export interface IAcceptOrderRequest {
   hash: string,
   status: OrderStatus
+}
+
+export interface ICollectionInfoFromLocal{
+  col_url: string,
+  itemsCnt: string,
+  ownerCnt:string,
+  orderCnt:string
 }
 
 export interface IListingData {
