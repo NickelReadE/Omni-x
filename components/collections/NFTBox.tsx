@@ -1,4 +1,5 @@
 import React from 'react'
+import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { IPropsNFTItem } from '../../interface/interface'
@@ -13,14 +14,14 @@ import ConfirmBid from './ConfirmBid'
 import { IGetOrderRequest } from '../../interface/interface'
 
 import usd from '../../constants/abis/USD.json'
-import omni from '../../constants/abis/omni.json'
+import omni from '../../constants/abis/Omni.json'
 import usdc from '../../constants/USDC.json'
 import usdt from '../../constants/USDT.json'
 
 import { openSnackBar } from '../../redux/reducers/snackBarReducer'
 
 import { postMakerOrder } from '../../utils/makeOrder'
-import { addressesByNetwork } from '../../constants'
+import { addressesByNetwork } from '../../constants/addresses'
 import { SupportedChainId } from '../../types'
 
 import { addDays } from 'date-fns'
@@ -43,6 +44,13 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
   const orders = useSelector(selectOrders)
   const bidOrders = useSelector(selectBidOrders)
   const executedOrders = useSelector(selectLastSaleOrders)
+  const {
+    provider,
+    signer,
+    address
+  } = useWallet()
+
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if(nft){
@@ -196,7 +204,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
         <a>
           <div className="group relative flex justify-center text-center overflow-hidden rounded-md">
             <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
-              <img className='collection-nft-image-item rounded-md object-cover ease-in-out duration-500 group-hover:scale-110' src={imageError||nft.image==null?'/images/omnix_logo_black_1.png':nft.image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={nft.image} />
+              <Image className='collection-nft-image-item rounded-md object-cover ease-in-out duration-500 group-hover:scale-110' src={imageError||nft.image==null?'/images/omnix_logo_black_1.png':nft.image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={nft.image} />
             </LazyLoad>
             {/* <div className={classNames('absolute top-[8px] right-[9px] p-[12px]', editStyle.ellipseBtn)}>
               <div className="bg-[url('/images/ellipse.png')] hover:bg-[url('/images/ellipse_hover.png')] bg-cover w-[21px] h-[21px]"></div>
@@ -270,3 +278,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
 }
 
 export default NFTBox
+
+function getCurrencyIconByAddress(currencyAddress: any) {
+  throw new Error('Function not implemented.')
+}

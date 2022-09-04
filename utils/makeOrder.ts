@@ -38,19 +38,19 @@ interface PostMakerOrderOptionalParams {
 }
 
 const prepareMakerOrder = async(
-    signer: ethers.providers.JsonRpcSigner | undefined,
-    signerAddress: string,
-    isOrderAsk: boolean,
-    collectionAddress: string,
-    strategyAddress: string,
-    amount: BigNumber,
-    price: BigNumber,
-    nonce: BigNumber,
-    protocolFees: BigNumber,
-    creatorFees: BigNumber,
-    currency: string,
-    optionalParams: PostMakerOrderOptionalParams = {},
-    chain: string
+  signer: ethers.providers.JsonRpcSigner | undefined,
+  signerAddress: string,
+  isOrderAsk: boolean,
+  collectionAddress: string,
+  strategyAddress: string,
+  amount: BigNumber,
+  price: BigNumber,
+  nonce: BigNumber,
+  protocolFees: BigNumber,
+  creatorFees: BigNumber,
+  currency: string,
+  optionalParams: PostMakerOrderOptionalParams = {},
+  chain: string
 ) => {
   const now = Date.now()
   const { tokenId, params, startTime, endTime } = optionalParams
@@ -63,7 +63,7 @@ const prepareMakerOrder = async(
     signer: signerAddress,
     collection: collectionAddress,
     price: price.toString(),
-    tokenId: tokenId?.toString() || "0",
+    tokenId: tokenId?.toString() || '0',
     amount: amount.toString(),
     strategy: strategyAddress,
     currency,
@@ -104,7 +104,7 @@ export const postMakerOrder = async(
     
   const signer = library.getSigner()
   const signerAddress = await signer.getAddress()
-  let nonce = await userService.getUserNonce(signerAddress)
+  const nonce = await userService.getUserNonce(signerAddress)
 
   const data = await prepareMakerOrder(
     needSign ? signer : undefined,
@@ -132,7 +132,7 @@ export const postMakerOrder = async(
  * @param library Etherjs provider
  * @see prepareMakerOrder for other params
  */
- export const updateMakerOrder = async (
+export const updateMakerOrder = async (
   library: providers.Web3Provider,
   isOrderAsk: boolean,
   collectionAddress: string,
@@ -168,7 +168,7 @@ export const postMakerOrder = async(
   const order = await orderService.createOrder(data)
 
   return data
-};
+}
 
 export const acceptOrder = async (
   hash: string, status: OrderStatus
@@ -179,7 +179,7 @@ export const acceptOrder = async (
   }
   try{
     await orderService.acceptOrder(data)
-   } catch(error) {
+  } catch(error) {
     console.log(error)
   }
 }
@@ -205,7 +205,7 @@ export const encodeMakerOrder = (order: MakerOrder, paramsTypes: SolidityType[])
  * @param paramsTypes contains an array of solidity types mapping the params array types
  * @returns String signature
  */
- const signMakerOrder = async (signer: providers.JsonRpcSigner, order: MakerOrder, paramsTypes: SolidityType[]): Promise<string> => {
+const signMakerOrder = async (signer: providers.JsonRpcSigner, order: MakerOrder, paramsTypes: SolidityType[]): Promise<string> => {
   const encodedOrder = encodeMakerOrder(order, paramsTypes)
   const typedData = {
     domain: {},
@@ -222,5 +222,5 @@ export const encodeMakerOrder = (order: MakerOrder, paramsTypes: SolidityType[])
   ])
   const digest = ethers.utils.keccak256(pack)
   const signature = await signer.signMessage(ethers.utils.arrayify(digest))
-  return signature;
+  return signature
 }
