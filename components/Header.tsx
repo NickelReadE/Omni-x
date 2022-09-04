@@ -170,106 +170,108 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
             </ul>
           </div>
 
-          {
-            pending &&
-            <div className={'rounded-[8px] w-[250px] md:order-2 mr-[70px] px-4 flex flex-col justify-center shadow-md ' + (expand ? 'h-[80px]' : 'h-[40px]')}>
-              <div className="flex items-center justify-between">
-                <span className="text-lg">processing</span>
+          <div className='absolute right-[100px] flex items-center'>
+            {
+              pending &&
+              <div className={'rounded-[8px] w-[250px] md:order-2 mr-[70px] px-4 flex flex-col justify-center shadow-md ' + (expand ? 'h-[80px]' : 'h-[40px]')}>
+                <div className="flex items-center justify-between">
+                  <span className="text-lg">processing</span>
+                  {
+                    !(pending && txInfo && txInfo.destTxHash)
+                      ?
+                      <Image src={loading} alt="loading" width={30} height={30} />
+                      :
+                      <Image src={clear} alt="clear" width={30} height={30} style={{ cursor: 'pointer' }} onClick={onClear} />
+                  }
+                  {
+                    expand
+                      ?
+                      <Image src={arrowUp} alt="arrowUp" style={{ cursor: 'pointer' }} onClick={() => setExpand(!expand)} />
+                      :
+                      <Image src={arrowDown} alt="arrowDown" style={{ cursor: 'pointer' }} onClick={() => setExpand(!expand)} />
+                  }
+                </div>
                 {
-                  !(pending && txInfo && txInfo.destTxHash)
-                    ?
-                    <Image src={loading} alt="loading" width={30} height={30} />
-                    :
-                    <Image src={clear} alt="clear" width={30} height={30} style={{ cursor: 'pointer' }} onClick={onClear} />
-                }
-                {
-                  expand
-                    ?
-                    <Image src={arrowUp} alt="arrowUp" style={{ cursor: 'pointer' }} onClick={() => setExpand(!expand)} />
-                    :
-                    <Image src={arrowDown} alt="arrowDown" style={{ cursor: 'pointer' }} onClick={() => setExpand(!expand)} />
+                  expand &&
+                  (
+                    txInfo?.type === 'bridge'
+                      ?
+                      <div className='flex items-center justify-between'>
+                        <Image src={viewExplorer} alt="view Explorer" width={20} height={20} style={{ cursor: 'pointer' }} onClick={onViewExplorer} />
+                        {
+                          (txInfo?.senderChainId === 4 || txInfo?.senderChainId === 4) &&
+                          <Image src={ethereum} alt="ethereum" width={20} height={20} />
+                        }
+                        {
+                          (txInfo?.senderChainId === 97 || txInfo?.senderChainId === 97) &&
+                          <Image src={binance} alt="binance" width={20} height={20} />
+                        }
+                        {
+                          (txInfo?.senderChainId === 43113 || txInfo?.senderChainId === 43113) &&
+                          <Image src={avax} alt="avax" width={20} height={20} />
+                        }
+                        {
+                          (txInfo?.senderChainId === 80001 || txInfo?.senderChainId === 80001) &&
+                          <Image src={polygon} alt="polygon" width={20} height={20} />
+                        }
+                        {
+                          (txInfo?.senderChainId === 421611 || txInfo?.senderChainId === 421611) &&
+                          <Image src={arbitrum} alt="arbitrum" width={20} height={20} />
+                        }
+                        {
+                          (txInfo?.senderChainId === 69 || txInfo?.senderChainId === 69) &&
+                          <Image src={optimism} alt="optimism" width={20} height={20} />
+                        }
+                        {
+                          (txInfo?.senderChainId === 4002 || txInfo?.senderChainId === 4002) &&
+                          <Image src={fantom} alt="fantom" width={20} height={20} />
+                        }
+                        <Image src={arrowRight} alt="arrowRight" />
+                        {
+                          (txInfo?.targetChainId === 4 || txInfo?.targetChainId === 4) &&
+                          <Image src={ethereum} alt="ethereum" width={20} height={20} />
+                        }
+                        {
+                          (txInfo?.targetChainId === 97 || txInfo?.targetChainId === 97) &&
+                          <Image src={binance} alt="binance" width={20} height={20} />
+                        }
+                        {
+                          (txInfo?.targetChainId === 43113 || txInfo?.targetChainId === 43113) &&
+                          <Image src={avax} alt="avax" width={20} height={20} />
+                        }
+                        {
+                          (txInfo?.targetChainId === 80001 || txInfo?.targetChainId === 80001) &&
+                          <Image src={polygon} alt="polygon" width={20} height={20} />
+                        }
+                        {
+                          (txInfo?.targetChainId === 421611 || txInfo?.targetChainId === 421611) &&
+                          <Image src={arbitrum} alt="arbitrum" width={20} height={20} />
+                        }
+                        {
+                          (txInfo?.targetChainId === 69 || txInfo?.targetChainId === 69) &&
+                          <Image src={optimism} alt="optimism" width={20} height={20} />
+                        }
+                        {
+                          (txInfo?.targetChainId === 4002 || txInfo?.targetChainId === 4002) &&
+                          <Image src={fantom} alt="fantom" width={20} height={20} />
+                        }
+                        <Image
+                          src={viewExplorer}
+                          alt="view Explorer"
+                          width={20}
+                          height={20}
+                          style={{ cursor: (pending && txInfo && txInfo.destTxHash) ? 'pointer' : 'auto', opacity: (pending && txInfo && txInfo.destTxHash) ? 1 : 0.4 }}
+                          onClick={onViewExplorerOnDest}
+                        />
+                        <span className="text-md text-gray-500 w-[90px] truncate">{txInfo?.itemName}</span>
+                      </div>
+                      :
+                      <div />
+                  )
                 }
               </div>
-              {
-                expand &&
-                (
-                  txInfo?.type === 'bridge'
-                    ?
-                    <div className='flex items-center justify-between'>
-                      <Image src={viewExplorer} alt="view Explorer" width={20} height={20} style={{ cursor: 'pointer' }} onClick={onViewExplorer} />
-                      {
-                        (txInfo?.senderChainId === 4 || txInfo?.senderChainId === 4) &&
-                        <Image src={ethereum} alt="ethereum" width={20} height={20} />
-                      }
-                      {
-                        (txInfo?.senderChainId === 97 || txInfo?.senderChainId === 97) &&
-                        <Image src={binance} alt="binance" width={20} height={20} />
-                      }
-                      {
-                        (txInfo?.senderChainId === 43113 || txInfo?.senderChainId === 43113) &&
-                        <Image src={avax} alt="avax" width={20} height={20} />
-                      }
-                      {
-                        (txInfo?.senderChainId === 80001 || txInfo?.senderChainId === 80001) &&
-                        <Image src={polygon} alt="polygon" width={20} height={20} />
-                      }
-                      {
-                        (txInfo?.senderChainId === 421611 || txInfo?.senderChainId === 421611) &&
-                        <Image src={arbitrum} alt="arbitrum" width={20} height={20} />
-                      }
-                      {
-                        (txInfo?.senderChainId === 69 || txInfo?.senderChainId === 69) &&
-                        <Image src={optimism} alt="optimism" width={20} height={20} />
-                      }
-                      {
-                        (txInfo?.senderChainId === 4002 || txInfo?.senderChainId === 4002) &&
-                        <Image src={fantom} alt="fantom" width={20} height={20} />
-                      }
-                      <Image src={arrowRight} alt="arrowRight" />
-                      {
-                        (txInfo?.targetChainId === 4 || txInfo?.targetChainId === 4) &&
-                        <Image src={ethereum} alt="ethereum" width={20} height={20} />
-                      }
-                      {
-                        (txInfo?.targetChainId === 97 || txInfo?.targetChainId === 97) &&
-                        <Image src={binance} alt="binance" width={20} height={20} />
-                      }
-                      {
-                        (txInfo?.targetChainId === 43113 || txInfo?.targetChainId === 43113) &&
-                        <Image src={avax} alt="avax" width={20} height={20} />
-                      }
-                      {
-                        (txInfo?.targetChainId === 80001 || txInfo?.targetChainId === 80001) &&
-                        <Image src={polygon} alt="polygon" width={20} height={20} />
-                      }
-                      {
-                        (txInfo?.targetChainId === 421611 || txInfo?.targetChainId === 421611) &&
-                        <Image src={arbitrum} alt="arbitrum" width={20} height={20} />
-                      }
-                      {
-                        (txInfo?.targetChainId === 69 || txInfo?.targetChainId === 69) &&
-                        <Image src={optimism} alt="optimism" width={20} height={20} />
-                      }
-                      {
-                        (txInfo?.targetChainId === 4002 || txInfo?.targetChainId === 4002) &&
-                        <Image src={fantom} alt="fantom" width={20} height={20} />
-                      }
-                      <Image
-                        src={viewExplorer}
-                        alt="view Explorer"
-                        width={20}
-                        height={20}
-                        style={{ cursor: (pending && txInfo && txInfo.destTxHash) ? 'pointer' : 'auto', opacity: (pending && txInfo && txInfo.destTxHash) ? 1 : 0.4 }}
-                        onClick={onViewExplorerOnDest}
-                      />
-                      <span className="text-md text-gray-500 w-[90px] truncate">{txInfo?.itemName}</span>
-                    </div>
-                    :
-                    <div />
-                )
-              }
-            </div>
-          }
+            }
+          </div>
         </div>
       </nav>
     </>
