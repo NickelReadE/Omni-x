@@ -5,6 +5,11 @@ import { IGetOrderRequest } from '../../interface/interface'
 import { collectionsService } from '../../services/collections'
 import { getOrders } from './ordersReducer'
 import { openSnackBar } from './snackBarReducer'
+import { getERC721Instance, getERC1155Instance, getRoyaltyFeeMangerInstance } from '../../utils/contracts'
+import { ERC2189_INTERFACE_ID } from '../../utils/constants'
+import { RoyaltyFeeManagerAddress } from '../../constants/addresses'
+
+import { ethers } from 'ethers'
 interface CollectionState{
 	nfts:any[],
 	allNFTs: {},
@@ -13,7 +18,8 @@ interface CollectionState{
 	finishedGetting:boolean,
 	owners:number,
 	collections:any[],
-	collectionsForCard:any[]
+	collectionsForCard:any[],
+	royalty:number
 }
 //reducers
 export const collectionsSlice = createSlice({
@@ -26,7 +32,8 @@ export const collectionsSlice = createSlice({
 		finishedGetting: false,
 		owners: 0,
 		collections: [],
-		collectionsForCard:[]
+		collectionsForCard:[],
+		royalty: 0
 	} as CollectionState,
 	reducers: {
 		setCollectionNFTs: (state, action) => {
@@ -56,12 +63,15 @@ export const collectionsSlice = createSlice({
 		},
 		setCollectionsForCard:(state, action)=>{
 			state.collectionsForCard = action.payload === undefined ? '' : action.payload
+		},
+		setRoyalty: (state, action) =>{
+			state.royalty = action.payload === undefined ? '' : action.payload
 		}
 	}
 })
 
 //actions
-export const { setCollectionNFTs,setCollectionAllNFTs, setCollectionInfo, setNFTInfo, clearCollections, startGetNFTs, setCollectionOwners, setCollections, setCollectionsForCard } = collectionsSlice.actions
+export const { setCollectionNFTs,setCollectionAllNFTs, setCollectionInfo, setNFTInfo, clearCollections, startGetNFTs, setCollectionOwners, setCollections, setCollectionsForCard, setRoyalty } = collectionsSlice.actions
 
 export const clearCollectionNFTs = () => (dispatch: Dispatch<any>) => {
 	dispatch(clearCollections())
@@ -122,6 +132,7 @@ export const getCollections = () => async (dispatch: Dispatch<any>) => {
 		console.log("getNFTInfo error ? ", error)
 	}
 }
+
 export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, getState: () => any) => {
 	try {
 		const request: IGetOrderRequest = {
@@ -163,6 +174,51 @@ export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, ge
 	}
 }
 
+export const getRoyalty = (contractType:string, address: string, chainId:number, signer:any) => async (dispatch: Dispatch<any>) => {
+	try{
+		if(contractType==='ERC721'){
+			console.log(address, chainId)
+			const NFTContract =  getERC721Instance(address,chainId,null)
+			const supportedERP2981 = await NFTContract.supportsInterface(ERC2189_INTERFACE_ID)
+			if(supportedERP2981){
+				const royalty = await NFTContract.getRoyaltyInfo(1,100)
+				console.log('royaltyInfo with erc2981',royalty)
+				setRoyalty(parseInt(royalty[1])/100.0)
+			}
+			else{
+				const RoyaltyManager = getRoyaltyFeeMangerInstance(RoyaltyFeeManagerAddress[chainId], chainId)
+				const royaltyInfo = await RoyaltyManager.calculateRoyaltyFeeAndGetRecipient(address,1,100)
+				console.log('royaltyInfo without erc2981',parseInt(royaltyInfo[1])/100.0)
+				setRoyalty(parseInt(royaltyInfo[1])/100.0)
+	
+			}
+		}else if(contractType==='ERC1155'){
+			console.log(address, chainId)
+			const NFTContract =  getERC1155Instance(address,chainId,null)
+			const supportedERP2981 = await NFTContract.supportsInterface(ERC2189_INTERFACE_ID)
+			if(supportedERP2981){
+				console.log(NFTContract)
+				const royalty = await NFTContract.getRoyaltyInfo(1,100)
+				console.log('royaltyInfo with erc2981',royalty)
+				setRoyalty(parseInt(royalty[1])/100.0)
+			}
+			else{
+				const RoyaltyManager = getRoyaltyFeeMangerInstance(RoyaltyFeeManagerAddress[chainId], chainId)
+				const royaltyInfo = await RoyaltyManager.calculateRoyaltyFeeAndGetRecipient(address,1,100)
+				console.log('royaltyInfo without erc2981',parseInt(royaltyInfo[1])/100.0)
+				setRoyalty(parseInt(royaltyInfo[1])/100.0)
+	
+			}
+		}else{
+			console.log("Invalid contract type")
+		}
+	}catch(error){
+		console.log(error)
+	}
+	
+	
+}
+
 //selectors
 export const selectCollectionNFTs = (state: any) => state.collectionsState.nfts
 export const selectCollectionInfo = (state: any) => state.collectionsState.info
@@ -172,5 +228,6 @@ export const selectCollectionOwners = (state: any) => state.collectionsState.own
 export const selectCollections = (state: any) => state.collectionsState.collections
 export const selectCollectionAllNFTs = (state: any) => state.collectionsState.allNFTs
 export const selectCollectionsForCard = (state: any) => state.collectionsState.collectionsForCard
+export const selectRoyalty = (state: any) => state.collectionsState.royalty
 
 export default collectionsSlice.reducer

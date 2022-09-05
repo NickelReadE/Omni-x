@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import type { NextPage } from 'next'
 import { Listbox, Transition, Switch } from '@headlessui/react'
+import {ethers} from 'ethers'
 
 import Discord from '../../../public/images/discord.png'
 import Twitter from '../../../public/images/twitter.png'
@@ -10,7 +11,8 @@ import Web from '../../../public/images/web.png'
 import Ethereum from '../../../public/sidebar/ethereum.png'
 import Explorer from '../../../public/images/exp.png'
 
-import { getCollectionNFTs, selectCollectionNFTs, getCollectionInfo,getCollectionAllNFTs,selectCollectionInfo, clearCollectionNFTs, selectGetNFTs, getCollectionOwners, selectCollectionOwners,selectCollectionAllNFTs } from '../../../redux/reducers/collectionsReducer'
+import { getCollectionNFTs, selectCollectionNFTs, getCollectionInfo,getCollectionAllNFTs, getRoyalty,selectCollectionInfo, clearCollectionNFTs, selectGetNFTs, getCollectionOwners, selectCollectionOwners,selectCollectionAllNFTs, selectRoyalty } from '../../../redux/reducers/collectionsReducer'
+import { selectAssetPrices} from '../../../redux/reducers/feeddataReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import NFTBox from '../../../components/collections/NFTBox'
@@ -36,7 +38,11 @@ import { info } from 'console'
 import ordersReducer, { getOrders,selectOrders, getLastSaleOrders,selectBidOrders,selectLastSaleOrders } from '../../../redux/reducers/ordersReducer'
 import { IGetOrderRequest , ICollectionInfoFromLocal} from '../../../interface/interface'
 import { getChainInfo, getChainIdFromName } from '../../../utils/constants'
-import { getChain } from 'react-moralis'
+import { convertETHtoUSDT, convertUSDTtoETH } from '../../../utils/convertRate'
+import { useMoralisWeb3Api, useMoralis } from 'react-moralis'
+import useWallet from '../../../hooks/useWallet'
+import { CurrencyList } from '../../../constants/currenciList'
+
 
 const sort_fields = [
   { id: 1, name: 'price: low to high', value: 'price', unavailable: false },
@@ -124,6 +130,8 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const Collection: NextPage = () => {
+  const{signer} = useWallet()
+  const { isInitialized, Moralis } = useMoralis()
   const [currentTab, setCurrentTab] = useState<string>('items')
   const [expandedMenu, setExpandedMenu] = useState(0)
   const [selected, setSelected] = useState(sort_fields[0])
@@ -144,9 +152,9 @@ const Collection: NextPage = () => {
 
   const collectionInfo = useSelector(selectCollectionInfo)
   const collectionOwners = useSelector(selectCollectionOwners)
-
+  const royalty = useSelector(selectRoyalty)
   const orders = useSelector(selectOrders)
-
+  const assetPrices = useSelector(selectAssetPrices)
 
   const [imageError, setImageError] = useState(false)
   const classes = useStyles()
@@ -157,12 +165,24 @@ const Collection: NextPage = () => {
 
   const [isActiveBuyNow, setIsActiveBuyNow] = useState<boolean>(false)
   const [listNFTs, setListNFTs] = useState<any>([])
+  const [ordersForCollection, setOrdersForCollection] = useState<any>([])
   const [collectionInfoFromLocal, setCollectionInfoFromLocal] = useState<ICollectionInfoFromLocal>()
 
   const [explorerUrl, setExplorerUrl] = useState('')
 
-  const finishedGetting = useSelector(selectGetNFTs)
+  const [contractType, setContractType] = useState('')
 
+  const [floorPrice, setFloorPrice] = useState(0)
+
+  const finishedGetting = useSelector(selectGetNFTs)
+  const fetchCollectionMetaData = async() => {
+    const options = {
+      address: collectionInfo.address,
+      chain: collectionInfo.chain,
+    };
+    const metaData = await Moralis.Web3API.token.getNFTMetadata(options);
+    setContractType(metaData.contract_type)
+  }
   useEffect(() => {
     if ( col_url ) {
       dispatch(getCollectionInfo(col_url) as any)
@@ -223,7 +243,6 @@ const Collection: NextPage = () => {
 
   useEffect(() => {
     if( collectionInfo ) {
-      console.log(collectionInfo)
       const chainStr = collectionInfo.chain
       const chainInfo:any =  getChainInfo(getChainIdFromName(chainStr))
       if(chainInfo){
@@ -317,18 +336,66 @@ const Collection: NextPage = () => {
       for(let i=0;i<allNFTs.length;i++){
         for(let j=0; j<orders.length;j++){
           if(collectionInfo.address==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
-            console.log(allNFTs[i])
-            temp.push(allNFTs[i])
-            break
+            temp.push(allNFTs[i])           
           }
         }
       }
-      setListNFTs(temp)
+      setListNFTs(temp)    
     } 
   },[isActiveBuyNow,collectionInfo,allNFTs])
+  useEffect(()=>{
+    if(collectionInfo && allNFTs.length>0){
+      const tempOrders = []
+      for(let i=0;i<allNFTs.length;i++){
+        let order:any = null
+        for(let j=0; j<orders.length;j++){
+          if(collectionInfo.address==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
+            order = orders[j]         
+          }
+        }
+        if(order){
+          tempOrders.push(order)
+        }        
+      }
+      setOrdersForCollection(tempOrders)     
+    } 
+  },[collectionInfo,allNFTs])
+  useEffect(()=>{   
+    if(ordersForCollection.length > 0 && assetPrices){
+      let lowPrice: any = Number.MAX_VALUE
+      ordersForCollection.map((collection: { price: any, currencyAddress:any }) => {
+        let priceAsUSD = 0
+        if(CurrencyList.find(({address}) => address===collection.currencyAddress)){
+         priceAsUSD = parseFloat(ethers.utils.formatEther(collection.price))
+        }else{
+          priceAsUSD = convertETHtoUSDT(parseFloat(ethers.utils.formatEther(collection.price)), assetPrices.eth)
+        }
+        if(lowPrice > priceAsUSD){
+          lowPrice  = priceAsUSD
+        }
+        setFloorPrice(lowPrice)     
+      })
+    }else if(ordersForCollection.length ===0){
+      setFloorPrice(0)
+    }
+    console.log(ordersForCollection)
+
+  },[ordersForCollection])
+  useEffect(()=> {
+    if (isInitialized && collectionInfo.address) {
+      fetchCollectionMetaData()
+    }
+  }, [isInitialized, Moralis,collectionInfo])
+  useEffect(()=>{
+    if(contractType!=='' && collectionInfo){
+      console.log("started to get royalty")
+      dispatch(getRoyalty(contractType, collectionInfo.address, getChainIdFromName(collectionInfo.chain) ,signer) as any)
+    }
+  },[contractType,collectionInfo])
   
-
-
+  useEffect(()=>{
+    console.log(royalty)
+   },[royalty])
   return (
     <>
       <div className={classNames('w-full', 'mt-20', 'pr-[70px]' ,'pt-[30px]', 'relative', editStyle.collection)}>
@@ -354,7 +421,7 @@ const Collection: NextPage = () => {
                 </a>
               </Link>
               :
-              <a className="p-2">
+              <a className="p-2 flex items-center">
                 <Image src={Discord} width={25} height={21} alt='discord' />
               </a>
             }
@@ -371,17 +438,17 @@ const Collection: NextPage = () => {
             }
             { collectionInfo&&collectionInfo.website?
               <Link href={collectionInfo.website}>
-                <a className="p-2">
+                <a className="p-2 flex items-center">
                   <Image src={Web} alt='website' />
                 </a>
               </Link>
               :
-              <a className="p-2">
+              <a className="p-2 flex items-center">
                 <Image src={Web} alt='website' />
               </a>
             }
             <Link href={explorerUrl}>
-              <a target='_blank' className="p-2">
+              <a target='_blank' className="p-2 flex items-center">
                 <Image src={Explorer} alt='website' />
               </a>
             </Link>
@@ -424,7 +491,7 @@ const Collection: NextPage = () => {
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <span className="mr-[22px] ">Royalty Fee</span>
-                  <span >20%</span>           
+                  <span >{royalty}%</span>           
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex flex-col space-y-4 justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <div className="flex flex-col">
@@ -432,7 +499,7 @@ const Collection: NextPage = () => {
                       <span>Volume(Total)</span>
                     </div>
                     <div className="flex flex-row">
-                      <span className="mr-[10px] ">200</span>
+                      <span className="mr-[10px] ">0</span>
                       <img src='/svgs/eth_asset.svg' alt='asset'></img>
                     </div>                      
                   </div>
@@ -441,7 +508,7 @@ const Collection: NextPage = () => {
                       <span >Volume(7d)</span>
                     </div>
                     <div className="flex flex-row">
-                      <span className="mr-[10px] ">2.8</span>
+                      <span className="mr-[10px] ">0</span>
                       <img src='/svgs/eth_asset.svg' alt='asset'></img>
                     </div>                      
                   </div>
@@ -454,15 +521,15 @@ const Collection: NextPage = () => {
                     </div>
                     <div className="flex flex-col space-y-1">
                       <div className="flex flex-row justify-between">
-                        <span className="mr-[22px] ">66.52</span>
+                        <span className="mr-[22px] ">{floorPrice==0?0:convertUSDTtoETH(floorPrice,assetPrices.eth?assetPrices.eth:1500).toFixed(4)}</span>
                         <img src='/svgs/eth_asset.svg' alt='asset'></img>
                       </div>
                       <div className="flex flex-row justify-between">
-                        <span className="mr-[22px] ">69.7k</span>
+                        <span className="mr-[22px] ">{floorPrice}</span>
                         <img src='/svgs/usd_asset.svg' alt='asset'></img>
                       </div>
                       <div className="flex flex-row justify-between">
-                        <span className="mr-[22px] ">300k</span>
+                        <span className="mr-[22px] ">{floorPrice}</span>
                         <img src='/svgs/omni_asset.svg' alt='asset'></img>
                       </div>
                     </div>                      
