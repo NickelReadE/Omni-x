@@ -106,6 +106,13 @@ export interface IAcceptOrderRequest {
   status: OrderStatus
 }
 
+export interface ICollectionInfoFromLocal{
+  col_url: string,
+  itemsCnt: string,
+  ownerCnt:string,
+  orderCnt:string
+}
+
 export interface IListingData {
   price: number,
   currencyName: string,

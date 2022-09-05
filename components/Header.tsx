@@ -116,9 +116,9 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
               <li className="flex items-center" onMouseOver={() => handleMouseOver('home')} onMouseOut={handleMouseOut}>
                 <Link href='/'>
                   <a> 
-                    <div className="w-[100px] h-[40px] bg- bg-no-repeat bg-center rounded-[50px]" style={{backgroundImage: `url('/navbar/home${menu == 'home' ? '_active' : (hover.isHover && hover.hoverMenu == 'home' ? '_hover' : '')}.svg')`}}>
-                      <div className="relative top-full text-center h-[36px] w-[130px] -left-2.5">
-                        <span className={` absolute left-0 px-10 py-2 text-lg bg-[#f1f1f1] rounded-[50px] ${hover.isHover && hover.hoverMenu == 'home'?'text-[#1E1C21] font-bold':'text-[#ADB5BD]'} ${hover.isHover && hover.hoverMenu != menu?'':'hidden'}`} >HOME</span>
+                    <div className="w-[219px] h-[90px] bg-no-repeat bg-center" style={{backgroundImage: `url('/navbar/home${menu == 'home' ? '_active' : ''}.svg')`}}>
+                      <div className="relative top-3/4 text-center">
+                        <span className={`text-lg  ${hover.isHover && hover.hoverMenu == 'home'?'text-[#000000] font-bold':'text-[#ADB5BD]'} ${hover.isHover && hover.hoverMenu != menu?'':'hidden'} ${menu == 'home' && 'hidden'}`} >HOME</span>
                       </div>
                     </div>
                   </a>

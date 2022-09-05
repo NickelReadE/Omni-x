@@ -86,8 +86,6 @@ const Item: NextPage = () => {
 
   const nftInfo = useSelector(selectNFTInfo)
 
-
-
   useEffect(() => {
     if ( col_url && token_id ) {
       dispatch(getNFTInfo(col_url, token_id) as any)
@@ -120,10 +118,14 @@ const Item: NextPage = () => {
   }, [nftInfo, owner, ownerType])
 
   useEffect(() => {
-    if (orders.length > 0) {
-      setOrder(orders[0])
+    setOrder(undefined)
+
+    if (orders.length > 0  && nftInfo.collection!=undefined && nftInfo.nft!=undefined) {
+      if(nftInfo.collection.address===orders[0].collectionAddress&&Number(nftInfo.nft.token_id)===Number(orders[0].tokenId)){
+        setOrder(orders[0])
+      }
     } 
-  }, [orders])
+  }, [orders,nftInfo])
 
   useEffect(() => {
     if (bidOrders.length > 0) {
@@ -151,7 +153,7 @@ const Item: NextPage = () => {
       setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[0].price)))
       setLastSaleCoin(`/images/${getCurrencyIconByAddress(lastSaleOrders[0].currencyAddress)}`)
     } 
-  },[lastSaleOrders])
+  },[lastSaleOrders,nftInfo])
 
   const getNFTOwnership = async(col_url: string, token_id: string) => {
     console.log('--getNFTOwnership---')
@@ -429,7 +431,7 @@ const Item: NextPage = () => {
         <div className="w-full mt-40 pr-[70px] pb-[120px] font-[Retni_Sans]">
           <div className="w-full 2xl:px-[10%] xl:px-[5%] lg:px-[2%] md:px-[2%] ">
             <div className="grid grid-cols-3 2xl:gap-12 lg:gap-1 xl:gap-4">
-              <div className="col-span-1">
+              <div className="col-span-1 h-full">
                 <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image"/>}>
                   <img className='rounded-[8px]' src={imageError?'/images/omnix_logo_black_1.png':nftInfo.nft.image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={nftInfo.nft.image} />
                 </LazyLoad>
@@ -445,7 +447,6 @@ const Item: NextPage = () => {
                     <Image src={PngSub} alt=""/>
                   </div>
                 </div>
-
                 <div className="grid 2xl:grid-cols-3 lg:grid-cols-[200px_1fr_1fr] xl:grid-cols-[230px_1fr_1fr] px-6 pt-3 mt-6 bg-[#F6F8FC] rounded-[2px]">
                   <div className="">
                     <div className="flex justify-start items-center">
@@ -479,7 +480,7 @@ const Item: NextPage = () => {
                     </div>
                   </div>
                   <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
-                    <div className="overflow-x-hidden overflow-y-auto grid 2xl:grid-cols-[30%_25%_25%_20%] lg:grid-cols-[30%_18%_32%_20%] xl:grid-cols-[30%_18%_32%_20%] max-h-[130px]">
+                    <div className="overflow-x-hidden overflow-y-auto grid 2xl:grid-cols-[30%_25%_25%_20%] lg:grid-cols-[30%_18%_32%_20%] xl:grid-cols-[30%_18%_32%_20%] min-h-[210px] max-h-[210px]">
                       <div className="font-bold text-[18px] text-[#000000]">account</div>
                       <div className="font-bold text-[18px] text-[#000000]">chain</div>
                       <div className="font-bold text-[18px] text-[#000000]">bid</div>
@@ -550,7 +551,6 @@ const Item: NextPage = () => {
                   <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='activity'?' text-[#1E1C21]':' text-[#A0B3CC]'}`} >activity</li>
                   <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='info'?' text-[#1E1C21]':' text-[#A0B3CC]'}`} >info</li>
                   <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='stats'?' text-[#1E1C21]':' text-[#A0B3CC]'}`} >stats</li>
-
                 </ul>
               </div>
               <div className="border-2 border-[#E9ECEF] bg-[#F6F8FC] px-10 py-8">

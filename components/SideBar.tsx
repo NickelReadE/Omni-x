@@ -72,6 +72,7 @@ const SideBar: React.FC = () => {
   const [omniBalance, setOmniBalance] = useState(0)
   const [usdcBalance, setUsdcBalance] = useState(0)
   const [usdtBalance, setUsdtBalance] = useState(0)
+  const [nativeBalance,setNativeBalance] = useState('0')
 
 
   const nfts = useSelector(selectUserNFTs)
@@ -500,11 +501,7 @@ const SideBar: React.FC = () => {
   const updateModal = (status: boolean) => {
     setConfirmTransfer(status)
   }
-  const setLogout = async() => {
-    console.log('clicked disconnect')
-    await disconnect()
-    window.location.reload()
-  }
+
   useEffect(()=>{
     const getBalance = async() => {
       try {
@@ -525,16 +522,23 @@ const SideBar: React.FC = () => {
           const balance = await usdContract.balanceOf(address)
           setUsdtBalance(Number(ethers.utils.formatEther(balance)))
         }
+        //Native Token
+        const balance = await provider?.getBalance(address!)
+        setNativeBalance((Number(balance)/Math.pow(10,18)).toFixed(4))
       } catch (error) {
         console.log(error)
       }
-      
     }
-    if(signer!=undefined && address){
+    if(signer!=undefined && address!=undefined){
       getBalance()
     }
   },[signer,address])
-
+  const setLogout = async() => {
+    console.log('clicked disconnect')
+    await disconnect()
+    window.location.reload()
+  }
+  
   return (
     <>
       { !onMenu &&
@@ -741,8 +745,7 @@ const SideBar: React.FC = () => {
                 <span className="font-semibold w-auto text-[16px]">OMNI balance: {omniBalance}</span>
                 <span className="font-semibold w-auto text-[16px]">USDC balance: {usdcBalance}</span>
                 <span className="font-semibold w-auto text-[16px]">USDT balance: {usdtBalance}</span>
-
-
+                <span className="font-semibold w-auto text-[16px]">NATIVE balance: {nativeBalance}</span>
                 <span className="w-auto text-[16px]">Staking: coming soon</span>
                 {/* <div className="w-full flex flex-row font-semibold text-[14px]">
                   <div className="bg-g-200 w-[88px] px-[11px] py-[9px]">
@@ -1041,7 +1044,8 @@ const SideBar: React.FC = () => {
       <div className="w-full md:w-auto">
         <Dialog open={unwrap} onClose={() => setUnwrap(false)}>
           <ConfirmUnwrap
-            updateModal={() => setUnwrap(false)}
+            updateModal={() => setUnwrap(false)}   
+            onUnwrap={onUnwrap}
           />
         </Dialog>
       </div>

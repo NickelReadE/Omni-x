@@ -17,7 +17,7 @@ const Analytics: NextPage = () => {
               <div className='flex justify-center items-center w-[140px] h-[140px] mt-[4px] border-2 border-solid	 rounded-[50%] border-black text-center	font-circular'>Unparalleled Liquidity</div>
             </div>     
             <div className='relative w-fit left-[225px] top-[43px]'>
-              <Link href={'https://docs.google.com/forms/d/e/1FAIpQLSd0ymFsGZc888Pyj0HLcG8Qn7d25i7GRKh-h1D7Uq1j-qbqpQ/viewform'}>
+              <Link href={'https://docs.google.com/forms/d/e/1FAIpQLSf6VCJyF1uf9SZ9BJwbGuP7bMla7JzOXMg6ctXN6SlSgNgFlw/viewform?usp=pp_url'}>
                 <a target="_blank">
                   <button className='flex justify-center  bg-[#B444F9] text-xl text-white rounded-lg pl-4 pr-4 pt-2 pb-2 items-center font-circular   transition-all duration-300 ease-in-out hover:scale-105 hover:drop-shadow-[0_10px_10px_rgba(180,68,249,0.7)] active:scale-100 active:drop-shadow-[0_5px_5px_rgba(180,68,249,0.8)]' >apply to launchpad</button>
                 </a>
