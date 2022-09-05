@@ -94,7 +94,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       for(let i=lastSaleOrders.length-1;i>=0;i--){
         if(lastSaleOrders[i].collectionAddress==collection_address&&lastSaleOrders[i].tokenId==nft.token_id){
           setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[i].price)))
-          currencies_list.map((item,index) => {
+          currencies_list[provider?._network.chainId as number].map((item,index) => {
             if(item.address==lastSaleOrders[i].currencyAddress){
               setLastSaleCoin(`/images/${item.icon}`)
             }
@@ -107,7 +107,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       for(let i=0;i<orders.length;i++){
         if(orders[i].tokenId==nft.token_id && orders[i].collectionAddress==nft.token_address && orders[i].chain==nft.chain) {
           setPrice(Number(ethers.utils.formatEther(orders[i].price)))
-          currencies_list.map((item,index) => {
+          currencies_list[provider?._network.chainId as number].map((item,index) => {
             if(item.address==orders[i].currencyAddress){
               setImageURL(`/images/${item.icon}`)
             }
@@ -122,9 +122,9 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
           if(bidOrders[i].tokenId==nft.token_id && bidOrders[i].collectionAddress==nft.token_address){
             if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
               bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
-              for(let j=0;j<currencies_list.length;j++){
-                if(currencies_list[j].address==bidOrders[i].currencyAddress){
-                  setHighestBidCoin(`/images/${currencies_list[j].icon}`)
+              for(let j=0;j<currencies_list[provider?._network.chainId as number].length;j++){
+                if(currencies_list[provider?._network.chainId as number][j].address==bidOrders[i].currencyAddress){
+                  setHighestBidCoin(`/images/${currencies_list[provider?._network.chainId as number][j].icon}`)
                 }
               }
             }

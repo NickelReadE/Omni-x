@@ -343,7 +343,7 @@ const Collection: NextPage = () => {
               </div>
               <div className="xl:ml-20 lg:ml-10 md:ml-10">
                 <p className="text-[#1E1C21] text-xl font-normal underline">royalty fee</p>
-                <p className="text-[#1E1C21] text-xl font-bold mt-3">{Number(collectionInfo.royalty)/100}%</p>
+                <p className="text-[#1E1C21] text-xl font-bold mt-3">0%</p>
               </div>
             </div>
           </div>

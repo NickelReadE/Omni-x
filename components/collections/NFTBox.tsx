@@ -63,7 +63,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
           if(orders[i].tokenId==nft.token_id && orders[i].collectionAddress==col_address && orders[i].chain==chain) {
             setPrice(ethers.utils.formatEther(orders[i].price))
             setList(true)
-            currencies_list.map((item,index) => {
+            currencies_list[provider?._network.chainId as number].map((item,index) => {
               if(item.address==orders[i].currencyAddress){
                 setImageURL(`/images/${item.icon}`)
               }
@@ -78,9 +78,9 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
           for(let i=0;i<executedOrders.length;i++){
             if(executedOrders[i].tokenId==nft.token_id && executedOrders[i].collectionAddress==col_address){
               lastprice = Number(ethers.utils.formatEther(executedOrders[i].price))
-              for(let j=0;j<currencies_list.length;j++){
-                if(currencies_list[j].address==executedOrders[i].currencyAddress){
-                  setLastSaleCoin(`/images/${currencies_list[j].icon}`)
+              for(let j=0;j<currencies_list[provider?._network.chainId as number].length;j++){
+                if(currencies_list[provider?._network.chainId as number][j].address==executedOrders[i].currencyAddress){
+                  setLastSaleCoin(`/images/${currencies_list[provider?._network.chainId as number][j].icon}`)
                 }
               }
             }
@@ -93,9 +93,9 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
             if(bidOrders[i].tokenId==nft.token_id && bidOrders[i].collectionAddress==col_address){
               if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
                 bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
-                for(let j=0;j<currencies_list.length;j++){
-                  if(currencies_list[j].address==bidOrders[i].currencyAddress){
-                    setHighestBidCoin(`/images/${currencies_list[j].icon}`)
+                for(let j=0;j<currencies_list[provider?._network.chainId as number].length;j++){
+                  if(currencies_list[provider?._network.chainId as number][j].address==bidOrders[i].currencyAddress){
+                    setHighestBidCoin(`/images/${currencies_list[provider?._network.chainId as number][j].icon}`)
                   }
                 }
               }
