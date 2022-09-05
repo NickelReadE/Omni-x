@@ -247,7 +247,6 @@ const Item: NextPage = () => {
       true
     )
 
-    console.log("nftInfo.collection.address", nftInfo.collection.address);
     if (!listingData.isAuction) {
       const transferSelector = getTransferSelectorNftInstance(chainId, signer)
       const transferManagerAddr = await transferSelector.checkTransferManagerForToken(nftInfo.collection.address)
