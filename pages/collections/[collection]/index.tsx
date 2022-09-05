@@ -179,8 +179,8 @@ const Collection: NextPage = () => {
     const options = {
       address: collectionInfo.address,
       chain: collectionInfo.chain,
-    };
-    const metaData = await Moralis.Web3API.token.getNFTMetadata(options);
+    }
+    const metaData = await Moralis.Web3API.token.getNFTMetadata(options)
     setContractType(metaData.contract_type)
   }
   useEffect(() => {
@@ -366,7 +366,7 @@ const Collection: NextPage = () => {
       ordersForCollection.map((collection: { price: any, currencyAddress:any }) => {
         let priceAsUSD = 0
         if(CurrencyList.find(({address}) => address===collection.currencyAddress)){
-         priceAsUSD = parseFloat(ethers.utils.formatEther(collection.price))
+          priceAsUSD = parseFloat(ethers.utils.formatEther(collection.price))
         }else{
           priceAsUSD = convertETHtoUSDT(parseFloat(ethers.utils.formatEther(collection.price)), assetPrices.eth)
         }
@@ -388,14 +388,13 @@ const Collection: NextPage = () => {
   }, [isInitialized, Moralis,collectionInfo])
   useEffect(()=>{
     if(contractType!=='' && collectionInfo){
-      console.log("started to get royalty")
       dispatch(getRoyalty(contractType, collectionInfo.address, getChainIdFromName(collectionInfo.chain) ,signer) as any)
     }
   },[contractType,collectionInfo])
   
   useEffect(()=>{
     console.log(royalty)
-   },[royalty])
+  },[royalty])
   return (
     <>
       <div className={classNames('w-full', 'mt-20', 'pr-[70px]' ,'pt-[30px]', 'relative', editStyle.collection)}>
