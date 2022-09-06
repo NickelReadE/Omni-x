@@ -238,8 +238,6 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
       setOpenBidDlg(false)
       return
     }
-    console.log(address)
-    console.log(ethers.utils.formatEther(balance))
 
     if(Number(ethers.utils.formatEther(balance)) < Number(price)) {
       dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))
