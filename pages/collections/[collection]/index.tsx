@@ -420,7 +420,11 @@ const Collection: NextPage = () => {
                 </a>
               </Link>
               :
+<<<<<<< HEAD
               <a className="p-2 flex items-center">
+=======
+              <a className="p-2">
+>>>>>>> 715e6e1979c5c46530bbf1cc06f916c35f4f7de8
                 <Image src={Discord} width={25} height={21} alt='discord' />
               </a>
             }
@@ -437,11 +441,16 @@ const Collection: NextPage = () => {
             }
             { collectionInfo&&collectionInfo.website?
               <Link href={collectionInfo.website}>
+<<<<<<< HEAD
                 <a className="p-2 flex items-center">
+=======
+                <a className="p-2">
+>>>>>>> 715e6e1979c5c46530bbf1cc06f916c35f4f7de8
                   <Image src={Web} alt='website' />
                 </a>
               </Link>
               :
+<<<<<<< HEAD
               <a className="p-2 flex items-center">
                 <Image src={Web} alt='website' />
               </a>
@@ -452,12 +461,18 @@ const Collection: NextPage = () => {
               </a>
             </Link>
               
+=======
+              <a className="p-2">
+                <Image src={Web} alt='website' />
+              </a>
+            }
+                    
+>>>>>>> 715e6e1979c5c46530bbf1cc06f916c35f4f7de8
           </div>
         </div>  
         <div className='w-full  mt-[-100px] border-b-2 border-[#E9ECEF]'>
           <div className="felx">
-            <div className="w-[320px] min-w-[320px]"/>
-              
+            <div className="w-[320px] min-w-[320px]"/>              
           </div>
           <div className="flex">
             <div className="w-[320px] min-w-[320px]">
@@ -490,7 +505,11 @@ const Collection: NextPage = () => {
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <span className="mr-[22px] ">Royalty Fee</span>
+<<<<<<< HEAD
                   <span >{royalty}%</span>           
+=======
+                  <span >20%</span>           
+>>>>>>> 715e6e1979c5c46530bbf1cc06f916c35f4f7de8
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex flex-col space-y-4 justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <div className="flex flex-col">
@@ -498,7 +517,11 @@ const Collection: NextPage = () => {
                       <span>Volume(Total)</span>
                     </div>
                     <div className="flex flex-row">
+<<<<<<< HEAD
                       <span className="mr-[10px] ">0</span>
+=======
+                      <span className="mr-[10px] ">200</span>
+>>>>>>> 715e6e1979c5c46530bbf1cc06f916c35f4f7de8
                       <img src='/svgs/eth_asset.svg' alt='asset'></img>
                     </div>                      
                   </div>
@@ -507,7 +530,11 @@ const Collection: NextPage = () => {
                       <span >Volume(7d)</span>
                     </div>
                     <div className="flex flex-row">
+<<<<<<< HEAD
                       <span className="mr-[10px] ">0</span>
+=======
+                      <span className="mr-[10px] ">2.8</span>
+>>>>>>> 715e6e1979c5c46530bbf1cc06f916c35f4f7de8
                       <img src='/svgs/eth_asset.svg' alt='asset'></img>
                     </div>                      
                   </div>
