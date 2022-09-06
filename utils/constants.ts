@@ -229,7 +229,7 @@ export const getChainInfo = (chainId: number) => {
 
 const loopCurrencies = (currencies: any, idx: number, address?: string) => {
   if (Object.values(currencies).indexOf(address) != -1) {
-    return CURRENCIES_LIST[idx].text
+    return CURRENCIES_LIST[idx]
   }
   return null
 }
@@ -237,9 +237,9 @@ const loopCurrencies = (currencies: any, idx: number, address?: string) => {
 export const getCurrencyIconByAddress = (address?: string) => {
   const currency_addr_list = [oft, usdc, usdt]
   for (let idx = 0; idx < currency_addr_list.length; idx++) {
-    const icon = loopCurrencies(currency_addr_list[idx], idx, address)
-    if (icon) {
-      return icon
+    const currency = loopCurrencies(currency_addr_list[idx], idx, address)
+    if (currency) {
+      return currency.icon
     }
   }
   
@@ -253,9 +253,9 @@ export const getChainNameById = (chainId: number) => {
 export const getCurrencyNameAddress = (address?: string) => {
   const currency_addr_list = [oft, usdc, usdt]
   for (let idx = 0; idx < currency_addr_list.length; idx++) {
-    const text = loopCurrencies(currency_addr_list[idx], idx, address)
-    if (text) {
-      return text
+    const currency = loopCurrencies(currency_addr_list[idx], idx, address)
+    if (currency) {
+      return currency.text
     }
   }
   
