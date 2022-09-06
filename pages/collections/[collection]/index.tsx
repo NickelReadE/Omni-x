@@ -367,8 +367,7 @@ const Collection: NextPage = () => {
         </div>  
         <div className='w-full  mt-[-100px] border-b-2 border-[#E9ECEF]'>
           <div className="felx">
-            <div className="w-[320px] min-w-[320px]"/>
-              
+            <div className="w-[320px] min-w-[320px]"/>              
           </div>
           <div className="flex">
             <div className="w-[320px] min-w-[320px]">
