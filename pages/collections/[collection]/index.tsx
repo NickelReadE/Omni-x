@@ -392,7 +392,7 @@ const Collection: NextPage = () => {
     }
   },[contractType,collectionInfo])
   
-   return (
+  return (
     <>
       <div className={classNames('w-full', 'mt-20', 'pr-[70px]' ,'pt-[30px]', 'relative', editStyle.collection)}>
         <div className="w-[100%] h-[100%] mt-20">
