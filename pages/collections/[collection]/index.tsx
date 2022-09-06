@@ -379,8 +379,7 @@ const Collection: NextPage = () => {
     }else if(ordersForCollection.length ===0){
       setFloorPrice(0)
     }
-    console.log(ordersForCollection)
-
+   
   },[ordersForCollection])
   useEffect(()=> {
     if (isInitialized && collectionInfo.address) {
@@ -393,10 +392,7 @@ const Collection: NextPage = () => {
     }
   },[contractType,collectionInfo])
   
-  useEffect(()=>{
-    console.log(royalty)
-  },[royalty])
-  return (
+   return (
     <>
       <div className={classNames('w-full', 'mt-20', 'pr-[70px]' ,'pt-[30px]', 'relative', editStyle.collection)}>
         <div className="w-[100%] h-[100%] mt-20">
@@ -524,11 +520,11 @@ const Collection: NextPage = () => {
                         <img src='/svgs/eth_asset.svg' alt='asset'></img>
                       </div>
                       <div className="flex flex-row justify-between">
-                        <span className="mr-[22px] ">{floorPrice}</span>
+                        <span className="mr-[22px] ">{floorPrice==0?0:floorPrice.toFixed(4)}</span>
                         <img src='/svgs/usd_asset.svg' alt='asset'></img>
                       </div>
                       <div className="flex flex-row justify-between">
-                        <span className="mr-[22px] ">{floorPrice}</span>
+                        <span className="mr-[22px] ">{floorPrice==0?0:floorPrice.toFixed(4)}</span>
                         <img src='/svgs/omni_asset.svg' alt='asset'></img>
                       </div>
                     </div>                      

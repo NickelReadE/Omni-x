@@ -159,7 +159,6 @@ export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, ge
 							})
 							collectionsF.push({col_url:element.col_url, itemsCnt:items.data.count, ownerCnt:ownerCnt.data, orderCnt:orderCnt})		
 							if(collectionsF.length===info.data.length){
-								console.log('started to update localstroage')
 								localStorage.setItem('cards',JSON.stringify(collectionsF))
 								dispatch(setCollectionsForCard(collectionsF))			
 							}
@@ -177,35 +176,28 @@ export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, ge
 export const getRoyalty = (contractType:string, address: string, chainId:number, signer:any) => async (dispatch: Dispatch<any>) => {
 	try{
 		if(contractType==='ERC721'){
-			console.log(address, chainId)
 			const NFTContract =  getERC721Instance(address,chainId,null)
 			const supportedERP2981 = await NFTContract.supportsInterface(ERC2189_INTERFACE_ID)
 			if(supportedERP2981){
-				const royalty = await NFTContract.getRoyaltyInfo(1,100)
-				console.log('royaltyInfo with erc2981',royalty)
+				const royalty = await NFTContract.royaltyInfo(1,100)
 				setRoyalty(parseInt(royalty[1])/100.0)
 			}
 			else{
 				const RoyaltyManager = getRoyaltyFeeMangerInstance(RoyaltyFeeManagerAddress[chainId], chainId)
 				const royaltyInfo = await RoyaltyManager.calculateRoyaltyFeeAndGetRecipient(address,1,100)
-				console.log('royaltyInfo without erc2981',parseInt(royaltyInfo[1])/100.0)
 				setRoyalty(parseInt(royaltyInfo[1])/100.0)
 	
 			}
 		}else if(contractType==='ERC1155'){
-			console.log(address, chainId)
 			const NFTContract =  getERC1155Instance(address,chainId,null)
 			const supportedERP2981 = await NFTContract.supportsInterface(ERC2189_INTERFACE_ID)
 			if(supportedERP2981){
-				console.log(NFTContract)
-				const royalty = await NFTContract.getRoyaltyInfo(1,100)
-				console.log('royaltyInfo with erc2981',royalty)
+				const royalty = await NFTContract.royaltyInfo(1,100)
 				setRoyalty(parseInt(royalty[1])/100.0)
 			}
 			else{
 				const RoyaltyManager = getRoyaltyFeeMangerInstance(RoyaltyFeeManagerAddress[chainId], chainId)
 				const royaltyInfo = await RoyaltyManager.calculateRoyaltyFeeAndGetRecipient(address,1,100)
-				console.log('royaltyInfo without erc2981',parseInt(royaltyInfo[1])/100.0)
 				setRoyalty(parseInt(royaltyInfo[1])/100.0)
 	
 			}
