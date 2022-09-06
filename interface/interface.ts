@@ -103,3 +103,10 @@ export interface IAcceptOrderRequest {
   hash: string,
   status: string
 }
+
+export interface ICollectionInfoFromLocal{
+  col_url: string,
+  itemsCnt: string,
+  ownerCnt:string,
+  orderCnt:string
+}
