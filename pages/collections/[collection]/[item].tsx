@@ -346,6 +346,13 @@ const Item: NextPage = () => {
     }
 
     const balance = await usdContract?.balanceOf(address)
+
+    if(Number(price) === 0) {
+      dispatch(openSnackBar({ message: 'Please enter a number greater than 0', status: 'error' }))
+      setOpenBidDlg(false)
+      return
+    }
+
     if(Number(ethers.utils.formatEther(balance)) < Number(price)) {
       dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))
       setOpenBidDlg(false)

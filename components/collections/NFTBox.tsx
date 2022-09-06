@@ -15,8 +15,11 @@ import { IGetOrderRequest } from '../../interface/interface'
 
 import usd from '../../constants/abis/USD.json'
 import omni from '../../constants/abis/omni.json'
+import currencyManagerABI from '../../constants/abis/CurrencyManager.json'
 import usdc from '../../constants/USDC.json'
 import usdt from '../../constants/USDT.json'
+import omniCoin from '../../constants/OMNI.json'
+import currencyManagerContractAddress from '../../constants/CurrencyManager.json'
 
 import { openSnackBar } from '../../redux/reducers/snackBarReducer'
 
@@ -28,6 +31,7 @@ import { addDays } from 'date-fns'
 
 import editStyle from '../../styles/nftbox.module.scss'
 import classNames from '../../helpers/classNames'
+
 
 import { currencies_list } from '../../utils/constants'
 
@@ -137,36 +141,87 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
     const signer = Provider.getSigner()
     let usdContract = null
     let contractAddress =''
+    let currencyMangerContract = null
 
-    if(currency==='0x49fB1b5550AFFdFF32CffF03c1A8168f992296eF'){
-      contractAddress= '0xEEe98d31332154026a4aD6e95c4ce702aF7b1B20'
-      if(chainId===4){
-        usdContract =  new ethers.Contract(contractAddress, omni, signer)
+    if(chainId===4){
+      currencyMangerContract =  new ethers.Contract(currencyManagerContractAddress['rinkeby'], currencyManagerABI, signer)
+    } else if(chainId===97) {
+      currencyMangerContract =  new ethers.Contract(currencyManagerContractAddress['bsc-testnet'], currencyManagerABI, signer)
+    } else if(chainId===43113) {
+      currencyMangerContract =  new ethers.Contract(currencyManagerContractAddress['fuji'], currencyManagerABI, signer)
+    } else if(chainId===80001) {
+      //
+    } else if(chainId===421611) {
+      //
+    } else if(chainId===69) {
+      //
+    } else if(chainId===4002) {
+      //
+    }
+
+    if(currencyMangerContract===null){
+      dispatch(openSnackBar({ message: "This network doesn't support currencies", status: 'error' }))
+      setOpenBidDlg(false)
+      return
+    }
+    
+    if(currency===currencies_list[provider?._network.chainId as number][0]['address']){//OMNI
+      const isOmniCoin = await currencyMangerContract.isOmniCurrency(currency)
+      if(isOmniCoin){
+        if(chainId===4){
+          contractAddress = omniCoin['rinkeby']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        } else if(chainId===97) {
+          contractAddress = omniCoin['bsc-testnet']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        } else if(chainId===43113) {
+          contractAddress = omniCoin['fuji']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        }
+      } else {
+        dispatch(openSnackBar({ message: "This network doesn't support this omni currency", status: 'error' }))
+        setOpenBidDlg(false)
+        return
       }
-    } else if (currency==='0xeb8f08a975ab53e34d8a0330e0d34de942c95926'){
-      if(chainId===4){
-        contractAddress = usdc['rinkeby']
-        usdContract =  new ethers.Contract(contractAddress, usd, signer)
-      } else if(chainId===43113) {
-        contractAddress = usdc['fuji']
-        usdContract =  new ethers.Contract(contractAddress, usd, signer)
-      } else if(chainId===80001) {
-        contractAddress = usdc['mumbai']
-        usdContract =  new ethers.Contract(contractAddress, usd, signer)
-      } else if(chainId===421611) {
-        contractAddress = usdc['arbitrum-rinkeby']
-        usdContract =  new ethers.Contract(contractAddress, usd, signer)
-      } else if(chainId===69) {
-        contractAddress = usdc['optimism-kovan']
-        usdContract =  new ethers.Contract(contractAddress, usd, signer)
-      } else if(chainId===4002) {
-        contractAddress = usdc['fantom-testnet']
-        usdContract =  new ethers.Contract(contractAddress, usd, signer)
+    } else if (currency===currencies_list[provider?._network.chainId as number][1]['address']){//USDC
+      const isUsdcCoin = await currencyMangerContract.isCurrencyWhitelisted(currency)
+      if(isUsdcCoin){
+        if(chainId===4){
+          contractAddress = usdc['rinkeby']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        } else if(chainId===43113) {
+          contractAddress = usdc['fuji']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        } else if(chainId===80001) {
+          contractAddress = usdc['mumbai']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        } else if(chainId===421611) {
+          contractAddress = usdc['arbitrum-rinkeby']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        } else if(chainId===69) {
+          contractAddress = usdc['optimism-kovan']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        } else if(chainId===4002) {
+          contractAddress = usdc['fantom-testnet']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        }
+      } else {
+        dispatch(openSnackBar({ message: "This network doesn't support this USDC currency", status: 'error' }))
+        setOpenBidDlg(false)
+        return
       }
-    } else if (currency==='0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad') {
-      contractAddress = usdt['bsc-testnet']
-      if(chainId===97){
-        usdContract =  new ethers.Contract(contractAddress, usd, signer)
+
+    } else if (currency===currencies_list[provider?._network.chainId as number][2]['address']) {//USDT
+      const isUsdtCoin = await currencyMangerContract.isCurrencyWhitelisted(currency)
+      if(isUsdtCoin){
+        if(chainId===97){
+          contractAddress = usdt['bsc-testnet']
+          usdContract =  new ethers.Contract(contractAddress, usd, signer)
+        }
+      } else {
+        dispatch(openSnackBar({ message: "This network doesn't support this USDT currency", status: 'error' }))
+        setOpenBidDlg(false)
+        return
       }
     }
 
@@ -177,6 +232,15 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
     }
 
     const balance = await usdContract?.balanceOf(address)
+
+    if(Number(price) === 0) {
+      dispatch(openSnackBar({ message: 'Please enter a number greater than 0', status: 'error' }))
+      setOpenBidDlg(false)
+      return
+    }
+    console.log(address)
+    console.log(ethers.utils.formatEther(balance))
+
     if(Number(ethers.utils.formatEther(balance)) < Number(price)) {
       dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))
       setOpenBidDlg(false)
