@@ -278,6 +278,12 @@ const Item: NextPage = () => {
       setOpenBidDlg(false)
       return
     }
+
+    if(currency===''){
+      dispatch(openSnackBar({ message: 'Current Currency is not supported in this network', status: 'error' }))
+      setOpenBidDlg(false)
+      return
+    }
     
     if(currency===currencies_list[provider?._network.chainId as number][0]['address']){//OMNI
       const isOmniCoin = await currencyMangerContract.isOmniCurrency(currency)
@@ -293,7 +299,7 @@ const Item: NextPage = () => {
           usdContract =  new ethers.Contract(contractAddress, omni, signer)
         }
       } else {
-        dispatch(openSnackBar({ message: "This network doesn't support this omni currency", status: 'error' }))
+        dispatch(openSnackBar({ message: 'omni currency is not whitelisted in this network', status: 'error' }))
         setOpenBidDlg(false)
         return
       }
@@ -320,7 +326,7 @@ const Item: NextPage = () => {
           usdContract =  new ethers.Contract(contractAddress, omni, signer)
         }
       } else {
-        dispatch(openSnackBar({ message: "This network doesn't support this USDC currency", status: 'error' }))
+        dispatch(openSnackBar({ message: 'USDC currency is not whitelisted in this network', status: 'error' }))
         setOpenBidDlg(false)
         return
       }
@@ -333,14 +339,14 @@ const Item: NextPage = () => {
           usdContract =  new ethers.Contract(contractAddress, usd, signer)
         }
       } else {
-        dispatch(openSnackBar({ message: "This network doesn't support this USDT currency", status: 'error' }))
+        dispatch(openSnackBar({ message: 'USDT currency is not whitelisted in this network', status: 'error' }))
         setOpenBidDlg(false)
         return
       }
     }
 
     if(usdContract===null){
-      dispatch(openSnackBar({ message: "This network doesn't support this coin", status: 'error' }))
+      dispatch(openSnackBar({ message: 'This network does not support this coin', status: 'error' }))
       setOpenBidDlg(false)
       return
     }

@@ -160,7 +160,13 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
     }
 
     if(currencyMangerContract===null){
-      dispatch(openSnackBar({ message: "This network doesn't support currencies", status: 'error' }))
+      dispatch(openSnackBar({ message: 'This network does not support currencies', status: 'error' }))
+      setOpenBidDlg(false)
+      return
+    }
+
+    if(currency===''){
+      dispatch(openSnackBar({ message: 'Current Currency is not supported in this network', status: 'error' }))
       setOpenBidDlg(false)
       return
     }
@@ -179,7 +185,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
           usdContract =  new ethers.Contract(contractAddress, omni, signer)
         }
       } else {
-        dispatch(openSnackBar({ message: "This network doesn't support this omni currency", status: 'error' }))
+        dispatch(openSnackBar({ message: 'omni currency is not whitelisted in this network', status: 'error' }))
         setOpenBidDlg(false)
         return
       }
@@ -206,7 +212,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
           usdContract =  new ethers.Contract(contractAddress, omni, signer)
         }
       } else {
-        dispatch(openSnackBar({ message: "This network doesn't support this USDC currency", status: 'error' }))
+        dispatch(openSnackBar({ message: 'USDC currency is not whitelisted in this network', status: 'error' }))
         setOpenBidDlg(false)
         return
       }
@@ -219,7 +225,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
           usdContract =  new ethers.Contract(contractAddress, usd, signer)
         }
       } else {
-        dispatch(openSnackBar({ message: "This network doesn't support this USDT currency", status: 'error' }))
+        dispatch(openSnackBar({ message: 'USDT currency is not whitelisted in this network', status: 'error' }))
         setOpenBidDlg(false)
         return
       }
