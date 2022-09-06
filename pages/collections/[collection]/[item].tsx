@@ -119,6 +119,24 @@ const Item: NextPage = () => {
     }
   }, [col_url, token_id])
 
+  const getChainId = (chainName: string) => {
+    if(chainName==='rinkeby'){
+      return 4
+    } else if(chainName==='bnbt'){
+      return 97
+    } else if(chainName==='avalanche testnet'){
+      return 43113
+    } else if(chainName==='maticmum'){
+      return 80001
+    } else if(chainName==='arbitrum-rinkeby'){
+      return 421611
+    } else if(chainName==='optimism-kovan'){
+      return  69
+    } else if(chainName==='fantom'){
+      return 4002
+    } 
+  }
+
   useEffect(() => {
     if ( nftInfo && nftInfo.collection && owner.length && ownerType) {
       if(nftInfo.collection.chain=='rinkeby' ) {
@@ -157,9 +175,10 @@ const Item: NextPage = () => {
           temp_bidOrders.push(bidOrders[i])
           if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
             bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
-            for(let j=0;j<currencies_list[provider?._network.chainId as number].length;j++){
-              if(currencies_list[provider?._network.chainId as number][j].address==bidOrders[i].currencyAddress){
-                setHighestBidCoin(`/images/${currencies_list[provider?._network.chainId as number][j].icon}`)
+            const chainIdForList = getChainId(orders[i].chain as string)
+            for(let j=0;j<currencies_list[chainIdForList as number].length;j++){
+              if(currencies_list[chainIdForList as number][j].address==bidOrders[i].currencyAddress){
+                setHighestBidCoin(`/images/${currencies_list[chainIdForList as number][j].icon}`)
               }
             }
           }
@@ -176,9 +195,10 @@ const Item: NextPage = () => {
     if(lastSaleOrders.length>0 && nftInfo.collection!=undefined && nftInfo.nft!=undefined){
       if(nftInfo.collection.address===lastSaleOrders[0].collectionAddress&&Number(nftInfo.nft.token_id)===Number(lastSaleOrders[0].tokenId)){
         setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[0].price)))
-        for(let j=0;j<currencies_list[provider?._network.chainId as number].length;j++){
-          if(currencies_list[provider?._network.chainId as number][j].address==lastSaleOrders[0].currencyAddress){
-            setLastSaleCoin(`/images/${currencies_list[provider?._network.chainId as number][j].icon}`)
+        const chainIdForList = getChainId(lastSaleOrders[0].chain as string)
+        for(let j=0;j<currencies_list[chainIdForList as number].length;j++){
+          if(currencies_list[chainIdForList as number][j].address==lastSaleOrders[0].currencyAddress){
+            setLastSaleCoin(`/images/${currencies_list[chainIdForList as number][j].icon}`)
           }
         }
       }
@@ -203,7 +223,6 @@ const Item: NextPage = () => {
   const getListOrders = () => {
     const request: IGetOrderRequest = {
       isOrderAsk: true,
-      chain: nftInfo.collection.chain,
       collection: nftInfo.collection.address,
       tokenId: nftInfo.nft.token_id,
       signer: owner,

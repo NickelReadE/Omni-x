@@ -84,6 +84,24 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   }, [])
 
   useEffect(()=>{
+    const getChainId = (chainName: string) => {
+      if(chainName==='rinkeby'){
+        return 4
+      } else if(chainName==='bnbt'){
+        return 97
+      } else if(chainName==='avalanche testnet'){
+        return 43113
+      } else if(chainName==='maticmum'){
+        return 80001
+      } else if(chainName==='arbitrum-rinkeby'){
+        return 421611
+      } else if(chainName==='optimism-kovan'){
+        return  69
+      } else if(chainName==='fantom'){
+        return 4002
+      } 
+    }
+
     const collection_address = nft.token_address
     if (collection_address == '0xb7b0d9849579d14845013ef9d8421ae58e9b9369' || collection_address == '0x7470ea065e50e3862cd9b8fb7c77712165da80e5' || collection_address == '0xb74bf94049d2c01f8805b8b15db0909168cabf46' || collection_address == '0x7f04504ae8db0689a0526d99074149fe6ddf838c' || collection_address == '0xa783cc101a0e38765540ea66aeebe38beebf7756'|| collection_address == '0x316dc98ed120130daf1771ca577fad2156c275e5') {
       setList(true)
@@ -94,7 +112,8 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       for(let i=lastSaleOrders.length-1;i>=0;i--){
         if(lastSaleOrders[i].collectionAddress==collection_address&&lastSaleOrders[i].tokenId==nft.token_id){
           setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[i].price)))
-          currencies_list[provider?._network.chainId as number].map((item,index) => {
+          const chainIdForList = getChainId(orders[i].chain as string)
+          currencies_list[chainIdForList as number].map((item,index) => {
             if(item.address==lastSaleOrders[i].currencyAddress){
               setLastSaleCoin(`/images/${item.icon}`)
             }
@@ -105,9 +124,10 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     if(orders.length>0){
       ///only in the beta version
       for(let i=0;i<orders.length;i++){
-        if(orders[i].tokenId==nft.token_id && orders[i].collectionAddress==nft.token_address && orders[i].chain==nft.chain) {
+        if(orders[i].tokenId==nft.token_id && orders[i].collectionAddress==nft.token_address) {
           setPrice(Number(ethers.utils.formatEther(orders[i].price)))
-          currencies_list[provider?._network.chainId as number].map((item,index) => {
+          const chainIdForList = getChainId(orders[i].chain as string)
+          currencies_list[chainIdForList as number].map((item,index) => {
             if(item.address==orders[i].currencyAddress){
               setImageURL(`/images/${item.icon}`)
             }
@@ -122,9 +142,10 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
           if(bidOrders[i].tokenId==nft.token_id && bidOrders[i].collectionAddress==nft.token_address){
             if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
               bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
-              for(let j=0;j<currencies_list[provider?._network.chainId as number].length;j++){
-                if(currencies_list[provider?._network.chainId as number][j].address==bidOrders[i].currencyAddress){
-                  setHighestBidCoin(`/images/${currencies_list[provider?._network.chainId as number][j].icon}`)
+              const chainIdForList = getChainId(bidOrders[i].chain as string)
+              for(let j=0;j<currencies_list[chainIdForList as number].length;j++){
+                if(currencies_list[chainIdForList as number][j].address==bidOrders[i].currencyAddress){
+                  setHighestBidCoin(`/images/${currencies_list[chainIdForList as number][j].icon}`)
                 }
               }
             }

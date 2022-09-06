@@ -35,7 +35,6 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
     if(nfts.length>0){
       const request: IGetOrderRequest = {
         isOrderAsk: true,
-        chain: provider?.network.name,
         signer: address,
         startTime: Math.floor(Date.now() / 1000).toString(),
         endTime: Math.floor(Date.now() / 1000).toString(),
