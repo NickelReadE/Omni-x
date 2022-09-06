@@ -22,7 +22,7 @@ import useWallet from '../../../hooks/useWallet'
 import { acceptOrder, postMakerOrder } from '../../../utils/makeOrder'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../../../types'
 import { IBidData, IGetOrderRequest, IListingData, IOrder, OrderStatus } from '../../../interface/interface'
-import { ContractName, CREATOR_FEE, CURRENCIES_LIST, getAddressByName, getChainInfo, getChainNameById, getCurrencyIconByAddress, getCurrencyNameAddress, getLayerzeroChainId, PROTOCAL_FEE } from '../../../utils/constants'
+import { ContractName, CREATOR_FEE, CURRENCIES_LIST, getAddressByName, getChainIconByCurrencyAddress, getChainInfo, getChainNameById, getCurrencyIconByAddress, getCurrencyNameAddress, getLayerzeroChainId, PROTOCAL_FEE } from '../../../utils/constants'
 import { getCurrencyInstance, getERC721Instance, getTransferSelectorNftInstance, getOmniInstance, getOmnixExchangeInstance } from '../../../utils/contracts'
 
 import PngCheck from '../../../public/images/check.png' 
@@ -419,7 +419,7 @@ const Item: NextPage = () => {
     return str.length > 12 ? str.substring(0, 9) + '...' : str
   }
 
-  const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
+  const currencyChainIcon = getChainIconByCurrencyAddress(order?.currencyAddress)
   const isListed = !!order
   const isAuction = order?.params?.[2] == SaleType.AUCTION
 
@@ -461,9 +461,9 @@ const Item: NextPage = () => {
                         <>
                           <h1 className="text-[#1E1C21] text-[60px] font-normal">{order.price && ethers.utils.formatEther(order.price)}</h1>
                           <div className="mr-5">
-                            {currencyIcon && 
+                            {currencyChainIcon && 
                               <img
-                                src={`/images/${currencyIcon}`}
+                                src={`${currencyChainIcon}`}
                                 className='mr-[8px] w-[21px]'
                                 alt="icon"
                               />
@@ -504,7 +504,7 @@ const Item: NextPage = () => {
                                 })
                               }
                             </div>
-                            <div className='flex justify-start items-center mt-3'>
+                            <div className='flex justify-start mt-3'>
                               <div className="mr-5">
                                 <img
                                   src={`/images/${getCurrencyIconByAddress(item.currencyAddress)}`}

@@ -227,17 +227,17 @@ export const getChainInfo = (chainId: number) => {
   return null
 }
 
-export const getCurrencyIconByAddress = (address?: string) => {
-  const loopCurrencies = (currencies: any, idx: number) => {
-    if (Object.values(currencies).indexOf(address) != -1) {
-      return CURRENCIES_LIST[idx].icon
-    }
-    return null
+const loopCurrencies = (currencies: any, idx: number, address?: string) => {
+  if (Object.values(currencies).indexOf(address) != -1) {
+    return CURRENCIES_LIST[idx].text
   }
+  return null
+}
 
+export const getCurrencyIconByAddress = (address?: string) => {
   const currency_addr_list = [oft, usdc, usdt]
   for (let idx = 0; idx < currency_addr_list.length; idx++) {
-    const icon = loopCurrencies(currency_addr_list[idx], idx)
+    const icon = loopCurrencies(currency_addr_list[idx], idx, address)
     if (icon) {
       return icon
     }
@@ -250,21 +250,33 @@ export const getChainNameById = (chainId: number) => {
   return chainInfos[chainId].name
 }
 
-export const getCurrencyNameAddress = (address: string) => {
-  const loopCurrencies = (currencies: any, idx: number) => {
-    if (Object.values(currencies).indexOf(address) != -1) {
-      return CURRENCIES_LIST[idx].text
-    }
-    return null
-  }
-
+export const getCurrencyNameAddress = (address?: string) => {
   const currency_addr_list = [oft, usdc, usdt]
   for (let idx = 0; idx < currency_addr_list.length; idx++) {
-    const text = loopCurrencies(currency_addr_list[idx], idx)
+    const text = loopCurrencies(currency_addr_list[idx], idx, address)
     if (text) {
       return text
     }
   }
   
   return CURRENCIES_LIST[0].text
+}
+
+const chainIcons = Object.values(chainInfos).reduce((acc, cur) => {
+  Object.assign(acc, { [cur.name]: cur.logo} )
+  return acc
+}, {})
+
+export const getChainIconByCurrencyAddress = (address?: string) => {
+  const currency_addr_list = [oft, usdc, usdt]
+  
+  for (let idx = 0; idx < currency_addr_list.length; idx++) {
+    const chainIdx = Object.values(currency_addr_list[idx]).indexOf(address)
+    if (chainIdx != -1) {
+      const chainName = Object.keys(currency_addr_list[idx])[chainIdx]
+      return (chainIcons as any)[chainName]
+    }
+  }
+  
+  return (chainIcons as any)['rinkeby']
 }
