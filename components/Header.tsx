@@ -87,7 +87,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
           </div>   
           {/* <div className='min-w-[200px]'></div> */}
           <div className='justify-between h-[90px] items-center w-full md:flex md:w-auto mx-auto md:order-2' id='mobile-menu-3'>
-            <ul className="flex flex-col justify-between w-[500px] md:flex-row md:space-x-8 md:text-sm md:font-medium" >
+            <ul className="flex flex-col justify-between md:flex-row md:space-x-8 md:text-sm md:font-medium" >
               <li className="flex items-center" onMouseOver={() => handleMouseOver('home')} onMouseOut={handleMouseOut}>
                 <Link href='/'>
                   <a> 
@@ -110,7 +110,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
                   </a>
                 </Link>
               </li>
-              <li onMouseOver={() => handleMouseOver('analytics')} onMouseOut={handleMouseOut}>
+              <li className="flex items-center" onMouseOver={() => handleMouseOver('analytics')} onMouseOut={handleMouseOut}>
                 <Link href='/launchpad'>
                   <a>
                     <div className="w-[219px] h-[90px] bg-no-repeat bg-center" style={{backgroundImage: `url('/navbar/analytics${menu == 'analytics' ? '_active' : ''}.svg')`}}>

@@ -30,7 +30,7 @@ import PngIcon3 from '../../../public/images/collections/dbanner3.png'
 
 import image_25 from '../../../public/images/image 25.png'
 import useWallet from '../../../hooks/useWallet'
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import { postMakerOrder, acceptOrder } from '../../../utils/makeOrder'
 import { addressesByNetwork } from '../../../constants'
 import { SupportedChainId } from '../../../types'
@@ -41,8 +41,13 @@ import { addDays } from 'date-fns'
 
 import usd from '../../../constants/abis/USD.json'
 import omni from '../../../constants/abis/omni.json'
+import currencyManagerABI from '../../../constants/abis/CurrencyManager.json'
 import usdc from '../../../constants/USDC.json'
 import usdt from '../../../constants/USDT.json'
+import omniCoin from '../../../constants/OMNI.json'
+import currencyManagerContractAddress from '../../../constants/CurrencyManager.json'
+
+import { currencies_list } from '../../../utils/constants'
 
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
@@ -71,14 +76,6 @@ const Item: NextPage = () => {
     address
   } = useWallet()
 
-
-
-  const currencies_list = [
-    { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0x49fB1b5550AFFdFF32CffF03c1A8168f992296eF' },
-    { value: 1, text: 'USDC', icon: 'payment/usdc.png', address: '0xeb8f08a975ab53e34d8a0330e0d34de942c95926' },
-    { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad' },
-  ]
-
   const chainList = [
     { chain: 'all', img_url: '/svgs/all_chain.svg', title: 'all NFTs', disabled: false},
     { chain: 'rinkeby', img_url: '/svgs/ethereum.svg', title: 'Ethereum', disabled: false},
@@ -99,11 +96,13 @@ const Item: NextPage = () => {
 
   const nftInfo = useSelector(selectNFTInfo)
 
+
   useEffect(() => {
     const getNFTOwner = async(col_url:string, token_id:string) => {
       const tokenIdOwner = await collectionsService.getNFTOwner(col_url, token_id)
 
       if ( tokenIdOwner.length > 0 ) {
+
         const user_info = await userService.getUserByAddress(tokenIdOwner)
         if(user_info.username == ''){
           setOwner(tokenIdOwner)
@@ -158,9 +157,9 @@ const Item: NextPage = () => {
           temp_bidOrders.push(bidOrders[i])
           if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
             bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
-            for(let j=0;j<currencies_list.length;j++){
-              if(currencies_list[j].address==bidOrders[i].currencyAddress){
-                setHighestBidCoin(`/images/${currencies_list[j].icon}`)
+            for(let j=0;j<currencies_list[provider?._network.chainId as number].length;j++){
+              if(currencies_list[provider?._network.chainId as number][j].address==bidOrders[i].currencyAddress){
+                setHighestBidCoin(`/images/${currencies_list[provider?._network.chainId as number][j].icon}`)
               }
             }
           }
@@ -174,13 +173,12 @@ const Item: NextPage = () => {
   useEffect(() => {
     setLastSale(0)
     setLastSaleCoin('')
-    console.log(nftInfo)
     if(lastSaleOrders.length>0 && nftInfo.collection!=undefined && nftInfo.nft!=undefined){
       if(nftInfo.collection.address===lastSaleOrders[0].collectionAddress&&Number(nftInfo.nft.token_id)===Number(lastSaleOrders[0].tokenId)){
         setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[0].price)))
-        for(let j=0;j<currencies_list.length;j++){
-          if(currencies_list[j].address==lastSaleOrders[0].currencyAddress){
-            setLastSaleCoin(`/images/${currencies_list[j].icon}`)
+        for(let j=0;j<currencies_list[provider?._network.chainId as number].length;j++){
+          if(currencies_list[provider?._network.chainId as number][j].address==lastSaleOrders[0].currencyAddress){
+            setLastSaleCoin(`/images/${currencies_list[provider?._network.chainId as number][j].icon}`)
           }
         }
       }
@@ -257,46 +255,110 @@ const Item: NextPage = () => {
     const signer = Provider.getSigner()
     let usdContract = null
     let contractAddress =''
+    let currencyMangerContract = null
 
-    if(currency==='0x49fB1b5550AFFdFF32CffF03c1A8168f992296eF'){//OMNI
-      contractAddress= '0xEEe98d31332154026a4aD6e95c4ce702aF7b1B20'
-      if(chainId===4){
-        usdContract =  new ethers.Contract(contractAddress, omni, signer)
+    if(chainId===4){
+      currencyMangerContract =  new ethers.Contract(currencyManagerContractAddress['rinkeby'], currencyManagerABI, signer)
+    } else if(chainId===97) {
+      currencyMangerContract =  new ethers.Contract(currencyManagerContractAddress['bsc-testnet'], currencyManagerABI, signer)
+    } else if(chainId===43113) {
+      currencyMangerContract =  new ethers.Contract(currencyManagerContractAddress['fuji'], currencyManagerABI, signer)
+    } else if(chainId===80001) {
+      //
+    } else if(chainId===421611) {
+      //
+    } else if(chainId===69) {
+      //
+    } else if(chainId===4002) {
+      //
+    }
+
+    if(currencyMangerContract===null){
+      dispatch(openSnackBar({ message: "This network doesn't support currencies", status: 'error' }))
+      setOpenBidDlg(false)
+      return
+    }
+
+    if(currency===''){
+      dispatch(openSnackBar({ message: 'Current Currency is not supported in this network', status: 'error' }))
+      setOpenBidDlg(false)
+      return
+    }
+    
+    if(currency===currencies_list[provider?._network.chainId as number][0]['address']){//OMNI
+      const isOmniCoin = await currencyMangerContract.isOmniCurrency(currency)
+      if(isOmniCoin){
+        if(chainId===4){
+          contractAddress = omniCoin['rinkeby']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        } else if(chainId===97) {
+          contractAddress = omniCoin['bsc-testnet']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        } else if(chainId===43113) {
+          contractAddress = omniCoin['fuji']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        }
+      } else {
+        dispatch(openSnackBar({ message: 'omni currency is not whitelisted in this network', status: 'error' }))
+        setOpenBidDlg(false)
+        return
       }
-    } else if (currency==='0xeb8f08a975ab53e34d8a0330e0d34de942c95926'){//USDC
-      if(chainId===4){
-        contractAddress = usdc['rinkeby']
-        usdContract =  new ethers.Contract(contractAddress, usd, signer)
-      } else if(chainId===43113) {
-        contractAddress = usdc['fuji']
-        usdContract =  new ethers.Contract(contractAddress, usd, signer)
-      } else if(chainId===80001) {
-        contractAddress = usdc['mumbai']
-        usdContract =  new ethers.Contract(contractAddress, usd, signer)
-      } else if(chainId===421611) {
-        contractAddress = usdc['arbitrum-rinkeby']
-        usdContract =  new ethers.Contract(contractAddress, usd, signer)
-      } else if(chainId===69) {
-        contractAddress = usdc['optimism-kovan']
-        usdContract =  new ethers.Contract(contractAddress, usd, signer)
-      } else if(chainId===4002) {
-        contractAddress = usdc['fantom-testnet']
-        usdContract =  new ethers.Contract(contractAddress, usd, signer)
+    } else if (currency===currencies_list[provider?._network.chainId as number][1]['address']){//USDC
+      const isUsdcCoin = await currencyMangerContract.isCurrencyWhitelisted(currency)
+      if(isUsdcCoin){
+        if(chainId===4){
+          contractAddress = usdc['rinkeby']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        } else if(chainId===43113) {
+          contractAddress = usdc['fuji']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        } else if(chainId===80001) {
+          contractAddress = usdc['mumbai']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        } else if(chainId===421611) {
+          contractAddress = usdc['arbitrum-rinkeby']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        } else if(chainId===69) {
+          contractAddress = usdc['optimism-kovan']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        } else if(chainId===4002) {
+          contractAddress = usdc['fantom-testnet']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        }
+      } else {
+        dispatch(openSnackBar({ message: 'USDC currency is not whitelisted in this network', status: 'error' }))
+        setOpenBidDlg(false)
+        return
       }
-    } else if (currency==='0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad') {//USDT
-      contractAddress = usdt['bsc-testnet']
-      if(chainId===97){
-        usdContract =  new ethers.Contract(contractAddress, usd, signer)
+
+    } else if (currency===currencies_list[provider?._network.chainId as number][2]['address']) {//USDT
+      const isUsdtCoin = await currencyMangerContract.isCurrencyWhitelisted(currency)
+      if(isUsdtCoin){
+        if(chainId===97){
+          contractAddress = usdt['bsc-testnet']
+          usdContract =  new ethers.Contract(contractAddress, usd, signer)
+        }
+      } else {
+        dispatch(openSnackBar({ message: 'USDT currency is not whitelisted in this network', status: 'error' }))
+        setOpenBidDlg(false)
+        return
       }
     }
 
     if(usdContract===null){
-      dispatch(openSnackBar({ message: "This network doesn't support this coin", status: 'error' }))
+      dispatch(openSnackBar({ message: 'This network does not support this coin', status: 'error' }))
       setOpenBidDlg(false)
       return
     }
 
     const balance = await usdContract?.balanceOf(address)
+
+    if(Number(price) === 0) {
+      dispatch(openSnackBar({ message: 'Please enter a number greater than 0', status: 'error' }))
+      setOpenBidDlg(false)
+      return
+    }
+
     if(Number(ethers.utils.formatEther(balance)) < Number(price)) {
       dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))
       setOpenBidDlg(false)
@@ -469,7 +531,7 @@ const Item: NextPage = () => {
                     <div className="flex justify-between items-center mt-6">
                       <h1 className="text-[#1E1C21] text-[60px] font-bold">{order && order.price && ethers.utils.formatEther(order.price)}</h1>
                       {
-                        currencies_list.map((currency,index) => {
+                        currencies_list[provider?._network.chainId as number].map((currency,index) => {
                           if(currency.address==order?.currencyAddress){
                             return(
                               <div className="mr-5" key={index}>
@@ -497,9 +559,9 @@ const Item: NextPage = () => {
                       <div className="font-bold text-[18px] text-[#000000]">bid</div>
                       <div></div>
                       {
-                        bidOrder && bidOrder.map((item,index) => {
+                        bidOrder && bidOrder.map((item,idx) => {
                           return <>
-                            <div className='break-all mt-3 text-[16px] font-bold'>{truncate(item.signer)}</div>
+                            <div className='break-all mt-3 text-[16px] font-bold' key={idx}>{truncate(item.signer)}</div>
                             <div className="text-center mt-3">
                               {
                                 chainList.map((chain,index) => {
@@ -517,7 +579,7 @@ const Item: NextPage = () => {
                               }
                             </div>
                             <div className='flex justify-start mt-3'>
-                              {currencies_list.map((currency,index) => {
+                              {currencies_list[provider?._network.chainId as number].map((currency,index) => {
                                 if(currency.address==item?.currencyAddress){
                                   return(
                                     <div className="mr-5" key={index}>
@@ -532,7 +594,7 @@ const Item: NextPage = () => {
                               })}
                               <p className='ml-3 text-[16px] font-bold'>${item && item.price && ethers.utils.formatEther(item.price)}</p>
                             </div>
-                            <div className='text-right mt-3'>{owner.toLowerCase()==address?.toLowerCase()&&<button className='bg-[#ADB5BD] hover:bg-[#38B000] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5' onClick={() => onAccept(index)}>accept</button>}</div>
+                            <div className='text-right mt-3'>{owner.toLowerCase()==address?.toLowerCase()&&<button className='bg-[#ADB5BD] hover:bg-[#38B000] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5' onClick={() => onAccept(idx)}>accept</button>}</div>
                           </>
                         })
                       }

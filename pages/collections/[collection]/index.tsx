@@ -141,6 +141,7 @@ const Collection: NextPage = () => {
   const allNFTs = useSelector(selectCollectionAllNFTs)
 
   const collectionInfo = useSelector(selectCollectionInfo)
+
   const collectionOwners = useSelector(selectCollectionOwners)
 
   const orders = useSelector(selectOrders)
