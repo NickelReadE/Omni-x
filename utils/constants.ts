@@ -37,6 +37,16 @@ export const ONFT1155_CORE_INTERFACE_ID = '0x33577776'
 export const ERC1155_INTERFACE_ID = '0xd9b67a26'
 export const ERC712_INTERFACE_ID = '0x80ac58cd'
 
+export const chainIdInfos: { [key: string]: number} = {
+  'rinkeby': 4,
+  'bnbt': 97,
+  'avalanche testnet': 43113,
+  'maticmum': 80001,
+  'arbitrum-rinkeby': 421611,
+  'optimism-kovan': 69,
+  'fantom': 4002,
+}
+
 export const chainInfos: { [key: number]: { name: string; logo: string, officialName: string, currency: string } } = {
   1: {
     name: 'eth',

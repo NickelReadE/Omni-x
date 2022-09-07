@@ -48,7 +48,7 @@ import omniCoin from '../../../constants/OMNI.json'
 import currencyManagerContractAddress from '../../../constants/CurrencyManager.json'
 
 import { currencies_list } from '../../../utils/constants'
-
+import { chainIdInfos } from '../../../utils/constants'
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('items')
@@ -119,24 +119,6 @@ const Item: NextPage = () => {
     }
   }, [col_url, token_id])
 
-  const getChainId = (chainName: string) => {
-    if(chainName==='rinkeby'){
-      return 4
-    } else if(chainName==='bnbt'){
-      return 97
-    } else if(chainName==='avalanche testnet'){
-      return 43113
-    } else if(chainName==='maticmum'){
-      return 80001
-    } else if(chainName==='arbitrum-rinkeby'){
-      return 421611
-    } else if(chainName==='optimism-kovan'){
-      return  69
-    } else if(chainName==='fantom'){
-      return 4002
-    } 
-  }
-
   useEffect(() => {
     if ( nftInfo && nftInfo.collection && owner.length && ownerType) {
       if(nftInfo.collection.chain=='rinkeby' ) {
@@ -175,7 +157,7 @@ const Item: NextPage = () => {
           temp_bidOrders.push(bidOrders[i])
           if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
             bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
-            const chainIdForList = getChainId(orders[i].chain as string)
+            const chainIdForList = chainIdInfos[bidOrders[i].chain as string]
             for(let j=0;j<currencies_list[chainIdForList as number].length;j++){
               if(currencies_list[chainIdForList as number][j].address==bidOrders[i].currencyAddress){
                 setHighestBidCoin(`/images/${currencies_list[chainIdForList as number][j].icon}`)
@@ -195,7 +177,7 @@ const Item: NextPage = () => {
     if(lastSaleOrders.length>0 && nftInfo.collection!=undefined && nftInfo.nft!=undefined){
       if(nftInfo.collection.address===lastSaleOrders[0].collectionAddress&&Number(nftInfo.nft.token_id)===Number(lastSaleOrders[0].tokenId)){
         setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[0].price)))
-        const chainIdForList = getChainId(lastSaleOrders[0].chain as string)
+        const chainIdForList = chainIdInfos[lastSaleOrders[0].chain as string]
         for(let j=0;j<currencies_list[chainIdForList as number].length;j++){
           if(currencies_list[chainIdForList as number][j].address==lastSaleOrders[0].currencyAddress){
             setLastSaleCoin(`/images/${currencies_list[chainIdForList as number][j].icon}`)
