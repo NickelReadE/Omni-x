@@ -22,7 +22,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import editStyle from '../styles/nftbox.module.scss'
 import classNames from '../helpers/classNames'
 import { currencies_list } from '../utils/constants'
-import { chainIdInfos } from '../utils/constants'
+import { getChainIdFromName } from '../utils/constants'
 
 import Router from 'next/router'
 
@@ -95,7 +95,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       for(let i=lastSaleOrders.length-1;i>=0;i--){
         if(lastSaleOrders[i].collectionAddress==collection_address&&lastSaleOrders[i].tokenId==nft.token_id){
           setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[i].price)))
-          const chainIdForList = chainIdInfos[lastSaleOrders[i].chain as string]
+          const chainIdForList = getChainIdFromName(lastSaleOrders[i].chain)
           currencies_list[chainIdForList as number].map((item,index) => {
             if(item.address==lastSaleOrders[i].currencyAddress){
               setLastSaleCoin(`/images/${item.icon}`)
@@ -109,7 +109,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       for(let i=0;i<orders.length;i++){
         if(orders[i].tokenId==nft.token_id && orders[i].collectionAddress==nft.token_address) {
           setPrice(Number(ethers.utils.formatEther(orders[i].price)))
-          const chainIdForList = chainIdInfos[orders[i].chain as string]
+          const chainIdForList = getChainIdFromName(orders[i].chain)
           currencies_list[chainIdForList as number].map((item,index) => {
             if(item.address==orders[i].currencyAddress){
               setImageURL(`/images/${item.icon}`)
@@ -125,7 +125,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
           if(bidOrders[i].tokenId==nft.token_id && bidOrders[i].collectionAddress==nft.token_address){
             if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
               bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
-              const chainIdForList = chainIdInfos[bidOrders[i].chain as string]
+              const chainIdForList = getChainIdFromName(bidOrders[i].chain as string)
               for(let j=0;j<currencies_list[chainIdForList as number].length;j++){
                 if(currencies_list[chainIdForList as number][j].address==bidOrders[i].currencyAddress){
                   setHighestBidCoin(`/images/${currencies_list[chainIdForList as number][j].icon}`)

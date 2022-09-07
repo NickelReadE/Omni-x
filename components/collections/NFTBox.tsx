@@ -16,9 +16,9 @@ import { IGetOrderRequest } from '../../interface/interface'
 import usd from '../../constants/abis/USD.json'
 import omni from '../../constants/abis/omni.json'
 import currencyManagerABI from '../../constants/abis/CurrencyManager.json'
-import usdc from '../../constants/USDC.json'
-import usdt from '../../constants/USDT.json'
-import omniCoin from '../../constants/OMNI.json'
+import usdcAddress  from '../../constants/USDC.json'
+import usdtAddress  from '../../constants/USDT.json'
+import omniAddress from '../../constants/OMNI.json'
 import currencyManagerContractAddress from '../../constants/CurrencyManager.json'
 
 import { openSnackBar } from '../../redux/reducers/snackBarReducer'
@@ -34,7 +34,7 @@ import classNames from '../../helpers/classNames'
 
 
 import { currencies_list } from '../../utils/constants'
-import { chainIdInfos } from '../../utils/constants'
+import { getChainIdFromName, getChainNameFromId } from '../../utils/constants'
 
 const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
@@ -68,7 +68,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
           if(orders[i].tokenId==nft.token_id && orders[i].collectionAddress==col_address && orders[i].chain==chain) {
             setPrice(ethers.utils.formatEther(orders[i].price))
             setList(true)
-            const chainIdForList = chainIdInfos[orders[i].chain as string]
+            const chainIdForList = getChainIdFromName(orders[i].chain)
             currencies_list[chainIdForList as number].map((item,index) => {
               if(item.address==orders[i].currencyAddress){
                 setImageURL(`/images/${item.icon}`)
@@ -84,7 +84,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
           for(let i=0;i<executedOrders.length;i++){
             if(executedOrders[i].tokenId==nft.token_id && executedOrders[i].collectionAddress==col_address){
               lastprice = Number(ethers.utils.formatEther(executedOrders[i].price))
-              const chainIdForList = chainIdInfos[executedOrders[i].chain as string]
+              const chainIdForList = getChainIdFromName(executedOrders[i].chain)
               for(let j=0;j<currencies_list[chainIdForList as number].length;j++){
                 if(currencies_list[chainIdForList as number][j].address==executedOrders[i].currencyAddress){
                   setLastSaleCoin(`/images/${currencies_list[chainIdForList as number][j].icon}`)
@@ -100,7 +100,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
             if(bidOrders[i].tokenId==nft.token_id && bidOrders[i].collectionAddress==col_address){
               if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
                 bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
-                const chainIdForList = chainIdInfos[bidOrders[i].chain as string]
+                const chainIdForList = getChainIdFromName(bidOrders[i].chain)
                 for(let j=0;j<currencies_list[chainIdForList as number].length;j++){
                   if(currencies_list[chainIdForList as number][j].address==bidOrders[i].currencyAddress){
                     setHighestBidCoin(`/images/${currencies_list[chainIdForList as number][j].icon}`)
@@ -130,14 +130,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
 
   const onBid = async (currency: string, price: number, period: number) => {
     const chainId = provider?.network.chainId as number
-    let chain = provider?._network.name as string
-    if(chain=='unknown'){
-      if(chainId==4002){
-        chain='fantom'
-      } else if(chainId==43113){
-        chain='avalanche testnet'
-      }
-    }
+    const chain = getChainNameFromId(chainId)
     const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
     const startTime = Date.now()
 
@@ -146,21 +139,10 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
     let usdContract = null
     let contractAddress =''
     let currencyMangerContract = null
-    console.log(chain)
-    if(chainId===4){
-      currencyMangerContract =  new ethers.Contract(currencyManagerContractAddress['rinkeby'], currencyManagerABI, signer)
-    } else if(chainId===97) {
-      currencyMangerContract =  new ethers.Contract(currencyManagerContractAddress['bsc-testnet'], currencyManagerABI, signer)
-    } else if(chainId===43113) {
-      currencyMangerContract =  new ethers.Contract(currencyManagerContractAddress['fuji'], currencyManagerABI, signer)
-    } else if(chainId===80001) {
-      //
-    } else if(chainId===421611) {
-      //
-    } else if(chainId===69) {
-      //
-    } else if(chainId===4002) {
-      //
+    const key = chainId.toString() as keyof typeof currencyManagerContractAddress
+
+    if(currencyManagerContractAddress[key]!=''){
+      currencyMangerContract =  new ethers.Contract(currencyManagerContractAddress[key], currencyManagerABI, signer)
     }
 
     if(currencyMangerContract===null){
@@ -178,14 +160,8 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
     if(currency===currencies_list[provider?._network.chainId as number][0]['address']){//OMNI
       const isOmniCoin = await currencyMangerContract.isOmniCurrency(currency)
       if(isOmniCoin){
-        if(chainId===4){
-          contractAddress = omniCoin['rinkeby']
-          usdContract =  new ethers.Contract(contractAddress, omni, signer)
-        } else if(chainId===97) {
-          contractAddress = omniCoin['bsc-testnet']
-          usdContract =  new ethers.Contract(contractAddress, omni, signer)
-        } else if(chainId===43113) {
-          contractAddress = omniCoin['fuji']
+        contractAddress = omniAddress[key]
+        if(contractAddress!=''){
           usdContract =  new ethers.Contract(contractAddress, omni, signer)
         }
       } else {
@@ -196,23 +172,8 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
     } else if (currency===currencies_list[provider?._network.chainId as number][1]['address']){//USDC
       const isUsdcCoin = await currencyMangerContract.isCurrencyWhitelisted(currency)
       if(isUsdcCoin){
-        if(chainId===4){
-          contractAddress = usdc['rinkeby']
-          usdContract =  new ethers.Contract(contractAddress, omni, signer)
-        } else if(chainId===43113) {
-          contractAddress = usdc['fuji']
-          usdContract =  new ethers.Contract(contractAddress, omni, signer)
-        } else if(chainId===80001) {
-          contractAddress = usdc['mumbai']
-          usdContract =  new ethers.Contract(contractAddress, omni, signer)
-        } else if(chainId===421611) {
-          contractAddress = usdc['arbitrum-rinkeby']
-          usdContract =  new ethers.Contract(contractAddress, omni, signer)
-        } else if(chainId===69) {
-          contractAddress = usdc['optimism-kovan']
-          usdContract =  new ethers.Contract(contractAddress, omni, signer)
-        } else if(chainId===4002) {
-          contractAddress = usdc['fantom-testnet']
+        contractAddress = usdcAddress[key]
+        if(contractAddress!=''){
           usdContract =  new ethers.Contract(contractAddress, omni, signer)
         }
       } else {
@@ -220,13 +181,12 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
         setOpenBidDlg(false)
         return
       }
-
     } else if (currency===currencies_list[provider?._network.chainId as number][2]['address']) {//USDT
       const isUsdtCoin = await currencyMangerContract.isCurrencyWhitelisted(currency)
       if(isUsdtCoin){
-        if(chainId===97){
-          contractAddress = usdt['bsc-testnet']
-          usdContract =  new ethers.Contract(contractAddress, usd, signer)
+        contractAddress = usdcAddress[key]
+        if(contractAddress!=''){
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
         }
       } else {
         dispatch(openSnackBar({ message: 'USDT currency is not whitelisted in this network', status: 'error' }))

@@ -42,13 +42,13 @@ import { addDays } from 'date-fns'
 import usd from '../../../constants/abis/USD.json'
 import omni from '../../../constants/abis/omni.json'
 import currencyManagerABI from '../../../constants/abis/CurrencyManager.json'
-import usdc from '../../../constants/USDC.json'
-import usdt from '../../../constants/USDT.json'
-import omniCoin from '../../../constants/OMNI.json'
+import usdcAddress  from '../../../constants/USDC.json'
+import usdtAddress  from '../../../constants/USDT.json'
+import omniAddress from '../../../constants/OMNI.json'
 import currencyManagerContractAddress from '../../../constants/CurrencyManager.json'
 
 import { currencies_list } from '../../../utils/constants'
-import { chainIdInfos } from '../../../utils/constants'
+import { getChainIdFromName,getChainNameFromId } from '../../../utils/constants'
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('items')
@@ -81,10 +81,10 @@ const Item: NextPage = () => {
     { chain: 'rinkeby', img_url: '/svgs/ethereum.svg', title: 'Ethereum', disabled: false},
     { chain: 'arbitrum-rinkeby', img_url: '/svgs/arbitrum.svg', title: 'Arbitrum', disabled: true},
     { chain: 'avalanche testnet', img_url: '/svgs/avax.svg', title: 'Avalanche', disabled: false},
-    { chain: 'bnbt', img_url: '/svgs/binance.svg', title: 'BNB Chain', disabled: false},
-    { chain: 'fantom', img_url: '/svgs/fantom.svg', title: 'Fantom', disabled: true},
+    { chain: 'bsc testnet', img_url: '/svgs/binance.svg', title: 'BNB Chain', disabled: false},
+    { chain: 'fantom-testnet', img_url: '/svgs/fantom.svg', title: 'Fantom', disabled: true},
     { chain: 'optimism-kovan', img_url: '/svgs/optimism.svg', title: 'Optimism', disabled: true},
-    { chain: 'maticmum', img_url: '/svgs/polygon.svg', title: 'Polygon', disabled: false},
+    { chain: 'mumbai', img_url: '/svgs/polygon.svg', title: 'Polygon', disabled: false},
   ]
 
   const router = useRouter()
@@ -157,7 +157,7 @@ const Item: NextPage = () => {
           temp_bidOrders.push(bidOrders[i])
           if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
             bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
-            const chainIdForList = chainIdInfos[bidOrders[i].chain as string]
+            const chainIdForList = getChainIdFromName(bidOrders[i].chain)
             for(let j=0;j<currencies_list[chainIdForList as number].length;j++){
               if(currencies_list[chainIdForList as number][j].address==bidOrders[i].currencyAddress){
                 setHighestBidCoin(`/images/${currencies_list[chainIdForList as number][j].icon}`)
@@ -177,7 +177,7 @@ const Item: NextPage = () => {
     if(lastSaleOrders.length>0 && nftInfo.collection!=undefined && nftInfo.nft!=undefined){
       if(nftInfo.collection.address===lastSaleOrders[0].collectionAddress&&Number(nftInfo.nft.token_id)===Number(lastSaleOrders[0].tokenId)){
         setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[0].price)))
-        const chainIdForList = chainIdInfos[lastSaleOrders[0].chain as string]
+        const chainIdForList = getChainIdFromName(lastSaleOrders[0].chain)
         for(let j=0;j<currencies_list[chainIdForList as number].length;j++){
           if(currencies_list[chainIdForList as number][j].address==lastSaleOrders[0].currencyAddress){
             setLastSaleCoin(`/images/${currencies_list[chainIdForList as number][j].icon}`)
@@ -241,14 +241,8 @@ const Item: NextPage = () => {
 
   const onBid = async (currency: string, price: number, period: number) => {
     const chainId = provider?.network.chainId as number
-    let chain = provider?._network.name as string
-    if(chain=='unknown'){
-      if(chainId==4002){
-        chain='fantom'
-      } else if(chainId==43113){
-        chain='avalanche testnet'
-      }
-    }
+    const chain = getChainNameFromId(chainId)
+    
     const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
     const startTime = Date.now()
 
@@ -257,21 +251,10 @@ const Item: NextPage = () => {
     let usdContract = null
     let contractAddress =''
     let currencyMangerContract = null
+    const key = chainId.toString() as keyof typeof currencyManagerContractAddress
 
-    if(chainId===4){
-      currencyMangerContract =  new ethers.Contract(currencyManagerContractAddress['rinkeby'], currencyManagerABI, signer)
-    } else if(chainId===97) {
-      currencyMangerContract =  new ethers.Contract(currencyManagerContractAddress['bsc-testnet'], currencyManagerABI, signer)
-    } else if(chainId===43113) {
-      currencyMangerContract =  new ethers.Contract(currencyManagerContractAddress['fuji'], currencyManagerABI, signer)
-    } else if(chainId===80001) {
-      //
-    } else if(chainId===421611) {
-      //
-    } else if(chainId===69) {
-      //
-    } else if(chainId===4002) {
-      //
+    if(currencyManagerContractAddress[key]!=''){
+      currencyMangerContract =  new ethers.Contract(currencyManagerContractAddress[key], currencyManagerABI, signer)
     }
 
     if(currencyMangerContract===null){
@@ -289,14 +272,8 @@ const Item: NextPage = () => {
     if(currency===currencies_list[provider?._network.chainId as number][0]['address']){//OMNI
       const isOmniCoin = await currencyMangerContract.isOmniCurrency(currency)
       if(isOmniCoin){
-        if(chainId===4){
-          contractAddress = omniCoin['rinkeby']
-          usdContract =  new ethers.Contract(contractAddress, omni, signer)
-        } else if(chainId===97) {
-          contractAddress = omniCoin['bsc-testnet']
-          usdContract =  new ethers.Contract(contractAddress, omni, signer)
-        } else if(chainId===43113) {
-          contractAddress = omniCoin['fuji']
+        contractAddress = omniAddress[key]
+        if(contractAddress!=''){
           usdContract =  new ethers.Contract(contractAddress, omni, signer)
         }
       } else {
@@ -307,23 +284,8 @@ const Item: NextPage = () => {
     } else if (currency===currencies_list[provider?._network.chainId as number][1]['address']){//USDC
       const isUsdcCoin = await currencyMangerContract.isCurrencyWhitelisted(currency)
       if(isUsdcCoin){
-        if(chainId===4){
-          contractAddress = usdc['rinkeby']
-          usdContract =  new ethers.Contract(contractAddress, omni, signer)
-        } else if(chainId===43113) {
-          contractAddress = usdc['fuji']
-          usdContract =  new ethers.Contract(contractAddress, omni, signer)
-        } else if(chainId===80001) {
-          contractAddress = usdc['mumbai']
-          usdContract =  new ethers.Contract(contractAddress, omni, signer)
-        } else if(chainId===421611) {
-          contractAddress = usdc['arbitrum-rinkeby']
-          usdContract =  new ethers.Contract(contractAddress, omni, signer)
-        } else if(chainId===69) {
-          contractAddress = usdc['optimism-kovan']
-          usdContract =  new ethers.Contract(contractAddress, omni, signer)
-        } else if(chainId===4002) {
-          contractAddress = usdc['fantom-testnet']
+        contractAddress = usdcAddress[key]
+        if(contractAddress!=''){
           usdContract =  new ethers.Contract(contractAddress, omni, signer)
         }
       } else {
@@ -331,13 +293,12 @@ const Item: NextPage = () => {
         setOpenBidDlg(false)
         return
       }
-
     } else if (currency===currencies_list[provider?._network.chainId as number][2]['address']) {//USDT
       const isUsdtCoin = await currencyMangerContract.isCurrencyWhitelisted(currency)
       if(isUsdtCoin){
-        if(chainId===97){
-          contractAddress = usdt['bsc-testnet']
-          usdContract =  new ethers.Contract(contractAddress, usd, signer)
+        contractAddress = usdcAddress[key]
+        if(contractAddress!=''){
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
         }
       } else {
         dispatch(openSnackBar({ message: 'USDT currency is not whitelisted in this network', status: 'error' }))
@@ -360,11 +321,11 @@ const Item: NextPage = () => {
       return
     }
 
-    if(Number(ethers.utils.formatEther(balance)) < Number(price)) {
-      dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))
-      setOpenBidDlg(false)
-      return
-    }
+    // if(Number(ethers.utils.formatEther(balance)) < Number(price)) {
+    //   dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))
+    //   setOpenBidDlg(false)
+    //   return
+    // }
 
     try {
       await postMakerOrder(
@@ -580,7 +541,7 @@ const Item: NextPage = () => {
                               }
                             </div>
                             <div className='flex justify-start mt-3'>
-                              {currencies_list[provider?._network.chainId as number].map((currency,index) => {
+                              {currencies_list[getChainIdFromName(item.chain)].map((currency,index) => {
                                 if(currency.address==item?.currencyAddress){
                                   return(
                                     <div className="mr-5" key={index}>

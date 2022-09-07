@@ -37,16 +37,6 @@ export const ONFT1155_CORE_INTERFACE_ID = '0x33577776'
 export const ERC1155_INTERFACE_ID = '0xd9b67a26'
 export const ERC712_INTERFACE_ID = '0x80ac58cd'
 
-export const chainIdInfos: { [key: string]: number} = {
-  'rinkeby': 4,
-  'bnbt': 97,
-  'avalanche testnet': 43113,
-  'maticmum': 80001,
-  'arbitrum-rinkeby': 421611,
-  'optimism-kovan': 69,
-  'fantom': 4002,
-}
-
 export const chainInfos: { [key: number]: { name: string; logo: string, officialName: string, currency: string } } = {
   1: {
     name: 'eth',
@@ -229,12 +219,37 @@ export const chain_list: {[key: string]: number} = {
   'bsc testnet': 97,
   'rinkeby': 4,
   'mumbai': 80001,
-  'avalanche testnet': 43113
+  'avalanche testnet': 43113,
+  'arbitrum-rinkeby': 421611,
+  'optimism-kovan': 69,
+  'fantom-testnet': 4002,
 }
 
 export const getChainIdFromName = (name: string): number => {
   return chain_list[name]
 }
+
+export const chain_list_: {[key: number]: string} = {
+  1 : 'eth ',
+  56 : 'bsc',
+  137 : 'matic',
+  43114 : 'avalanche',
+  250 : 'fantom',
+  10 : 'optimism',
+  42161 : 'arbitrum',
+  97 : 'bsc testnet',
+  4 : 'rinkeby',
+  80001 : 'mumbai',
+  43113 : 'avalanche testnet',
+  421611:'arbitrum-rinkeby',
+  69:'optimism-kovan',
+  4002:'fantom-testnet'
+}
+
+export const getChainNameFromId = (id: number): string => {
+  return chain_list_[id]
+}
+
 
 export const getAddressByName = (name: 'Omnix' | 'Omnix1155' | 'LayerZeroEndpoint', chainId: number) => {
   if (name === 'Omnix') {
