@@ -26,7 +26,7 @@ export const rpcProviders: { [key: number]: string } = {
   4: 'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
   97: 'https://data-seed-prebsc-1-s1.binance.org:8545',
   43113: 'https://api.avax-test.network/ext/bc/C/rpc',
-  80001: 'https://speedy-nodes-nyc.moralis.io/99e98b2333a911011f42606d/polygon/mumbai',
+  80001: 'https://polygon-mumbai.g.alchemy.com/v2/H2EfIYrKg--DbTdHW37WJaSVuaJvTF0T',
   421611: 'https://rinkeby.arbitrum.io/rpc',
   69: 'https://kovan.optimism.io',
   4002: 'https://rpc.testnet.fantom.network'
