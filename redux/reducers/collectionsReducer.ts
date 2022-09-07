@@ -65,6 +65,7 @@ export const collectionsSlice = createSlice({
 			state.collectionsForCard = action.payload === undefined ? '' : action.payload
 		},
 		setRoyalty: (state, action) =>{
+			console.log('reduce',action.payload)
 			state.royalty = action.payload === undefined ? '' : action.payload
 		}
 	}
@@ -177,29 +178,47 @@ export const getRoyalty = (contractType:string, address: string, chainId:number,
 	try{
 		if(contractType==='ERC721'){
 			const NFTContract =  getERC721Instance(address,chainId,null)
-			const supportedERP2981 = await NFTContract.supportsInterface(ERC2189_INTERFACE_ID)
-			if(supportedERP2981){
+			// const supportedERP2981 = await NFTContract.supportsInterface(ERC2189_INTERFACE_ID)
+			// if(supportedERP2981){
+			// 	const royalty = await NFTContract.royaltyInfo(1,100)
+			// 	setRoyalty(parseInt(royalty[1])/100.0)
+			// }
+			// else{
+			// 	const RoyaltyManager = getRoyaltyFeeMangerInstance(RoyaltyFeeManagerAddress[chainId], chainId)
+			// 	const royaltyInfo = await RoyaltyManager.calculateRoyaltyFeeAndGetRecipient(address,1,100)
+			// 	setRoyalty(parseInt(royaltyInfo[1])/100.0)
+	
+			// }
+			try{
 				const royalty = await NFTContract.royaltyInfo(1,100)
-				setRoyalty(parseInt(royalty[1])/100.0)
-			}
-			else{
+				dispatch(setRoyalty(parseInt(royalty[1])))
+			}catch(error){
 				const RoyaltyManager = getRoyaltyFeeMangerInstance(RoyaltyFeeManagerAddress[chainId], chainId)
 				const royaltyInfo = await RoyaltyManager.calculateRoyaltyFeeAndGetRecipient(address,1,100)
-				setRoyalty(parseInt(royaltyInfo[1])/100.0)
-	
+				dispatch(setRoyalty(parseInt(royaltyInfo[1])))
 			}
 		}else if(contractType==='ERC1155'){
 			const NFTContract =  getERC1155Instance(address,chainId,null)
-			const supportedERP2981 = await NFTContract.supportsInterface(ERC2189_INTERFACE_ID)
-			if(supportedERP2981){
+			
+			//const supportedERP2981 = await NFTContract.supportsInterface(ERC2189_INTERFACE_ID)
+			// if(supportedERP2981){
+			// 	const royalty = await NFTContract.royaltyInfo(1,100)
+			// 	setRoyalty(parseInt(royalty[1])/100.0)
+			// }
+			// else{
+			// 	const RoyaltyManager = getRoyaltyFeeMangerInstance(RoyaltyFeeManagerAddress[chainId], chainId)
+			// 	const royaltyInfo = await RoyaltyManager.calculateRoyaltyFeeAndGetRecipient(address,1,100)
+			// 	setRoyalty(parseInt(royaltyInfo[1])/100.0)
+	
+			// }
+			console.log('NFT1155',NFTContract)
+			try{
 				const royalty = await NFTContract.royaltyInfo(1,100)
-				setRoyalty(parseInt(royalty[1])/100.0)
-			}
-			else{
+				dispatch(setRoyalty(parseInt(royalty[1])))
+			}catch(error){
 				const RoyaltyManager = getRoyaltyFeeMangerInstance(RoyaltyFeeManagerAddress[chainId], chainId)
 				const royaltyInfo = await RoyaltyManager.calculateRoyaltyFeeAndGetRecipient(address,1,100)
-				setRoyalty(parseInt(royaltyInfo[1])/100.0)
-	
+				dispatch(setRoyalty(parseInt(royaltyInfo[1])))
 			}
 		}else{
 			console.log("Invalid contract type")

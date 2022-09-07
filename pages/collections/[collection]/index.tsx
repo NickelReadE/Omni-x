@@ -391,7 +391,6 @@ const Collection: NextPage = () => {
       dispatch(getRoyalty(contractType, collectionInfo.address, getChainIdFromName(collectionInfo.chain) ,signer) as any)
     }
   },[contractType,collectionInfo])
-  
   return (
     <>
       <div className={classNames('w-full', 'mt-20', 'pr-[70px]' ,'pt-[30px]', 'relative', editStyle.collection)}>
