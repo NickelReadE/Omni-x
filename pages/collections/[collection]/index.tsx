@@ -35,13 +35,13 @@ import Chip from '@material-ui/core/Chip'
 import classNames from '../../../helpers/classNames'
 import editStyle from '../../../styles/collection.module.scss'
 import { info } from 'console'
-import ordersReducer, { getOrders,selectOrders, getLastSaleOrders,selectBidOrders,selectLastSaleOrders } from '../../../redux/reducers/ordersReducer'
+import ordersReducer, { getOrders, selectOrders, getLastSaleOrders,selectBidOrders,selectLastSaleOrders } from '../../../redux/reducers/ordersReducer'
 import { IGetOrderRequest , ICollectionInfoFromLocal} from '../../../interface/interface'
 import { getChainInfo, getChainIdFromName } from '../../../utils/constants'
 import { convertETHtoUSDT, convertUSDTtoETH } from '../../../utils/convertRate'
 import { useMoralisWeb3Api, useMoralis } from 'react-moralis'
 import useWallet from '../../../hooks/useWallet'
-import { CurrencyList } from '../../../constants/currenciList'
+import { currencies_list } from '../../../utils/constants'
 
 
 const sort_fields = [
@@ -207,7 +207,7 @@ const Collection: NextPage = () => {
         sort: 'OLDEST'
       }
       dispatch(getOrders(request) as any)
-
+      console.log('1',orders)
       const bidRequest: IGetOrderRequest = {
         isOrderAsk: false,
         collection: collectionInfo.address,
@@ -216,8 +216,7 @@ const Collection: NextPage = () => {
         status: ['VALID'],
         sort: 'PRICE_ASC'
       }
-      dispatch(getOrders(bidRequest) as any)
-
+      console.log('2',orders)
       const excutedRequest: IGetOrderRequest = {
         collection: collectionInfo.address,
         status: ['EXECUTED'],
@@ -335,9 +334,10 @@ const Collection: NextPage = () => {
     if(isActiveBuyNow && collectionInfo && allNFTs.length>0){
       const temp = []
       for(let i=0;i<allNFTs.length;i++){
-        for(let j=0; j<orders.length;j++){
+        for(let j=0; j<orders.length;j++){  
           if(collectionInfo.address==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
-            temp.push(allNFTs[i])           
+            temp.push(allNFTs[i]) 
+            break         
           }
         }
       }
@@ -357,7 +357,7 @@ const Collection: NextPage = () => {
         if(order){
           tempOrders.push(order)
         }        
-      }
+      }      
       setOrdersForCollection(tempOrders)     
     } 
   },[collectionInfo,allNFTs])
@@ -366,16 +366,19 @@ const Collection: NextPage = () => {
       let lowPrice: any = Number.MAX_VALUE
       ordersForCollection.map((collection: { price: any, currencyAddress:any }) => {
         let priceAsUSD = 0
-        if(CurrencyList.find(({address}) => address===collection.currencyAddress)){
+        if(currencies_list[getChainIdFromName(collectionInfo.chain)].find(({address}) => address===collection.currencyAddress)){
           priceAsUSD = parseFloat(ethers.utils.formatEther(collection.price))
         }else{
           priceAsUSD = convertETHtoUSDT(parseFloat(ethers.utils.formatEther(collection.price)), assetPrices.eth)
         }
         if(lowPrice > priceAsUSD){
           lowPrice  = priceAsUSD
-        }
-        setFloorPrice(lowPrice)     
+        }             
       })
+      if(lowPrice === Number.MAX_VALUE){
+        lowPrice = 0
+      }
+      setFloorPrice(lowPrice)
     }else if(ordersForCollection.length ===0){
       setFloorPrice(0)
     }

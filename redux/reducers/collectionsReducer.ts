@@ -142,7 +142,8 @@ export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, ge
 			sort: 'PRICE_ASC'
 		}
 	  	await dispatch(getOrders(request))
-		const orders = getState().ordersState.orders		
+		const orders = getState().ordersState.orders	
+		console.log('2',orders)	
 		let collectionsF : any[] = []
 		const info = await collectionsService.getCollections()		
 		await info.data.map(async (element:any, index:number)=>{
@@ -151,14 +152,19 @@ export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, ge
 				setTimeout(
 					async function(){				
 						let orderCnt = 0	
-						const items = await collectionsService.getCollectionInfo(element.col_url as string)
+						const nfts = await collectionsService.getCollectionAllNFTs(element.col_url as string , '', '')
+						const collectionInfo  = await collectionsService.getCollectionInfo(element.col_url as string)
 						setTimeout(async function(){
-							orders.map((element:any)=>{								
-								if(element.collectionAddress===items.data.address){
-									orderCnt++
-								}
+							nfts.data.map((nft:any)=>{
+								for(const order of orders){
+									if(collectionInfo.data.address==order.collectionAddress&& nft.token_id==order.tokenId && order.isOrderAsk){
+										orderCnt++
+										break										
+									}
+								}								
+								
 							})
-							collectionsF.push({col_url:element.col_url, itemsCnt:items.data.count, ownerCnt:ownerCnt.data, orderCnt:orderCnt})		
+							collectionsF.push({col_url:element.col_url, itemsCnt:collectionInfo.data.count, ownerCnt:ownerCnt.data, orderCnt:orderCnt})		
 							if(collectionsF.length===info.data.length){
 								localStorage.setItem('cards',JSON.stringify(collectionsF))
 								dispatch(setCollectionsForCard(collectionsF))			
