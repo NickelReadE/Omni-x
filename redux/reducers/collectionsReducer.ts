@@ -137,13 +137,14 @@ export const getCollections = () => async (dispatch: Dispatch<any>) => {
 export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, getState: () => any) => {
 	try {
 		const request: IGetOrderRequest = {
-			isOrderAsk: true,      
+			isOrderAsk: true,
+			startTime: Math.floor(Date.now() / 1000).toString(),
+			endTime: Math.floor(Date.now() / 1000).toString(),
 			status: ['VALID'],
-			sort: 'PRICE_ASC'
+			sort: 'OLDEST'
 		}
 	  	await dispatch(getOrders(request))
-		const orders = getState().ordersState.orders	
-		console.log('2',orders)	
+		const orders = getState().ordersState.orders
 		let collectionsF : any[] = []
 		const info = await collectionsService.getCollections()		
 		await info.data.map(async (element:any, index:number)=>{

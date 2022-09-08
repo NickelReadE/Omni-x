@@ -207,7 +207,6 @@ const Collection: NextPage = () => {
         sort: 'OLDEST'
       }
       dispatch(getOrders(request) as any)
-      console.log('1',orders)
       const bidRequest: IGetOrderRequest = {
         isOrderAsk: false,
         collection: collectionInfo.address,
