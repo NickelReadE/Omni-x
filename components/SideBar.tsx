@@ -28,6 +28,7 @@ import usd from '../constants/abis/USD.json'
 import omni from '../constants/abis/Omni.json'
 import usdc from '../constants/USDC.json'
 import usdt from '../constants/USDT.json'
+import omniAddress from '../constants/OMNI.json'
 
 interface RefObject {
   offsetHeight: number

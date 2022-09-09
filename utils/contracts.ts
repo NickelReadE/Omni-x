@@ -13,8 +13,6 @@ import ONFTCore1155 from '../constants/abis/ONFTCore1155.json'
 import LZEndpointABI from '../constants/abis/LayerzeroEndpoint.json'
 import veSTG from '../constants/abis/veSTG.json'
 import RoyaltyFeeManagerABI from '../constants/abis/RoyaltyFeeManager.json'
-export const getOmnixBridgeInstance = (chainId: number, signer: any) => {
-  const address = getAddressByName('Omnix', chainId)
 
 export const getContractInstanceByAddr = (address: string, abi: any, chainId: number, signer: any) => {
   if (signer === null) {

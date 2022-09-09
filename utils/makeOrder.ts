@@ -1,11 +1,11 @@
-import { providers, BigNumber, ethers, BigNumberish } from 'ethers'
+import {BigNumber, ethers, providers} from 'ethers'
 import addTime from 'date-fns/add'
-import { TypedDataUtils } from 'ethers-eip712'
-import { userService } from '../services/users'
-import { orderService } from '../services/orders'
-import { minNetPriceRatio } from '../constants'
-import { SolidityType, MakerOrderWithEncodedParams, MakerOrder } from '../types'
-import { OrderStatus } from '../interface/interface'
+import {TypedDataUtils} from 'ethers-eip712'
+import {userService} from '../services/users'
+import {orderService} from '../services/orders'
+import {minNetPriceRatio} from '../constants'
+import {MakerOrder, MakerOrderWithEncodedParams, SolidityType} from '../types'
+import {OrderStatus} from '../interface/interface'
 
 const MAKE_ORDER_SIGN_TYPES = {
   EIP712Domain: [
@@ -38,8 +38,9 @@ interface PostMakerOrderOptionalParams {
 }
 
 const prepareMakerOrder = async(
-  signer: ethers.providers.JsonRpcSigner | undefined,
+  signer: ethers.providers.JsonRpcSigner,
   signerAddress: string,
+  chainId: number,
   isOrderAsk: boolean,
   collectionAddress: string,
   strategyAddress: string,
@@ -89,42 +90,41 @@ const prepareMakerOrder = async(
 
 export const postMakerOrder = async(
   library: providers.Web3Provider,
+  chainId: number,
   isOrderAsk: boolean,
   collectionAddress: string,
   strategyAddress: string,
-  amount: BigNumberish,
-  price: BigNumberish,
-  protocolFees: BigNumberish,
-  creatorFees: BigNumberish,
+  amount: BigNumber,
+  price: BigNumber,
+  protocolFees: BigNumber,
+  creatorFees: BigNumber,
   currency: string,
   optionalParams: PostMakerOrderOptionalParams = {},
-  chain: string,
-  needSign: boolean
+  chain: string
 ) => {
-    
+
   const signer = library.getSigner()
   const signerAddress = await signer.getAddress()
   const nonce = await userService.getUserNonce(signerAddress)
 
   const data = await prepareMakerOrder(
-    needSign ? signer : undefined,
+    signer,
     signerAddress,
+    chainId,
     isOrderAsk,
     collectionAddress,
     strategyAddress,
-    BigNumber.from(amount),
-    BigNumber.from(price),
+    amount,
+    price,
     nonce,
-    BigNumber.from(protocolFees),
-    BigNumber.from(creatorFees),
+    protocolFees,
+    creatorFees,
     currency,
     optionalParams,
     chain
   )
 
-  const order = await orderService.createOrder(data)
-
-  return order
+  return await orderService.createOrder(data)
 }
 
 /**
@@ -134,6 +134,7 @@ export const postMakerOrder = async(
  */
 export const updateMakerOrder = async (
   library: providers.Web3Provider,
+  chainId: number,
   isOrderAsk: boolean,
   collectionAddress: string,
   strategyAddress: string,
@@ -152,6 +153,7 @@ export const updateMakerOrder = async (
   const data = await prepareMakerOrder(
     signer,
     signerAddress,
+    chainId,
     isOrderAsk,
     collectionAddress,
     strategyAddress,

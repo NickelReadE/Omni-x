@@ -15,7 +15,6 @@ import { IGetOrderRequest } from '../../interface/interface'
 
 import usd from '../../constants/abis/USD.json'
 import omni from '../../constants/abis/Omni.json'
-import omni from '../../constants/abis/omni.json'
 import currencyManagerABI from '../../constants/abis/CurrencyManager.json'
 import usdc from '../../constants/USDC.json'
 import usdt from '../../constants/USDT.json'
