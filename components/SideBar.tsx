@@ -79,7 +79,6 @@ const SideBar: React.FC = () => {
   const [omniBalance, setOmniBalance] = useState(0)
   const [usdcBalance, setUsdcBalance] = useState(0)
   const [usdtBalance, setUsdtBalance] = useState(0)
-  const [nativeBalance,setNativeBalance] = useState('0')
 
 
   const nfts = useSelector(selectUserNFTs)
@@ -517,26 +516,61 @@ const SideBar: React.FC = () => {
   useEffect(()=>{
     const getBalance = async() => {
       try {
-        {
-          const omniContract = getCurrencyInstance(getAddressByName('OMNI', chainId), chainId, signer)
-          const balance = await omniContract.balanceOf(address)
-          setOmniBalance(Number(ethers.utils.formatEther(balance)))
-        }
-
-        {
-          const usdContract = getCurrencyInstance(getAddressByName('USDC', chainId), chainId, signer)
+        if(chainId===4){
+          //OMNI
+          const contractOmniAddress = omniAddress['rinkeby']
+          const omniContract =  new ethers.Contract(contractOmniAddress, omni, signer)
+          const omni_balance = await omniContract.balanceOf(address)
+          setOmniBalance(Number(ethers.utils.formatEther(omni_balance)))
+          //usdc
+          const contractAddress = usdc['rinkeby']
+          const usdContract =  new ethers.Contract(contractAddress, usd, signer)
+          const usdc_balance = await usdContract.balanceOf(address)
+          setUsdcBalance(Number(ethers.utils.formatEther(usdc_balance)))
+        } else if(chainId===43113) {
+          //OMNI
+          const contractOmniAddress = omniAddress['fuji']
+          const omniContract =  new ethers.Contract(contractOmniAddress, omni, signer)
+          const omni_balance = await omniContract.balanceOf(address)
+          setOmniBalance(Number(ethers.utils.formatEther(omni_balance)))
+          //usdc
+          const contractAddress = usdc['fuji']
+          const usdContract =  new ethers.Contract(contractAddress, usd, signer)
+          const balance = await usdContract.balanceOf(address)
+          setUsdcBalance(Number(ethers.utils.formatEther(balance)))
+        } else if(chainId===80001) {
+          const contractAddress = usdc['mumbai']
+          const usdContract =  new ethers.Contract(contractAddress, usd, signer)
+          const balance = await usdContract.balanceOf(address)
+          setUsdcBalance(Number(ethers.utils.formatEther(balance)))
+        } else if(chainId===421611) {
+          const contractAddress = usdc['arbitrum-rinkeby']
+          const usdContract =  new ethers.Contract(contractAddress, usd, signer)
+          const balance = await usdContract.balanceOf(address)
+          setUsdcBalance(Number(ethers.utils.formatEther(balance)))
+        } else if(chainId===69) {
+          const contractAddress = usdc['optimism-kovan']
+          const usdContract =  new ethers.Contract(contractAddress, usd, signer)
+          const balance = await usdContract.balanceOf(address)
+          setUsdcBalance(Number(ethers.utils.formatEther(balance)))
+        } else if(chainId===4002) {
+          const contractAddress = usdc['fantom-testnet']
+          const usdContract =  new ethers.Contract(contractAddress, usd, signer)
           const balance = await usdContract.balanceOf(address)
           setUsdcBalance(Number(ethers.utils.formatEther(balance)))
         }
-
-        {
-          const usdContract = getCurrencyInstance(getAddressByName('USDT', chainId), chainId, signer)
-          const balance = await usdContract.balanceOf(address)
+        if(chainId===97){
+          //OMNI
+          const contractOmniAddress = omniAddress['bsc-testnet']
+          const omniContract =  new ethers.Contract(contractOmniAddress, omni, signer)
+          const omni_balance = await omniContract.balanceOf(address)
+          setOmniBalance(Number(ethers.utils.formatEther(omni_balance)))
+          //usdt
+          const contractAddress = usdt['bsc-testnet']
+          const usdTContract =  new ethers.Contract(contractAddress, usd, signer)
+          const balance = await usdTContract.balanceOf(address)
           setUsdtBalance(Number(ethers.utils.formatEther(balance)))
         }
-        //Native Token
-        const balance = await provider?.getBalance(address!)
-        setNativeBalance((Number(balance)/Math.pow(10,18)).toFixed(4))
       } catch (error) {
         console.log(error)
       }
@@ -766,7 +800,6 @@ const SideBar: React.FC = () => {
                 <span className="font-semibold w-auto text-[16px]">OMNI balance: {omniBalance}</span>
                 <span className="font-semibold w-auto text-[16px]">USDC balance: {usdcBalance}</span>
                 <span className="font-semibold w-auto text-[16px]">USDT balance: {usdtBalance}</span>
-                <span className="font-semibold w-auto text-[16px]">NATIVE balance: {nativeBalance}</span>
                 <span className="w-auto text-[16px]">Staking: coming soon</span>
                 {/* <div className="w-full flex flex-row font-semibold text-[14px]">
                   <div className="bg-g-200 w-[88px] px-[11px] py-[9px]">

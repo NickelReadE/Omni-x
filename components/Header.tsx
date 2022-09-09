@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import headerStyle from '../styles/header.module.scss'
 import classNames from '../helpers/classNames'
 import useProgress from '../hooks/useProgress'
 import { getOmniInstance } from '../utils/contracts'
@@ -87,7 +88,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
             }
             {
               isSearch &&
-              <input autoFocus type="text" placeholder='Acquire Your Desires' className="flex items-center bg-[#F6F8FC] bg-[url('../public/images/search.png')] bg-contain bg-no-repeat	 w-[472px] h-[75px] border-0 focus:outline-0 focus:shadow-none focus:ring-offset-0 focus:ring-0 px-[85px]" onBlur={() => setSearch(false)} onClick={() => setSearch(false)} />
+              <input autoFocus type="text" placeholder='Acquire Your Desires' className="flex items-center bg-[#F6F8FC] bg-[url('../public/images/search.png')] bg-contain bg-no-repeat	 w-[472px] h-[75px] border-0 focus:outline-0 focus:shadow-none focus:ring-offset-0 focus:ring-0 px-[85px]" onBlur={() => setSearch(false)} onClick={() => setSearch(false)}/>
             }
           </div>
 
@@ -116,7 +117,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
                   </a>
                 </Link>
               </li>
-              <li onMouseOver={() => handleMouseOver('analytics')} onMouseOut={handleMouseOut}>
+              <li className="flex items-center" onMouseOver={() => handleMouseOver('analytics')} onMouseOut={handleMouseOut}>
                 <Link href='/launchpad'>
                   <a>
                     <div className="w-[219px] h-[90px] bg-no-repeat bg-center" style={{ backgroundImage: `url('/navbar/analytics${menu == 'analytics' ? '_active' : (hover.isHover && hover.hoverMenu == 'analytics' ? '_hover' : '')}.svg')` }}>

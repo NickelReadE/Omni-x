@@ -3,11 +3,12 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import Dialog from '@material-ui/core/Dialog'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import useWallet from '../../hooks/useWallet'
 
 import CustomSelect from './CustomSelect'
 import Select from 'react-select'
-import { IBidData } from '../../interface/interface'
-import { CURRENCIES_LIST } from '../../utils/constants'
+
+import { currencies_list } from '../../utils/constants'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,7 +35,7 @@ interface IConfirmBidProps {
   openBidDlg: boolean,
   nftImage: string,
   nftTitle: string,
-  onSubmit?: (bidData: IBidData) => void
+  onSubmit: any
 }
 
 const ConfirmBid: React.FC<IConfirmBidProps> = ({
@@ -44,11 +45,15 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
   nftTitle,
   onSubmit
 }) => {
+  const {
+    provider,
+  } = useWallet()
+
   const classes = useStyles()
   const [selectedOption, setSelectedOption] = useState(null)
   const [price_in_usd, setPriceInUSD] = useState('')
   const [price, setPrice] = useState(0)
-  const [currency, setCurrency] = useState(CURRENCIES_LIST[0])
+  const [currency, setCurrency] = useState(currencies_list[provider?._network.chainId as number][0])
   const [period, setPeriod] = useState(period_list[2])
 
   const onChangePrice = (e: any) => {
@@ -64,12 +69,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
   }, [price])
 
   const onBid = () => {
-    if (onSubmit) {
-      onSubmit({
-        currencyName: currency.text,
-        price
-      })
-    }
+    onSubmit(currency.address, price, period.period)
   }
 
   return (
@@ -84,11 +84,11 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
           <div>
             <p className="text-[#6C757D] text-[18px] font-semibold">Bid Price</p>
             <div className="flex justify-start items-center mt-5">
-              <CustomSelect optionData={CURRENCIES_LIST} value={currency} onChange={(value: any) => setCurrency(value)} />
-              <input type="text" value={price} className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F8F9FA] border-[2px] border-[#E9ECEF] rounded-lg" onChange={onChangePrice}/>
+              <CustomSelect optionData={currencies_list[provider?._network.chainId as number]} value={currency} onChange={(value: any) => setCurrency(value)} />
+              <input type="text" value={price} className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg" onChange={onChangePrice}/>
               <span className="px-4 text-[#ADB5BD] font-light">{price_in_usd}</span>
             </div>
-            {/* <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Duration</p>
+            <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Duration</p>
             <div className="flex justify-start items-center mt-5">
               <Select
                 placeholder="Select"
@@ -107,14 +107,14 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
                 value={period}
                 onChange={(value: any) => setPeriod(value)}
               />
-            </div> */}
+            </div>
           </div>
           <div>
             <img className='rounded-[8px] max-w-[250px]' src={nftImage} />
             <p className='mt-2 text-center text-[#6C757D] font-medium'>{nftTitle}</p>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-4 mt-12 flex items-end">
           <div className="col-span-1">
             <button className='bg-[#38B000] rounded text-[#fff] w-[95px] h-[35px]' onClick={() => onBid()}>bid</button>

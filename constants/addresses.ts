@@ -18,12 +18,25 @@ const rinkebyAddresses: Addresses = {
   REMOTE_ADDRESS_MANAGER: '0xdA0c422fC4C1c876C5355ED679ac4B709A2750AD',
 }
 
+
+
 export const addressesByNetwork: { [chainId in SupportedChainId]: Addresses } = {
   [SupportedChainId.RINKEBY]: rinkebyAddresses,
 }
 
 
 export const chains = ['eth', 'bsc', 'matic', 'avalanche', 'fantom', 'optimism', 'arbitrum']
+
+export const CurrencyManager:{[key:string]:string} = {
+  'eth':'0x7C90bCcbe469e8454540318DE4dBD8E22d0F9425',
+  'bsc':'0x56E2765333b832A98D38d010D1052C37a9da0FC2',
+  'polygon' :'',
+  'avalanche':'0x5D2ee1079a05AD0d1A3917D555B38f774D2B74aC ',
+  'arbitrum':'',
+  'optimism':'',
+  'fantom' :''
+}
+
 export const GregContractAddress:{[key:string]:string} = {
   'eth':'0x7FFE2672C100bFb0094ad0B4d592Dd9f9416f1AC',
   'bsc':'0xc5F4f67442E688Bc4Da2d9D8a055374e642490a4',
@@ -51,3 +64,10 @@ export const veSTGContractAddresses:string[]=[
   '0x43d2761ed16C89A2C4342e2B16A3C61Ccf88f05B',
   '0x933421675cDC8c280e5F21f0e061E77849293dba'
 ]
+
+export const RoyaltyFeeManagerAddress:{[key:string]:string} = {
+  4: '0xB519cD2346A720a84336750B12AA4AA93A98aC4c',
+  97: '0x6B8e0DeA5746D42A227399741fAC895732888883',
+  43113: '0x5837469Bfde42BA19bBE1dc6fCe6f44e95121528',
+  80001: '0xe45788A35a4BD42AE8612D71E786E7E9E0Dff8e8'
+}

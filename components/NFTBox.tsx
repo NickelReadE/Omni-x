@@ -22,6 +22,7 @@ import { ContractName, CREATOR_FEE, CURRENCIES_LIST, getAddressByName, PROTOCAL_
 import Router from 'next/router'
 import editStyle from '../styles/nftbox.module.scss'
 import classNames from '../helpers/classNames'
+import { currencies_list } from '../utils/constants'
 
 const NFTBox = ({nft, index}: IPropsNFTItem) => {
 
@@ -37,6 +38,8 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   const [highestBidCoin, setHighestBidCoin] = useState('')
   const [lastSale,setLastSale] = useState(0)
   const [lastSaleCoin, setLastSaleCoin] = useState('')
+  const [isShowBtn, SetIsShowBtn] = useState(false)
+
   const orders = useSelector(selectOrders)
   const bidOrders = useSelector(selectBidOrders)
   const lastSaleOrders = useSelector(selectLastSaleOrders)
@@ -74,22 +77,62 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
         }
       }
 
-      
+
     }
     updateImage()
   }, [])
 
-  useEffect(() => {
-    // let flag = false
-    if(orders.length>0) {
-      ///only in the beta version
-      const collection_address = nft.token_address
-      if (collection_address == '0xb7b0d9849579d14845013ef9d8421ae58e9b9369' || collection_address == '0x7470ea065e50e3862cd9b8fb7c77712165da80e5' || collection_address == '0xb74bf94049d2c01f8805b8b15db0909168cabf46' || collection_address == '0x7f04504ae8db0689a0526d99074149fe6ddf838c' || collection_address == '0xa783cc101a0e38765540ea66aeebe38beebf7756'|| collection_address == '0x316dc98ed120130daf1771ca577fad2156c275e5') {
-        setList(true)
-        // setImageURL(`/images/${item.icon}`)
+  useEffect(()=>{
+    const collection_address = nft.token_address
+    if (collection_address == '0xb7b0d9849579d14845013ef9d8421ae58e9b9369' || collection_address == '0x7470ea065e50e3862cd9b8fb7c77712165da80e5' || collection_address == '0xb74bf94049d2c01f8805b8b15db0909168cabf46' || collection_address == '0x7f04504ae8db0689a0526d99074149fe6ddf838c' || collection_address == '0xa783cc101a0e38765540ea66aeebe38beebf7756'|| collection_address == '0x316dc98ed120130daf1771ca577fad2156c275e5') {
+      setList(true)
+    }
+    if(lastSaleOrders.length>0){
+      setLastSale(0)
+      setLastSaleCoin('')
+      for(let i=lastSaleOrders.length-1;i>=0;i--){
+        if(lastSaleOrders[i].collectionAddress==collection_address&&lastSaleOrders[i].tokenId==nft.token_id){
+          setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[i].price)))
+          currencies_list[provider?._network.chainId as number].map((item,index) => {
+            if(item.address==lastSaleOrders[i].currencyAddress){
+              setLastSaleCoin(`/images/${item.icon}`)
+            }
+          })
+        }
       }
     }
-  }, [orders, bidOrders])
+    if(orders.length>0){
+      ///only in the beta version
+      for(let i=0;i<orders.length;i++){
+        if(orders[i].tokenId==nft.token_id && orders[i].collectionAddress==nft.token_address && orders[i].chain==nft.chain) {
+          setPrice(Number(ethers.utils.formatEther(orders[i].price)))
+          currencies_list[provider?._network.chainId as number].map((item,index) => {
+            if(item.address==orders[i].currencyAddress){
+              setImageURL(`/images/${item.icon}`)
+            }
+          })
+        }
+      }
+    }
+    if(bidOrders.length>0) {
+      if ( bidOrders.length > 0 ) {
+        let bid_balance = 0
+        for(let i=0; i<bidOrders.length;i++){
+          if(bidOrders[i].tokenId==nft.token_id && bidOrders[i].collectionAddress==nft.token_address){
+            if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
+              bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
+              for(let j=0;j<currencies_list[provider?._network.chainId as number].length;j++){
+                if(currencies_list[provider?._network.chainId as number][j].address==bidOrders[i].currencyAddress){
+                  setHighestBidCoin(`/images/${currencies_list[provider?._network.chainId as number][j].icon}`)
+                }
+              }
+            }
+          }
+        }
+        setHighestBid(bid_balance)
+      }
+    }
+  },[orders,bidOrders,lastSaleOrders])
 
   const doubleClickToSetDetailLink = () => {
     const collection_address = nft.token_address
@@ -154,9 +197,9 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       dispatch(openSnackBar({ message: err.message, status: 'error' }))
     }
   }
-  
+
   return (
-    <div className='border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]'>
+    <div className='border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]'onMouseEnter={() => SetIsShowBtn(true)} onMouseLeave={() => SetIsShowBtn(false)}>
       <div className="nft-image-container group relative flex justify-center text-center overflow-hidden rounded-md" ref={setNodeRef} style={style} {...listeners} {...attributes}>
         {islisted?
           <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
@@ -171,7 +214,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
           <div className="bg-[url('/images/ellipse.png')] hover:bg-[url('/images/ellipse_hover.png')] bg-cover w-[21px] h-[21px]"></div>
         </div> */}
       </div>
-      <div className="flex flex-row mt-2.5 justify-between align-middle font-['Retni_Sans']">
+      <div className="flex flex-row mt-2.5 justify-between align-middle font-['RetniSans']">
         <div className="ml-3 text-[#000000] text-[14px] font-bold">
           {JSON.parse(nft.metadata)?.name}
         </div>
@@ -201,20 +244,23 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
           </div>
         </div>
       </div>
-      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['Retni_Sans']">
+      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
         <div className="flex items-center ml-3">
           {islisted && price>0&&<img src={img_url} className="w-[18px] h-[18px]" alt="icon" />}
           {islisted && price>0&&<span className="text-[#000000] text-[18px] font-extrabold ml-2">{price}</span>}
         </div>
       </div>
-      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['Retni_Sans']">
+      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
         <div className="flex items-center ml-3">
           {lastSale!=0&&<><span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span><img src={lastSaleCoin} className="w-[18px] h-[18px]" />&nbsp;<span className="text-[#6C757D] text-[14px]font-bold">{lastSale}</span></>}
-          {lastSale==0&&highestBid!=0&&<><span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span><img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;<span className="text-[#6C757D] text-[14px] font-bold">{highestBid}</span></>}  
+          {lastSale==0&&highestBid!=0&&<><span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span><img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;<span className="text-[#6C757D] text-[14px] font-bold">{highestBid}</span></>}
         </div>
-        {islisted&&<div className="ml-2 mr-3 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-bold cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
-          {'Sell'}
-        </div>}
+        <div className="flex items-center ml-3">
+          <div>&nbsp;</div>
+          {isShowBtn&&islisted&&<div className="ml-2 mr-3 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-bold cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
+            {'Sell'}
+          </div>}
+        </div>
       </div>
       <ConfirmSell handleSellDlgClose={() => {setOpenSellDlg(false)}} openSellDlg={openSellDlg} nftImage={image} nftTitle={nft.name} onSubmit={onListing} />
     </div>

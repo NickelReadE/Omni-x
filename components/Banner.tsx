@@ -67,7 +67,6 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
       fetchNFTByAddress('avalanche',String(GregContractAddress['avalanche'])) 
       fetchNFTByAddress('fantom',String(GregContractAddress['fantom']))
       chainsFroSTG.map((chain)=>{
-        console.log(chain)
         fetchToken(chain)
       })
     }

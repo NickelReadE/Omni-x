@@ -29,6 +29,24 @@ import PngSub from '../../../public/images/subButton.png'
 
 import PngEther from '../../../public/images/collections/ethereum.png'
 import useWallet from '../../../hooks/useWallet'
+import { BigNumber, ethers } from 'ethers'
+import { postMakerOrder, acceptOrder } from '../../../utils/makeOrder'
+import { addressesByNetwork } from '../../../constants'
+import { SupportedChainId } from '../../../types'
+import { getOrders, getLastSaleOrders, selectOrders, selectBidOrders, selectLastSaleOrders } from '../../../redux/reducers/ordersReducer'
+import { IGetOrderRequest, IOrder } from '../../../interface/interface'
+import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
+import { addDays } from 'date-fns'
+
+import usd from '../../../constants/abis/USD.json'
+import omni from '../../../constants/abis/omni.json'
+import currencyManagerABI from '../../../constants/abis/CurrencyManager.json'
+import usdc from '../../../constants/USDC.json'
+import usdt from '../../../constants/USDT.json'
+import omniCoin from '../../../constants/OMNI.json'
+import currencyManagerContractAddress from '../../../constants/CurrencyManager.json'
+
+import { currencies_list } from '../../../utils/constants'
 
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
@@ -38,7 +56,7 @@ const Item: NextPage = () => {
 
 
   const [order, setOrder] = useState<IOrder>()
-  // const [bidOrder, setBidOrder] = useState<IOrder>()
+  const [bidOrder, setBidOrder] = useState<IOrder[]>()
   const [openSellDlg, setOpenSellDlg] = React.useState(false)
   const [openBidDlg, setOpenBidDlg] = React.useState(false)
   const [profileLink, setProfileLink] = React.useState('')
@@ -49,7 +67,7 @@ const Item: NextPage = () => {
   const [lastSaleCoin, setLastSaleCoin] = React.useState('')
 
   const orders = useSelector(selectOrders)
-  const bidOrders = useSelector(selectBidOrders) as IOrder[]
+  const bidOrders = useSelector(selectBidOrders)
   const lastSaleOrders = useSelector(selectLastSaleOrders)
 
   const {
@@ -77,23 +95,31 @@ const Item: NextPage = () => {
 
   const nftInfo = useSelector(selectNFTInfo)
 
+
   useEffect(() => {
+    const getNFTOwner = async(col_url:string, token_id:string) => {
+      const tokenIdOwner = await collectionsService.getNFTOwner(col_url, token_id)
+
+      if ( tokenIdOwner.length > 0 ) {
+
+        const user_info = await userService.getUserByAddress(tokenIdOwner)
+        if(user_info.username == ''){
+          setOwner(tokenIdOwner)
+          setOwnerType('address')
+        } else {
+          setOwner(user_info.username)
+          setOwnerType('username')
+        }
+      }
+    }
     if ( col_url && token_id ) {
       dispatch(getNFTInfo(col_url, token_id) as any)
-      getNFTOwnership(col_url, token_id)
+      getNFTOwner(col_url, token_id)
     }
   }, [col_url, token_id])
 
   useEffect(() => {
-    console.log(lastSaleOrders)
-    if (lastSaleOrders.length>0) {
-      setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[0].price)))
-      setLastSaleCoin(`/images/${getCurrencyIconByAddress(lastSaleOrders[0].currencyAddress)}`)
-    }
-  },[lastSaleOrders])
-
-  useEffect(() => {
-    if ( nftInfo && nftInfo.collection && owner && ownerType ) {
+    if ( nftInfo && nftInfo.collection && owner.length && ownerType) {
       if(nftInfo.collection.chain=='rinkeby' ) {
         if(ownerType=='address') {
           const profile_link = 'https://rinkeby.etherscan.io/address/' + owner
@@ -119,35 +145,47 @@ const Item: NextPage = () => {
   }, [orders,nftInfo])
 
   useEffect(() => {
-    if (bidOrders.length > 0) {
-      const sortedBids = [...bidOrders]
-      sortedBids
-        .sort((o1, o2) => {
-          const p1 = BigNumber.from(o1.price)
-          const p2 = BigNumber.from(o2.price)
-          if (p1.eq(p2)) return 0
-          return p2.sub(p1).isNegative() ? -1 : 1
-        })
+    setHighestBid(0)
+    setHighestBidCoin('')
 
-      setHighestBidCoin(`/images/${getCurrencyIconByAddress(sortedBids[0].currencyAddress)}`)
-      setHighestBid(Number(ethers.utils.formatEther(sortedBids[0].price)))
-    } else {
-      setHighestBid(0)
-      setHighestBidCoin('')
+    if ( bidOrders.length > 0 && nftInfo.collection!=undefined && nftInfo.nft!=undefined) {
+      const temp_bidOrders: any = []
+      let bid_balance = 0
+      for(let i=0; i<bidOrders.length;i++){
+        if(nftInfo.collection.address===bidOrders[i].collectionAddress&&Number(nftInfo.nft.token_id)===Number(bidOrders[i].tokenId)){
+          temp_bidOrders.push(bidOrders[i])
+          if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
+            bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
+            for(let j=0;j<currencies_list[provider?._network.chainId as number].length;j++){
+              if(currencies_list[provider?._network.chainId as number][j].address==bidOrders[i].currencyAddress){
+                setHighestBidCoin(`/images/${currencies_list[provider?._network.chainId as number][j].icon}`)
+              }
+            }
+          }
+        }
+      }
+      setBidOrder(temp_bidOrders)
+      setHighestBid(bid_balance)
     }
-  }, [bidOrders])
+  }, [bidOrders,nftInfo])
 
   useEffect(() => {
     setLastSale(0)
     setLastSaleCoin('')
-    if(lastSaleOrders.length>0){
-      setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[0].price)))
-      setLastSaleCoin(`/images/${getCurrencyIconByAddress(lastSaleOrders[0].currencyAddress)}`)
+    if(lastSaleOrders.length>0 && nftInfo.collection!=undefined && nftInfo.nft!=undefined){
+      if(nftInfo.collection.address===lastSaleOrders[0].collectionAddress&&Number(nftInfo.nft.token_id)===Number(lastSaleOrders[0].tokenId)){
+        setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[0].price)))
+        for(let j=0;j<currencies_list[provider?._network.chainId as number].length;j++){
+          if(currencies_list[provider?._network.chainId as number][j].address==lastSaleOrders[0].currencyAddress){
+            setLastSaleCoin(`/images/${currencies_list[provider?._network.chainId as number][j].icon}`)
+          }
+        }
+      }
+
     }
-  },[lastSaleOrders])
+  },[lastSaleOrders,nftInfo])
 
   const getNFTOwnership = async(col_url: string, token_id: string) => {
-    console.log('--getNFTOwnership---')
     const tokenIdOwner = await collectionsService.getNFTOwner(col_url, token_id)
     if ( tokenIdOwner.length > 0 ) {
       const user_info = await userService.getUserByAddress(tokenIdOwner)
@@ -199,220 +237,264 @@ const Item: NextPage = () => {
     dispatch(getLastSaleOrders(excutedRequest) as any)
   }
 
-  const updateOrderStatus = async (order: IOrder, status: OrderStatus) => {
-    await acceptOrder(
-      order.hash,
-      status
-    )
-  }
-
-  const onListing = async (listingData: IListingData) => {
-    const price = ethers.utils.parseEther(listingData.price.toString())
-    const amount = ethers.utils.parseUnits('1', 0)
-    const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
-    const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
-    const chainId = provider?.network.chainId || 4
-    const lzChainId = getLayerzeroChainId(chainId)
+  const onBid = async (currency: string, price: number, period: number) => {
+    const chainId = provider?.network.chainId as number
+    let chain = provider?._network.name as string
+    if(chain=='unknown'){
+      if(chainId==4002){
+        chain='fantom'
+      } else if(chainId==43113){
+        chain='avalanche testnet'
+      }
+    }
+    const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
     const startTime = Date.now()
 
-    await postMakerOrder(
-      provider as any,
-      true,
-      nftInfo.collection.address,
-      getAddressByName('Strategy', chainId),
-      amount,
-      price,
-      protocalFees,
-      creatorFees,
-      getAddressByName(listingData.currencyName as ContractName, chainId),
-      {
-        tokenId: token_id,
-        startTime,
-        endTime: addDays(startTime, listingData.period).getTime(),
-        params: {
-          values: [lzChainId, listingData.isAuction ? SaleType.AUCTION : SaleType.FIXED],
-          types: ['uint16', 'uint16'],
-        },
-      },
-      nftInfo.collection.chain,
-      true
-    )
+    const Provider = new ethers.providers.Web3Provider(window.ethereum)
+    const signer = Provider.getSigner()
+    let usdContract = null
+    let contractAddress =''
+    let currencyMangerContract = null
 
-    if (!listingData.isAuction) {
-      const transferSelector = getTransferSelectorNftInstance(chainId, signer)
-      const transferManagerAddr = await transferSelector.checkTransferManagerForToken(nftInfo.collection.address)
-      const nftContract = getERC721Instance(nftInfo.collection.address, chainId, signer)
-      await nftContract.approve(transferManagerAddr, token_id)
+    if(chainId===4){
+      currencyMangerContract =  new ethers.Contract(currencyManagerContractAddress['rinkeby'], currencyManagerABI, signer)
+    } else if(chainId===97) {
+      currencyMangerContract =  new ethers.Contract(currencyManagerContractAddress['bsc-testnet'], currencyManagerABI, signer)
+    } else if(chainId===43113) {
+      currencyMangerContract =  new ethers.Contract(currencyManagerContractAddress['fuji'], currencyManagerABI, signer)
+    } else if(chainId===80001) {
+      //
+    } else if(chainId===421611) {
+      //
+    } else if(chainId===69) {
+      //
+    } else if(chainId===4002) {
+      //
     }
 
-    dispatch(openSnackBar({ message: '  Success', status: 'success' }))
-    setOpenSellDlg(false)
-  }
-
-  const onBuy = async () => {
-    console.log('-buy--', order, provider)
-
-    if (!order) {
-      dispatch(openSnackBar({ message: 'Not listed', status: 'warning' }))
+    if(currencyMangerContract===null){
+      dispatch(openSnackBar({ message: "This network doesn't support currencies", status: 'error' }))
+      setOpenBidDlg(false)
       return
     }
 
-    const chainId = provider?.network.chainId || 4
-    const lzChainId = getLayerzeroChainId(chainId)
-    const omniAddress = getAddressByName(getCurrencyNameAddress(order.currencyAddress) as ContractName, chainId)
-    const omni = getCurrencyInstance(omniAddress, chainId, signer)
-    const omnixExchange = getOmnixExchangeInstance(chainId, signer)
-    const makerAsk : MakerOrderWithSignature = {
-      isOrderAsk: order.isOrderAsk,
-      signer: order?.signer,
-      collection: order?.collectionAddress,
-      price: order?.price,
-      tokenId: order?.tokenId,
-      amount: order?.amount,
-      strategy: order?.strategy,
-      currency: order?.currencyAddress,
-      nonce: order?.nonce,
-      startTime: order?.startTime,
-      endTime: order?.endTime,
-      minPercentageToAsk: order?.minPercentageToAsk,
-      params: ethers.utils.defaultAbiCoder.encode(['uint16','uint16'], order?.params),
-      signature: order?.signature
-    }
-    const takerBid : TakerOrderWithEncodedParams = {
-      isOrderAsk: false,
-      taker: address || '0x',
-      price: order?.price || '0',
-      tokenId: order?.tokenId || '0',
-      minPercentageToAsk: order?.minPercentageToAsk || '0',
-      params: ethers.utils.defaultAbiCoder.encode(['uint16'], [lzChainId])
-    }
-
-    console.log('--buy----', makerAsk, takerBid)
-
-    const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
-
-    console.log('---lzFee---', lzFee)
-
-    await omni.approve(omnixExchange.address, takerBid.price, { gasLimit: '300000' })
-    await omni.approve(getAddressByName('FundManager', chainId), takerBid.price, { gasLimit: '300000' })
-
-    console.log('--approved----')
-
-    await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee, gasLimit: '3000000' })
-
-    // await updateOrderStatus(order, 'EXECUTED')
-
-    dispatch(openSnackBar({ message: 'Bought an NFT', status: 'success' }))
-    // getBidOrders()
-    // getListOrders()
-    // getNFTOwnership(col_url, token_id)
-  }
-
-  const onBid = async (bidData: IBidData) => {
-    if (!order) {
-      dispatch(openSnackBar({ message: '  Please list first to place a bid', status: 'warning' }))
+    if(currency===''){
+      dispatch(openSnackBar({ message: 'Current Currency is not supported in this network', status: 'error' }))
+      setOpenBidDlg(false)
       return
     }
 
-    const chainId = provider?.network.chainId as number
-    const lzChainId = getLayerzeroChainId(chainId)
+    if(currency===currencies_list[provider?._network.chainId as number][0]['address']){//OMNI
+      const isOmniCoin = await currencyMangerContract.isOmniCurrency(currency)
+      if(isOmniCoin){
+        if(chainId===4){
+          contractAddress = omniCoin['rinkeby']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        } else if(chainId===97) {
+          contractAddress = omniCoin['bsc-testnet']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        } else if(chainId===43113) {
+          contractAddress = omniCoin['fuji']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        }
+      } else {
+        dispatch(openSnackBar({ message: 'omni currency is not whitelisted in this network', status: 'error' }))
+        setOpenBidDlg(false)
+        return
+      }
+    } else if (currency===currencies_list[provider?._network.chainId as number][1]['address']){//USDC
+      const isUsdcCoin = await currencyMangerContract.isCurrencyWhitelisted(currency)
+      if(isUsdcCoin){
+        if(chainId===4){
+          contractAddress = usdc['rinkeby']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        } else if(chainId===43113) {
+          contractAddress = usdc['fuji']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        } else if(chainId===80001) {
+          contractAddress = usdc['mumbai']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        } else if(chainId===421611) {
+          contractAddress = usdc['arbitrum-rinkeby']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        } else if(chainId===69) {
+          contractAddress = usdc['optimism-kovan']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        } else if(chainId===4002) {
+          contractAddress = usdc['fantom-testnet']
+          usdContract =  new ethers.Contract(contractAddress, omni, signer)
+        }
+      } else {
+        dispatch(openSnackBar({ message: 'USDC currency is not whitelisted in this network', status: 'error' }))
+        setOpenBidDlg(false)
+        return
+      }
 
-    const currency = getAddressByName(bidData.currencyName as ContractName, chainId)
-    const price = ethers.utils.parseEther(bidData.price.toString())
-    const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
-    const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
+    } else if (currency===currencies_list[provider?._network.chainId as number][2]['address']) {//USDT
+      const isUsdtCoin = await currencyMangerContract.isCurrencyWhitelisted(currency)
+      if(isUsdtCoin){
+        if(chainId===97){
+          contractAddress = usdt['bsc-testnet']
+          usdContract =  new ethers.Contract(contractAddress, usd, signer)
+        }
+      } else {
+        dispatch(openSnackBar({ message: 'USDT currency is not whitelisted in this network', status: 'error' }))
+        setOpenBidDlg(false)
+        return
+      }
+    }
+
+    if(usdContract===null){
+      dispatch(openSnackBar({ message: 'This network does not support this coin', status: 'error' }))
+      setOpenBidDlg(false)
+      return
+    }
+
+    const balance = await usdContract?.balanceOf(address)
+
+    if(Number(price) === 0) {
+      dispatch(openSnackBar({ message: 'Please enter a number greater than 0', status: 'error' }))
+      setOpenBidDlg(false)
+      return
+    }
+
+    if(Number(ethers.utils.formatEther(balance)) < Number(price)) {
+      dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))
+      setOpenBidDlg(false)
+      return
+    }
 
     try {
       await postMakerOrder(
         provider as any,
+        chainId,
         false,
         nftInfo.collection.address,
-        order?.strategy,
-        order?.amount,
-        price,
-        protocalFees,
-        creatorFees,
+        addresses.STRATEGY_STANDARD_SALE,
+        ethers.utils.parseUnits('1', 1),
+        ethers.utils.parseEther(price.toString()),
+        ethers.utils.parseUnits('2', 2),
+        ethers.utils.parseUnits('2', 2),
         currency,
         {
           tokenId: token_id,
-          startTime: order.startTime,
-          endTime: order.endTime,
+          startTime: startTime,
+          endTime: addDays(startTime, period).getTime(),
           params: {
-            values: [lzChainId],
-            types: ['uint16'],
+            values: [10001],
+            types: ['uint256'],
           },
         },
-        getChainNameById(chainId),
-        true
+        chain
       )
-
-      const omni = getCurrencyInstance(currency, chainId, signer)
-      await omni.approve(getAddressByName('OmnixExchange', chainId), price)
-      await omni.approve(getAddressByName('FundManager', chainId), price)
-
       setOpenBidDlg(false)
-      dispatch(openSnackBar({ message: 'Place a bid Success', status: 'success' }))
+      dispatch(openSnackBar({ message: 'Make Offer Success', status: 'success' }))
+
+      getBidOrders()
     } catch (err: any) {
       dispatch(openSnackBar({ message: err.message, status: 'error' }))
     }
   }
 
-  const onAccept = async (bidOrder: IOrder) => {
-    const chainId = provider?.network.chainId || 4
-    const lzChainId = getLayerzeroChainId(chainId)
+  const onBuy = async() => {
+    const hash = orders[0].hash
 
-    const omnixExchange = getOmnixExchangeInstance(chainId, signer)
-    const makerBid : MakerOrderWithSignature = {
-      isOrderAsk: false,
-      signer: bidOrder.signer,
-      collection: bidOrder.collectionAddress,
-      price: bidOrder.price,
-      tokenId: bidOrder.tokenId,
-      amount: bidOrder.amount,
-      strategy: bidOrder.strategy,
-      currency: bidOrder.currencyAddress,
-      nonce: bidOrder.nonce,
-      startTime: bidOrder.startTime,
-      endTime: bidOrder.endTime,
-      minPercentageToAsk: bidOrder.minPercentageToAsk,
-      params: ethers.utils.defaultAbiCoder.encode(['uint16'], bidOrder.params),
-      signature: bidOrder.signature
+    try {
+      await acceptOrder(
+        hash,
+        'EXECUTED'
+      )
+      for(let i = 1; i<orders.length;i++){
+        await acceptOrder(
+          orders[i].hash,
+          'EXPIRED'
+        )
+      }
+      dispatch(openSnackBar({ message: 'BUY Success', status: 'success' }))
+
+      getBidOrders()
+      getListOrders()
+      getLastSaleOrder()
+      getNFTOwnership(col_url, token_id)
+
+    } catch(error){
+      console.log(error)
     }
-    const takerAsk : TakerOrderWithEncodedParams = {
-      isOrderAsk: true,
-      taker: address || '0x',
-      price: bidOrder.price || '0',
-      tokenId: bidOrder.tokenId || '0',
-      minPercentageToAsk: bidOrder.minPercentageToAsk || '0',
-      params: ethers.utils.defaultAbiCoder.encode(['uint16'], [lzChainId])
+  }
+
+  const onAccept = async(index:number) => {
+    const hash = bidOrders[index].hash
+
+    try {
+      await acceptOrder(
+        hash,
+        'EXECUTED'
+      )
+
+      for(let i = 0; i<orders.length;i++){
+        await acceptOrder(
+          orders[i].hash,
+          'EXPIRED'
+        )
+      }
+
+      dispatch(openSnackBar({ message: 'ACCEPT Success', status: 'success' }))
+
+      getBidOrders()
+      getListOrders()
+      getLastSaleOrder()
+      getNFTOwnership(col_url, token_id)
+
+    } catch(error){
+      console.log(error)
     }
+  }
 
-    const transferSelector = getTransferSelectorNftInstance(chainId, signer)
-    const transferManagerAddr = await transferSelector.checkTransferManagerForToken(nftInfo.collection.address)
-    const nftContract = getERC721Instance(nftInfo.collection.address, chainId, signer)
-    await nftContract.approve(transferManagerAddr, token_id)
 
-    const lzFee = await omnixExchange.connect(signer as any).getLzFeesForBidWithTakerAsk(takerAsk, makerBid)
 
-    await omnixExchange.connect(signer as any).matchBidWithTakerAsk(takerAsk, makerBid, { value: lzFee })
+  const onListing = async (currency: string, price: number, period: number) => {
+    const chainId = provider?.network.chainId as number
 
-    await updateOrderStatus(bidOrder, 'EXECUTED')
+    const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
+    const startTime = Date.now()
 
-    dispatch(openSnackBar({ message: 'Accepted a Bid', status: 'success' }))
-    getBidOrders()
-    getListOrders()
-    getNFTOwnership(col_url, token_id)
+    try {
+      await postMakerOrder(
+        provider as any,
+        chainId,
+        true,
+        nftInfo.collection.address,
+        addresses.STRATEGY_STANDARD_SALE,
+        ethers.utils.parseUnits('1', 1),
+        ethers.utils.parseEther(price.toString()),
+        ethers.utils.parseUnits('2', 2),
+        ethers.utils.parseUnits('2', 2),
+        currency,
+        {
+          tokenId: token_id,
+          startTime: startTime,
+          endTime: addDays(startTime, period).getTime(),
+          params: {
+            values: [10001],
+            types: ['uint256'],
+          },
+        },
+        nftInfo.collection.chain
+      )
+      setOpenSellDlg(false)
+      dispatch(openSnackBar({ message: 'Listing Success', status: 'success' }))
+      getListOrders()
+
+    } catch (err: any) {
+      dispatch(openSnackBar({ message: err.message, status: 'error' }))
+    }
   }
 
   const truncate = (str: string) => {
     return str.length > 12 ? str.substring(0, 9) + '...' : str
   }
 
-  const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
-  const isListed = !!order
-  const isAuction = order?.params?.[2] == SaleType.AUCTION
 
-  console.log('--------', isListed, isAuction, owner, address)
   return (
     <>
       {nftInfo && nftInfo.nft &&
@@ -435,7 +517,6 @@ const Item: NextPage = () => {
                     <Image src={PngSub} alt=""/>
                   </div>
                 </div>
-
                 <div className="grid 2xl:grid-cols-3 lg:grid-cols-[200px_1fr_1fr] xl:grid-cols-[230px_1fr_1fr] px-6 pt-3 mt-6 bg-[#F6F8FC] rounded-[2px]">
                   <div className="">
                     <div className="flex justify-start items-center">
@@ -447,20 +528,22 @@ const Item: NextPage = () => {
 
                     </div>
                     <div className="flex justify-between items-center mt-6">
-                      {order && (
-                        <>
-                          <h1 className="text-[#1E1C21] text-[60px] font-normal">{order.price && ethers.utils.formatEther(order.price)}</h1>
-                          <div className="mr-5">
-                            {currencyIcon &&
-                              <img
-                                src={`/images/${currencyIcon}`}
-                                className='mr-[8px] w-[21px]'
-                                alt="icon"
-                              />
-                            }
-                          </div>
-                        </>
-                      )}
+                      <h1 className="text-[#1E1C21] text-[60px] font-bold">{order && order.price && ethers.utils.formatEther(order.price)}</h1>
+                      {
+                        currencies_list[provider?._network.chainId as number].map((currency,index) => {
+                          if(currency.address==order?.currencyAddress){
+                            return(
+                              <div className="mr-5" key={index}>
+                                <img
+                                  src={`/images/${currency.icon}`}
+                                  className='mr-[8px] w-[21px]'
+                                  alt="icon"
+                                />
+                              </div>
+                            )
+                          }
+                        })
+                      }
                     </div>
                     <div className="mb-3">
                       <span className='font-normal font-[16px]'>{order && order.price && '$'}{order && order.price && ethers.utils.formatEther(order.price)}</span>
@@ -475,37 +558,43 @@ const Item: NextPage = () => {
                       <div className="font-bold text-[18px] text-[#000000]">bid</div>
                       <div></div>
                       {
-                        bidOrders && bidOrders.map((item, index) => {
-                          return <Fragment key={index}>
-                            <div className='break-all mt-3'>{truncate(item.signer)}</div>
+                        bidOrder && bidOrder.map((item,idx) => {
+                          return <>
+                            <div className='break-all mt-3 text-[16px] font-bold' key={idx}>{truncate(item.signer)}</div>
                             <div className="text-center mt-3">
                               {
-                                chainList.map((chain, chainIdx) => {
-                                  if (chain.chain == item?.chain){
+                                chainList.map((chain,index) => {
+                                  if(chain.chain==item?.chain){
                                     return(
                                       <img
                                         src={chain.img_url}
                                         className='mr-[8px] w-[21px]'
                                         alt="icon"
-                                        key={chainIdx}
+                                        key={index}
                                       />
                                     )
                                   }
                                 })
                               }
                             </div>
-                            <div className='flex justify-start items-center mt-3'>
-                              <div className="mr-5">
-                                <img
-                                  src={`/images/${getCurrencyIconByAddress(item.currencyAddress)}`}
-                                  className='mr-[8px] w-[21px]'
-                                  alt="icon"
-                                />
-                              </div>
-                              <p className='ml-3'>${item && item.price && ethers.utils.formatEther(item.price)}</p>
+                            <div className='flex justify-start mt-3'>
+                              {currencies_list[provider?._network.chainId as number].map((currency,index) => {
+                                if(currency.address==item?.currencyAddress){
+                                  return(
+                                    <div className="mr-5" key={index}>
+                                      <img
+                                        src={`/images/${currency.icon}`}
+                                        className='mr-[8px] w-[21px]'
+                                        alt="icon"
+                                      />
+                                    </div>
+                                  )
+                                }
+                              })}
+                              <p className='ml-3 text-[16px] font-bold'>${item && item.price && ethers.utils.formatEther(item.price)}</p>
                             </div>
-                            <div className='text-right mt-3'>{owner.toLowerCase()==address?.toLowerCase()&&<button className='bg-[#ADB5BD] hover:bg-[#38B000] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5' onClick={() => onAccept(item)}>accept</button>}</div>
-                          </Fragment>
+                            <div className='text-right mt-3'>{owner.toLowerCase()==address?.toLowerCase()&&<button className='bg-[#ADB5BD] hover:bg-[#38B000] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5' onClick={() => onAccept(idx)}>accept</button>}</div>
+                          </>
                         })
                       }
                     </div>
@@ -515,17 +604,17 @@ const Item: NextPage = () => {
                   <div className="">
                     <div className="mb-3">
                       <div className="">
-                        { isListed && !isAuction && owner?.toLowerCase() != address?.toLowerCase() &&
+                        { order && owner && address && owner.toLowerCase() != address.toLowerCase() &&
                           <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={()=>onBuy()}>buy</button>
                         }
-                        { !isListed && owner?.toLowerCase() == address?.toLowerCase() &&
+                        { address && owner && owner.toLowerCase() == address.toLowerCase() &&
                           <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={() => {setOpenSellDlg(true)}}>sell</button>
                         }
                       </div>
                     </div>
                   </div>
                   <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
-                    { isListed && isAuction && owner?.toLowerCase() != address?.toLowerCase() &&
+                    { owner && address && owner.toLowerCase() != address.toLowerCase() &&
                       <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]" onClick={() => {setOpenBidDlg(true)}}>bid</button>
                     }
                   </div>
@@ -540,7 +629,6 @@ const Item: NextPage = () => {
                   <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='activity'?' text-[#1E1C21]':' text-[#A0B3CC]'}`} >activity</li>
                   <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='info'?' text-[#1E1C21]':' text-[#A0B3CC]'}`} >info</li>
                   <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='stats'?' text-[#1E1C21]':' text-[#A0B3CC]'}`} >stats</li>
-
                 </ul>
               </div>
               <div className="border-2 border-[#E9ECEF] bg-[#F6F8FC] px-10 py-8">
@@ -567,8 +655,8 @@ const Item: NextPage = () => {
               </div>
             </div>
           </div>
-          <ConfirmSell onSubmit={onListing} handleSellDlgClose={() => {setOpenSellDlg(false)}} openSellDlg={openSellDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} />
-          <ConfirmBid onSubmit={onBid} handleBidDlgClose={() => {setOpenBidDlg(false)}} openBidDlg={openBidDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} />
+          <ConfirmSell handleSellDlgClose={() => {setOpenSellDlg(false)}} openSellDlg={openSellDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} onSubmit={onListing} />
+          <ConfirmBid handleBidDlgClose={() => {setOpenBidDlg(false)}} openBidDlg={openBidDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} onSubmit={onBid}/>
         </div>
       }
     </>

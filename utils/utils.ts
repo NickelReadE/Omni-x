@@ -54,12 +54,12 @@ export const rpcDatafeedProvider:IRpcDatafeed = {
 
 }
 export const rpcGasProvider:IRpcDatafeed = {
-	'eth':'https://rinkeby.infura.io/v3/',
-  'bsc':'https://data-seed-prebsc-1-s1.binance.org:8545',
-  'arbitrm':'https://rinkeby.arbitrum.io/rpc',
-  'avalanche':'https://api.avax-test.network/ext/bc/C/rpce',
-  'fantom':'https://rpc.testnet.fantom.network',
-  'optimism':'https://kovan.optimism.io/',
-  'polygon':'https://matic-mumbai.chainstacklabs.com'
+	'eth':'https://rpc.ankr.com/eth',
+  'bsc':'https://rpc.ankr.com/bsc',
+  'arbitrm':'https://rpc.ankr.com/arbitrum',
+  'avalanche':'https://api.avax.network/ext/bc/C/rpc',
+  'fantom':'https://rpc.ankr.com/fantom',
+  'optimism':'https://rpc.ankr.com/optimism',
+  'polygon':'https://rpc.ankr.com/polygon'
 
 }
