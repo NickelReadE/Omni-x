@@ -65,7 +65,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
 
     await omni.mint({ gasLimit: '300000' })
 
-    dispatch(openSnackBar({ message: 'You will receive an 1000 $OMNI soon', status: 'success' }))
+    dispatch(openSnackBar({ message: 'You will receive an 10000 $OMNI soon', status: 'success' }))
   }
 
   return (

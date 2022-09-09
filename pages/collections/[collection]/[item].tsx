@@ -298,16 +298,16 @@ const Item: NextPage = () => {
 
     console.log('--buy----', makerAsk, takerBid)
 
-    await omni.approve(omnixExchange.address, takerBid.price)
-    await omni.approve(getAddressByName('FundManager', chainId), takerBid.price)
+    const tx1 = await omni.approve(omnixExchange.address, takerBid.price)
+    const tx2 = await omni.approve(getAddressByName('FundManager', chainId), takerBid.price)
 
+    await Promise.all([tx1.wait(), tx2.wait()])
     console.log('--approved----')
+    await waitFor(3000)
 
     const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
 
     console.log('---lzFee---', lzFee)
-
-    await waitFor(3000)
 
     await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
 
