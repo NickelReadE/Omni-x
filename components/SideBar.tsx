@@ -518,7 +518,6 @@ const SideBar: React.FC = () => {
           const omniContract =  new ethers.Contract(contractOmniAddress, omni, signer)
           const omni_balance = await omniContract.balanceOf(address)
           setOmniBalance(Number(ethers.utils.formatEther(omni_balance)))
-          console.log(omni_balance)
         }
         //USDC
         const contractUSDCAddress = usdcAddress[key]

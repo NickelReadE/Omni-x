@@ -49,6 +49,7 @@ import currencyManagerContractAddress from '../../../constants/CurrencyManager.j
 
 import { currencies_list } from '../../../utils/constants'
 import { getChainIdFromName,getChainNameFromId } from '../../../utils/constants'
+import { exec } from 'child_process'
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('items')
@@ -66,6 +67,8 @@ const Item: NextPage = () => {
   const [lastSale, setLastSale] = React.useState(0)
   const [highestBidCoin, setHighestBidCoin] = React.useState('')
   const [lastSaleCoin, setLastSaleCoin] = React.useState('')
+
+  const [orderFlag, setOrderFlag] = React.useState(false)
 
   const orders = useSelector(selectOrders)
   const bidOrders = useSelector(selectBidOrders)
@@ -96,13 +99,10 @@ const Item: NextPage = () => {
 
   const nftInfo = useSelector(selectNFTInfo)
 
-
   useEffect(() => {
     const getNFTOwner = async(col_url:string, token_id:string) => {
       const tokenIdOwner = await collectionsService.getNFTOwner(col_url, token_id)
-
       if ( tokenIdOwner.length > 0 ) {
-
         const user_info = await userService.getUserByAddress(tokenIdOwner)
         if(user_info.username == ''){
           setOwner(tokenIdOwner)
@@ -132,24 +132,22 @@ const Item: NextPage = () => {
       getListOrders()
       getBidOrders()
       getLastSaleOrder()
+      setOrderFlag(true)
     }
   }, [nftInfo, owner, ownerType])
 
   useEffect(() => {
+    //ORDER
     setOrder(undefined)
-
-    if (orders.length > 0  && nftInfo.collection!=undefined && nftInfo.nft!=undefined) {
+    if (orders.length > 0  && nftInfo.collection!=undefined && nftInfo.nft!=undefined && orderFlag) {
       if(nftInfo.collection.address===orders[0].collectionAddress&&Number(nftInfo.nft.token_id)===Number(orders[0].tokenId)){
         setOrder(orders[0])
       }
-    } 
-  }, [orders,nftInfo])
-
-  useEffect(() => {
+    }
+    //BID ORDER
     setHighestBid(0)
     setHighestBidCoin('')
-
-    if ( bidOrders.length > 0 && nftInfo.collection!=undefined && nftInfo.nft!=undefined) {
+    if(bidOrders.length > 0 && nftInfo.collection!=undefined && nftInfo.nft!=undefined && orderFlag){
       const temp_bidOrders: any = []
       let bid_balance = 0
       for(let i=0; i<bidOrders.length;i++){
@@ -168,13 +166,14 @@ const Item: NextPage = () => {
       }
       setBidOrder(temp_bidOrders)
       setHighestBid(bid_balance)
-    } 
-  }, [bidOrders,nftInfo])
+    }
 
-  useEffect(() => {
+    //SALE ORDER
     setLastSale(0)
     setLastSaleCoin('')
-    if(lastSaleOrders.length>0 && nftInfo.collection!=undefined && nftInfo.nft!=undefined){
+
+    if(lastSaleOrders.length > 0 && nftInfo.collection!=undefined && nftInfo.nft!=undefined && orderFlag){
+      console.log(lastSaleOrders)
       if(nftInfo.collection.address===lastSaleOrders[0].collectionAddress&&Number(nftInfo.nft.token_id)===Number(lastSaleOrders[0].tokenId)){
         setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[0].price)))
         const chainIdForList = getChainIdFromName(lastSaleOrders[0].chain)
@@ -184,9 +183,9 @@ const Item: NextPage = () => {
           }
         }
       }
+    }
+  }, [orders,bidOrders,lastSaleOrders,nftInfo,orderFlag])
 
-    } 
-  },[lastSaleOrders,nftInfo])
 
   const getNFTOwnership = async(col_url: string, token_id: string) => {
     const tokenIdOwner = await collectionsService.getNFTOwner(col_url, token_id)
@@ -321,11 +320,11 @@ const Item: NextPage = () => {
       return
     }
 
-    // if(Number(ethers.utils.formatEther(balance)) < Number(price)) {
-    //   dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))
-    //   setOpenBidDlg(false)
-    //   return
-    // }
+    if(Number(ethers.utils.formatEther(balance)) < Number(price)) {
+      dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))
+      setOpenBidDlg(false)
+      return
+    }
 
     try {
       await postMakerOrder(
@@ -379,7 +378,6 @@ const Item: NextPage = () => {
       getListOrders()
       getLastSaleOrder()
       getNFTOwnership(col_url, token_id)
-      
     } catch(error){
       console.log(error)
     }
@@ -407,7 +405,6 @@ const Item: NextPage = () => {
       getListOrders()
       getLastSaleOrder()
       getNFTOwnership(col_url, token_id)
-      
     } catch(error){
       console.log(error)
     }

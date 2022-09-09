@@ -146,7 +146,6 @@ const Collection: NextPage = () => {
 
   const orders = useSelector(selectOrders)
 
-
   const [imageError, setImageError] = useState(false)
   const classes = useStyles()
 
@@ -301,7 +300,6 @@ const Collection: NextPage = () => {
       for(let i=0;i<allNFTs.length;i++){
         for(let j=0; j<orders.length;j++){
           if(collectionInfo.address==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
-            console.log(allNFTs[i])
             temp.push(allNFTs[i])
             break
           }
