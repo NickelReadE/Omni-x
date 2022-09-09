@@ -51,7 +51,6 @@ const Collections: NextPage = () => {
     const  localCards = localStorage.getItem('cards') 
     if(localCards===null){
       if(collections.length>0 && collectionsForCard.length>0){
-        console.log(collectionsForCard)
         localStorage.setItem('cards',JSON.stringify(collectionsForCard))
         collections.map((item: any,index:number) => {
           slides.push(                     
