@@ -59,15 +59,15 @@ export const getONFTCore1155Instance = (contractAddress: string, chainId: number
 }
 
 export const getOmnixExchangeInstance = (chainId: number, signer: any) => {
-  return getContractInstance('OmnixExchange', OmnixExchangeABI, chainId, signer);
+  return getContractInstance('OmnixExchange', OmnixExchangeABI, chainId, signer)
 }
 
 export const getOmniInstance = (chainId: number, signer: any) => {
-  return getContractInstance('OMNI', OmniABI, chainId, signer);
+  return getContractInstance('OMNI', OmniABI, chainId, signer)
 }
 
 export const getTransferSelectorNftInstance = (chainId: number, signer: any) => {
-  return getContractInstance('TransferSelectorNFT', TransferSelectorNFTABI, chainId, signer);
+  return getContractInstance('TransferSelectorNFT', TransferSelectorNFTABI, chainId, signer)
 }
 export const getVeSTGInstance = (contractAddress: string, chainId: number, signer: any) => {
   return getContractInstanceByAddr(contractAddress, veSTG, chainId, signer)
@@ -91,5 +91,5 @@ export const validateContract = async (chainId: number, address: string): Promis
 }
 
 export const getCurrencyInstance = (address: string, chainId: number, signer: any) => {
-  return getContractInstanceByAddr(address, ERC20Abi, chainId, signer);
+  return getContractInstanceByAddr(address, ERC20Abi, chainId, signer)
 }

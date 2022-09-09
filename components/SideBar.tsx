@@ -22,6 +22,8 @@ import ConfirmUnwrap from './bridge/ConfirmUnwrap'
 import UserEdit from './user/UserEdit'
 import useBridge from '../hooks/useBridge'
 import useProgress from '../hooks/useProgress'
+import useContract from '../hooks/useContract'
+import {PendingTxType} from '../contexts/contract'
 import usd from '../constants/abis/USD.json'
 import omni from '../constants/abis/Omni.json'
 import usdc from '../constants/USDC.json'
@@ -43,15 +45,16 @@ const SideBar: React.FC = () => {
   const {
     provider,
     signer,
-    address,    
+    address,
     disconnect,
     connect: connectWallet,
-    
+
     switchNetwork
-  } = useWallet()  
+  } = useWallet()
   const classes = useStyles()
   const { estimateGasFee, estimateGasFeeONFTCore, unwrapInfo, selectedUnwrapInfo, validateOwNFT, validateONFT } = useBridge()
-  const { txInfo, setPendingTxInfo } = useProgress()
+  const { addTxToHistories } = useProgress()
+  const { listenONFTEvents } = useContract()
 
   const dispatch = useDispatch()
   const ref = useRef(null)
@@ -263,40 +266,18 @@ const SideBar: React.FC = () => {
       if (selectedNFTItem.contract_type === 'ERC721') {
         const onftCoreInstance = getONFTCore721Instance(selectedNFTItem.token_address, provider?._network?.chainId, signer)
         const targetONFTCoreAddress = await onftCoreInstance.trustedRemoteLookup(lzTargetChainId)
-        const targetCoreInstance = getONFTCore721Instance(targetONFTCoreAddress, targetChain, null)
         const tx = await onftCoreInstance.sendFrom(
-          _signerAddress,
+          address,
           lzTargetChainId,
-          _signerAddress,
+          address,
           selectedNFTItem.token_id,
-          _signerAddress,
+          address,
           ethers.constants.AddressZero,
           '0x',
           { value: estimatedFee }
         )
         const blockNumber = await targetProvider.getBlockNumber()
-        targetCoreInstance.on('ReceiveFromChain', async (/*srcChainId, srcAddress, toAddress, tokenId, nonce*/) => {
-          const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), blockNumber)
-          const eventExist = events.filter((ev) => {
-            return ev.args?._toAddress.toLowerCase() === address?.toLowerCase()
-            && parseInt(ev.args?._tokenId) === parseInt(selectedNFTItem.token_id)
-          })
-          const pendingTxInfo = localStorage.getItem('pendingTxInfo')
-          if (eventExist.length > 0 && pendingTxInfo) {
-            setPendingTxInfo({
-              ...JSON.parse(pendingTxInfo),
-              ...{
-                destTxHash: eventExist[0].transactionHash
-              }
-            })
-          }
-
-          setTimeout(() => {
-            dispatch(getUserNFTs(address) as any)
-          }, 30000)
-        })
-        onLeave()
-        await setPendingTxInfo({
+        const pendingTx: PendingTxType = {
           txHash: tx.hash,
           type: 'bridge',
           senderChainId: provider?._network?.chainId,
@@ -307,12 +288,15 @@ const SideBar: React.FC = () => {
           nftItem: selectedNFTItem,
           targetBlockNumber: blockNumber,
           itemName: selectedNFTItem.name
-        })
+        }
+        const historyIndex = addTxToHistories(pendingTx)
+        await listenONFTEvents(pendingTx, historyIndex)
+        onLeave()
         await tx.wait()
       } else if (selectedNFTItem.contract_type === 'ERC1155') {
         const onft1155CoreInstance = getONFTCore1155Instance(selectedNFTItem.token_address, provider?._network?.chainId, signer)
         const targetONFT1155CoreAddress = await onft1155CoreInstance.trustedRemoteLookup(lzTargetChainId)
-        const targetCoreInstance = getONFTCore1155Instance(targetONFT1155CoreAddress, targetChain, null)
+        const blockNumber = await targetProvider.getBlockNumber()
         const tx = await onft1155CoreInstance.sendFrom(
           _signerAddress,
           lzTargetChainId,
@@ -325,8 +309,7 @@ const SideBar: React.FC = () => {
           { value: estimatedFee }
         )
         onLeave()
-        const blockNumber = await targetProvider.getBlockNumber()
-        await setPendingTxInfo({
+        const pendingTx: PendingTxType = {
           txHash: tx.hash,
           type: 'bridge',
           senderChainId: provider?._network?.chainId,
@@ -337,27 +320,9 @@ const SideBar: React.FC = () => {
           contractType: 'ERC1155',
           nftItem: selectedNFTItem,
           itemName: selectedNFTItem.name
-        })
-        targetCoreInstance.on('ReceiveFromChain', async (/*srcChainId, srcAddress, toAddress, tokenId, nonce*/) => {
-          const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), blockNumber)
-          const eventExist = events.filter((ev) => {
-            return ev.args?._toAddress.toLowerCase() === address?.toLowerCase()
-            && parseInt(ev.args?._tokenId) === parseInt(selectedNFTItem.token_id)
-            && parseInt(ev.args?._amount) === parseInt(selectedNFTItem.amount)
-          })
-          const pendingTxInfo = localStorage.getItem('pendingTxInfo')
-          if (eventExist.length > 0 && pendingTxInfo) {
-            setPendingTxInfo({
-              ...JSON.parse(pendingTxInfo),
-              ...{
-                destTxHash: eventExist[0].transactionHash
-              }
-            })
-          }
-          setTimeout(() => {
-            dispatch(getUserNFTs(address) as any)
-          }, 30000)
-        })
+        }
+        const historyIndex = addTxToHistories(pendingTx)
+        await listenONFTEvents(pendingTx, historyIndex)
         await tx.wait()
       }
     } else {
@@ -367,27 +332,6 @@ const SideBar: React.FC = () => {
         const noSignerOmniXInstance = getOmnixBridgeInstance(targetChain, null)
         const dstAddress = await noSignerOmniXInstance.persistentAddresses(selectedNFTItem.token_address)
         const blockNumber = await targetProvider.getBlockNumber()
-
-        noSignerOmniXInstance.on('LzReceive', async () => {
-          const events = await noSignerOmniXInstance.queryFilter(noSignerOmniXInstance.filters.LzReceive(), blockNumber)
-          const eventExist = events.filter((ev) => {
-            return ev.args?.toAddress.toLowerCase() === address?.toLowerCase()
-              && ev.args?.tokenId.toString() === selectedNFTItem.token_id
-          })
-          const pendingTxInfo = localStorage.getItem('pendingTxInfo')
-          if (eventExist.length > 0 && pendingTxInfo) {
-            setPendingTxInfo({
-              ...JSON.parse(pendingTxInfo),
-              ...{
-                destTxHash: eventExist[0].transactionHash
-              }
-            })
-          }
-          // After 30 seconds from receiving the token on Target Chain, refresh user NFT items
-          setTimeout(() => {
-            dispatch(getUserNFTs(address) as any)
-          }, 30000)
-        })
 
         let adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 3500000])
         if (dstAddress !== ethers.constants.AddressZero) {
@@ -401,8 +345,7 @@ const SideBar: React.FC = () => {
         const tx = await contractInstance.wrap(lzTargetChainId, selectedNFTItem.token_address, BigNumber.from(selectedNFTItem.token_id), adapterParams, {
           value: estimatedFee
         })
-        onLeave()
-        await setPendingTxInfo({
+        const pendingTx: PendingTxType = {
           txHash: tx.hash,
           type: 'bridge',
           senderChainId: provider?._network?.chainId,
@@ -413,7 +356,10 @@ const SideBar: React.FC = () => {
           nftItem: selectedNFTItem,
           targetBlockNumber: blockNumber,
           itemName: selectedNFTItem.name
-        })
+        }
+        const historyIndex = addTxToHistories(pendingTx)
+        await listenONFTEvents(pendingTx, historyIndex)
+        onLeave()
         await tx.wait()
         setSelectedNFTItem(undefined)
       } else if (selectedNFTItem.contract_type === 'ERC1155') {
@@ -422,28 +368,6 @@ const SideBar: React.FC = () => {
         const erc1155Instance = getERC1155Instance(selectedNFTItem.token_address, 0, signer)
         const dstAddress = await noSignerOmniX1155Instance.persistentAddresses(selectedNFTItem.token_address)
         const blockNumber = await targetProvider.getBlockNumber()
-
-        noSignerOmniX1155Instance.on('LzReceive', async () => {
-          const events = await noSignerOmniX1155Instance.queryFilter(noSignerOmniX1155Instance.filters.LzReceive(), blockNumber)
-          const eventExist = events.filter((ev) => {
-            return ev.args?.toAddress.toLowerCase() === address.toLowerCase()
-              && ev.args?.tokenId.toString() === selectedNFTItem.token_id
-              && ev.args?.amount.toString() === selectedNFTItem.amount
-          })
-          const pendingTxInfo = localStorage.getItem('pendingTxInfo')
-          if (eventExist.length > 0 && pendingTxInfo) {
-            setPendingTxInfo({
-              ...JSON.parse(pendingTxInfo),
-              ...{
-                destTxHash: eventExist[0].transactionHash
-              }
-            })
-          }
-          // After 30 seconds from receiving the token on Target Chain, refresh user NFT items
-          setTimeout(() => {
-            dispatch(getUserNFTs(address) as any)
-          }, 30000)
-        })
 
         let adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 3500000])
         if (dstAddress !== ethers.constants.AddressZero) {
@@ -465,7 +389,7 @@ const SideBar: React.FC = () => {
           value: estimatedFee.nativeFee
         })
         onLeave()
-        await setPendingTxInfo({
+        const pendingTx: PendingTxType = {
           txHash: tx.hash,
           type: 'bridge',
           senderChainId: provider?._network?.chainId,
@@ -476,7 +400,9 @@ const SideBar: React.FC = () => {
           nftItem: selectedNFTItem,
           targetBlockNumber: blockNumber,
           itemName: selectedNFTItem.name
-        })
+        }
+        const historyIndex = addTxToHistories(pendingTx)
+        await listenONFTEvents(pendingTx, historyIndex)
         await tx.wait()
         setSelectedNFTItem(undefined)
       }
@@ -557,7 +483,7 @@ const SideBar: React.FC = () => {
       }
     }
   }
- 
+
   useEffect(() => {
     (async () => {
       if (unwrapInfo) {
@@ -602,7 +528,7 @@ const SideBar: React.FC = () => {
           const balance = await usdContract.balanceOf(address)
           setUsdcBalance(Number(ethers.utils.formatEther(balance)))
         }
-        
+
         {
           const usdContract = getCurrencyInstance(getAddressByName('USDT', chainId), chainId, signer)
           const balance = await usdContract.balanceOf(address)
@@ -619,6 +545,20 @@ const SideBar: React.FC = () => {
       getBalance()
     }
   },[signer,address])
+
+  useEffect(() => {
+    (async () => {
+      const allHistories = localStorage.getItem('txHistories')
+      const txInfos = allHistories ? JSON.parse(allHistories) : []
+
+      for (let i = 0; i < txInfos.length; i++) {
+        const txInfo = txInfos[i]
+        if (!txInfo.destTxHash) {
+          await listenONFTEvents(txInfo, i)
+        }
+      }
+    })()
+  }, [listenONFTEvents])
 
   return (
     <>
@@ -744,7 +684,7 @@ const SideBar: React.FC = () => {
                         <img src="/svgs/ethereum.svg" width={24} height={28} />
                       </div>
                       <span className="flex items-center ml-4 " >Ethereum</span>
-                    </div>                   
+                    </div>
                   </button>
                 </li>
                 <li className="w-full">
@@ -754,9 +694,9 @@ const SideBar: React.FC = () => {
                         <img src="/svgs/arbitrum.svg" width={24} height={28} />
                       </div>
                       <span className=" flex items-center ml-4 ">Arbitrum</span>
-                    </div>  
+                    </div>
                   </button>
-                  
+
                 </li>
                 <li className="w-full">
                   <button className="w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(env === 'testnet' ? 43113 : 1)}>
@@ -1125,7 +1065,7 @@ const SideBar: React.FC = () => {
       <div className="w-full md:w-auto">
         <Dialog open={unwrap} onClose={() => setUnwrap(false)}>
           <ConfirmUnwrap
-            updateModal={() => setUnwrap(false)}   
+            updateModal={() => setUnwrap(false)}
             onUnwrap={onUnwrap}
           />
         </Dialog>
