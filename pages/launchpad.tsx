@@ -5,19 +5,17 @@ import Image from 'next/image'
 import Link from 'next/link'
 import styles from '../styles/launchpad.module.scss'
 import classNames from '../helpers/classNames'
-import OmniCoin from '/images/omnicoin.svg'
-import OX from '/images/ox.svg'
 const Launchpad: NextPage = () => {
   return (
-    <div className='mt-[75px] w-full px-[90px] pt-[50px]'>
+    <div className='mt-[75px] w-full px-[130px] pt-[50px]'>
       <div className='flex  justify-between'>
         <div className='flex flex-col'>
           <p className='text-xxl2 font-bold italic'>OMNI X LAUNCHPAD</p>
           <p className='text-xl2'>art for everyone, everwhere </p>
         </div>
-        <div className='flex space-x-12 '>
-          <img className='w-[100px]' src='/images/ox.svg' alt='Omni coin'/>
-          <img  className='w-[150px]' src='/images/omnicoin.svg' alt='OX'/>          
+        <div className='flex space-x-12 items-center'>
+          <img className='w-[130px] h-[130px]'  src='/images/ox.png' alt='Omni coin'/>
+          <img  className='w-[150px] h-[150px]' src='/images/omnicoin.png' alt='OX'/>          
         </div>
         <div className='py-6 px-14 flex flex-col bg-l-50 space-y-4 '>
           <p className='text-xg1 italic font-bold text-center'>
