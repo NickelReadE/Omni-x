@@ -30,7 +30,7 @@ interface ITypeNFT{
 const NftForLaunch = (pro:ITypeNFT) => {
   const typeNFT = pro.typeNFT
   return (
-    <div className='border-[2px] border-[#F8F9FA]  rounded-[8px] '>
+    <div className=' border-[#F8F9FA]  rounded-[8px] '>
       <p className='font-bold text-xl2 mb-[24px]'>
         {typeNFT==='live'?'Live Launches':'Upcoming'}
         
@@ -39,7 +39,7 @@ const NftForLaunch = (pro:ITypeNFT) => {
         <div className="group relative flex justify-center text-center overflow-hidden rounded-md" >
           <img className='w-[300px] rounded-md ' src='/images/nft.png' alt="nft-image" />        
         </div>
-        <div className="flex flex-row justify-between  px-3 align-middle  font-['RetniSans']">
+        <div className="flex flex-row justify-between  px-3 mt-[12px] align-middle  font-['RetniSans']">
           <div className=" text-[#000000] text-[14px] font-bold">
             Tiny Dinose
           </div>

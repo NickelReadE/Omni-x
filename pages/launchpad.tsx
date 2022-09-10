@@ -60,10 +60,12 @@ const Launchpad: NextPage = () => {
           <p className='w-[830px] text-xg1 text-[#A0B3CC]'>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet.
           </p>
-          <button className='px-2 py-1 w-[170px] bg-[#B444F9] text-white rounded-lg'>
-            view collection
-          </button>
-
+          
+          <Link href='/collections'>
+            <button className='px-2 py-1 w-[170px] bg-[#B444F9] text-white rounded-lg'>
+              view collection
+            </button>       
+          </Link>
         </div>
       </div>
       <div className='flex flew-wrap space-x-12 mt-[80px]'>
