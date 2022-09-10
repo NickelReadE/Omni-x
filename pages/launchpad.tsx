@@ -24,7 +24,7 @@ const Launchpad: NextPage = () => {
           <p className='text-xg text-[#A0B3CC]'>
             Interested in launching your own collection?
           </p>
-          <div className='flex space-x-2 justify-center space-x-6'>
+          <div className='flex space-x-2 justify-center space-x-6 mt-[40px]'>
             
             <Link href="https://omni-x.gitbook.io/omni-x-nft-marketplace/marketplace-features/launchpad">
               <a target="_blank">
