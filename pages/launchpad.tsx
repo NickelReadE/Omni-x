@@ -17,14 +17,14 @@ const Launchpad: NextPage = () => {
           <img className='w-[130px] h-[130px]'  src='/images/ox.png' alt='Omni coin'/>
           <img  className='w-[150px] h-[150px]' src='/images/omnicoin.png' alt='OX'/>          
         </div>
-        <div className='py-6 px-14 flex flex-col bg-l-50 space-y-4 '>
+        <div className='py-6 px-12 flex flex-col bg-l-50 space-y-4 '>
           <p className='text-xg1 italic font-bold text-center'>
             **CREATORS**
           </p>
           <p className='text-xg text-[#A0B3CC]'>
             Interested in launching your own collection?
           </p>
-          <div className='flex space-x-2 justify-center space-x-6 mt-[40px]'>
+          <div className='flex space-x-2 justify-center space-x-16 mt-[40px]'>
             
             <Link href="https://omni-x.gitbook.io/omni-x-nft-marketplace/marketplace-features/launchpad">
               <a target="_blank">
@@ -51,16 +51,15 @@ const Launchpad: NextPage = () => {
       </div>
       <div className='flex  justify-between mt-[30px]'>
         <img className='w-[600px]' src='/images/nft.png' alt='NFT'></img>
-        <div className='flex flex-col space-y-2'>
+        <div className='flex flex-col'>
           <p className='text-xxl2'>
             Tiny Dinos
           </p>
           <p className='w-[830px] text-xg1 text-[#A0B3CC]'>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet.
-          </p>
-          
-          <Link href='/collections'>
-            <button className='px-2 py-1 w-[170px] bg-[#B444F9] text-white rounded-lg'>
+          </p>          
+          <Link  href='/collections'>
+            <button className='mt-[25px] px-2 py-1 w-[170px]  bg-[#B444F9] text-white rounded-lg'>
               view collection
             </button>       
           </Link>
