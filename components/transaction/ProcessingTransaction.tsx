@@ -45,7 +45,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
 
   return (
     <>
-      <div className={'rounded-[8px] w-[250px] md:order-2 mr-[70px] px-4 flex flex-col justify-center shadow-md h-[80px]'}>
+      <div className={'rounded-[8px] w-[250px] md:order-2 mr-[70px] px-4 flex flex-col justify-center shadow-md py-4'}>
         <div className="flex items-center justify-between">
           <span className="text-lg">{pending ? 'processing' : 'last transaction'}</span>
           {
