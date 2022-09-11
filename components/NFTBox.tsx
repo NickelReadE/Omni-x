@@ -159,7 +159,8 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     try {
       await postMakerOrder(
         provider as any,
-        true,
+        chainId,
+        false,
         nft.token_address,
         getAddressByName('Strategy', chainId),
         amount,
@@ -177,7 +178,6 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
           },
         },
         nft.chain,
-        true
       )
       setOpenSellDlg(false)
       dispatch(openSnackBar({ message: 'Listing Success', status: 'success' }))
