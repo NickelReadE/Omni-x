@@ -49,7 +49,6 @@ const SideBar: React.FC = () => {
     address,
     disconnect,
     connect: connectWallet,
-
     switchNetwork
   } = useWallet()
   const classes = useStyles()

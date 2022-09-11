@@ -131,7 +131,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
             </ul>
           </div>
 
-          <div className='absolute right-[100px] flex items-center'>
+          <div className='absolute right-[100px] flex items-center flex-col'>
             {
               histories?.map((item, index) => {
                 return <ProcessingTransaction txInfo={item} key={index} />
