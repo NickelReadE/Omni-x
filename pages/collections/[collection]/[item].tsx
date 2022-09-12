@@ -23,7 +23,7 @@ import { acceptOrder, postMakerOrder } from '../../../utils/makeOrder'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../../../types'
 import { IBidData, IGetOrderRequest, IListingData, IOrder, OrderStatus } from '../../../interface/interface'
 import { ContractName, CREATOR_FEE, CURRENCIES_LIST, getAddressByName, getChainIconByCurrencyAddress, getChainInfo, getChainNameById, getCurrencyIconByAddress, getCurrencyNameAddress, getLayerzeroChainId, isUsdcOrUsdt, PROTOCAL_FEE } from '../../../utils/constants'
-import { getCurrencyInstance, getERC721Instance, getTransferSelectorNftInstance, getOmniInstance, getOmnixExchangeInstance } from '../../../utils/contracts'
+import { getCurrencyInstance, getERC721Instance, getTransferSelectorNftInstance, getOmniInstance, getOmnixExchangeInstance, getCurrencyManagerInstance } from '../../../utils/contracts'
 
 import PngCheck from '../../../public/images/check.png' 
 import PngSub from '../../../public/images/subButton.png'
@@ -216,6 +216,43 @@ const Item: NextPage = () => {
     )
   }
 
+  const checkValid = async (currency: string, price: string, chainId: number) => {
+    if (currency===''){
+      dispatch(openSnackBar({ message: 'Current Currency is not supported in this network', status: 'error' }))
+      setOpenBidDlg(false)
+      return
+    }
+
+    const currencyMangerContract = getCurrencyManagerInstance(chainId, signer)
+    if (currencyMangerContract===null){
+      dispatch(openSnackBar({ message: "This network doesn't support currencies", status: 'error' }))
+      setOpenBidDlg(false)
+      return false
+    }
+
+    if (!await currencyMangerContract.isCurrencyWhitelisted(currency)) {
+      dispatch(openSnackBar({ message: 'USDC currency is not whitelisted in this network', status: 'error' }))
+      setOpenBidDlg(false)
+      return false
+    }
+
+    if (Number(price) === 0) {
+      dispatch(openSnackBar({ message: 'Please enter a number greater than 0', status: 'error' }))
+      setOpenBidDlg(false)
+      return false
+    }
+
+    const currencyContract = getCurrencyInstance(currency, chainId, signer)
+    const balance = await currencyContract?.balanceOf(address)
+    if (Number(ethers.utils.formatEther(balance)) < Number(price)) {
+      dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))
+      setOpenBidDlg(false)
+      return false
+    }
+
+    return true
+  }
+
   const onListing = async (listingData: IListingData) => {
     const price = ethers.utils.parseEther(listingData.price.toString())
     const amount = ethers.utils.parseUnits('1', 0)
@@ -224,7 +261,7 @@ const Item: NextPage = () => {
     const chainId = provider?.network.chainId || 4
     const lzChainId = getLayerzeroChainId(chainId)
     const startTime = Date.now()
-    
+
     await postMakerOrder(
       provider as any,
       true,
@@ -267,9 +304,15 @@ const Item: NextPage = () => {
       return
     }
 
+    
     const chainId = provider?.network.chainId || 4
     const lzChainId = getLayerzeroChainId(chainId)
     const omniAddress = getAddressByName(getCurrencyNameAddress(order.currencyAddress) as ContractName, chainId)
+
+    if (!checkValid(omniAddress, order?.price, chainId)) {
+      return
+    }
+
     const omni = getCurrencyInstance(omniAddress, chainId, signer)
     const omnixExchange = getOmnixExchangeInstance(chainId, signer)
     const makerAsk : MakerOrderWithSignature = {
@@ -339,6 +382,10 @@ const Item: NextPage = () => {
     const price = ethers.utils.parseEther(bidData.price.toString())
     const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
     const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
+
+    if (!checkValid(currency, order?.price, chainId)) {
+      return
+    }
 
     try {
       await postMakerOrder(

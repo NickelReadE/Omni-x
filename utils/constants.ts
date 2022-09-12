@@ -10,6 +10,7 @@ import USDC from '../constants/USDC.json'
 import USDT from '../constants/USDT.json'
 import Stargate from '../constants/Stargate.json'
 import StargatePoolManager from '../constants/StargatePoolManager.json'
+import CurrencyManager from '../constants/CurrencyManager.json'
 import LZEndpoint from '../constants/LayerzeroEndpoints.json'
 import ChainIds from '../constants/chainIds.json'
 import CHAINS from '../constants/chains.json'
@@ -25,6 +26,7 @@ const usdc: any = USDC
 const usdt: any = USDT
 const stargate: any = Stargate
 const stargatePoolManager: any = StargatePoolManager
+const currencyManager: any = CurrencyManager
 const lzEndpoint: any = LZEndpoint
 const chainIds: any = ChainIds
 
@@ -54,7 +56,8 @@ export type ContractName =
   'TransferSelectorNFT' |
   'FundManager' |
   'StargateRouter' |
-  'StargatePoolManager'
+  'StargatePoolManager' |
+  'CurrencyManager'
 
 export const rpcProviders: { [key: number]: string } = {
   1:'https://mainnet.infura.io/v3/20504cdcff23477c9ed314d042d85a74',
