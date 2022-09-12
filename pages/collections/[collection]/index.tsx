@@ -299,7 +299,7 @@ const Collection: NextPage = () => {
       setClearFilter(true)
     }
   }
-
+  
   const searchFilter = (searchValue: string, attrKey: string) => {
     const newObj = {[attrKey]: searchValue}
     setFilterObj((prevState: any) => {
@@ -333,16 +333,15 @@ const Collection: NextPage = () => {
     if(isActiveBuyNow && collectionInfo && allNFTs.length>0){
       const temp = []
       for(let i=0;i<allNFTs.length;i++){
-        for(let j=0; j<orders.length;j++){
+        for(let j=0; j<orders.length;j++){  
           if(collectionInfo.address==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
-            console.log(allNFTs[i])
-            temp.push(allNFTs[i])
-            break
+            temp.push(allNFTs[i]) 
+            break         
           }
         }
       }
-      setListNFTs(temp)
-    }
+      setListNFTs(temp)    
+    } 
   },[isActiveBuyNow,collectionInfo,allNFTs])
   useEffect(()=>{
     if(collectionInfo && allNFTs.length>0){
@@ -351,17 +350,17 @@ const Collection: NextPage = () => {
         let order:any = null
         for(let j=0; j<orders.length;j++){
           if(collectionInfo.address==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
-            order = orders[j]
+            order = orders[j]         
           }
         }
         if(order){
           tempOrders.push(order)
-        }
-      }
-      setOrdersForCollection(tempOrders)
-    }
+        }        
+      }      
+      setOrdersForCollection(tempOrders)     
+    } 
   },[collectionInfo,allNFTs])
-  useEffect(()=>{
+  useEffect(()=>{   
     if(ordersForCollection.length > 0 && assetPrices){
       let lowPrice: any = Number.MAX_VALUE
       ordersForCollection.map((collection: { price: any, currencyAddress:any }) => {
@@ -373,7 +372,7 @@ const Collection: NextPage = () => {
         }
         if(lowPrice > priceAsUSD){
           lowPrice  = priceAsUSD
-        }
+        }             
       })
       if(lowPrice === Number.MAX_VALUE){
         lowPrice = 0
@@ -382,7 +381,7 @@ const Collection: NextPage = () => {
     }else if(ordersForCollection.length ===0){
       setFloorPrice(0)
     }
-
+   
   },[ordersForCollection])
   useEffect(()=> {
     if (isInitialized && collectionInfo.address) {
@@ -399,7 +398,7 @@ const Collection: NextPage = () => {
       <div className={classNames('w-full', 'mt-20', 'pr-[70px]' ,'pt-[30px]', 'relative', editStyle.collection)}>
         <div className="w-[100%] h-[100%] mt-20">
           <img className={classNames(editStyle.bannerImg)} src={collectionInfo&&collectionInfo.banner_image ? collectionInfo.banner_image : ''} />
-          <div className={classNames(editStyle.bannerOpacity)} />
+          <div className={classNames(editStyle.bannerOpacity)} /> 
         </div>
         <div className="flex space-x-8 items-end ml-[70px]">
           <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="logo" />}>
@@ -407,11 +406,11 @@ const Collection: NextPage = () => {
           </LazyLoad>
           <div className="flex relative  text-lg font-bold text-center items-center">
             <div className={'select-none inline-block p-4 text-xxl font-extrabold '}>
-              {collectionInfo?collectionInfo.name:''}
-            </div>
+              {collectionInfo?collectionInfo.name:''}                  
+            </div> 
             <div className="w-[30px] h-[30px] bg-[#B444F9] rounded-[30px] flex items-center justify-center">
               <div className=" w-[15px] h-[9px] border-b-[3px] border-l-[3px] border-white -rotate-45 "></div>
-            </div>
+            </div> 
             { collectionInfo&&collectionInfo.discord?
               <Link href={collectionInfo.discord}>
                 <a className="p-2 flex items-center">
@@ -450,18 +449,18 @@ const Collection: NextPage = () => {
                 <Image src={Explorer} alt='website' />
               </a>
             </Link>
-
+              
           </div>
-        </div>
+        </div>  
         <div className='w-full  mt-[-100px] border-b-2 border-[#E9ECEF]'>
-          <div className="felx">
-            <div className="w-[320px] min-w-[320px]"/>
+          <div className="flex">
+            <div className="w-[320px] min-w-[320px]"/>              
           </div>
           <div className="flex">
             <div className="w-[320px] min-w-[320px]">
             </div>
             <div className="flex w-full justify-between items-end">
-              <div className="flex flex-col">
+              <div className="flex flex-col">                
                 <ul className="flex relative justify-item-stretch text-lg font-bold text-center">
                   <li
                     className={`select-none inline-block p-4  w-32	 cursor-pointer z-30 ${currentTab === 'items' ? 'text-[#1E1C21] border-b-2 border-black': ' text-[#A0B3CC]'} `}
@@ -472,19 +471,19 @@ const Collection: NextPage = () => {
                   <li className={'select-none inline-block p-4  w-32	 cursor-pointer  z-10  text-[#A0B3CC]'}>stats</li>
                 </ul>
               </div>
-
+              
               <ul className="flex space-x-4 relative justify-item-stretch items-end text-md font-bold text-center pb-[5px]">
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <span className="mr-[22px] ">Items</span>
-                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.itemsCnt:0}</span>
+                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.itemsCnt:0}</span>           
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <span className="mr-[22px] ">Owners</span>
-                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.ownerCnt:0}</span>
+                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.ownerCnt:0}</span>           
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <span className="mr-[22px] ">Listed</span>
-                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.orderCnt:0}</span>
+                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.orderCnt:0}</span>           
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <span className="mr-[22px] ">Royalty Fee</span>
@@ -556,7 +555,7 @@ const Collection: NextPage = () => {
           </div>
         </div>
       </div>
-
+      
 
 
       <div className="w-full pr-[70px]">
@@ -739,7 +738,7 @@ const Collection: NextPage = () => {
               </div>
             </div>
             <div className="mt-5">
-
+            
               {
                 Object.keys(searchObj).map((attrKey, attrIndex) => {
                   return searchObj[attrKey].map((item: any, index: any) => {
