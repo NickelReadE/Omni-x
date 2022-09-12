@@ -296,6 +296,8 @@ export const getAddressByName = (name: ContractName, chainId: number) => {
     return stargate[chainInfos[chainId].name].router
   } else if (name === 'StargatePoolManager') {
     return stargatePoolManager[chainInfos[chainId].name]
+  } else if (name === 'CurrencyManager') {
+    return currencyManager[chainInfos[chainId].name]
   }
 }
 
