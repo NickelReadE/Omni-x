@@ -89,10 +89,11 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     if (collection_address == '0xb7b0d9849579d14845013ef9d8421ae58e9b9369' || collection_address == '0x7470ea065e50e3862cd9b8fb7c77712165da80e5' || collection_address == '0xb74bf94049d2c01f8805b8b15db0909168cabf46' || collection_address == '0x7f04504ae8db0689a0526d99074149fe6ddf838c' || collection_address == '0xa783cc101a0e38765540ea66aeebe38beebf7756'|| collection_address == '0x316dc98ed120130daf1771ca577fad2156c275e5') {
       setList(true)
     }
+    
     if(lastSaleOrders.length>0){
       setLastSale(0)
       setLastSaleCoin('')
-      for(let i=lastSaleOrders.length-1;i>=0;i--){
+      for(let i=0;i<lastSaleOrders.length;i++){
         if(lastSaleOrders[i].collectionAddress==collection_address&&lastSaleOrders[i].tokenId==nft.token_id){
           setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[i].price)))
           const chainIdForList = getChainIdFromName(lastSaleOrders[i].chain)

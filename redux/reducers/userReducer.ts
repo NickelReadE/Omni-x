@@ -73,7 +73,7 @@ export const updateUser = (user: FormData) => async (dispatch: Dispatch<any>) =>
 
 export const getUserNFTs = (address: string) => async (dispatch: Dispatch<any>) => {
     try {
-        const nfts = await userService.getUserNFTs(address)
+        const nfts = await userService.getUserNFTs('0x8636fa411113d1b40b5d76f6766d16b3aa829d30')
         nfts.map((nft:any)=>{
             if(nft.token_address===GregContractAddress[nft.chain]){
                 dispatch(setIsGregHolder(true))
@@ -93,7 +93,6 @@ export const updateIsGregHolder = (flag: boolean) => async (dispatch: Dispatch<a
 }
 export const updateHeroSkin = (name: String) => async (dispatch: Dispatch<any>) => {
     try {
-       
         dispatch(setHeroSkin(name))
     } catch (error) {
         console.log("failed to update heroSkin")

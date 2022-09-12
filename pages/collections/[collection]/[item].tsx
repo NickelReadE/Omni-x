@@ -173,7 +173,6 @@ const Item: NextPage = () => {
     setLastSaleCoin('')
 
     if(lastSaleOrders.length > 0 && nftInfo.collection!=undefined && nftInfo.nft!=undefined && orderFlag){
-      console.log(lastSaleOrders)
       if(nftInfo.collection.address===lastSaleOrders[0].collectionAddress&&Number(nftInfo.nft.token_id)===Number(lastSaleOrders[0].tokenId)){
         setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[0].price)))
         const chainIdForList = getChainIdFromName(lastSaleOrders[0].chain)

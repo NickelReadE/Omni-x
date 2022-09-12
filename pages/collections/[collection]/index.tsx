@@ -32,7 +32,7 @@ import Chip from '@material-ui/core/Chip'
 import classNames from '../../../helpers/classNames'
 import editStyle from '../../../styles/collection.module.scss'
 import { info } from 'console'
-import ordersReducer, { getOrders,selectOrders, getLastSaleOrders,selectBidOrders,selectLastSaleOrders } from '../../../redux/reducers/ordersReducer'
+import { getOrders,selectOrders, getLastSaleOrders } from '../../../redux/reducers/ordersReducer'
 import { IGetOrderRequest , ICollectionInfoFromLocal} from '../../../interface/interface'
 
 
@@ -143,7 +143,6 @@ const Collection: NextPage = () => {
   const collectionInfo = useSelector(selectCollectionInfo)
 
   const collectionOwners = useSelector(selectCollectionOwners)
-
   const orders = useSelector(selectOrders)
 
   const [imageError, setImageError] = useState(false)
