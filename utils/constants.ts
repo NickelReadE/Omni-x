@@ -8,6 +8,8 @@ import FundManager from '../constants/FundManager.json'
 import OFT from '../constants/OFT.json'
 import USDC from '../constants/USDC.json'
 import USDT from '../constants/USDT.json'
+import Stargate from '../constants/Stargate.json'
+import StargatePoolManager from '../constants/StargatePoolManager.json'
 import LZEndpoint from '../constants/LayerzeroEndpoints.json'
 import ChainIds from '../constants/chainIds.json'
 import CHAINS from '../constants/chains.json'
@@ -21,6 +23,8 @@ const fundManager: any = FundManager
 const oft: any = OFT
 const usdc: any = USDC
 const usdt: any = USDT
+const stargate: any = Stargate
+const stargatePoolManager: any = StargatePoolManager
 const lzEndpoint: any = LZEndpoint
 const chainIds: any = ChainIds
 
@@ -48,7 +52,9 @@ export type ContractName =
   'USDC' |
   'USDT' |
   'TransferSelectorNFT' |
-  'FundManager'
+  'FundManager' |
+  'StargateRouter' |
+  'StargatePoolManager'
 
 export const rpcProviders: { [key: number]: string } = {
   1:'https://mainnet.infura.io/v3/20504cdcff23477c9ed314d042d85a74',
@@ -203,6 +209,10 @@ export const getAddressByName = (name: ContractName, chainId: number) => {
     return transferSelectorNFT[chainInfos[chainId].name]
   } else if (name === 'FundManager') {
     return fundManager[chainInfos[chainId].name]
+  } else if (name === 'StargateRouter') {
+    return stargate[chainInfos[chainId].name].router
+  } else if (name === 'StargatePoolManager') {
+    return stargatePoolManager[chainInfos[chainId].name]
   }
 }
 
@@ -280,3 +290,17 @@ export const getChainIconByCurrencyAddress = (address?: string) => {
   
   return (chainIcons as any)['rinkeby']
 }
+
+export const isUsdcOrUsdt = (address?: string) => {
+  const currency_addr_list = [usdc, usdt]
+  
+  for (let idx = 0; idx < currency_addr_list.length; idx++) {
+    const chainIdx = Object.values(currency_addr_list[idx]).indexOf(address)
+    if (chainIdx != -1) {
+      return true
+    }
+  }
+  
+  return false
+}
+

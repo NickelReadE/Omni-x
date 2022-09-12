@@ -22,7 +22,7 @@ import useWallet from '../../../hooks/useWallet'
 import { acceptOrder, postMakerOrder } from '../../../utils/makeOrder'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../../../types'
 import { IBidData, IGetOrderRequest, IListingData, IOrder, OrderStatus } from '../../../interface/interface'
-import { ContractName, CREATOR_FEE, CURRENCIES_LIST, getAddressByName, getChainIconByCurrencyAddress, getChainInfo, getChainNameById, getCurrencyIconByAddress, getCurrencyNameAddress, getLayerzeroChainId, PROTOCAL_FEE } from '../../../utils/constants'
+import { ContractName, CREATOR_FEE, CURRENCIES_LIST, getAddressByName, getChainIconByCurrencyAddress, getChainInfo, getChainNameById, getCurrencyIconByAddress, getCurrencyNameAddress, getLayerzeroChainId, isUsdcOrUsdt, PROTOCAL_FEE } from '../../../utils/constants'
 import { getCurrencyInstance, getERC721Instance, getTransferSelectorNftInstance, getOmniInstance, getOmnixExchangeInstance } from '../../../utils/contracts'
 
 import PngCheck from '../../../public/images/check.png' 
@@ -298,10 +298,16 @@ const Item: NextPage = () => {
 
     console.log('--buy----', makerAsk, takerBid)
 
-    const tx1 = await omni.approve(omnixExchange.address, takerBid.price)
-    const tx2 = await omni.approve(getAddressByName('FundManager', chainId), takerBid.price)
+    const approveTxs = []
+    approveTxs.push(await omni.approve(omnixExchange.address, takerBid.price))
+    approveTxs.push(await omni.approve(getAddressByName('FundManager', chainId), takerBid.price))
+    if (isUsdcOrUsdt(order?.currencyAddress)) {
+      console.log('--approved- usdc---')
+      approveTxs.push(await omni.approve(getAddressByName('StargatePoolManager', chainId), takerBid.price))
+    }
 
-    await Promise.all([tx1.wait(), tx2.wait()])
+    await Promise.all(approveTxs.map(tx => tx.wait()))
+    
     console.log('--approved----')
     await waitFor(3000)
 
@@ -358,8 +364,14 @@ const Item: NextPage = () => {
       )
 
       const omni = getCurrencyInstance(currency, chainId, signer)
-      await omni.approve(getAddressByName('OmnixExchange', chainId), price)
-      await omni.approve(getAddressByName('FundManager', chainId), price)
+
+      const approveTxs = []
+      approveTxs.push(await omni.approve(getAddressByName('OmnixExchange', chainId), price))
+      approveTxs.push(await omni.approve(getAddressByName('FundManager', chainId), price))
+      if (isUsdcOrUsdt(currency)) {
+        approveTxs.push(await omni.approve(getAddressByName('StargatePoolManager', chainId), price))
+      }
+      await Promise.all(approveTxs.map(tx => tx.wait()))
 
       setOpenBidDlg(false)
       dispatch(openSnackBar({ message: 'Place a bid Success', status: 'success' }))
