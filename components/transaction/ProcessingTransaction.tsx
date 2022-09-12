@@ -58,6 +58,9 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
           txInfo?.type === 'bridge'
             ?
             <div className='flex items-center justify-between'>
+              <span className="text-[#38B000] w-[30px] truncate" style={{fontSize: 14, lineHeight: '18px', fontWeight: 700}}>
+                xfer:
+              </span>
               <Image
                 onMouseEnter={() => onHover('sender')}
                 onMouseLeave={() => onLeave('sender')}
@@ -77,7 +80,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
                 onClick={onViewExplorerOnDest}
                 alt="chain icon"
               />
-              <span className="text-md text-gray-500 w-[150px] truncate">{txInfo?.itemName}</span>
+              <span className="text-md text-gray-500 w-[120px] truncate">{txInfo?.itemName}</span>
             </div>
             :
             <div />
