@@ -17,8 +17,7 @@ import {
   getOmnixBridgeInstance, getONFTCore721Instance, getONFTCore1155Instance, getCurrencyInstance,
 } from '../utils/contracts'
 import regExpFormat from '../helpers/regExpFormat'
-import {getChainIdFromName, getLayerzeroChainId,getChainInfo} from '../utils/constants'
-import { getAddressByName, getChainIdFromName, getLayerzeroChainId, getProvider } from '../utils/constants'
+import {getChainIdFromName, getLayerzeroChainId,getChainInfo, getProvider} from '../utils/constants'
 import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
 import UserEdit from './user/UserEdit'
@@ -518,11 +517,7 @@ const SideBar: React.FC = () => {
   const updateModal = (status: boolean) => {
     setConfirmTransfer(status)
   }
-  const setLogout = async() => {
-    console.log('clicked disconnect')
-    await disconnect()
-    window.location.reload()
-  }
+
   useEffect(()=>{
     const getBalance = async() => {
       try {
@@ -611,7 +606,6 @@ const SideBar: React.FC = () => {
     })()
   }, [listenONFTEvents])
 
-  },[signer,address,chainId])
   const setLogout = async() => {
     console.log('clicked disconnect')
     await disconnect()
