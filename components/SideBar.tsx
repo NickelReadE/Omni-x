@@ -16,7 +16,8 @@ import {
   getOmnixBridge1155Instance,
   getOmnixBridgeInstance, getONFTCore721Instance, getONFTCore1155Instance, getCurrencyInstance,
 } from '../utils/contracts'
-import {getAddressByName, getChainIdFromName, getLayerzeroChainId} from '../utils/constants'
+import regExpFormat from '../helpers/regExpFormat'
+import {getChainIdFromName, getLayerzeroChainId, getChainInfo, getAddressByName} from '../utils/constants'
 import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
 import UserEdit from './user/UserEdit'
@@ -35,6 +36,13 @@ const useStyles = makeStyles({
     maxWidth: '100%',
   },
 })
+const format = function (number:string) {
+  return ('' + number).replace(/(\d)(?=(?:\d{3})+(?:\.|$))|(\.\d\d\d\d?)\d*$/g, 
+    function(m, s1, s2){
+      return s2 || (s1 + ',')
+    }
+  )
+}
 const SideBar: React.FC = () => {
   const {
     provider,
@@ -72,7 +80,6 @@ const SideBar: React.FC = () => {
   const [omniBalance, setOmniBalance] = useState(0)
   const [usdcBalance, setUsdcBalance] = useState(0)
   const [usdtBalance, setUsdtBalance] = useState(0)
-  const [nativeBalance,setNativeBalance] = useState('0')
 
 
   const nfts = useSelector(selectUserNFTs)
@@ -89,6 +96,7 @@ const SideBar: React.FC = () => {
   const [isONFT, setIsONFT] = useState(false)
   const [unwrap, setUnwrap] = useState(false)
   const [bOpenModal, setOpenModal] = React.useState(false)
+  const [nativeBalance, setNativeBalance] = useState('')
 
   const {setNodeRef} = useDroppable({
     id: 'droppable',
@@ -524,7 +532,11 @@ const SideBar: React.FC = () => {
         }
         //Native Token
         const balance = await provider?.getBalance(address!)
-        setNativeBalance((Number(balance)/Math.pow(10,18)).toFixed(4))
+        if(Number(balance)===0 || balance===undefined){
+          setNativeBalance('0')  
+        }else{
+          setNativeBalance((Number(balance)/Math.pow(10,18)).toFixed(4))
+        }        
       } catch (error) {
         console.log(error)
       }
@@ -532,7 +544,7 @@ const SideBar: React.FC = () => {
     if(signer!=undefined && address!=undefined){
       getBalance()
     }
-  },[signer,address])
+  },[signer,address,chainId])
   const setLogout = async() => {
     console.log('clicked disconnect')
     await disconnect()
@@ -742,10 +754,10 @@ const SideBar: React.FC = () => {
             </button>
             { expandedMenu == 3 &&
               <div className='flex flex-col w-full space-y-4 p-6 pt-8 pb-0' ref={menu_wallets}>
-                <span className="font-semibold w-auto text-[16px]">OMNI balance: {omniBalance}</span>
-                <span className="font-semibold w-auto text-[16px]">USDC balance: {usdcBalance}</span>
-                <span className="font-semibold w-auto text-[16px]">USDT balance: {usdtBalance}</span>
-                <span className="font-semibold w-auto text-[16px]">NATIVE balance: {nativeBalance}</span>
+                <span className="font-semibold w-auto text-[16px]">OMNI balance: {regExpFormat(omniBalance)}</span>
+                <span className="font-semibold w-auto text-[16px]">USDC balance: {regExpFormat(usdcBalance)}</span>
+                <span className="font-semibold w-auto text-[16px]">USDT balance: {regExpFormat(usdtBalance)}</span>
+                <span className="font-semibold w-auto text-[16px]">{getChainInfo(chainId)?.nativeCurrency.symbol} balance: {regExpFormat(nativeBalance)}</span>
                 <span className="w-auto text-[16px]">Staking: coming soon</span>
                 {/* <div className="w-full flex flex-row font-semibold text-[14px]">
                   <div className="bg-g-200 w-[88px] px-[11px] py-[9px]">

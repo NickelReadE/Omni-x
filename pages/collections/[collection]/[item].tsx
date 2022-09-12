@@ -86,6 +86,7 @@ const Item: NextPage = () => {
 
   const nftInfo = useSelector(selectNFTInfo)
 
+
   useEffect(() => {
     if ( col_url && token_id ) {
       dispatch(getNFTInfo(col_url, token_id) as any)
@@ -499,7 +500,7 @@ const Item: NextPage = () => {
                       {
                         bidOrders && bidOrders.map((item, index) => {
                           return <Fragment key={index}>
-                            <div className='break-all mt-3'>{truncate(item.signer)}</div>
+                            <div className='break-all mt-3 text-[16px] font-bold'>{truncate(item.signer)}</div>
                             <div className="text-center mt-3">
                               {
                                 chainList.map((chain, chainIdx) => {

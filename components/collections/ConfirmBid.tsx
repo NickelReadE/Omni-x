@@ -3,6 +3,7 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import Dialog from '@material-ui/core/Dialog'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import useWallet from '../../hooks/useWallet'
 
 import CustomSelect from './CustomSelect'
 import Select from 'react-select'
@@ -44,6 +45,10 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
   nftTitle,
   onSubmit
 }) => {
+  const {
+    provider,
+  } = useWallet()
+
   const classes = useStyles()
   const [selectedOption, setSelectedOption] = useState(null)
   const [price_in_usd, setPriceInUSD] = useState('')
@@ -85,7 +90,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
             <p className="text-[#6C757D] text-[18px] font-semibold">Bid Price</p>
             <div className="flex justify-start items-center mt-5">
               <CustomSelect optionData={CURRENCIES_LIST} value={currency} onChange={(value: any) => setCurrency(value)} />
-              <input type="text" value={price} className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F8F9FA] border-[2px] border-[#E9ECEF] rounded-lg" onChange={onChangePrice}/>
+              <input type="text" value={price} className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg" onChange={onChangePrice}/>
               <span className="px-4 text-[#ADB5BD] font-light">{price_in_usd}</span>
             </div>
             {/* <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Duration</p>

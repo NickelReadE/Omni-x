@@ -4,9 +4,13 @@ import Link from 'next/link'
 import { IPropsNFTItem } from '../../interface/interface'
 import LazyLoad from 'react-lazyload'
 import { ethers } from 'ethers'
-import { selectOrders, selectBidOrders, selectLastSaleOrders } from '../../redux/reducers/ordersReducer'
+import { selectOrders, selectBidOrders, selectLastSaleOrders, getOrders } from '../../redux/reducers/ordersReducer'
 import { useSelector } from 'react-redux'
 import { getCurrencyIconByAddress } from '../../utils/constants'
+import useWallet from '../../hooks/useWallet'
+import { isYesterday } from 'date-fns'
+import ConfirmBid from './ConfirmBid'
+import { IGetOrderRequest } from '../../interface/interface'
 import editStyle from '../../styles/nftbox.module.scss'
 import classNames from '../../helpers/classNames'
 
@@ -22,6 +26,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
   const [highestBid, setHighestBid] = useState(0)
   const [highestBidCoin, setHighestBidCoin] = useState('')
   const [isOwner, setIsOwner] = useState(false)
+  const [isShowBtn, SetIsShowBtn] = useState(false)
   const orders = useSelector(selectOrders)
   const bidOrders = useSelector(selectBidOrders)
   const executedOrders = useSelector(selectLastSaleOrders)
@@ -61,10 +66,183 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
         }
       }
     }
-  },[nft])
+  },[nft,orders,bidOrders,executedOrders])
+
+  // const getBidOrders = () => {
+  //   const bidRequest: IGetOrderRequest = {
+  //     isOrderAsk: false,
+  //     collection: col_address,
+  //     startTime: Math.floor(Date.now() / 1000).toString(),
+  //     endTime: Math.floor(Date.now() / 1000).toString(),
+  //     status: ['VALID'],
+  //     sort: 'PRICE_ASC'
+  //   }
+  //   dispatch(getOrders(bidRequest) as any)
+  // }
+
+
+  // const onBid = async (currency: string, price: number, period: number) => {
+  //   const chainId = provider?.network.chainId as number
+  //   let chain = provider?._network.name as string
+  //   if(chain=='unknown'){
+  //     if(chainId==4002){
+  //       chain='fantom'
+  //     } else if(chainId==43113){
+  //       chain='avalanche testnet'
+  //     }
+  //   }
+  //   const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
+  //   const startTime = Date.now()
+
+  //   const Provider = new ethers.providers.Web3Provider(window.ethereum)
+  //   const signer = Provider.getSigner()
+  //   let usdContract = null
+  //   let contractAddress =''
+  //   let currencyMangerContract = null
+
+  //   if(chainId===4){
+  //     currencyMangerContract =  new ethers.Contract(currencyManagerContractAddress['rinkeby'], currencyManagerABI, signer)
+  //   } else if(chainId===97) {
+  //     currencyMangerContract =  new ethers.Contract(currencyManagerContractAddress['bsc-testnet'], currencyManagerABI, signer)
+  //   } else if(chainId===43113) {
+  //     currencyMangerContract =  new ethers.Contract(currencyManagerContractAddress['fuji'], currencyManagerABI, signer)
+  //   } else if(chainId===80001) {
+  //     //
+  //   } else if(chainId===421611) {
+  //     //
+  //   } else if(chainId===69) {
+  //     //
+  //   } else if(chainId===4002) {
+  //     //
+  //   }
+
+  //   if(currencyMangerContract===null){
+  //     dispatch(openSnackBar({ message: 'This network does not support currencies', status: 'error' }))
+  //     setOpenBidDlg(false)
+  //     return
+  //   }
+
+  //   if(currency===''){
+  //     dispatch(openSnackBar({ message: 'Current Currency is not supported in this network', status: 'error' }))
+  //     setOpenBidDlg(false)
+  //     return
+  //   }
+    
+  //   if(currency===currencies_list[provider?._network.chainId as number][0]['address']){//OMNI
+  //     const isOmniCoin = await currencyMangerContract.isOmniCurrency(currency)
+  //     if(isOmniCoin){
+  //       if(chainId===4){
+  //         contractAddress = omniCoin['rinkeby']
+  //         usdContract =  new ethers.Contract(contractAddress, omni, signer)
+  //       } else if(chainId===97) {
+  //         contractAddress = omniCoin['bsc-testnet']
+  //         usdContract =  new ethers.Contract(contractAddress, omni, signer)
+  //       } else if(chainId===43113) {
+  //         contractAddress = omniCoin['fuji']
+  //         usdContract =  new ethers.Contract(contractAddress, omni, signer)
+  //       }
+  //     } else {
+  //       dispatch(openSnackBar({ message: 'omni currency is not whitelisted in this network', status: 'error' }))
+  //       setOpenBidDlg(false)
+  //       return
+  //     }
+  //   } else if (currency===currencies_list[provider?._network.chainId as number][1]['address']){//USDC
+  //     const isUsdcCoin = await currencyMangerContract.isCurrencyWhitelisted(currency)
+  //     if(isUsdcCoin){
+  //       if(chainId===4){
+  //         contractAddress = usdc['rinkeby']
+  //         usdContract =  new ethers.Contract(contractAddress, omni, signer)
+  //       } else if(chainId===43113) {
+  //         contractAddress = usdc['fuji']
+  //         usdContract =  new ethers.Contract(contractAddress, omni, signer)
+  //       } else if(chainId===80001) {
+  //         contractAddress = usdc['mumbai']
+  //         usdContract =  new ethers.Contract(contractAddress, omni, signer)
+  //       } else if(chainId===421611) {
+  //         contractAddress = usdc['arbitrum-rinkeby']
+  //         usdContract =  new ethers.Contract(contractAddress, omni, signer)
+  //       } else if(chainId===69) {
+  //         contractAddress = usdc['optimism-kovan']
+  //         usdContract =  new ethers.Contract(contractAddress, omni, signer)
+  //       } else if(chainId===4002) {
+  //         contractAddress = usdc['fantom-testnet']
+  //         usdContract =  new ethers.Contract(contractAddress, omni, signer)
+  //       }
+  //     } else {
+  //       dispatch(openSnackBar({ message: 'USDC currency is not whitelisted in this network', status: 'error' }))
+  //       setOpenBidDlg(false)
+  //       return
+  //     }
+
+  //   } else if (currency===currencies_list[provider?._network.chainId as number][2]['address']) {//USDT
+  //     const isUsdtCoin = await currencyMangerContract.isCurrencyWhitelisted(currency)
+  //     if(isUsdtCoin){
+  //       if(chainId===97){
+  //         contractAddress = usdt['bsc-testnet']
+  //         usdContract =  new ethers.Contract(contractAddress, usd, signer)
+  //       }
+  //     } else {
+  //       dispatch(openSnackBar({ message: 'USDT currency is not whitelisted in this network', status: 'error' }))
+  //       setOpenBidDlg(false)
+  //       return
+  //     }
+  //   }
+
+  //   if(usdContract===null){
+  //     dispatch(openSnackBar({ message: "This network doesn't support this coin", status: 'error' }))
+  //     setOpenBidDlg(false)
+  //     return
+  //   }
+
+  //   const balance = await usdContract?.balanceOf(address)
+
+  //   if(Number(price) === 0) {
+  //     dispatch(openSnackBar({ message: 'Please enter a number greater than 0', status: 'error' }))
+  //     setOpenBidDlg(false)
+  //     return
+  //   }
+
+  //   if(Number(ethers.utils.formatEther(balance)) < Number(price)) {
+  //     dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))
+  //     setOpenBidDlg(false)
+  //     return
+  //   }
+
+  //   try {
+  //     await postMakerOrder(
+  //       provider as any,
+  //       chainId,
+  //       false,
+  //       col_address as any,
+  //       addresses.STRATEGY_STANDARD_SALE,
+  //       ethers.utils.parseUnits('1', 1),
+  //       ethers.utils.parseEther(price.toString()),
+  //       ethers.utils.parseUnits('2', 2),
+  //       ethers.utils.parseUnits('2', 2),
+  //       currency,
+  //       {
+  //         tokenId: nft.token_id,
+  //         startTime: startTime,
+  //         endTime: addDays(startTime, period).getTime(),
+  //         params: {
+  //           values: [10001],
+  //           types: ['uint256'],
+  //         },
+  //       },
+  //       chain
+  //     )
+  //     setOpenBidDlg(false)
+  //     dispatch(openSnackBar({ message: 'Make Offer Success', status: 'success' }))
+
+  //     getBidOrders()
+
+  //   } catch (err: any) {
+  //     dispatch(openSnackBar({ message: err.message, status: 'error' }))
+  //   }
+  // }
 
   return (
-    <div className={classNames('w-full border-[2px] border-[#F6F8FC] rounded-[8px] cursor-pointer hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F6F8FC]', editStyle.nftContainer)}>
+    <div className={classNames('w-full border-[2px] border-[#F6F8FC] rounded-[8px] cursor-pointer hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F6F8FC]', editStyle.nftContainer)} onMouseEnter={() => SetIsShowBtn(true)} onMouseLeave={() => SetIsShowBtn(false)}>
       <Link href={`/collections/${col_url}/${nft.token_id}`}>
         <a>
           <div className="group relative flex justify-center text-center overflow-hidden rounded-md">
@@ -75,7 +253,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
               <div className="bg-[url('/images/ellipse.png')] hover:bg-[url('/images/ellipse_hover.png')] bg-cover w-[21px] h-[21px]"></div>
             </div> */}
           </div>
-          <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['Retni_Sans']">
+          <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
             <div className="text-[#000000] text-[14px] font-bold  mt-3 ml-3">
               {nft.name}
             </div>
@@ -106,7 +284,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
               </div>
             </div>
           </div>
-          <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['Retni_Sans']">
+          <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
             <div className="flex items-center ml-3">
               {islisted && img_url==''&&<><img src={'/svgs/ethereum.svg'} className="w-[18px] h-[18px]" alt='icon'/><span className="text-[#000000] text-[18px] font-extrabold ml-2">{price}</span></>}
               {islisted && img_url!=''&&<><img src={img_url} className="w-[18px] h-[18px]" alt='icon'/><span className="text-[#000000] text-[18px] font-extrabold ml-2">{price}</span></>}
@@ -114,26 +292,29 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
           </div>
         </a>
       </Link>
-      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['Retni_Sans']">
+      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle  font-['RetniSans']">
         <Link href={`/collections/${col_url}/${nft.token_id}`}><a><div className="flex items-center ml-3">
           {lastSale!=0&&<><span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span><img src={lastSaleCoin} className="w-[18px] h-[18px]" />&nbsp;<span className="text-[#6C757D] text-[14px]font-bold">{lastSale}</span></>}
           {lastSale==0&&highestBid!=0&&<><span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span><img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;<span className="text-[#6C757D] text-[14px] font-bold">{highestBid}</span></>} 
         </div></a></Link>
-        {
-          isOwner&&<Link href={`/collections/${col_url}/${nft.token_id}`}><a><div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#B00000]">
-            {'Sell'}
-          </div></a></Link>
-        }
-        {
-          !isOwner&& islisted &&<Link href={`/collections/${col_url}/${nft.token_id}`}><a><div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]">
-            {'Buy now'}
-          </div></a></Link>
-        }
-        {
-          !isOwner&& !islisted &&<div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]" onClick={() => setOpenBidDlg(true)}>
-            {'Bid'}
-          </div>
-        }
+        <div className="flex items-center ml-3">
+          <div>&nbsp;</div>
+          {
+            isShowBtn&&isOwner&&<Link href={`/collections/${col_url}/${nft.token_id}`}><a><div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#B00000]">
+              {'Sell'}
+            </div></a></Link>
+          }
+          {
+            isShowBtn&&!isOwner&& islisted &&<Link href={`/collections/${col_url}/${nft.token_id}`}><a><div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]">
+              {'Buy now'} 
+            </div></a></Link>
+          }
+          {
+            isShowBtn&&!isOwner&& !islisted &&<div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]" onClick={() => setOpenBidDlg(true)}>
+              {'Bid'}
+            </div>
+          }
+        </div>
       </div>
 
 
