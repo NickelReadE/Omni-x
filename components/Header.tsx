@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import classNames from '../helpers/classNames'
 import useProgress from '../hooks/useProgress'
@@ -78,21 +78,21 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
           <div className='absolute'>
             {
               !isSearch &&
-              <button
-                onClick={() => setSearch(true)}
-                className='flex items-center'>
-                <img
-                  src={'/images/logo.svg'}
-                  className='mr-3 bg-contain hover:bg-[url("../public/images/logo_hover.svg")]'
-                  alt="logo"
-                  width='75px'
-                  height='75px'
-                />
-              </button>
+                <button
+                  onClick={() => setSearch(true)}
+                  className='flex items-center'>
+                  <img
+                    src={'/images/logo.svg'}
+                    className='mr-3 bg-contain hover:bg-[url("../public/images/logo_hover.svg")]'
+                    alt="logo"
+                    width='75px'
+                    height='75px'
+                  />
+                </button>
             }
             {
               isSearch &&
-              <input autoFocus type="text" placeholder='Acquire Your Desires' className="flex items-center bg-[#F6F8FC] bg-[url('../public/images/search.png')] bg-contain bg-no-repeat	 w-[472px] h-[75px] border-0 focus:outline-0 focus:shadow-none focus:ring-offset-0 focus:ring-0 px-[85px]" onBlur={() => setSearch(false)} onClick={() => setSearch(false)}/>
+                <input autoFocus type="text" placeholder='Acquire Your Desires' className="flex items-center bg-[#F6F8FC] bg-[url('../public/images/search.png')] bg-contain bg-no-repeat	 w-[472px] h-[75px] border-0 focus:outline-0 focus:shadow-none focus:ring-offset-0 focus:ring-0 px-[85px]" onBlur={() => setSearch(false)} onClick={() => setSearch(false)}/>
             }
           </div>
 
@@ -137,57 +137,57 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
 
           {
             histories.length > 0 &&
-            <div className={'absolute right-[100px] h-[90px] flex items-center'}>
-              <div className={'relative'}>
-                <Menu>
-                  <Menu.Button className={'w-[250px] h-[40px] bg-[#F6F8FC] px-[18px] flex items-center justify-between'} style={{ borderRadius: '20px', border: '1.5px solid #000000'}}>
-                    <div className={'flex items-center'}>
-                      {pending ? 'processing' : 'last transaction'}
-                      {
-                        pending
-                          ? 
-                          <img width={24} height={24} src={'/images/omnix_loading.gif'} alt="nft-image" />
-                          :  
-                          <img width={24} height={24} src={'/images/omnix_logo_black_1.png'} alt="nft-image" />
-                      }
-                    </div>
-                    <div className={'flex items-center'}>
-                      <img width={15} height={15} src={'/images/refresh_round.png'} onClick={onClear} alt="nft-image" />
-                      <img width={10} height={6} src={'/images/arrowDown.png'} style={{marginLeft: 10}} alt="nft-image" />
-                    </div>
-                  </Menu.Button>
-
-                  <Menu.Items className={'absolute top-0 w-[250px] bg-white'} style={{ borderRadius: '20px', border: '1.5px solid #000000'}}>
-                    <div className={'h-[38px] bg-[#F6F8FC] px-[18px] flex items-center justify-between'} style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px'}}>
+              <div className={'absolute right-[100px] h-[90px] flex items-center'}>
+                <div className={'relative'}>
+                  <Menu>
+                    <Menu.Button className={'w-[250px] h-[40px] bg-[#F6F8FC] px-[18px] flex items-center justify-between'} style={{ borderRadius: '20px', border: '1.5px solid #000000'}}>
                       <div className={'flex items-center'}>
-                        {pending ? 'processing' : 'last transaction'}
+                        {pending ? 'processing' : 'last transactions'}
                         {
                           pending
                             ?
-                            <img width={24} height={24} src={'/images/omnix_loading.gif'} alt="nft-image" />
+                            <img width={24} height={24} src={'/images/omnix_loading.gif'} style={{marginLeft: 10}} alt="nft-image" />
                             :
-                            <img width={24} height={24} src={'/images/omnix_logo_black_1.png'} alt="nft-image" />
+                            <img width={24} height={24} src={'/images/omnix_logo_black_1.png'} style={{marginLeft: 10}} alt="nft-image" />
                         }
                       </div>
                       <div className={'flex items-center'}>
-                        <img width={10} height={6} src={'/images/arrowUp.png'} alt="nft-image" />
+                        <img width={15} height={15} src={'/images/refresh_round.png'} onClick={onClear} alt="nft-image" />
+                        <img width={10} height={6} src={'/images/arrowDown.png'} style={{marginLeft: 10}} alt="nft-image" />
                       </div>
-                    </div>
-                    {
-                      histories?.map((item, index) => {
-                        return (
-                          <Menu.Item key={index}>
-                            <a href="#" className="">
-                              <ProcessingTransaction txInfo={item} />
-                            </a>
-                          </Menu.Item>
-                        )
-                      })
-                    }
-                  </Menu.Items>
-                </Menu>
+                    </Menu.Button>
+
+                    <Menu.Items className={'absolute top-0 w-[250px] bg-white'} style={{ borderRadius: '20px', border: '1.5px solid #000000'}}>
+                      <div className={'h-[38px] bg-[#F6F8FC] px-[18px] flex items-center justify-between'} style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px'}}>
+                        <div className={'flex items-center'}>
+                          {pending ? 'processing' : 'last transactions'}
+                          {
+                            pending
+                              ?
+                              <img width={24} height={24} src={'/images/omnix_loading.gif'} style={{marginLeft: 10}} alt="nft-image" />
+                              :
+                              <img width={24} height={24} src={'/images/omnix_logo_black_1.png'} style={{marginLeft: 10}} alt="nft-image" />
+                          }
+                        </div>
+                        <div className={'flex items-center'}>
+                          <img width={10} height={6} src={'/images/arrowUp.png'} alt="nft-image" />
+                        </div>
+                      </div>
+                      {
+                        histories?.map((item, index) => {
+                          return (
+                            <Menu.Item key={index}>
+                              <a href="#" className="">
+                                <ProcessingTransaction txInfo={item} />
+                              </a>
+                            </Menu.Item>
+                          )
+                        })
+                      }
+                    </Menu.Items>
+                  </Menu>
+                </div>
               </div>
-            </div>
           }
         </div>
       </nav>
