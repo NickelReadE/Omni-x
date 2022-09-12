@@ -8,6 +8,7 @@ import { IPropsSlider } from '../interface/interface'
 import { Divider } from '@material-ui/core'
 import CircularProgress from '@material-ui/core/CircularProgress'
 const Slider = (props: IPropsSlider) => {
+  console.log(props)
   return (
     <>
       <div className="mt-10 pl-12 pr-20 mb-20">
@@ -23,7 +24,7 @@ const Slider = (props: IPropsSlider) => {
           <div className="py-4 mt-5">           
             <div className="w-full flex flex-wrap justify-center gap-12">
               {
-                props.cards.length ===0 &&
+                props.cards.length ===0 &&                
                 <CircularProgress />
               }
               {props.cards.map((item, index) => (

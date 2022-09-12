@@ -108,5 +108,6 @@ export interface ICollectionInfoFromLocal{
   col_url: string,
   itemsCnt: string,
   ownerCnt:string,
-  orderCnt:string
+  orderCnt:string,
+  floorPrice:{eth:string, usd:string}
 }

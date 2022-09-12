@@ -4,11 +4,14 @@ import { useSelector } from 'react-redux'
 import { IGetOrderRequest } from '../../interface/interface'
 import { collectionsService } from '../../services/collections'
 import { getOrders } from './ordersReducer'
+import { getAssetPrices } from './feeddataReducer'
 import { openSnackBar } from './snackBarReducer'
 import { getERC721Instance, getERC1155Instance, getRoyaltyFeeMangerInstance } from '../../utils/contracts'
 import { ERC2189_INTERFACE_ID } from '../../utils/constants'
 import { RoyaltyFeeManagerAddress } from '../../constants/addresses'
-
+import { convertETHtoUSDT, convertUSDTtoETH } from '../../utils/convertRate'
+import { currencies_list } from '../../utils/constants'
+import { getChainInfo, getChainIdFromName } from '../../utils/constants'
 import { ethers } from 'ethers'
 interface CollectionState{
 	nfts:any[],
@@ -145,27 +148,60 @@ export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, ge
 		}
 	  	await dispatch(getOrders(request))
 		const orders = getState().ordersState.orders
+		let ethPrice = getState().feeddataState.assetPrices.eth
+		if(ethPrice===undefined){
+			await dispatch(getAssetPrices())
+			ethPrice = getState().feeddataState.assetPrices.eth
+		}
+		console.log('ethPrice', ethPrice)
 		let collectionsF : any[] = []
 		const info = await collectionsService.getCollections()		
 		await info.data.map(async (element:any, index:number)=>{
 			setTimeout(async function(){
 				const ownerCnt = await collectionsService.getCollectionOwners(element.col_url as string)
 				setTimeout(
-					async function(){				
-						let orderCnt = 0	
+					async function(){			
+						let ordersForCollection: { price: any; currencyAddress: any }[] = []	
 						const nfts = await collectionsService.getCollectionAllNFTs(element.col_url as string , '', '')
 						const collectionInfo  = await collectionsService.getCollectionInfo(element.col_url as string)
 						setTimeout(async function(){
 							nfts.data.map((nft:any)=>{
-								for(const order of orders){
-									if(collectionInfo.data.address==order.collectionAddress&& nft.token_id==order.tokenId && order.isOrderAsk){
-										orderCnt++
-										break										
+								let order:any = null
+								for(const orderi of orders){
+									if(collectionInfo.data.address==orderi.collectionAddress&& nft.token_id==orderi.tokenId ){
+										order = orderi										
 									}
+								}
+								if(order !== null){
+									ordersForCollection.push(order)
 								}								
 								
 							})
-							collectionsF.push({col_url:element.col_url, itemsCnt:collectionInfo.data.count, ownerCnt:ownerCnt.data, orderCnt:orderCnt})		
+							let lowPrice: any = Number.MAX_VALUE
+							if(ordersForCollection.length > 0 ){								
+								ordersForCollection.map((order: { price: any, currencyAddress:any }) => {
+								  let priceAsUSD = 0
+								  console.log(collectionInfo)
+								  if(currencies_list[getChainIdFromName(collectionInfo.data.chain)].find(({address}) => address===order.currencyAddress)){
+									priceAsUSD = parseFloat(ethers.utils.formatEther(order.price))
+								  }else{
+									priceAsUSD = convertETHtoUSDT(parseFloat(ethers.utils.formatEther(order.price)), ethPrice)
+								  }
+								  if(lowPrice > priceAsUSD){
+									lowPrice  = priceAsUSD
+								  }             
+								})
+								if(lowPrice === Number.MAX_VALUE){
+								  lowPrice = 0
+								}								
+							}else{
+								lowPrice = 0
+							}
+							if(lowPrice>0){
+								lowPrice = lowPrice.toFixed(4)
+								console.log(lowPrice)
+							}
+							collectionsF.push({col_url:element.col_url, itemsCnt:collectionInfo.data.count, ownerCnt:ownerCnt.data, orderCnt:ordersForCollection.length, floorPrice:{usd:lowPrice,eth:lowPrice>0?convertUSDTtoETH(lowPrice,ethPrice).toFixed(4):0}})		
 							if(collectionsF.length===info.data.length){
 								localStorage.setItem('cards',JSON.stringify(collectionsF))
 								dispatch(setCollectionsForCard(collectionsF))			
