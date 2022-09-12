@@ -16,7 +16,7 @@ export const ContractProvider = ({
 }: ContractProviderProps): JSX.Element => {
   const dispatch = useDispatch()
   const { address, signer, provider } = useWallet()
-  const { updateHistory } = useProgress()
+  const { histories, updateHistory } = useProgress()
 
   const listenONFTEvents = useCallback(async (txInfo: PendingTxType, historyIndex: number) => {
     if (txInfo.type === 'bridge' && address && provider?._network?.chainId) {

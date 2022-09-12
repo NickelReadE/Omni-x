@@ -11,6 +11,7 @@ export const ProgressProvider = ({
   children,
 }: ProgressProviderProps): JSX.Element => {
   const [histories, setHistories] = useState<PendingTxType[]>([])
+  const [pending, setPending] = useState<boolean>(false)
   const { address, provider } = useWallet()
 
   const addTxToHistories = (txInfo: PendingTxType): number => {
@@ -44,10 +45,16 @@ export const ProgressProvider = ({
     })()
   }, [address, provider])
 
+  useEffect(() => {
+    setPending(histories.filter((history) => !history.destTxHash).length > 0)
+  }, [histories])
+
   return (
     <ProgressContext.Provider
       value={{
         histories,
+        pending,
+        setPending,
         addTxToHistories,
         updateHistory,
         clearHistories,

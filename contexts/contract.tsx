@@ -5,7 +5,7 @@ export type PendingTxType = {
   txHash: string,
   destTxHash?: string | undefined,
   type: 'bridge' | 'buy' | 'sell' | 'bid',
-  senderChainId: number | undefined,
+  senderChainId: number,
   targetChainId: number,
   targetAddress: string,
   isONFTCore: boolean,

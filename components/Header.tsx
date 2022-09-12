@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import headerStyle from '../styles/header.module.scss'
 import classNames from '../helpers/classNames'
 import useProgress from '../hooks/useProgress'
 import { getOmniInstance } from '../utils/contracts'
@@ -8,6 +7,7 @@ import useWallet from '../hooks/useWallet'
 import { useDispatch } from 'react-redux'
 import { openSnackBar } from '../redux/reducers/snackBarReducer'
 import ProcessingTransaction from './transaction/ProcessingTransaction'
+import { Menu } from '@headlessui/react'
 
 type HeaderProps = {
   menu: string
@@ -24,7 +24,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
     hoverMenu: menu,
     isHover: false
   })
-  const { histories } = useProgress()
+  const { pending, histories, clearHistories } = useProgress()
   const dispatch = useDispatch()
   const {
     provider,
@@ -43,6 +43,10 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
       hoverMenu: '',
       isHover: false
     })
+  }
+
+  const onClear = () => {
+    clearHistories()
   }
 
   const onOmniFaucet = async () => {
@@ -131,13 +135,48 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
             </ul>
           </div>
 
-          <div className='absolute right-[100px] h-[90px] flex items-center flex-col overflow-y-auto'>
-            {
-              histories?.map((item, index) => {
-                return <ProcessingTransaction txInfo={item} key={index} />
-              })
-            }
-          </div>
+          {
+            histories.length > 0 &&
+            <div className={'absolute right-[100px] h-[90px] flex items-center'}>
+              <div className={'relative'}>
+                <Menu>
+                  <Menu.Button className={'w-[250px] h-[40px] bg-[#F6F8FC] px-[18px] flex items-center justify-between'} style={{ borderRadius: '20px', border: '1.5px solid #000000'}}>
+                    <div className={'flex items-center'}>
+                      {pending ? 'processing' : 'last transaction'}
+                      <img width={24} height={24} src={'/images/omnix_logo_black_1.png'} alt="nft-image" />
+                    </div>
+                    <div className={'flex items-center'}>
+                      <img width={15} height={15} src={'/images/refresh_round.png'} onClick={onClear} alt="nft-image" />
+                      <img width={10} height={6} src={'/images/arrowDown.png'} style={{marginLeft: 10}} alt="nft-image" />
+                    </div>
+                  </Menu.Button>
+
+                  <Menu.Items className={'absolute top-0 w-[250px] bg-white'} style={{ borderRadius: '20px', border: '1.5px solid #000000'}}>
+                    <div className={'h-[38px] bg-[#F6F8FC] px-[18px] flex items-center justify-between'} style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px'}}>
+                      <div className={'flex items-center'}>
+                        {pending ? 'processing' : 'last transaction'}
+                        <img width={24} height={24} src={'/images/omnix_logo_black_1.png'} alt="nft-image" />
+                      </div>
+                      <div className={'flex items-center'}>
+                        <img width={10} height={6} src={'/images/arrowUp.png'} alt="nft-image" />
+                      </div>
+                    </div>
+                    {
+                      histories?.map((item, index) => {
+                        return (
+                          <Menu.Item key={index}>
+                            <a href="#" className="">
+                              <ProcessingTransaction txInfo={item} />
+                            </a>
+                          </Menu.Item>
+                        )
+                      })
+                    }
+                  </Menu.Items>
+                </Menu>
+              </div>
+            </div>
+          }
         </div>
       </nav>
     </>
