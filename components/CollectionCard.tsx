@@ -1,6 +1,7 @@
 import React from 'react'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { chain_list } from '../utils/utils'
 import { IPropsNFTItem } from '../interface/interface'
 import LazyLoad from 'react-lazyload'
@@ -22,7 +23,7 @@ import editStyle from '../styles/nftbox.module.scss'
 import classNames from '../helpers/classNames'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Hgreg from '../public/images/gregs/logo.png'
-
+import Loading from '../public/images/loading_f.gif'
 const CollectionCard = (props:any) => {
 
   const [chain, setChain] = useState('eth')
@@ -77,15 +78,15 @@ const CollectionCard = (props:any) => {
           <div className='text-[14px] font-extrabold  mb-1 w-[60px]'>Floor</div>
           <div className='flex flex-col space-y-2' >
             <div className=' flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
-              <span className='font-medium text-[12px] mr-[4px]'>{props.card?props.card.floorPrice.eth:<CircularProgress style={{width:'20px', height:'20px'}}/>}</span>
+              <span className='font-medium text-[12px] mr-[4px]'>{props.card?props.card.floorPrice.eth:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
               <img src='/svgs/eth_asset.svg' className='w-[16px]' alt='asset img'></img>
             </div>
             <div className='flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
-              <span className='font-medium text-[12px] mr-[4px]' >{props.card?props.card.floorPrice.usd:<CircularProgress style={{width:'20px', height:'20px'}}/>}</span>
+              <span className='font-medium text-[12px] mr-[4px]' >{props.card?props.card.floorPrice.usd:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
               <img src='/svgs/usd_asset.svg' className='w-[16px]' alt='asset img'></img>
             </div>
             <div className='flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
-              <span className='font-medium text-[12px] mr-[px]'>{props.card?props.card.floorPrice.usd:<CircularProgress style={{width:'20px', height:'20px'}}/>}</span>
+              <span className='font-medium text-[12px] mr-[px]'>{props.card?props.card.floorPrice.usd:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
               <img src='/svgs/omni_asset.svg' className='w-[16px]' alt='asset img'></img>
             </div>
           </div>            
@@ -93,25 +94,25 @@ const CollectionCard = (props:any) => {
         <div className={classNames('row-span-2 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)}>
           <div className='text-[14px] flex flex-row justify-between'>
             <span className='font-extrabold mr-[1px]'>Items</span>
-            <span className='font-medium text-[12px]'>{props.card?props.card.itemsCnt:<CircularProgress style={{width:'20px', height:'20px'}}/>}</span>
+            <span className='font-medium text-[12px]'>{props.card?props.card.itemsCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
           </div>
         </div>
         <div  className={classNames('row-span-2 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
           <div className='text-[14px] flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
             <span className='font-extrabold mr-[1px]'>Owners</span>
-            <span className='font-medium text-[12px]'>{props.card?props.card.ownerCnt:<CircularProgress style={{width:'20px', height:'20px'}}/>}</span>
+            <span className='font-medium text-[12px]'>{props.card?props.card.ownerCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
           </div>
         </div>
         <div className={classNames('row-span-2 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
           <div className='text-[14px] flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
             <span className='font-extrabold mr-[1px]'>Listed</span>
-            <span className='font-medium text-[12px]'>{props.card?props.card.orderCnt:<CircularProgress style={{width:'20px', height:'20px'}}/>}</span>
+            <span className='font-medium text-[12px]'>{props.card?props.card.orderCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
           </div>
         </div>
         <div className={classNames('row-span-3 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
           <div className='text-[14px] font-extrabold mb-1'>Volume(Total)</div>
           <div className='text-[14px] flex flex-row '>
-            <span className='mr-1 text-[12px]'>{props.card?0:<CircularProgress style={{width:'20px', height:'20px'}}/>}</span>
+            <span className='mr-1 text-[12px]'>{props.card?0:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
             <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img>
           </div>
         </div>
@@ -119,10 +120,10 @@ const CollectionCard = (props:any) => {
           <div className='text-[14px] font-extrabold mb-1 '>Volume(7d)</div>
           <div className='text-[14px] flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
             <div className='flex flex-row mr-4'>
-              <span className='font-medium mr-1 text-[12px]'>{props.card?0:<CircularProgress style={{width:'20px', height:'20px'}}/>}</span>
+              <span className='font-medium mr-1 text-[12px]'>{props.card?0:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
               <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img>
             </div>               
-            <span className='font-medium text-[#38B000] text-[12px]'> {props.card?'0%':<CircularProgress style={{width:'20px', height:'20px'}}/>}</span>
+            <span className='font-medium text-[#38B000] text-[12px]'> {props.card?'0%':<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
           </div>
         </div>
       </div>
