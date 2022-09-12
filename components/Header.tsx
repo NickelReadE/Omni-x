@@ -143,7 +143,13 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
                   <Menu.Button className={'w-[250px] h-[40px] bg-[#F6F8FC] px-[18px] flex items-center justify-between'} style={{ borderRadius: '20px', border: '1.5px solid #000000'}}>
                     <div className={'flex items-center'}>
                       {pending ? 'processing' : 'last transaction'}
-                      <img width={24} height={24} src={'/images/omnix_logo_black_1.png'} alt="nft-image" />
+                      {
+                        pending
+                          ? 
+                          <img width={24} height={24} src={'/images/omnix_loading.gif'} alt="nft-image" />
+                          :  
+                          <img width={24} height={24} src={'/images/omnix_logo_black_1.png'} alt="nft-image" />
+                      }
                     </div>
                     <div className={'flex items-center'}>
                       <img width={15} height={15} src={'/images/refresh_round.png'} onClick={onClear} alt="nft-image" />
@@ -155,7 +161,13 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
                     <div className={'h-[38px] bg-[#F6F8FC] px-[18px] flex items-center justify-between'} style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px'}}>
                       <div className={'flex items-center'}>
                         {pending ? 'processing' : 'last transaction'}
-                        <img width={24} height={24} src={'/images/omnix_logo_black_1.png'} alt="nft-image" />
+                        {
+                          pending
+                            ?
+                            <img width={24} height={24} src={'/images/omnix_loading.gif'} alt="nft-image" />
+                            :
+                            <img width={24} height={24} src={'/images/omnix_logo_black_1.png'} alt="nft-image" />
+                        }
                       </div>
                       <div className={'flex items-center'}>
                         <img width={10} height={6} src={'/images/arrowUp.png'} alt="nft-image" />
