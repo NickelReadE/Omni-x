@@ -6,99 +6,97 @@ import {GregContractAddress} from '../../constants/addresses'
 
 //reducers
 export const userSlice = createSlice({
-  name: 'user',
-  initialState: {
-    updatingUser: false,
-    gettingUser: true,
-    user: {},
-    nfts: [],
-    isGregHolder:false,
-    heroSkin:'logo'
-  },
-  reducers: {
-    setUser: (state, action) => {
-      state.user = action.payload
+    name: 'user',
+    initialState: {
+        updatingUser: false,
+        gettingUser: true,
+        user: {},
+        nfts: [],
+        isGregHolder:false,
+        heroSkin:'logo'
     },
-    setUpdatingUser: (state, action) => {
-      state.updatingUser = action.payload === undefined ? false : action.payload
-    },
-    setGettingUser: (state, action) => {
-      state.gettingUser = action.payload === undefined ? false : action.payload
-    },
-    setUserNFTs: (state, action) => {
-      state.nfts = action.payload === undefined ? [] : action.payload
-    },
-    setIsGregHolder: (state, action) => {
-      state.isGregHolder = action.payload === undefined?false : action.payload
-    },
-    setHeroSkin: (state, action) => {
-      state.heroSkin = action.payload === undefined?false : action.payload
+    reducers: {
+        setUser: (state, action) => {
+            state.user = action.payload
+        },
+        setUpdatingUser: (state, action) => {
+            state.updatingUser = action.payload === undefined ? false : action.payload
+        },
+        setGettingUser: (state, action) => {
+            state.gettingUser = action.payload === undefined ? false : action.payload
+        },
+        setUserNFTs: (state, action) => {
+            state.nfts = action.payload === undefined ? [] : action.payload
+        },
+        setIsGregHolder: (state, action) => {
+            state.isGregHolder = action.payload === undefined?false : action.payload
+        },
+        setHeroSkin: (state, action) => {
+            state.heroSkin = action.payload === undefined?false : action.payload
+        }
     }
-  }
 })
 
 //actions
 export const { setUser, setUpdatingUser, setGettingUser, setUserNFTs, setIsGregHolder, setHeroSkin } = userSlice.actions
 
 export const getUser = (address: string) => async (dispatch: Dispatch<any>) => {
-  dispatch(setGettingUser(true))
-  try {
-    const user = await userService.getUserByAddress(address)
-    dispatch(setUser(user))
-    if(user.greg){
-      // dispatch(setHeroSkin(user.greg))
-    }
+    dispatch(setGettingUser(true))
+    try {
+        const user = await userService.getUserByAddress(address)
+        dispatch(setUser(user))
+        if(user.greg){
+           // dispatch(setHeroSkin(user.greg))
+        }
         
-    dispatch(setGettingUser(false))
-  } catch (error) {
-    //dispatch(setUser({}))
-    dispatch(setGettingUser(false))
-  }
+        dispatch(setGettingUser(false))
+    } catch (error) {
+        //dispatch(setUser({}))
+        dispatch(setGettingUser(false))
+    }
 }
 
 export const updateUser = (user: FormData) => async (dispatch: Dispatch<any>) => {
-  dispatch(setUpdatingUser(true))
+    dispatch(setUpdatingUser(true))
 
-  try {
-    dispatch(openSnackBar({ message: 'Updating User Profile...', status: 'info' }))
-    await userService.updateProfile(user)
-    dispatch(setUpdatingUser(false))
-    dispatch(setUser(user))
-    dispatch(openSnackBar({ message: 'Successfully updated', status: 'success' }))
-  } catch (error: any) {
-    dispatch(setUpdatingUser(false))
-    dispatch(openSnackBar({ message: error.message, status: 'error' }))
-  }
+    try {
+        dispatch(openSnackBar({ message: 'Updating User Profile...', status: 'info' }))
+        await userService.updateProfile(user)
+        dispatch(setUpdatingUser(false))
+        dispatch(setUser(user))
+        dispatch(openSnackBar({ message: 'Successfully updated', status: 'success' }))
+    } catch (error: any) {
+        dispatch(setUpdatingUser(false))
+        dispatch(openSnackBar({ message: error.message, status: 'error' }))
+    }
 }
 
 export const getUserNFTs = (address: string) => async (dispatch: Dispatch<any>) => {
-  try {
-    const nfts = await userService.getUserNFTs(address)
-    nfts.map((nft:any)=>{
-      if(nft.token_address===GregContractAddress[nft.chain]){
-        dispatch(setIsGregHolder(true))
-      }            
-    })
-    dispatch(setUserNFTs(nfts))
-  } catch (error) {
-    console.log('failed to get user nft items')
-  }
+    try {
+        const nfts = await userService.getUserNFTs(address)
+        nfts.map((nft:any)=>{
+            if(nft.token_address===GregContractAddress[nft.chain]){
+                dispatch(setIsGregHolder(true))
+            }            
+        })
+        dispatch(setUserNFTs(nfts))
+    } catch (error) {
+    }
 }
 export const updateIsGregHolder = (flag: boolean) => async (dispatch: Dispatch<any>) => {
-  try {
+    try {
        
-    dispatch(setIsGregHolder(flag))
-  } catch (error) {
-    console.log('failed to update Isgregholder')
-  }
+        dispatch(setIsGregHolder(flag))
+    } catch (error) {
+        console.log("failed to update Isgregholder")
+    }
 }
-export const updateHeroSkin = (name: string) => async (dispatch: Dispatch<any>) => {
-  try {
-       
-    dispatch(setHeroSkin(name))
-  } catch (error) {
-    console.log('failed to update heroSkin')
-  }
+export const updateHeroSkin = (name: String) => async (dispatch: Dispatch<any>) => {
+    try {
+        dispatch(setHeroSkin(name))
+    } catch (error) {
+        console.log("failed to update heroSkin")
+    }
 }
 //selectors
 export const selectUser = (state: any) => state.userState.user

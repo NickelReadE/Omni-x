@@ -53,7 +53,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
   const [selectedOption, setSelectedOption] = useState(null)
   const [price_in_usd, setPriceInUSD] = useState('')
   const [price, setPrice] = useState(0)
-  const [currency, setCurrency] = useState(currencies_list[provider?._network.chainId as number][0])
+  const [currency, setCurrency] = useState(currencies_list[4][0])//rinkeby as default
   const [period, setPeriod] = useState(period_list[2])
 
   const onChangePrice = (e: any) => {
