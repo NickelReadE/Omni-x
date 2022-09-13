@@ -244,7 +244,7 @@ const Item: NextPage = () => {
 
     const currencyContract = getCurrencyInstance(currency, chainId, signer)
     const balance = await currencyContract?.balanceOf(address)
-    if (Number(ethers.utils.formatEther(balance)) < Number(price)) {
+    if (balance.lt(BigNumber.from(price))) {
       dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))
       setOpenBidDlg(false)
       return false
@@ -297,8 +297,6 @@ const Item: NextPage = () => {
   }
 
   const onBuy = async () => {
-    console.log('-buy--', order, provider)
-
     if (!order) {
       dispatch(openSnackBar({ message: 'Not listed', status: 'warning' }))
       return
@@ -308,8 +306,8 @@ const Item: NextPage = () => {
     const chainId = provider?.network.chainId || 4
     const lzChainId = getLayerzeroChainId(chainId)
     const omniAddress = getAddressByName(getCurrencyNameAddress(order.currencyAddress) as ContractName, chainId)
-
-    if (!checkValid(omniAddress, order?.price, chainId)) {
+    
+    if (!(await checkValid(omniAddress, order?.price, chainId))) {
       return
     }
 
@@ -346,14 +344,11 @@ const Item: NextPage = () => {
     approveTxs.push(await omni.approve(omnixExchange.address, takerBid.price))
     approveTxs.push(await omni.approve(getAddressByName('FundManager', chainId), takerBid.price))
     if (isUsdcOrUsdt(order?.currencyAddress)) {
-      console.log('--approved- usdc---')
       approveTxs.push(await omni.approve(getAddressByName('StargatePoolManager', chainId), takerBid.price))
     }
 
     await Promise.all(approveTxs.map(tx => tx.wait()))
-    
-    console.log('--approved----')
-    await waitFor(3000)
+    await waitFor(1000)
 
     const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
 
