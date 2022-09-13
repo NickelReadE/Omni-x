@@ -75,16 +75,16 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
         <div className='flex flex-wrap items-start'>
           <div className='absolute'>
             <div className='flex'>
-              <button className='flex items-center'>
+              <button className='flex items-center mt-[20px]'>
                 <img
                   src={'/images/logo.svg'}
-                  className='mr-3 bg-contain hover:bg-[url("../public/images/logo_hover.svg")]'
+                  className='mr-3 bg-contain'
                   alt="logo"
-                  width='75px'
-                  height='75px'
+                  width='50px'
+                  height='50px'
                 />
               </button>
-              <input autoFocus type="text" placeholder='Acquire Your Desires' className="flex items-center bg-[#F6F8FC] bg-[url('../public/images/search.png')] bg-contain bg-no-repeat	 w-[472px] h-[75px] border-0 focus:outline-0 focus:shadow-none focus:ring-offset-0 focus:ring-0 px-[85px]" onChange={e => handleChangeInput(e.target.value)}/>
+              <input autoFocus type="text" placeholder='Search' className="flex items-center bg-[#F6F8FC] bg-[url('../public/images/search.png')] bg-contain bg-no-repeat	 w-[248px] h-[40px] mt-[25px] border-0 focus:outline-0 focus:shadow-none focus:ring-offset-0 focus:ring-0 px-[85px]" onChange={e => handleChangeInput(e.target.value)}/>
             </div>
           </div>   
           {/* <div className='min-w-[200px]'></div> */}
