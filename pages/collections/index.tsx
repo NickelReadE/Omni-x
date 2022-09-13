@@ -67,8 +67,6 @@ const Collections: NextPage = () => {
         })
       }
     }
-    
-    
     setOmniSlides(slides)
   }, [collections ,collectionsForCard])
   useEffect(()=>{

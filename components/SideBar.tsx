@@ -407,7 +407,7 @@ const SideBar: React.FC = () => {
         setSelectedNFTItem(undefined)
       }
     }
-
+    
     setConfirmTransfer(false)
   }
 

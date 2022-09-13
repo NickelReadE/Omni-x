@@ -6,13 +6,16 @@ import LazyLoad from 'react-lazyload'
 import { ethers } from 'ethers'
 import { selectOrders, selectBidOrders, selectLastSaleOrders, getOrders } from '../../redux/reducers/ordersReducer'
 import { useSelector } from 'react-redux'
-import { getCurrencyIconByAddress } from '../../utils/constants'
+import { getCurrencyIconByAddress, getChainIdFromName, getChainNameFromId } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'
 import { isYesterday } from 'date-fns'
 import ConfirmBid from './ConfirmBid'
 import { IGetOrderRequest } from '../../interface/interface'
 import editStyle from '../../styles/nftbox.module.scss'
 import classNames from '../../helpers/classNames'
+
+
+import { currencies_list } from '../../utils/constants'
 
 const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)

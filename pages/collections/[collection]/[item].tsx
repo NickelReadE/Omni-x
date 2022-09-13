@@ -54,6 +54,8 @@ const Item: NextPage = () => {
   const [highestBidCoin, setHighestBidCoin] = React.useState('')
   const [lastSaleCoin, setLastSaleCoin] = React.useState('')
 
+  const [orderFlag, setOrderFlag] = React.useState(false)
+
   const orders = useSelector(selectOrders)
   const bidOrders = useSelector(selectBidOrders) as IOrder[]
   const lastSaleOrders = useSelector(selectLastSaleOrders)
@@ -69,10 +71,10 @@ const Item: NextPage = () => {
     { chain: 'rinkeby', img_url: '/svgs/ethereum.svg', title: 'Ethereum', disabled: false},
     { chain: 'arbitrum-rinkeby', img_url: '/svgs/arbitrum.svg', title: 'Arbitrum', disabled: true},
     { chain: 'avalanche testnet', img_url: '/svgs/avax.svg', title: 'Avalanche', disabled: false},
-    { chain: 'bnbt', img_url: '/svgs/binance.svg', title: 'BNB Chain', disabled: false},
-    { chain: 'fantom', img_url: '/svgs/fantom.svg', title: 'Fantom', disabled: true},
+    { chain: 'bsc testnet', img_url: '/svgs/binance.svg', title: 'BNB Chain', disabled: false},
+    { chain: 'fantom-testnet', img_url: '/svgs/fantom.svg', title: 'Fantom', disabled: true},
     { chain: 'optimism-kovan', img_url: '/svgs/optimism.svg', title: 'Optimism', disabled: true},
-    { chain: 'maticmum', img_url: '/svgs/polygon.svg', title: 'Polygon', disabled: false},
+    { chain: 'mumbai', img_url: '/svgs/polygon.svg', title: 'Polygon', disabled: false},
   ]
 
   const router = useRouter()
@@ -85,7 +87,6 @@ const Item: NextPage = () => {
   // console.log(token_id)
 
   const nftInfo = useSelector(selectNFTInfo)
-
 
   useEffect(() => {
     if ( col_url && token_id ) {
@@ -115,13 +116,14 @@ const Item: NextPage = () => {
       getListOrders()
       getBidOrders()
       getLastSaleOrder()
+      setOrderFlag(true)
     }
   }, [nftInfo, owner, ownerType])
 
   useEffect(() => {
+    //ORDER
     setOrder(undefined)
-
-    if (orders.length > 0  && nftInfo.collection!=undefined && nftInfo.nft!=undefined) {
+    if (orders.length > 0  && nftInfo.collection!=undefined && nftInfo.nft!=undefined && orderFlag) {
       if(nftInfo.collection.address===orders[0].collectionAddress&&Number(nftInfo.nft.token_id)===Number(orders[0].tokenId)){
         setOrder(orders[0])
       }
@@ -174,7 +176,6 @@ const Item: NextPage = () => {
   const getListOrders = () => {
     const request: IGetOrderRequest = {
       isOrderAsk: true,
-      chain: nftInfo.collection.chain,
       collection: nftInfo.collection.address,
       tokenId: nftInfo.nft.token_id,
       signer: owner,

@@ -57,8 +57,6 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
   const [currency, setCurrency] = useState(CURRENCIES_LIST[0])
   const [period, setPeriod] = useState(period_list[2])
 
-
-
   const onChangePrice = (e: any) => {
     setPrice(e.target.value)
   }

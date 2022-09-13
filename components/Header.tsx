@@ -20,6 +20,7 @@ import { getOmniInstance } from '../utils/contracts'
 import useWallet from '../hooks/useWallet'
 import { useDispatch } from 'react-redux'
 import { openSnackBar } from '../redux/reducers/snackBarReducer'
+import { getSearchText } from '../redux/reducers/headerReducer'
 
 type HeaderProps = {
   menu: string
@@ -31,7 +32,6 @@ type HoverType = {
 }
 
 const Header = ({ menu }: HeaderProps): JSX.Element => {
-  const [isSearch, setSearch] = useState(false)
   const [hover, setHovering] = useState<HoverType>({
     hoverMenu: menu,
     isHover: false
@@ -68,6 +68,9 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
     dispatch(openSnackBar({ message: 'You will receive an 10000 $OMNI soon', status: 'success' }))
   }
 
+  const handleChangeInput = (text: string) => {
+    dispatch(getSearchText(text) as any)
+  }
   return (
     <>
       <nav className={
@@ -86,30 +89,23 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
       >
         <div className='flex flex-wrap items-start'>
           <div className='absolute'>
-            {
-              !isSearch && 
-              <button
-                onClick={() => setSearch(true)}
-                className='flex items-center'>
+            <div className='flex'>
+              <button className='flex items-center mt-[20px]'>
                 <img
                   src={'/images/logo.svg'}
-                  className='mr-3 bg-contain hover:bg-[url("../public/images/logo_hover.svg")]'
+                  className='mr-3 bg-contain'
                   alt="logo"
-                  width='75px'
-                  height='75px'
+                  width='50px'
+                  height='50px'
                 />
               </button>
-            }
-            {
-              isSearch && 
-              <input autoFocus type="text" placeholder='Acquire Your Desires' className="flex items-center bg-[#F6F8FC] bg-[url('../public/images/search.png')] bg-contain bg-no-repeat	 w-[472px] h-[75px] border-0 focus:outline-0 focus:shadow-none focus:ring-offset-0 focus:ring-0 px-[85px]" onBlur={() => setSearch(false)} onClick={() => setSearch(false)}/>
-            }
-          </div>
+              <input autoFocus type="text" placeholder='Search' className="flex items-center bg-[#F6F8FC] bg-[url('../public/images/search.png')] bg-contain bg-no-repeat	 w-[248px] h-[40px] mt-[25px] border-0 focus:outline-0 focus:shadow-none focus:ring-offset-0 focus:ring-0 px-[85px]" onChange={e => handleChangeInput(e.target.value)}/>
+            </div>
 
-          <div className='absolute right-[100px] top-[20px]'>
-            <button className='bg-gradient-to-br from-[#F3F9FF] to-[#DBE1E9] border-2 border-[#A0B3CC] rounded-lg text-black text-lg p-[10px]' onClick={() => onOmniFaucet()}>Get Test OMNI</button>
-          </div>
-
+            <div className='absolute right-[100px] top-[20px]'>
+              <button className='bg-gradient-to-br from-[#F3F9FF] to-[#DBE1E9] border-2 border-[#A0B3CC] rounded-lg text-black text-lg p-[10px]' onClick={() => onOmniFaucet()}>Get Test OMNI</button>
+            </div>
+          </div>   
           {/* <div className='min-w-[200px]'></div> */}
           <div className='justify-between h-[90px] items-center w-full md:flex md:w-auto mx-auto md:order-2' id='mobile-menu-3'>
             <ul className="flex flex-col justify-between md:flex-row md:space-x-8 md:text-sm md:font-medium" >

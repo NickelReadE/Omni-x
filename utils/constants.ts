@@ -70,7 +70,7 @@ export const rpcProviders: { [key: number]: string } = {
   4: 'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
   97: 'https://data-seed-prebsc-1-s1.binance.org:8545',
   43113: 'https://api.avax-test.network/ext/bc/C/rpc',
-  80001: 'https://speedy-nodes-nyc.moralis.io/99e98b2333a911011f42606d/polygon/mumbai',
+  80001: 'https://polygon-mumbai.g.alchemy.com/v2/H2EfIYrKg--DbTdHW37WJaSVuaJvTF0T',
   421611: 'https://rinkeby.arbitrum.io/rpc',
   69: 'https://kovan.optimism.io',
   4002: 'https://rpc.testnet.fantom.network'
@@ -264,12 +264,37 @@ export const chain_list: {[key: string]: number} = {
   'bsc testnet': 97,
   'rinkeby': 4,
   'mumbai': 80001,
-  'avalanche testnet': 43113
+  'avalanche testnet': 43113,
+  'arbitrum-rinkeby': 421611,
+  'optimism-kovan': 69,
+  'fantom-testnet': 4002,
 }
 
 export const getChainIdFromName = (name: string): number => {
   return chain_list[name]
 }
+
+export const chain_list_: {[key: number]: string} = {
+  1 : 'eth ',
+  56 : 'bsc',
+  137 : 'matic',
+  43114 : 'avalanche',
+  250 : 'fantom',
+  10 : 'optimism',
+  42161 : 'arbitrum',
+  97 : 'bsc testnet',
+  4 : 'rinkeby',
+  80001 : 'mumbai',
+  43113 : 'avalanche testnet',
+  421611:'arbitrum-rinkeby',
+  69:'optimism-kovan',
+  4002:'fantom-testnet'
+}
+
+export const getChainNameFromId = (id: number): string => {
+  return chain_list_[id]
+}
+
 
 export const getAddressByName = (name: ContractName, chainId: number) => {
   if (name === 'Omnix') {
@@ -285,9 +310,9 @@ export const getAddressByName = (name: ContractName, chainId: number) => {
   } else if (name === 'OMNI') {
     return oft[chainInfos[chainId].name]
   } else if (name === 'USDC') {
-    return usdc[chainInfos[chainId].name]
+    return usdc[chainId.toString()]
   } else if (name === 'USDT') {
-    return usdt[chainInfos[chainId].name]
+    return usdt[chainId.toString()]
   } else if (name === 'TransferSelectorNFT') {
     return transferSelectorNFT[chainInfos[chainId].name]
   } else if (name === 'FundManager') {
@@ -297,7 +322,7 @@ export const getAddressByName = (name: ContractName, chainId: number) => {
   } else if (name === 'StargatePoolManager') {
     return stargatePoolManager[chainInfos[chainId].name]
   } else if (name === 'CurrencyManager') {
-    return currencyManager[chainInfos[chainId].name]
+    return currencyManager[chainId.toString()]
   }
 }
 
