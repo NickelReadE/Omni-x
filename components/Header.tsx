@@ -101,11 +101,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
               </button>
               <input autoFocus type="text" placeholder='Search' className="flex items-center bg-[#F6F8FC] bg-[url('../public/images/search.png')] bg-contain bg-no-repeat	 w-[248px] h-[40px] mt-[25px] border-0 focus:outline-0 focus:shadow-none focus:ring-offset-0 focus:ring-0 px-[85px]" onChange={e => handleChangeInput(e.target.value)}/>
             </div>
-
-            <div className='absolute right-[100px] top-[20px]'>
-              <button className='bg-gradient-to-br from-[#F3F9FF] to-[#DBE1E9] border-2 border-[#A0B3CC] rounded-lg text-black text-lg p-[10px]' onClick={() => onOmniFaucet()}>Get Test OMNI</button>
-            </div>
-          </div>   
+          </div>
           {/* <div className='min-w-[200px]'></div> */}
           <div className='justify-between h-[90px] items-center w-full md:flex md:w-auto mx-auto md:order-2' id='mobile-menu-3'>
             <ul className="flex flex-col justify-between md:flex-row md:space-x-8 md:text-sm md:font-medium" >
@@ -230,6 +226,9 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
               }
             </div>
           }
+          <div className='absolute right-[100px] top-[20px]'>
+            <button className='bg-gradient-to-br from-[#F3F9FF] to-[#DBE1E9] border-2 border-[#A0B3CC] rounded-lg text-black text-lg p-[10px]' onClick={() => onOmniFaucet()}>Get Test OMNI</button>
+          </div>
         </div>
       </nav>
     </>
