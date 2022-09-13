@@ -2,13 +2,9 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import classNames from '../helpers/classNames'
 import useProgress from '../hooks/useProgress'
-import { getOmniInstance } from '../utils/contracts'
 import useWallet from '../hooks/useWallet'
-import { useDispatch } from 'react-redux'
-import { openSnackBar } from '../redux/reducers/snackBarReducer'
 import ProcessingTransaction from './transaction/ProcessingTransaction'
 import { Menu } from '@headlessui/react'
-
 import { getSearchText } from '../redux/reducers/headerReducer'
 import { useDispatch } from 'react-redux'
 
