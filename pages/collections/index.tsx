@@ -76,11 +76,6 @@ const Collections: NextPage = () => {
         })
       }
     }
-<<<<<<< HEAD
-    
-    console.log(slides)
-=======
->>>>>>> c3ded0120956d06b23a45fd82684de6c5621c704
     setOmniSlides(slides)
   }, [collections ,collectionsForCard])
   useEffect(()=>{
