@@ -104,7 +104,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
               </div>
               <div className="flex items-center justify-around my-5">
                 <p>Gas Cost:</p>
-                <p>{ethers.utils.formatEther(estimatedFee)}&nbsp;{chainInfos[senderChain].currency}</p>
+                <p>{estimatedFee!=undefined&&ethers.utils.formatEther(estimatedFee)}&nbsp;{chainInfos[senderChain].currency}</p>
               </div>
               {/*<p className="my-4 text-slate-500 text-lg leading-relaxed">
                 Note: if the asset is a non-native omnichain token and transferred to its home chain,

@@ -93,7 +93,6 @@ export const updateIsGregHolder = (flag: boolean) => async (dispatch: Dispatch<a
 }
 export const updateHeroSkin = (name: String) => async (dispatch: Dispatch<any>) => {
     try {
-       
         dispatch(setHeroSkin(name))
     } catch (error) {
         console.log("failed to update heroSkin")

@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import NFTBox from './NFTBox'
+import NFTbox from './collections/NFTBox'
 import { IPropsImage } from '../interface/interface'
 import { getOrders,getLastSaleOrders } from '../redux/reducers/ordersReducer'
 import { IGetOrderRequest } from '../interface/interface'
 import useWallet from '../hooks/useWallet'
 import { useDispatch, useSelector } from 'react-redux'
 import { getCollections } from '../redux/reducers/collectionsReducer'
+import { selectSearchText } from '../redux/reducers/headerReducer'
+import { selectNFTInfo } from '../redux/reducers/collectionsReducer'
+import {  getCollectionInfo,getCollectionAllNFTs, selectCollectionAllNFTs,selectCollectionInfo } from '../redux/reducers/collectionsReducer'
 
 const chainList = [
   { chain: 'all', img_url: '/svgs/all_chain.svg', title: 'all NFTs', disabled: false},
@@ -19,23 +23,58 @@ const chainList = [
 ]
 const NFTGrid = ({ nfts }: IPropsImage) => {
   const [chain, setChain] = useState('all')
+  const [isSearch, setSearch] = useState(false)
+  const [nft, setNFT] = useState(null)
+  const [colURL, setColURL] = useState('')
+  const [tokenID, setTokenID] = useState(0)
 
   const {
     provider,
     address
   } = useWallet()
   const dispatch = useDispatch()
+  const searchText = useSelector(selectSearchText)
+  const col_url = searchText.split('#')[0]
+  const token_id = searchText.split('#')[1]
 
+  const allNFTs = useSelector(selectCollectionAllNFTs)
+  const collectionInfo = useSelector(selectCollectionInfo)
+
+  useEffect(()=>{
+    if(searchText==''){
+      setSearch(false)
+    }else{
+      if(col_url!=''&&Number(token_id)>0){
+        setSearch(true)
+        setColURL(col_url)
+        setTokenID(Number(token_id))
+        if(colURL!=col_url){
+          dispatch(getCollectionAllNFTs(col_url,'','') as any)
+        }
+        dispatch(getCollectionInfo(col_url) as any)
+      } else{
+        setSearch(false)
+      }
+    }
+
+  },[searchText])
+
+  
+  useEffect(() => {
+    if(allNFTs && tokenID>0){
+      setNFT(allNFTs[tokenID-1])
+    }
+  }, [allNFTs,tokenID])
 
   useEffect(() => {
     dispatch(getCollections() as any)
   }, [])
 
+
   useEffect(()=> {
     if(nfts.length>0){
       const request: IGetOrderRequest = {
         isOrderAsk: true,
-        chain: provider?.network.name,
         signer: address,
         startTime: Math.floor(Date.now() / 1000).toString(),
         endTime: Math.floor(Date.now() / 1000).toString(),
@@ -61,6 +100,12 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
     }
   },[nfts])
 
+  // useEffect(()=>{
+  //   if(nfts.length>0){
+  //     console.log(nfts)
+  //   }
+  // },[nfts])
+
 
   return (
     <>
@@ -80,7 +125,7 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
           </div>
         </div>
         <div className="grid grid-cols-4 gap-6 2xl:grid-cols-5 2xl:gap-10 mt-4">
-          {nfts.map((item, index) => {
+          {!isSearch&&nfts.map((item, index) => {
             if(chain == 'all'){
               return (
                 <NFTBox nft={item} index={index} key={index}/>
@@ -93,6 +138,9 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
               }
             }
           })}
+          {
+            isSearch&&nft!=null&&<NFTbox nft={nft} index={1} col_url={col_url} col_address={collectionInfo.address}  chain={collectionInfo?collectionInfo.chain:'eth'}/>
+          }
         </div>
       </div>
     </>
