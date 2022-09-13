@@ -1,17 +1,9 @@
 {
-    "ethereum": "",
-    "bsc": "",
-    "avalanche": "",
-    "polygon": "",
-    "arbitrum": "",
-    "optimism": "",
-    "fantom": "",
-  
-    "rinkeby": "0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad",
-    "bsc-testnet": "0xF49E250aEB5abDf660d643583AdFd0be41464EfD",
-    "fuji": "",
-    "mumbai": "",
-    "arbitrum-rinkeby": "",
-    "optimism-kovan": "",
-    "fantom-testnet": ""
-  }
+  "4": "0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad",
+  "97": "0xF49E250aEB5abDf660d643583AdFd0be41464EfD",
+  "43113": "",
+  "80001": "",
+  "421611": "",
+  "69": "",
+  "4002": ""
+}
