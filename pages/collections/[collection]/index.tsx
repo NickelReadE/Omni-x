@@ -507,8 +507,7 @@ const Collection: NextPage = () => {
                       <span className="mr-[10px] ">0</span>
                       <img src='/svgs/eth_asset.svg' alt='asset'></img>
                     </div>                      
-                  </div>
-                               
+                  </div>                               
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <div className="flex flex-col space-y-2">

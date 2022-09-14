@@ -16,7 +16,8 @@ import {
   getOmnixBridge1155Instance,
   getOmnixBridgeInstance, getONFTCore721Instance, getONFTCore1155Instance,
 } from '../utils/contracts'
-import {getChainIdFromName, getLayerzeroChainId} from '../utils/constants'
+import regExpFormat from '../helpers/regExpFormat'
+import {getChainIdFromName, getLayerzeroChainId,getChainInfo} from '../utils/constants'
 import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
 import UserEdit from './user/UserEdit'
@@ -24,9 +25,10 @@ import useBridge from '../hooks/useBridge'
 import useProgress from '../hooks/useProgress'
 import usd from '../constants/abis/USD.json'
 import omni from '../constants/abis/omni.json'
-import usdc from '../constants/USDC.json'
-import usdt from '../constants/USDT.json'
+
 import omniAddress from '../constants/OMNI.json'
+import usdcAddress  from '../constants/USDC.json'
+import usdtAddress  from '../constants/USDT.json'
 
 interface RefObject {
   offsetHeight: number
@@ -40,6 +42,13 @@ const useStyles = makeStyles({
     maxWidth: '100%',
   },
 })
+const format = function (number:string) {
+  return ('' + number).replace(/(\d)(?=(?:\d{3})+(?:\.|$))|(\.\d\d\d\d?)\d*$/g, 
+    function(m, s1, s2){
+      return s2 || (s1 + ',')
+    }
+  )
+}
 const SideBar: React.FC = () => {
   const {
     provider,
@@ -93,6 +102,7 @@ const SideBar: React.FC = () => {
   const [isONFT, setIsONFT] = useState(false)
   const [unwrap, setUnwrap] = useState(false)
   const [bOpenModal, setOpenModal] = React.useState(false)
+  const [nativeBalance, setNativeBalance] = useState('')
 
   const {setNodeRef} = useDroppable({
     id: 'droppable',
@@ -404,7 +414,7 @@ const SideBar: React.FC = () => {
         setSelectedNFTItem(undefined)
       }
     }
-
+    
     setConfirmTransfer(false)
   }
 
@@ -510,61 +520,35 @@ const SideBar: React.FC = () => {
   useEffect(()=>{
     const getBalance = async() => {
       try {
-        if(chainId===4){
-          //OMNI
-          const contractOmniAddress = omniAddress['rinkeby']
+        const key = chainId.toString() as keyof typeof omniAddress
+        //OMNI
+        const contractOmniAddress = omniAddress[key]
+        if(contractOmniAddress!=''){
           const omniContract =  new ethers.Contract(contractOmniAddress, omni, signer)
           const omni_balance = await omniContract.balanceOf(address)
           setOmniBalance(Number(ethers.utils.formatEther(omni_balance)))
-          //usdc
-          const contractAddress = usdc['rinkeby']
-          const usdContract =  new ethers.Contract(contractAddress, usd, signer)
+        }
+        //USDC
+        const contractUSDCAddress = usdcAddress[key]
+        if(contractUSDCAddress!=''){
+          const usdContract =  new ethers.Contract(contractUSDCAddress, omni, signer)
           const usdc_balance = await usdContract.balanceOf(address)
           setUsdcBalance(Number(ethers.utils.formatEther(usdc_balance)))
-        } else if(chainId===43113) {
-          //OMNI
-          const contractOmniAddress = omniAddress['fuji']
-          const omniContract =  new ethers.Contract(contractOmniAddress, omni, signer)
-          const omni_balance = await omniContract.balanceOf(address)
-          setOmniBalance(Number(ethers.utils.formatEther(omni_balance)))
-          //usdc
-          const contractAddress = usdc['fuji']
-          const usdContract =  new ethers.Contract(contractAddress, usd, signer)
-          const balance = await usdContract.balanceOf(address)
-          setUsdcBalance(Number(ethers.utils.formatEther(balance)))
-        } else if(chainId===80001) {
-          const contractAddress = usdc['mumbai']
-          const usdContract =  new ethers.Contract(contractAddress, usd, signer)
-          const balance = await usdContract.balanceOf(address)
-          setUsdcBalance(Number(ethers.utils.formatEther(balance)))
-        } else if(chainId===421611) {
-          const contractAddress = usdc['arbitrum-rinkeby']
-          const usdContract =  new ethers.Contract(contractAddress, usd, signer)
-          const balance = await usdContract.balanceOf(address)
-          setUsdcBalance(Number(ethers.utils.formatEther(balance)))
-        } else if(chainId===69) {
-          const contractAddress = usdc['optimism-kovan']
-          const usdContract =  new ethers.Contract(contractAddress, usd, signer)
-          const balance = await usdContract.balanceOf(address)
-          setUsdcBalance(Number(ethers.utils.formatEther(balance)))
-        } else if(chainId===4002) {
-          const contractAddress = usdc['fantom-testnet']
-          const usdContract =  new ethers.Contract(contractAddress, usd, signer)
-          const balance = await usdContract.balanceOf(address)
-          setUsdcBalance(Number(ethers.utils.formatEther(balance)))
         }
-        if(chainId===97){
-          //OMNI
-          const contractOmniAddress = omniAddress['bsc-testnet']
-          const omniContract =  new ethers.Contract(contractOmniAddress, omni, signer)
-          const omni_balance = await omniContract.balanceOf(address)
-          setOmniBalance(Number(ethers.utils.formatEther(omni_balance)))
-          //usdt
-          const contractAddress = usdt['bsc-testnet']
-          const usdTContract =  new ethers.Contract(contractAddress, usd, signer)
-          const balance = await usdTContract.balanceOf(address)
-          setUsdtBalance(Number(ethers.utils.formatEther(balance)))
+        //USDT
+        const contractUSDTAddress = usdtAddress[key]
+        if(contractUSDTAddress!=''){
+          const usdTContract =  new ethers.Contract(contractUSDTAddress, usd, signer)
+          const usdt_balance = await usdTContract.balanceOf(address)
+          setUsdtBalance(Number(ethers.utils.formatEther(usdt_balance)))
         }
+        //Native Token
+        const balance = await provider?.getBalance(address!)
+        if(Number(balance)===0 || balance===undefined){
+          setNativeBalance('0')  
+        }else{
+          setNativeBalance((Number(balance)/Math.pow(10,18)).toFixed(4))
+        }        
       } catch (error) {
         console.log(error)
       }
@@ -572,7 +556,7 @@ const SideBar: React.FC = () => {
     if(signer!=undefined && address!=undefined){
       getBalance()
     }
-  },[signer,address])
+  },[signer,address,chainId])
   const setLogout = async() => {
     console.log('clicked disconnect')
     await disconnect()
@@ -782,9 +766,10 @@ const SideBar: React.FC = () => {
             </button>
             { expandedMenu == 3 &&
               <div className='flex flex-col w-full space-y-4 p-6 pt-8 pb-0' ref={menu_wallets}>
-                <span className="font-semibold w-auto text-[16px]">OMNI balance: {omniBalance}</span>
-                <span className="font-semibold w-auto text-[16px]">USDC balance: {usdcBalance}</span>
-                <span className="font-semibold w-auto text-[16px]">USDT balance: {usdtBalance}</span>
+                <span className="font-semibold w-auto text-[16px]">OMNI balance: {regExpFormat(omniBalance)}</span>
+                <span className="font-semibold w-auto text-[16px]">USDC balance: {regExpFormat(usdcBalance)}</span>
+                <span className="font-semibold w-auto text-[16px]">USDT balance: {regExpFormat(usdtBalance)}</span>
+                <span className="font-semibold w-auto text-[16px]">{getChainInfo(chainId)?.nativeCurrency.symbol} balance: {regExpFormat(nativeBalance)}</span>
                 <span className="w-auto text-[16px]">Staking: coming soon</span>
                 {/* <div className="w-full flex flex-row font-semibold text-[14px]">
                   <div className="bg-g-200 w-[88px] px-[11px] py-[9px]">
