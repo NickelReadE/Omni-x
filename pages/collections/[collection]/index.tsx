@@ -215,7 +215,7 @@ const Collection: NextPage = () => {
         status: ['VALID'],
         sort: 'PRICE_ASC'
       }
-      console.log('2',orders)
+      dispatch(getOrders(bidRequest) as any)
       const excutedRequest: IGetOrderRequest = {
         collection: collectionInfo.address,
         status: ['EXECUTED'],

@@ -65,7 +65,6 @@ export const collectionsSlice = createSlice({
 			state.collectionsForCard = action.payload === undefined ? '' : action.payload
 		},
 		setRoyalty: (state, action) =>{
-			console.log('reduce',action.payload)
 			state.royalty = action.payload === undefined ? '' : action.payload
 		}
 	}
@@ -218,7 +217,6 @@ export const getRoyalty = (contractType:string, address: string, chainId:number,
 			// 	setRoyalty(parseInt(royaltyInfo[1])/100.0)
 	
 			// }
-			console.log('NFT1155',NFTContract)
 			try{
 				const royalty = await NFTContract.royaltyInfo(1,100)
 				dispatch(setRoyalty(parseInt(royalty[1])))
