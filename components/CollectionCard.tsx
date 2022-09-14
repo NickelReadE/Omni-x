@@ -10,7 +10,6 @@ import ConfirmSell from './collections/ConfirmSell'
 import { prependOnceListener } from 'process'
 
 import useWallet from '../hooks/useWallet'
-import { addressesByNetwork } from '../constants'
 import { SupportedChainId } from '../types'
 import { postMakerOrder } from '../utils/makeOrder'
 import { ethers } from 'ethers'
