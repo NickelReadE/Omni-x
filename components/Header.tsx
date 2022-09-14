@@ -80,13 +80,13 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
               </button>
               <input autoFocus type="text" placeholder='Search' className="flex items-center bg-[#F6F8FC] bg-[url('../public/images/search.png')] bg-contain bg-no-repeat	 w-[248px] h-[40px] mt-[25px] border-0 focus:outline-0 focus:shadow-none focus:ring-offset-0 focus:ring-0 px-[85px]" onChange={e => handleChangeInput(e.target.value)}/>
             </div>
-          </div>   
+          </div>
           {/* <div className='min-w-[200px]'></div> */}
           <div className='justify-between h-[90px] items-center w-full md:flex md:w-auto mx-auto md:order-2' id='mobile-menu-3'>
             <ul className="flex flex-col justify-between md:flex-row md:space-x-8 md:text-sm md:font-medium" >
               <li className="flex items-center" onMouseOver={() => handleMouseOver('home')} onMouseOut={handleMouseOut}>
                 <Link href='/'>
-                  <a> 
+                  <a>
                     <div className="w-[219px] h-[90px] bg-no-repeat bg-center" style={{backgroundImage: `url('/navbar/home${menu == 'home' ? '_active' : ''}.svg')`}}>
                       <div className="relative top-3/4 text-center">
                         <span className={`text-lg  ${hover.isHover && hover.hoverMenu == 'home'?'text-[#000000] font-bold':'text-[#ADB5BD]'} ${hover.isHover && hover.hoverMenu != menu?'':'hidden'} ${menu == 'home' && 'hidden'}`} >HOME</span>
@@ -115,7 +115,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
                       </div>
                     </div>
                   </a>
-                </Link> 
+                </Link>
               </li>
             </ul>
           </div>
@@ -162,9 +162,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
                         histories?.map((item, index) => {
                           return (
                             <Menu.Item key={index}>
-                              <a href="#" className="">
-                                <ProcessingTransaction txInfo={item} />
-                              </a>
+                              <ProcessingTransaction txInfo={item} />
                             </Menu.Item>
                           )
                         })
