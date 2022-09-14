@@ -23,7 +23,7 @@ export interface IPropsNFTItem {
 
 export interface NFTItem {
   name: string,
-  attributes: any,
+  attributes: Object,
   image: string,
   custom_id: number,
   token: string,
@@ -72,7 +72,7 @@ export interface IGetOrderRequest {
   price?: any,
   startTime?: string,
   endTime?: string,
-  status?: string[],
+  status?: [string],
   pagination?: any,
   sort?: string
 }
@@ -111,7 +111,8 @@ export interface ICollectionInfoFromLocal{
   col_url: string,
   itemsCnt: string,
   ownerCnt:string,
-  orderCnt:string
+  orderCnt:string,
+  floorPrice:{eth:string, usd:string}
 }
 
 export interface IListingData {
