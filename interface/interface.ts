@@ -110,3 +110,8 @@ export interface ICollectionInfoFromLocal{
   ownerCnt:string,
   orderCnt:string
 }
+
+export interface ITypeNFT{
+  typeNFT:string,
+  items:string
+}

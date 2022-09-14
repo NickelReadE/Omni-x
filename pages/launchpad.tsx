@@ -1,21 +1,30 @@
 import type { NextPage } from 'next'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import NftForLaunch from '../components/NftForLaunch'
 import Image from 'next/image'
 import Link from 'next/link'
+import { getCollections, selectCollections} from '../redux/reducers/collectionsReducer'
 import styles from '../styles/launchpad.module.scss'
 import classNames from '../helpers/classNames'
 const Launchpad: NextPage = () => {
+  const collections = useSelector(selectCollections)
+  const [isShow, setIsShow] = useState(false)
+  const [collectionsToShow, setCollectionsToShow] = useState([])
+  const dispatch = useDispatch()  
+  useEffect(()=>{
+    dispatch(getCollections() as any)
+  },[])
+  useEffect(()=>{
+    setCollectionsToShow(collections.filter((collection: { mint_status: string })=>collection.mint_status==='Live' || collection.mint_status==='Upcoming')) 
+    
+  },[collections])
   return (
     <div className='mt-[75px] w-full px-[130px] pt-[50px]'>
       <div className='flex  justify-between'>
         <div className='flex flex-col'>
           <p className='text-xxl2 font-bold italic'>OMNI X LAUNCHPAD</p>
           <p className='text-xl2'>art for everyone, everwhere </p>
-        </div>
-        <div className='flex space-x-12 items-center'>
-          <img className='w-[130px] h-[130px]'  src='/images/ox.png' alt='Omni coin'/>
-          <img  className='w-[150px] h-[150px]' src='/images/omnicoin.png' alt='OX'/>          
         </div>
         <div className='py-6 px-12 flex flex-col bg-l-50 space-y-4 '>
           <p className='text-xg1 italic font-bold text-center'>
@@ -66,8 +75,15 @@ const Launchpad: NextPage = () => {
         </div>
       </div>
       <div className='flex flew-wrap space-x-12 mt-[80px]'>
-        <NftForLaunch typeNFT='live'/>
-        <NftForLaunch typeNFT='upcoming'/>
+        {          
+          <div>              
+            {
+              collectionsToShow.map((collection:{mint_status:string, count:string}, index)=>{
+                return <NftForLaunch key={index} typeNFT={collection.mint_status} items={collection.count}/>                    
+              })
+            }
+          </div>            
+        }   
       </div>
       <div className='bg-l-50 px-[40px] py-[30px] mt-[100px] mb-[50px]'>
         <p className='text-xxl2 font-bold italic'>
