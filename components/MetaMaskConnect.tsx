@@ -17,15 +17,17 @@ const MetaMaskConnect = ({onConnect, context}:ConnectButtonProps): JSX.Element =
 
   React.useEffect(()=>{
     if(context.address) {
-      setChainID(context.provider?._network?.chainId as number)
-      if(supportChainIDs.includes(context.provider?._network?.chainId as number)){
-        setShow(false)
+      if(Number(context.provider?._network?.chainId)>0){
+        setChainID(context.provider?._network?.chainId as number)
+        if(supportChainIDs.includes(context.provider?._network?.chainId as number)){
+          setShow(false)
+        }
       }
     } else setShow(true)
   },[context])
 
   const signSection = () => {
-    if(supportChainIDs.includes(chainId)){
+    if(supportChainIDs.includes(chainId)&&!context.address){
       return(
         <div>
           <div>Please sign-in by connecting your wallet</div>

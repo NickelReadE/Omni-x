@@ -11,8 +11,12 @@ const Home: NextPage = () => {
 
   React.useEffect(() => {
     if(context.address) {
-      if(supportChainIDs.includes(context.provider?._network?.chainId as number)){
-        setIsBlur(false)
+      if(Number(context.provider?._network?.chainId)>0){
+        if(supportChainIDs.includes(context.provider?._network?.chainId as number)){
+          setIsBlur(false)
+        }
+      } else {
+        window.location.reload()
       }
     } else setIsBlur(true)
   }, [context])
