@@ -91,7 +91,6 @@ const Collections: NextPage = () => {
     <>
       <div className='pt-10'>
         <Slider  title="Beta Collections" cards={omniSlides} />    
-
       </div>
     </>
   )
