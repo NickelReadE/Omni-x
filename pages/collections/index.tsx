@@ -50,19 +50,28 @@ const Collections: NextPage = () => {
     const slides: Array<React.ReactNode> = []
     const  localCards = localStorage.getItem('cards') 
     if(localCards===null){
-      if(collections.length>0 && collectionsForCard.length>0){
-        localStorage.setItem('cards',JSON.stringify(collectionsForCard))
-        collections.map((item: any,index:number) => {
-          slides.push(                     
-            <CollectionCard collection={item} card={collectionsForCard[index]}/>           
-          )
-        })
+      if(collections.length>0){
+        if(collectionsForCard.length>0){
+          localStorage.setItem('cards',JSON.stringify(collectionsForCard))
+          collections.map((item: any,index:number) => {
+            slides.push(                     
+              <CollectionCard collection={item} card={collectionsForCard.find((card: { col_url: any })=>card.col_url == item.col_url)}/>           
+            )
+          })
+        }else{
+          collections.map((item: any,index:number) => {
+            slides.push(                     
+              <CollectionCard collection={item} card={null}/>           
+            )
+          })
+        }        
+        
       }
     }else{
       if(collections.length>0){
         collections.map((item: any,index:number) => {
           slides.push(                     
-            <CollectionCard collection={item} card={collectionsForCard.length>0?collectionsForCard[index]:JSON.parse(localCards)[index]}/>           
+            <CollectionCard collection={item} card={collectionsForCard.length>0?collectionsForCard.find((card: { col_url: any })=>card.col_url == item.col_url):JSON.parse(localCards).find((card: { col_url: any })=>card.col_url==item.col_url)}/>           
           )
         })
       }
