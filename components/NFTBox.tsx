@@ -133,7 +133,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
         setHighestBid(bid_balance)
       }
     }
-  },[orders,bidOrders,lastSaleOrders])
+  }, [orders, bidOrders])
 
   const doubleClickToSetDetailLink = () => {
     const collection_address = nft.token_address

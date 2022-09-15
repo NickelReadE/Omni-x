@@ -167,7 +167,6 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                 <div className="flex justify-start items-center mt-5">
                   <CustomSelect optionData={CURRENCIES_LIST} value={currency} onChange={(value: any) => setCurrency(value)} />
                   <input type="text" value={price} className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg" onChange={onChangePrice}/>
-                  <span className="px-4 text-[#ADB5BD] font-light">{price_in_usd}</span>
                 </div>
                 <p className="text-[#ADB5BD] text-[14px] font-light italic leading-6 w-[435px] mt-10">*sale funds are recieved on the blockchain the NFT is currently hosted on</p>
                 <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Duration</p>

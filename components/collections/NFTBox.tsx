@@ -42,7 +42,9 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
             setPrice(ethers.utils.formatEther(orders[i].price))
             setList(true)
             setImageURL(`/images/${getCurrencyIconByAddress(orders[i].currencyAddress)}`)
-            setIsOwner(true)
+            if(orders[i].signer==address){
+              setIsOwner(true)
+            }
           }
         }
         if(executedOrders.length > 0) {

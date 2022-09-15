@@ -215,7 +215,7 @@ const Collection: NextPage = () => {
         status: ['VALID'],
         sort: 'PRICE_ASC'
       }
-      console.log('2',orders)
+      dispatch(getOrders(bidRequest) as any)
       const excutedRequest: IGetOrderRequest = {
         collection: collectionInfo.address,
         status: ['EXECUTED'],
@@ -343,46 +343,47 @@ const Collection: NextPage = () => {
       setListNFTs(temp)    
     } 
   },[isActiveBuyNow,collectionInfo,allNFTs])
-  useEffect(()=>{
-    if(collectionInfo && allNFTs.length>0){
-      const tempOrders = []
-      for(let i=0;i<allNFTs.length;i++){
-        let order:any = null
-        for(let j=0; j<orders.length;j++){
-          if(collectionInfo.address==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
-            order = orders[j]         
-          }
-        }
-        if(order){
-          tempOrders.push(order)
-        }        
-      }      
-      setOrdersForCollection(tempOrders)     
-    } 
-  },[collectionInfo,allNFTs])
-  useEffect(()=>{   
-    if(ordersForCollection.length > 0 && assetPrices){
-      let lowPrice: any = Number.MAX_VALUE
-      ordersForCollection.map((collection: { price: any, currencyAddress:any }) => {
-        let priceAsUSD = 0
-        if(currencies_list[getChainIdFromName(collectionInfo.chain)].find(({address}) => address===collection.currencyAddress)){
-          priceAsUSD = parseFloat(ethers.utils.formatEther(collection.price))
-        }else{
-          priceAsUSD = convertETHtoUSDT(parseFloat(ethers.utils.formatEther(collection.price)), assetPrices.eth)
-        }
-        if(lowPrice > priceAsUSD){
-          lowPrice  = priceAsUSD
-        }             
-      })
-      if(lowPrice === Number.MAX_VALUE){
-        lowPrice = 0
-      }
-      setFloorPrice(lowPrice)
-    }else if(ordersForCollection.length ===0){
-      setFloorPrice(0)
-    }
+  // useEffect(()=>{
+  //   if(collectionInfo && allNFTs.length>0){
+  //     const tempOrders = []
+  //     for(let i=0;i<allNFTs.length;i++){
+  //       let order:any = null
+  //       for(let j=0; j<orders.length;j++){
+  //         if(collectionInfo.address==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
+  //           order = orders[j]         
+  //         }
+  //       }
+  //       if(order){
+  //         tempOrders.push(order)
+  //       }        
+  //     }      
+  //     console.log(tempOrders)
+  //     setOrdersForCollection(tempOrders)     
+  //   } 
+  // },[collectionInfo,allNFTs])
+  // useEffect(()=>{   
+  //   if(ordersForCollection.length > 0 && assetPrices){
+  //     let lowPrice: any = Number.MAX_VALUE
+  //     ordersForCollection.map((order: { price: any, currencyAddress:any }) => {
+  //       let priceAsUSD = 0
+  //       if(currencies_list[getChainIdFromName(collectionInfo.chain)].find(({address}) => address===order.currencyAddress)){
+  //         priceAsUSD = parseFloat(ethers.utils.formatEther(order.price))
+  //       }else{
+  //         priceAsUSD = convertETHtoUSDT(parseFloat(ethers.utils.formatEther(order.price)), assetPrices.eth)
+  //       }
+  //       if(lowPrice > priceAsUSD){
+  //         lowPrice  = priceAsUSD
+  //       }             
+  //     })
+  //     if(lowPrice === Number.MAX_VALUE){
+  //       lowPrice = 0
+  //     }
+  //     setFloorPrice(lowPrice)
+  //   }else if(ordersForCollection.length ===0){
+  //     setFloorPrice(0)
+  //   }
    
-  },[ordersForCollection])
+  // },[ordersForCollection])
   useEffect(()=> {
     if (isInitialized && collectionInfo.address) {
       fetchCollectionMetaData()
@@ -516,15 +517,15 @@ const Collection: NextPage = () => {
                     </div>
                     <div className="flex flex-col space-y-1">
                       <div className="flex flex-row justify-between">
-                        <span className="mr-[22px] ">{floorPrice==0?0:convertUSDTtoETH(floorPrice,assetPrices.eth?assetPrices.eth:1500).toFixed(4)}</span>
+                        <span className="mr-[22px] ">{collectionInfoFromLocal?collectionInfoFromLocal.floorPrice?.eth:0}</span>
                         <img src='/svgs/eth_asset.svg' alt='asset'></img>
                       </div>
                       <div className="flex flex-row justify-between">
-                        <span className="mr-[22px] ">{floorPrice==0?0:floorPrice.toFixed(4)}</span>
+                        <span className="mr-[22px] ">{collectionInfoFromLocal?collectionInfoFromLocal.floorPrice?.usd:0}</span>
                         <img src='/svgs/usd_asset.svg' alt='asset'></img>
                       </div>
                       <div className="flex flex-row justify-between">
-                        <span className="mr-[22px] ">{floorPrice==0?0:floorPrice.toFixed(4)}</span>
+                        <span className="mr-[22px] ">{collectionInfoFromLocal?collectionInfoFromLocal.floorPrice?.usd:0}</span>
                         <img src='/svgs/omni_asset.svg' alt='asset'></img>
                       </div>
                     </div>                      

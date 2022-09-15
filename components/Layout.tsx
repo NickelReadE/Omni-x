@@ -74,7 +74,7 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
       const new_slides:Array<React.ReactNode> = []
       new_slides.push(<Link href={'/collections/azuki_god'}><a><img src='/images/banner-4.png' alt="banner - 1" className={'banner-slider'} /></a></Link>)
       new_slides.push(<Link href={'/collections/mmlmt7'}><a><img src='/images/banner-6.png' alt="banner - 3" className={'banner-slider'} /></a></Link>)
-      new_slides.push(<Link href={'/collections/gregs_eth_test'}><a><img src='/images/banner-5.png' alt="banner - 2" className={'banner-slider'} /></a></Link>)
+      new_slides.push(<Link href={'/collections/kith_friends'}><a><img src='/images/banner-5.png' alt="banner - 2" className={'banner-slider'} /></a></Link>)
       setCurrentSlides(new_slides)
     } else if ( menu === 'home' ) {
       const new_slides:Array<React.ReactNode> = []

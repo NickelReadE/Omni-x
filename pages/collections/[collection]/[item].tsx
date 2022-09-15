@@ -58,7 +58,7 @@ const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('items')
   const [owner, setOwner] = useState('')
-  const [ownerType, setOwnerType] = useState('')
+  const [ownerType, setOwnerType] = useState('address')
 
 
   const [order, setOrder] = useState<IOrder>()
@@ -114,14 +114,6 @@ const Item: NextPage = () => {
   }, [col_url, token_id])
 
   useEffect(() => {
-    console.log(lastSaleOrders)
-    if (lastSaleOrders.length>0) {
-      setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[0].price)))
-      setLastSaleCoin(`/images/${getCurrencyIconByAddress(lastSaleOrders[0].currencyAddress)}`)
-    }
-  },[lastSaleOrders])
-
-  useEffect(() => {
     if ( nftInfo && nftInfo.collection && owner && ownerType ) {
       if(nftInfo.collection.chain=='rinkeby' ) {
         if(ownerType=='address') {
@@ -136,7 +128,7 @@ const Item: NextPage = () => {
       getLastSaleOrder()
       setOrderFlag(true)
     }
-  }, [nftInfo, owner, ownerType])
+  }, [nftInfo,owner])
 
   useEffect(() => {
     //ORDER
@@ -500,6 +492,10 @@ const Item: NextPage = () => {
     dispatch(openSnackBar({ message: 'Accepted a Bid', status: 'success' }))
     getLastSaleOrder()
     getNFTOwnership(col_url, token_id)
+
+    for(let i = 0; i<orders.length;i++){
+      updateOrderStatus(orders[i],'EXPIRED')
+    }
   }
 
   const truncate = (str: string) => {
@@ -572,7 +568,7 @@ const Item: NextPage = () => {
                       <div className="font-bold text-[18px] text-[#000000]">bid</div>
                       <div></div>
                       {
-                        bidOrders && bidOrders.map((item, index) => {
+                        bidOrders?.map((item, index) => {
                           return <Fragment key={index}>
                             <div className='break-all mt-3 text-[16px] font-bold'>{truncate(item.signer)}</div>
                             <div className="text-center mt-3">
