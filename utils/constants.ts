@@ -83,7 +83,7 @@ export const getChainIcons = (chainId: number) => {
   }
 }
 
-export const chainInfos: { [key: number]: { name: string; logo: string, officialName: string, currency: string } } = {
+export const chainInfos: { [key: number]: { name: string; logo: string, roundedLogo: string, explorerLogo: string, officialName: string, currency: string } } = {
   1: {
     name: 'eth',
     logo: '/svgs/fantom.svg',
