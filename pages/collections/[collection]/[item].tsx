@@ -141,7 +141,7 @@ const Item: NextPage = () => {
   }, [orders,nftInfo])
 
   useEffect(() => {
-    if (bidOrders.length > 0) {
+    if (bidOrders.length > 0 && nftInfo.collection!=undefined && nftInfo.nft!=undefined && orderFlag) {
       const sortedBids = [...bidOrders]
       sortedBids
         .sort((o1, o2) => {
@@ -157,14 +157,16 @@ const Item: NextPage = () => {
       setHighestBid(0)
       setHighestBidCoin('')
     }
-  }, [bidOrders])
+  }, [bidOrders,nftInfo])
 
   useEffect(() => {
     setLastSale(0)
     setLastSaleCoin('')
-    if(lastSaleOrders.length>0){
-      setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[0].price)))
-      setLastSaleCoin(`/images/${getCurrencyIconByAddress(lastSaleOrders[0].currencyAddress)}`)
+    if(lastSaleOrders.length>0 && nftInfo.collection!=undefined && nftInfo.nft!=undefined && orderFlag ){
+      if(Number(lastSaleOrders[0].tokenId)===nftInfo.nft.token_id && lastSaleOrders[0].collectionAddress===nftInfo.collection.address){
+        setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[0].price)))
+        setLastSaleCoin(`/images/${getCurrencyIconByAddress(lastSaleOrders[0].currencyAddress)}`)
+      }
     } 
   },[lastSaleOrders,nftInfo])
 
@@ -356,7 +358,7 @@ const Item: NextPage = () => {
       params: ethers.utils.defaultAbiCoder.encode(['uint16'], [lzChainId])
     }
 
-    console.log('--buy----', makerAsk, takerBid)
+    // console.log('--buy----', makerAsk, takerBid)
 
     const approveTxs = []
 
@@ -372,7 +374,7 @@ const Item: NextPage = () => {
 
     const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
 
-    console.log('---lzFee---', lzFee)
+    // console.log('---lzFee---', lzFee)
 
     await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
 
@@ -507,7 +509,7 @@ const Item: NextPage = () => {
   console.log('--------', isListed, isAuction, owner, address)
   return (
     <>
-      {nftInfo && nftInfo.nft && 
+      {nftInfo && nftInfo.nft && nftInfo.nft.token_id===Number(token_id) && nftInfo.collection.col_url===col_url&&
         <div className="w-full mt-40 pr-[70px] pb-[120px] font-[Retni_Sans]">
           <div className="w-full 2xl:px-[10%] xl:px-[5%] lg:px-[2%] md:px-[2%] ">
             <div className="grid grid-cols-3 2xl:gap-12 lg:gap-1 xl:gap-4">
@@ -567,36 +569,38 @@ const Item: NextPage = () => {
                       <div></div>
                       {
                         bidOrders?.map((item, index) => {
-                          return <Fragment key={index}>
-                            <div className='break-all mt-3 text-[16px] font-bold'>{truncate(item.signer)}</div>
-                            <div className="text-center mt-3">
-                              {
-                                chainList.map((chain, chainIdx) => {
-                                  if (chain.chain == item?.chain){
-                                    return(
-                                      <img
-                                        src={chain.img_url}
-                                        className='mr-[8px] w-[21px]'
-                                        alt="icon"
-                                        key={chainIdx}
-                                      />
-                                    )
-                                  }
-                                })
-                              }
-                            </div>
-                            <div className='flex justify-start mt-3'>
-                              <div className="mr-5">
-                                <img
-                                  src={`/images/${getCurrencyIconByAddress(item.currencyAddress)}`}
-                                  className='mr-[8px] w-[21px]'
-                                  alt="icon"
-                                />
+                          if(Number(item.tokenId)===nftInfo.nft.token_id && item.collectionAddress===nftInfo.collection.address){
+                            return <Fragment key={index}>
+                              <div className='break-all mt-3 text-[16px] font-bold'>{truncate(item.signer)}</div>
+                              <div className="text-center mt-3">
+                                {
+                                  chainList.map((chain, chainIdx) => {
+                                    if (chain.chain == item?.chain){
+                                      return(
+                                        <img
+                                          src={chain.img_url}
+                                          className='mr-[8px] w-[21px]'
+                                          alt="icon"
+                                          key={chainIdx}
+                                        />
+                                      )
+                                    }
+                                  })
+                                }
                               </div>
-                              <p className='ml-3'>${item && item.price && ethers.utils.formatEther(item.price)}</p>
-                            </div>
-                            <div className='text-right mt-3'>{owner.toLowerCase()==address?.toLowerCase()&&<button className='bg-[#ADB5BD] hover:bg-[#38B000] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5' onClick={() => onAccept(item)}>accept</button>}</div>
-                          </Fragment>
+                              <div className='flex justify-start mt-3'>
+                                <div className="mr-5">
+                                  <img
+                                    src={`/images/${getCurrencyIconByAddress(item.currencyAddress)}`}
+                                    className='mr-[8px] w-[21px]'
+                                    alt="icon"
+                                  />
+                                </div>
+                                <p className='ml-3'>${item && item.price && ethers.utils.formatEther(item.price)}</p>
+                              </div>
+                              <div className='text-right mt-3'>{owner.toLowerCase()==address?.toLowerCase()&&<button className='bg-[#ADB5BD] hover:bg-[#38B000] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5' onClick={() => onAccept(item)}>accept</button>}</div>
+                            </Fragment>
+                          }
                         })
                       }
                     </div>
