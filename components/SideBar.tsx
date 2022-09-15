@@ -515,28 +515,27 @@ const SideBar: React.FC = () => {
       try {
         {
           const omniContract = getCurrencyInstance(getAddressByName('OMNI', chainId), chainId, signer)
-          const balance = await omniContract.balanceOf(address)
-          setOmniBalance(Number(ethers.utils.formatEther(balance)))
+          const balance = await omniContract?.balanceOf(address)
+          setOmniBalance(Number(ethers.utils.formatEther(balance || '0')))
         }
 
         {
           const usdContract = getCurrencyInstance(getAddressByName('USDC', chainId), chainId, signer)
-          const balance = await usdContract.balanceOf(address)
-          setUsdcBalance(Number(ethers.utils.formatEther(balance)))
+          const balance = await usdContract?.balanceOf(address)
+          setUsdcBalance(Number(ethers.utils.formatEther(balance || '0')))
         }
         
         {
           const usdContract = getCurrencyInstance(getAddressByName('USDT', chainId), chainId, signer)
-          const balance = await usdContract.balanceOf(address)
-          setUsdtBalance(Number(ethers.utils.formatEther(balance)))
+          const balance = await usdContract?.balanceOf(address)
+          setUsdtBalance(Number(ethers.utils.formatEther(balance || '0')))
         }
-        //Native Token
-        const balance = await provider?.getBalance(address!)
-        if(Number(balance)===0 || balance===undefined){
-          setNativeBalance('0')  
-        }else{
-          setNativeBalance((Number(balance)/Math.pow(10,18)).toFixed(4))
-        }        
+
+        {
+          //Native Token
+          const balance = await provider?.getBalance(address!)
+          setNativeBalance(Number(ethers.utils.formatEther(balance || '0')).toFixed(4))
+        }
       } catch (error) {
         console.log(error)
       }
@@ -757,7 +756,7 @@ const SideBar: React.FC = () => {
                 <span className="font-semibold w-auto text-[16px]">OMNI balance: {regExpFormat(omniBalance)}</span>
                 <span className="font-semibold w-auto text-[16px]">USDC balance: {regExpFormat(usdcBalance)}</span>
                 <span className="font-semibold w-auto text-[16px]">USDT balance: {regExpFormat(usdtBalance)}</span>
-                <span className="font-semibold w-auto text-[16px]">{getChainInfo(chainId)?.nativeCurrency.symbol} balance: {regExpFormat(nativeBalance)}</span>
+                <span className="font-semibold w-auto text-[16px]">{getChainInfo(chainId)?.nativeCurrency.symbol} balance1: {nativeBalance}</span>
                 <span className="w-auto text-[16px]">Staking: coming soon</span>
                 {/* <div className="w-full flex flex-row font-semibold text-[14px]">
                   <div className="bg-g-200 w-[88px] px-[11px] py-[9px]">
