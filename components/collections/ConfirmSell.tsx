@@ -91,7 +91,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
               <div>
                 <p className="text-[#6C757D] text-[18px] font-semibold">Starting Price</p>
                 <div className="flex justify-start items-center mt-5">
-                  <CustomSelect optionData={currencies_list[provider?._network.chainId as number]} value={currency} onChange={(value: any) => setCurrency(value)} />
+                  <CustomSelect optionData={currencies_list[provider?._network?.chainId as number]} value={currency} onChange={(value: any) => setCurrency(value)} />
                   <input type="text" value="40.50" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg"/>
                   <span className="px-4 text-[#ADB5BD] font-light">~ $40.50 USD</span>
                 </div>

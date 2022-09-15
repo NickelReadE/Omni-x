@@ -36,7 +36,7 @@ const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('items')
   const [owner, setOwner] = useState('')
-  const [ownerType, setOwnerType] = useState('')
+  const [ownerType, setOwnerType] = useState('address')
 
 
   const [order, setOrder] = useState<IOrder>()
@@ -102,7 +102,7 @@ const Item: NextPage = () => {
   }, [col_url, token_id])
 
   useEffect(() => {
-    if ( nftInfo && nftInfo.collection && owner.length && ownerType) {
+    if ( nftInfo && nftInfo.collection) {
       if(nftInfo.collection.chain=='rinkeby' ) {
         if(ownerType=='address') {
           const profile_link = 'https://rinkeby.etherscan.io/address/' + owner
@@ -116,7 +116,7 @@ const Item: NextPage = () => {
       getLastSaleOrder()
       setOrderFlag(true)
     }
-  }, [nftInfo, owner, ownerType])
+  }, [nftInfo,owner])
 
   useEffect(() => {
     //ORDER

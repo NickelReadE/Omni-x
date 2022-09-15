@@ -10,7 +10,6 @@ import { IPropsSlider } from '../interface/interface'
 import { Divider } from '@material-ui/core'
 import CircularProgress from '@material-ui/core/CircularProgress'
 const Slider = (props: IPropsSlider) => {
-  console.log(props)
   return (
     <>
       <div className="mt-10 pl-12 pr-20 mb-20">

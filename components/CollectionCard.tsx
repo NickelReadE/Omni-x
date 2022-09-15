@@ -77,15 +77,15 @@ const CollectionCard = (props:any) => {
           <div className='text-[14px] font-extrabold  mb-1 w-[60px]'>Floor</div>
           <div className='flex flex-col space-y-2' >
             <div className=' flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
-              <span className='font-medium text-[12px] mr-[4px]'>{props.card?props.card.floorPrice.eth:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+              <span className='font-medium text-[12px] mr-[4px]'>{props.card?props.card.floorPrice?.eth:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
               <img src='/svgs/eth_asset.svg' className='w-[16px]' alt='asset img'></img>
             </div>
             <div className='flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
-              <span className='font-medium text-[12px] mr-[4px]' >{props.card?props.card.floorPrice.usd:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+              <span className='font-medium text-[12px] mr-[4px]' >{props.card?props.card.floorPrice?.usd:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
               <img src='/svgs/usd_asset.svg' className='w-[16px]' alt='asset img'></img>
             </div>
             <div className='flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
-              <span className='font-medium text-[12px] mr-[px]'>{props.card?props.card.floorPrice.usd:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+              <span className='font-medium text-[12px] mr-[px]'>{props.card?props.card.floorPrice?.usd:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
               <img src='/svgs/omni_asset.svg' className='w-[16px]' alt='asset img'></img>
             </div>
           </div>

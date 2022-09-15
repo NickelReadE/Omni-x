@@ -83,7 +83,7 @@ export const getChainIcons = (chainId: number) => {
   }
 }
 
-export const chainInfos: { [key: number]: { name: string; logo: string, roundedLogo: string, explorerLogo: string, officialName: string, currency: string } } = {
+export const chainInfos: { [key: number]: { name: string; logo: string, officialName: string, currency: string } } = {
   1: {
     name: 'eth',
     logo: '/svgs/fantom.svg',
@@ -302,6 +302,7 @@ export const chain_list: {[key: string]: number} = {
 export const getChainIdFromName = (name: string): number => {
   return chain_list[name]
 }
+export const supportChainIDs = [4,80001,43113,421611,69,4002,97]
 
 export const chain_list_: {[key: number]: string} = {
   1 : 'eth ',
