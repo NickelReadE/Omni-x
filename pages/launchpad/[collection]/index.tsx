@@ -2,25 +2,17 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import MintImgBottom from '../../../static/mintImg-bg.png'
-import EthereumImageSVG from '../../../static/logo/ethereum-eth-logo-1.svg'
-import BscscanImageSVG from '../../../static/logo/dbanner1_copy_4_1.svg'
-import AvaxImageSVG from '../../../static/logo/dbanner1_copy_1.svg'
-import PolygonImageSVG from '../../../static/logo/dbanner1_copy_3_1.svg'
-import ArbitrumImageSVG from '../../../static/logo/dbanner1_copy_2_1.svg'
-import FantomImageSVG from '../../../static/logo/fantom-ftm-logo-1.svg'
-import OptimisticImageSVG from '../../../static/logo/JtpX95Rt_400x400-1.svg'
+import MintImgBottom from '../../../public/images/mintImg-bg.png'
+import EthereumImageSVG from '../../../public/svgs/ethereum.svg'
+import BscscanImageSVG from '../../../public/svgs/binance.svg'
+import AvaxImageSVG from '../../../public/svgs/avax.svg'
+import PolygonImageSVG from '../../../public/svgs/polygon.svg'
+import ArbitrumImageSVG from '../../../public/svgs/arbitrum.svg'
+import FantomImageSVG from '../../../public/svgs/fantom.svg'
+import OptimisticImageSVG from '../../../public/svgs/optimism.svg'
 
-import EthereumImage from '../../../static/logo/ethereum-eth-logo-1.png'
-import BscscanImage from '../../../static/logo/dbanner1_copy_4_1.png'
-import AvaxImage from '../../../static/logo/dbanner1_copy_1.png'
-import PolygonImage from '../../../static/logo/dbanner1_copy_3_1.png'
-import ArbitrumImage from '../../../static/logo/dbanner1_copy_2_1.png'
-import FantomImage from '../../../static/logo/fantom-ftm-logo-1.png'
-import OptimisticImage from '../../../static/logo/JtpX95Rt_400x400-1.png'
-
-import MinusSign from '../../../static/minus-sign.png'
-import PlusSign from '../../../static/plus-sign.png'
+import MinusSign from '../../../public/images/minus-sign.png'
+import PlusSign from '../../../public/images/plus-sign.png'
 import mintstyles from '../../../styles/mint.module.scss'
 import WalletConnectProvider  from '@walletconnect/web3-provider'
 import Web3Modal from 'web3modal'
@@ -39,7 +31,6 @@ import { Slide } from 'react-toastify'
 interface Address {
   address: string,
   imageSVG: string,
-  image: any,
   name: string,
   price: number,
   chainId: string,
@@ -149,7 +140,6 @@ const addresses:contractInfo = {
   '1': {
     address: '0x7FFE2672C100bFb0094ad0B4d592Dd9f9416f1AC',
     imageSVG: EthereumImageSVG,
-    image: EthereumImage,
     name: 'Ethereum',
     price: 0.06,
     chainId: '101',
@@ -160,7 +150,6 @@ const addresses:contractInfo = {
   '42161': {
     address: '0x6c25c2c42928Ee8D65D2C3b0a29571BD4549A96B',
     imageSVG: ArbitrumImageSVG,
-    image: ArbitrumImage,
     name: 'Arbitrum',
     price: 0.06,
     chainId: '110',
@@ -171,7 +160,6 @@ const addresses:contractInfo = {
   '137': {
     address: '0x54417f05c4D5E08B079bd671d0158Ff2854a4a88',
     imageSVG: PolygonImageSVG,
-    image: PolygonImage,
     name: 'Polygon',
     price: 100,
     chainId: '109',
@@ -182,7 +170,6 @@ const addresses:contractInfo = {
   '43114': {
     address: '0x018BB96D00309236E6D56046BBD8E9e083cC8CE9',
     imageSVG:AvaxImageSVG,
-    image: AvaxImage,
     name: 'Avalanche',
     price: 3.5,
     chainId: '106',
@@ -193,7 +180,6 @@ const addresses:contractInfo = {
   '56': {
     address: '0xc5F4f67442E688Bc4Da2d9D8a055374e642490a4',
     imageSVG:BscscanImageSVG,
-    image: BscscanImage,
     name: 'BNB Chain',
     price: 0.3,
     chainId: '102',
@@ -204,7 +190,6 @@ const addresses:contractInfo = {
   '10': {
     address: '0xbb2e4B6e10FE9cCEBFDCa805cdCF9fA9fb65248F',
     imageSVG:OptimisticImageSVG,
-    image:OptimisticImage,
     name: 'Optimism',
     price: 0.06,
     chainId: '111',
@@ -215,7 +200,6 @@ const addresses:contractInfo = {
   '250': {
     address: '0x165865de32bA3d9552FF814C2F283964c2B61a7D',
     imageSVG: FantomImageSVG,
-    image: FantomImage,
     name: 'Fantom',
     price: 285,
     chainId: '112',
