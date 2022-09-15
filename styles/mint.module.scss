@@ -1,5 +1,5 @@
 .mintHero{
-    background: url(../static/MintPage-Hero.png);
+    background: url(../public/images/MintPage-Hero.png);
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -163,14 +163,6 @@
 
 .blackGradientBottom2{
     background: linear-gradient(to bottom, transparent 80%, #000 100%);
-}
-.mintSecBg{
-    background: url(../static/gregnftbg.png);
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    padding-top: 50px;
-    position: relative;
 }
 .mintheadingImg{
     padding-top: 50px;

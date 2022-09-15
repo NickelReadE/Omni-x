@@ -10,7 +10,6 @@ import PolygonImageSVG from '../../../public/svgs/polygon.svg'
 import ArbitrumImageSVG from '../../../public/svgs/arbitrum.svg'
 import FantomImageSVG from '../../../public/svgs/fantom.svg'
 import OptimisticImageSVG from '../../../public/svgs/optimism.svg'
-
 import MinusSign from '../../../public/images/minus-sign.png'
 import PlusSign from '../../../public/images/plus-sign.png'
 import mintstyles from '../../../styles/mint.module.scss'
@@ -19,7 +18,6 @@ import Web3Modal from 'web3modal'
 import { ethers } from 'ethers'
 import React, { useState , useEffect } from 'react'
 //import AdvancedONT from '../services/abis/AdvancedONT.json'
-
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Slide } from 'react-toastify'
@@ -482,7 +480,7 @@ const Mint: NextPage = () => {
             loop
             muted
           >
-            <source src='../static/video/ethereum.mp4' type='video/mp4' />
+            <source src='/video/ethereum.mp4' type='video/mp4' />
             Your browser does not support the video tag.
           </video>
         </>)
@@ -496,7 +494,7 @@ const Mint: NextPage = () => {
             loop
             muted
           >
-            <source src='../static/video/arbitrum.mp4' type='video/mp4' />
+            <source src='/video/arbitrum.mp4' type='video/mp4' />
             Your browser does not support the video tag.
           </video>
         </>)
@@ -510,7 +508,7 @@ const Mint: NextPage = () => {
             loop
             muted
           >
-            <source src='../static/video/polygon.mp4' type='video/mp4' />
+            <source src='../public/video/polygon.mp4' type='video/mp4' />
             Your browser does not support the video tag.
           </video>
         </>)
@@ -524,7 +522,7 @@ const Mint: NextPage = () => {
             loop
             muted
           >
-            <source src='../static/video/avalanche.mp4' type='video/mp4' />
+            <source src='../public/video/avalanche.mp4' type='video/mp4' />
             Your browser does not support the video tag.
           </video>
         </>)
@@ -538,7 +536,7 @@ const Mint: NextPage = () => {
             loop
             muted
           >
-            <source src='../static/video/binance.mp4' type='video/mp4' />
+            <source src='../public/video/binance.mp4' type='video/mp4' />
             Your browser does not support the video tag.
           </video>
         </>)
@@ -552,7 +550,7 @@ const Mint: NextPage = () => {
             loop
             muted
           >
-            <source src='../static/video/optimistic.mp4' type='video/mp4' />
+            <source src='../public/video/optimistic.mp4' type='video/mp4' />
             Your browser does not support the video tag.
           </video>
         </>)
@@ -566,7 +564,7 @@ const Mint: NextPage = () => {
             loop
             muted
           >
-            <source src='../static/video/fantom.mp4' type='video/mp4' />
+            <source src='../public/video/fantom.mp4' type='video/mp4' />
             Your browser does not support the video tag.
           </video>
         </>)
@@ -581,7 +579,7 @@ const Mint: NextPage = () => {
           loop
           muted
         >
-          <source src='../static/video/ethereum.mp4' type='video/mp4' />
+          <source src='../public/video/ethereum.mp4' type='video/mp4' />
           Your browser does not support the video tag.
         </video>
       </>)
@@ -699,7 +697,7 @@ const Mint: NextPage = () => {
             <div className={mintstyles.mintImgB}>
               <Image src={MintImgBottom} alt='mint background' layout='responsive' />
               <div className={mintstyles.mintImgtext}>
-                <h1>&#40Dinos, 40Dinos&#41</h1>
+                <h1>&#40Dinose, 40Dinose&#41</h1>
               </div>
             </div>
           </div>
@@ -721,9 +719,10 @@ const Mint: NextPage = () => {
                 {/* <span>{chainId?addresses[`${Number(chainId)}`].price:0}<Image src={chainId?addresses[`${Number(chainId)}`].imageSVG:EthereumImageSVG} width={29.84} height={25.46} alt='ikon'></Image></span> */}
                 <div className='flex flex-row space-x-2 items-center mt-[15px]'>
                   <div className='text-xg1 '>
-                    {chainId?addresses[`${Number(chainId)}`].price:0}
+                    {/* {chainId?addresses[`${Number(chainId)}`].price:0} */}
+                    0.06
                   </div>
-                  <img src='../../../static/logo/ethereum-eth-logo-1.svg' width={29.84} height={25.46} alt='ikon'></img>
+                  <img src='/svgs/ethereum.svg' width={29.84} height={25.46} alt='ikon'></img>
                 </div>
               </div>
               <span className={mintstyles.line}></span>
