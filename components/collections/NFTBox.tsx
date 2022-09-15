@@ -34,6 +34,10 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
   const bidOrders = useSelector(selectBidOrders)
   const executedOrders = useSelector(selectLastSaleOrders)
 
+  const {
+    address
+  } = useWallet()
+
   useEffect(() => {
     if(nft){
       if (col_address == '0xb7b0d9849579d14845013ef9d8421ae58e9b9369' || col_address == '0x7470ea065e50e3862cd9b8fb7c77712165da80e5' || col_address == '0xb74bf94049d2c01f8805b8b15db0909168cabf46' || col_address == '0x7f04504ae8db0689a0526d99074149fe6ddf838c' || col_address == '0xa783cc101a0e38765540ea66aeebe38beebf7756'|| col_address == '0x316dc98ed120130daf1771ca577fad2156c275e5') {
