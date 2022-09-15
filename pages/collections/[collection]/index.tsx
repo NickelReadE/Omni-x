@@ -215,6 +215,7 @@ const Collection: NextPage = () => {
         status: ['VALID'],
         sort: 'PRICE_ASC'
       }
+      dispatch(getOrders(bidRequest) as any)
       const excutedRequest: IGetOrderRequest = {
         collection: collectionInfo.address,
         status: ['EXECUTED'],
@@ -516,15 +517,15 @@ const Collection: NextPage = () => {
                     </div>
                     <div className="flex flex-col space-y-1">
                       <div className="flex flex-row justify-between">
-                        <span className="mr-[22px] ">{collectionInfoFromLocal?collectionInfoFromLocal.floorPrice.eth:0}</span>
+                        <span className="mr-[22px] ">{collectionInfoFromLocal?collectionInfoFromLocal.floorPrice?.eth:0}</span>
                         <img src='/svgs/eth_asset.svg' alt='asset'></img>
                       </div>
                       <div className="flex flex-row justify-between">
-                        <span className="mr-[22px] ">{collectionInfoFromLocal?collectionInfoFromLocal.floorPrice.usd:0}</span>
+                        <span className="mr-[22px] ">{collectionInfoFromLocal?collectionInfoFromLocal.floorPrice?.usd:0}</span>
                         <img src='/svgs/usd_asset.svg' alt='asset'></img>
                       </div>
                       <div className="flex flex-row justify-between">
-                        <span className="mr-[22px] ">{collectionInfoFromLocal?collectionInfoFromLocal.floorPrice.usd:0}</span>
+                        <span className="mr-[22px] ">{collectionInfoFromLocal?collectionInfoFromLocal.floorPrice?.usd:0}</span>
                         <img src='/svgs/omni_asset.svg' alt='asset'></img>
                       </div>
                     </div>                      

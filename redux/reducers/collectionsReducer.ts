@@ -68,7 +68,6 @@ export const collectionsSlice = createSlice({
 			state.collectionsForCard = action.payload === undefined ? '' : action.payload
 		},
 		setRoyalty: (state, action) =>{
-			console.log('reduce',action.payload)
 			state.royalty = action.payload === undefined ? '' : action.payload
 		}
 	}
@@ -153,7 +152,6 @@ export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, ge
 			await dispatch(getAssetPrices())
 			ethPrice = getState().feeddataState.assetPrices.eth
 		}
-		console.log('ethPrice', ethPrice)
 		let collectionsF : any[] = []
 		const info = await collectionsService.getCollections()		
 		await info.data.map(async (element:any, index:number)=>{
@@ -181,7 +179,6 @@ export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, ge
 							if(ordersForCollection.length > 0 ){								
 								ordersForCollection.map((order: { price: any, currencyAddress:any }) => {
 								  let priceAsUSD = 0
-								  console.log(collectionInfo)
 								  if(currencies_list[getChainIdFromName(collectionInfo.data.chain)].find(({address}) => address===order.currencyAddress)){
 									priceAsUSD = parseFloat(ethers.utils.formatEther(order.price))
 								  }else{
@@ -199,7 +196,6 @@ export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, ge
 							}
 							if(lowPrice>0){
 								lowPrice = lowPrice.toFixed(4)
-								console.log(lowPrice)
 							}
 							collectionsF.push({col_url:element.col_url, itemsCnt:collectionInfo.data.count, ownerCnt:ownerCnt.data, orderCnt:ordersForCollection.length, floorPrice:{usd:lowPrice,eth:lowPrice>0?convertUSDTtoETH(lowPrice,ethPrice).toFixed(4):0}})		
 							if(collectionsF.length===info.data.length){
@@ -254,7 +250,6 @@ export const getRoyalty = (contractType:string, address: string, chainId:number,
 			// 	setRoyalty(parseInt(royaltyInfo[1])/100.0)
 	
 			// }
-			console.log('NFT1155',NFTContract)
 			try{
 				const royalty = await NFTContract.royaltyInfo(1,100)
 				dispatch(setRoyalty(parseInt(royalty[1])))
