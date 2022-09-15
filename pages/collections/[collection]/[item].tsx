@@ -6,7 +6,7 @@ import Image from 'next/image'
 
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
-import { BigNumber, ethers } from 'ethers'
+import { BigNumber, ethers, BigNumberish } from 'ethers'
 import { addDays } from 'date-fns'
 
 import ConfirmSell from '../../../components/collections/ConfirmSell'
@@ -34,6 +34,24 @@ const waitFor = (ms: number) => {
   return new Promise((res) => {
     setTimeout(() => res(0), ms)
   })
+}
+
+const approve = async (contract: any, owner?: string, spender?: string, amount?: BigNumberish) => {
+  const allowance = await contract.allowance(owner, spender)
+  if (allowance.lt(BigNumber.from(amount))) {
+    return contract.approve(spender, amount)
+  }
+  return null
+}
+
+const approveNft = async (contract: any, owner?: string, operator?: string, tokenId?: BigNumberish) => {
+  const isApprovedAll = await contract.isApprovedForAll(owner, operator)
+  if (isApprovedAll) return null
+
+  const approvedOperator = await contract.getApproved(tokenId)
+  if (approvedOperator == operator) return null
+
+  return (await contract.approve(operator, tokenId)).wait()
 }
 
 const Item: NextPage = () => {
@@ -290,7 +308,7 @@ const Item: NextPage = () => {
       const transferSelector = getTransferSelectorNftInstance(chainId, signer)
       const transferManagerAddr = await transferSelector.checkTransferManagerForToken(nftInfo.collection.address)
       const nftContract = getERC721Instance(nftInfo.collection.address, chainId, signer)
-      await nftContract.approve(transferManagerAddr, token_id)
+      await approveNft(nftContract, address, transferManagerAddr, token_id)
     }
 
     dispatch(openSnackBar({ message: '  Success', status: 'success' }))
@@ -313,6 +331,11 @@ const Item: NextPage = () => {
     }
 
     const omni = getCurrencyInstance(omniAddress, chainId, signer)
+    if (!omni) {
+      dispatch(openSnackBar({ message: 'Could not find the currency', status: 'warning' }))
+      return
+    }
+
     const omnixExchange = getOmnixExchangeInstance(chainId, signer)
     const makerAsk : MakerOrderWithSignature = {
       isOrderAsk: order.isOrderAsk,
@@ -342,13 +365,15 @@ const Item: NextPage = () => {
     console.log('--buy----', makerAsk, takerBid)
 
     const approveTxs = []
-    approveTxs.push(await omni.approve(omnixExchange.address, takerBid.price))
-    approveTxs.push(await omni.approve(getAddressByName('FundManager', chainId), takerBid.price))
+
+    approveTxs.push(await approve(omni, address, omnixExchange.address, takerBid.price))
+    approveTxs.push(await approve(omni, address, getAddressByName('FundManager', chainId), takerBid.price))
+
     if (isUsdcOrUsdt(order?.currencyAddress)) {
-      approveTxs.push(await omni.approve(getAddressByName('StargatePoolManager', chainId), takerBid.price))
+      approveTxs.push(await approve(omni, address, getAddressByName('StargatePoolManager', chainId), takerBid.price))
     }
 
-    await Promise.all(approveTxs.map(tx => tx.wait()))
+    await Promise.all(approveTxs.filter(Boolean).map(tx => tx.wait()))
     await waitFor(1000)
 
     const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
@@ -384,6 +409,14 @@ const Item: NextPage = () => {
     }
 
     try {
+      
+      const omni = getCurrencyInstance(currency, chainId, signer)
+
+      if (!omni) {
+        dispatch(openSnackBar({ message: 'Could not find the currency', status: 'warning' }))
+        return
+      }
+
       await postMakerOrder(
         provider as any,
         false,
@@ -407,15 +440,13 @@ const Item: NextPage = () => {
         true
       )
 
-      const omni = getCurrencyInstance(currency, chainId, signer)
-
       const approveTxs = []
-      approveTxs.push(await omni.approve(getAddressByName('OmnixExchange', chainId), price))
-      approveTxs.push(await omni.approve(getAddressByName('FundManager', chainId), price))
+      approveTxs.push(await approve(omni, address, getAddressByName('OmnixExchange', chainId), price))
+      approveTxs.push(await approve(omni, address, getAddressByName('FundManager', chainId), price))
       if (isUsdcOrUsdt(currency)) {
-        approveTxs.push(await omni.approve(getAddressByName('StargatePoolManager', chainId), price))
+        approveTxs.push(await approve(omni, address, getAddressByName('StargatePoolManager', chainId), price))
       }
-      await Promise.all(approveTxs.map(tx => tx.wait()))
+      await Promise.all(approveTxs.filter(Boolean).map(tx => tx.wait()))
 
       setOpenBidDlg(false)
       dispatch(openSnackBar({ message: 'Place a bid Success', status: 'success' }))
@@ -457,7 +488,7 @@ const Item: NextPage = () => {
     const transferSelector = getTransferSelectorNftInstance(chainId, signer)
     const transferManagerAddr = await transferSelector.checkTransferManagerForToken(nftInfo.collection.address)
     const nftContract = getERC721Instance(nftInfo.collection.address, chainId, signer)
-    await nftContract.approve(transferManagerAddr, token_id)
+    await approveNft(nftContract, address, transferManagerAddr, token_id)
 
     const lzFee = await omnixExchange.connect(signer as any).getLzFeesForBidWithTakerAsk(takerAsk, makerBid)
     
