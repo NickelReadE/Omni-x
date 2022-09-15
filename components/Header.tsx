@@ -21,6 +21,7 @@ import useWallet from '../hooks/useWallet'
 import { useDispatch } from 'react-redux'
 import { openSnackBar } from '../redux/reducers/snackBarReducer'
 import { getSearchText } from '../redux/reducers/headerReducer'
+import { updateRefreshBalance } from '../redux/reducers/userReducer'
 
 type HeaderProps = {
   menu: string
@@ -63,9 +64,11 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
     const chainId = provider?.network.chainId as number
     const omni = getOmniInstance(chainId, signer)
 
-    await omni.mint({ gasLimit: '300000' })
+    const tx = await omni.mint({ gasLimit: '300000' })
+    await tx.wait()
 
-    dispatch(openSnackBar({ message: 'You will receive an 10000 $OMNI soon', status: 'success' }))
+    dispatch(updateRefreshBalance())
+    dispatch(openSnackBar({ message: 'You received an 10000 $OMNI soon', status: 'success' }))
   }
 
   const handleChangeInput = (text: string) => {

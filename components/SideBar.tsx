@@ -7,7 +7,7 @@ import LazyLoad from 'react-lazyload'
 import {Dialog} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import useWallet from '../hooks/useWallet'
-import {getUserNFTs, selectUser, selectUserNFTs} from '../redux/reducers/userReducer'
+import {getUserNFTs, selectRefreshBalance, selectUser, selectUserNFTs} from '../redux/reducers/userReducer'
 import {NFTItem} from '../interface/interface'
 import {
   getLayerZeroEndpointInstance,
@@ -81,9 +81,9 @@ const SideBar: React.FC = () => {
   const [usdcBalance, setUsdcBalance] = useState(0)
   const [usdtBalance, setUsdtBalance] = useState(0)
 
-
   const nfts = useSelector(selectUserNFTs)
   const user = useSelector(selectUser)
+  const refreshBalance = useSelector(selectRefreshBalance)
 
   const [selectedNFTItem, setSelectedNFTItem] = useState<NFTItem>()
   const [isONFTCore, setIsONFTCore] = useState(false)
@@ -543,7 +543,8 @@ const SideBar: React.FC = () => {
     if(signer!=undefined && address!=undefined){
       getBalance()
     }
-  },[signer,address,chainId])
+  },[signer, address, chainId, refreshBalance])
+
   const setLogout = async() => {
     console.log('clicked disconnect')
     await disconnect()
