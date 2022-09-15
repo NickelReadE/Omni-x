@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { IPropsNFTItem } from '../../interface/interface'
 import LazyLoad from 'react-lazyload'
-import USD from '../../public/images/USD.png'
 import { ethers } from 'ethers'
 import { selectOrders, selectBidOrders, selectLastSaleOrders,getOrders } from '../../redux/reducers/ordersReducer'
 import { useDispatch, useSelector } from 'react-redux'
@@ -14,7 +13,7 @@ import ConfirmBid from './ConfirmBid'
 import { IGetOrderRequest } from '../../interface/interface'
 
 import usd from '../../constants/abis/USD.json'
-import omni from '../../constants/abis/omni.json'
+import omni from '../../constants/abis/Omni.json'
 import currencyManagerABI from '../../constants/abis/CurrencyManager.json'
 import usdcAddress  from '../../constants/USDC.json'
 import usdtAddress  from '../../constants/USDT.json'
@@ -24,17 +23,19 @@ import currencyManagerContractAddress from '../../constants/CurrencyManager.json
 import { openSnackBar } from '../../redux/reducers/snackBarReducer'
 
 import { postMakerOrder } from '../../utils/makeOrder'
-import { addressesByNetwork } from '../../constants'
+// import { addressesByNetwork } from '../../constants'
 import { SupportedChainId } from '../../types'
 
 import { addDays } from 'date-fns'
 
+import { getCurrencyIconByAddress } from '../../utils/constants'
 import editStyle from '../../styles/nftbox.module.scss'
 import classNames from '../../helpers/classNames'
 
 
 import { currencies_list } from '../../utils/constants'
 import { getChainIdFromName, getChainNameFromId } from '../../utils/constants'
+import { CurrencyList } from '../../constants/currenciList'
 
 const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
@@ -63,17 +64,11 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
   useEffect(() => {
     if(nft){
       if (col_address == '0xb7b0d9849579d14845013ef9d8421ae58e9b9369' || col_address == '0x7470ea065e50e3862cd9b8fb7c77712165da80e5' || col_address == '0xb74bf94049d2c01f8805b8b15db0909168cabf46' || col_address == '0x7f04504ae8db0689a0526d99074149fe6ddf838c' || col_address == '0xa783cc101a0e38765540ea66aeebe38beebf7756'|| col_address == '0x316dc98ed120130daf1771ca577fad2156c275e5') {
-        setImage(nft.image)
         for(let i=0;i<orders.length;i++){
           if(orders[i].tokenId==nft.token_id && orders[i].collectionAddress==col_address && orders[i].chain==chain) {
             setPrice(ethers.utils.formatEther(orders[i].price))
             setList(true)
-            const chainIdForList = getChainIdFromName(orders[i].chain)
-            currencies_list[chainIdForList as number].map((item,index) => {
-              if(item.address==orders[i].currencyAddress){
-                setImageURL(`/images/${item.icon}`)
-              }
-            })
+            setImageURL(`/images/${getCurrencyIconByAddress(orders[i].currencyAddress)}`)
             if(orders[i].signer==address){
               setIsOwner(true)
             }
@@ -84,12 +79,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
           for(let i=0;i<executedOrders.length;i++){
             if(executedOrders[i].tokenId==nft.token_id && executedOrders[i].collectionAddress==col_address){
               lastprice = Number(ethers.utils.formatEther(executedOrders[i].price))
-              const chainIdForList = getChainIdFromName(executedOrders[i].chain)
-              for(let j=0;j<currencies_list[chainIdForList as number].length;j++){
-                if(currencies_list[chainIdForList as number][j].address==executedOrders[i].currencyAddress){
-                  setLastSaleCoin(`/images/${currencies_list[chainIdForList as number][j].icon}`)
-                }
-              }
+              setLastSaleCoin(`/images/${getCurrencyIconByAddress(executedOrders[i].currencyAddress)}`)
             }
           }
           setLastSale(lastprice)
@@ -100,12 +90,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
             if(bidOrders[i].tokenId==nft.token_id && bidOrders[i].collectionAddress==col_address){
               if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
                 bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
-                const chainIdForList = getChainIdFromName(bidOrders[i].chain)
-                for(let j=0;j<currencies_list[chainIdForList as number].length;j++){
-                  if(currencies_list[chainIdForList as number][j].address==bidOrders[i].currencyAddress){
-                    setHighestBidCoin(`/images/${currencies_list[chainIdForList as number][j].icon}`)
-                  }
-                }
+                setHighestBidCoin(`/images/${getCurrencyIconByAddress(bidOrders[i].currencyAddress)}`)
               }
             }
           }
@@ -128,125 +113,125 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
   }
 
 
-  const onBid = async (currency: string, price: number, period: number) => {
-    const chainId = provider?.network.chainId as number
-    const chain = getChainNameFromId(chainId)
-    const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
-    const startTime = Date.now()
+  // const onBid = async (currency: string, price: number, period: number) => {
+  //   const chainId = provider?.network.chainId as number
+  //   const chain = getChainNameFromId(chainId)
+  //   const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
+  //   const startTime = Date.now()
 
-    const Provider = new ethers.providers.Web3Provider(window.ethereum)
-    const signer = Provider.getSigner()
-    let usdContract = null
-    let contractAddress =''
-    let currencyMangerContract = null
-    const key = chainId.toString() as keyof typeof currencyManagerContractAddress
+  //   const Provider = new ethers.providers.Web3Provider(window.ethereum)
+  //   const signer = Provider.getSigner()
+  //   let usdContract = null
+  //   let contractAddress =''
+  //   let currencyMangerContract = null
+  //   const key = chainId.toString() as keyof typeof currencyManagerContractAddress
 
-    if(currencyManagerContractAddress[key]!=''){
-      currencyMangerContract =  new ethers.Contract(currencyManagerContractAddress[key], currencyManagerABI, signer)
-    }
+  //   if(currencyManagerContractAddress[key]!=''){
+  //     currencyMangerContract =  new ethers.Contract(currencyManagerContractAddress[key], currencyManagerABI, signer)
+  //   }
 
-    if(currencyMangerContract===null){
-      dispatch(openSnackBar({ message: 'This network does not support currencies', status: 'error' }))
-      setOpenBidDlg(false)
-      return
-    }
+  //   if(currencyMangerContract===null){
+  //     dispatch(openSnackBar({ message: 'This network does not support currencies', status: 'error' }))
+  //     setOpenBidDlg(false)
+  //     return
+  //   }
 
-    if(currency===''){
-      dispatch(openSnackBar({ message: 'Current Currency is not supported in this network', status: 'error' }))
-      setOpenBidDlg(false)
-      return
-    }
+  //   if(currency===''){
+  //     dispatch(openSnackBar({ message: 'Current Currency is not supported in this network', status: 'error' }))
+  //     setOpenBidDlg(false)
+  //     return
+  //   }
     
-    if(currency===currencies_list[provider?._network.chainId as number][0]['address']){//OMNI
-      const isOmniCoin = await currencyMangerContract.isOmniCurrency(currency)
-      if(isOmniCoin){
-        contractAddress = omniAddress[key]
-        if(contractAddress!=''){
-          usdContract =  new ethers.Contract(contractAddress, omni, signer)
-        }
-      } else {
-        dispatch(openSnackBar({ message: 'omni currency is not whitelisted in this network', status: 'error' }))
-        setOpenBidDlg(false)
-        return
-      }
-    } else if (currency===currencies_list[provider?._network.chainId as number][1]['address']){//USDC
-      const isUsdcCoin = await currencyMangerContract.isCurrencyWhitelisted(currency)
-      if(isUsdcCoin){
-        contractAddress = usdcAddress[key]
-        if(contractAddress!=''){
-          usdContract =  new ethers.Contract(contractAddress, omni, signer)
-        }
-      } else {
-        dispatch(openSnackBar({ message: 'USDC currency is not whitelisted in this network', status: 'error' }))
-        setOpenBidDlg(false)
-        return
-      }
-    } else if (currency===currencies_list[provider?._network.chainId as number][2]['address']) {//USDT
-      const isUsdtCoin = await currencyMangerContract.isCurrencyWhitelisted(currency)
-      if(isUsdtCoin){
-        contractAddress = usdcAddress[key]
-        if(contractAddress!=''){
-          usdContract =  new ethers.Contract(contractAddress, omni, signer)
-        }
-      } else {
-        dispatch(openSnackBar({ message: 'USDT currency is not whitelisted in this network', status: 'error' }))
-        setOpenBidDlg(false)
-        return
-      }
-    }
+  //   if(currency===currencies_list[provider?._network.chainId as number][0]['address']){//OMNI
+  //     const isOmniCoin = await currencyMangerContract.isOmniCurrency(currency)
+  //     if(isOmniCoin){
+  //       contractAddress = omniAddress[key]
+  //       if(contractAddress!=''){
+  //         usdContract =  new ethers.Contract(contractAddress, omni, signer)
+  //       }
+  //     } else {
+  //       dispatch(openSnackBar({ message: 'omni currency is not whitelisted in this network', status: 'error' }))
+  //       setOpenBidDlg(false)
+  //       return
+  //     }
+  //   } else if (currency===currencies_list[provider?._network.chainId as number][1]['address']){//USDC
+  //     const isUsdcCoin = await currencyMangerContract.isCurrencyWhitelisted(currency)
+  //     if(isUsdcCoin){
+  //       contractAddress = usdcAddress[key]
+  //       if(contractAddress!=''){
+  //         usdContract =  new ethers.Contract(contractAddress, omni, signer)
+  //       }
+  //     } else {
+  //       dispatch(openSnackBar({ message: 'USDC currency is not whitelisted in this network', status: 'error' }))
+  //       setOpenBidDlg(false)
+  //       return
+  //     }
+  //   } else if (currency===currencies_list[provider?._network.chainId as number][2]['address']) {//USDT
+  //     const isUsdtCoin = await currencyMangerContract.isCurrencyWhitelisted(currency)
+  //     if(isUsdtCoin){
+  //       contractAddress = usdcAddress[key]
+  //       if(contractAddress!=''){
+  //         usdContract =  new ethers.Contract(contractAddress, omni, signer)
+  //       }
+  //     } else {
+  //       dispatch(openSnackBar({ message: 'USDT currency is not whitelisted in this network', status: 'error' }))
+  //       setOpenBidDlg(false)
+  //       return
+  //     }
+  //   }
 
-    if(usdContract===null){
-      dispatch(openSnackBar({ message: "This network doesn't support this coin", status: 'error' }))
-      setOpenBidDlg(false)
-      return
-    }
+  //   if(usdContract===null){
+  //     dispatch(openSnackBar({ message: "This network doesn't support this coin", status: 'error' }))
+  //     setOpenBidDlg(false)
+  //     return
+  //   }
 
-    const balance = await usdContract?.balanceOf(address)
+  //   const balance = await usdContract?.balanceOf(address)
 
-    if(Number(price) === 0) {
-      dispatch(openSnackBar({ message: 'Please enter a number greater than 0', status: 'error' }))
-      setOpenBidDlg(false)
-      return
-    }
+  //   if(Number(price) === 0) {
+  //     dispatch(openSnackBar({ message: 'Please enter a number greater than 0', status: 'error' }))
+  //     setOpenBidDlg(false)
+  //     return
+  //   }
 
-    if(Number(ethers.utils.formatEther(balance)) < Number(price)) {
-      dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))
-      setOpenBidDlg(false)
-      return
-    }
+  //   if(Number(ethers.utils.formatEther(balance)) < Number(price)) {
+  //     dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))
+  //     setOpenBidDlg(false)
+  //     return
+  //   }
 
-    try {
-      await postMakerOrder(
-        provider as any,
-        chainId,
-        false,
-        col_address as any,
-        addresses.STRATEGY_STANDARD_SALE,
-        ethers.utils.parseUnits('1', 1),
-        ethers.utils.parseEther(price.toString()),
-        ethers.utils.parseUnits('2', 2),
-        ethers.utils.parseUnits('2', 2),
-        currency,
-        {
-          tokenId: nft.token_id,
-          startTime: startTime,
-          endTime: addDays(startTime, period).getTime(),
-          params: {
-            values: [10001],
-            types: ['uint256'],
-          },
-        },
-        chain
-      )
-      setOpenBidDlg(false)
-      dispatch(openSnackBar({ message: 'Make Offer Success', status: 'success' }))
+  //   try {
+  //     await postMakerOrder(
+  //       provider as any,
+  //       chainId,
+  //       false,
+  //       col_address as any,
+  //       addresses.STRATEGY_STANDARD_SALE,
+  //       ethers.utils.parseUnits('1', 1),
+  //       ethers.utils.parseEther(price.toString()),
+  //       ethers.utils.parseUnits('2', 2),
+  //       ethers.utils.parseUnits('2', 2),
+  //       currency,
+  //       {
+  //         tokenId: nft.token_id,
+  //         startTime: startTime,
+  //         endTime: addDays(startTime, period).getTime(),
+  //         params: {
+  //           values: [10001],
+  //           types: ['uint256'],
+  //         },
+  //       },
+  //       chain
+  //     )
+  //     setOpenBidDlg(false)
+  //     dispatch(openSnackBar({ message: 'Make Offer Success', status: 'success' }))
 
-      getBidOrders()
+  //     getBidOrders()
 
-    } catch (err: any) {
-      dispatch(openSnackBar({ message: err.message, status: 'error' }))
-    }
-  }
+  //   } catch (err: any) {
+  //     dispatch(openSnackBar({ message: err.message, status: 'error' }))
+  //   }
+  // }
 
   return (
     <div className={classNames('w-full border-[2px] border-[#F6F8FC] rounded-[8px] cursor-pointer hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F6F8FC]', editStyle.nftContainer)} onMouseEnter={() => SetIsShowBtn(true)} onMouseLeave={() => SetIsShowBtn(false)}>
@@ -325,7 +310,7 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
       </div>
 
 
-      <ConfirmBid handleBidDlgClose={() => {setOpenBidDlg(false)}} openBidDlg={openSellDlg} nftImage={image} nftTitle={nft.name} onSubmit={onBid} />
+      {/* <ConfirmBid handleBidDlgClose={() => {setOpenBidDlg(false)}} openBidDlg={openSellDlg} nftImage={image} nftTitle={nft.name} onSubmit={onBid} /> */}
     </div>
   )
 }

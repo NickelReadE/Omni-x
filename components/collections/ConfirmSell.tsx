@@ -9,6 +9,8 @@ import useWallet from '../../hooks/useWallet'
 import CustomSelect from './CustomSelect'
 import Select from 'react-select'
 import { currencies_list } from '../../utils/constants'
+import { IListingData } from '../../interface/interface'
+import { CURRENCIES_LIST } from '../../utils/constants'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,10 +34,10 @@ const period_list = [
 
 interface IConfirmSellProps {
   handleSellDlgClose: () => void,
+  onSubmit?: (listingData: IListingData) => void,
   openSellDlg: boolean,
   nftImage: string,
-  nftTitle: string,
-  onSubmit?: any,
+  nftTitle: string
 }
 
 const ConfirmSell: React.FC<IConfirmSellProps> = ({
@@ -69,7 +71,14 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
   }, [price])
 
   const onListing = () => {
-    onSubmit(currency.address, price, period.period)
+    if (onSubmit) {
+      onSubmit({
+        currencyName: currency.text,
+        price,
+        period: period.period,
+        isAuction: sellType != 'fixed'
+      })
+    }
   }
 
   return (
@@ -95,12 +104,12 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                   <input type="text" value="40.50" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg"/>
                   <span className="px-4 text-[#ADB5BD] font-light">~ $40.50 USD</span>
                 </div>
-                <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Reserve Price</p>
+                {/* <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Reserve Price</p>
                 <div className="flex justify-start items-center mt-5">
                   <CustomSelect optionData={currencies_list[provider?._network.chainId as number]} value={currency} onChange={(value: any) => setCurrency(value)} />
                   <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg"/>
                   <span className="px-4 text-[#ADB5BD] font-light">~ $60.00 USD</span>
-                </div>
+                </div> */}
                 <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Duration</p>
                 <div className="flex justify-start items-center mt-5">
                   <Select
@@ -117,10 +126,11 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                     isSearchable={ false }
                     getOptionLabel={(e:any) => e?.text}
                     getOptionValue={(e:any) => e?.value}
-                    value={0}
+                    value={period}
+                    onChange={(value: any) => setPeriod(value)}
                   />
-                  <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg"/>
-                  <span className="px-4 text-[#ADB5BD] font-light">~ $60.00 USD</span>
+                  {/* <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F8F9FA] border-[2px] border-[#E9ECEF] rounded-lg"/>
+                  <span className="px-4 text-[#ADB5BD] font-light">~ $60.00 USD</span> */}
                 </div>
               </div>
             
@@ -131,7 +141,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
             </div>
             <div className="grid grid-cols-4 mt-10 flex items-end">
               <div className="col-span-1">
-                <button className='bg-[#B00000] rounded text-[#fff] w-[95px] h-[35px]'>list</button>
+                <button className='bg-[#B00000] rounded text-[#fff] w-[95px] h-[35px]' onClick={onListing}>list</button>
               </div>
               <div className="col-span-3">
                 <div className='flex justify-end'>
@@ -158,7 +168,6 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                 <div className="flex justify-start items-center mt-5">
                   <CustomSelect optionData={currencies_list[provider?._network.chainId as number]} value={currency} onChange={(value: any) => setCurrency(value)} />
                   <input type="text" value={price} className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg" onChange={onChangePrice}/>
-                  <span className="px-4 text-[#ADB5BD] font-light">{price_in_usd}</span>
                 </div>
                 <p className="text-[#ADB5BD] text-[14px] font-light italic leading-6 w-[435px] mt-10">*sale funds are recieved on the blockchain the NFT is currently hosted on</p>
                 <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Duration</p>
@@ -192,7 +201,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
             
             <div className="grid grid-cols-4 mt-20 flex items-end">
               <div className="col-span-1">
-                <button className='bg-[#B00000] rounded text-[#fff] w-[95px] h-[35px]' onClick={() => onListing()}>list</button>
+                <button className='bg-[#B00000] rounded text-[#fff] w-[95px] h-[35px]' onClick={onListing}>list</button>
               </div>
               <div className="col-span-3">
                 <div className='flex justify-end'>

@@ -14,17 +14,17 @@ import {
   getERC721Instance,
   getERC1155Instance,
   getOmnixBridge1155Instance,
-  getOmnixBridgeInstance, getONFTCore721Instance, getONFTCore1155Instance,
+  getOmnixBridgeInstance, getONFTCore721Instance, getONFTCore1155Instance, getCurrencyInstance,
 } from '../utils/contracts'
 import regExpFormat from '../helpers/regExpFormat'
-import {getChainIdFromName, getLayerzeroChainId,getChainInfo} from '../utils/constants'
+import {getChainIdFromName, getLayerzeroChainId,getChainInfo,getAddressByName} from '../utils/constants'
 import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
 import UserEdit from './user/UserEdit'
 import useBridge from '../hooks/useBridge'
 import useProgress from '../hooks/useProgress'
 import usd from '../constants/abis/USD.json'
-import omni from '../constants/abis/omni.json'
+import omni from '../constants/abis/Omni.json'
 
 import omniAddress from '../constants/OMNI.json'
 import usdcAddress  from '../constants/USDC.json'
@@ -113,7 +113,6 @@ const SideBar: React.FC = () => {
 
   // Drag and drop event monitor
   useDndMonitor({
-    
     onDragStart(event) {
       setDragOver(true)
       setDragEnd(false)
@@ -520,27 +519,22 @@ const SideBar: React.FC = () => {
   useEffect(()=>{
     const getBalance = async() => {
       try {
-        const key = chainId.toString() as keyof typeof omniAddress
-        //OMNI
-        const contractOmniAddress = omniAddress[key]
-        if(contractOmniAddress!=''){
-          const omniContract =  new ethers.Contract(contractOmniAddress, omni, signer)
-          const omni_balance = await omniContract.balanceOf(address)
-          setOmniBalance(Number(ethers.utils.formatEther(omni_balance)))
+        {
+          const omniContract = getCurrencyInstance(getAddressByName('OMNI', chainId), chainId, signer)
+          const balance = await omniContract.balanceOf(address)
+          setOmniBalance(Number(ethers.utils.formatEther(balance)))
         }
-        //USDC
-        const contractUSDCAddress = usdcAddress[key]
-        if(contractUSDCAddress!=''){
-          const usdContract =  new ethers.Contract(contractUSDCAddress, omni, signer)
-          const usdc_balance = await usdContract.balanceOf(address)
-          setUsdcBalance(Number(ethers.utils.formatEther(usdc_balance)))
+
+        {
+          const usdContract = getCurrencyInstance(getAddressByName('USDC', chainId), chainId, signer)
+          const balance = await usdContract.balanceOf(address)
+          setUsdcBalance(Number(ethers.utils.formatEther(balance)))
         }
-        //USDT
-        const contractUSDTAddress = usdtAddress[key]
-        if(contractUSDTAddress!=''){
-          const usdTContract =  new ethers.Contract(contractUSDTAddress, usd, signer)
-          const usdt_balance = await usdTContract.balanceOf(address)
-          setUsdtBalance(Number(ethers.utils.formatEther(usdt_balance)))
+        
+        {
+          const usdContract = getCurrencyInstance(getAddressByName('USDT', chainId), chainId, signer)
+          const balance = await usdContract.balanceOf(address)
+          setUsdtBalance(Number(ethers.utils.formatEther(balance)))
         }
         //Native Token
         const balance = await provider?.getBalance(address!)

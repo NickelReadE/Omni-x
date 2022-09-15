@@ -1,19 +1,54 @@
 import {ethers} from 'ethers'
 import OmnixBridge from '../constants/OmnixBridge.json'
 import OmnixBridge1155 from '../constants/OmnixBridge1155.json'
+import OmnixExchange from '../constants/OmnixExchange.json'
+import Strategy from '../constants/Strategy.json'
+import TransferSelectorNFT from '../constants/TransferSelectorNFT.json'
+import FundManager from '../constants/FundManager.json'
+import OFT from '../constants/OFT.json'
+import USDC from '../constants/USDC.json'
+import USDT from '../constants/USDT.json'
 import LZEndpoint from '../constants/LayerzeroEndpoints.json'
 import ChainIds from '../constants/chainIds.json'
 import CHAINS from '../constants/chains.json'
 
 const omnixBridge: any = OmnixBridge
 const omnixBridge1155: any = OmnixBridge1155
+const omnixExchange: any = OmnixExchange
+const strategy: any = Strategy
+const transferSelectorNFT: any = TransferSelectorNFT
+const fundManager: any = FundManager
+const oft: any = OFT
+const usdc: any = USDC
+const usdt: any = USDT
 const lzEndpoint: any = LZEndpoint
 const chainIds: any = ChainIds
+
+export const PROTOCAL_FEE = 2
+export const CREATOR_FEE = 2
 
 const environments: any = {
   mainnet: ['ethereum', 'bsc', 'avalanche', 'polygon', 'arbitrum', 'optimism', 'fantom'],
   testnet: ['rinkeby', 'bsc-testnet', 'fuji', 'mumbai', 'arbitrum-rinkeby', 'optimism-kovan', 'fantom-testnet']
 }
+
+export const CURRENCIES_LIST = [
+  { value: 0, text: 'OMNI', icon: 'payment/omni.png' },
+  { value: 1, text: 'USDC', icon: 'payment/usdc.png' },
+  { value: 2, text: 'USDT', icon: 'payment/usdt.png' },
+]
+
+export type ContractName = 
+  'Omnix' | 
+  'Omnix1155' | 
+  'LayerZeroEndpoint' | 
+  'OmnixExchange' | 
+  'Strategy' | 
+  'OMNI' | 
+  'USDC' |
+  'USDT' |
+  'TransferSelectorNFT' |
+  'FundManager'
 
 export const rpcProviders: { [key: number]: string } = {
   1:'https://mainnet.infura.io/v3/20504cdcff23477c9ed314d042d85a74',
@@ -254,13 +289,27 @@ export const getChainNameFromId = (id: number): string => {
 }
 
 
-export const getAddressByName = (name: 'Omnix' | 'Omnix1155' | 'LayerZeroEndpoint', chainId: number) => {
+export const getAddressByName = (name: ContractName, chainId: number) => {
   if (name === 'Omnix') {
     return omnixBridge[chainInfos[chainId].name]
   } else if (name === 'Omnix1155') {
     return omnixBridge1155[chainInfos[chainId].name]
   } else if (name === 'LayerZeroEndpoint') {
     return lzEndpoint[chainInfos[chainId].name]
+  } else if (name === 'OmnixExchange') {
+    return omnixExchange[chainInfos[chainId].name]
+  } else if (name === 'Strategy') {
+    return strategy[chainInfos[chainId].name]
+  } else if (name === 'OMNI') {
+    return oft[chainInfos[chainId].name]
+  } else if (name === 'USDC') {
+    return usdc[chainInfos[chainId].name]
+  } else if (name === 'USDT') {
+    return usdt[chainInfos[chainId].name]
+  } else if (name === 'TransferSelectorNFT') {
+    return transferSelectorNFT[chainInfos[chainId].name]
+  } else if (name === 'FundManager') {
+    return fundManager[chainInfos[chainId].name]
   }
 }
 
@@ -282,4 +331,58 @@ export const getChainInfo = (chainId: number) => {
     return filter[0]
   }
   return null
+}
+
+const loopCurrencies = (currencies: any, idx: number, address?: string) => {
+  if (Object.values(currencies).indexOf(address) != -1) {
+    return CURRENCIES_LIST[idx].icon
+  }
+  return null
+}
+
+export const getCurrencyIconByAddress = (address?: string) => {
+  const currency_addr_list = [oft, usdc, usdt]
+  for (let idx = 0; idx < currency_addr_list.length; idx++) {
+    const icon = loopCurrencies(currency_addr_list[idx], idx, address)
+    if (icon) {
+      return icon
+    }
+  }
+  
+  return CURRENCIES_LIST[0].icon
+}
+
+export const getChainNameById = (chainId: number) => {
+  return chainInfos[chainId].name
+}
+
+export const getCurrencyNameAddress = (address?: string) => {
+  const currency_addr_list = [oft, usdc, usdt]
+  for (let idx = 0; idx < currency_addr_list.length; idx++) {
+    const text = loopCurrencies(currency_addr_list[idx], idx, address)
+    if (text) {
+      return text
+    }
+  }
+  
+  return CURRENCIES_LIST[0].text
+}
+
+const chainIcons = Object.values(chainInfos).reduce((acc, cur) => {
+  Object.assign(acc, { [cur.name]: cur.logo} )
+  return acc
+}, {})
+
+export const getChainIconByCurrencyAddress = (address?: string) => {
+  const currency_addr_list = [oft, usdc, usdt]
+  
+  for (let idx = 0; idx < currency_addr_list.length; idx++) {
+    const chainIdx = Object.values(currency_addr_list[idx]).indexOf(address)
+    if (chainIdx != -1) {
+      const chainName = Object.keys(currency_addr_list[idx])[chainIdx]
+      return (chainIcons as any)[chainName]
+    }
+  }
+  
+  return (chainIcons as any)['rinkeby']
 }

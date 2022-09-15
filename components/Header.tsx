@@ -16,9 +16,12 @@ import polygon from '../public/sidebar/polygon.png'
 import avax from '../public/sidebar/avax.png'
 import arbitrum from '../public/sidebar/arbitrum.png'
 import fantom from '../public/sidebar/fantom.png'
+import { getOmniInstance } from '../utils/contracts'
+import useWallet from '../hooks/useWallet'
+import { useDispatch } from 'react-redux'
+import { openSnackBar } from '../redux/reducers/snackBarReducer'
 
 import { getSearchText } from '../redux/reducers/headerReducer'
-import { useDispatch } from 'react-redux'
 
 type HeaderProps = {
   menu: string
@@ -36,6 +39,11 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
   })
   const [expand, setExpand] = useState(false)
   const { txInfo, pending } = useProgress()
+  const {
+    provider,
+    signer,
+    address
+  } = useWallet()
 
   const handleMouseOver = (hoverMenu: string) => {
     setHovering({
@@ -56,6 +64,15 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
   const handleChangeInput = (text: string) => {
     dispatch(getSearchText(text) as any)
   }
+  const onOmniFaucet = async () => {
+    const chainId = provider?.network.chainId as number
+    const omni = getOmniInstance(chainId, signer)
+
+    await omni.mint({ gasLimit: '300000' })
+
+    dispatch(openSnackBar({ message: 'You will receive an 1000 $OMNI soon', status: 'success' }))
+  }
+
   return (
     <>
       <nav className={
@@ -86,7 +103,12 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
               </button>
               <input autoFocus type="text" placeholder='Search' className="flex items-center bg-[#F6F8FC] bg-[url('../public/images/search.png')] bg-contain bg-no-repeat	 w-[248px] h-[40px] mt-[25px] border-0 focus:outline-0 focus:shadow-none focus:ring-offset-0 focus:ring-0 px-[85px]" onChange={e => handleChangeInput(e.target.value)}/>
             </div>
-          </div>   
+          </div>
+
+          <div className='absolute right-[100px] top-[20px]'>
+            <button className='bg-gradient-to-br from-[#F3F9FF] to-[#DBE1E9] border-2 border-[#A0B3CC] rounded-lg text-black text-lg p-[10px]' onClick={() => onOmniFaucet()}>Get Test OMNI</button>
+          </div>
+
           {/* <div className='min-w-[200px]'></div> */}
           <div className='justify-between h-[90px] items-center w-full md:flex md:w-auto mx-auto md:order-2' id='mobile-menu-3'>
             <ul className="flex flex-col justify-between md:flex-row md:space-x-8 md:text-sm md:font-medium" >
