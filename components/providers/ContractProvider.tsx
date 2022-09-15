@@ -131,7 +131,7 @@ export const ContractProvider = ({
           const eventExist = events.filter((ev) => {
             return ev.args?.toAddress === address
               && ev.args?.tokenId.toString() === txInfo.nftItem.token_id
-              && ev.args?.amount.toString() === txInfo.nftItem.amount
+              // && ev.args?.amount.toString() === txInfo.nftItem.amount
           })
 
           if (eventExist.length === 0) {
@@ -140,7 +140,7 @@ export const ContractProvider = ({
               const eventExist = events.filter((ev) => {
                 return ev.args?.toAddress.toLowerCase() === address?.toLowerCase()
                   && ev.args?.tokenId.toString() === txInfo.nftItem.token_id
-                  && ev.args?.amount.toString() === txInfo.nftItem.amount
+                  // && ev.args?.amount.toString() === txInfo.nftItem.amount
               })
               if (eventExist.length > 0) {
                 updateHistory(historyIndex, {
