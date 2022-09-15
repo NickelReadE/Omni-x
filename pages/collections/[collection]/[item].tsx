@@ -312,6 +312,7 @@ const Item: NextPage = () => {
     }
 
     dispatch(openSnackBar({ message: '  Success', status: 'success' }))
+    getListOrders()
     setOpenSellDlg(false)
   }
 
@@ -385,8 +386,7 @@ const Item: NextPage = () => {
     await updateOrderStatus(order, 'EXECUTED')
 
     dispatch(openSnackBar({ message: 'Bought an NFT', status: 'success' }))
-    getBidOrders()
-    getListOrders()
+    getLastSaleOrder()
     getNFTOwnership(col_url, token_id)
   }
 
@@ -449,6 +449,7 @@ const Item: NextPage = () => {
       await Promise.all(approveTxs.filter(Boolean).map(tx => tx.wait()))
 
       setOpenBidDlg(false)
+      getBidOrders()
       dispatch(openSnackBar({ message: 'Place a bid Success', status: 'success' }))
     } catch (err: any) {
       dispatch(openSnackBar({ message: err.message, status: 'error' }))
@@ -497,8 +498,7 @@ const Item: NextPage = () => {
     await updateOrderStatus(bidOrder, 'EXECUTED')
 
     dispatch(openSnackBar({ message: 'Accepted a Bid', status: 'success' }))
-    getBidOrders()
-    getListOrders()
+    getLastSaleOrder()
     getNFTOwnership(col_url, token_id)
   }
 
