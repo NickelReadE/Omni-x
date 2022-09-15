@@ -6,6 +6,7 @@ import { orderService } from '../services/orders'
 import { minNetPriceRatio } from '../constants'
 import { SolidityType, MakerOrderWithEncodedParams, MakerOrder } from '../types'
 import { OrderStatus } from '../interface/interface'
+import { TokenDistributorAbi } from '@looksrare/sdk'
 
 const MAKE_ORDER_SIGN_TYPES = {
   EIP712Domain: [
@@ -171,10 +172,11 @@ export const postMakerOrder = async(
 };
 
 export const acceptOrder = async (
-  hash: string, status: OrderStatus
+  hash: string, tokeId: number,status: OrderStatus
 ) => {
   const data  = {
     hash: hash,
+    tokenId:tokeId,
     status
   }
   try{

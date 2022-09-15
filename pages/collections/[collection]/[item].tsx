@@ -223,6 +223,7 @@ const Item: NextPage = () => {
   const updateOrderStatus = async (order: IOrder, status: OrderStatus) => {
     await acceptOrder(
       order.hash,
+      Number(order.tokenId),
       status
     )
   }
@@ -493,9 +494,6 @@ const Item: NextPage = () => {
     getLastSaleOrder()
     getNFTOwnership(col_url, token_id)
 
-    for(let i = 0; i<orders.length;i++){
-      updateOrderStatus(orders[i],'EXPIRED')
-    }
   }
 
   const truncate = (str: string) => {
