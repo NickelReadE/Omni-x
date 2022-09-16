@@ -78,8 +78,8 @@ const Launchpad: NextPage = () => {
         {
           <div>
             {
-              collectionsToShow.map((collection: { mint_status: string, count: string }, index) => {
-                return <NftForLaunch key={index} typeNFT={collection.mint_status} items={collection.count} />
+              collectionsToShow.map((collection: { mint_status: string, count: string, col_url:string }, index) => {
+                return <NftForLaunch key={index} typeNFT={collection.mint_status} items={collection.count} col_url={collection.col_url} />
               })
             }
           </div>

@@ -17,33 +17,28 @@ import WalletConnectProvider  from '@walletconnect/web3-provider'
 import Web3Modal from 'web3modal'
 import { ethers } from 'ethers'
 import React, { useState , useEffect } from 'react'
-//import AdvancedONT from '../services/abis/AdvancedONT.json'
+import { getCollectionInfo, selectCollectionInfo } from '../../../redux/reducers/collectionsReducer'
+import { useDispatch, useSelector } from 'react-redux'
+import AdvancedONT from '../../../constants/abis/AdvancedONT.json'
+import ethereumwl from '../../../constants/whitelist/ethereum.json'
+import earlysupporter from '../../../constants/whitelist/earlysupporter.json'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Slide } from 'react-toastify'
+import { contractInfo } from '../../../interface/interface'
+import classNames from '../../../helpers/classNames'
+import useWallet from '../../../hooks/useWallet'
+
 
 //video 
-//const { MerkleTree } = require('merkletreejs')
-//const keccak256 = require('keccak256')
+import { MerkleTree } from 'merkletreejs'
+import keccak256  from 'keccak256'
 
-interface Address {
-  address: string,
-  imageSVG: string,
-  name: string,
-  price: number,
+
+interface chains {
   chainId: string,
-  unit: string,
-  color: string,
-  index: number
-} 
-
-interface contractInfo {
-  [key: string]: Address
+  name: string
 }
- interface chains {
-   chainId: string,
-   name: string
- }
 
 const providerOptions  = {
   walletconnect: {
@@ -238,9 +233,18 @@ const chainIds: Array<chains> = [
 ]
 
 const Mint: NextPage = () => {
+  const {
+    provider,
+    signer,
+    address,    
+    disconnect,
+    connect: connectWallet,    
+    switchNetwork
+  } = useWallet()  
   const router = useRouter()
-  const col_url = router.query.collection as string   
-  const [provider, setProvider] = useState<any>()
+  const col_url = router.query.collection as string 
+  const dispatch = useDispatch()
+  const collectionInfo = useSelector(selectCollectionInfo)   
   const [library, setLibrary] = useState<any>()
   const [account, setAccount] = useState<any>()
   const [network, setNetwork] = useState<string>('1')
@@ -259,81 +263,7 @@ const Mint: NextPage = () => {
   const [isTransferring,setIsTransferring] = useState<boolean>(false)
   const [isSwitchingNetwork,setIsSwitchingNetwork] = useState<boolean>(false)
 
-
-  const connect = async():Promise<void> =>{
-    try {
-      let web3Modal: Web3Modal | null
-
-      if (typeof window !== 'undefined') {
-        web3Modal = new Web3Modal({
-          network: 'mainnet', // optional
-          cacheProvider: true,
-          providerOptions, // required
-        })
-        const provider = await web3Modal.connect()
-        const library = new ethers.providers.Web3Provider(provider)
-        const accounts = await library.listAccounts()
-        const network = await library.getNetwork()
-
-        setProvider(provider)
-        setLibrary(library)
-        if (accounts) 
-          setAccount(accounts[0])
-        if(isContainChains(network.chainId)){
-          setChainId(network.chainId)
-          setNetwork(network.chainId.toString())
-        } else {
-          setInitial(true)
-        }
-      }
-    } catch (error) {
-      console.error(error)
-    }
-  }
-  const isContainChains = (e:any):boolean => {
-    let returnValue = 0
-    chainIds.map(function(chain, idx){
-      if(chain.chainId==e.toString()){
-        returnValue=1
-      } 
-    })
-    if(returnValue==1){
-      return true
-    } else {
-      return false
-    }
-  }
-
-  const switchNetwork = async ():Promise<void> => {
-    setIsSwitchingNetwork(true)
-    try {
-      await library.provider.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId:`0x${Number(network).toString(16)}` }]
-      })
-      window.location.reload()
-    } catch (switchError:any) {
-      if (switchError.code === 4902) {
-        try {
-          await library.provider.request({
-            method: 'wallet_addEthereumChain',
-            params: [networkParams[`0x${Number(network).toString(16)}`]]
-          })
-        } catch (error:any) {
-          errorToast('Fail to add the network, Please try again')
-          setNetwork(chainId)
-        }
-      } else if(switchError.code == 4001) {
-        errorToast(switchError.message)
-        setNetwork(chainId)
-      } else {
-        errorToast('Please confirm the network connection')
-        setNetwork(chainId)
-      }
-    }
-    setIsSwitchingNetwork(false)
-  }
-
+ 
   const decrease = ():void => {
     if(mintNum > 1) {
       setMintNum(mintNum - 1)
@@ -354,70 +284,52 @@ const Mint: NextPage = () => {
   }
 
   const getInfo = async ():Promise<void> => {
-    if(addresses[chainId]) 
-    {
-      try{
-        const provider = new ethers.providers.Web3Provider(window.ethereum)
-        const signer = provider.getSigner()
-        //const tokenContract =  new ethers.Contract(addresses[`${Number(chainId).toString(10)}`].address, AdvancedONT.abi, signer)
-
-        const result =30 //await tokenContract.balanceOf(account)
-        const token = 0
-        const tokenlist = []
-        for (let i = 0; i < Number(result); i++) {
-          //token = await tokenContract.tokenOfOwnerByIndex(account, i)
-          tokenlist.push(Number(token))
-        }
-
-        setOwnToken(tokenlist)
-
-        const max_mint = 5//await tokenContract.maxMintId()
-        const nextId = 1//await tokenContract.nextMintId()
-
-        setTotalNFTCount(Number(max_mint))
-        setNextTokenId(Number(nextId))
-        setSubStrateIndex(addresses[`${Number(chainId).toString(10)}`].index)
-
-        const publicmintFlag = true //await tokenContract._publicSaleStarted()
-        const saleFlag = true//await tokenContract._saleStarted()
-        if(!saleFlag && !publicmintFlag){
-          setMintable(false)
-          errorToast('Sale has not started on '+ addresses[chainId].name)
-        } else {
-          setMintable(true)
-        }
-      } catch(error){
-        errorToast('Please check the Internet Connection')
+    
+    try{        
+      const tokenContract =  new ethers.Contract('0x7FFE2672C100bFb0094ad0B4d592Dd9f9416f1AC', AdvancedONT.abi, signer)
+      
+      const result =await tokenContract.balanceOf(address)
+      const tokenlist = []
+      for (let i = 0; i < Number(result); i++) {
+        const token = await tokenContract.tokenOfOwnerByIndex(address, i)
+        tokenlist.push(Number(token))
       }
+
+      setOwnToken(tokenlist)
+
+      const max_mint = await tokenContract.maxMintId()
+      const nextId = await tokenContract.nextMintId()
+      console.log(max_mint, nextId)
+      setTotalNFTCount(Number(max_mint))
+      setNextTokenId(Number(nextId))
+      setSubStrateIndex(addresses[`${Number(chainId).toString(10)}`].index)
+
+      const publicmintFlag = await tokenContract._publicSaleStarted()
+      const saleFlag = await tokenContract._saleStarted()
+      if(!saleFlag && !publicmintFlag){
+        setMintable(false)
+        errorToast('Sale has not started on '+ addresses[chainId].name)
+      } else {
+        setMintable(true)
+      }
+    } catch(error){
+      //errorToast('Please check the Internet Connection')
     }
+    
   }
 
   const mint = async ():Promise<void> => {
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner()
-    //const tokenContract =  new ethers.Contract(addresses[`${Number(chainId).toString(10)}`].address, AdvancedONT.abi, signer)
-    /// first private sale
+    const tokenContract =  new ethers.Contract('0x7FFE2672C100bFb0094ad0B4d592Dd9f9416f1AC', AdvancedONT.abi, signer)
+    //first private sale
+    //let wladdress = ethereumwl
 
-    // let wladdress = ethereumwl
-    // if(Number(chainId) === 42161) {
-    //   wladdress = arbitrumwl
-    // } else if(Number(chainId) === 137) {
-    //   wladdress = polygonwl
-    // } else if(Number(chainId) === 43114) {
-    //   wladdress = avalanchewl
-    // } else if(Number(chainId) === 56) {
-    //   wladdress = bscwl
-    // } else if(Number(chainId) === 10) {
-    //   wladdress = optimismwl
-    // } else if(Number(chainId) === 250) {
-    //   wladdress = fantomwl
-    // } 
-
-    /// second private sale
-    //let wladdress = earlysupporter
-    // const leafNodes = wladdress.map(addr => keccak256(addr))
-    //const merkleTree = new MerkleTree(leafNodes, keccak256,{sortPairs: true})
-    // const merkleProof = merkleTree.getHexProof(keccak256(account))
+    // second private sale
+    const wladdress = earlysupporter
+    const leafNodes = wladdress.map(addr => keccak256(addr))
+    const merkleTree = new MerkleTree(leafNodes, keccak256,{sortPairs: true})
+    const merkleProof = merkleTree.getHexProof(keccak256(account))
     let mintResult
     setIsMinting(true)
     try {
@@ -508,7 +420,7 @@ const Mint: NextPage = () => {
             loop
             muted
           >
-            <source src='../public/video/polygon.mp4' type='video/mp4' />
+            <source src='/video/polygon.mp4' type='video/mp4' />
             Your browser does not support the video tag.
           </video>
         </>)
@@ -522,7 +434,7 @@ const Mint: NextPage = () => {
             loop
             muted
           >
-            <source src='../public/video/avalanche.mp4' type='video/mp4' />
+            <source src='/video/avalanche.mp4' type='video/mp4' />
             Your browser does not support the video tag.
           </video>
         </>)
@@ -536,7 +448,7 @@ const Mint: NextPage = () => {
             loop
             muted
           >
-            <source src='../public/video/binance.mp4' type='video/mp4' />
+            <source src='/video/binance.mp4' type='video/mp4' />
             Your browser does not support the video tag.
           </video>
         </>)
@@ -550,7 +462,7 @@ const Mint: NextPage = () => {
             loop
             muted
           >
-            <source src='../public/video/optimistic.mp4' type='video/mp4' />
+            <source src='/video/optimistic.mp4' type='video/mp4' />
             Your browser does not support the video tag.
           </video>
         </>)
@@ -564,7 +476,7 @@ const Mint: NextPage = () => {
             loop
             muted
           >
-            <source src='../public/video/fantom.mp4' type='video/mp4' />
+            <source src='/video/fantom.mp4' type='video/mp4' />
             Your browser does not support the video tag.
           </video>
         </>)
@@ -579,7 +491,7 @@ const Mint: NextPage = () => {
           loop
           muted
         >
-          <source src='../public/video/ethereum.mp4' type='video/mp4' />
+          <source src='/video/ethereum.mp4' type='video/mp4' />
           Your browser does not support the video tag.
         </video>
       </>)
@@ -609,33 +521,33 @@ const Mint: NextPage = () => {
       )
     }
   }
-  useEffect(() => {
-    if (provider?.on) {
-      const handleAccountsChanged = (accounts:any) => {
-        setAccount(accounts[0])
-      }
+  // useEffect(() => {
+  //   if (provider?.on) {
+  //     const handleAccountsChanged = (accounts:any) => {
+  //       setAccount(accounts[0])
+  //     }
 
-      const handleChainChanged = (chainId:any) => {
-        if(isContainChains(parseInt(chainId,16))){
-          setChainId(parseInt(chainId,16))
-        }else{
-          errorToast('The current network is not supported, please change the network')
-          switchNetwork()
-          setNetwork('1')
-        }
-      }
+  //     const handleChainChanged = (chainId:any) => {
+  //       if(isContainChains(parseInt(chainId,16))){
+  //         setChainId(parseInt(chainId,16))
+  //       }else{
+  //         errorToast('The current network is not supported, please change the network')
+  //         switchNetwork()
+  //         setNetwork('1')
+  //       }
+  //     }
 
-      provider.on('accountsChanged', handleAccountsChanged)
-      provider.on('chainChanged', handleChainChanged)
+  //     provider.on('accountsChanged', handleAccountsChanged)
+  //     provider.on('chainChanged', handleChainChanged)
 
-      return () => {
-        if (provider.removeListener) {
-          provider.removeListener('accountsChanged', handleAccountsChanged)
-          provider.removeListener('chainChanged', handleChainChanged)
-        }
-      }
-    }
-  }, [provider])
+  //     return () => {
+  //       if (provider.removeListener) {
+  //         provider.removeListener('accountsChanged', handleAccountsChanged)
+  //         provider.removeListener('chainChanged', handleChainChanged)
+  //       }
+  //     }
+  //   }
+  // }, [provider])
 
   useEffect(() => {
     const calculateFee = async():Promise<void> => {
@@ -645,7 +557,6 @@ const Mint: NextPage = () => {
           const signer = provider.getSigner()
           // const tokenContract =  new ethers.Contract(addresses[`${Number(chainId).toString(10)}`].address, AdvancedONT.abi, signer)
           const adapterParam = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 200000])
-          console.log(addresses[toChain].chainId)
           const fee:any =[0.001] //await tokenContract.estimateSendFee(addresses[toChain].chainId, account,transferNFT,false,adapterParam)
           setEstimateFee('Estimate Fee :'+(Number(fee[0])/Math.pow(10,18)*1.1).toFixed(10)+addresses[chainId].unit)
         } else {
@@ -654,41 +565,34 @@ const Mint: NextPage = () => {
       } catch(error){
         console.log(error)
         if(String(chainId) == toChain){
-          errorToast(`${addresses[toChain].name} is currently unavailable for transfer`)
+          //errorToast(`${addresses[toChain].name} is currently unavailable for transfer`)
         } else {
-          errorToast('Please Check the Internet Connection!!!')
+          //errorToast('Please Check the Internet Connection!!!')
         }
 
       }
     }
-    console.log(chainId,toChain,transferNFT)
     calculateFee()
   },[toChain,transferNFT])
 
 
   useEffect(()=>{
-    if(chainId){
+    if(provider && address){
       getInfo()
     }
-  },[chainId,account])
-
+  },[provider,address])
 
   useEffect(()=>{
-    if(init==true){
-      setTransferNFT(0)
-      switchNetwork()
+    dispatch(getCollectionInfo(col_url) as any)
+    if(provider && address){
+      getInfo()
     }
-  },[network, init])
-
-
-  useEffect(()=>{
-    connect()
-  },[])
+  },[]) 
 
   return (
     <>      
       <ToastContainer />
-      <div className={mintstyles.mintHero}>         
+      <div className={classNames(mintstyles.mintHero, 'font-RetniSans')}>         
         <div className={mintstyles.container}>
           <div className={mintstyles.mintImgWrap}>
             <div className={mintstyles.mintImgT}>
@@ -697,7 +601,7 @@ const Mint: NextPage = () => {
             <div className={mintstyles.mintImgB}>
               <Image src={MintImgBottom} alt='mint background' layout='responsive' />
               <div className={mintstyles.mintImgtext}>
-                <h1>&#40Dinose, 40Dinose&#41</h1>
+                <h1>{collectionInfo.name?.toUpperCase()}</h1>
               </div>
             </div>
           </div>

@@ -113,5 +113,19 @@ export interface ICollectionInfoFromLocal{
 
 export interface ITypeNFT{
   typeNFT:string,
-  items:string
+  items:string,
+  col_url:string
+}
+
+export interface contractInfo{
+  [key: string]: {
+    address: string,
+    imageSVG: string,
+    name: string,
+    price: number,
+    chainId: string,
+    unit: string,
+    color: string,
+    index: number
+  }
 }

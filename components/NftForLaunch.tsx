@@ -1,11 +1,18 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import { ITypeNFT } from '../interface/interface'
 import Link from 'next/link'
+import { getCollectionInfo, selectCollectionInfo } from '../redux/reducers/collectionsReducer'
+import { useDispatch, useSelector } from 'react-redux'
 const NftForLaunch = (pro:ITypeNFT) => {
+  const dispatch = useDispatch()
+  const collectionInfo = useSelector(selectCollectionInfo)
+  useEffect(()=>{
+    dispatch(getCollectionInfo(pro.col_url) as any)
+  },[])
   const typeNFT = pro.typeNFT
   console.log('TypeNFT',pro)
   return (
-    <Link href={'/launchpad/tiny_dinos'}>
+    <Link href={`/launchpad/${pro.col_url}`}>
       <div className=' border-[#F8F9FA]  rounded-[8px] hover:cursor-pointer'>
         <p className='font-bold text-xl2 mb-[24px]'>
           {typeNFT==='Live'?'Live Launches':'Upcoming'}
@@ -17,7 +24,7 @@ const NftForLaunch = (pro:ITypeNFT) => {
           </div>
           <div className="flex flex-row justify-between  px-3 mt-[12px] align-middle  font-['RetniSans']">
             <div className=" text-[#000000] text-[14px] font-bold">
-              Tiny Dinose
+              {collectionInfo.name.toUpperCase()}
             </div>
           </div>
           <div className='flex px-3 justify-between'>    
