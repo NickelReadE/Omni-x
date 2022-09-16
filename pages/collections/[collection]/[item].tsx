@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { useState, useEffect, Fragment, useMemo } from 'react'
 import LazyLoad from 'react-lazyload'
 import type { NextPage } from 'next'
 import Link from 'next/link'
@@ -6,30 +6,23 @@ import Image from 'next/image'
 
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
-import { BigNumber, ethers, BigNumberish } from 'ethers'
-import { addDays } from 'date-fns'
-
+import { BigNumber, ethers } from 'ethers'
 import ConfirmSell from '../../../components/collections/ConfirmSell'
 import ConfirmBid from '../../../components/collections/ConfirmBid'
 
-import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
 import { getNFTInfo, selectNFTInfo } from '../../../redux/reducers/collectionsReducer'
-import { getOrders, getLastSaleOrders, selectOrders, selectBidOrders, selectLastSaleOrders } from '../../../redux/reducers/ordersReducer'
-import { userService } from '../../../services/users'
-import { collectionsService } from '../../../services/collections'
+import { selectOrders, selectBidOrders, selectLastSaleOrders } from '../../../redux/reducers/ordersReducer'
 
 import useWallet from '../../../hooks/useWallet'
-import { acceptOrder, postMakerOrder } from '../../../utils/makeOrder'
-import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../../../types'
-import { IBidData, IGetOrderRequest, IListingData, IOrder, OrderStatus } from '../../../interface/interface'
-import { ContractName, CREATOR_FEE, CURRENCIES_LIST, getAddressByName, getChainIconByCurrencyAddress, getChainInfo, getChainNameById, getCurrencyIconByAddress, getCurrencyNameAddress, getLayerzeroChainId, isUsdcOrUsdt, PROTOCAL_FEE } from '../../../utils/constants'
-import { getCurrencyInstance, getERC721Instance, getTransferSelectorNftInstance, getOmniInstance, getOmnixExchangeInstance, getCurrencyManagerInstance } from '../../../utils/contracts'
+import useTrading from '../../../hooks/useTrading'
+import { IOrder } from '../../../interface/interface'
+import { SaleType } from '../../../types/enum'
+import { getChainIconByCurrencyAddress, getCurrencyIconByAddress, getProfileLink } from '../../../utils/constants'
 
 import PngCheck from '../../../public/images/check.png' 
 import PngSub from '../../../public/images/subButton.png'
 import PngEther from '../../../public/images/collections/ethereum.png'
-import { SaleType } from '../../../types/enum'
-import useTrading from '../../../hooks/useTrading'
+import useOrderStatics from '../../../hooks/useOrderStatics'
 
 const truncate = (str: string) => {
   return str.length > 12 ? str.substring(0, 9) + '...' : str
@@ -50,30 +43,22 @@ const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('items')
 
-  const [order, setOrder] = useState<IOrder>()
-  const [profileLink, setProfileLink] = React.useState('')
-
-  const [highestBid, setHighestBid] = React.useState(0)
-  const [lastSale, setLastSale] = React.useState(0)
-  const [highestBidCoin, setHighestBidCoin] = React.useState('')
-  const [lastSaleCoin, setLastSaleCoin] = React.useState('')
-
-  const [orderFlag, setOrderFlag] = React.useState(false)
-
-  const orders = useSelector(selectOrders)
   const bidOrders = useSelector(selectBidOrders) as IOrder[]
-  const lastSaleOrders = useSelector(selectLastSaleOrders)
+  const nftInfo = useSelector(selectNFTInfo)
 
+  const dispatch = useDispatch()
+  
   const {
     provider,
     signer,
     address
   } = useWallet()
-  const dispatch = useDispatch()
+
   const router = useRouter()
-  const nftInfo = useSelector(selectNFTInfo)
   const col_url = router.query.collection as string
   const token_id = router.query.item as string
+
+  // trading hook
   const {
     owner,
     ownerType,
@@ -94,83 +79,50 @@ const Item: NextPage = () => {
     signer,
     address,
     col_url,
-    token_id,
-    order
+    token_id
   })
 
+  // statistics hook
+  const {
+    order,
+    highestBid,
+    highestBidCoin,
+    lastSale,
+    lastSaleCoin
+  } = useOrderStatics(nftInfo)
+
+  // nft info api call
   useEffect(() => {
     if (col_url && token_id) {
+      console.log('-getting nft info-')
       dispatch(getNFTInfo(col_url, token_id) as any)
       getNFTOwnership(col_url, token_id)
     }
   }, [col_url, token_id])
-
+  
+  // order api call
   useEffect(() => {
-    if ( nftInfo && nftInfo.collection && owner && ownerType ) {
-      if(nftInfo.collection.chain=='rinkeby' ) {
-        if(ownerType=='address') {
-          const profile_link = 'https://rinkeby.etherscan.io/address/' + owner
-          setProfileLink(profile_link)
-        } else if (ownerType=='username') {
-          setProfileLink('')
-        }
-      }
+    if (nftInfo && owner) {
+      console.log('-getting orders-')
       getListOrders()
       getBidOrders()
       getLastSaleOrder()
-      setOrderFlag(true)
     }
-  }, [nftInfo,owner])
+  }, [nftInfo, owner])
 
-  useEffect(() => {
-    //ORDER
-    setOrder(undefined)
-    if (orders.length > 0  && nftInfo.collection!=undefined && nftInfo.nft!=undefined && orderFlag) {
-      if (nftInfo.collection.address === orders[0].collectionAddress
-        && Number(nftInfo.nft.token_id) === Number(orders[0].tokenId)) {
-        setOrder(orders[0])
-      }
-    } 
-  }, [orders, nftInfo])
-
-  useEffect(() => {
-    if (bidOrders.length > 0 && nftInfo.collection!=undefined && nftInfo.nft!=undefined && orderFlag) {
-      const sortedBids = [...bidOrders]
-      sortedBids
-        .sort((o1, o2) => {
-          const p1 = BigNumber.from(o1.price)
-          const p2 = BigNumber.from(o2.price)
-          if (p1.eq(p2)) return 0
-          return p2.sub(p1).isNegative() ? -1 : 1
-        })
-      
-      setHighestBidCoin(`/images/${getCurrencyIconByAddress(sortedBids[0].currencyAddress)}`)
-      setHighestBid(Number(ethers.utils.formatEther(sortedBids[0].price)))
-    } else {
-      setHighestBid(0)
-      setHighestBidCoin('')
-    }
-  }, [bidOrders, nftInfo])
-
-  useEffect(() => {
-    setLastSale(0)
-    setLastSaleCoin('')
-    if (lastSaleOrders.length>0 && nftInfo.collection!=undefined && nftInfo.nft!=undefined && orderFlag ){
-      if (Number(lastSaleOrders[0].tokenId)===nftInfo.nft.token_id && lastSaleOrders[0].collectionAddress===nftInfo.collection.address){
-        setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[0].price)))
-        setLastSaleCoin(`/images/${getCurrencyIconByAddress(lastSaleOrders[0].currencyAddress)}`)
-      }
-    } 
-  },[lastSaleOrders, nftInfo])
-
+  // profile link
+  const profileLink = getProfileLink(nftInfo?.collection?.chain, ownerType, owner)
   const currencyChainIcon = getChainIconByCurrencyAddress(order?.currencyAddress)
+  const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
+
+  // listing or auction
   const isListed = !!order
   const isAuction = order?.params?.[2] == SaleType.AUCTION
 
-  console.log('--------', isListed, isAuction, owner, address)
+  console.log('-isListed, isAuction, owner, address-', isListed, isAuction, owner, address, nftInfo)
   return (
     <>
-      {nftInfo && nftInfo.nft && nftInfo.nft.token_id===Number(token_id) && nftInfo.collection.col_url===col_url&&
+      {nftInfo?.nft?.token_id === Number(token_id) && nftInfo?.collection?.col_url === col_url &&
         <div className="w-full mt-40 pr-[70px] pb-[120px] font-[Retni_Sans]">
           <div className="w-full 2xl:px-[10%] xl:px-[5%] lg:px-[2%] md:px-[2%] ">
             <div className="grid grid-cols-3 2xl:gap-12 lg:gap-1 xl:gap-4">
@@ -203,7 +155,7 @@ const Item: NextPage = () => {
                     <div className="flex justify-between items-center mt-6">
                       {order && (
                         <>
-                          <h1 className="text-[#1E1C21] text-[60px] font-normal">{order.price && ethers.utils.formatEther(order.price)}</h1>
+                          <h1 className="text-[#1E1C21] text-[60px] font-normal">{formattedPrice}</h1>
                           <div className="mr-5">
                             {currencyChainIcon && 
                               <img
@@ -217,9 +169,9 @@ const Item: NextPage = () => {
                       )}
                     </div>
                     <div className="mb-3">
-                      <span className='font-normal font-[16px]'>{order && order.price && '$'}{order && order.price && ethers.utils.formatEther(order.price)}</span>
-                      <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-bold">Highest Bid: <span className="font-bold">{highestBid}</span></h1>{highestBidCoin!=''&&<Image src={highestBidCoin} width={15} height={16} alt="chain  logo" />}</div>
-                      <div className="flex justify-start items-center"><h1 className="mr-3 font-bold">Last Sale: <span className="font-bold">{lastSale!=0&&lastSale}</span></h1>{lastSaleCoin!=''&&<Image src={lastSaleCoin} width={15} height={16} alt="chain logo" />}</div>
+                      <span className='font-normal font-[16px]'>{formattedPrice && '$'}{formattedPrice}</span>
+                      <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-bold">Highest Bid: <span className="font-bold">{highestBid}</span></h1>{highestBidCoin&&<Image src={highestBidCoin} width={15} height={16} alt="chain  logo" />}</div>
+                      <div className="flex justify-start items-center"><h1 className="mr-3 font-bold">Last Sale: <span className="font-bold">{lastSale != 0 && lastSale}</span></h1>{lastSaleCoin&&<Image src={lastSaleCoin} width={15} height={16} alt="chain logo" />}</div>
                     </div>
                   </div>
                   <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
@@ -272,7 +224,7 @@ const Item: NextPage = () => {
                     <div className="mb-3">
                       <div className="">
                         { isListed && !isAuction && owner?.toLowerCase() != address?.toLowerCase() && 
-                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={()=>onBuy()}>buy</button>
+                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={()=>onBuy(order)}>buy</button>
                         }
                         { owner?.toLowerCase() == address?.toLowerCase() && 
                           <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={() => {setOpenSellDlg(true)}}>sell</button>
@@ -323,7 +275,7 @@ const Item: NextPage = () => {
             </div>
           </div>
           <ConfirmSell onSubmit={onListing} handleSellDlgClose={() => {setOpenSellDlg(false)}} openSellDlg={openSellDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} />
-          <ConfirmBid onSubmit={onBid} handleBidDlgClose={() => {setOpenBidDlg(false)}} openBidDlg={openBidDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} />
+          <ConfirmBid onSubmit={(bidData) => onBid(bidData, order)} handleBidDlgClose={() => {setOpenBidDlg(false)}} openBidDlg={openBidDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} />
         </div>
       }
     </>

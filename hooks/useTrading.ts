@@ -27,8 +27,8 @@ export type TradingFunction = {
   getLastSaleOrder: () => void,
   updateOrderStatus: (order: IOrder, status: OrderStatus) => Promise<void>,
   onListing: (listingData: IListingData) => Promise<void>,
-  onBuy: () => Promise<void>,
-  onBid: (bidData: IBidData) => Promise<void>,
+  onBuy: (order?: IOrder) => Promise<void>,
+  onBid: (bidData: IBidData, order?: IOrder) => Promise<void>,
   onAccept: (bidOrder: IOrder) => Promise<void>,
 }
 
@@ -54,7 +54,6 @@ const useTrading = ({
   provider,
   signer,
   address,
-  order,
   col_url,
   token_id
 }: any): TradingFunction => {
@@ -105,7 +104,7 @@ const useTrading = ({
 
   const getNFTOwnership = async (col_url: string, token_id: string) => {
     const tokenIdOwner = await collectionsService.getNFTOwner(col_url, token_id)
-    if ( tokenIdOwner.length > 0 ) {
+    if (tokenIdOwner.length > 0) {
       const user_info = await userService.getUserByAddress(tokenIdOwner)
       if(user_info.username == ''){
         setOwner(tokenIdOwner)
@@ -206,7 +205,7 @@ const useTrading = ({
   }
 
   
-  const onBuy = async () => {
+  const onBuy = async (order?: IOrder) => {
     if (!order) {
       dispatch(openSnackBar({ message: 'Not listed', status: 'warning' }))
       return
@@ -280,7 +279,7 @@ const useTrading = ({
     getNFTOwnership(col_url, token_id)
   }
 
-  const onBid = async (bidData: IBidData) => {
+  const onBid = async (bidData: IBidData, order?: IOrder) => {
     if (!order) {
       dispatch(openSnackBar({ message: '  Please list first to place a bid', status: 'warning' }))
       return
@@ -294,7 +293,7 @@ const useTrading = ({
     const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
     const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
 
-    if (!checkValid(currency, order?.price, chainId)) {
+    if (!checkValid(currency, price.toString(), chainId)) {
       return
     }
 

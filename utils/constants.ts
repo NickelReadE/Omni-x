@@ -415,3 +415,12 @@ export const isUsdcOrUsdt = (address?: string) => {
   return false
 }
 
+export const getProfileLink = (chainName: string, ownerType: string, owner: string) => {
+  if (chainName=='rinkeby' ) {
+    if(ownerType=='address') {
+      return 'https://rinkeby.etherscan.io/address/' + owner
+    }
+  }
+
+  return ''
+}
