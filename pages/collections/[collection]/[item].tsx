@@ -382,6 +382,7 @@ const Item: NextPage = () => {
 
     dispatch(openSnackBar({ message: 'Bought an NFT', status: 'success' }))
     getLastSaleOrder()
+    getListOrders()
     getNFTOwnership(col_url, token_id)
   }
 
@@ -494,6 +495,8 @@ const Item: NextPage = () => {
 
     dispatch(openSnackBar({ message: 'Accepted a Bid', status: 'success' }))
     getLastSaleOrder()
+    getListOrders()
+    getBidOrders()
     getNFTOwnership(col_url, token_id)
 
   }

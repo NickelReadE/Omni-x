@@ -757,7 +757,7 @@ const SideBar: React.FC = () => {
                 <span className="font-semibold w-auto text-[16px]">OMNI balance: {regExpFormat(omniBalance)}</span>
                 <span className="font-semibold w-auto text-[16px]">USDC balance: {regExpFormat(usdcBalance)}</span>
                 <span className="font-semibold w-auto text-[16px]">USDT balance: {regExpFormat(usdtBalance)}</span>
-                <span className="font-semibold w-auto text-[16px]">{getChainInfo(chainId)?.nativeCurrency.symbol} balance1: {nativeBalance}</span>
+                <span className="font-semibold w-auto text-[16px]">{getChainInfo(chainId)?.nativeCurrency.symbol} balance: {nativeBalance}</span>
                 <span className="w-auto text-[16px]">Staking: coming soon</span>
                 {/* <div className="w-full flex flex-row font-semibold text-[14px]">
                   <div className="bg-g-200 w-[88px] px-[11px] py-[9px]">
