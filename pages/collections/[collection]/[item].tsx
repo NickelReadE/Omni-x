@@ -29,42 +29,28 @@ import PngCheck from '../../../public/images/check.png'
 import PngSub from '../../../public/images/subButton.png'
 import PngEther from '../../../public/images/collections/ethereum.png'
 import { SaleType } from '../../../types/enum'
+import useTrading from '../../../hooks/useTrading'
 
-const waitFor = (ms: number) => {
-  return new Promise((res) => {
-    setTimeout(() => res(0), ms)
-  })
+const truncate = (str: string) => {
+  return str.length > 12 ? str.substring(0, 9) + '...' : str
 }
 
-const approve = async (contract: any, owner?: string, spender?: string, amount?: BigNumberish) => {
-  const allowance = await contract.allowance(owner, spender)
-  if (allowance.lt(BigNumber.from(amount))) {
-    return contract.approve(spender, amount)
-  }
-  return null
-}
-
-const approveNft = async (contract: any, owner?: string, operator?: string, tokenId?: BigNumberish) => {
-  const isApprovedAll = await contract.isApprovedForAll(owner, operator)
-  if (isApprovedAll) return null
-
-  const approvedOperator = await contract.getApproved(tokenId)
-  if (approvedOperator == operator) return null
-
-  return (await contract.approve(operator, tokenId)).wait()
-}
+const chainList = [
+  { chain: 'all', img_url: '/svgs/all_chain.svg', title: 'all NFTs', disabled: false},
+  { chain: 'rinkeby', img_url: '/svgs/ethereum.svg', title: 'Ethereum', disabled: false},
+  { chain: 'arbitrum-rinkeby', img_url: '/svgs/arbitrum.svg', title: 'Arbitrum', disabled: true},
+  { chain: 'avalanche testnet', img_url: '/svgs/avax.svg', title: 'Avalanche', disabled: false},
+  { chain: 'bsc testnet', img_url: '/svgs/binance.svg', title: 'BNB Chain', disabled: false},
+  { chain: 'fantom-testnet', img_url: '/svgs/fantom.svg', title: 'Fantom', disabled: true},
+  { chain: 'optimism-kovan', img_url: '/svgs/optimism.svg', title: 'Optimism', disabled: true},
+  { chain: 'mumbai', img_url: '/svgs/polygon.svg', title: 'Polygon', disabled: false},
+]
 
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('items')
-  const [owner, setOwner] = useState('')
-  const [ownerType, setOwnerType] = useState('address')
-
 
   const [order, setOrder] = useState<IOrder>()
-  // const [bidOrder, setBidOrder] = useState<IOrder>()
-  const [openSellDlg, setOpenSellDlg] = React.useState(false)
-  const [openBidDlg, setOpenBidDlg] = React.useState(false)
   const [profileLink, setProfileLink] = React.useState('')
 
   const [highestBid, setHighestBid] = React.useState(0)
@@ -83,31 +69,37 @@ const Item: NextPage = () => {
     signer,
     address
   } = useWallet()
-
-  const chainList = [
-    { chain: 'all', img_url: '/svgs/all_chain.svg', title: 'all NFTs', disabled: false},
-    { chain: 'rinkeby', img_url: '/svgs/ethereum.svg', title: 'Ethereum', disabled: false},
-    { chain: 'arbitrum-rinkeby', img_url: '/svgs/arbitrum.svg', title: 'Arbitrum', disabled: true},
-    { chain: 'avalanche testnet', img_url: '/svgs/avax.svg', title: 'Avalanche', disabled: false},
-    { chain: 'bsc testnet', img_url: '/svgs/binance.svg', title: 'BNB Chain', disabled: false},
-    { chain: 'fantom-testnet', img_url: '/svgs/fantom.svg', title: 'Fantom', disabled: true},
-    { chain: 'optimism-kovan', img_url: '/svgs/optimism.svg', title: 'Optimism', disabled: true},
-    { chain: 'mumbai', img_url: '/svgs/polygon.svg', title: 'Polygon', disabled: false},
-  ]
-
-  const router = useRouter()
   const dispatch = useDispatch()
-
+  const router = useRouter()
+  const nftInfo = useSelector(selectNFTInfo)
   const col_url = router.query.collection as string
   const token_id = router.query.item as string
-
-  // console.log(col_url)
-  // console.log(token_id)
-
-  const nftInfo = useSelector(selectNFTInfo)
+  const {
+    owner,
+    ownerType,
+    openBidDlg,
+    openSellDlg,
+    setOpenBidDlg,
+    setOpenSellDlg,
+    getNFTOwnership,
+    getListOrders,
+    getBidOrders,
+    getLastSaleOrder,
+    onListing,
+    onBuy,
+    onBid,
+    onAccept
+  } = useTrading({
+    provider,
+    signer,
+    address,
+    col_url,
+    token_id,
+    order
+  })
 
   useEffect(() => {
-    if ( col_url && token_id ) {
+    if (col_url && token_id) {
       dispatch(getNFTInfo(col_url, token_id) as any)
       getNFTOwnership(col_url, token_id)
     }
@@ -134,11 +126,12 @@ const Item: NextPage = () => {
     //ORDER
     setOrder(undefined)
     if (orders.length > 0  && nftInfo.collection!=undefined && nftInfo.nft!=undefined && orderFlag) {
-      if(nftInfo.collection.address===orders[0].collectionAddress&&Number(nftInfo.nft.token_id)===Number(orders[0].tokenId)){
+      if (nftInfo.collection.address === orders[0].collectionAddress
+        && Number(nftInfo.nft.token_id) === Number(orders[0].tokenId)) {
         setOrder(orders[0])
       }
     } 
-  }, [orders,nftInfo])
+  }, [orders, nftInfo])
 
   useEffect(() => {
     if (bidOrders.length > 0 && nftInfo.collection!=undefined && nftInfo.nft!=undefined && orderFlag) {
@@ -157,353 +150,18 @@ const Item: NextPage = () => {
       setHighestBid(0)
       setHighestBidCoin('')
     }
-  }, [bidOrders,nftInfo])
+  }, [bidOrders, nftInfo])
 
   useEffect(() => {
     setLastSale(0)
     setLastSaleCoin('')
-    if(lastSaleOrders.length>0 && nftInfo.collection!=undefined && nftInfo.nft!=undefined && orderFlag ){
-      if(Number(lastSaleOrders[0].tokenId)===nftInfo.nft.token_id && lastSaleOrders[0].collectionAddress===nftInfo.collection.address){
+    if (lastSaleOrders.length>0 && nftInfo.collection!=undefined && nftInfo.nft!=undefined && orderFlag ){
+      if (Number(lastSaleOrders[0].tokenId)===nftInfo.nft.token_id && lastSaleOrders[0].collectionAddress===nftInfo.collection.address){
         setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[0].price)))
         setLastSaleCoin(`/images/${getCurrencyIconByAddress(lastSaleOrders[0].currencyAddress)}`)
       }
     } 
-  },[lastSaleOrders,nftInfo])
-
-  const getNFTOwnership = async(col_url: string, token_id: string) => {
-    console.log('--getNFTOwnership---')
-    const tokenIdOwner = await collectionsService.getNFTOwner(col_url, token_id)
-    if ( tokenIdOwner.length > 0 ) {
-      const user_info = await userService.getUserByAddress(tokenIdOwner)
-      if(user_info.username == ''){
-        setOwner(tokenIdOwner)
-        setOwnerType('address')
-      } else {
-        setOwner(user_info.username)
-        setOwnerType('username')
-      }
-    }
-  }
-
-  const getListOrders = () => {
-    const request: IGetOrderRequest = {
-      isOrderAsk: true,
-      collection: nftInfo.collection.address,
-      tokenId: nftInfo.nft.token_id,
-      signer: owner,
-      startTime: Math.floor(Date.now() / 1000).toString(),
-      endTime: Math.floor(Date.now() / 1000).toString(),
-      status: ['VALID'],
-      sort: 'NEWEST'
-    }
-    dispatch(getOrders(request) as any)
-  }
-
-  const getBidOrders = () => {
-    const bidRequest: IGetOrderRequest = {
-      isOrderAsk: false,
-      collection: nftInfo.collection.address,
-      tokenId: nftInfo.nft.token_id,
-      startTime: Math.floor(Date.now() / 1000).toString(),
-      endTime: Math.floor(Date.now() / 1000).toString(),
-      status: ['VALID'],
-      sort: 'PRICE_ASC'
-    }
-    dispatch(getOrders(bidRequest) as any)
-  }
-
-  const getLastSaleOrder = () => {
-    const excutedRequest: IGetOrderRequest = {
-      collection: nftInfo.collection.address,
-      tokenId: nftInfo.nft.token_id,
-      status: ['EXECUTED'],
-      sort: 'UPDATE_NEWEST'
-    }
-    dispatch(getLastSaleOrders(excutedRequest) as any)
-  }
-
-  const updateOrderStatus = async (order: IOrder, status: OrderStatus) => {
-    await acceptOrder(
-      order.hash,
-      Number(order.tokenId),
-      status
-    )
-  }
-
-  const checkValid = async (currency: string, price: string, chainId: number) => {
-    if (currency===''){
-      dispatch(openSnackBar({ message: 'Current Currency is not supported in this network', status: 'error' }))
-      setOpenBidDlg(false)
-      return
-    }
-
-    const currencyMangerContract = getCurrencyManagerInstance(chainId, signer)
-    if (currencyMangerContract===null){
-      dispatch(openSnackBar({ message: "This network doesn't support currencies", status: 'error' }))
-      setOpenBidDlg(false)
-      return false
-    }
-
-    if (!await currencyMangerContract.isCurrencyWhitelisted(currency)) {
-      dispatch(openSnackBar({ message: 'USDC currency is not whitelisted in this network', status: 'error' }))
-      setOpenBidDlg(false)
-      return false
-    }
-
-    if (Number(price) === 0) {
-      dispatch(openSnackBar({ message: 'Please enter a number greater than 0', status: 'error' }))
-      setOpenBidDlg(false)
-      return false
-    }
-
-    const currencyContract = getCurrencyInstance(currency, chainId, signer)
-    const balance = await currencyContract?.balanceOf(address)
-    if (balance.lt(BigNumber.from(price))) {
-      dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))
-      setOpenBidDlg(false)
-      return false
-    }
-
-    return true
-  }
-
-  const onListing = async (listingData: IListingData) => {
-    const price = ethers.utils.parseEther(listingData.price.toString())
-    const amount = ethers.utils.parseUnits('1', 0)
-    const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
-    const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
-    const chainId = provider?.network.chainId || 4
-    const lzChainId = getLayerzeroChainId(chainId)
-    const startTime = Date.now()
-
-    await postMakerOrder(
-      provider as any,
-      true,
-      nftInfo.collection.address,
-      getAddressByName('Strategy', chainId),
-      amount,
-      price,
-      protocalFees,
-      creatorFees,
-      getAddressByName(listingData.currencyName as ContractName, chainId),
-      {
-        tokenId: token_id,
-        startTime,
-        endTime: addDays(startTime, listingData.period).getTime(),
-        params: {
-          values: [lzChainId, listingData.isAuction ? SaleType.AUCTION : SaleType.FIXED],
-          types: ['uint16', 'uint16'],
-        },
-      },
-      nftInfo.collection.chain,
-      true
-    )
-
-    if (!listingData.isAuction) {
-      const transferSelector = getTransferSelectorNftInstance(chainId, signer)
-      const transferManagerAddr = await transferSelector.checkTransferManagerForToken(nftInfo.collection.address)
-      const nftContract = getERC721Instance(nftInfo.collection.address, chainId, signer)
-      await approveNft(nftContract, address, transferManagerAddr, token_id)
-    }
-
-    dispatch(openSnackBar({ message: '  Success', status: 'success' }))
-    getListOrders()
-    setOpenSellDlg(false)
-  }
-
-  const onBuy = async () => {
-    if (!order) {
-      dispatch(openSnackBar({ message: 'Not listed', status: 'warning' }))
-      return
-    }
-
-    
-    const chainId = provider?.network.chainId || 4
-    const lzChainId = getLayerzeroChainId(chainId)
-    const omniAddress = getAddressByName(getCurrencyNameAddress(order.currencyAddress) as ContractName, chainId)
-    
-    if (!(await checkValid(omniAddress, order?.price, chainId))) {
-      return
-    }
-
-    const omni = getCurrencyInstance(omniAddress, chainId, signer)
-    if (!omni) {
-      dispatch(openSnackBar({ message: 'Could not find the currency', status: 'warning' }))
-      return
-    }
-
-    const omnixExchange = getOmnixExchangeInstance(chainId, signer)
-    const makerAsk : MakerOrderWithSignature = {
-      isOrderAsk: order.isOrderAsk,
-      signer: order?.signer,
-      collection: order?.collectionAddress,
-      price: order?.price,
-      tokenId: order?.tokenId,
-      amount: order?.amount,
-      strategy: order?.strategy,
-      currency: order?.currencyAddress,
-      nonce: order?.nonce,
-      startTime: order?.startTime,
-      endTime: order?.endTime,
-      minPercentageToAsk: order?.minPercentageToAsk,
-      params: ethers.utils.defaultAbiCoder.encode(['uint16','uint16'], order?.params),
-      signature: order?.signature
-    }
-    const takerBid : TakerOrderWithEncodedParams = {
-      isOrderAsk: false,
-      taker: address || '0x',
-      price: order?.price || '0',
-      tokenId: order?.tokenId || '0',
-      minPercentageToAsk: order?.minPercentageToAsk || '0',
-      params: ethers.utils.defaultAbiCoder.encode(['uint16'], [lzChainId])
-    }
-
-    // console.log('--buy----', makerAsk, takerBid)
-
-    const approveTxs = []
-
-    approveTxs.push(await approve(omni, address, omnixExchange.address, takerBid.price))
-    approveTxs.push(await approve(omni, address, getAddressByName('FundManager', chainId), takerBid.price))
-
-    if (isUsdcOrUsdt(order?.currencyAddress)) {
-      approveTxs.push(await approve(omni, address, getAddressByName('StargatePoolManager', chainId), takerBid.price))
-    }
-
-    await Promise.all(approveTxs.filter(Boolean).map(tx => tx.wait()))
-    await waitFor(1000)
-
-    const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
-
-    // console.log('---lzFee---', lzFee)
-
-    await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
-
-    await updateOrderStatus(order, 'EXECUTED')
-
-    dispatch(openSnackBar({ message: 'Bought an NFT', status: 'success' }))
-    getLastSaleOrder()
-    getListOrders()
-    getNFTOwnership(col_url, token_id)
-  }
-
-  const onBid = async (bidData: IBidData) => {
-    if (!order) {
-      dispatch(openSnackBar({ message: '  Please list first to place a bid', status: 'warning' }))
-      return
-    }
-
-    const chainId = provider?.network.chainId as number
-    const lzChainId = getLayerzeroChainId(chainId)
-
-    const currency = getAddressByName(bidData.currencyName as ContractName, chainId)
-    const price = ethers.utils.parseEther(bidData.price.toString())
-    const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
-    const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
-
-    if (!checkValid(currency, order?.price, chainId)) {
-      return
-    }
-
-    try {
-      
-      const omni = getCurrencyInstance(currency, chainId, signer)
-
-      if (!omni) {
-        dispatch(openSnackBar({ message: 'Could not find the currency', status: 'warning' }))
-        return
-      }
-
-      await postMakerOrder(
-        provider as any,
-        false,
-        nftInfo.collection.address,
-        order?.strategy,
-        order?.amount,
-        price,
-        protocalFees,
-        creatorFees,
-        currency,
-        {
-          tokenId: token_id,
-          startTime: order.startTime,
-          endTime: order.endTime,
-          params: {
-            values: [lzChainId],
-            types: ['uint16'],
-          },
-        },
-        getChainNameById(chainId),
-        true
-      )
-
-      const approveTxs = []
-      approveTxs.push(await approve(omni, address, getAddressByName('OmnixExchange', chainId), price))
-      approveTxs.push(await approve(omni, address, getAddressByName('FundManager', chainId), price))
-      if (isUsdcOrUsdt(currency)) {
-        approveTxs.push(await approve(omni, address, getAddressByName('StargatePoolManager', chainId), price))
-      }
-      await Promise.all(approveTxs.filter(Boolean).map(tx => tx.wait()))
-
-      setOpenBidDlg(false)
-      getBidOrders()
-      dispatch(openSnackBar({ message: 'Place a bid Success', status: 'success' }))
-    } catch (err: any) {
-      dispatch(openSnackBar({ message: err.message, status: 'error' }))
-    }
-  }
-
-  const onAccept = async (bidOrder: IOrder) => {
-    const chainId = provider?.network.chainId || 4
-    const lzChainId = getLayerzeroChainId(chainId)
-    
-    const omnixExchange = getOmnixExchangeInstance(chainId, signer)
-    const makerBid : MakerOrderWithSignature = {
-      isOrderAsk: false,
-      signer: bidOrder.signer,
-      collection: bidOrder.collectionAddress,
-      price: bidOrder.price,
-      tokenId: bidOrder.tokenId,
-      amount: bidOrder.amount,
-      strategy: bidOrder.strategy,
-      currency: bidOrder.currencyAddress,
-      nonce: bidOrder.nonce,
-      startTime: bidOrder.startTime,
-      endTime: bidOrder.endTime,
-      minPercentageToAsk: bidOrder.minPercentageToAsk,
-      params: ethers.utils.defaultAbiCoder.encode(['uint16'], bidOrder.params),
-      signature: bidOrder.signature
-    }
-    const takerAsk : TakerOrderWithEncodedParams = {
-      isOrderAsk: true,
-      taker: address || '0x',
-      price: bidOrder.price || '0',
-      tokenId: bidOrder.tokenId || '0',
-      minPercentageToAsk: bidOrder.minPercentageToAsk || '0',
-      params: ethers.utils.defaultAbiCoder.encode(['uint16'], [lzChainId])
-    }
-
-    const transferSelector = getTransferSelectorNftInstance(chainId, signer)
-    const transferManagerAddr = await transferSelector.checkTransferManagerForToken(nftInfo.collection.address)
-    const nftContract = getERC721Instance(nftInfo.collection.address, chainId, signer)
-    await approveNft(nftContract, address, transferManagerAddr, token_id)
-
-    const lzFee = await omnixExchange.connect(signer as any).getLzFeesForBidWithTakerAsk(takerAsk, makerBid)
-    
-    await omnixExchange.connect(signer as any).matchBidWithTakerAsk(takerAsk, makerBid, { value: lzFee })
-
-    await updateOrderStatus(bidOrder, 'EXECUTED')
-
-    dispatch(openSnackBar({ message: 'Accepted a Bid', status: 'success' }))
-    getLastSaleOrder()
-    getListOrders()
-    getBidOrders()
-    getNFTOwnership(col_url, token_id)
-
-  }
-
-  const truncate = (str: string) => {
-    return str.length > 12 ? str.substring(0, 9) + '...' : str
-  }
+  },[lastSaleOrders, nftInfo])
 
   const currencyChainIcon = getChainIconByCurrencyAddress(order?.currencyAddress)
   const isListed = !!order
