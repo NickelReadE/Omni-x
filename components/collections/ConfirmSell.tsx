@@ -4,9 +4,11 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import Dialog from '@material-ui/core/Dialog'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import useWallet from '../../hooks/useWallet'
 
 import CustomSelect from './CustomSelect'
 import Select from 'react-select'
+import { currencies_list } from '../../utils/constants'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,11 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   }),
 )
-const currencies_list = [
-  { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0x49fB1b5550AFFdFF32CffF03c1A8168f992296eF' },
-  { value: 1, text: 'USDC', icon: 'payment/usdc.png', address: '0xeb8f08a975ab53e34d8a0330e0d34de942c95926' },
-  { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad' },
-]
+
 const period_list = [
   { value: 0, text: '1 Day', period: 1, },
   { value: 1, text: '1 Week', period: 7, },
@@ -47,11 +45,15 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
   nftTitle,
   onSubmit
 }) => {
+  const {
+    provider,
+  } = useWallet()
+
   const classes = useStyles()
   const [sellType, setSellType] = useState('fixed')
   const [price_in_usd, setPriceInUSD] = useState('')
   const [price, setPrice] = useState(0)
-  const [currency, setCurrency] = useState(currencies_list[0])
+  const [currency, setCurrency] = useState(currencies_list[4][0]) //default
   const [period, setPeriod] = useState(period_list[2])
 
   const onChangePrice = (e: any) => {
@@ -77,7 +79,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
           <div className="text-[#1E1C21] text-[28px] font-semibold">list item for sale</div>
           <div className="flex justify-end">
             <button className={`w-[132px] px-5 py-2 text-[#ADB5BD] font-['Roboto Mono'] font-semibold text-[16px] rounded-[8px] border-2 border-[#ADB5BD] ${sellType=='fixed'?'z-10 bg-[#E9ECEF]':'bg-[#F8F9FA]'}`} onClick={() => setSellType('fixed')}>fixed price</button>
-            <button className={`w-[132px] px-5 py-2 text-[#6C757D] font-['Roboto Mono'] font-semibold text-[16px] rounded-[8px] border-2 border-[#ADB5BD] relative -left-2.5 ${sellType=='auction'?'z-10 bg-[#E9ECEF]':'bg-[#F8F9FA]'}`}>auction</button>
+            <button className={`w-[132px] px-5 py-2 text-[#6C757D] font-['Roboto Mono'] font-semibold text-[16px] rounded-[8px] border-2 border-[#ADB5BD] relative -left-2.5 ${sellType=='auction'?'z-10 bg-[#E9ECEF]':'bg-[#F8F9FA]'}`}onClick={() => setSellType('auction')}>auction</button>
           </div>
         </div>
       </DialogTitle>
@@ -89,14 +91,14 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
               <div>
                 <p className="text-[#6C757D] text-[18px] font-semibold">Starting Price</p>
                 <div className="flex justify-start items-center mt-5">
-                  <CustomSelect optionData={currencies_list} value={currency} onChange={(value: any) => setCurrency(value)} />
-                  <input type="text" value="40.50" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F8F9FA] border-[2px] border-[#E9ECEF] rounded-lg"/>
+                  <CustomSelect optionData={currencies_list[provider?._network?.chainId as number]} value={currency} onChange={(value: any) => setCurrency(value)} />
+                  <input type="text" value="40.50" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg"/>
                   <span className="px-4 text-[#ADB5BD] font-light">~ $40.50 USD</span>
                 </div>
                 <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Reserve Price</p>
                 <div className="flex justify-start items-center mt-5">
-                  <CustomSelect optionData={currencies_list} value={currency} onChange={(value: any) => setCurrency(value)} />
-                  <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F8F9FA] border-[2px] border-[#E9ECEF] rounded-lg"/>
+                  <CustomSelect optionData={currencies_list[provider?._network.chainId as number]} value={currency} onChange={(value: any) => setCurrency(value)} />
+                  <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg"/>
                   <span className="px-4 text-[#ADB5BD] font-light">~ $60.00 USD</span>
                 </div>
                 <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Duration</p>
@@ -106,7 +108,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                     styles={{
                       control: (styles:any) => ({ ...styles,
                         borderRadius: '8px',
-                        backgroundColor: '#F8F9FA',
+                        backgroundColor: '#F6F8FC',
                         border: '2px solid #E9ECEF',
                         width: '170px'
                       })
@@ -117,11 +119,11 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                     getOptionValue={(e:any) => e?.value}
                     value={0}
                   />
-                  <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F8F9FA] border-[2px] border-[#E9ECEF] rounded-lg"/>
+                  <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg"/>
                   <span className="px-4 text-[#ADB5BD] font-light">~ $60.00 USD</span>
                 </div>
               </div>
-            
+
               <div>
                 <img className='rounded-[8px] max-w-[250px]' src={nftImage} />
                 <p className='mt-2 text-center text-[#6C757D] font-medium'>{nftTitle}</p>
@@ -154,8 +156,8 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
               <div>
                 <p className="text-[#6C757D] text-[18px] font-semibold">Sale Price</p>
                 <div className="flex justify-start items-center mt-5">
-                  <CustomSelect optionData={currencies_list} value={currency} onChange={(value: any) => setCurrency(value)} />
-                  <input type="text" value={price} className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F8F9FA] border-[2px] border-[#E9ECEF] rounded-lg" onChange={onChangePrice}/>
+                  <CustomSelect optionData={currencies_list[provider?._network.chainId as number]} value={currency} onChange={(value: any) => setCurrency(value)} />
+                  <input type="text" value={price} className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg" onChange={onChangePrice}/>
                   <span className="px-4 text-[#ADB5BD] font-light">{price_in_usd}</span>
                 </div>
                 <p className="text-[#ADB5BD] text-[14px] font-light italic leading-6 w-[435px] mt-10">*sale funds are recieved on the blockchain the NFT is currently hosted on</p>
@@ -166,7 +168,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                     styles={{
                       control: (styles:any) => ({ ...styles,
                         borderRadius: '8px',
-                        backgroundColor: '#F8F9FA',
+                        backgroundColor: '#F6F8FC',
                         border: '2px solid #E9ECEF',
                         width: '170px'
                       })
@@ -178,7 +180,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                     value={period}
                     onChange={(value: any) => setPeriod(value)}
                   />
-                  {/* <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F8F9FA] border-[2px] border-[#E9ECEF] rounded-lg"/>
+                  {/* <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg"/>
                   <span className="px-4 text-[#ADB5BD] font-light">~ $60.00 USD</span> */}
                 </div>
               </div>
@@ -187,7 +189,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                 <p className='mt-2 text-center text-[#6C757D] font-medium'>{nftTitle}</p>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-4 mt-20 flex items-end">
               <div className="col-span-1">
                 <button className='bg-[#B00000] rounded text-[#fff] w-[95px] h-[35px]' onClick={() => onListing()}>list</button>

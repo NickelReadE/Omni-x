@@ -6,6 +6,8 @@ import userReducer from "./reducers/userReducer"
 import collectionsReducer from "./reducers/collectionsReducer"
 import snackBarReducer from "./reducers/snackBarReducer"
 import ordersReducer from "./reducers/ordersReducer"
+import feeddataReducer from "./reducers/feeddataReducer"
+import headerReducer from "./reducers/headerReducer"
 
 const bindMiddleware = (middleware: any) => {
   if (process.env.NODE_ENV !== 'production') {
@@ -20,6 +22,8 @@ const combinedReducer = combineReducers({
   snackBarState: snackBarReducer,
   collectionsState: collectionsReducer,
   ordersState: ordersReducer,
+  feeddataState:feeddataReducer,
+  headerState: headerReducer
 })
 
 const reducer = (state: any, action: any) => {

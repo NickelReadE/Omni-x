@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { Dispatch } from 'react'
 import { userService } from '../../services/users'
 import { openSnackBar } from './snackBarReducer'
+import {GregContractAddress} from '../../constants/addresses'
 
 //reducers
 export const userSlice = createSlice({
@@ -11,6 +12,8 @@ export const userSlice = createSlice({
         gettingUser: true,
         user: {},
         nfts: [],
+        isGregHolder:false,
+        heroSkin:'logo'
     },
     reducers: {
         setUser: (state, action) => {
@@ -24,21 +27,31 @@ export const userSlice = createSlice({
         },
         setUserNFTs: (state, action) => {
             state.nfts = action.payload === undefined ? [] : action.payload
+        },
+        setIsGregHolder: (state, action) => {
+            state.isGregHolder = action.payload === undefined?false : action.payload
+        },
+        setHeroSkin: (state, action) => {
+            state.heroSkin = action.payload === undefined?false : action.payload
         }
     }
 })
 
 //actions
-export const { setUser, setUpdatingUser, setGettingUser, setUserNFTs } = userSlice.actions
+export const { setUser, setUpdatingUser, setGettingUser, setUserNFTs, setIsGregHolder, setHeroSkin } = userSlice.actions
 
 export const getUser = (address: string) => async (dispatch: Dispatch<any>) => {
     dispatch(setGettingUser(true))
     try {
         const user = await userService.getUserByAddress(address)
         dispatch(setUser(user))
+        if(user.greg){
+           // dispatch(setHeroSkin(user.greg))
+        }
+        
         dispatch(setGettingUser(false))
     } catch (error) {
-        dispatch(setUser({}))
+        //dispatch(setUser({}))
         dispatch(setGettingUser(false))
     }
 }
@@ -61,15 +74,36 @@ export const updateUser = (user: FormData) => async (dispatch: Dispatch<any>) =>
 export const getUserNFTs = (address: string) => async (dispatch: Dispatch<any>) => {
     try {
         const nfts = await userService.getUserNFTs(address)
+        nfts.map((nft:any)=>{
+            if(nft.token_address===GregContractAddress[nft.chain]){
+                dispatch(setIsGregHolder(true))
+            }            
+        })
         dispatch(setUserNFTs(nfts))
     } catch (error) {
     }
 }
-
+export const updateIsGregHolder = (flag: boolean) => async (dispatch: Dispatch<any>) => {
+    try {
+       
+        dispatch(setIsGregHolder(flag))
+    } catch (error) {
+        console.log("failed to update Isgregholder")
+    }
+}
+export const updateHeroSkin = (name: String) => async (dispatch: Dispatch<any>) => {
+    try {
+        dispatch(setHeroSkin(name))
+    } catch (error) {
+        console.log("failed to update heroSkin")
+    }
+}
 //selectors
 export const selectUser = (state: any) => state.userState.user
 export const selectUpdatingUser = (state: any) => state.userState.updatingUser
 export const selectGettingUser = (state: any) => state.userState.gettingUser
 export const selectUserNFTs = (state: any) => state.userState.nfts
+export const selectIsGregHolder = (state: any) => state.userState.isGregHolder
+export const selectHeroSkin = (state: any) => state.userState.heroSkin
 
 export default userSlice.reducer

@@ -5,8 +5,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import LazyLoad from 'react-lazyload'
 
-import { getCollections, selectCollections } from '../../redux/reducers/collectionsReducer'
-
+import { getCollections, selectCollections, updateCollectionsForCard, selectCollectionsForCard} from '../../redux/reducers/collectionsReducer'
+import {getOrders, selectOrders} from '../../redux/reducers/ordersReducer'
 import pfp from '../../public/images/pfp.png'
 import photography from '../../public/images/photography.png'
 import gaming from '../../public/images/gaming.png'
@@ -20,7 +20,8 @@ import fashion from '../../public/images/fashion.png'
 
 import ImageList from '../../components/ImageList'
 import Slider from '../../components/Slider'
-
+import CollectionCard from '../../components/CollectionCard'
+import { IGetOrderRequest } from '../../interface/interface'
 
 const serviceSlides: Array<React.ReactNode> = []
 serviceSlides.push(<Image src={pfp} alt="image - 25" layout='responsive' width={230} height={263} />)
@@ -34,39 +35,62 @@ serviceSlides.push(<Image src={domains} alt="image - 28" layout='responsive' wid
 serviceSlides.push(<Image src={fashion} alt="image - 29" layout='responsive' width={230} height={263} />)
 
 const Collections: NextPage = () => {
-  const [omniSlides, setOmniSlides] = useState<Array<React.ReactNode>>([])
-  const [imageError, setImageError] = useState(false)
-
+  const [omniSlides, setOmniSlides] = useState<Array<React.ReactNode>>([])  
   const dispatch = useDispatch()
   const collections = useSelector(selectCollections)
-
+  const collectionsForCard = useSelector(selectCollectionsForCard)
+  const orders = useSelector(selectOrders)
+  
   useEffect(() => {
     dispatch(getCollections() as any)
+    dispatch(updateCollectionsForCard() as any)
   }, [])
 
   useEffect(() => {
     const slides: Array<React.ReactNode> = []
-
-    collections && collections.map((item: any) => {
-      slides.push(
-        <Link href={`/collections/${item.col_url}`}>
-          <a>
-            <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt={item.name} />}>
-              <img src={imageError?'/images/omnix_logo_black_1.png':(item.profile_image ? item.profile_image : '/images/omnix_logo_black_1.png')} alt={item.name} onError={(e)=>{setImageError(true)}} data-src={item.profile_image ? item.profile_image : ''} className='w-[100%]' />
-            </LazyLoad>
-          </a>
-        </Link>
-      )
-    })
+    const  localCards = localStorage.getItem('cards') 
+    if(localCards===null){
+      if(collections.length>0){
+        if(collectionsForCard.length>0){
+          localStorage.setItem('cards',JSON.stringify(collectionsForCard))
+          collections.map((item: any,index:number) => {
+            slides.push(                     
+              <CollectionCard collection={item} card={collectionsForCard.find((card: { col_url: any })=>card.col_url == item.col_url)}/>           
+            )
+          })
+        }else{
+          collections.map((item: any,index:number) => {
+            slides.push(                     
+              <CollectionCard collection={item} card={null}/>           
+            )
+          })
+        }        
+        
+      }
+    }else{
+      if(collections.length>0){
+        collections.map((item: any,index:number) => {
+          slides.push(                     
+            <CollectionCard collection={item} card={collectionsForCard.length>0?collectionsForCard.find((card: { col_url: any })=>card.col_url == item.col_url):JSON.parse(localCards).find((card: { col_url: any })=>card.col_url==item.col_url)}/>           
+          )
+        })
+      }
+    }
     setOmniSlides(slides)
-  }, [collections])
+  }, [collections ,collectionsForCard])
+  useEffect(()=>{
+    const request: IGetOrderRequest = {
+      isOrderAsk: true,      
+      status: ['VALID'],
+      sort: 'PRICE_ASC'
+    }
+    dispatch(getOrders(request) as any)
+  },[])
+ 
   return (
     <>
-      <div>
-        <Slider title="Beta Collections" images={omniSlides} />
-        {/* <Slider title="Trending Collection" images={omniSlides} /> */}
-        {/* <ImageList title="" images={serviceSlides} /> */}
-        
+      <div className='pt-10'>
+        <Slider  title="Beta Collections" cards={omniSlides} />    
       </div>
     </>
   )

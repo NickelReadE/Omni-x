@@ -42,7 +42,7 @@ const CustomSelect: React.FC<ICustomSelectProps> = ({
       styles={{
         control: (styles:any) => ({ ...styles,
           borderRadius: '8px',
-          backgroundColor: '#F8F9FA',
+          backgroundColor: '#F6F8FC',
           border: '2px solid #E9ECEF',
           width: '170px'
         }),

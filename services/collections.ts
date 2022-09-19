@@ -13,6 +13,17 @@ const getCollectionNFTs = async (col_url: string, page: Number, display_per_page
     return res.data
 }
 
+const getCollectionAllNFTs = async (col_url: string,sort: String, searchObj: Object) => {
+    const option = {
+        col_url,
+        sort,
+        searchObj
+    }
+    const res = await API.post(`collections/allNfts`, option)
+    return res.data
+}
+
+
 const getCollectionInfo = async (col_url: string) => {
     const res = await API.get(`collections/${col_url}`)
     return res.data
@@ -37,7 +48,13 @@ const getNFTOwner = async (col_url: string, token_id: string) => {
     const res = await API.get(`collections/owner/${col_url}/${token_id}`)
     return res.data.owner
 }
-
+// const getCollectionAllNfts = async (col_url: string) => {
+//     const option = {
+//         col_url
+//     }
+//     const res = await API.post(`collections/allnfts`, option)
+//     return res.data
+// }
 
 export const collectionsService = {
     getCollectionNFTs,
@@ -46,4 +63,5 @@ export const collectionsService = {
     getNFTInfo,
     getCollections,
     getNFTOwner,
+    getCollectionAllNFTs
 }

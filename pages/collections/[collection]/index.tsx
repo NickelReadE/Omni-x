@@ -3,13 +3,16 @@ import Link from 'next/link'
 import Image from 'next/image'
 import type { NextPage } from 'next'
 import { Listbox, Transition, Switch } from '@headlessui/react'
+import {ethers} from 'ethers'
 
 import Discord from '../../../public/images/discord.png'
 import Twitter from '../../../public/images/twitter.png'
 import Web from '../../../public/images/web.png'
 import Ethereum from '../../../public/sidebar/ethereum.png'
+import Explorer from '../../../public/images/exp.png'
 
-import { getCollectionNFTs, selectCollectionNFTs, getCollectionInfo, selectCollectionInfo, clearCollectionNFTs, selectGetNFTs, getCollectionOwners, selectCollectionOwners } from '../../../redux/reducers/collectionsReducer'
+import { getCollectionNFTs, selectCollectionNFTs, getCollectionInfo,getCollectionAllNFTs, getRoyalty,selectCollectionInfo, clearCollectionNFTs, selectGetNFTs, getCollectionOwners, selectCollectionOwners,selectCollectionAllNFTs, selectRoyalty } from '../../../redux/reducers/collectionsReducer'
+import { selectAssetPrices} from '../../../redux/reducers/feeddataReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import NFTBox from '../../../components/collections/NFTBox'
@@ -32,6 +35,14 @@ import Chip from '@material-ui/core/Chip'
 import classNames from '../../../helpers/classNames'
 import editStyle from '../../../styles/collection.module.scss'
 import { info } from 'console'
+import ordersReducer, { getOrders, selectOrders, getLastSaleOrders,selectBidOrders,selectLastSaleOrders } from '../../../redux/reducers/ordersReducer'
+import { IGetOrderRequest , ICollectionInfoFromLocal} from '../../../interface/interface'
+import { getChainInfo, getChainIdFromName } from '../../../utils/constants'
+import { convertETHtoUSDT, convertUSDTtoETH } from '../../../utils/convertRate'
+import { useMoralisWeb3Api, useMoralis } from 'react-moralis'
+import useWallet from '../../../hooks/useWallet'
+import { currencies_list } from '../../../utils/constants'
+
 
 const sort_fields = [
   { id: 1, name: 'price: low to high', value: 'price', unavailable: false },
@@ -119,23 +130,32 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const Collection: NextPage = () => {
+  const{signer} = useWallet()
+  const { isInitialized, Moralis } = useMoralis()
   const [currentTab, setCurrentTab] = useState<string>('items')
   const [expandedMenu, setExpandedMenu] = useState(0)
   const [selected, setSelected] = useState(sort_fields[0])
   const [enabled, setEnabled] = useState(false)
+  // const [nfts,setNFTs] = useState<any>({})
 
   const [hasMoreNFTs, setHasMoreNFTs] = useState(true)
 
   const router = useRouter()
-  
+
   const col_url = router.query.collection as string
   const display_per_page = 20
   const [page, setPage] = useState(0)
 
   const dispatch = useDispatch()
   const nfts = useSelector(selectCollectionNFTs)
+  const allNFTs = useSelector(selectCollectionAllNFTs)
+
   const collectionInfo = useSelector(selectCollectionInfo)
+
   const collectionOwners = useSelector(selectCollectionOwners)
+  const royalty = useSelector(selectRoyalty)
+  const orders = useSelector(selectOrders)
+  const assetPrices = useSelector(selectAssetPrices)
 
   const [imageError, setImageError] = useState(false)
   const classes = useStyles()
@@ -144,20 +164,73 @@ const Collection: NextPage = () => {
   const [filterObj, setFilterObj] = useState<any>({})
   const [clearFilter, setClearFilter] = useState(false)
 
-  const finishedGetting = useSelector(selectGetNFTs)
+  const [isActiveBuyNow, setIsActiveBuyNow] = useState<boolean>(false)
+  const [listNFTs, setListNFTs] = useState<any>([])
+  const [ordersForCollection, setOrdersForCollection] = useState<any>([])
+  const [collectionInfoFromLocal, setCollectionInfoFromLocal] = useState<ICollectionInfoFromLocal>()
 
+  const [explorerUrl, setExplorerUrl] = useState('')
+
+  const [contractType, setContractType] = useState('')
+
+  const [floorPrice, setFloorPrice] = useState(0)
+
+  const finishedGetting = useSelector(selectGetNFTs)
+  const fetchCollectionMetaData = async() => {
+    const options = {
+      address: collectionInfo.address,
+      chain: collectionInfo.chain,
+    }
+    const metaData = await Moralis.Web3API.token.getNFTMetadata(options)
+    setContractType(metaData.contract_type)
+  }
   useEffect(() => {
     if ( col_url ) {
       dispatch(getCollectionInfo(col_url) as any)
       dispatch(getCollectionOwners(col_url) as any)
+      const localData = localStorage.getItem('cards')
+      if(localData){
+        setCollectionInfoFromLocal((JSON.parse(localData)).find((element: ICollectionInfoFromLocal) => element.col_url===col_url))
+      }
+
       setPage(0)
     }
   }, [col_url])
+
+  useEffect(()=>{
+    if(nfts.length>0){
+      const request: IGetOrderRequest = {
+        isOrderAsk: true,
+        startTime: Math.floor(Date.now() / 1000).toString(),
+        endTime: Math.floor(Date.now() / 1000).toString(),
+        status: ['VALID'],
+        sort: 'OLDEST'
+      }
+      dispatch(getOrders(request) as any)
+      const bidRequest: IGetOrderRequest = {
+        isOrderAsk: false,
+        collection: collectionInfo.address,
+        startTime: Math.floor(Date.now() / 1000).toString(),
+        endTime: Math.floor(Date.now() / 1000).toString(),
+        status: ['VALID'],
+        sort: 'PRICE_ASC'
+      }
+      dispatch(getOrders(bidRequest) as any)
+      const excutedRequest: IGetOrderRequest = {
+        collection: collectionInfo.address,
+        status: ['EXECUTED'],
+        sort: 'UPDATE_OLDEST'
+      }
+      dispatch(getLastSaleOrders(excutedRequest) as any)
+    }
+  },[nfts])
+
 
   const onChangeSort = (item: any) => {
     setSelected(item)
     dispatch(clearCollectionNFTs() as any)
     dispatch(getCollectionNFTs(col_url, 0, display_per_page, item.value, searchObj) as any)
+    dispatch(getCollectionAllNFTs(col_url,selected.value, searchObj) as any)
     setPage(0)
   }
 
@@ -168,9 +241,22 @@ const Collection: NextPage = () => {
   }, [nfts, selectGetNFTs])
 
   useEffect(() => {
+    if( collectionInfo ) {
+      const chainStr = collectionInfo.chain
+      const chainInfo:any =  getChainInfo(getChainIdFromName(chainStr))
+      if(chainInfo){
+        const mainUrl =chainInfo?.explorers[0]?.url+'/address/'+collectionInfo.address
+        setExplorerUrl(mainUrl)
+      }
+
+    }
+  }, [collectionInfo])
+
+  useEffect(() => {
     if ( collectionInfo ) {
       dispatch(clearCollectionNFTs() as any)
       dispatch(getCollectionNFTs(col_url, 0, display_per_page, selected.value, searchObj) as any)
+      dispatch(getCollectionAllNFTs(col_url,selected.value, searchObj) as any)
       setPage(0)
     }
   }, [searchObj])
@@ -233,72 +319,225 @@ const Collection: NextPage = () => {
     })
   }
 
+  const buyComponet = () => {
+    const temp = []
+    for(let i = 0;i<listNFTs.length;i++){
+      temp.push(
+        <NFTBox nft={listNFTs[i]} index={i} key={i}  col_url={col_url} col_address={collectionInfo.address}  chain={collectionInfo?collectionInfo.chain:'eth'}/>
+      )
+    }
+    return temp
+  }
+
+  useEffect(()=>{
+    if(isActiveBuyNow && collectionInfo && allNFTs.length>0){
+      const temp = []
+      for(let i=0;i<allNFTs.length;i++){
+        for(let j=0; j<orders.length;j++){  
+          if(collectionInfo.address==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
+            temp.push(allNFTs[i]) 
+            break         
+          }
+        }
+      }
+      setListNFTs(temp)    
+    } 
+  },[isActiveBuyNow,collectionInfo,allNFTs])
+  // useEffect(()=>{
+  //   if(collectionInfo && allNFTs.length>0){
+  //     const tempOrders = []
+  //     for(let i=0;i<allNFTs.length;i++){
+  //       let order:any = null
+  //       for(let j=0; j<orders.length;j++){
+  //         if(collectionInfo.address==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
+  //           order = orders[j]         
+  //         }
+  //       }
+  //       if(order){
+  //         tempOrders.push(order)
+  //       }        
+  //     }      
+  //     console.log(tempOrders)
+  //     setOrdersForCollection(tempOrders)     
+  //   } 
+  // },[collectionInfo,allNFTs])
+  // useEffect(()=>{   
+  //   if(ordersForCollection.length > 0 && assetPrices){
+  //     let lowPrice: any = Number.MAX_VALUE
+  //     ordersForCollection.map((order: { price: any, currencyAddress:any }) => {
+  //       let priceAsUSD = 0
+  //       if(currencies_list[getChainIdFromName(collectionInfo.chain)].find(({address}) => address===order.currencyAddress)){
+  //         priceAsUSD = parseFloat(ethers.utils.formatEther(order.price))
+  //       }else{
+  //         priceAsUSD = convertETHtoUSDT(parseFloat(ethers.utils.formatEther(order.price)), assetPrices.eth)
+  //       }
+  //       if(lowPrice > priceAsUSD){
+  //         lowPrice  = priceAsUSD
+  //       }             
+  //     })
+  //     if(lowPrice === Number.MAX_VALUE){
+  //       lowPrice = 0
+  //     }
+  //     setFloorPrice(lowPrice)
+  //   }else if(ordersForCollection.length ===0){
+  //     setFloorPrice(0)
+  //   }
+   
+  // },[ordersForCollection])
+  useEffect(()=> {
+    if (isInitialized && collectionInfo.address) {
+      fetchCollectionMetaData()
+    }
+  }, [isInitialized, Moralis,collectionInfo])
+  useEffect(()=>{
+    if(contractType!=='' && collectionInfo){
+      dispatch(getRoyalty(contractType, collectionInfo.address, getChainIdFromName(collectionInfo.chain) ,signer) as any)
+    }
+  },[contractType,collectionInfo])
   return (
     <>
-      <div className={classNames('w-full', 'mt-20', 'pr-[70px]', 'relative', editStyle.collection)}>
+      <div className={classNames('w-full', 'mt-20', 'pr-[70px]' ,'pt-[30px]', 'relative', editStyle.collection)}>
         <div className="w-[100%] h-[100%] mt-20">
           <img className={classNames(editStyle.bannerImg)} src={collectionInfo&&collectionInfo.banner_image ? collectionInfo.banner_image : ''} />
-          <div className={classNames(editStyle.bannerOpacity)} />
+          <div className={classNames(editStyle.bannerOpacity)} /> 
         </div>
-        <div className="grid grid-cols-13 mt-20">
+        <div className="flex space-x-8 items-end ml-[70px]">
+          <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="logo" />}>
+            <img className="w-[200px] h-[200px]" src={imageError?'/images/omnix_logo_black_1.png':(collectionInfo&&collectionInfo.profile_image ? collectionInfo.profile_image : '/images/omnix_logo_black_1.png')} alt="logo" onError={(e)=>{setImageError(true)}} data-src={collectionInfo&&collectionInfo.profile_image ? collectionInfo.profile_image : ''} />
+          </LazyLoad>
+          <div className="flex relative  text-lg font-bold text-center items-center">
+            <div className={'select-none inline-block p-4 text-xxl font-extrabold '}>
+              {collectionInfo?collectionInfo.name:''}                  
+            </div> 
+            <div className="w-[30px] h-[30px] bg-[#B444F9] rounded-[30px] flex items-center justify-center">
+              <div className=" w-[15px] h-[9px] border-b-[3px] border-l-[3px] border-white -rotate-45 "></div>
+            </div> 
+            { collectionInfo&&collectionInfo.discord?
+              <Link href={collectionInfo.discord}>
+                <a className="p-2 flex items-center">
+                  <Image src={Discord} width={25} height={21} alt='discord' />
+                </a>
+              </Link>
+              :
+              <a className="p-2 flex items-center">
+                <Image src={Discord} width={25} height={21} alt='discord' />
+              </a>
+            }
+            { collectionInfo&&collectionInfo.twitter?
+              <Link href={collectionInfo.twitter}>
+                <a className="p-2 flex items-center">
+                  <Image src={Twitter} alt='twitter' />
+                </a>
+              </Link>
+              :
+              <a className="p-2 flex items-center">
+                <Image src={Twitter} alt='twitter' />
+              </a>
+            }
+            { collectionInfo&&collectionInfo.website?
+              <Link href={collectionInfo.website}>
+                <a className="p-2 flex items-center">
+                  <Image src={Web} alt='website' />
+                </a>
+              </Link>
+              :
+              <a className="p-2 flex items-center">
+                <Image src={Web} alt='website' />
+              </a>
+            }
+            <Link href={explorerUrl}>
+              <a target='_blank' className="p-2 flex items-center">
+                <Image src={Explorer} alt='website' />
+              </a>
+            </Link>
+              
+          </div>
+        </div>  
+        <div className='w-full  mt-[-100px] border-b-2 border-[#E9ECEF]'>
+          <div className="flex">
+            <div className="w-[320px] min-w-[320px]"/>              
+          </div>
+          <div className="flex">
+            <div className="w-[320px] min-w-[320px]">
+            </div>
+            <div className="flex w-full justify-between items-end">
+              <div className="flex flex-col">                
+                <ul className="flex relative justify-item-stretch text-lg font-bold text-center">
+                  <li
+                    className={`select-none inline-block p-4  w-32	 cursor-pointer z-30 ${currentTab === 'items' ? 'text-[#1E1C21] border-b-2 border-black': ' text-[#A0B3CC]'} `}
+                    onClick={() => setCurrentTab('items')}>
+                    items
+                  </li>
+                  <li className={'select-none inline-block p-4  w-32	 cursor-pointer  z-20  text-[#A0B3CC]'}>activity</li>
+                  <li className={'select-none inline-block p-4  w-32	 cursor-pointer  z-10  text-[#A0B3CC]'}>stats</li>
+                </ul>
+              </div>
+              
+              <ul className="flex space-x-4 relative justify-item-stretch items-end text-md font-bold text-center pb-[5px]">
+                <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
+                  <span className="mr-[22px] ">Items</span>
+                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.itemsCnt:0}</span>           
+                </li>
+                <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
+                  <span className="mr-[22px] ">Owners</span>
+                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.ownerCnt:0}</span>           
+                </li>
+                <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
+                  <span className="mr-[22px] ">Listed</span>
+                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.orderCnt:0}</span>           
+                </li>
+                <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
+                  <span className="mr-[22px] ">Royalty Fee</span>
+                  <span >{royalty}%</span>
+                </li>
+                <li className="inline-block px-[13px] py-[13px] h-fit flex flex-col space-y-4 justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
+                  <div className="flex flex-col">
+                    <div className="flex justify-start">
+                      <span>Volume(Total)</span>
+                    </div>
+                    <div className="flex flex-row">
+                      <span className="mr-[10px] ">0</span>
+                      <img src='/svgs/eth_asset.svg' alt='asset'></img>
+                    </div>
+                  </div>
+                  <div className="flex flex-col">
+                    <div className="flex justify-start">
+                      <span >Volume(7d)</span>
+                    </div>
+                    <div className="flex flex-row">
+                      <span className="mr-[10px] ">0</span>
+                      <img src='/svgs/eth_asset.svg' alt='asset'></img>
+                    </div>
+                  </div>
+
+                </li>
+                <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
+                  <div className="flex flex-col space-y-2">
+                    <div>
+                      <span className="mr-[22px] ">Floor</span>
+                    </div>
+                    <div className="flex flex-col space-y-1">
+                      <div className="flex flex-row justify-between">
+                        <span className="mr-[22px] ">{collectionInfoFromLocal?collectionInfoFromLocal.floorPrice?.eth:0}</span>
+                        <img src='/svgs/eth_asset.svg' alt='asset'></img>
+                      </div>
+                      <div className="flex flex-row justify-between">
+                        <span className="mr-[22px] ">{collectionInfoFromLocal?collectionInfoFromLocal.floorPrice?.usd:0}</span>
+                        <img src='/svgs/usd_asset.svg' alt='asset'></img>
+                      </div>
+                      <div className="flex flex-row justify-between">
+                        <span className="mr-[22px] ">{collectionInfoFromLocal?collectionInfoFromLocal.floorPrice?.usd:0}</span>
+                        <img src='/svgs/omni_asset.svg' alt='asset'></img>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
           <div className="col-span-1"></div>
-          <div className="2xl:col-span-1 xl:col-span-2 md:col-span-2">
-            <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="logo" />}>
-              <img src={imageError?'/images/omnix_logo_black_1.png':(collectionInfo&&collectionInfo.profile_image ? collectionInfo.profile_image : '/images/omnix_logo_black_1.png')} alt="logo" onError={(e)=>{setImageError(true)}} data-src={collectionInfo&&collectionInfo.profile_image ? collectionInfo.profile_image : ''} />
-            </LazyLoad>
-          </div>
-          <div className="2xl:col-span-9 xl:col-span-8 md:col-span-8 px-8 pt-3">
-            <div>
-              <p className="text-[#1E1C21] font-['Roboto Mono'] text-3xl uppercase font-bold">{collectionInfo?collectionInfo.name:''}</p>
-            </div>
-            <div className="flex justify-start mt-5 mb-5">
-              <div>
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-normal underline">items</p>
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-bold mt-3">{collectionInfo?collectionInfo.count:0}</p>
-              </div>
-              <div className="xl:ml-20 lg:ml-10 md:ml-10">
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-normal underline">holders</p>
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-bold mt-3">{collectionOwners}</p>
-              </div>
-              <div className="xl:ml-20 lg:ml-10 md:ml-10">
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-normal underline">floor</p>
-                <div className="flex justify-center text-[#1E1C21] font-['Roboto Mono'] text-xl font-bold mt-3">
-                  <span className='mr-3'>0</span><Image src={Ethereum} height={20} width={23} alt="" />
-                </div>
-              </div>
-              <div className="xl:ml-20 lg:ml-10 md:ml-10">
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-normal underline">royalty fee</p>
-                <p className="text-[#1E1C21] font-['Roboto Mono'] text-xl font-bold mt-3">0%</p>
-              </div>
-            </div>
-          </div>
-          <div className="col-span-2">
-            <div className="mt-7">
-              { collectionInfo&&collectionInfo.discord &&
-                <Link href={collectionInfo.discord}>
-                  <a className="p-2">
-                    <Image src={Discord} width={25} height={21} alt='discord' />
-                  </a>
-                </Link>
-              }
-              { collectionInfo&&collectionInfo.twitter &&
-                <Link href={collectionInfo.twitter}>
-                  <a className="p-2">
-                    <Image src={Twitter} alt='twitter' />
-                  </a>
-                </Link>
-              }
-              { collectionInfo&&collectionInfo.website &&
-                <Link href={collectionInfo.website}>
-                  <a className="p-2">
-                    <Image src={Web} alt='website' />
-                  </a>
-                </Link>
-              }
-            </div>
-          </div>
         </div>
-        
+
         <div className='w-full mt-8 border-b-2 border-[#E9ECEF]'>
           <div className="flex">
             <div className="w-[320px] min-w-[320px]">
@@ -306,17 +545,18 @@ const Collection: NextPage = () => {
             <div className="px-12">
               <ul className="flex relative justify-item-stretch text-xl font-bold text-center">
                 <li
-                  className={`select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer z-30 ${currentTab === 'items' ? 'bg-[#E9ECEF] text-[#1E1C21] shadow-[1px_-1px_4px_1px_rgba(233,236,239,1)]' : 'bg-[#F8F9FA] text-[#ADB5BD] shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)]'} `}
+                  className={`select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer z-30 ${currentTab === 'items' ? 'bg-[#E9ECEF] text-[#1E1C21] shadow-[1px_-1px_4px_1px_rgba(233,236,239,1)]' : 'bg-[#F6F8FC] text-[#ADB5BD] shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)]'} `}
                   onClick={() => setCurrentTab('items')}>
                   items
                 </li>
-                <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-20 bg-[#F8F9FA] text-[#ADB5BD]'}>activity</li>
-                <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-10 bg-[#F8F9FA] text-[#ADB5BD]'}>stats</li>
+                <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-20 bg-[#F6F8FC] text-[#ADB5BD]'}>activity</li>
+                <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-10 bg-[#F6F8FC] text-[#ADB5BD]'}>stats</li>
               </ul>
             </div>
           </div>
         </div>
       </div>
+      
 
 
       <div className="w-full pr-[70px]">
@@ -325,7 +565,7 @@ const Collection: NextPage = () => {
             <ul className='flex flex-col space-y-4'>
               <li className="w-full">
                 <div
-                  className={`w-full px-4 py-4 text-left text-g-600  font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`}
+                  className={`w-full px-4 py-4 text-left text-g-600  font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`} onClick={()=>setIsActiveBuyNow(!isActiveBuyNow)}
                 >
                   Buy Now
                   <Switch
@@ -352,7 +592,7 @@ const Collection: NextPage = () => {
                       aria-controls="panel1a-content"
                       id="panel1a-header"
                     >
-                      <Typography className={classes.heading}>{key}</Typography>
+                      <Typography className={classNames(classes.heading,'font-RetniSans') } style={{fontFamily:'RetniSans'}}>{key}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                       <div>
@@ -446,7 +686,7 @@ const Collection: NextPage = () => {
           <div className="px-12 py-6 border-l-2 border-[#E9ECEF] w-full">
             <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 p-1 gap-4">
               <div className="2xl:col-start-4 xl:col-start-3 lg:col-start-2 md:col-start-1">
-                <button className="rounded-lg bg-[#38B000] text-[#F8F9FA] py-2 xl:text-[18px] lg:text-[14px] w-full">make a collection bid</button>
+                <button className="rounded-lg bg-[#38B000] text-[#F6F8FC] py-2 xl:text-[18px] lg:text-[14px] w-full">make a collection bid</button>
               </div>
               <div className="min-w-[180px] z-10 2xl:col-start-5 xl:col-start-4 lg:col-start-3 md:col-start-2">
                 <Listbox value={selected} onChange={onChangeSort}>
@@ -499,10 +739,7 @@ const Collection: NextPage = () => {
               </div>
             </div>
             <div className="mt-5">
-              {
-                clearFilter &&
-                <Chip label="Clear Filters" variant="outlined" onClick={() => {setClearFilter(false), setSearchObj({})}} classes={{ root: classes.chipRoot }}/>
-              }
+            
               {
                 Object.keys(searchObj).map((attrKey, attrIndex) => {
                   return searchObj[attrKey].map((item: any, index: any) => {
@@ -527,7 +764,7 @@ const Collection: NextPage = () => {
                   loader={
                     <div className='flex justify-center items-center'>
                       <div className="flex justify-center items-center w-[90%] h-[100px]">
-                        <CircularProgress />
+                        {!isActiveBuyNow&&<CircularProgress />}
                       </div>
                     </div>
                   }
@@ -535,13 +772,13 @@ const Collection: NextPage = () => {
                     <div></div>
                   }
                 >
-                  <div className="grid 2xl:grid-cols-5 gap-4 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 p-1">
-                    { nfts.map((item, index) => {
-                      console.log(item)
+                  <div className="grid 2xl:grid-cols-5 gap-4 xl:grid-cols-3 md:grid-cols-2 p-1">
+                    { !isActiveBuyNow && nfts.map((item, index) => {
                       return (
-                        <NFTBox nft={item} index={index} key={index} col_url={col_url} chain={collectionInfo?collectionInfo.chain:'eth'}/>
+                        <NFTBox nft={item} index={index} key={index}  col_url={col_url} col_address={collectionInfo.address}  chain={collectionInfo?collectionInfo.chain:'eth'}/>
                       )
                     })}
+                    { isActiveBuyNow && listNFTs && buyComponet()}
                   </div>
                 </InfiniteScroll>
               }

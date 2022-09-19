@@ -59,8 +59,8 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
                   {
                     selectedNFTItem &&
                       <>
-                        <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image"/>}>
-                          <img className="rounded-[8px]" src={imageError ? '/images/omnix_logo_black_1.png' : image} alt="nft-image" onError={(e) => {
+                        <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image"/>} style={{ width: '100%', height: '100%' }}>
+                          <img className="rounded-[8px]" src={imageError ? '/images/omnix_logo_black_1.png' : image} style={{ width: '100%', height: '100%' }} alt="nft-image" onError={(e) => {
                             setImageError(true)
                           }} data-src={image}/>
                         </LazyLoad>
@@ -85,7 +85,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
               <div className="flex items-center justify-around mt-1">
                 <div className="flex flex-col">
                   <p>From:</p>
-                  <div className="flex flex-col items-center px-[15px] py-[10px] bg-[#F8F9FA] rounded-md border-2 border-[#E9ECEF] min-w-[95px] min-h-[78px]">
+                  <div className="flex flex-col items-center px-[15px] py-[10px] bg-[#F6F8FC] rounded-md border-2 border-[#E9ECEF] min-w-[95px] min-h-[78px]">
                     <p>
                       <img src={chainInfos[senderChain].logo} width={30} height={30} style={{width: 30, height: 30}} alt={'Sender chain'} />
                     </p>
@@ -94,7 +94,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
                 </div>
                 <div className="flex flex-col">
                   <p>To:</p>
-                  <div className="flex flex-col items-center px-[15px] py-[10px] bg-[#F8F9FA] rounded-md border-2 border-[#E9ECEF] min-w-[95px] min-h-[78px]">
+                  <div className="flex flex-col items-center px-[15px] py-[10px] bg-[#F6F8FC] rounded-md border-2 border-[#E9ECEF] min-w-[95px] min-h-[78px]">
                     <p>
                       <img src={chainInfos[targetChain].logo} width={30} height={30} style={{width: 30, height: 30}} alt={'Target chain'} />
                     </p>
@@ -104,7 +104,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
               </div>
               <div className="flex items-center justify-around my-5">
                 <p>Gas Cost:</p>
-                <p>{ethers.utils.formatEther(estimatedFee)}&nbsp;{chainInfos[senderChain].currency}</p>
+                <p>{estimatedFee!=undefined&&ethers.utils.formatEther(estimatedFee)}&nbsp;{chainInfos[senderChain].currency}</p>
               </div>
               {/*<p className="my-4 text-slate-500 text-lg leading-relaxed">
                 Note: if the asset is a non-native omnichain token and transferred to its home chain,

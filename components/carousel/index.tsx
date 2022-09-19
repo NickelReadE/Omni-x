@@ -153,7 +153,7 @@ const Carousel = (props: any): JSX.Element => {
   }
 
   return (
-    <div className={Style.react3dCarousel} style={{ height }} {...handlers}>
+    <div className={Style.react3dCarousel} style={{ height:'500px' }} {...handlers}>
       {
         slides && slides.length > 0 &&
         <div className={Style.sliderContainer} >
