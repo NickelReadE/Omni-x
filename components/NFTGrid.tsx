@@ -59,7 +59,7 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
 
   },[searchText])
 
-  
+
   useEffect(() => {
     if(allNFTs && tokenID>0){
       setNFT(allNFTs[tokenID-1])

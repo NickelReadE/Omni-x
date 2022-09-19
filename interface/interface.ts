@@ -91,17 +91,20 @@ export interface IOrder {
   startTime: number,
   endTime: number,
   minPercentageToAsk: number,
-  params: [],
+  params: any[],
   signature: string,
   v: number,
   r: string,
   s: string,
-  status: string
+  hash: string,
+  status: OrderStatus
 }
+
+export type OrderStatus = 'EXECUTED' | 'EXPIRED'
 
 export interface IAcceptOrderRequest {
   hash: string,
-  status: string
+  status: OrderStatus
 }
 
 export interface ICollectionInfoFromLocal{
@@ -110,4 +113,16 @@ export interface ICollectionInfoFromLocal{
   ownerCnt:string,
   orderCnt:string,
   floorPrice:{eth:string, usd:string}
+}
+
+export interface IListingData {
+  price: number,
+  currencyName: string,
+  period: number,
+  isAuction: boolean
+}
+
+export interface IBidData {
+  price: number,
+  currencyName: string
 }

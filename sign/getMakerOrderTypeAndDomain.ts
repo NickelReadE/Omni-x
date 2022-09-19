@@ -1,6 +1,6 @@
 import { TypedDataDomain, TypedDataField } from "@ethersproject/abstract-signer";
 import { SupportedChainId } from "../types";
-import { addressesByNetwork } from "../constants";
+import { getAddressByName } from "../utils/constants";
 
 const version = 1;
 
@@ -23,7 +23,7 @@ export const getMakerOrderTypeAndDomain = (
     name: "OmniXExchange",
     version: version.toString(),
     chainId,
-    verifyingContract: verifyingContract ? verifyingContract : addressesByNetwork[chainId].EXCHANGE,
+    verifyingContract: verifyingContract ? verifyingContract : getAddressByName('OmnixExchange', chainId),
   };
 
   const type: Record<string, Array<TypedDataField>> = {
