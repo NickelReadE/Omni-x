@@ -2,42 +2,18 @@ import React from 'react'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { chain_list } from '../utils/utils'
-import { IPropsNFTItem } from '../interface/interface'
-import LazyLoad from 'react-lazyload'
 import {useDraggable} from '@dnd-kit/core'
-import ConfirmSell from './collections/ConfirmSell'
-import { prependOnceListener } from 'process'
 
-import useWallet from '../hooks/useWallet'
-import { addressesByNetwork } from '../constants'
-import { SupportedChainId } from '../types'
-import { postMakerOrder } from '../utils/makeOrder'
-import { ethers } from 'ethers'
-import { addDays } from 'date-fns'
-import { getCollectionInfo, selectCollectionInfo, getCollectionOwners, selectCollectionOwners } from '../redux/reducers/collectionsReducer'
-import { convertUSDTtoETH } from '../utils/convertRate'
-
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch,  } from 'react-redux'
 import editStyle from '../styles/nftbox.module.scss'
 import classNames from '../helpers/classNames'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import Hgreg from '../public/images/gregs/logo.png'
 import Loading from '../public/images/loading_f.gif'
 const CollectionCard = (props:any) => {
 
-  const [chain, setChain] = useState('eth')
   const [image, setImage] = useState(props.collection.profile_image)
   const [imageError, setImageError] = useState(false)
-  const [openSellDlg, setOpenSellDlg] = React.useState(false)
   ///only in the beta version
-  const [islisted,setList] = useState(false)
-  const [itemCounts, setItemCounts] = useState(0)
-  const [ownerNum, setOwnerNum] = useState(0)
-  const {
-    provider,
-    address
-  } = useWallet()
+ 
 
   const dispatch = useDispatch()
   const {attributes, listeners, setNodeRef, transform} = useDraggable({

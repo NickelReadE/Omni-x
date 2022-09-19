@@ -502,22 +502,22 @@ const Mint: NextPage = () => {
     if(mintable){
       if(isMinting){
         return(
-          <button type='button'  disabled><i  className='fa fa-spinner fa-spin' style={{'letterSpacing':'normal'}}/>MINT NOW</button>
+          <button type='button'  disabled><i  className='fa fa-spinner fa-spin font-bold text-xl  ' style={{'letterSpacing':'normal'}}/>mint now</button>
         )
       } else {
         if(isSwitchingNetwork){
           return(
-            <button type='button' disabled>MINT NOW</button>
+            <button type='button' disabled>mint now</button>
           )
         } else {
           return(
-            <button type='button' onClick={()=>mint()}>MINT NOW</button>
+            <button type='button' onClick={()=>mint()}>mint now</button>
           )
         }
       }
     } else{
       return(
-        <button type='button'  disabled>MINT NOW</button>
+        <button type='button'  disabled>mint now</button>
       )
     }
   }
@@ -593,33 +593,25 @@ const Mint: NextPage = () => {
     <>      
       <ToastContainer />
       <div className={classNames(mintstyles.mintHero, 'font-RetniSans')}>         
-        <div className={mintstyles.container}>
+        <div className={classNames(mintstyles.container, 'flex justify-between px-[150px]')}>
           <div className={mintstyles.mintImgWrap}>
             <div className={mintstyles.mintImgT}>
-              {videoSection()}
-            </div>
-            <div className={mintstyles.mintImgB}>
-              <Image src={MintImgBottom} alt='mint background' layout='responsive' />
-              <div className={mintstyles.mintImgtext}>
-                <h1>{collectionInfo.name?.toUpperCase()}</h1>
-              </div>
+              <img className='w-[600px] rounded-md ' src={collectionInfo.profile_image?collectionInfo.profile_image:'/images/nft.png'} alt="nft-image" />
             </div>
           </div>
-          <div className={mintstyles.mintDesc}>
-            <h1>Description</h1>
+          <div >
+            <h1 className='font-bold text-xxl2'>{collectionInfo.name?collectionInfo.name:'Collection Name'}</h1>
             <div className={mintstyles.mintDescSec}>
-              <p>Tiny Dinos is our genesis collection that represents our community and technological breakthroughs</p>
-              <p>mint greg below from any chain you wish and transfer him to any other chain using the “Transfer” box below</p>
-              <p>5 mints per transaction</p>
+              <p className='font-bold text-[#A0B3CC] text-xg1 w-[830px]'>{collectionInfo.description? collectionInfo.description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet.'}</p>
             </div>
             <div className={mintstyles.mintDataGrid}>
               <div className={mintstyles.mintDataWrap}>
-                <h5>MINTED</h5>
+                <h5>minted</h5>
                 <span>{nextTokenId - substrateIndex}/{totalNFTCount - substrateIndex}</span>
               </div>
               <span className={mintstyles.line}></span>
               <div className={mintstyles.mintDataWrap}>
-                <h5>PRICE</h5>
+                <h5>price</h5>
                 {/* <span>{chainId?addresses[`${Number(chainId)}`].price:0}<Image src={chainId?addresses[`${Number(chainId)}`].imageSVG:EthereumImageSVG} width={29.84} height={25.46} alt='ikon'></Image></span> */}
                 <div className='flex flex-row space-x-2 items-center mt-[15px]'>
                   <div className='text-xg1 '>
@@ -631,7 +623,7 @@ const Mint: NextPage = () => {
               </div>
               <span className={mintstyles.line}></span>
               <div className={mintstyles.mintDataWrap}>
-                <h5>QUANTITY</h5>
+                <h5>quantity</h5>
                 <div className={mintstyles.counterWrap}>
                   <button onClick={()=>decrease()}><Image src={MinusSign} alt='minus'></Image></button>
                   <span>{mintNum}</span>
@@ -639,7 +631,7 @@ const Mint: NextPage = () => {
                 </div>
               </div>
             </div>
-            <div className={mintstyles.mintBtnWrap}>
+            <div className='w-fit	 px-2 py-1 text-white border-2 border-[#B444F9] bg-[#B444F9] rounded-lg transition-all duration-300 ease-in-out hover:scale-105 hover:drop-shadow-[0_10px_10px_rgba(180,68,249,0.7)] active:scale-100 active:drop-shadow-[0_5px_5px_rgba(180,68,249,0.8)]'>
               {mintButton()}
             </div>
           </div>

@@ -42,14 +42,16 @@ const Launchpad: NextPage = () => {
                 </button>
               </a>
             </Link>
-
-            <Link href={'https://docs.google.com/forms/d/e/1FAIpQLSf6VCJyF1uf9SZ9BJwbGuP7bMla7JzOXMg6ctXN6SlSgNgFlw/viewform?usp=pp_url'}>
-              <a target="_blank">
-                <button className='px-2 py-1 text-white border-2 border-[#B444F9] bg-[#B444F9] rounded-lg'>
-                  apply to launchpad
-                </button>
-              </a>
-            </Link>
+            <div className='transition-all duration-300 ease-in-out hover:scale-105 hover:drop-shadow-[0_10px_10px_rgba(180,68,249,0.7)] active:scale-100 active:drop-shadow-[0_5px_5px_rgba(180,68,249,0.8)]'>
+              <Link href={'https://docs.google.com/forms/d/e/1FAIpQLSf6VCJyF1uf9SZ9BJwbGuP7bMla7JzOXMg6ctXN6SlSgNgFlw/viewform?usp=pp_url'}>
+                <a target="_blank">
+                  <button className='px-2 py-1 text-white border-2 border-[#B444F9] bg-[#B444F9] rounded-lg transition-all duration-300 ease-in-out hover:scale-105 hover:drop-shadow-[0_10px_10px_rgba(180,68,249,0.7)] active:scale-100 active:drop-shadow-[0_5px_5px_rgba(180,68,249,0.8)]'>
+                    apply to launchpad
+                  </button>
+                </a>
+              </Link>
+            </div>
+            
           </div>
         </div>
       </div>
