@@ -25,7 +25,7 @@ export interface MakerOrderWithEncodedParams extends Omit<MakerOrder, "params"> 
 }
 
 /** MakerOrderWithSignature matches the type used for API order mutations and contract calls. */
-export interface MakerOrderWithSignature extends MakerOrder {
+export interface MakerOrderWithSignature extends MakerOrderWithEncodedParams {
   signature: string;
 }
 

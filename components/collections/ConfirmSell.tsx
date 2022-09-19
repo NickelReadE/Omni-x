@@ -123,7 +123,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                   <span className="px-4 text-[#ADB5BD] font-light">~ $60.00 USD</span>
                 </div>
               </div>
-            
+
               <div>
                 <img className='rounded-[8px] max-w-[250px]' src={nftImage} />
                 <p className='mt-2 text-center text-[#6C757D] font-medium'>{nftTitle}</p>
@@ -189,7 +189,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                 <p className='mt-2 text-center text-[#6C757D] font-medium'>{nftTitle}</p>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-4 mt-20 flex items-end">
               <div className="col-span-1">
                 <button className='bg-[#B00000] rounded text-[#fff] w-[95px] h-[35px]' onClick={() => onListing()}>list</button>

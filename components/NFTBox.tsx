@@ -2,15 +2,13 @@ import React from 'react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { chain_list } from '../utils/utils'
-import { IPropsNFTItem } from '../interface/interface'
+import { IListingData, IPropsNFTItem } from '../interface/interface'
 import LazyLoad from 'react-lazyload'
 import {useDraggable} from '@dnd-kit/core'
 import ConfirmSell from './collections/ConfirmSell'
-import { cpuUsage, prependOnceListener } from 'process'
+import { prependOnceListener } from 'process'
 
 import useWallet from '../hooks/useWallet'
-import { addressesByNetwork } from '../constants'
-import { SupportedChainId } from '../types'
 import { postMakerOrder } from '../utils/makeOrder'
 import { addDays } from 'date-fns'
 import { openSnackBar } from '../redux/reducers/snackBarReducer'
@@ -19,12 +17,13 @@ import { getOrders, selectOrders,selectBidOrders, selectLastSaleOrders } from '.
 import { selectCollections } from '../redux/reducers/collectionsReducer'
 import { IGetOrderRequest } from '../interface/interface'
 import { useDispatch, useSelector } from 'react-redux'
+import { ContractName, CREATOR_FEE, CURRENCIES_LIST, getAddressByName, PROTOCAL_FEE } from '../utils/constants'
+
+import Router from 'next/router'
 import editStyle from '../styles/nftbox.module.scss'
 import classNames from '../helpers/classNames'
 import { currencies_list } from '../utils/constants'
 import { getChainIdFromName } from '../utils/constants'
-
-import Router from 'next/router'
 
 const NFTBox = ({nft, index}: IPropsNFTItem) => {
 
@@ -79,7 +78,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
         }
       }
 
-      
+
     }
     updateImage()
   }, [])
@@ -155,33 +154,35 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   }
 
 
-  const onListing = async (currency: string, price: number, period: number) => {
+  const onListing = async (listingData: IListingData) => {
     const chainId = provider?.network.chainId as number
-    
-    const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
+    const amount = ethers.utils.parseUnits('1', 0)
+    const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
+    const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
+
     const startTime = Date.now()
     try {
       await postMakerOrder(
         provider as any,
         chainId,
-        true,
+        false,
         nft.token_address,
-        addresses.STRATEGY_STANDARD_SALE,
-        ethers.utils.parseUnits('1', 1),
-        ethers.utils.parseEther(price.toString()),
-        ethers.utils.parseUnits('2', 2),
-        ethers.utils.parseUnits('2', 2),
-        currency,
+        getAddressByName('Strategy', chainId),
+        amount,
+        ethers.utils.parseEther(listingData.price.toString()),
+        protocalFees,
+        creatorFees,
+        getAddressByName(listingData.currencyName as ContractName, chainId),
         {
           tokenId: String(nft.token_id),
-          startTime: startTime,
-          endTime: addDays(startTime, period).getTime(),
+          startTime,
+          endTime: addDays(startTime, listingData.period).getTime(),
           params: {
-            values: [10001,1],
+            values: [10001],
             types: ['uint256'],
           },
         },
-        nft.chain
+        nft.chain,
       )
       setOpenSellDlg(false)
       dispatch(openSnackBar({ message: 'Listing Success', status: 'success' }))
@@ -201,7 +202,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       dispatch(openSnackBar({ message: err.message, status: 'error' }))
     }
   }
-  
+
   return (
     <div className='border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]'onMouseEnter={() => SetIsShowBtn(true)} onMouseLeave={() => SetIsShowBtn(false)}>
       <div className="nft-image-container group relative flex justify-center text-center overflow-hidden rounded-md" ref={setNodeRef} style={style} {...listeners} {...attributes}>
@@ -257,7 +258,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
         <div className="flex items-center ml-3">
           {lastSale!=0&&<><span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span><img src={lastSaleCoin} className="w-[18px] h-[18px]" />&nbsp;<span className="text-[#6C757D] text-[14px]font-bold">{lastSale}</span></>}
-          {lastSale==0&&highestBid!=0&&<><span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span><img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;<span className="text-[#6C757D] text-[14px] font-bold">{highestBid}</span></>}  
+          {lastSale==0&&highestBid!=0&&<><span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span><img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;<span className="text-[#6C757D] text-[14px] font-bold">{highestBid}</span></>}
         </div>
         <div className="flex items-center ml-3">
           <div>&nbsp;</div>

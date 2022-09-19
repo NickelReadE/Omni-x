@@ -114,7 +114,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
             <p className='mt-2 text-center text-[#6C757D] font-medium'>{nftTitle}</p>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-4 mt-12 flex items-end">
           <div className="col-span-1">
             <button className='bg-[#38B000] rounded text-[#fff] w-[95px] h-[35px]' onClick={() => onBid()}>bid</button>

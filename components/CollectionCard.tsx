@@ -10,7 +10,6 @@ import ConfirmSell from './collections/ConfirmSell'
 import { prependOnceListener } from 'process'
 
 import useWallet from '../hooks/useWallet'
-import { addressesByNetwork } from '../constants'
 import { SupportedChainId } from '../types'
 import { postMakerOrder } from '../utils/makeOrder'
 import { ethers } from 'ethers'
@@ -49,7 +48,7 @@ const CollectionCard = (props:any) => {
   const style = transform ? {
     transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
     zIndex: 99
-  } : undefined  
+  } : undefined
   return (
     <div className={classNames(' border-[2px] border-[#F6F8FC] w-[340px] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F6F8FC]', editStyle.nftContainer)}>
       <div className='relative'  style={style} >
@@ -61,18 +60,18 @@ const CollectionCard = (props:any) => {
             <Link href={`/collections/${props.collection.col_url}`}>
               <div className='w-[230px] text-[18px] text-white	 text-extrabold text-center items-center bg-[#B444F9] rounded-lg mb-[24px]  py-[7px] hover:cursor-pointer'>view collection</div>
             </Link>
-            
+
             <div className='w-[230px] text-[18px] text-white	 text-extrabold text-center items-center bg-[#38B000] rounded-lg  py-[7px]'>make a collection bid</div>
           </div>
-          
+
         </div>
       </div>
       <div className="flex flex-row mt-2.5 justify-start">
         <div className="ml-3 text-[#000000] text-[20px] font-bold ">
           {props.collection.name}
-        </div>        
+        </div>
       </div>
-      
+
       <div className="grid grid-rows-6 grid-flow-col gap-1 p-2">
         <div className={classNames('row-span-6 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
           <div className='text-[14px] font-extrabold  mb-1 w-[60px]'>Floor</div>
@@ -89,7 +88,7 @@ const CollectionCard = (props:any) => {
               <span className='font-medium text-[12px] mr-[px]'>{props.card?props.card.floorPrice?.usd:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
               <img src='/svgs/omni_asset.svg' className='w-[16px]' alt='asset img'></img>
             </div>
-          </div>            
+          </div>
         </div>
         <div className={classNames('row-span-2 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)}>
           <div className='text-[14px] flex flex-row justify-between'>
@@ -122,12 +121,12 @@ const CollectionCard = (props:any) => {
             <div className='flex flex-row mr-4'>
               <span className='font-medium mr-1 text-[12px]'>{props.card?0:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
               <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img>
-            </div>               
+            </div>
             <span className='font-medium text-[#38B000] text-[12px]'> {props.card?'0%':<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
           </div>
         </div>
       </div>
-      
+
 
     </div>
   )
