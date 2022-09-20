@@ -76,9 +76,9 @@ const Launchpad: NextPage = () => {
           </Link>
         </div>
       </div>
-      <div className='flex flew-wrap space-x-12 mt-[80px]'>
+      <div className='mt-[80px]'>
         {
-          <div>
+          <div className='flex flex-wrap space-x-12'>
             {
               collectionsToShow.map((collection: { mint_status: string, count: string, col_url:string }, index) => {
                 return <NftForLaunch key={index} typeNFT={collection.mint_status} items={collection.count} col_url={collection.col_url} />

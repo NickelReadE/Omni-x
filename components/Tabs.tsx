@@ -17,43 +17,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import Dialog from '@material-ui/core/Dialog'
 import UserEdit from './user/UserEdit'
 
-const feed: Array<FeedItem> = [
-  {
-    postedby: 'boobavelli.eth',
-    id: '#3648',
-    title: 'tiny dinos',
-    owner: 'seaviva.eth',
-    image: <Image src={image_19} alt="image - 25" layout="responsive" width={500} height={500}/>,
-    chain: 'ETH',
-    love: 24500,
-    view: 12200,
-    alert: {
-      content: 'alert: collection 24 hr volume',
-      percent: 257
-    }
-  },
-  {
-    postedby: 'boobavelli.eth',
-    id: '#3648',
-    title: 'tiny dinos',
-    owner: 'seaviva.eth',
-    image: <Image src={image_19} alt="image - 25" layout="responsive" width={500} height={500}/>,
-    chain: 'ETH',
-    love: 24500,
-    view: 12200,
-  },
-  {
-    postedby: 'boobavelli.eth',
-    id: '#3648',
-    title: 'tiny dinos',
-    owner: 'seaviva.eth',
-    image: <Image src={image_19} alt="image - 25" layout="responsive" width={500} height={500}/>,
-    chain: 'ETH',
-    love: 24500,
-    view: 12200,
-  },
-]
-
 type TabProps = {
   blur: boolean,
 }
