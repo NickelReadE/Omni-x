@@ -5,9 +5,6 @@ import LZEndpoint from '../constants/LayerzeroEndpoints.json'
 import ChainIds from '../constants/chainIds.json'
 import CHAINS from '../constants/chains.json'
 
-import GregABI from '../constants/abis/Greg.json'
-import KanpaiABI from '../constants/abis/Kanpai.json'
-import AdvancedONT from '../constants/abis/AdvancedONT.json'
 
 const omnixBridge: any = OmnixBridge
 const omnixBridge1155: any = OmnixBridge1155
@@ -285,10 +282,4 @@ export const getChainInfo = (chainId: number) => {
     return filter[0]
   }
   return null
-}
-
-export const CollectionABI : {[key : string] : any} = {
-  'tiny_dinos': AdvancedONT,
-  'gregs_eth' : GregABI,
-  'kanpai_pandas' : KanpaiABI
 }

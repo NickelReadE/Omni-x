@@ -10,14 +10,17 @@ import classNames from '../../helpers/classNames'
 const Launchpad: NextPage = () => {
   const collections = useSelector(selectCollections)
   const [isShow, setIsShow] = useState(false)
-  const [collectionsToShow, setCollectionsToShow] = useState([])
+  const [collectionsForLive, setCcollectionsForLive] = useState([])
+  const [collectionsForComing, setCcollectionsForComing] = useState([])
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(getCollections() as any)
   }, [])
   useEffect(() => {
-    setCollectionsToShow(collections.filter((collection: { mint_status: string }) => collection.mint_status === 'Live' || collection.mint_status === 'Upcoming'))
-    console.log(collections)
+    setCcollectionsForLive(collections.filter((collection: { mint_status: string }) => collection.mint_status === 'Live'))
+    
+    setCcollectionsForComing(collections.filter((collection: { mint_status: string }) => collection.mint_status === 'Upcoming'))
+    
   }, [collections])
   return (
     <div className='mt-[75px] w-full px-[130px] pt-[50px]'>
@@ -78,13 +81,36 @@ const Launchpad: NextPage = () => {
       </div>
       <div className='mt-[80px]'>
         {
-          <div className='flex flex-wrap space-x-12'>
-            {
-              collectionsToShow.map((collection: { mint_status: string, count: string, col_url:string, name:string, profile_image:string, price:string }, index) => {
-                return <NftForLaunch key={index} typeNFT={collection.mint_status} items={collection.count} col_url={collection.col_url} name={collection.name} img={collection.profile_image} price={collection.price} />
-              })
-            }
+          collectionsForLive.length>0 &&
+          <div className=''>            
+            <p className='font-bold text-xl2 mb-[24px]'>
+              Live Launches              
+            </p>
+            <div className='flex flex-wrap space-x-12'>
+              {
+                collectionsForLive.map((collection: { mint_status: string, count: string, col_url:string, name:string, profile_image:string, price:string }, index) => {
+                  return <NftForLaunch key={index} typeNFT={collection.mint_status} items={collection.count} col_url={collection.col_url} name={collection.name} img={collection.profile_image} price={collection.price} />
+                })
+              }
+            </div>
           </div>
+          
+        }
+        {
+          collectionsForComing.length>0 &&
+          <div className=''>            
+            <p className='font-bold text-xl2 mb-[24px]'>
+              Upcoming              
+            </p>
+            <div className='flex flex-wrap space-x-12'>
+              {
+                collectionsForComing.map((collection: { mint_status: string, count: string, col_url:string, name:string, profile_image:string, price:string }, index) => {
+                  return <NftForLaunch key={index} typeNFT={collection.mint_status} items={collection.count} col_url={collection.col_url} name={collection.name} img={collection.profile_image} price={collection.price} />
+                })
+              }
+            </div>
+          </div>
+          
         }
       </div>
       <div className='bg-l-50 px-[40px] py-[30px] mt-[100px] mb-[50px]'>

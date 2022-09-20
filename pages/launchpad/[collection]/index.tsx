@@ -28,211 +28,13 @@ import { Slide } from 'react-toastify'
 import { contractInfo } from '../../../interface/interface'
 import classNames from '../../../helpers/classNames'
 import useWallet from '../../../hooks/useWallet'
-import { CollectionABI } from '../../../utils/constants'
+
 
 
 //video 
 import { MerkleTree } from 'merkletreejs'
 import keccak256  from 'keccak256'
 import { cornersOfRectangle } from '@dnd-kit/core/dist/utilities/algorithms/helpers'
-
-
-interface chains {
-  chainId: string,
-  name: string
-}
-
-const providerOptions  = {
-  walletconnect: {
-    package: WalletConnectProvider, 
-    options: {
-      infuraId: 'https://mainnet.infura.io/v3/12a4aa4f06fe4bc7b5d50d73da475e2a'
-    }
-  }
-}
-
-const networkParams:{[key:string]:object} = {
-  '0x1': {
-    chainId: '0x1',
-    rpcUrls: ['https://api.mycryptoapi.com/eth'],
-    chainName: 'ETH',
-    nativeCurrency: {
-      name: 'Ether',
-      symbol: 'ETH',
-      decimals: 18
-    },
-    blockExplorerUrls: ['https://etherscan.io']
-  },
-  '0x38': {
-    chainId: '0x38',
-    chainName: 'Binance Smart Chain Mainnet',
-    nativeCurrency: {
-      name: 'BSC',
-      symbol: 'BNB',
-      decimals: 18
-    },
-    rpcUrls: ['https://bsc-dataseed1.binance.org'],
-    blockExplorerUrls: ['https://bscscan.com']
-  },
-  '0xa86a': {
-    chainId: '0xA86A',
-    chainName: 'Avalanche Network',
-    nativeCurrency: {
-      name: 'Avalanche',
-      symbol: 'AVAX',
-      decimals: 18
-    },
-    rpcUrls: ['https://api.avax.network/ext/bc/C/rpc'],
-    blockExplorerUrls: ['https://snowtrace.io/']
-  },
-  '0x89': {
-    chainId: '0x89',
-    chainName: 'Matic Mainnet',
-    nativeCurrency: {
-      name: 'Matic',
-      symbol: 'MATIC',
-      decimals: 18
-    },
-    rpcUrls: ['https://polygon-rpc.com'],
-    blockExplorerUrls: ['https://polygonscan.com/']
-  },
-  '0xa4b1': {
-    chainId: '0xA4B1',
-    chainName: 'Arbitrum Mainnet',
-    nativeCurrency: {
-      name: 'Arbitrum',
-      symbol: 'ETH',
-      decimals: 18
-    },
-    rpcUrls: ['https://arb1.arbitrum.io/rpc'],
-    blockExplorerUrls: ['https://arbiscan.io/']
-  },
-  '0xfa': {
-    chainId: '0xFA',
-    chainName: 'Fantom Mainnet',
-    nativeCurrency: {
-      name: 'Fantom',
-      symbol: 'MTF',
-      decimals: 18
-    },
-    rpcUrls: ['https://rpc.fantom.network'],
-    blockExplorerUrls: ['https://ftmscan.com']
-  },
-  '0xa': {
-    chainId: '0xA',
-    chainName: 'Optimistic Ethereum',
-    nativeCurrency: {
-      name: 'ETH',
-      symbol: 'ETH',
-      decimals: 18
-    },
-    rpcUrls: ['https://mainnet.optimism.io'],
-    blockExplorerUrls: ['https://optimistic.ethereum.io']
-  },
-}
-
-const addresses:contractInfo = {
-  '1': {
-    address: '0x7FFE2672C100bFb0094ad0B4d592Dd9f9416f1AC',
-    imageSVG: EthereumImageSVG,
-    name: 'Ethereum',
-    price: 0.06,
-    chainId: '101',
-    unit: 'ETH',
-    color:'#8C8C8C',
-    index: 0
-  },
-  '42161': {
-    address: '0x6c25c2c42928Ee8D65D2C3b0a29571BD4549A96B',
-    imageSVG: ArbitrumImageSVG,
-    name: 'Arbitrum',
-    price: 0.06,
-    chainId: '110',
-    unit: 'ETH',
-    color:'#28A0F0',
-    index: 500
-  },
-  '137': {
-    address: '0x54417f05c4D5E08B079bd671d0158Ff2854a4a88',
-    imageSVG: PolygonImageSVG,
-    name: 'Polygon',
-    price: 100,
-    chainId: '109',
-    unit: 'MATIC',
-    color:'#8247E5',
-    index: 1350
-  },
-  '43114': {
-    address: '0x018BB96D00309236E6D56046BBD8E9e083cC8CE9',
-    imageSVG:AvaxImageSVG,
-    name: 'Avalanche',
-    price: 3.5,
-    chainId: '106',
-    unit: 'AVAX',
-    color:'#E84142',
-    index: 2200
-  },
-  '56': {
-    address: '0xc5F4f67442E688Bc4Da2d9D8a055374e642490a4',
-    imageSVG:BscscanImageSVG,
-    name: 'BNB Chain',
-    price: 0.3,
-    chainId: '102',
-    unit: 'BNB',
-    color:'#F3BA2F',
-    index: 3050
-  },
-  '10': {
-    address: '0xbb2e4B6e10FE9cCEBFDCa805cdCF9fA9fb65248F',
-    imageSVG:OptimisticImageSVG,
-    name: 'Optimism',
-    price: 0.06,
-    chainId: '111',
-    unit: 'ETH',
-    color:'#FF0320',
-    index:3900
-  },
-  '250': {
-    address: '0x165865de32bA3d9552FF814C2F283964c2B61a7D',
-    imageSVG: FantomImageSVG,
-    name: 'Fantom',
-    price: 285,
-    chainId: '112',
-    unit: 'FTM',
-    color:'#13B5EC',
-    index: 4200
-  }
-}
-const chainIds: Array<chains> = [
-  {
-    chainId:'1',
-    name:'Ethereum',
-  },
-  {
-    chainId:'42161',
-    name:'Arbitrum',
-  },
-  {
-    chainId:'137',
-    name:'Polygon',
-  },
-  {
-    chainId:'43114',
-    name:'Avalanche',
-  },
-  {
-    chainId:'56',
-    name:'BNB Chain',
-  },
-  {
-    chainId:'10',
-    name:'Optimism',
-  },
-  {
-    chainId:'250',
-    name:'Fantom',
-  },
-]
 
 const Mint: NextPage = () => {
   const {
@@ -265,7 +67,8 @@ const Mint: NextPage = () => {
   const [mintable, setMintable] = useState<boolean>(false)
   const [isTransferring,setIsTransferring] = useState<boolean>(false)
   const [isSwitchingNetwork,setIsSwitchingNetwork] = useState<boolean>(false)
-
+  const [price, setPrice] = useState(0)
+  const [startId, setStartId] = useState(0)
  
   const decrease = ():void => {
     if(mintNum > 1) {
@@ -291,7 +94,8 @@ const Mint: NextPage = () => {
     try{    
       const chainId = provider?._network?.chainId  
       console.log(collectionInfo.address)
-      const tokenContract =  new ethers.Contract(collectionInfo.address[chainId?chainId:0], CollectionABI[collectionInfo.col_url], signer)
+      const tokenContract =  new ethers.Contract(collectionInfo.address[chainId?chainId:0], AdvancedONT, signer)
+      setStartId(Number(collectionInfo.start_ids[chainId?chainId:0]))
       console.log(tokenContract)
       const result =await tokenContract.balanceOf(address)
       const tokenlist = []
@@ -302,18 +106,20 @@ const Mint: NextPage = () => {
 
       setOwnToken(tokenlist)
 
+      const priceT = await tokenContract.price()
+      setPrice(Number(priceT))
       const max_mint = await tokenContract.maxMintId()
       const nextId = await tokenContract.nextMintId()
       console.log(max_mint, nextId)
       setTotalNFTCount(Number(max_mint))
       setNextTokenId(Number(nextId))
-      setSubStrateIndex(addresses[`${Number(chainId).toString(10)}`].index)
+      setSubStrateIndex(10)
 
       const publicmintFlag = await tokenContract._publicSaleStarted()
       const saleFlag = await tokenContract._saleStarted()
       if(!saleFlag && !publicmintFlag){
         setMintable(false)
-        //errorToast('Sale has not started on '+ addresses[chainId].name)
+        //errorToast('Sale has not started on '+ provider?._network.name)
       } else {
         setMintable(true)
       }
@@ -324,9 +130,10 @@ const Mint: NextPage = () => {
   }
 
   const mint = async ():Promise<void> => {
+    console.log("STarted to mint")
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner()
-    const tokenContract =  new ethers.Contract(collectionInfo.address[chainId?chainId:0], CollectionABI[collectionInfo.col_url], signer)
+    const tokenContract =  new ethers.Contract(collectionInfo.address[chainId?chainId:0], AdvancedONT, signer)
     //first private sale
     //let wladdress = ethereumwl
 
@@ -338,14 +145,14 @@ const Mint: NextPage = () => {
     let mintResult
     setIsMinting(true)
     try {
-      const publicmintFlag = true//await tokenContract._publicSaleStarted()
-      const saleFlag = true//await tokenContract._saleStarted()
+      const publicmintFlag = await tokenContract._publicSaleStarted()
+      const saleFlag = await tokenContract._saleStarted()
       if(saleFlag && publicmintFlag) {
         const currentBalance = await library.getBalance(account)
         console.log(currentBalance)
 
-        //mintResult = await tokenContract.publicMint(mintNum, {value: ethers.utils.parseEther((addresses[chainId].price*mintNum).toString())})
-        const receipt = null //await mintResult.wait()
+        mintResult = await tokenContract.publicMint(mintNum, {value: ethers.utils.parseEther((collectionInfo.price*mintNum).toString())})
+        const receipt = await mintResult.wait()
         if(receipt!=null){
           setIsMinting(false)
           getInfo()
@@ -353,14 +160,14 @@ const Mint: NextPage = () => {
         // add the the function to get the emit from the contract and call the getInfo()
       } else if (saleFlag) {
 
-        const currentBalance = 3//await tokenContract.balanceOf(account)
+        const currentBalance = await tokenContract.balanceOf(account)
         if(Number(currentBalance) + mintNum > 5){
           errorToast('You have already minted ' + String(Number(currentBalance)) + ' gregs \n' + 'Can"t mint more than 5 gregs in private sale')
           setIsMinting(false)
         } else{
-          //mintResult = await tokenContract.mint(mintNum,merkleProof, {value: ethers.utils.parseEther((addresses[chainId].price*mintNum).toString())})
+          mintResult = await tokenContract.mint(mintNum,merkleProof, {value: ethers.utils.parseEther((collectionInfo.price*mintNum).toString())})
           // add the the function to get the emit from the contract and call the getInfo()
-          const receipt = null//await mintResult.wait()
+          const receipt = await mintResult.wait()
           if(receipt!=null){
             setIsMinting(false)
             getInfo()
@@ -374,10 +181,10 @@ const Mint: NextPage = () => {
       } else {
         const currentBalance = await library.getBalance(account)
         
-        if(Number(currentBalance)/Math.pow(10,18)<addresses[chainId].price*mintNum){
+        if(Number(currentBalance)/Math.pow(10,18)<collectionInfo.price*mintNum){
           errorToast('There is not enough money to mint nft')
         } else {
-          errorToast('your address is not whitelisted on '+ addresses[chainId].name)
+          errorToast('your address is not whitelisted on '+ provider?._network.name)
         }
       }
       setIsMinting(false)
@@ -450,7 +257,7 @@ const Mint: NextPage = () => {
           // const tokenContract =  new ethers.Contract(addresses[`${Number(chainId).toString(10)}`].address, AdvancedONT.abi, signer)
           const adapterParam = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 200000])
           const fee:any =[0.001] //await tokenContract.estimateSendFee(addresses[toChain].chainId, account,transferNFT,false,adapterParam)
-          setEstimateFee('Estimate Fee :'+(Number(fee[0])/Math.pow(10,18)*1.1).toFixed(10)+addresses[chainId].unit)
+         // setEstimateFee('Estimate Fee :'+(Number(fee[0])/Math.pow(10,18)*1.1).toFixed(10)+addresses[chainId].unit)
         } else {
           setEstimateFee('')
         }
@@ -496,7 +303,7 @@ const Mint: NextPage = () => {
             <div className={mintstyles.mintDataGrid}>
               <div className={mintstyles.mintDataWrap}>
                 <h5>minted</h5>
-                <span>{nextTokenId - substrateIndex}/{totalNFTCount - substrateIndex}</span>
+                <span>{Number(totalNFTCount) - startId}/{Number(nextTokenId) - startId}</span>
               </div>
               <span className={mintstyles.line}></span>
               <div className={mintstyles.mintDataWrap}>
@@ -504,7 +311,7 @@ const Mint: NextPage = () => {
                 {/* <span>{chainId?addresses[`${Number(chainId)}`].price:0}<Image src={chainId?addresses[`${Number(chainId)}`].imageSVG:EthereumImageSVG} width={29.84} height={25.46} alt='ikon'></Image></span> */}
                 <div className='flex flex-row space-x-2 items-center mt-[15px]'>
                   <div className='text-xg1 '>
-                    {collectionInfo.price?ethers.utils.formatEther(collectionInfo.price).toString():0}                    
+                    {0}                    
                   </div>
                   <img src='/svgs/ethereum.svg' width={29.84} height={25.46} alt='ikon'></img>
                 </div>
