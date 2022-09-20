@@ -89,7 +89,7 @@ const Item: NextPage = () => {
     highestBidCoin,
     lastSale,
     lastSaleCoin
-  } = useOrderStatics(nftInfo)
+  } = useOrderStatics({ nftInfo })
 
   // nft info api call
   useEffect(() => {
@@ -117,9 +117,10 @@ const Item: NextPage = () => {
 
   // listing or auction
   const isListed = !!order
-  const isAuction = order?.params?.[2] == SaleType.AUCTION
+  const isAuction = order?.params?.[1] == SaleType.AUCTION
 
   console.log('-isListed, isAuction, owner, address-', isListed, isAuction, owner, address, nftInfo)
+
   return (
     <>
       {nftInfo?.nft?.token_id === Number(token_id) && nftInfo?.collection?.col_url === col_url &&
