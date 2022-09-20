@@ -57,13 +57,13 @@ const useOrderStatics = ({
   // last sale
   const lastSaleOrder: IOrder = useMemo(() => {
     if (lastSaleOrders?.length > 0  && nftInfo?.collection && nftInfo?.nft) {
-      if (nftInfo.collection.address === orders[0].collectionAddress
+      if (nftInfo.collection.address === lastSaleOrders[0].collectionAddress
         && Number(nftInfo.nft.token_id) === Number(lastSaleOrders[0].tokenId)) {
         return lastSaleOrders[0]
       }
     }
     return undefined
-  }, [orders, nftInfo])
+  }, [lastSaleOrders, nftInfo])
   const lastSale = formatEther(lastSaleOrder?.price)
   const lastSaleCoin = lastSaleOrder?.currencyAddress && `/images/${getCurrencyIconByAddress(lastSaleOrder?.currencyAddress)}`
 
