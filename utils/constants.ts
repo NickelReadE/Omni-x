@@ -360,11 +360,11 @@ export const getCurrencyIconByAddress = (address?: string) => {
   for (let idx = 0; idx < currency_addr_list.length; idx++) {
     const currency = loopCurrencies(currency_addr_list[idx], idx, address)
     if (currency) {
-      return currency.icon
+      return `/images/${currency.icon}`
     }
   }
   
-  return CURRENCIES_LIST[0].icon
+  return `/images/${CURRENCIES_LIST[0].icon}`
 }
 
 export const getChainNameById = (chainId: number) => {
@@ -423,4 +423,8 @@ export const getProfileLink = (chainName: string, ownerType: string, owner: stri
   }
 
   return ''
+}
+
+export const getChainIcon = (chain: string) => {
+  return (chainIcons as any)[chain]
 }

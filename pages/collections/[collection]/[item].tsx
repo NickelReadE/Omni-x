@@ -6,17 +6,16 @@ import Image from 'next/image'
 
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
-import { BigNumber, ethers } from 'ethers'
+import { ethers } from 'ethers'
 import ConfirmSell from '../../../components/collections/ConfirmSell'
 import ConfirmBid from '../../../components/collections/ConfirmBid'
 
 import { getNFTInfo, selectNFTInfo } from '../../../redux/reducers/collectionsReducer'
-import { selectOrders, selectBidOrders, selectLastSaleOrders } from '../../../redux/reducers/ordersReducer'
+import { selectBidOrders } from '../../../redux/reducers/ordersReducer'
 
 import useWallet from '../../../hooks/useWallet'
 import useTrading from '../../../hooks/useTrading'
 import { IOrder } from '../../../interface/interface'
-import { SaleType } from '../../../types/enum'
 import { getChainIconByCurrencyAddress, getCurrencyIconByAddress, getProfileLink } from '../../../utils/constants'
 
 import PngCheck from '../../../public/images/check.png' 
@@ -78,18 +77,26 @@ const Item: NextPage = () => {
     provider,
     signer,
     address,
-    col_url,
+    collection_name: col_url,
+    collection_address: nftInfo?.collection?.address,
+    collection_chain: nftInfo?.collection?.chain,
     token_id
   })
 
   // statistics hook
   const {
     order,
+    isListed,
+    isAuction,
     highestBid,
     highestBidCoin,
     lastSale,
     lastSaleCoin
-  } = useOrderStatics({ nftInfo })
+  } = useOrderStatics({ 
+    nft: nftInfo?.nft, 
+    collection_address: nftInfo?.collection?.address,
+    isDetailPage: true 
+  })
 
   // nft info api call
   useEffect(() => {
@@ -114,10 +121,6 @@ const Item: NextPage = () => {
   const profileLink = getProfileLink(nftInfo?.collection?.chain, ownerType, owner)
   const currencyChainIcon = getChainIconByCurrencyAddress(order?.currencyAddress)
   const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
-
-  // listing or auction
-  const isListed = !!order
-  const isAuction = order?.params?.[1] == SaleType.AUCTION
 
   console.log('-isListed, isAuction, owner, address-', isListed, isAuction, owner, address, nftInfo)
 
@@ -205,7 +208,7 @@ const Item: NextPage = () => {
                               <div className='flex justify-start mt-3'>
                                 <div className="mr-5">
                                   <img
-                                    src={`/images/${getCurrencyIconByAddress(item.currencyAddress)}`}
+                                    src={getCurrencyIconByAddress(item.currencyAddress)}
                                     className='mr-[8px] w-[21px]'
                                     alt="icon"
                                   />
