@@ -1,9 +1,12 @@
 import { BigNumber, ethers } from "ethers"
 import { useMemo } from "react"
-import { useSelector } from "react-redux"
+import { useSelector,useDispatch } from "react-redux"
 import { IOrder } from "../interface/interface"
 import { selectBidOrders, selectLastSaleOrders, selectOrders } from "../redux/reducers/ordersReducer"
 import { getCurrencyIconByAddress } from "../utils/constants"
+import { useEffect,useState } from 'react'
+import { selectNFTInfo } from "../redux/reducers/collectionsReducer"
+import useWallet from '../hooks/useWallet'
 
 export type OrderStatics = {
   order: IOrder,
@@ -18,9 +21,24 @@ const formatEther = (price?: string) => {
   return Number(ethers.utils.formatEther(price))
 }
 
-const useOrderStatics = ({
-  nftInfo
-}: any): OrderStatics => {
+const useOrderStatics = (): OrderStatics => {
+  const [collectionAddress, setCollectionAddress] = useState('')
+  const {
+    provider,
+  } = useWallet()
+  
+  const nftInfo = useSelector(selectNFTInfo)
+
+  useEffect(() => {
+    if(nftInfo && nftInfo.collection && nftInfo.collection.address && provider?._network?.chainId) {
+      Object.keys(nftInfo.collection.address).map((key, idx)=>{
+        if(key==(provider?._network?.chainId).toString()){
+          setCollectionAddress(nftInfo.collection.address[key])
+        }
+      })
+    }
+  },[nftInfo,provider])
+
   const orders = useSelector(selectOrders)
   const bidOrders = useSelector(selectBidOrders) as IOrder[]
   const lastSaleOrders = useSelector(selectLastSaleOrders)
@@ -28,7 +46,7 @@ const useOrderStatics = ({
   // order
   const order: IOrder = useMemo(() => {
     if (orders?.length > 0  && nftInfo?.collection && nftInfo?.nft) {
-      if (nftInfo.collection.address === orders[0].collectionAddress
+      if (collectionAddress === orders[0].collectionAddress
         && Number(nftInfo.nft.token_id) === Number(orders[0].tokenId)) {
         return orders[0]
       }
@@ -51,13 +69,14 @@ const useOrderStatics = ({
     }
     return undefined
   }, [bidOrders, nftInfo])
+
   const highestBid = formatEther(highestBidOrder?.price)
   const highestBidCoin = highestBidOrder?.currencyAddress && `/images/${getCurrencyIconByAddress(highestBidOrder?.currencyAddress)}`
 
   // last sale
   const lastSaleOrder: IOrder = useMemo(() => {
     if (lastSaleOrders?.length > 0  && nftInfo?.collection && nftInfo?.nft) {
-      if (nftInfo.collection.address === orders[0].collectionAddress
+      if (collectionAddress === lastSaleOrders[0].collectionAddress
         && Number(nftInfo.nft.token_id) === Number(lastSaleOrders[0].tokenId)) {
         return lastSaleOrders[0]
       }

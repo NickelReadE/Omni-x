@@ -17,7 +17,7 @@ import useWallet from '../../../hooks/useWallet'
 import useTrading from '../../../hooks/useTrading'
 import { IOrder } from '../../../interface/interface'
 import { SaleType } from '../../../types/enum'
-import { getChainIconByCurrencyAddress, getCurrencyIconByAddress, getProfileLink } from '../../../utils/constants'
+import { getChainIconByCurrencyAddress, getCurrencyIconByAddress, getProfileLink,getChainNameFromId } from '../../../utils/constants'
 
 import PngCheck from '../../../public/images/check.png' 
 import PngSub from '../../../public/images/subButton.png'
@@ -32,8 +32,8 @@ const chainList = [
   { chain: 'all', img_url: '/svgs/all_chain.svg', title: 'all NFTs', disabled: false},
   { chain: 'rinkeby', img_url: '/svgs/ethereum.svg', title: 'Ethereum', disabled: false},
   { chain: 'arbitrum-rinkeby', img_url: '/svgs/arbitrum.svg', title: 'Arbitrum', disabled: true},
-  { chain: 'avalanche testnet', img_url: '/svgs/avax.svg', title: 'Avalanche', disabled: false},
-  { chain: 'bsc testnet', img_url: '/svgs/binance.svg', title: 'BNB Chain', disabled: false},
+  { chain: 'fuji', img_url: '/svgs/avax.svg', title: 'Avalanche', disabled: false},
+  { chain: 'bsc-testnet', img_url: '/svgs/binance.svg', title: 'BNB Chain', disabled: false},
   { chain: 'fantom-testnet', img_url: '/svgs/fantom.svg', title: 'Fantom', disabled: true},
   { chain: 'optimism-kovan', img_url: '/svgs/optimism.svg', title: 'Optimism', disabled: true},
   { chain: 'mumbai', img_url: '/svgs/polygon.svg', title: 'Polygon', disabled: false},
@@ -42,12 +42,12 @@ const chainList = [
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('items')
-
+  const [collectionAddress, setCollectionAddress] = useState('')
+  const [collectionChainName,setCollectionChainName] = useState('')
+  
   const bidOrders = useSelector(selectBidOrders) as IOrder[]
   const nftInfo = useSelector(selectNFTInfo)
-
   const dispatch = useDispatch()
-  
   const {
     provider,
     signer,
@@ -82,6 +82,7 @@ const Item: NextPage = () => {
     token_id
   })
 
+
   // statistics hook
   const {
     order,
@@ -89,37 +90,56 @@ const Item: NextPage = () => {
     highestBidCoin,
     lastSale,
     lastSaleCoin
-  } = useOrderStatics(nftInfo)
+  } = useOrderStatics( 
+  )
 
   // nft info api call
   useEffect(() => {
-    if (col_url && token_id) {
+    if (col_url && token_id ) {
       console.log('-getting nft info-')
       dispatch(getNFTInfo(col_url, token_id) as any)
-      getNFTOwnership(col_url, token_id)
     }
   }, [col_url, token_id])
+
+  useEffect(() => {
+    if (col_url && token_id && collectionAddress && collectionChainName ) {
+      console.log('-getting nftOwnerShip info-')
+      getNFTOwnership(collectionAddress, collectionChainName,token_id)
+    }
+  }, [col_url, token_id,collectionAddress,collectionChainName])
   
   // order api call
   useEffect(() => {
-    if (nftInfo && owner) {
+    if (nftInfo) {
       console.log('-getting orders-')
       getListOrders()
       getBidOrders()
       getLastSaleOrder()
     }
   }, [nftInfo, owner])
+  //get collection Address
+  useEffect(() => {
+    if(nftInfo && nftInfo.collection && nftInfo.collection.address &&provider?._network?.chainId) {
+      Object.keys(nftInfo.collection.address).map((key, idx)=>{
+        if(key==(provider?._network?.chainId).toString()){
+          setCollectionAddress(nftInfo.collection.address[key])
+          setCollectionChainName(getChainNameFromId(provider?._network?.chainId))
+        }
+      })
+    }
+  },[nftInfo,provider])
 
   // profile link
   const profileLink = getProfileLink(nftInfo?.collection?.chain, ownerType, owner)
   const currencyChainIcon = getChainIconByCurrencyAddress(order?.currencyAddress)
+  const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
   const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
 
   // listing or auction
   const isListed = !!order
   const isAuction = order?.params?.[2] == SaleType.AUCTION
 
-  console.log('-isListed, isAuction, owner, address-', isListed, isAuction, owner, address, nftInfo)
+  // console.log('-isListed, isAuction, owner, address-', isListed, isAuction, owner, address, nftInfo)
   return (
     <>
       {nftInfo?.nft?.token_id === Number(token_id) && nftInfo?.collection?.col_url === col_url &&
@@ -157,9 +177,9 @@ const Item: NextPage = () => {
                         <>
                           <h1 className="text-[#1E1C21] text-[60px] font-normal">{formattedPrice}</h1>
                           <div className="mr-5">
-                            {currencyChainIcon && 
+                            {currencyIcon && 
                               <img
-                                src={`${currencyChainIcon}`}
+                                src={`/images/${currencyIcon}`}
                                 className='mr-[8px] w-[21px]'
                                 alt="icon"
                               />
@@ -182,7 +202,7 @@ const Item: NextPage = () => {
                       <div></div>
                       {
                         bidOrders?.map((item, index) => {
-                          if(Number(item.tokenId)===nftInfo.nft.token_id && item.collectionAddress===nftInfo.collection.address){
+                          if(Number(item.tokenId)===nftInfo.nft.token_id && item.collectionAddress===collectionAddress){
                             return <Fragment key={index}>
                               <div className='break-all mt-3 text-[16px] font-bold'>{truncate(item.signer)}</div>
                               <div className="text-center mt-3">

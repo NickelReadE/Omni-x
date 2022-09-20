@@ -33,7 +33,6 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
   const orders = useSelector(selectOrders)
   const bidOrders = useSelector(selectBidOrders)
   const executedOrders = useSelector(selectLastSaleOrders)
-
   const {
     address
   } = useWallet()
@@ -269,25 +268,25 @@ const NFTBox = ({nft, col_url,col_address, chain}: IPropsNFTItem) => {
             <div className="mr-3 flex items-center">
               {/* <div className={classNames("mr-3 flex items-center cursor-pointer bg-[url('/images/round-refresh.png')] hover:bg-[url('/images/round-refresh_hover.png')] bg-cover w-[20px] h-[20px]", editStyle.refreshBtn)}></div> */}
               <div className="flex items-center ml-1">
-                {(chain === 'eth' || chain === 'rinkeby') &&
+                {(chain === '4') &&
                   <img src="/svgs/ethereum.svg" className="w-[16px] h-[16px]" />
                 }
-                {chain === 'bsc' &&
+                {chain === '97' &&
                   <img src="/svgs/binance.svg" className="w-[16px] h-[16px]" />
                 }
-                {chain === 'matic' &&
+                {chain === '80001' &&
                   <img src="/svgs/polygon.svg" className="w-[16px] h-[16px]" />
                 }
-                {chain === 'avalanche' &&
+                {chain === '43113' &&
                   <img src="/svgs/avax.svg" className="w-[16px] h-[16px]" />
                 }
-                {chain === 'fantom' &&
+                {chain === '4002' &&
                   <img src="/svgs/fantom.svg" className="w-[16px] h-[16px]" />
                 }
-                {chain === 'optimism' &&
+                {chain === '69' &&
                   <img src="/svgs/optimism.svg" className="w-[16px] h-[16px]" />
                 }
-                {chain === 'arbitrum' &&
+                {chain === '421611' &&
                   <img src="/svgs/arbitrum.svg" className="w-[16px] h-[16px]" />
                 }
               </div>

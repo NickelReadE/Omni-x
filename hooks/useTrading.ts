@@ -13,7 +13,8 @@ import { SaleType } from "../types/enum"
 import { ContractName, CREATOR_FEE, getAddressByName, getChainNameById, getCurrencyNameAddress, getLayerzeroChainId, isUsdcOrUsdt, PROTOCAL_FEE } from "../utils/constants"
 import { getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, getOmnixExchangeInstance, getTransferSelectorNftInstance } from "../utils/contracts"
 import { acceptOrder, postMakerOrder } from "../utils/makeOrder"
-
+import { useEffect } from 'react'
+import { getChainNameFromId } from '../utils/constants'
 export type TradingFunction = {
   owner: string,
   ownerType: string,
@@ -21,7 +22,7 @@ export type TradingFunction = {
   openBidDlg: boolean,
   setOpenSellDlg: Dispatch<SetStateAction<boolean>>,
   setOpenBidDlg: Dispatch<SetStateAction<boolean>>,
-  getNFTOwnership: (col_url: string, token_id: string) => Promise<void>,
+  getNFTOwnership: (col_url: string, token_id: string, collection_address: string) => Promise<void>,
   getListOrders: () => void,
   getBidOrders: () => void,
   getLastSaleOrder: () => void,
@@ -61,9 +62,22 @@ const useTrading = ({
   const [ownerType, setOwnerType] = useState('address')
   const [openSellDlg, setOpenSellDlg] = useState(false)
   const [openBidDlg, setOpenBidDlg] = useState(false)
+  const [collectionAddress, setCollectionAddress] = useState('')
+  const [collectionChainName,setCollectionChainName] = useState('')
 
   const dispatch = useDispatch()
   const nftInfo = useSelector(selectNFTInfo)
+
+  useEffect(() => {
+    if(nftInfo && nftInfo.collection && nftInfo.collection.address && provider?._network?.chainId) {
+      Object.keys(nftInfo.collection.address).map((key, idx)=>{
+        if(key==(provider?._network?.chainId).toString()){
+          setCollectionAddress(nftInfo.collection.address[key])
+          setCollectionChainName(getChainNameFromId(provider?._network?.chainId))
+        }
+      })
+    }
+  },[nftInfo,provider])
 
   const checkValid = async (currency: string, price: string, chainId: number) => {
     if (currency===''){
@@ -102,8 +116,8 @@ const useTrading = ({
     return true
   }
 
-  const getNFTOwnership = async (col_url: string, token_id: string) => {
-    const tokenIdOwner = await collectionsService.getNFTOwner(col_url, token_id)
+  const getNFTOwnership = async (col_address: string, collection_chain_name: string, token_id: string) => {
+    const tokenIdOwner = await collectionsService.getNFTOwner(col_address, collection_chain_name, token_id)
     if (tokenIdOwner.length > 0) {
       const user_info = await userService.getUserByAddress(tokenIdOwner)
       if(user_info.username == ''){
@@ -119,8 +133,8 @@ const useTrading = ({
   const getListOrders = () => {
     const request: IGetOrderRequest = {
       isOrderAsk: true,
-      collection: nftInfo.collection.address,
-      tokenId: nftInfo.nft.token_id,
+      collection: collectionAddress,
+      tokenId: token_id,
       signer: owner,
       startTime: Math.floor(Date.now() / 1000).toString(),
       endTime: Math.floor(Date.now() / 1000).toString(),
@@ -133,10 +147,10 @@ const useTrading = ({
   const getBidOrders = () => {
     const bidRequest: IGetOrderRequest = {
       isOrderAsk: false,
-      collection: nftInfo.collection.address,
-      tokenId: nftInfo.nft.token_id,
-      startTime: Math.floor(Date.now() / 1000).toString(),
-      endTime: Math.floor(Date.now() / 1000).toString(),
+      collection: collectionAddress,
+      tokenId: token_id,
+      // startTime: Math.floor(Date.now() / 1000).toString(),
+      // endTime: Math.floor(Date.now() / 1000).toString(),
       status: ['VALID'],
       sort: 'PRICE_ASC'
     }
@@ -144,8 +158,8 @@ const useTrading = ({
   }
   const getLastSaleOrder = () => {
     const excutedRequest: IGetOrderRequest = {
-      collection: nftInfo.collection.address,
-      tokenId: nftInfo.nft.token_id,
+      collection: collectionAddress,
+      tokenId: token_id,
       status: ['EXECUTED'],
       sort: 'UPDATE_NEWEST'
     }
@@ -172,7 +186,7 @@ const useTrading = ({
     await postMakerOrder(
       provider as any,
       true,
-      nftInfo.collection.address,
+      collectionAddress,
       getAddressByName('Strategy', chainId),
       amount,
       price,
@@ -188,14 +202,14 @@ const useTrading = ({
           types: ['uint16', 'uint16'],
         },
       },
-      nftInfo.collection.chain,
+      collectionChainName,
       true
     )
 
     if (!listingData.isAuction) {
       const transferSelector = getTransferSelectorNftInstance(chainId, signer)
-      const transferManagerAddr = await transferSelector.checkTransferManagerForToken(nftInfo.collection.address)
-      const nftContract = getERC721Instance(nftInfo.collection.address, chainId, signer)
+      const transferManagerAddr = await transferSelector.checkTransferManagerForToken(collectionAddress)
+      const nftContract = getERC721Instance(collectionAddress, chainId, signer)
       await approveNft(nftContract, address, transferManagerAddr, token_id)
     }
 
@@ -276,7 +290,7 @@ const useTrading = ({
     dispatch(openSnackBar({ message: 'Bought an NFT', status: 'success' }))
     getLastSaleOrder()
     getListOrders()
-    getNFTOwnership(col_url, token_id)
+    getNFTOwnership(col_url, token_id, collectionAddress)
   }
 
   const onBid = async (bidData: IBidData, order?: IOrder) => {
@@ -305,11 +319,10 @@ const useTrading = ({
         dispatch(openSnackBar({ message: 'Could not find the currency', status: 'warning' }))
         return
       }
-
       await postMakerOrder(
         provider as any,
         false,
-        nftInfo.collection.address,
+        collectionAddress,
         order?.strategy,
         order?.amount,
         price,
@@ -376,8 +389,8 @@ const useTrading = ({
     }
 
     const transferSelector = getTransferSelectorNftInstance(chainId, signer)
-    const transferManagerAddr = await transferSelector.checkTransferManagerForToken(nftInfo.collection.address)
-    const nftContract = getERC721Instance(nftInfo.collection.address, chainId, signer)
+    const transferManagerAddr = await transferSelector.checkTransferManagerForToken(collectionAddress)
+    const nftContract = getERC721Instance(collectionAddress, chainId, signer)
     await approveNft(nftContract, address, transferManagerAddr, token_id)
 
     const lzFee = await omnixExchange.connect(signer as any).getLzFeesForBidWithTakerAsk(takerAsk, makerBid)
@@ -390,7 +403,7 @@ const useTrading = ({
     getLastSaleOrder()
     getListOrders()
     getBidOrders()
-    getNFTOwnership(col_url, token_id)
+    getNFTOwnership(col_url, token_id,collectionAddress)
 
   }
 
