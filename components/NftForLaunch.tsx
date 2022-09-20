@@ -24,7 +24,7 @@ const NftForLaunch = (pro:ITypeNFT) => {
       <div className={classNames(' flex flex-col bg-l-50 ')}>
         <div className={classNames('relative', editStyle.nftContainer)}>
           <div className={classNames('group relative flex justify-center text-center overflow-hidden rounded-md')} >
-            <img className='w-[300px] rounded-md ' src={collectionInfo.profile_image?collectionInfo.profile_image:'/images/nft.png'} alt="nft-image" />        
+            <img className='w-[300px] rounded-md ' src={pro.img?pro.img:'/images/nft.png'} alt="nft-image" />        
           </div>
           <div className={classNames('absolute w-full h-full  flex items-center justify-center  ', editStyle.actionBtn)}>
             <div>
@@ -38,7 +38,7 @@ const NftForLaunch = (pro:ITypeNFT) => {
         
         <div className="flex flex-row justify-between  px-3 mt-[12px] align-middle  font-['RetniSans']">
           <div className=" text-[#000000] text-[14px] font-bold">
-            {collectionInfo.name?.toUpperCase()}
+            {pro.name.toUpperCase()}
           </div>
         </div>
         <div className='flex px-3 justify-between'>    

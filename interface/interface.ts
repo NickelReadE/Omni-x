@@ -114,7 +114,9 @@ export interface ICollectionInfoFromLocal{
 export interface ITypeNFT{
   typeNFT:string,
   items:string,
-  col_url:string
+  col_url:string,
+  name:string,
+  img:string
 }
 
 export interface contractInfo{

@@ -602,7 +602,7 @@ const Mint: NextPage = () => {
           <div >
             <h1 className='font-bold text-xxl2'>{collectionInfo.name?collectionInfo.name:'Collection Name'}</h1>
             <div className={mintstyles.mintDescSec}>
-              <p className='font-bold text-[#A0B3CC] text-xg1 w-[830px]'>{collectionInfo.description? collectionInfo.description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet.'}</p>
+              <p className='font-bold text-[#A0B3CC] text-xg1 w-[830px]'>{collectionInfo.description? collectionInfo.description: 'Descriptoin here'}</p>
             </div>
             <div className={mintstyles.mintDataGrid}>
               <div className={mintstyles.mintDataWrap}>
