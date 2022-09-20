@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { IPropsNFTItem } from '../../interface/interface'
 import LazyLoad from 'react-lazyload'
 import { ethers } from 'ethers'
-import { getCurrencyIconByAddress, getChainIconByCurrencyAddress, getChainIcon } from '../../utils/constants'
+import { getCurrencyIconByAddress, getChainIcon } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'
 import ConfirmBid from './ConfirmBid'
 import editStyle from '../../styles/nftbox.module.scss'
@@ -16,7 +16,6 @@ import useOrderStatics from '../../hooks/useOrderStatics'
 const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
   const [isShowBtn, SetIsShowBtn] = useState(false)
-
   const {
     provider,
     signer,

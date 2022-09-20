@@ -12,7 +12,8 @@ import { SaleType } from "../types/enum"
 import { ContractName, CREATOR_FEE, getAddressByName, getChainNameById, getCurrencyNameAddress, getLayerzeroChainId, isUsdcOrUsdt, PROTOCAL_FEE } from "../utils/constants"
 import { getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, getOmnixExchangeInstance, getTransferSelectorNftInstance } from "../utils/contracts"
 import { acceptOrder, postMakerOrder } from "../utils/makeOrder"
-
+import { useEffect } from 'react'
+import { getChainNameFromId } from '../utils/constants'
 export type TradingFunction = {
   owner: string,
   ownerType: string,
@@ -20,7 +21,7 @@ export type TradingFunction = {
   openBidDlg: boolean,
   setOpenSellDlg: Dispatch<SetStateAction<boolean>>,
   setOpenBidDlg: Dispatch<SetStateAction<boolean>>,
-  getNFTOwnership: (collection_name: string, token_id: string) => Promise<void>,
+  getNFTOwnership: (collection_address: string, collection_chain_name: string, token_id: string) => Promise<void>,
   getListOrders: () => void,
   getBidOrders: () => void,
   getLastSaleOrder: () => void,
@@ -102,8 +103,8 @@ const useTrading = ({
     return true
   }
 
-  const getNFTOwnership = async (collection_name: string, token_id: string) => {
-    const tokenIdOwner = await collectionsService.getNFTOwner(collection_name, token_id)
+  const getNFTOwnership = async (collection_address: string, collection_chain_name: string, token_id: string) => {
+    const tokenIdOwner = await collectionsService.getNFTOwner(collection_address, collection_chain_name, token_id)
     if (tokenIdOwner.length > 0) {
       const user_info = await userService.getUserByAddress(tokenIdOwner)
       if(user_info.username == ''){
@@ -135,8 +136,8 @@ const useTrading = ({
       isOrderAsk: false,
       collection: collection_address,
       tokenId: token_id,
-      startTime: Math.floor(Date.now() / 1000).toString(),
-      endTime: Math.floor(Date.now() / 1000).toString(),
+      // startTime: Math.floor(Date.now() / 1000).toString(),
+      // endTime: Math.floor(Date.now() / 1000).toString(),
       status: ['VALID'],
       sort: 'PRICE_ASC'
     }
@@ -277,7 +278,7 @@ const useTrading = ({
     dispatch(openSnackBar({ message: 'Bought an NFT', status: 'success' }))
     getLastSaleOrder()
     getListOrders()
-    getNFTOwnership(collection_name, token_id)
+    getNFTOwnership(collection_address, collection_chain, token_id)
   }
 
   const onBid = async (bidData: IBidData, order?: IOrder) => {
@@ -308,7 +309,6 @@ const useTrading = ({
         dispatch(openSnackBar({ message: 'Could not find the currency', status: 'warning' }))
         return
       }
-
       await postMakerOrder(
         provider as any,
         false,
@@ -394,7 +394,7 @@ const useTrading = ({
     getLastSaleOrder()
     getListOrders()
     getBidOrders()
-    getNFTOwnership(collection_name, token_id)
+    getNFTOwnership(collection_address, collection_chain, token_id)
 
   }
 

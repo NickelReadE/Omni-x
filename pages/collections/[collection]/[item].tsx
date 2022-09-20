@@ -16,7 +16,7 @@ import { selectBidOrders } from '../../../redux/reducers/ordersReducer'
 import useWallet from '../../../hooks/useWallet'
 import useTrading from '../../../hooks/useTrading'
 import { IOrder } from '../../../interface/interface'
-import { getChainIconByCurrencyAddress, getCurrencyIconByAddress, getProfileLink } from '../../../utils/constants'
+import { getChainIcon, getChainIconByCurrencyAddress, getChainNameFromId, getCollectionAddress, getCurrencyIconByAddress, getProfileLink } from '../../../utils/constants'
 
 import PngCheck from '../../../public/images/check.png' 
 import PngSub from '../../../public/images/subButton.png'
@@ -27,26 +27,13 @@ const truncate = (str: string) => {
   return str.length > 12 ? str.substring(0, 9) + '...' : str
 }
 
-const chainList = [
-  { chain: 'all', img_url: '/svgs/all_chain.svg', title: 'all NFTs', disabled: false},
-  { chain: 'rinkeby', img_url: '/svgs/ethereum.svg', title: 'Ethereum', disabled: false},
-  { chain: 'arbitrum-rinkeby', img_url: '/svgs/arbitrum.svg', title: 'Arbitrum', disabled: true},
-  { chain: 'avalanche testnet', img_url: '/svgs/avax.svg', title: 'Avalanche', disabled: false},
-  { chain: 'bsc testnet', img_url: '/svgs/binance.svg', title: 'BNB Chain', disabled: false},
-  { chain: 'fantom-testnet', img_url: '/svgs/fantom.svg', title: 'Fantom', disabled: true},
-  { chain: 'optimism-kovan', img_url: '/svgs/optimism.svg', title: 'Optimism', disabled: true},
-  { chain: 'mumbai', img_url: '/svgs/polygon.svg', title: 'Polygon', disabled: false},
-]
-
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('items')
-
+  
   const bidOrders = useSelector(selectBidOrders) as IOrder[]
   const nftInfo = useSelector(selectNFTInfo)
-
   const dispatch = useDispatch()
-  
   const {
     provider,
     signer,
@@ -56,6 +43,9 @@ const Item: NextPage = () => {
   const router = useRouter()
   const col_url = router.query.collection as string
   const token_id = router.query.item as string
+  const chain_id = provider?._network?.chainId
+  const chain_name = chain_id && getChainNameFromId(chain_id)
+  const collection_address = chain_id && getCollectionAddress(nftInfo?.collection?.address, chain_id)
 
   // trading hook
   const {
@@ -78,8 +68,8 @@ const Item: NextPage = () => {
     signer,
     address,
     collection_name: col_url,
-    collection_address: nftInfo?.collection?.address,
-    collection_chain: nftInfo?.collection?.chain,
+    collection_address,
+    collection_chain: chain_name,
     token_id
   })
 
@@ -94,22 +84,28 @@ const Item: NextPage = () => {
     lastSaleCoin
   } = useOrderStatics({ 
     nft: nftInfo?.nft, 
-    collection_address: nftInfo?.collection?.address,
+    collection_address,
     isDetailPage: true 
   })
 
   // nft info api call
   useEffect(() => {
-    if (col_url && token_id) {
+    if (col_url && token_id ) {
       console.log('-getting nft info-')
       dispatch(getNFTInfo(col_url, token_id) as any)
-      getNFTOwnership(col_url, token_id)
     }
   }, [col_url, token_id])
+
+  useEffect(() => {
+    if (token_id && collection_address && chain_name ) {
+      console.log('-getting nftOwnerShip info-')
+      getNFTOwnership(collection_address, chain_name, token_id)
+    }
+  }, [token_id, collection_address, chain_name])
   
   // order api call
   useEffect(() => {
-    if (nftInfo && owner) {
+    if (nftInfo) {
       console.log('-getting orders-')
       getListOrders()
       getBidOrders()
@@ -118,8 +114,9 @@ const Item: NextPage = () => {
   }, [nftInfo, owner])
 
   // profile link
-  const profileLink = getProfileLink(nftInfo?.collection?.chain, ownerType, owner)
+  const profileLink = chain_name && getProfileLink(chain_name, ownerType, owner)
   const currencyChainIcon = getChainIconByCurrencyAddress(order?.currencyAddress)
+  const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
   const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
 
   console.log('-isListed, isAuction, owner, address-', isListed, isAuction, owner, address, nftInfo)
@@ -150,10 +147,13 @@ const Item: NextPage = () => {
                   <div className="">
                     <div className="flex justify-start items-center">
                       <h1 className="text-[#1E1C21] text-[18px] font-bold">owner:</h1>
-                      {
-                        owner && ownerType=='address' && <h1 className="text-[#B444F9] text-[20px] font-normal underline ml-4 break-all lg:ml-1">
-                          <Link href={profileLink}><a target='_blank'>{truncate(owner)}</a></Link></h1>
-                      }
+                      {owner && ownerType=='address' && (
+                        <h1 className="text-[#B444F9] text-[20px] font-normal underline ml-4 break-all lg:ml-1">
+                          <Link href={profileLink || '#'}>
+                            <a target='_blank'>{truncate(owner)}</a>
+                          </Link>
+                        </h1>
+                      )}
                       
                     </div>
                     <div className="flex justify-between items-center mt-6">
@@ -161,9 +161,9 @@ const Item: NextPage = () => {
                         <>
                           <h1 className="text-[#1E1C21] text-[60px] font-normal">{formattedPrice}</h1>
                           <div className="mr-5">
-                            {currencyChainIcon && 
+                            {currencyIcon && 
                               <img
-                                src={`${currencyChainIcon}`}
+                                src={`/images/${currencyIcon}`}
                                 className='mr-[8px] w-[21px]'
                                 alt="icon"
                               />
@@ -186,24 +186,15 @@ const Item: NextPage = () => {
                       <div></div>
                       {
                         bidOrders?.map((item, index) => {
-                          if(Number(item.tokenId)===nftInfo.nft.token_id && item.collectionAddress===nftInfo.collection.address){
+                          if (Number(item.tokenId) === nftInfo.nft.token_id && item.collectionAddress === collection_address){
                             return <Fragment key={index}>
                               <div className='break-all mt-3 text-[16px] font-bold'>{truncate(item.signer)}</div>
                               <div className="text-center mt-3">
-                                {
-                                  chainList.map((chain, chainIdx) => {
-                                    if (chain.chain == item?.chain){
-                                      return(
-                                        <img
-                                          src={chain.img_url}
-                                          className='mr-[8px] w-[21px]'
-                                          alt="icon"
-                                          key={chainIdx}
-                                        />
-                                      )
-                                    }
-                                  })
-                                }
+                                <img
+                                  src={getChainIcon(item.chain)}
+                                  className='mr-[8px] w-[21px]'
+                                  alt="icon"
+                                />
                               </div>
                               <div className='flex justify-start mt-3'>
                                 <div className="mr-5">
