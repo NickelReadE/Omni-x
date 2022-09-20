@@ -117,6 +117,7 @@ const Item: NextPage = () => {
   const profileLink = chain_name && getProfileLink(chain_name, ownerType, owner)
   const currencyChainIcon = getChainIconByCurrencyAddress(order?.currencyAddress)
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
+  console.log(currencyIcon)
   const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
 
   console.log('-isListed, isAuction, owner, address-', isListed, isAuction, owner, address, nftInfo)
@@ -163,7 +164,7 @@ const Item: NextPage = () => {
                           <div className="mr-5">
                             {currencyIcon && 
                               <img
-                                src={`/images/${currencyIcon}`}
+                                src={`${currencyIcon}`}
                                 className='mr-[8px] w-[21px]'
                                 alt="icon"
                               />

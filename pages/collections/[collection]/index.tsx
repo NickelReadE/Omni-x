@@ -194,7 +194,6 @@ const Collection: NextPage = () => {
       address: collectionAddress
     }
     const metaData = await Web3Api.token.getNFTMetadata(options)
-    console.log(metaData)
     setContractType(metaData.contract_type)
   }
 

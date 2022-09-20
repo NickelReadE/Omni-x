@@ -425,5 +425,7 @@ export const getChainIcon = (chain: string) => {
 }
 
 export const getCollectionAddress = (col_addresses: any, chain_id: number) => {
-  return col_addresses[chain_id.toString()]
+  if(col_addresses){
+    return col_addresses[chain_id.toString()]
+  }
 }

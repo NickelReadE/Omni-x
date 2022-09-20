@@ -23,6 +23,8 @@ import Slider from '../../components/Slider'
 import CollectionCard from '../../components/CollectionCard'
 import { IGetOrderRequest } from '../../interface/interface'
 
+import useWallet from '../../hooks/useWallet'
+
 const serviceSlides: Array<React.ReactNode> = []
 serviceSlides.push(<Image src={pfp} alt="image - 25" layout='responsive' width={230} height={263} />)
 serviceSlides.push(<Image src={photography} alt="image - 26" layout='responsive' width={230} height={263} />)
@@ -40,6 +42,12 @@ const Collections: NextPage = () => {
   const collections = useSelector(selectCollections)
   const collectionsForCard = useSelector(selectCollectionsForCard)
   const orders = useSelector(selectOrders)
+
+  const {
+    provider,
+  } = useWallet()
+  const chain_id = provider?._network?.chainId
+  
   
   useEffect(() => {
     dispatch(getCollections() as any)

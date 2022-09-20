@@ -156,6 +156,7 @@ export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, ge
 		const info = await collectionsService.getCollections()		
 		await info.data.map(async (element:any, index:number)=>{
 			setTimeout(async function(){
+				console.log(element,element.col_url)
 				const ownerCnt = await collectionsService.getCollectionOwners(element.col_url as string)
 				setTimeout(
 					async function(){			
