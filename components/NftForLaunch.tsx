@@ -1,6 +1,7 @@
 import React,{useEffect} from 'react'
 import { ITypeNFT } from '../interface/interface'
 import Link from 'next/link'
+import { ethers } from 'ethers'
 import { getCollectionInfo, selectCollectionInfo } from '../redux/reducers/collectionsReducer'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -13,7 +14,6 @@ const NftForLaunch = (pro:ITypeNFT) => {
     dispatch(getCollectionInfo(pro.col_url) as any)
   },[])
   const typeNFT = pro.typeNFT
-  console.log('TypeNFT',collectionInfo)
   return (
     
     <div className=' border-[#F8F9FA]  rounded-[8px] hover:cursor-pointer'>
@@ -56,7 +56,7 @@ const NftForLaunch = (pro:ITypeNFT) => {
                 price
               </div>
               <div className="flex items-center">
-                0.1Eth
+                {ethers.utils.formatEther(pro.price?pro.price:'0').toString()}
               </div>
             </div>
           </div>    

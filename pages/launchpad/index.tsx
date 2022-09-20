@@ -80,8 +80,8 @@ const Launchpad: NextPage = () => {
         {
           <div className='flex flex-wrap space-x-12'>
             {
-              collectionsToShow.map((collection: { mint_status: string, count: string, col_url:string, name:string, profile_image:string }, index) => {
-                return <NftForLaunch key={index} typeNFT={collection.mint_status} items={collection.count} col_url={collection.col_url} name={collection.name} img={collection.profile_image} />
+              collectionsToShow.map((collection: { mint_status: string, count: string, col_url:string, name:string, profile_image:string, price:string }, index) => {
+                return <NftForLaunch key={index} typeNFT={collection.mint_status} items={collection.count} col_url={collection.col_url} name={collection.name} img={collection.profile_image} price={collection.price} />
               })
             }
           </div>

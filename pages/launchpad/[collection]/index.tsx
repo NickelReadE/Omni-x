@@ -28,11 +28,13 @@ import { Slide } from 'react-toastify'
 import { contractInfo } from '../../../interface/interface'
 import classNames from '../../../helpers/classNames'
 import useWallet from '../../../hooks/useWallet'
+import { CollectionABI } from '../../../utils/constants'
 
 
 //video 
 import { MerkleTree } from 'merkletreejs'
 import keccak256  from 'keccak256'
+import { cornersOfRectangle } from '@dnd-kit/core/dist/utilities/algorithms/helpers'
 
 
 interface chains {
@@ -240,7 +242,8 @@ const Mint: NextPage = () => {
     disconnect,
     connect: connectWallet,    
     switchNetwork
-  } = useWallet()  
+  } = useWallet()
+
   const router = useRouter()
   const col_url = router.query.collection as string 
   const dispatch = useDispatch()
@@ -285,9 +288,11 @@ const Mint: NextPage = () => {
 
   const getInfo = async ():Promise<void> => {
     
-    try{        
-      const tokenContract =  new ethers.Contract('0x7FFE2672C100bFb0094ad0B4d592Dd9f9416f1AC', AdvancedONT.abi, signer)
-      
+    try{    
+      const chainId = provider?._network?.chainId  
+      console.log(collectionInfo.address)
+      const tokenContract =  new ethers.Contract(collectionInfo.address[chainId?chainId:0], CollectionABI[collectionInfo.col_url], signer)
+      console.log(tokenContract)
       const result =await tokenContract.balanceOf(address)
       const tokenlist = []
       for (let i = 0; i < Number(result); i++) {
@@ -308,12 +313,12 @@ const Mint: NextPage = () => {
       const saleFlag = await tokenContract._saleStarted()
       if(!saleFlag && !publicmintFlag){
         setMintable(false)
-        errorToast('Sale has not started on '+ addresses[chainId].name)
+        //errorToast('Sale has not started on '+ addresses[chainId].name)
       } else {
         setMintable(true)
       }
     } catch(error){
-      //errorToast('Please check the Internet Connection')
+      console.log(error)
     }
     
   }
@@ -321,7 +326,7 @@ const Mint: NextPage = () => {
   const mint = async ():Promise<void> => {
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner()
-    const tokenContract =  new ethers.Contract('0x7FFE2672C100bFb0094ad0B4d592Dd9f9416f1AC', AdvancedONT.abi, signer)
+    const tokenContract =  new ethers.Contract(collectionInfo.address[chainId?chainId:0], CollectionABI[collectionInfo.col_url], signer)
     //first private sale
     //let wladdress = ethereumwl
 
@@ -379,125 +384,6 @@ const Mint: NextPage = () => {
     }
   }
 
-
-  const videoSection = () => {
-    if(account){
-      if(Number(chainId) === 1) {
-        return(<>
-          <video
-            style={{ objectFit: 'cover' }}
-            width='100%'
-            height='100%'
-            autoPlay
-            loop
-            muted
-          >
-            <source src='/video/ethereum.mp4' type='video/mp4' />
-            Your browser does not support the video tag.
-          </video>
-        </>)
-      }  else if(Number(chainId) === 42161) {
-        return(<>
-          <video
-            style={{ objectFit: 'cover' }}
-            width='100%'
-            height='100%'
-            autoPlay
-            loop
-            muted
-          >
-            <source src='/video/arbitrum.mp4' type='video/mp4' />
-            Your browser does not support the video tag.
-          </video>
-        </>)
-      }  else if(Number(chainId) === 137) {
-        return(<>
-          <video
-            style={{ objectFit: 'cover' }}
-            width='100%'
-            height='100%'
-            autoPlay
-            loop
-            muted
-          >
-            <source src='/video/polygon.mp4' type='video/mp4' />
-            Your browser does not support the video tag.
-          </video>
-        </>)
-      }  else if(Number(chainId) === 43114) {
-        return(<>
-          <video
-            style={{ objectFit: 'cover' }}
-            width='100%'
-            height='100%'
-            autoPlay
-            loop
-            muted
-          >
-            <source src='/video/avalanche.mp4' type='video/mp4' />
-            Your browser does not support the video tag.
-          </video>
-        </>)
-      }  else if(Number(chainId) === 56) {
-        return(<>
-          <video
-            style={{ objectFit: 'cover' }}
-            width='100%'
-            height='100%'
-            autoPlay
-            loop
-            muted
-          >
-            <source src='/video/binance.mp4' type='video/mp4' />
-            Your browser does not support the video tag.
-          </video>
-        </>)
-      }  else if(Number(chainId) === 10) {
-        return(<>
-          <video
-            style={{ objectFit: 'cover' }}
-            width='100%'
-            height='100%'
-            autoPlay
-            loop
-            muted
-          >
-            <source src='/video/optimistic.mp4' type='video/mp4' />
-            Your browser does not support the video tag.
-          </video>
-        </>)
-      }  else if(Number(chainId) === 250) {
-        return(<>
-          <video
-            style={{ objectFit: 'cover' }}
-            width='100%'
-            height='100%'
-            autoPlay
-            loop
-            muted
-          >
-            <source src='/video/fantom.mp4' type='video/mp4' />
-            Your browser does not support the video tag.
-          </video>
-        </>)
-      } 
-    } else {
-      return(<>
-        <video
-          style={{ objectFit: 'cover' }}
-          width='100%'
-          height='100%'
-          autoPlay
-          loop
-          muted
-        >
-          <source src='/video/ethereum.mp4' type='video/mp4' />
-          Your browser does not support the video tag.
-        </video>
-      </>)
-    }
-
-  }
   const mintButton = () => {
     if(mintable){
       if(isMinting){
@@ -548,6 +434,12 @@ const Mint: NextPage = () => {
   //     }
   //   }
   // }, [provider])
+  useEffect(()=>{
+    if(provider){
+      setChainId(provider._network?.chainId)
+    }
+  },[provider])
+
 
   useEffect(() => {
     const calculateFee = async():Promise<void> => {
@@ -577,16 +469,13 @@ const Mint: NextPage = () => {
 
 
   useEffect(()=>{
-    if(provider && address){
+    if(provider && address && collectionInfo){
       getInfo()
     }
-  },[provider,address])
+  },[provider,address,collectionInfo])
 
   useEffect(()=>{
-    dispatch(getCollectionInfo(col_url) as any)
-    if(provider && address){
-      getInfo()
-    }
+    dispatch(getCollectionInfo(col_url) as any)   
   },[]) 
 
   return (
@@ -615,8 +504,7 @@ const Mint: NextPage = () => {
                 {/* <span>{chainId?addresses[`${Number(chainId)}`].price:0}<Image src={chainId?addresses[`${Number(chainId)}`].imageSVG:EthereumImageSVG} width={29.84} height={25.46} alt='ikon'></Image></span> */}
                 <div className='flex flex-row space-x-2 items-center mt-[15px]'>
                   <div className='text-xg1 '>
-                    {/* {chainId?addresses[`${Number(chainId)}`].price:0} */}
-                    0.06
+                    {collectionInfo.price?ethers.utils.formatEther(collectionInfo.price).toString():0}                    
                   </div>
                   <img src='/svgs/ethereum.svg' width={29.84} height={25.46} alt='ikon'></img>
                 </div>

@@ -116,7 +116,8 @@ export interface ITypeNFT{
   items:string,
   col_url:string,
   name:string,
-  img:string
+  img:string,
+  price:string
 }
 
 export interface contractInfo{
