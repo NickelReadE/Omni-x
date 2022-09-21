@@ -29,7 +29,7 @@ const NftForLaunch = (pro:ITypeNFT) => {
   },[provider,collectionInfo])
   useEffect(()=>{
     if(collectionInfo){
-      if(collectionInfo.hasOwnProperty('mintFinish')){
+      if(Object.prototype.hasOwnProperty.call(collectionInfo, 'mintFinish')){
         setTime(collectionInfo.mintFinish)
       }
     }
