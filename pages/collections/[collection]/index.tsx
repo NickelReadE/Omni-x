@@ -212,7 +212,7 @@ const Collection: NextPage = () => {
   useEffect(() => {
     if ( col_url ) {
       dispatch(getCollectionInfo(col_url) as any)
-      dispatch(getCollectionOwners(col_url) as any)
+      // dispatch(getCollectionOwners(col_url) as any)
       const localData = localStorage.getItem('cards')
       if(localData){
         setCollectionInfoFromLocal((JSON.parse(localData)).find((element: ICollectionInfoFromLocal) => element.col_url===col_url))
@@ -348,7 +348,7 @@ const Collection: NextPage = () => {
     const temp = []
     for(let i = 0;i<listNFTs.length;i++){
       temp.push(
-        <NFTBox nft={listNFTs[i]} index={i} key={i}  col_url={col_url} col_address={collectionAddress}  chain={collectionInfo?collectionChainName:'eth'}/>
+        <NFTBox nft={listNFTs[i]} index={i} key={i}  col_url={col_url} col_address={collectionAddress}  chain={collectionInfo?collectionChainID:'4'}/>
       )
     }
     return temp
