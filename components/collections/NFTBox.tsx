@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { IPropsNFTItem } from '../../interface/interface'
@@ -12,6 +12,8 @@ import classNames from '../../helpers/classNames'
 
 import useTrading from '../../hooks/useTrading'
 import useOrderStatics from '../../hooks/useOrderStatics'
+import ConfirmSell from './ConfirmSell'
+import useOwnership from '../../hooks/useOwnership'
 
 const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
@@ -22,9 +24,45 @@ const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
     address
   } = useWallet()
 
+  const collection_address_map = useMemo(() => {
+    if (chain && col_address) {
+      return {
+        [chain]: col_address
+      }
+    }
+    return []
+  }, [chain, col_address])
+
+  // ownership hook
+  // const {
+  //   owner,
+  //   ownerChainId,
+  //   collectionAddress: ownedCollectionAddress
+  // } = useOwnership({
+  //   collection_address_map,
+  //   token_id: nft?.token_id
+  // })
+
+  const {
+    order,
+    orderChainId,
+    isListed,
+    isAuction,
+    highestBid,
+    highestBidCoin,
+    lastSale,
+    lastSaleCoin
+  } = useOrderStatics({ nft, collection_address_map })
+
+  const order_collection_address = order?.collectionAddress
+  const order_collection_chain = orderChainId && getChainNameFromId(orderChainId)
+
   const {
     openBidDlg,
+    openSellDlg,
     setOpenBidDlg,
+    setOpenSellDlg,
+    onListing,
     onBuy,
     onBid
   } = useTrading({
@@ -34,23 +72,19 @@ const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
     collection_name: col_url,
     collection_address: col_address,
     collection_chain: getChainNameFromId(chain ? Number(chain) : 4),
+    order_collection_address,
+    order_collection_chain,
+    owner: order?.signer, // owner,
+    owner_collection_address: order_collection_address, // ownedCollectionAddress,
+    owner_collection_chain: order_collection_chain, // ownerChainId && getChainNameFromId(ownerChainId),
     token_id: nft?.token_id
   })
 
-  const {
-    order,
-    isListed,
-    isAuction,
-    highestBid,
-    highestBidCoin,
-    lastSale,
-    lastSaleCoin
-  } = useOrderStatics({ nft, collection_address: col_address })
 
   const chainIcon = getChainIconById(chain)
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
   const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
-  const isOwner = order?.signer == address
+  const isOwner = order?.signer?.toLowerCase() == address?.toLowerCase() // owner?.toLowerCase() == address?.toLowerCase()
 
   return (
     <div className={classNames('w-full border-[2px] border-[#F6F8FC] rounded-[8px] cursor-pointer hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F6F8FC]', editStyle.nftContainer)} onMouseEnter={() => SetIsShowBtn(true)} onMouseLeave={() => SetIsShowBtn(false)}>
@@ -100,15 +134,11 @@ const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
         </div></a></Link>
         <div className="flex items-center ml-3">
           <div>&nbsp;</div>
-          {/* {isShowBtn && isOwner && (
-            <Link href={`/collections/${col_url}/${nft.token_id}`}>
-              <a>
-                <div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#B00000]">
-                  {'Sell'}
-                </div>
-              </a>
-            </Link>
-          )} */}
+          {isShowBtn && isOwner && (
+            <div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#B00000]" onClick={() => {setOpenSellDlg(true)}}>
+              {'Sell'}
+            </div>
+          )}
           {isShowBtn && !isOwner && isListed && !isAuction && (
             <div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]" onClick={()=>onBuy(order)}>
               {'Buy now'} 
@@ -122,6 +152,7 @@ const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
         </div>
       </div>
 
+      <ConfirmSell onSubmit={onListing} handleSellDlgClose={() => {setOpenSellDlg(false)}} openSellDlg={openSellDlg} nftImage={nft.image} nftTitle={nft.name} />
       <ConfirmBid onSubmit={(bidData) => onBid(bidData, order)} handleBidDlgClose={() => {setOpenBidDlg(false)}} openBidDlg={openBidDlg} nftImage={nft.image} nftTitle={nft.name} />
     </div>
   )

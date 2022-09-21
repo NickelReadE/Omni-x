@@ -11,7 +11,6 @@ export type OwnershipFunction = {
 }
 
 const getNFTOwnership = async (collection_address_map: {[chainId: string]: string}, token_id: string) => {
-  console.log('-get owner-')
   let tokenIdOwner = []
   let tokenChainId = 0
   for (const chain_id in collection_address_map) {
