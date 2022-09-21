@@ -188,7 +188,7 @@ const Collection: NextPage = () => {
   const Web3Api = useMoralisWeb3Api()
 
   const fetchCollectionMetaData = async() => {
-    const chain = '0x'+provider?._network?.chainId.toString(16)
+    const chain = '0x'+Number(collectionChainID).toString(16)
     const  options = {
       chain: chain as any,
       address: collectionAddress
@@ -199,13 +199,24 @@ const Collection: NextPage = () => {
 
   useEffect(() => {
     if(collectionInfo && collectionInfo.address && provider?._network?.chainId) {
+      let default_key:any
+      let flag = false
       Object.keys(collectionInfo.address).map((key, idx)=>{
         if(key==(provider?._network?.chainId).toString()){
+          flag = true
           setCollectionAddress(collectionInfo.address[key])
           setCollectionChainID(key)
           setCollectionChainName(getChainNameFromId(provider?._network?.chainId))
         }
+        if(idx===0) {
+          default_key = key
+        }
       })
+      if(!flag) {
+        setCollectionAddress(collectionInfo.address[default_key])
+        setCollectionChainID(default_key)
+        setCollectionChainName(getChainNameFromId(default_key as number))
+      }
     }
   },[collectionInfo,provider])
 
@@ -778,6 +789,11 @@ const Collection: NextPage = () => {
                   }
                 >
                   <div className="grid 2xl:grid-cols-5 gap-4 xl:grid-cols-3 md:grid-cols-2 p-1">
+                    {/* { !isActiveBuyNow && nfts.map((item, index) => {
+                      return (
+                        <NFTBox nft={item} index={index} key={index}  col_url={col_url} col_address={collectionAddress}  chain={collectionInfo?collectionChainID:'4'}/>
+                      )
+                    })} */}
                     { !isActiveBuyNow && nfts.map((item, index) => {
                       return (
                         <NFTBox nft={item} index={index} key={index}  col_url={col_url} col_address={collectionAddress}  chain={collectionInfo?collectionChainID:'4'}/>

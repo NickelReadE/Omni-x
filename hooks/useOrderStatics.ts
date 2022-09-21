@@ -78,6 +78,7 @@ const useOrderStatics = ({
     }
     return undefined
   }, [bidOrders, collection_addresses])
+
   const highestBidOrder = (sortedBids && sortedBids.length > 0) ? sortedBids[0] : undefined
   const highestBid = formatEther(highestBidOrder?.price)
   const highestBidCoin = highestBidOrder?.currencyAddress && getCurrencyIconByAddress(highestBidOrder?.currencyAddress)
