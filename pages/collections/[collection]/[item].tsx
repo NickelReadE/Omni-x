@@ -22,6 +22,7 @@ import PngCheck from '../../../public/images/check.png'
 import PngSub from '../../../public/images/subButton.png'
 import PngEther from '../../../public/images/collections/ethereum.png'
 import useOrderStatics from '../../../hooks/useOrderStatics'
+import useOwnership from '../../../hooks/useOwnership'
 
 const truncate = (str: string) => {
   return str.length > 12 ? str.substring(0, 9) + '...' : str
@@ -31,8 +32,8 @@ const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('items')
   
-  const bidOrders = useSelector(selectBidOrders) as IOrder[]
   const nftInfo = useSelector(selectNFTInfo)
+
   const dispatch = useDispatch()
   const {
     provider,
@@ -45,17 +46,46 @@ const Item: NextPage = () => {
   const token_id = router.query.item as string
   const chain_id = provider?._network?.chainId
   const chain_name = chain_id && getChainNameFromId(chain_id)
-  const collection_address = chain_id && getCollectionAddress(nftInfo?.collection?.address, chain_id)
+  const collection_address_map = nftInfo?.collection?.address
+  const collection_address = chain_id && getCollectionAddress(collection_address_map, chain_id)
 
-  // trading hook
+  // ownership hook
   const {
     owner,
     ownerType,
+    ownerChainId,
+    collectionAddress: ownedCollectionAddress
+  } = useOwnership({
+    collection_address_map,
+    token_id
+  })
+
+  // statistics hook
+  const {
+    order,
+    orderChainId,
+    isListed,
+    isAuction,
+    sortedBids,
+    highestBid,
+    highestBidCoin,
+    lastSale,
+    lastSaleCoin
+  } = useOrderStatics({ 
+    nft: nftInfo?.nft, 
+    collection_address_map,
+    isDetailPage: true 
+  })
+
+  const order_collection_address = order?.collectionAddress
+  const order_collection_chain = orderChainId && getChainNameFromId(orderChainId)
+
+  // trading hook
+  const {
     openBidDlg,
     openSellDlg,
     setOpenBidDlg,
     setOpenSellDlg,
-    getNFTOwnership,
     getListOrders,
     getBidOrders,
     getLastSaleOrder,
@@ -69,23 +99,12 @@ const Item: NextPage = () => {
     address,
     collection_name: col_url,
     collection_address,
-    collection_chain: chain_name,
+    order_collection_address,
+    order_collection_chain,
+    owner,
+    owner_collection_address: ownedCollectionAddress,
+    owner_collection_chain: ownerChainId && getChainNameFromId(ownerChainId),
     token_id
-  })
-
-  // statistics hook
-  const {
-    order,
-    isListed,
-    isAuction,
-    highestBid,
-    highestBidCoin,
-    lastSale,
-    lastSaleCoin
-  } = useOrderStatics({ 
-    nft: nftInfo?.nft, 
-    collection_address,
-    isDetailPage: true 
   })
 
   // nft info api call
@@ -95,13 +114,6 @@ const Item: NextPage = () => {
       dispatch(getNFTInfo(col_url, token_id) as any)
     }
   }, [col_url, token_id])
-
-  useEffect(() => {
-    if (token_id && collection_address && chain_name ) {
-      console.log('-getting nftOwnerShip info-')
-      getNFTOwnership(collection_address, chain_name, token_id)
-    }
-  }, [token_id, collection_address, chain_name])
   
   // order api call
   useEffect(() => {
@@ -114,7 +126,7 @@ const Item: NextPage = () => {
   }, [nftInfo, owner])
 
   // profile link
-  const profileLink = chain_name && getProfileLink(chain_name, ownerType, owner)
+  const profileLink = chain_name && ownerType && owner && getProfileLink(chain_name, ownerType, owner)
   const currencyChainIcon = getChainIconByCurrencyAddress(order?.currencyAddress)
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
   console.log(currencyIcon)
@@ -186,9 +198,9 @@ const Item: NextPage = () => {
                       <div className="font-bold text-[18px] text-[#000000]">bid</div>
                       <div></div>
                       {
-                        bidOrders?.map((item, index) => {
-                          if (Number(item.tokenId) === nftInfo.nft.token_id && item.collectionAddress === collection_address){
-                            return <Fragment key={index}>
+                        sortedBids?.map((item, index) => {
+                          return (
+                            <Fragment key={index}>
                               <div className='break-all mt-3 text-[16px] font-bold'>{truncate(item.signer)}</div>
                               <div className="text-center mt-3">
                                 <img
@@ -207,9 +219,16 @@ const Item: NextPage = () => {
                                 </div>
                                 <p className='ml-3'>${item && item.price && ethers.utils.formatEther(item.price)}</p>
                               </div>
-                              <div className='text-right mt-3'>{owner.toLowerCase()==address?.toLowerCase()&&<button className='bg-[#ADB5BD] hover:bg-[#38B000] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5' onClick={() => onAccept(item)}>accept</button>}</div>
+                              <div className='text-right mt-3'>
+                                {owner?.toLowerCase() == address?.toLowerCase() &&
+                                  <button className='bg-[#ADB5BD] hover:bg-[#38B000] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5'
+                                    onClick={() => onAccept(item)}>
+                                    accept
+                                  </button>
+                                }
+                              </div>
                             </Fragment>
-                          }
+                          )
                         })
                       }
                     </div>

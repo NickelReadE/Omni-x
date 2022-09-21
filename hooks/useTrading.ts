@@ -15,13 +15,10 @@ import { acceptOrder, postMakerOrder } from "../utils/makeOrder"
 import { useEffect } from 'react'
 import { getChainNameFromId } from '../utils/constants'
 export type TradingFunction = {
-  owner: string,
-  ownerType: string,
   openSellDlg: boolean,
   openBidDlg: boolean,
   setOpenSellDlg: Dispatch<SetStateAction<boolean>>,
   setOpenBidDlg: Dispatch<SetStateAction<boolean>>,
-  getNFTOwnership: (collection_address: string, collection_chain_name: string, token_id: string) => Promise<void>,
   getListOrders: () => void,
   getBidOrders: () => void,
   getLastSaleOrder: () => void,
@@ -56,15 +53,18 @@ const useTrading = ({
   address,
   collection_name,
   collection_address,
-  collection_chain,
+  order_collection_address,
+  owner,
+  owner_collection_chain,
   token_id
 }: any): TradingFunction => {
-  const [owner, setOwner] = useState('')
-  const [ownerType, setOwnerType] = useState('address')
   const [openSellDlg, setOpenSellDlg] = useState(false)
   const [openBidDlg, setOpenBidDlg] = useState(false)
 
   const dispatch = useDispatch()
+
+  const chain_id = provider?._network?.chainId
+  const chain_name = chain_id && getChainNameFromId(chain_id)
 
   const checkValid = async (currency: string, price: string, chainId: number) => {
     if (currency===''){
@@ -103,24 +103,10 @@ const useTrading = ({
     return true
   }
 
-  const getNFTOwnership = async (collection_address: string, collection_chain_name: string, token_id: string) => {
-    const tokenIdOwner = await collectionsService.getNFTOwner(collection_address, collection_chain_name, token_id)
-    if (tokenIdOwner.length > 0) {
-      const user_info = await userService.getUserByAddress(tokenIdOwner)
-      if(user_info.username == ''){
-        setOwner(tokenIdOwner)
-        setOwnerType('address')
-      } else {
-        setOwner(user_info.username)
-        setOwnerType('username')
-      }
-    }
-  }
-
   const getListOrders = () => {
     const request: IGetOrderRequest = {
       isOrderAsk: true,
-      collection: collection_address,
+      collection: order_collection_address,
       tokenId: token_id,
       signer: owner,
       startTime: Math.floor(Date.now() / 1000).toString(),
@@ -134,7 +120,7 @@ const useTrading = ({
   const getBidOrders = () => {
     const bidRequest: IGetOrderRequest = {
       isOrderAsk: false,
-      collection: collection_address,
+      collection: order_collection_address,
       tokenId: token_id,
       // startTime: Math.floor(Date.now() / 1000).toString(),
       // endTime: Math.floor(Date.now() / 1000).toString(),
@@ -145,7 +131,7 @@ const useTrading = ({
   }
   const getLastSaleOrder = () => {
     const excutedRequest: IGetOrderRequest = {
-      collection: collection_address,
+      collection: order_collection_address,
       tokenId: token_id,
       status: ['EXECUTED'],
       sort: 'UPDATE_NEWEST'
@@ -162,6 +148,11 @@ const useTrading = ({
   }
 
   const onListing = async (listingData: IListingData) => {
+    if (owner_collection_chain != chain_name) {
+      dispatch(openSnackBar({ message: `Please switch network to ${owner_collection_chain}`, status: 'warning' }))
+      return
+    }
+
     const price = ethers.utils.parseEther(listingData.price.toString())
     const amount = ethers.utils.parseUnits('1', 0)
     const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
@@ -189,7 +180,7 @@ const useTrading = ({
           types: ['uint16', 'uint16'],
         },
       },
-      collection_chain,
+      chain_name,
       true
     )
 
@@ -278,7 +269,6 @@ const useTrading = ({
     dispatch(openSnackBar({ message: 'Bought an NFT', status: 'success' }))
     getLastSaleOrder()
     getListOrders()
-    getNFTOwnership(collection_address, collection_chain, token_id)
   }
 
   const onBid = async (bidData: IBidData, order?: IOrder) => {
@@ -295,12 +285,10 @@ const useTrading = ({
     const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
     const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
 
-    
     if (!checkValid(currency, price.toString(), chainId)) {
       return
     }
 
-    console.log('-validated-', order, collection_address, currency, token_id)
     try {
       
       const omni = getCurrencyInstance(currency, chainId, signer)
@@ -312,7 +300,7 @@ const useTrading = ({
       await postMakerOrder(
         provider as any,
         false,
-        collection_address,
+        order?.collectionAddress,
         order?.strategy,
         order?.amount,
         price,
@@ -350,6 +338,11 @@ const useTrading = ({
   }
 
   const onAccept = async (bidOrder: IOrder) => {
+    if (owner_collection_chain != chain_name) {
+      dispatch(openSnackBar({ message: `Please switch network to ${owner_collection_chain}`, status: 'warning' }))
+      return
+    }
+
     const chainId = provider?.network.chainId || 4
     const lzChainId = getLayerzeroChainId(chainId)
     
@@ -394,18 +387,13 @@ const useTrading = ({
     getLastSaleOrder()
     getListOrders()
     getBidOrders()
-    getNFTOwnership(collection_address, collection_chain, token_id)
-
   }
 
   return {
-    owner,
-    ownerType,
     openBidDlg,
     openSellDlg,
     setOpenSellDlg,
     setOpenBidDlg,
-    getNFTOwnership,
     getListOrders,
     getBidOrders,
     getLastSaleOrder,
