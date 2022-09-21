@@ -24,6 +24,7 @@ import CollectionCard from '../../components/CollectionCard'
 import { IGetOrderRequest } from '../../interface/interface'
 
 import useWallet from '../../hooks/useWallet'
+import { getChainNameById } from '../../utils/constants'
 
 const serviceSlides: Array<React.ReactNode> = []
 serviceSlides.push(<Image src={pfp} alt="image - 25" layout='responsive' width={230} height={263} />)
@@ -46,12 +47,15 @@ const Collections: NextPage = () => {
   const {
     provider,
   } = useWallet()
-  const chain_id = provider?._network?.chainId
   
+  useEffect(() => {
+    if(provider?._network){
+      dispatch(updateCollectionsForCard(provider._network.chainId.toString(), getChainNameById(provider._network.chainId) ) as any)
+    }
+  }, [provider?._network])
   
   useEffect(() => {
     dispatch(getCollections() as any)
-    dispatch(updateCollectionsForCard() as any)
   }, [])
 
   useEffect(() => {

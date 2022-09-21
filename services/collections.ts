@@ -29,8 +29,8 @@ const getCollectionInfo = async (col_url: string) => {
     return res.data
 }
 
-const getCollectionOwners = async (col_url: string) => {
-    const res = await API.post(`collections/${col_url}`)
+const getCollectionOwners = async (chain: string, address: string) => {
+    const res = await API.post(`collections/${chain}/${address}`)
     return res.data
 }
 

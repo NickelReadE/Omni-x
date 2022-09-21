@@ -155,7 +155,7 @@ const Collection: NextPage = () => {
 
   const collectionInfo = useSelector(selectCollectionInfo)
 
-  const collectionOwners = useSelector(selectCollectionOwners)
+  // const collectionOwners = useSelector(selectCollectionOwners)
   const royalty = useSelector(selectRoyalty)
   const orders = useSelector(selectOrders)
   const assetPrices = useSelector(selectAssetPrices)
@@ -210,7 +210,7 @@ const Collection: NextPage = () => {
   },[collectionInfo,provider])
 
   useEffect(() => {
-    if ( col_url ) {
+    if ( col_url && provider?._network) {
       dispatch(getCollectionInfo(col_url) as any)
       // dispatch(getCollectionOwners(col_url) as any)
       const localData = localStorage.getItem('cards')
@@ -220,7 +220,7 @@ const Collection: NextPage = () => {
       
       setPage(0)
     }
-  }, [col_url]) 
+  }, [col_url,provider]) 
 
   useEffect(()=>{
     if(nfts.length>0){

@@ -12,7 +12,7 @@ type ConnectButtonProps = {
   context:WalletContextType
 }
 const MetaMaskConnect = ({onConnect, context}:ConnectButtonProps): JSX.Element => {
-  const [show, setShow] = React.useState<boolean>(false)
+  const [show, setShow] = React.useState<boolean>(true)
   const [chainId, setChainID] = React.useState<number>(4)
 
   React.useEffect(()=>{
