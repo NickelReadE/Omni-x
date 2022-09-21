@@ -10,7 +10,7 @@ import Twitter from '../../../public/images/twitter.png'
 import Web from '../../../public/images/web.png'
 import Ethereum from '../../../public/sidebar/ethereum.png'
 import Explorer from '../../../public/images/exp.png'
-
+import Loading from '../../../public/images/loading_f.gif'
 import { getCollectionNFTs, selectCollectionNFTs, getCollectionInfo,getCollectionAllNFTs, getRoyalty,selectCollectionInfo, clearCollectionNFTs, selectGetNFTs, getCollectionOwners, selectCollectionOwners,selectCollectionAllNFTs, selectRoyalty } from '../../../redux/reducers/collectionsReducer'
 import { selectAssetPrices} from '../../../redux/reducers/feeddataReducer'
 import { useDispatch, useSelector } from 'react-redux'
@@ -763,7 +763,7 @@ const Collection: NextPage = () => {
                   loader={
                     <div className='flex justify-center items-center'>
                       <div className="flex justify-center items-center w-[90%] h-[100px]">
-                        {!isActiveBuyNow&&<CircularProgress />}
+                        {!isActiveBuyNow&&<Image src={Loading} alt='Loading...' width='80px' height='80px'/>}
                       </div>
                     </div>
                   }
