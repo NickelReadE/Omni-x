@@ -1,53 +1,33 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { chain_list } from '../utils/utils'
-import { IListingData, IPropsNFTItem } from '../interface/interface'
+import { useState } from 'react'
+import { IPropsNFTItem } from '../interface/interface'
 import LazyLoad from 'react-lazyload'
 import {useDraggable} from '@dnd-kit/core'
 import ConfirmSell from './collections/ConfirmSell'
-import { prependOnceListener } from 'process'
 
 import useWallet from '../hooks/useWallet'
-import { postMakerOrder } from '../utils/makeOrder'
-import { addDays } from 'date-fns'
-import { openSnackBar } from '../redux/reducers/snackBarReducer'
-import { ethers } from 'ethers'
-import { getOrders, selectOrders,selectBidOrders, selectLastSaleOrders } from '../redux/reducers/ordersReducer'
 import { selectCollections } from '../redux/reducers/collectionsReducer'
-import { IGetOrderRequest } from '../interface/interface'
-import { useDispatch, useSelector } from 'react-redux'
-import { ContractName, CREATOR_FEE, currencies_list, getAddressByName, PROTOCAL_FEE, getChainIdFromName,getCurrencyIconByAddress } from '../utils/constants'
+import { useSelector } from 'react-redux'
+import { getChainIconById, getChainNameFromId } from '../utils/constants'
 
 import Router from 'next/router'
+import useOrderStatics from '../hooks/useOrderStatics'
+import useTrading from '../hooks/useTrading'
 
 const NFTBox = ({nft, index}: IPropsNFTItem) => {
-
-  const [chain, setChain] = useState('eth')
-  const [image, setImage] = useState('/images/omnix_logo_black_1.png')
   const [imageError, setImageError] = useState(false)
-  const [openSellDlg, setOpenSellDlg] = React.useState(false)
-  ///only in the beta version
-  const [islisted,setList] = useState(false)
-  const [price, setPrice] = useState(0)
-  const [img_url, setImageURL] = useState('')
-  const [highestBid, setHighestBid] = useState(0)
-  const [highestBidCoin, setHighestBidCoin] = useState('')
-  const [lastSale,setLastSale] = useState(0)
-  const [lastSaleCoin, setLastSaleCoin] = useState('')
   const [isShowBtn, SetIsShowBtn] = useState(false)
-
-  const orders = useSelector(selectOrders)
-  const bidOrders = useSelector(selectBidOrders)
-  const lastSaleOrders = useSelector(selectLastSaleOrders)
   const collections = useSelector(selectCollections)
 
   const {
     provider,
-    address
+    address,
+    signer
   } = useWallet()
 
-  const dispatch = useDispatch()
+  const chain = provider?.network.chainId
+  const chainIcon = getChainIconById(chain?.toString())
 
   const {attributes, listeners, setNodeRef, transform} = useDraggable({
     id: `draggable-${index}`,
@@ -60,70 +40,62 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     zIndex: 99
   } : undefined
 
-  useEffect(() => {
-    const updateImage = async() => {
-      const metadata = nft.metadata
-      setChain(chain_list[nft.chain])
-      if (metadata) {
-        try {
-          // IPFS Gateway: A server that will return IPFS files from a "normal" URL.
-          const image_uri = JSON.parse(metadata).image
-          setImage(image_uri.replace('ipfs://', 'https://ipfs.io/ipfs/'))
-        } catch (err) {
-          console.log('NFTBox err? ', err)
-        }
+  const image = useMemo(() => {
+    const metadata = nft?.metadata
+    if (metadata) {
+      try {
+        // IPFS Gateway: A server that will return IPFS files from a "normal" URL.
+        const image_uri = JSON.parse(metadata).image
+        return image_uri.replace('ipfs://', 'https://ipfs.io/ipfs/')
+      } catch (err) {
+        console.log('NFTBox err? ', err)
       }
+    }
+    return '/images/omnix_logo_black_1.png'
+  }, [nft])
 
-      
+  const collection_address_map = useMemo(() => {
+    if (chain && nft?.token_address) {
+      return {
+        [chain]: nft.token_address
+      }
     }
-    updateImage()
-  }, [])
+    return []
+  }, [chain, nft])
 
-  useEffect(()=>{
-    const collection_address = nft.token_address
-    if (collection_address == '0xb7b0d9849579d14845013ef9d8421ae58e9b9369' || collection_address == '0x7470ea065e50e3862cd9b8fb7c77712165da80e5' || collection_address == '0xb74bf94049d2c01f8805b8b15db0909168cabf46' || collection_address == '0x7f04504ae8db0689a0526d99074149fe6ddf838c' || collection_address == '0xa783cc101a0e38765540ea66aeebe38beebf7756'|| collection_address == '0x316dc98ed120130daf1771ca577fad2156c275e5') {
-      setList(true)
-    }
-    
-    if(lastSaleOrders.length>0){
-      setLastSale(0)
-      setLastSaleCoin('')
-      for(let i=0;i<lastSaleOrders.length;i++){
-        if(lastSaleOrders[i].collectionAddress==collection_address&&lastSaleOrders[i].tokenId==nft.token_id){
-          setLastSale(Number(ethers.utils.formatEther(lastSaleOrders[i].price)))
-          setLastSaleCoin(`/images/${getCurrencyIconByAddress(lastSaleOrders[i].currencyAddress)}`)
-        }
-      }
-    }
-    if(orders.length>0){
-      ///only in the beta version
-      for(let i=0;i<orders.length;i++){
-        if(orders[i].tokenId==nft.token_id && orders[i].collectionAddress==nft.token_address) {
-          setPrice(Number(ethers.utils.formatEther(orders[i].price)))
-          setImageURL(`/images/${getCurrencyIconByAddress(orders[i].currencyAddress)}`)
-        }
-      }
-    }
-    if(bidOrders.length>0) {
-      if ( bidOrders.length > 0 ) {
-        let bid_balance = 0
-        for(let i=0; i<bidOrders.length;i++){
-          if(bidOrders[i].tokenId==nft.token_id && bidOrders[i].collectionAddress==nft.token_address){
-            if(bid_balance < Number(ethers.utils.formatEther(bidOrders[i].price))){
-              bid_balance = Number(ethers.utils.formatEther(bidOrders[i].price))
-              const chainIdForList = getChainIdFromName(bidOrders[i].chain as string)
-              for(let j=0;j<currencies_list[chainIdForList as number].length;j++){
-                if(currencies_list[chainIdForList as number][j].address==bidOrders[i].currencyAddress){
-                  setHighestBidCoin(`/images/${currencies_list[chainIdForList as number][j].icon}`)
-                }
-              }
-            }
-          }
-        }
-        setHighestBid(bid_balance)
-      }
-    }
-  }, [orders, bidOrders])
+  const {
+    order,
+    orderChainId,
+    isListed,
+    isAuction,
+    highestBid,
+    highestBidCoin,
+    lastSale,
+    lastSaleCoin
+  } = useOrderStatics({ nft, collection_address_map })
+
+  const order_collection_address = order?.collectionAddress
+  const order_collection_chain = orderChainId && getChainNameFromId(orderChainId)
+
+  console.log('-nft-', nft)
+  const {
+    openSellDlg,
+    setOpenSellDlg,
+    onListing
+  } = useTrading({
+    provider,
+    signer,
+    address,
+    collection_name: nft.name,
+    collection_address: nft.token_address,
+    collection_chain: getChainNameFromId(chain ? Number(chain) : 4),
+    order_collection_address,
+    order_collection_chain,
+    owner: address,
+    owner_collection_address: nft.token_address,
+    owner_collection_chain: nft.chain,
+    token_id: nft?.token_id
+  })
 
   const doubleClickToSetDetailLink = () => {
     const collection_address = nft.token_address
@@ -138,61 +110,11 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       }
     }
   }
-
-
-  const onListing = async (listingData: IListingData) => {
-    const chainId = provider?.network.chainId as number
-    const amount = ethers.utils.parseUnits('1', 0)
-    const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
-    const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
-
-    const startTime = Date.now()
-    try {
-      await postMakerOrder(
-        provider as any,
-        true,
-        nft.token_address,
-        getAddressByName('Strategy', chainId),
-        amount,
-        ethers.utils.parseEther(listingData.price.toString()),
-        protocalFees,
-        creatorFees,
-        getAddressByName(listingData.currencyName as ContractName, chainId),
-        {
-          tokenId: String(nft.token_id),
-          startTime,
-          endTime: addDays(startTime, listingData.period).getTime(),
-          params: {
-            values: [10001],
-            types: ['uint256'],
-          },
-        },
-        nft.chain,
-        true
-      )
-      setOpenSellDlg(false)
-      dispatch(openSnackBar({ message: 'Listing Success', status: 'success' }))
-
-      const request: IGetOrderRequest = {
-        isOrderAsk: true,
-        chain: provider?.network.name,
-        signer: address,
-        startTime: Math.floor(Date.now() / 1000).toString(),
-        endTime: Math.floor(Date.now() / 1000).toString(),
-        status: ['VALID'],
-        sort: 'OLDEST'
-      }
-      dispatch(getOrders(request) as any)
-
-    } catch (err: any) {
-      dispatch(openSnackBar({ message: err.message, status: 'error' }))
-    }
-  }
   
   return (
     <div className='border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]'onMouseEnter={() => SetIsShowBtn(true)} onMouseLeave={() => SetIsShowBtn(false)}>
       <div className="nft-image-container group relative flex justify-center text-center overflow-hidden rounded-md" ref={setNodeRef} style={style} {...listeners} {...attributes}>
-        {islisted?
+        {isListed ?
           <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
             <img className='nft-image rounded-md object-cover ease-in-out duration-500 group-hover:scale-110' src={imageError?'/images/omnix_logo_black_1.png':image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={image} onDoubleClick={() => doubleClickToSetDetailLink()}/>
           </LazyLoad>
@@ -211,46 +133,35 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
         </div>
         <div className="mr-3 flex items-center">
           <div className="flex items-center ml-1">
-            {chain === 'eth' &&
-              <img src="/svgs/ethereum.svg" className="w-[16px] h-[16px]" />
-            }
-            {chain === 'bsc' &&
-              <img src="/svgs/binance.svg" className="w-[16px] h-[16px]" />
-            }
-            {chain === 'matic' &&
-              <img src="/svgs/polygon.svg" className="w-[16px] h-[16px]" />
-            }
-            {chain === 'avalanche' &&
-              <img src="/svgs/avax.svg" className="w-[16px] h-[16px]" />
-            }
-            {chain === 'fantom' &&
-              <img src="/svgs/fantom.svg" className="w-[16px] h-[16px]" />
-            }
-            {chain === 'optimism' &&
-              <img src="/svgs/optimism.svg" className="w-[16px] h-[16px]" />
-            }
-            {chain === 'arbitrum' &&
-              <img src="/svgs/arbitrum.svg" className="w-[16px] h-[16px]" />
-            }
+            <img src={chainIcon} className="w-[16px] h-[16px]" />
           </div>
         </div>
       </div>
-      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
+      {/* <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
         <div className="flex items-center ml-3">
           {islisted && price>0&&<img src={img_url} className="w-[18px] h-[18px]" alt="icon" />}
           {islisted && price>0&&<span className="text-[#000000] text-[18px] font-extrabold ml-2">{price}</span>}
         </div>
-      </div>
+      </div> */}
       <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
         <div className="flex items-center ml-3">
-          {lastSale!=0&&<><span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span><img src={lastSaleCoin} className="w-[18px] h-[18px]" alt="" />&nbsp;<span className="text-[#6C757D] text-[14px]font-bold">{lastSale}</span></>}
-          {lastSale==0&&highestBid!=0&&<><span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span><img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;<span className="text-[#6C757D] text-[14px] font-bold">{highestBid}</span></>}  
+          {lastSale && <>
+            <span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span>
+            <img src={lastSaleCoin} className="w-[18px] h-[18px]" alt="" />&nbsp;
+            <span className="text-[#6C757D] text-[14px]font-bold">{lastSale}</span>
+          </>}
+          {!lastSale && highestBid && <>
+            <span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span>
+            <img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;
+            <span className="text-[#6C757D] text-[14px] font-bold">{highestBid}</span>
+          </>}  
         </div>
         <div className="flex items-center ml-3">
           <div>&nbsp;</div>
-          {isShowBtn&&islisted&&<div className="ml-2 mr-3 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-bold cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
-            {'Sell'}
-          </div>}
+          {isShowBtn && !isListed &&
+            <div className="ml-2 mr-3 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-bold cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
+              {'Sell'}
+            </div>}
         </div>
       </div>
       <ConfirmSell handleSellDlgClose={() => {setOpenSellDlg(false)}} openSellDlg={openSellDlg} nftImage={image} nftTitle={nft.name} onSubmit={onListing} />
