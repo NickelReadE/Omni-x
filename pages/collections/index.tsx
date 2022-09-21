@@ -22,7 +22,8 @@ import ImageList from '../../components/ImageList'
 import Slider from '../../components/Slider'
 import CollectionCard from '../../components/CollectionCard'
 import { IGetOrderRequest } from '../../interface/interface'
-
+import useWallet from '../../hooks/useWallet'
+import { getChainNameById } from '../../utils/constants'
 const serviceSlides: Array<React.ReactNode> = []
 serviceSlides.push(<Image src={pfp} alt="image - 25" layout='responsive' width={230} height={263} />)
 serviceSlides.push(<Image src={photography} alt="image - 26" layout='responsive' width={230} height={263} />)
@@ -35,6 +36,7 @@ serviceSlides.push(<Image src={domains} alt="image - 28" layout='responsive' wid
 serviceSlides.push(<Image src={fashion} alt="image - 29" layout='responsive' width={230} height={263} />)
 
 const Collections: NextPage = () => {
+  const {provider} = useWallet()
   const [omniSlides, setOmniSlides] = useState<Array<React.ReactNode>>([])  
   const dispatch = useDispatch()
   const collections = useSelector(selectCollections)
@@ -42,10 +44,14 @@ const Collections: NextPage = () => {
   const orders = useSelector(selectOrders)
   
   useEffect(() => {
+    if(provider?._network){
+      dispatch(updateCollectionsForCard(provider._network.chainId.toString(), getChainNameById(provider._network.chainId) ) as any)
+    }
+    
+  }, [provider?._network])
+  useEffect(()=>{
     dispatch(getCollections() as any)
-    dispatch(updateCollectionsForCard() as any)
-  }, [])
-
+  },[])
   useEffect(() => {
     const slides: Array<React.ReactNode> = []
     const  localCards = localStorage.getItem('cards') 

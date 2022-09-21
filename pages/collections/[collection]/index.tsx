@@ -42,6 +42,7 @@ import { convertETHtoUSDT, convertUSDTtoETH } from '../../../utils/convertRate'
 import { useMoralisWeb3Api, useMoralis } from 'react-moralis'
 import useWallet from '../../../hooks/useWallet'
 import { currencies_list } from '../../../utils/constants'
+import { getChainNameById } from '../../../utils/constants'
 
 
 const sort_fields = [
@@ -130,7 +131,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const Collection: NextPage = () => {
-  const{signer} = useWallet()
+  const{signer, provider} = useWallet()
   const { isInitialized, Moralis } = useMoralis()
   const [currentTab, setCurrentTab] = useState<string>('items')
   const [expandedMenu, setExpandedMenu] = useState(0)
@@ -152,7 +153,6 @@ const Collection: NextPage = () => {
 
   const collectionInfo = useSelector(selectCollectionInfo)
 
-  const collectionOwners = useSelector(selectCollectionOwners)
   const royalty = useSelector(selectRoyalty)
   const orders = useSelector(selectOrders)
   const assetPrices = useSelector(selectAssetPrices)
@@ -185,9 +185,8 @@ const Collection: NextPage = () => {
     setContractType(metaData.contract_type)
   }
   useEffect(() => {
-    if ( col_url ) {
+    if ( col_url && provider?._network) {
       dispatch(getCollectionInfo(col_url) as any)
-      dispatch(getCollectionOwners(col_url) as any)
       const localData = localStorage.getItem('cards')
       if(localData){
         setCollectionInfoFromLocal((JSON.parse(localData)).find((element: ICollectionInfoFromLocal) => element.col_url===col_url))
@@ -195,7 +194,7 @@ const Collection: NextPage = () => {
 
       setPage(0)
     }
-  }, [col_url])
+  }, [col_url, provider])
 
   useEffect(()=>{
     if(nfts.length>0){

@@ -109,9 +109,9 @@ export const getCollectionInfo = (col_url: string) => async (dispatch: Dispatch<
 	}
 }
 
-export const getCollectionOwners = (col_url: string) => async (dispatch: Dispatch<any>) => {
+export const getCollectionOwners = (chain: string, address: string) => async (dispatch: Dispatch<any>) => {
 	try {
-		const info = await collectionsService.getCollectionOwners(col_url)
+		const info = await collectionsService.getCollectionOwners(chain, address)
 		dispatch(setCollectionOwners(info))
 	} catch (error) {
 		console.log("getCollectionInfo error ? ", error)
@@ -136,7 +136,7 @@ export const getCollections = () => async (dispatch: Dispatch<any>) => {
 	}
 }
 
-export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, getState: () => any) => {
+export const updateCollectionsForCard = (chainId: string, chainName: string) => async (dispatch: Dispatch<any>, getState: () => any) => {
 	try {
 		const request: IGetOrderRequest = {
 			isOrderAsk: true,
@@ -155,8 +155,14 @@ export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, ge
 		let collectionsF : any[] = []
 		const info = await collectionsService.getCollections()		
 		await info.data.map(async (element:any, index:number)=>{
+			console.log('chain', chainId,chainName, 'address', element.address)
 			setTimeout(async function(){
-				const ownerCnt = await collectionsService.getCollectionOwners(element.col_url as string)
+				let ownerCnt = 0
+				if(Object.prototype.hasOwnProperty.call(element.address,chainId)){
+					const ownerdata = await collectionsService.getCollectionOwners(chainName, element.address[chainId])
+					ownerCnt = ownerdata.data
+					console.log(ownerdata)
+				}
 				setTimeout(
 					async function(){			
 						let ordersForCollection: { price: any; currencyAddress: any }[] = []	
@@ -197,7 +203,7 @@ export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, ge
 							if(lowPrice>0){
 								lowPrice = lowPrice.toFixed(4)
 							}
-							collectionsF.push({col_url:element.col_url, itemsCnt:collectionInfo.data.count, ownerCnt:ownerCnt.data, orderCnt:ordersForCollection.length, floorPrice:{usd:lowPrice,eth:lowPrice>0?convertUSDTtoETH(lowPrice,ethPrice).toFixed(4):0}})		
+							collectionsF.push({col_url:element.col_url, itemsCnt:collectionInfo.data.count, ownerCnt:ownerCnt, orderCnt:ordersForCollection.length, floorPrice:{usd:lowPrice,eth:lowPrice>0?convertUSDTtoETH(lowPrice,ethPrice).toFixed(4):0}})		
 							if(collectionsF.length===info.data.length){
 								localStorage.setItem('cards',JSON.stringify(collectionsF))
 								dispatch(setCollectionsForCard(collectionsF))			
