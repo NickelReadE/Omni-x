@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { IPropsNFTItem } from '../../interface/interface'
 import LazyLoad from 'react-lazyload'
 import { ethers } from 'ethers'
-import { getCurrencyIconByAddress, getChainIcon } from '../../utils/constants'
+import { getCurrencyIconByAddress, getChainIconById, getChainNameFromId } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'
 import ConfirmBid from './ConfirmBid'
 import editStyle from '../../styles/nftbox.module.scss'
@@ -33,7 +33,7 @@ const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
     address,
     collection_name: col_url,
     collection_address: col_address,
-    collection_chain: chain,
+    collection_chain: getChainNameFromId(chain ? Number(chain) : 4),
     token_id: nft?.token_id
   })
 
@@ -47,7 +47,7 @@ const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
     lastSaleCoin
   } = useOrderStatics({ nft, collection_address: col_address })
 
-  const chainIcon = getChainIcon(chain || 'rinkeby')
+  const chainIcon = getChainIconById(chain)
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
   const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
   const isOwner = order?.signer == address

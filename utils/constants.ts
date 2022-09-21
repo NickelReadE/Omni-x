@@ -424,6 +424,10 @@ export const getChainIcon = (chain: string) => {
   return (chainIcons as any)[chain]
 }
 
+export const getChainIconById = (chainId?: string) => {
+  return chainId && chainInfos[Number(chainId)]?.logo
+}
+
 export const getCollectionAddress = (col_addresses: any, chain_id: number) => {
   if(col_addresses){
     return col_addresses[chain_id.toString()]
