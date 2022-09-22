@@ -103,12 +103,12 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                   <input type="text" value={price} className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg" onChange={onChangePrice}/>
                   <span className="px-4 text-[#ADB5BD] font-light">~ $40.50 USD</span>
                 </div>
-                <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Reserve Price</p>
+                {/* <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Reserve Price</p>
                 <div className="flex justify-start items-center mt-5">
                   <CustomSelect optionData={CURRENCIES_LIST} value={currency} onChange={(value: any) => setCurrency(value)} />
                   <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F8F9FA] border-[2px] border-[#E9ECEF] rounded-lg"/>
                   <span className="px-4 text-[#ADB5BD] font-light">~ $60.00 USD</span>
-                </div>
+                </div> */}
                 <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Duration</p>
                 <div className="flex justify-start items-center mt-5">
                   <Select
@@ -127,8 +127,8 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                     getOptionValue={(e:any) => e?.value}
                     value={0}
                   />
-                  <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg"/>
-                  <span className="px-4 text-[#ADB5BD] font-light">~ $60.00 USD</span>
+                  {/* <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg"/>
+                  <span className="px-4 text-[#ADB5BD] font-light">~ $60.00 USD</span> */}
                 </div>
               </div>
 
@@ -139,7 +139,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
             </div>
             <div className="grid grid-cols-4 mt-10 flex items-end">
               <div className="col-span-1">
-                <button className='bg-[#B00000] rounded text-[#fff] w-[95px] h-[35px]'>list</button>
+                <button className='bg-[#B00000] rounded text-[#fff] w-[95px] h-[35px]' onClick={() => onListing()}>list</button>
               </div>
               <div className="col-span-3">
                 <div className='flex justify-end'>
