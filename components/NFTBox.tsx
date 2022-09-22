@@ -17,10 +17,12 @@ import useTrading from '../hooks/useTrading'
 
 import { ethers } from 'ethers'
 import { getCurrencyIconByAddress } from '../utils/constants'
+import { useUnmountEffect } from 'framer-motion'
 
 const NFTBox = ({nft, index}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
   const [isShowBtn, SetIsShowBtn] = useState(false)
+  const [isWhitelisted, setIsWhitelisted] = useState(false)
   const collections = useSelector(selectCollections)
 
   const {
@@ -100,18 +102,22 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     token_id: nft?.token_id
   })
   const doubleClickToSetDetailLink = () => {
-    const collection_address = nft.token_address
-    if (collection_address == '0xb7b0d9849579d14845013ef9d8421ae58e9b9369' || collection_address == '0x7470ea065e50e3862cd9b8fb7c77712165da80e5' || collection_address == '0xb74bf94049d2c01f8805b8b15db0909168cabf46' || collection_address == '0x7f04504ae8db0689a0526d99074149fe6ddf838c' || collection_address == '0xa783cc101a0e38765540ea66aeebe38beebf7756'|| collection_address == '0x316dc98ed120130daf1771ca577fad2156c275e5') {
-      for(let i = 0;i<collections.length;i++){
-        if(nft.name == collections[i].name){
-          const {pathname} = Router
-          if(pathname == '/' ){
-            Router.push(`/collections/${collections[i].col_url}/${nft.token_id}`)
-          }
+    for(let i = 0;i<collections.length;i++){
+      if(nft.name == collections[i].name){
+        const {pathname} = Router
+        if(pathname == '/' ){
+          Router.push(`/collections/${collections[i].col_url}/${nft.token_id}`)
         }
       }
     }
   }
+  React.useEffect(()=>{
+    for(let i = 0;i<collections.length;i++){
+      if(nft.name == collections[i].name){
+        setIsWhitelisted(true)
+      }
+    }
+  },[nft])
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
   const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
   
@@ -164,7 +170,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
         </div>
         <div className="flex items-center ml-3">
           <div>&nbsp;</div>
-          {isShowBtn &&
+          {isShowBtn && isWhitelisted &&
             <div className="ml-2 mr-3 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-bold cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
               {'Sell'}
             </div>}
