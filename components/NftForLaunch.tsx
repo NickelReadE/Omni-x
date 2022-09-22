@@ -23,10 +23,10 @@ const NftForLaunch = (pro:ITypeNFT) => {
     dispatch(getCollectionInfo(pro.col_url) as any)
   },[])
   useEffect(()=>{
-    if(provider && collectionInfo){
+    if(provider?._network && collectionInfo){
       getPrice()
     }    
-  },[provider,collectionInfo])
+  },[provider?._network,collectionInfo])
   useEffect(()=>{
     if(collectionInfo){
       if(Object.prototype.hasOwnProperty.call(collectionInfo, 'mintFinish')){
@@ -38,10 +38,9 @@ const NftForLaunch = (pro:ITypeNFT) => {
   const getPrice = async () =>{
     try{
       const chainId = provider?._network?.chainId  
-      console.log(collectionInfo.address)
       const tokenContract =  new ethers.Contract(collectionInfo.address[chainId?chainId:0], AdvancedONT, signer)
       const priceT = await tokenContract.price()
-      setPrice(Number(priceT))
+      setPrice(Number(ethers.utils.formatEther(priceT)))
     }catch(error){
       console.log(error)
     }

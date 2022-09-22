@@ -45,7 +45,7 @@ const Mint: NextPage = () => {
     connect: connectWallet,    
     switchNetwork
   } = useWallet()
-
+  const env = process.env.NEXT_PUBLICE_ENVIRONMENT || 'testnet'
   const router = useRouter()
   const col_url = router.query.collection as string 
   const dispatch = useDispatch()
@@ -92,7 +92,7 @@ const Mint: NextPage = () => {
   const getInfo = async ():Promise<void> => {
     
     try{    
-      const chainId = provider?._network?.chainId 
+      
       const tokenContract =  new ethers.Contract(collectionInfo.address[chainId?chainId:0], AdvancedONT, signer)
       setStartId(Number(collectionInfo.start_ids[chainId?chainId:0]))      
       const result =await tokenContract.balanceOf(address)
@@ -265,36 +265,11 @@ const Mint: NextPage = () => {
       )
     }
   }
-  // useEffect(() => {
-  //   if (provider?.on) {
-  //     const handleAccountsChanged = (accounts:any) => {
-  //       setAccount(accounts[0])
-  //     }
-
-  //     const handleChainChanged = (chainId:any) => {
-  //       if(isContainChains(parseInt(chainId,16))){
-  //         setChainId(parseInt(chainId,16))
-  //       }else{
-  //         errorToast('The current network is not supported, please change the network')
-  //         switchNetwork()
-  //         setNetwork('1')
-  //       }
-  //     }
-
-  //     provider.on('accountsChanged', handleAccountsChanged)
-  //     provider.on('chainChanged', handleChainChanged)
-
-  //     return () => {
-  //       if (provider.removeListener) {
-  //         provider.removeListener('accountsChanged', handleAccountsChanged)
-  //         provider.removeListener('chainChanged', handleChainChanged)
-  //       }
-  //     }
-  //   }
-  // }, [provider])
-
-
-
+  if(window.ethereum){
+    window.ethereum.on('chainChanged', function (networkId:string) {      
+      setChainId(parseInt(networkId))
+    }) 
+  }
   useEffect(() => {
     const calculateFee = async():Promise<void> => {
       try{
@@ -323,12 +298,15 @@ const Mint: NextPage = () => {
 
 
   useEffect(()=>{
-    if(provider && address && collectionInfo){
+    if(chainId && provider && address && collectionInfo){
       getInfo()
-      setChainId(provider._network?.chainId)
     }
-  },[provider,address,collectionInfo])
-
+  },[provider,address,collectionInfo,chainId])
+  useEffect(()=>{
+    if(provider?._network){
+      setChainId(provider._network.chainId)
+    }
+  },[provider?._network])
   useEffect(()=>{
     dispatch(getCollectionInfo(col_url) as any)  
   },[]) 
@@ -351,7 +329,7 @@ const Mint: NextPage = () => {
             <div className={mintstyles.mintDataGrid}>
               <div className={mintstyles.mintDataWrap}>
                 <h5>minted</h5>
-                <span>{Number(totalNFTCount) - startId}/{Number(nextTokenId) - startId}</span>
+                <span>{Number(nextTokenId) - startId}/{Number(totalNFTCount) - startId}</span>
               </div>
               <span className={mintstyles.line}></span>
               <div className={mintstyles.mintDataWrap}>
@@ -359,9 +337,29 @@ const Mint: NextPage = () => {
                 {/* <span>{chainId?addresses[`${Number(chainId)}`].price:0}<Image src={chainId?addresses[`${Number(chainId)}`].imageSVG:EthereumImageSVG} width={29.84} height={25.46} alt='ikon'></Image></span> */}
                 <div className='flex flex-row space-x-2 items-center mt-[15px]'>
                   <div className='text-xg1 '>
-                    {price}                    
+                    {(price*mintNum).toFixed(2)}                    
                   </div>
-                  <img src='/svgs/ethereum.svg' width={29.84} height={25.46} alt='ikon'></img>
+                  {
+                    chainId === (env === 'testnet' ? 4 : 1) && <img src="/sidebar/ethereum.png" className="m-auto h-[35px]" />
+                  }
+                  {
+                    chainId === (env === 'testnet' ? 421611 : 1) && <img src="/sidebar/arbitrum.png" className="m-auto h-[35px]" />
+                  }
+                  {
+                    chainId === (env === 'testnet' ? 43113 : 1) && <img src="/sidebar/avax.png" className="m-auto h-[35px]" />
+                  }
+                  {
+                    chainId === (env === 'testnet' ? 97 : 1) && <img src="/sidebar/binance.png" className="m-auto h-[35px]" />
+                  }
+                  {
+                    chainId === (env === 'testnet' ? 4002 : 1) && <img src="/sidebar/fantom.png" className="m-auto h-[35px]" />
+                  }
+                  {
+                    chainId === (env === 'testnet' ? 69 : 1) && <img src="/sidebar/optimism.png" className="m-auto h-[35px]" />
+                  }
+                  {
+                    chainId === 80001 && <img src="/sidebar/polygon.png" className="m-auto h-[35px]" />
+                  }
                 </div>
               </div>
               <span className={mintstyles.line}></span>

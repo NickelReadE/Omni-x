@@ -12,6 +12,7 @@ const Launchpad: NextPage = () => {
   const [isShow, setIsShow] = useState(false)
   const [collectionsForLive, setCcollectionsForLive] = useState([])
   const [collectionsForComing, setCcollectionsForComing] = useState([])
+  const [sampleCollection, setSampleCollection] = useState<any>({})
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(getCollections() as any)
@@ -21,6 +22,10 @@ const Launchpad: NextPage = () => {
     
     setCcollectionsForComing(collections.filter((collection: { mint_status: string }) => collection.mint_status === 'Upcoming'))
     
+    const samples = collections.filter((collection:{col_url: string}) => collection.col_url === 'kanpai_pandas')
+    if(samples.length > 0){
+      setSampleCollection(samples[0])
+    }
   }, [collections])
   return (
     <div className='mt-[75px] w-full px-[130px] pt-[50px]'>
@@ -64,13 +69,13 @@ const Launchpad: NextPage = () => {
         </div>
       </div>
       <div className='flex  justify-between mt-[30px]'>
-        <img className='w-[600px]' src='/images/nft.png' alt='NFT'></img>
+        <img className='w-[600px]' src={sampleCollection.profile_image?sampleCollection.profile_image:'/images/nft.png'} alt='NFT'></img>
         <div className='flex flex-col'>
           <p className='text-xxl2'>
-            Tiny Dinos
+            {sampleCollection.name?sampleCollection.name:'Collection Name'}
           </p>
           <p className='w-[830px] text-xg1 text-[#A0B3CC]'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet.
+            {sampleCollection.description?sampleCollection.description:'Description'}
           </p>
           <Link href='/collections/tiny_dinos'>
             <button className='mt-[25px] px-2 py-1 w-[170px]  bg-[#B444F9] text-white rounded-lg'>
