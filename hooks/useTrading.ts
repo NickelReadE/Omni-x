@@ -112,7 +112,7 @@ const useTrading = ({
       startTime: Math.floor(Date.now() / 1000).toString(),
       endTime: Math.floor(Date.now() / 1000).toString(),
       status: ['VALID'],
-      sort: 'NEWEST'
+      sort: 'OLDEST'
     }
     dispatch(getOrders(request) as any)
   }
@@ -122,8 +122,8 @@ const useTrading = ({
       isOrderAsk: false,
       collection: order_collection_address,
       tokenId: token_id,
-      // startTime: Math.floor(Date.now() / 1000).toString(),
-      // endTime: Math.floor(Date.now() / 1000).toString(),
+      startTime: Math.floor(Date.now() / 1000).toString(),
+      endTime: Math.floor(Date.now() / 1000).toString(),
       status: ['VALID'],
       sort: 'PRICE_ASC'
     }
@@ -212,14 +212,14 @@ const useTrading = ({
     if (!(await checkValid(omniAddress, order?.price, chainId))) {
       return
     }
-
     const omni = getCurrencyInstance(omniAddress, chainId, signer)
     if (!omni) {
       dispatch(openSnackBar({ message: 'Could not find the currency', status: 'warning' }))
       return
     }
-
     const omnixExchange = getOmnixExchangeInstance(chainId, signer)
+    console.log(omnixExchange)
+    console.log( ethers.utils.defaultAbiCoder.encode(['uint16','uint16'], order?.params))
     const makerAsk : MakerOrderWithSignature = {
       isOrderAsk: order.isOrderAsk,
       signer: order?.signer,

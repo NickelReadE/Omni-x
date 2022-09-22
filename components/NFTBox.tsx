@@ -15,6 +15,9 @@ import Router from 'next/router'
 import useOrderStatics from '../hooks/useOrderStatics'
 import useTrading from '../hooks/useTrading'
 
+import { ethers } from 'ethers'
+import { getCurrencyIconByAddress } from '../utils/constants'
+
 const NFTBox = ({nft, index}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
   const [isShowBtn, SetIsShowBtn] = useState(false)
@@ -77,7 +80,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   const order_collection_address = order?.collectionAddress
   const order_collection_chain = orderChainId && getChainNameFromId(orderChainId)
 
-  console.log('-nft-', nft)
+  // console.log('-nft-', nft)
   const {
     openSellDlg,
     setOpenSellDlg,
@@ -96,12 +99,11 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     owner_collection_chain: nft.chain,
     token_id: nft?.token_id
   })
-
   const doubleClickToSetDetailLink = () => {
     const collection_address = nft.token_address
     if (collection_address == '0xb7b0d9849579d14845013ef9d8421ae58e9b9369' || collection_address == '0x7470ea065e50e3862cd9b8fb7c77712165da80e5' || collection_address == '0xb74bf94049d2c01f8805b8b15db0909168cabf46' || collection_address == '0x7f04504ae8db0689a0526d99074149fe6ddf838c' || collection_address == '0xa783cc101a0e38765540ea66aeebe38beebf7756'|| collection_address == '0x316dc98ed120130daf1771ca577fad2156c275e5') {
       for(let i = 0;i<collections.length;i++){
-        if(collection_address == collections[i].address){
+        if(nft.name == collections[i].name){
           const {pathname} = Router
           if(pathname == '/' ){
             Router.push(`/collections/${collections[i].col_url}/${nft.token_id}`)
@@ -110,19 +112,15 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       }
     }
   }
+  const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
+  const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
   
   return (
     <div className='border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]'onMouseEnter={() => SetIsShowBtn(true)} onMouseLeave={() => SetIsShowBtn(false)}>
       <div className="nft-image-container group relative flex justify-center text-center overflow-hidden rounded-md" ref={setNodeRef} style={style} {...listeners} {...attributes}>
-        {isListed ?
-          <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
-            <img className='nft-image rounded-md object-cover ease-in-out duration-500 group-hover:scale-110' src={imageError?'/images/omnix_logo_black_1.png':image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={image} onDoubleClick={() => doubleClickToSetDetailLink()}/>
-          </LazyLoad>
-          :
-          <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
-            <img className='nft-image rounded-md object-cover ease-in-out duration-500 group-hover:scale-110' src={imageError?'/images/omnix_logo_black_1.png':image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={image}/>
-          </LazyLoad>
-        }
+        <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
+          <img className='nft-image rounded-md object-cover ease-in-out duration-500 group-hover:scale-110' src={imageError?'/images/omnix_logo_black_1.png':image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={image} onDoubleClick={() => doubleClickToSetDetailLink()}/>
+        </LazyLoad>
         {/* <div className="absolute top-[8px] right-[9px] p-[12px]" style={{background: 'radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.2) 0%, rgba(254, 254, 255, 0) 100%)'}}>
           <div className="bg-[url('/images/ellipse.png')] hover:bg-[url('/images/ellipse_hover.png')] bg-cover w-[21px] h-[21px]"></div>
         </div> */}
@@ -135,6 +133,14 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
           <div className="flex items-center ml-1">
             <img src={chainIcon} className="w-[16px] h-[16px]" />
           </div>
+        </div>
+      </div>
+      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
+        <div className="flex items-center ml-3">
+          {isListed && <>
+            <img src={currencyIcon || '/svgs/ethereum.svg'} className="w-[18px] h-[18px]" alt='icon'/>
+            <span className="text-[#000000] text-[18px] font-extrabold ml-2">{formattedPrice}</span>
+          </>}
         </div>
       </div>
       {/* <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
@@ -158,7 +164,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
         </div>
         <div className="flex items-center ml-3">
           <div>&nbsp;</div>
-          {isShowBtn && !isListed &&
+          {isShowBtn &&
             <div className="ml-2 mr-3 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-bold cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
               {'Sell'}
             </div>}
