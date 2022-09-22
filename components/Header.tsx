@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import classNames from '../helpers/classNames'
 import useProgress from '../hooks/useProgress'
-import useWallet from '../hooks/useWallet'
 import ProcessingTransaction from './transaction/ProcessingTransaction'
 import { Menu } from '@headlessui/react'
 import { getSearchText } from '../redux/reducers/headerReducer'
@@ -24,10 +23,6 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
   })
   const { pending, histories, clearHistories } = useProgress()
   const dispatch = useDispatch()
-  const {
-    provider,
-    signer,
-  } = useWallet()
 
   const handleMouseOver = (hoverMenu: string) => {
     setHovering({

@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Header from './Header'
 import { useRouter } from 'next/router'
@@ -8,7 +9,6 @@ import SideBar from './SideBar'
 import useWallet  from '../hooks/useWallet'
 import SnackbarComponent from './SnackBar'
 import Banner from './Banner'
-import default_slides from '../utils/defaultSlides'
 import Link from 'next/link'
 import PriceFeed from './PriceFeed'
 
@@ -21,7 +21,7 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
   const {
     address,
   } = useWallet()
-  
+
   const [ menu, setMenu ] = useState('home')
   const updatingUser = useSelector(selectUpdatingUser)
 
@@ -30,7 +30,7 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
   const user = useSelector(selectUser)
 
   const [collectionMenu, setCollectionMenu] = useState<boolean>(false)
-  
+
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
   }, [router.pathname])
 
   useEffect(()=>{
-    setIsBlur(address?false:true)
+    setIsBlur(!address)
   }, [address])
 
   useEffect(() => {
@@ -85,7 +85,7 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
         setCurrentSlides(new_slides)
       }
     }
-  }, [menu])
+  }, [menu, user.banners])
 
   return (
     <>
@@ -105,7 +105,7 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
         </div>
         {children}
         <PriceFeed/>
-        
+
       </main>
     </>
   )

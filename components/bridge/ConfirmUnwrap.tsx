@@ -1,8 +1,4 @@
-import React, {useState} from 'react'
-import useWallet from '../../hooks/useWallet'
-import LazyLoad from 'react-lazyload'
-import {chainInfos} from '../../utils/constants'
-import {ethers} from 'ethers'
+import React from 'react'
 
 interface IConfirmUnwrapProps {
   updateModal: (status: boolean) => void,
@@ -13,13 +9,6 @@ const ConfirmUnwrap: React.FC<IConfirmUnwrapProps> = ({
   updateModal,
   onUnwrap
 }) => {
-  const {
-    provider,
-    signer
-  } = useWallet()
-
-  const [imageError, setImageError] = useState(false)
-
   return (
     <>
       <div

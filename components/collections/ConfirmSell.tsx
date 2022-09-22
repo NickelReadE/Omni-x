@@ -1,16 +1,14 @@
 import React, {useEffect, useState} from 'react'
-
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
+import Select from 'react-select'
+import { makeStyles, createStyles } from '@material-ui/core/styles'
 import Dialog from '@material-ui/core/Dialog'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import useWallet from '../../hooks/useWallet'
-
 import CustomSelect from './CustomSelect'
-import Select from 'react-select'
 import { currencies_list } from '../../utils/constants'
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     root: {
       margin: 0,
@@ -125,7 +123,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
               </div>
 
               <div>
-                <img className='rounded-[8px] max-w-[250px]' src={nftImage} />
+                <img alt={'nftImage'} className='rounded-[8px] max-w-[250px]' src={nftImage} />
                 <p className='mt-2 text-center text-[#6C757D] font-medium'>{nftTitle}</p>
               </div>
             </div>
@@ -185,7 +183,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                 </div>
               </div>
               <div>
-                <img className='rounded-[8px] max-w-[250px]' src={nftImage} />
+                <img alt={'nftImage'} className='rounded-[8px] max-w-[250px]' src={nftImage} />
                 <p className='mt-2 text-center text-[#6C757D] font-medium'>{nftTitle}</p>
               </div>
             </div>

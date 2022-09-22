@@ -9,6 +9,7 @@ type ProcessingTransactionProps = {
 }
 
 const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Element => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pending, setPending] = useState(true)
   const [hovered, setHovered] = useState(false)
   const [targetHovered, setTargetHovered] = useState(false)
@@ -42,7 +43,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
       setTargetHovered(true)
     }
   }
-  
+
   const onLeave = (type: 'sender' | 'target') => {
     if (type === 'sender') {
       setHovered(false)
@@ -50,7 +51,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
       setTargetHovered(false)
     }
   }
-  
+
   return (
     <>
       <div className={'rounded-[8px] w-[250px] md:order-2 mr-[70px] px-4 flex flex-col justify-center py-2'}>

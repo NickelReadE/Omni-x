@@ -14,7 +14,7 @@ import PngCheck from '../../../public/images/check.png'
 import PngSub from '../../../public/images/subButton.png'
 import PngEther from '../../../public/images/collections/ethereum.png'
 import useWallet from '../../../hooks/useWallet'
-import { BigNumber, ethers } from 'ethers'
+import { ethers } from 'ethers'
 import { postMakerOrder, acceptOrder } from '../../../utils/makeOrder'
 import { addressesByNetwork } from '../../../constants/addresses'
 import { SupportedChainId } from '../../../types'
@@ -25,19 +25,16 @@ import { addDays } from 'date-fns'
 import omni from '../../../constants/abis/Omni.json'
 import currencyManagerABI from '../../../constants/abis/CurrencyManager.json'
 import usdcAddress  from '../../../constants/USDC.json'
-import usdtAddress  from '../../../constants/USDT.json'
 import omniAddress from '../../../constants/OMNI.json'
 import currencyManagerContractAddress from '../../../constants/CurrencyManager.json'
 
 import { currencies_list } from '../../../utils/constants'
 import { getChainIdFromName,getChainNameFromId } from '../../../utils/constants'
-import { exec } from 'child_process'
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('items')
   const [owner, setOwner] = useState('')
   const [ownerType, setOwnerType] = useState('address')
-
 
   const [order, setOrder] = useState<IOrder>()
   const [bidOrder, setBidOrder] = useState<IOrder[]>()
@@ -49,7 +46,6 @@ const Item: NextPage = () => {
   const [lastSale, setLastSale] = React.useState(0)
   const [highestBidCoin, setHighestBidCoin] = React.useState('')
   const [lastSaleCoin, setLastSaleCoin] = React.useState('')
-
   const [orderFlag, setOrderFlag] = React.useState(false)
 
   const orders = useSelector(selectOrders)
@@ -96,10 +92,10 @@ const Item: NextPage = () => {
       }
     }
     if ( col_url && token_id ) {
-      dispatch(getNFTInfo(col_url, token_id) as any)
+      dispatch(getNFTInfo(col_url, token_id) as never)
       getNFTOwner(col_url, token_id)
     }
-  }, [col_url, token_id])
+  }, [col_url, dispatch, token_id])
 
   useEffect(() => {
     if ( nftInfo && nftInfo.collection) {
@@ -116,6 +112,7 @@ const Item: NextPage = () => {
       getLastSaleOrder()
       setOrderFlag(true)
     }
+    /* eslint-disable react-hooks/exhaustive-deps */
   }, [nftInfo,owner])
 
   useEffect(() => {
@@ -130,7 +127,7 @@ const Item: NextPage = () => {
     setHighestBid(0)
     setHighestBidCoin('')
     if(bidOrders.length > 0 && nftInfo.collection!=undefined && nftInfo.nft!=undefined && orderFlag){
-      const temp_bidOrders: any = []
+      const temp_bidOrders: Array<any> = []
       let bid_balance = 0
       for(let i=0; i<bidOrders.length;i++){
         if(nftInfo.collection.address===bidOrders[i].collectionAddress&&Number(nftInfo.nft.token_id)===Number(bidOrders[i].tokenId)){
@@ -222,7 +219,7 @@ const Item: NextPage = () => {
   const onBid = async (currency: string, price: number, period: number) => {
     const chainId = provider?.network.chainId as number
     const chain = getChainNameFromId(chainId)
-    
+
     const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
     const startTime = Date.now()
 
@@ -248,7 +245,7 @@ const Item: NextPage = () => {
       setOpenBidDlg(false)
       return
     }
-    
+
     if(currency===currencies_list[provider?._network.chainId as number][0]['address']){//OMNI
       const isOmniCoin = await currencyMangerContract.isOmniCurrency(currency)
       if(isOmniCoin){
@@ -341,7 +338,7 @@ const Item: NextPage = () => {
 
   const onBuy = async() => {
     const hash = orders[0].hash
-    
+
     try {
       await acceptOrder(
         hash,
@@ -366,7 +363,7 @@ const Item: NextPage = () => {
 
   const onAccept = async(index:number) => {
     const hash = bidOrders[index].hash
-    
+
     try {
       await acceptOrder(
         hash,
@@ -391,11 +388,11 @@ const Item: NextPage = () => {
     }
   }
 
-  
+
 
   const onListing = async (currency: string, price: number, period: number) => {
     const chainId = provider?.network.chainId as number
-    
+
     const addresses = addressesByNetwork[SupportedChainId.RINKEBY]
     const startTime = Date.now()
 
@@ -438,13 +435,13 @@ const Item: NextPage = () => {
 
   return (
     <>
-      {nftInfo && nftInfo.nft && 
+      {nftInfo && nftInfo.nft &&
         <div className="w-full mt-40 pr-[70px] pb-[120px] font-[Retni_Sans]">
           <div className="w-full 2xl:px-[10%] xl:px-[5%] lg:px-[2%] md:px-[2%] ">
             <div className="grid grid-cols-3 2xl:gap-12 lg:gap-1 xl:gap-4">
               <div className="col-span-1 h-full">
                 <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image"/>}>
-                  <img className='rounded-[8px]' src={imageError?'/images/omnix_logo_black_1.png':nftInfo.nft.image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={nftInfo.nft.image} />
+                  <img className='rounded-[8px]' src={imageError?'/images/omnix_logo_black_1.png':nftInfo.nft.image} alt="nft-image" onError={()=>{setImageError(true)}} data-src={nftInfo.nft.image} />
                 </LazyLoad>
               </div>
               <div className="col-span-2">
@@ -466,7 +463,7 @@ const Item: NextPage = () => {
                         owner && ownerType=='address' && <h1 className="text-[#B444F9] text-[20px] font-normal underline ml-4 break-all lg:ml-1">
                           <Link href={profileLink}><a target='_blank'>{truncate(owner)}</a></Link></h1>
                       }
-                      
+
                     </div>
                     <div className="flex justify-between items-center mt-6">
                       <h1 className="text-[#1E1C21] text-[60px] font-bold">{order && order.price && ethers.utils.formatEther(order.price)}</h1>
@@ -545,17 +542,17 @@ const Item: NextPage = () => {
                   <div className="">
                     <div className="mb-3">
                       <div className="">
-                        { order && owner && address && owner.toLowerCase() != address.toLowerCase() && 
+                        { order && owner && address && owner.toLowerCase() != address.toLowerCase() &&
                           <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={()=>onBuy()}>buy</button>
                         }
-                        { address && owner && owner.toLowerCase() == address.toLowerCase() && 
+                        { address && owner && owner.toLowerCase() == address.toLowerCase() &&
                           <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={() => {setOpenSellDlg(true)}}>sell</button>
                         }
                       </div>
                     </div>
                   </div>
                   <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
-                    { owner && address && owner.toLowerCase() != address.toLowerCase() && 
+                    { owner && address && owner.toLowerCase() != address.toLowerCase() &&
                       <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]" onClick={() => {setOpenBidDlg(true)}}>bid</button>
                     }
                   </div>

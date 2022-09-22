@@ -1,11 +1,11 @@
-import {useState, ReactNode, useEffect, useCallback} from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import {ReactNode, useCallback} from 'react'
 import { PendingTxType, ContractContext } from '../../contexts/contract'
 import { getOmnixBridge1155Instance, getOmnixBridgeInstance, getONFTCore1155Instance, getONFTCore721Instance } from '../../utils/contracts'
 import { useDispatch } from 'react-redux'
 import { getUserNFTs } from '../../redux/reducers/userReducer'
 import useWallet from '../../hooks/useWallet'
 import useProgress from '../../hooks/useProgress'
-import {getLayerzeroChainId} from '../../utils/constants'
 
 type ContractProviderProps = {
   children?: ReactNode
@@ -15,8 +15,8 @@ export const ContractProvider = ({
   children,
 }: ContractProviderProps): JSX.Element => {
   const dispatch = useDispatch()
-  const { address, signer, provider } = useWallet()
-  const { histories, updateHistory } = useProgress()
+  const { address, provider } = useWallet()
+  const { updateHistory } = useProgress()
 
   const listenONFTEvents = useCallback(async (txInfo: PendingTxType, historyIndex: number) => {
     if (txInfo.type === 'bridge' && address && provider?._network?.chainId) {
