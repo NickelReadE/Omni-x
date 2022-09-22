@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Header from './Header'
