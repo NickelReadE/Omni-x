@@ -3,7 +3,6 @@ import LazyLoad from 'react-lazyload'
 import type { NextPage } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
-
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
 import { ethers } from 'ethers'
@@ -11,11 +10,8 @@ import ConfirmSell from '../../../components/collections/ConfirmSell'
 import ConfirmBid from '../../../components/collections/ConfirmBid'
 
 import { getNFTInfo, selectNFTInfo } from '../../../redux/reducers/collectionsReducer'
-import { selectBidOrders } from '../../../redux/reducers/ordersReducer'
-
 import useWallet from '../../../hooks/useWallet'
 import useTrading from '../../../hooks/useTrading'
-import { IOrder } from '../../../interface/interface'
 import { getChainIcon, getChainIconByCurrencyAddress, getChainNameFromId, getCollectionAddress, getCurrencyIconByAddress, getProfileLink } from '../../../utils/constants'
 
 import PngCheck from '../../../public/images/check.png' 
@@ -37,8 +33,8 @@ const Item: NextPage = () => {
   const dispatch = useDispatch()
   const {
     provider,
-    signer,
-    address
+    address,
+    signer
   } = useWallet()
 
   const router = useRouter()
@@ -248,7 +244,7 @@ const Item: NextPage = () => {
                     </div>
                   </div>
                   <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
-                    { isListed && isAuction && owner?.toLowerCase() != address?.toLowerCase() && 
+                    { owner && address && owner.toLowerCase() != address.toLowerCase() && 
                       <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]" onClick={() => {setOpenBidDlg(true)}}>bid</button>
                     }
                   </div>
@@ -290,7 +286,7 @@ const Item: NextPage = () => {
             </div>
           </div>
           <ConfirmSell onSubmit={onListing} handleSellDlgClose={() => {setOpenSellDlg(false)}} openSellDlg={openSellDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} />
-          <ConfirmBid onSubmit={(bidData) => onBid(bidData, order)} handleBidDlgClose={() => {setOpenBidDlg(false)}} openBidDlg={openBidDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} />
+          <ConfirmBid onSubmit={(bidData: any) => onBid(bidData, order)} handleBidDlgClose={() => {setOpenBidDlg(false)}} openBidDlg={openBidDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} />
         </div>
       }
     </>

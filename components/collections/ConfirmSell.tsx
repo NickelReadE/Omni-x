@@ -33,10 +33,10 @@ const period_list = [
 
 interface IConfirmSellProps {
   handleSellDlgClose: () => void,
-  onSubmit?: (listingData: IListingData) => void,
   openSellDlg: boolean,
   nftImage: string,
-  nftTitle: string
+  nftTitle: string,
+  onSubmit?: any,
 }
 
 const ConfirmSell: React.FC<IConfirmSellProps> = ({
@@ -70,14 +70,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
   }, [price])
 
   const onListing = () => {
-    if (onSubmit) {
-      onSubmit({
-        currencyName: currency.text,
-        price,
-        period: period.period,
-        isAuction: sellType != 'fixed'
-      })
-    }
+    onSubmit(currency.text, price, period.period)
   }
 
   return (
@@ -103,12 +96,12 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                   <input type="text" value={price} className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg" onChange={onChangePrice}/>
                   <span className="px-4 text-[#ADB5BD] font-light">~ $40.50 USD</span>
                 </div>
-                {/* <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Reserve Price</p>
+                <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Reserve Price</p>
                 <div className="flex justify-start items-center mt-5">
-                  <CustomSelect optionData={currencies_list} value={currency} onChange={(value: any) => setCurrency(value)} />
+                  <CustomSelect optionData={CURRENCIES_LIST} value={currency} onChange={(value: any) => setCurrency(value)} />
                   <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F8F9FA] border-[2px] border-[#E9ECEF] rounded-lg"/>
                   <span className="px-4 text-[#ADB5BD] font-light">~ $60.00 USD</span>
-                </div> */}
+                </div>
                 <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Duration</p>
                 <div className="flex justify-start items-center mt-5">
                   <Select
@@ -125,14 +118,13 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                     isSearchable={ false }
                     getOptionLabel={(e:any) => e?.text}
                     getOptionValue={(e:any) => e?.value}
-                    value={period}
-                    onChange={(value: any) => setPeriod(value)}
+                    value={0}
                   />
-                  {/* <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F8F9FA] border-[2px] border-[#E9ECEF] rounded-lg"/>
-                  <span className="px-4 text-[#ADB5BD] font-light">~ $60.00 USD</span> */}
+                  <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg"/>
+                  <span className="px-4 text-[#ADB5BD] font-light">~ $60.00 USD</span>
                 </div>
               </div>
-            
+
               <div>
                 <img className='rounded-[8px] max-w-[250px]' src={nftImage} />
                 <p className='mt-2 text-center text-[#6C757D] font-medium'>{nftTitle}</p>
@@ -140,7 +132,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
             </div>
             <div className="grid grid-cols-4 mt-10 flex items-end">
               <div className="col-span-1">
-                <button className='bg-[#B00000] rounded text-[#fff] w-[95px] h-[35px]' onClick={onListing}>list</button>
+                <button className='bg-[#B00000] rounded text-[#fff] w-[95px] h-[35px]'>list</button>
               </div>
               <div className="col-span-3">
                 <div className='flex justify-end'>
@@ -197,10 +189,10 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                 <p className='mt-2 text-center text-[#6C757D] font-medium'>{nftTitle}</p>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-4 mt-20 flex items-end">
               <div className="col-span-1">
-                <button className='bg-[#B00000] rounded text-[#fff] w-[95px] h-[35px]' onClick={onListing}>list</button>
+                <button className='bg-[#B00000] rounded text-[#fff] w-[95px] h-[35px]' onClick={() => onListing()}>list</button>
               </div>
               <div className="col-span-3">
                 <div className='flex justify-end'>

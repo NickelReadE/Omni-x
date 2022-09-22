@@ -1,10 +1,10 @@
-import React, {useRef, useLayoutEffect, useState, useEffect, useCallback} from 'react'
+import React, { useRef, useLayoutEffect, useState, useEffect, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import {BigNumber, ethers} from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import Image from 'next/image'
-import {useDndMonitor, useDroppable} from '@dnd-kit/core'
+import { useDndMonitor, useDroppable } from '@dnd-kit/core'
 import LazyLoad from 'react-lazyload'
-import {Dialog} from '@material-ui/core'
+import { Dialog } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import useWallet from '../hooks/useWallet'
 import {getUserNFTs, selectRefreshBalance, selectUser, selectUserNFTs} from '../redux/reducers/userReducer'
@@ -17,12 +17,14 @@ import {
   getOmnixBridgeInstance, getONFTCore721Instance, getONFTCore1155Instance, getCurrencyInstance,
 } from '../utils/contracts'
 import regExpFormat from '../helpers/regExpFormat'
-import {getChainIdFromName, getLayerzeroChainId, getChainInfo, getAddressByName} from '../utils/constants'
+import {getChainIdFromName, getLayerzeroChainId, getChainInfo, getAddressByName, getProvider} from '../utils/constants'
 import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
 import UserEdit from './user/UserEdit'
 import useBridge from '../hooks/useBridge'
 import useProgress from '../hooks/useProgress'
+import useContract from '../hooks/useContract'
+import {PendingTxType} from '../contexts/contract'
 
 interface RefObject {
   offsetHeight: number
@@ -47,15 +49,15 @@ const SideBar: React.FC = () => {
   const {
     provider,
     signer,
-    address,    
+    address,
     disconnect,
     connect: connectWallet,
-    
     switchNetwork
-  } = useWallet()  
+  } = useWallet()
   const classes = useStyles()
   const { estimateGasFee, estimateGasFeeONFTCore, unwrapInfo, selectedUnwrapInfo, validateOwNFT, validateONFT } = useBridge()
-  const { setPendingTxInfo } = useProgress()
+  const { addTxToHistories } = useProgress()
+  const { listenONFTEvents } = useContract()
 
   const dispatch = useDispatch()
   const ref = useRef(null)
@@ -262,40 +264,42 @@ const SideBar: React.FC = () => {
     const lzTargetChainId = getLayerzeroChainId(targetChain)
     const _signerAddress = address
 
+    const targetProvider = getProvider(targetChain)
     if (isONFTCore) {
       if (selectedNFTItem.contract_type === 'ERC721') {
         const onftCoreInstance = getONFTCore721Instance(selectedNFTItem.token_address, provider?._network?.chainId, signer)
         const targetONFTCoreAddress = await onftCoreInstance.trustedRemoteLookup(lzTargetChainId)
-        const targetCoreInstance = getONFTCore721Instance(targetONFTCoreAddress, targetChain, null)
         const tx = await onftCoreInstance.sendFrom(
-          _signerAddress,
+          address,
           lzTargetChainId,
-          _signerAddress,
+          address,
           selectedNFTItem.token_id,
-          _signerAddress,
+          address,
           ethers.constants.AddressZero,
           '0x',
           { value: estimatedFee }
         )
-        targetCoreInstance.on('ReceiveFromChain', (/*srcChainId, srcAddress, toAddress, tokenId, nonce*/) => {
-          setTimeout(() => {
-            dispatch(getUserNFTs(address) as any)
-          }, 30000)
-        })
-        onLeave()
-        await setPendingTxInfo({
+        const blockNumber = await targetProvider.getBlockNumber()
+        const pendingTx: PendingTxType = {
           txHash: tx.hash,
           type: 'bridge',
           senderChainId: provider?._network?.chainId,
           targetChainId: targetChain,
+          targetAddress: targetONFTCoreAddress,
+          isONFTCore: true,
+          contractType: 'ERC721',
+          nftItem: selectedNFTItem,
+          targetBlockNumber: blockNumber,
           itemName: selectedNFTItem.name
-        })
+        }
+        const historyIndex = addTxToHistories(pendingTx)
+        await listenONFTEvents(pendingTx, historyIndex)
+        onLeave()
         await tx.wait()
-        await setPendingTxInfo(null)
       } else if (selectedNFTItem.contract_type === 'ERC1155') {
         const onft1155CoreInstance = getONFTCore1155Instance(selectedNFTItem.token_address, provider?._network?.chainId, signer)
         const targetONFT1155CoreAddress = await onft1155CoreInstance.trustedRemoteLookup(lzTargetChainId)
-        const targetCoreInstance = getONFTCore1155Instance(targetONFT1155CoreAddress, targetChain, null)
+        const blockNumber = await targetProvider.getBlockNumber()
         const tx = await onft1155CoreInstance.sendFrom(
           _signerAddress,
           lzTargetChainId,
@@ -308,20 +312,21 @@ const SideBar: React.FC = () => {
           { value: estimatedFee }
         )
         onLeave()
-        await setPendingTxInfo({
+        const pendingTx: PendingTxType = {
           txHash: tx.hash,
           type: 'bridge',
           senderChainId: provider?._network?.chainId,
           targetChainId: targetChain,
+          targetAddress: targetONFT1155CoreAddress,
+          targetBlockNumber: blockNumber,
+          isONFTCore: true,
+          contractType: 'ERC1155',
+          nftItem: selectedNFTItem,
           itemName: selectedNFTItem.name
-        })
-        targetCoreInstance.on('ReceiveFromChain', (/*srcChainId, srcAddress, toAddress, tokenId, nonce*/) => {
-          setTimeout(() => {
-            dispatch(getUserNFTs(address) as any)
-          }, 30000)
-        })
+        }
+        const historyIndex = addTxToHistories(pendingTx)
+        await listenONFTEvents(pendingTx, historyIndex)
         await tx.wait()
-        await setPendingTxInfo(null)
       }
     } else {
       if (selectedNFTItem.contract_type === 'ERC721') {
@@ -329,14 +334,7 @@ const SideBar: React.FC = () => {
         const erc721Instance = getERC721Instance(selectedNFTItem.token_address, 0, signer)
         const noSignerOmniXInstance = getOmnixBridgeInstance(targetChain, null)
         const dstAddress = await noSignerOmniXInstance.persistentAddresses(selectedNFTItem.token_address)
-
-        noSignerOmniXInstance.on('LzReceive', async () => {
-          // After 30 seconds from receiving the token on Target Chain, refresh user NFT items
-          setTimeout(() => {
-            dispatch(getUserNFTs(address) as any)
-          }, 30000)
-          // await switchNetwork(targetChain)
-        })
+        const blockNumber = await targetProvider.getBlockNumber()
 
         let adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 3500000])
         if (dstAddress !== ethers.constants.AddressZero) {
@@ -350,30 +348,29 @@ const SideBar: React.FC = () => {
         const tx = await contractInstance.wrap(lzTargetChainId, selectedNFTItem.token_address, BigNumber.from(selectedNFTItem.token_id), adapterParams, {
           value: estimatedFee
         })
-        onLeave()
-        await setPendingTxInfo({
+        const pendingTx: PendingTxType = {
           txHash: tx.hash,
           type: 'bridge',
           senderChainId: provider?._network?.chainId,
           targetChainId: targetChain,
+          targetAddress: '',
+          isONFTCore: false,
+          contractType: 'ERC721',
+          nftItem: selectedNFTItem,
+          targetBlockNumber: blockNumber,
           itemName: selectedNFTItem.name
-        })
+        }
+        const historyIndex = addTxToHistories(pendingTx)
+        await listenONFTEvents(pendingTx, historyIndex)
+        onLeave()
         await tx.wait()
-        await setPendingTxInfo(null)
         setSelectedNFTItem(undefined)
       } else if (selectedNFTItem.contract_type === 'ERC1155') {
         const contractInstance = getOmnixBridge1155Instance(provider?._network?.chainId, signer)
         const noSignerOmniX1155Instance = getOmnixBridge1155Instance(targetChain, null)
         const erc1155Instance = getERC1155Instance(selectedNFTItem.token_address, 0, signer)
         const dstAddress = await noSignerOmniX1155Instance.persistentAddresses(selectedNFTItem.token_address)
-
-        noSignerOmniX1155Instance.on('LzReceive', async () => {
-          // After 30 seconds from receiving the token on Target Chain, refresh user NFT items
-          setTimeout(() => {
-            dispatch(getUserNFTs(address) as any)
-          }, 30000)
-          // await switchNetwork(targetChain)
-        })
+        const blockNumber = await targetProvider.getBlockNumber()
 
         let adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 3500000])
         if (dstAddress !== ethers.constants.AddressZero) {
@@ -395,19 +392,25 @@ const SideBar: React.FC = () => {
           value: estimatedFee.nativeFee
         })
         onLeave()
-        await setPendingTxInfo({
+        const pendingTx: PendingTxType = {
           txHash: tx.hash,
           type: 'bridge',
           senderChainId: provider?._network?.chainId,
           targetChainId: targetChain,
+          targetAddress: '',
+          isONFTCore: false,
+          contractType: 'ERC1155',
+          nftItem: selectedNFTItem,
+          targetBlockNumber: blockNumber,
           itemName: selectedNFTItem.name
-        })
+        }
+        const historyIndex = addTxToHistories(pendingTx)
+        await listenONFTEvents(pendingTx, historyIndex)
         await tx.wait()
-        await setPendingTxInfo(null)
         setSelectedNFTItem(undefined)
       }
     }
-    
+
     setConfirmTransfer(false)
   }
 

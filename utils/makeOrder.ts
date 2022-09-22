@@ -105,7 +105,7 @@ export const postMakerOrder = async(
     
   const signer = library.getSigner()
   const signerAddress = await signer.getAddress()
-  let nonce = await userService.getUserNonce(signerAddress) + 1
+  let nonce = await userService.getUserNonce(signerAddress)
 
   const data = await prepareMakerOrder(
     needSign ? signer : undefined,

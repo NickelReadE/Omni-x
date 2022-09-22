@@ -7,7 +7,6 @@ import useWallet from '../../hooks/useWallet'
 
 import CustomSelect from './CustomSelect'
 import Select from 'react-select'
-import { IBidData } from '../../interface/interface'
 import { CURRENCIES_LIST } from '../../utils/constants'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -35,7 +34,7 @@ interface IConfirmBidProps {
   openBidDlg: boolean,
   nftImage: string,
   nftTitle: string,
-  onSubmit?: (bidData: IBidData) => void
+  onSubmit: any
 }
 
 const ConfirmBid: React.FC<IConfirmBidProps> = ({
@@ -69,12 +68,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
   }, [price])
 
   const onBid = () => {
-    if (onSubmit) {
-      onSubmit({
-        currencyName: currency.text,
-        price
-      })
-    }
+    onSubmit(currency.text, price, period.period)
   }
 
   return (
@@ -93,7 +87,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
               <input type="text" value={price} className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg" onChange={onChangePrice}/>
               <span className="px-4 text-[#ADB5BD] font-light">{price_in_usd}</span>
             </div>
-            {/* <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Duration</p>
+            <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Duration</p>
             <div className="flex justify-start items-center mt-5">
               <Select
                 placeholder="Select"
@@ -112,14 +106,14 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
                 value={period}
                 onChange={(value: any) => setPeriod(value)}
               />
-            </div> */}
+            </div>
           </div>
           <div>
             <img className='rounded-[8px] max-w-[250px]' src={nftImage} />
             <p className='mt-2 text-center text-[#6C757D] font-medium'>{nftTitle}</p>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-4 mt-12 flex items-end">
           <div className="col-span-1">
             <button className='bg-[#38B000] rounded text-[#fff] w-[95px] h-[35px]' onClick={() => onBid()}>bid</button>
