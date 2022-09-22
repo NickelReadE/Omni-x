@@ -9,7 +9,7 @@ import ConfirmSell from './collections/ConfirmSell'
 import useWallet from '../hooks/useWallet'
 import { selectCollections } from '../redux/reducers/collectionsReducer'
 import { useSelector } from 'react-redux'
-import { getChainIconById, getChainNameFromId } from '../utils/constants'
+import { getChainIconById,getChainIdFromName, getChainNameFromId } from '../utils/constants'
 
 import Router from 'next/router'
 import useOrderStatics from '../hooks/useOrderStatics'
@@ -32,8 +32,6 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   } = useWallet()
 
   const chain = provider?.network.chainId
-  const chainIcon = getChainIconById(chain?.toString())
-
   const {attributes, listeners, setNodeRef, transform} = useDraggable({
     id: `draggable-${index}`,
     data: {
@@ -78,7 +76,6 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     lastSale,
     lastSaleCoin
   } = useOrderStatics({ nft, collection_address_map })
-
   const order_collection_address = order?.collectionAddress
   const order_collection_chain = orderChainId && getChainNameFromId(orderChainId)
 
@@ -118,6 +115,8 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       }
     }
   },[nft])
+  const chainId = getChainIdFromName(nft?.chain)
+  const chainIcon = getChainIconById(chainId.toString())
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
   const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
   
