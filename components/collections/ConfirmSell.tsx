@@ -36,7 +36,7 @@ interface IConfirmSellProps {
   openSellDlg: boolean,
   nftImage: string,
   nftTitle: string,
-  onSubmit?: any,
+  onSubmit?: (listingData: IListingData) => void
 }
 
 const ConfirmSell: React.FC<IConfirmSellProps> = ({
@@ -70,7 +70,14 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
   }, [price])
 
   const onListing = () => {
-    onSubmit(currency.text, price, period.period)
+    if (onSubmit) {
+      onSubmit({
+        currencyName: currency.text,
+        price,
+        period: period.period,
+        isAuction: sellType != 'fixed'
+      })
+    }
   }
 
   return (
