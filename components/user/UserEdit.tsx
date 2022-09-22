@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef, useState, useCallback } from 'react'
 import Cropper from 'react-easy-crop'
 import { Listbox } from '@headlessui/react'
