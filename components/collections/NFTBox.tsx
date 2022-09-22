@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { IPropsNFTItem } from '../../interface/interface'
+import { IBidData, IPropsNFTItem } from '../../interface/interface'
 import LazyLoad from 'react-lazyload'
 import { ethers } from 'ethers'
 import { getCurrencyIconByAddress, getChainIconById, getChainNameFromId } from '../../utils/constants'
@@ -153,7 +153,7 @@ const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
       </div>
 
       <ConfirmSell onSubmit={onListing} handleSellDlgClose={() => {setOpenSellDlg(false)}} openSellDlg={openSellDlg} nftImage={nft.image} nftTitle={nft.name} />
-      <ConfirmBid onSubmit={(bidData) => onBid(bidData, order)} handleBidDlgClose={() => {setOpenBidDlg(false)}} openBidDlg={openBidDlg} nftImage={nft.image} nftTitle={nft.name} />
+      <ConfirmBid onSubmit={(bidData: any) => onBid(bidData, order)} handleBidDlgClose={() => {setOpenBidDlg(false)}} openBidDlg={openBidDlg} nftImage={nft.image} nftTitle={nft.name} />
     </div>
   )
 }

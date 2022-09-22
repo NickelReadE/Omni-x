@@ -59,7 +59,7 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
 
   },[searchText])
 
-  
+
   useEffect(() => {
     if(allNFTs && tokenID>0){
       setNFT(allNFTs[tokenID-1])
@@ -118,12 +118,17 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
               </div>
             })
           }
+          <div className="flex p-3 font-medium cursor-pointer text-[#6C757D] absolute right-0">
+            <img src='/images/listing.png' className="w-[21px] h-[22px]"/>
+            <span>active listing</span>
+            <img src='/images/downArrow.png' className="w-[10px] h-[7px] ml-5 mt-auto mb-auto"/>
+          </div>
         </div>
         <div className="grid grid-cols-4 gap-6 2xl:grid-cols-5 2xl:gap-10 mt-4">
           {!isSearch&&nfts.map((item, index) => {
             if(chain == 'all'){
               return (
-                <NFTBox nft={item} index={index} key={index} />
+                <NFTBox nft={item} index={index} key={index}/>
               )
             } else {
               if(chain == item.chain) {

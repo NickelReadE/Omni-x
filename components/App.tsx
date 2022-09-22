@@ -3,6 +3,7 @@ import {DndContext} from '@dnd-kit/core'
 import {WalletProvider} from './WalletProvider'
 import {BridgeProvider} from './providers/BridgeProvider'
 import {ProgressProvider} from './providers/ProgressProvider'
+import {ContractProvider} from './providers/ContractProvider'
 import { MoralisProvider } from 'react-moralis'
 import Layout from './Layout'
 
@@ -17,15 +18,17 @@ function App({children}: AppProps) {
         <WalletProvider>
           <BridgeProvider>
             <ProgressProvider>
-              <DndContext>
-                <Layout>{children}</Layout>
-              </DndContext>
+              <ContractProvider>
+                <DndContext>
+                  <Layout>{children}</Layout>
+                </DndContext>
+              </ContractProvider>
             </ProgressProvider>
           </BridgeProvider>
         </WalletProvider>
       </MoralisProvider>
     </React.StrictMode>
-    
+
   )
 }
 

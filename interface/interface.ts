@@ -72,7 +72,7 @@ export interface IGetOrderRequest {
   price?: any,
   startTime?: string,
   endTime?: string,
-  status?: string[],
+  status?: [string],
   pagination?: any,
   sort?: string
 }
@@ -101,6 +101,7 @@ export interface IOrder {
 }
 
 export type OrderStatus = 'EXECUTED' | 'EXPIRED'
+
 export interface IAcceptOrderRequest {
   hash: string,
   status: OrderStatus

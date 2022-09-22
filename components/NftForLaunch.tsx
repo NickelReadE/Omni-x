@@ -1,31 +1,9 @@
 import React from 'react'
-import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { chain_list } from '../utils/utils'
-import { IPropsNFTItem } from '../interface/interface'
-import LazyLoad from 'react-lazyload'
-import {useDraggable} from '@dnd-kit/core'
-import ConfirmSell from './collections/ConfirmSell'
-import { cpuUsage, prependOnceListener } from 'process'
 
-import useWallet from '../hooks/useWallet'
-import { SupportedChainId } from '../types'
-import { postMakerOrder } from '../utils/makeOrder'
-import { addDays } from 'date-fns'
-import { openSnackBar } from '../redux/reducers/snackBarReducer'
-import { ethers } from 'ethers'
-import { getOrders, selectOrders,selectBidOrders, selectLastSaleOrders } from '../redux/reducers/ordersReducer'
-import { selectCollections } from '../redux/reducers/collectionsReducer'
-import { IGetOrderRequest } from '../interface/interface'
-import { useDispatch, useSelector } from 'react-redux'
-import editStyle from '../styles/nftbox.module.scss'
-import classNames from '../helpers/classNames'
-import { currencies_list } from '../utils/constants'
-
-import Router from 'next/router'
 interface ITypeNFT{
   typeNFT:string
 }
+
 const NftForLaunch = (pro:ITypeNFT) => {
   const typeNFT = pro.typeNFT
   return (

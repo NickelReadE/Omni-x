@@ -33,10 +33,7 @@ const chainIds: any = ChainIds
 export const PROTOCAL_FEE = 2
 export const CREATOR_FEE = 2
 
-const environments: any = {
-  mainnet: ['ethereum', 'bsc', 'avalanche', 'polygon', 'arbitrum', 'optimism', 'fantom'],
-  testnet: ['rinkeby', 'bsc-testnet', 'fuji', 'mumbai', 'arbitrum-rinkeby', 'optimism-kovan', 'fantom-testnet']
-}
+const SUSPPORTED_CHAIN_IDS = [1, 56, 137, 43114, 250, 10, 42161, 4, 97, 43113, 80001, 421611, 69, 4002]
 
 export const CURRENCIES_LIST = [
   { value: 0, text: 'OMNI', icon: 'payment/omni.png' },
@@ -44,13 +41,13 @@ export const CURRENCIES_LIST = [
   { value: 2, text: 'USDT', icon: 'payment/usdt.png' },
 ]
 
-export type ContractName = 
-  'Omnix' | 
-  'Omnix1155' | 
-  'LayerZeroEndpoint' | 
-  'OmnixExchange' | 
-  'Strategy' | 
-  'OMNI' | 
+export type ContractName =
+  'Omnix' |
+  'Omnix1155' |
+  'LayerZeroEndpoint' |
+  'OmnixExchange' |
+  'Strategy' |
+  'OMNI' |
   'USDC' |
   'USDT' |
   'TransferSelectorNFT' |
@@ -82,93 +79,133 @@ export const ERC1155_INTERFACE_ID = '0xd9b67a26'
 export const ERC712_INTERFACE_ID = '0x80ac58cd'
 export const ERC2189_INTERFACE_ID = '0x2a55205a'
 
+export const getChainIcons = (chainId: number) => {
+  if (SUSPPORTED_CHAIN_IDS.includes(chainId)) {
+    return {
+      icon: chainInfos[chainId].roundedLogo,
+      explorer: chainInfos[chainId].explorerLogo,
+    }
+  }
+  return {
+    icon: chainInfos[1].roundedLogo,
+    explorer: chainInfos[1].explorerLogo,
+  }
+}
 
-export const chainInfos: { [key: number]: { name: string; logo: string, officialName: string, currency: string } } = {
+export const chainInfos: { [key: number]: { name: string; logo: string, roundedLogo: string, explorerLogo: string, officialName: string, currency: string } } = {
   1: {
     name: 'eth',
     logo: '/svgs/fantom.svg',
+    roundedLogo: '/images/roundedColorEthereum.png',
+    explorerLogo: '/images/ethereumExplorer.png',
     officialName: 'Fantom',
     currency: 'FTM'
   },
   56: {
     name: 'bsc',
     logo: '/svgs/fantom.svg',
+    roundedLogo: '/images/roundedColorBinance.png',
+    explorerLogo: '/images/binanceExplorer.png',
     officialName: 'Fantom',
     currency: 'FTM'
   },
   137: {
     name: 'polygon',
     logo: '/svgs/fantom.svg',
+    roundedLogo: '/images/roundedColorPolygon.png',
+    explorerLogo: '/images/polygonExplorer.png',
     officialName: 'Fantom',
     currency: 'FTM'
   },
   43114: {
     name: 'avalanche',
     logo: '/svgs/fantom.svg',
+    roundedLogo: '/images/roundedColorAvalanche.png',
+    explorerLogo: '/images/avalancheExplorer.png',
     officialName: 'Fantom',
     currency: 'FTM'
   },
   250: {
     name: 'fantom',
     logo: '/svgs/fantom.svg',
+    roundedLogo: '/images/roundedColorFantom.png',
+    explorerLogo: '/images/fantomExplorer.png',
     officialName: 'Fantom',
     currency: 'FTM'
   },
   10: {
     name: 'optimism',
     logo: '/svgs/fantom.svg',
+    roundedLogo: '/images/roundedColorOptimism.png',
+    explorerLogo: '/images/optimismExplorer.png',
     officialName: 'Fantom',
     currency: 'FTM'
   },
   42161: {
     name: 'arbitrum',
     logo: '/svgs/fantom.svg',
+    roundedLogo: '/images/roundedColorArbitrum.png',
+    explorerLogo: '/images/arbitrumExplorer.png',
     officialName: 'Fantom',
     currency: 'FTM'
   },
   4: {
     name: 'rinkeby',
     logo: '/svgs/ethereum.svg',
+    roundedLogo: '/images/roundedColorEthereum.png',
+    explorerLogo: '/images/ethereumExplorer.png',
     officialName: 'Rinkeby',
     currency: 'ETH'
   },
   97: {
     name: 'bsc-testnet',
     logo: '/svgs/binance.svg',
+    roundedLogo: '/images/roundedColorBinance.png',
+    explorerLogo: '/images/binanceExplorer.png',
     officialName: 'BSC',
     currency: 'BNB'
   },
   43113: {
     name: 'fuji',
     logo: '/svgs/avax.svg',
+    roundedLogo: '/images/roundedColorAvalanche.png',
+    explorerLogo: '/images/avalancheExplorer.png',
     officialName: 'Fuji',
     currency: 'AVAX'
   },
   80001: {
     name: 'mumbai',
     logo: '/svgs/polygon.svg',
+    roundedLogo: '/images/roundedColorPolygon.png',
+    explorerLogo: '/images/polygonExplorer.png',
     officialName: 'Mumbai',
     currency: 'MATIC'
   },
   421611: {
     name: 'arbitrum-rinkeby',
     logo: '/svgs/arbitrum.svg',
+    roundedLogo: '/images/roundedColorArbitrum.png',
+    explorerLogo: '/images/arbitrumExplorer.png',
     officialName: 'Arbitrum',
     currency: 'ArbETH'
   },
   69: {
     name: 'optimism-kovan',
     logo: '/svgs/optimism.svg',
+    roundedLogo: '/images/roundedColorOptimism.png',
+    explorerLogo: '/images/optimismExplorer.png',
     officialName: 'Optimism',
     currency: 'ETH'
   },
   4002: {
     name: 'fantom-testnet',
     logo: '/svgs/fantom.svg',
+    roundedLogo: '/images/roundedColorFantom.png',
+    explorerLogo: '/images/fantomExplorer.png',
     officialName: 'Fantom',
     currency: 'FTM'
   },
-  
+
 }
 
 export const getLayerzeroChainId = (chainId: number): number => {
@@ -292,7 +329,6 @@ export const getChainNameFromId = (id: number): string => {
   return chain_list_[id]
 }
 
-
 export const getAddressByName = (name: ContractName, chainId: number) => {
   if (name === 'Omnix') {
     return omnixBridge[chainInfos[chainId].name]
@@ -374,7 +410,7 @@ export const getCurrencyNameAddress = (address?: string) => {
       return currency.text
     }
   }
-  
+
   return CURRENCIES_LIST[0].text
 }
 
@@ -432,4 +468,13 @@ export const getCollectionAddress = (col_addresses: any, chain_id: number) => {
   if(col_addresses){
     return col_addresses[chain_id.toString()]
   }
+  return null
+}
+
+export const getBlockExplorer = (chainId: number) => {
+  const chainInfo = getChainInfo(chainId)
+  if (chainInfo) {
+    return chainInfo.explorers?.[0]?.url
+  }
+  return null
 }
