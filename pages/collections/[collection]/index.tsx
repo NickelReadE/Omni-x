@@ -37,13 +37,12 @@ import editStyle from '../../../styles/collection.module.scss'
 import { info } from 'console'
 import ordersReducer, { getOrders, selectOrders, getLastSaleOrders,selectBidOrders,selectLastSaleOrders } from '../../../redux/reducers/ordersReducer'
 import { IGetOrderRequest , ICollectionInfoFromLocal} from '../../../interface/interface'
-import { getChainInfo, getChainIdFromName } from '../../../utils/constants'
+import { getChainInfo, getChainIdFromName, chain_list_ } from '../../../utils/constants'
 import { convertETHtoUSDT, convertUSDTtoETH } from '../../../utils/convertRate'
 import { useMoralisWeb3Api, useMoralis } from 'react-moralis'
 import useWallet from '../../../hooks/useWallet'
-import { currencies_list } from '../../../utils/constants'
+import { currencies_list,getChainNameFromId } from '../../../utils/constants'
 import { getChainNameById } from '../../../utils/constants'
-
 
 const sort_fields = [
   { id: 1, name: 'price: low to high', value: 'price', unavailable: false },
@@ -131,12 +130,16 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const Collection: NextPage = () => {
-  const{signer, provider} = useWallet()
   const { isInitialized, Moralis } = useMoralis()
   const [currentTab, setCurrentTab] = useState<string>('items')
   const [expandedMenu, setExpandedMenu] = useState(0)
   const [selected, setSelected] = useState(sort_fields[0])
   const [enabled, setEnabled] = useState(false)
+  const [collectionAddress, setCollectionAddress] = useState('')
+  const [collectionChainID, setCollectionChainID] = useState('')
+  const [collectionChainName,setCollectionChainName] = useState('')
+
+
   // const [nfts,setNFTs] = useState<any>({})
 
   const [hasMoreNFTs, setHasMoreNFTs] = useState(true)
@@ -149,6 +152,7 @@ const Collection: NextPage = () => {
 
   const dispatch = useDispatch()
   const nfts = useSelector(selectCollectionNFTs)
+  console.log(nfts)
   const allNFTs = useSelector(selectCollectionAllNFTs)
 
   const collectionInfo = useSelector(selectCollectionInfo)
@@ -176,15 +180,51 @@ const Collection: NextPage = () => {
   const [floorPrice, setFloorPrice] = useState(0)
 
   const finishedGetting = useSelector(selectGetNFTs)
+
+  const {
+    provider,
+    signer
+  } = useWallet()
+  
+  const Web3Api = useMoralisWeb3Api()
+
   const fetchCollectionMetaData = async() => {
-    const options = {
-      address: collectionInfo.address,
-      chain: collectionInfo.chain,
+    const chain = '0x'+Number(collectionChainID).toString(16)
+    const  options = {
+      chain: chain as any,
+      address: collectionAddress
     }
-    const metaData = await Moralis.Web3API.token.getNFTMetadata(options)
+    const metaData = await Web3Api.token.getNFTMetadata(options)
     setContractType(metaData.contract_type)
   }
+
   useEffect(() => {
+    if(collectionInfo && collectionInfo.address && provider?._network?.chainId) {
+      let default_key:any
+      let flag = false
+      Object.keys(collectionInfo.address).map((key,idx)=>{
+        const chainId = (provider?._network?.chainId).toString()
+        
+        if(key===chainId){
+          flag = true
+          setCollectionAddress(collectionInfo.address[key])
+          setCollectionChainID(key)
+          setCollectionChainName(getChainNameFromId(provider?._network?.chainId))
+        }
+        if(idx===0) {
+          default_key = key
+        }
+      })
+      if(!flag) {
+        setCollectionAddress(collectionInfo.address[default_key])
+        setCollectionChainID(default_key)
+        setCollectionChainName(getChainNameFromId(default_key as number))
+      }
+    }
+  },[collectionInfo,provider?._network])
+
+  useEffect(() => {
+    
     if ( col_url && provider?._network) {
       dispatch(getCollectionInfo(col_url) as any)
       const localData = localStorage.getItem('cards')
@@ -194,7 +234,7 @@ const Collection: NextPage = () => {
 
       setPage(0)
     }
-  }, [col_url, provider])
+  }, [col_url,provider?._network]) 
 
   useEffect(()=>{
     if(nfts.length>0){
@@ -208,15 +248,15 @@ const Collection: NextPage = () => {
       dispatch(getOrders(request) as any)
       const bidRequest: IGetOrderRequest = {
         isOrderAsk: false,
-        collection: collectionInfo.address,
-        startTime: Math.floor(Date.now() / 1000).toString(),
-        endTime: Math.floor(Date.now() / 1000).toString(),
+        collection: collectionAddress,
+        // startTime: Math.floor(Date.now() / 1000).toString(),
+        // endTime: Math.floor(Date.now() / 1000).toString(),
         status: ['VALID'],
         sort: 'PRICE_ASC'
       }
       dispatch(getOrders(bidRequest) as any)
       const excutedRequest: IGetOrderRequest = {
-        collection: collectionInfo.address,
+        collection: collectionAddress,
         status: ['EXECUTED'],
         sort: 'UPDATE_OLDEST'
       }
@@ -241,10 +281,10 @@ const Collection: NextPage = () => {
 
   useEffect(() => {
     if( collectionInfo ) {
-      const chainStr = collectionInfo.chain
+      const chainStr = collectionChainName
       const chainInfo:any =  getChainInfo(getChainIdFromName(chainStr))
       if(chainInfo){
-        const mainUrl =chainInfo?.explorers[0]?.url+'/address/'+collectionInfo.address
+        const mainUrl =chainInfo?.explorers[0]?.url+'/address/'+collectionAddress
         setExplorerUrl(mainUrl)
       }
 
@@ -322,7 +362,7 @@ const Collection: NextPage = () => {
     const temp = []
     for(let i = 0;i<listNFTs.length;i++){
       temp.push(
-        <NFTBox nft={listNFTs[i]} index={i} key={i}  col_url={col_url} col_address={collectionInfo.address}  chain={collectionInfo?collectionInfo.chain:'eth'}/>
+        <NFTBox nft={listNFTs[i]} index={i} key={i}  col_url={col_url} col_address={collectionAddress}  chain={collectionInfo?collectionChainID:'4'}/>
       )
     }
     return temp
@@ -333,7 +373,7 @@ const Collection: NextPage = () => {
       const temp = []
       for(let i=0;i<allNFTs.length;i++){
         for(let j=0; j<orders.length;j++){  
-          if(collectionInfo.address==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
+          if(collectionAddress==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
             temp.push(allNFTs[i]) 
             break         
           }
@@ -348,7 +388,7 @@ const Collection: NextPage = () => {
   //     for(let i=0;i<allNFTs.length;i++){
   //       let order:any = null
   //       for(let j=0; j<orders.length;j++){
-  //         if(collectionInfo.address==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
+  //         if(collectionAddress==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
   //           order = orders[j]         
   //         }
   //       }
@@ -365,7 +405,7 @@ const Collection: NextPage = () => {
   //     let lowPrice: any = Number.MAX_VALUE
   //     ordersForCollection.map((order: { price: any, currencyAddress:any }) => {
   //       let priceAsUSD = 0
-  //       if(currencies_list[getChainIdFromName(collectionInfo.chain)].find(({address}) => address===order.currencyAddress)){
+  //       if(currencies_list[getChainIdFromName(collectionChainName)].find(({address}) => address===order.currencyAddress)){
   //         priceAsUSD = parseFloat(ethers.utils.formatEther(order.price))
   //       }else{
   //         priceAsUSD = convertETHtoUSDT(parseFloat(ethers.utils.formatEther(order.price)), assetPrices.eth)
@@ -384,15 +424,16 @@ const Collection: NextPage = () => {
    
   // },[ordersForCollection])
   useEffect(()=> {
-    if (isInitialized && collectionInfo.address) {
+    if (isInitialized && collectionAddress && collectionChainName) {
       fetchCollectionMetaData()
     }
   }, [isInitialized, Moralis,collectionInfo])
+  
   useEffect(()=>{
-    if(contractType!=='' && collectionInfo){
-      dispatch(getRoyalty(contractType, collectionInfo.address, getChainIdFromName(collectionInfo.chain) ,signer) as any)
+    if(contractType!=='' && collectionChainName){
+      dispatch(getRoyalty(contractType, collectionAddress, getChainIdFromName(collectionChainName) ,signer) as any)
     }
-  },[contractType,collectionInfo])
+  },[contractType,collectionChainName])
   return (
     <>
       <div className={classNames('w-full', 'mt-20', 'pr-[70px]' ,'pt-[30px]', 'relative', editStyle.collection)}>
@@ -772,9 +813,14 @@ const Collection: NextPage = () => {
                   }
                 >
                   <div className="grid 2xl:grid-cols-5 gap-4 xl:grid-cols-3 md:grid-cols-2 p-1">
+                    {/* { !isActiveBuyNow && nfts.map((item, index) => {
+                      return (
+                        <NFTBox nft={item} index={index} key={index}  col_url={col_url} col_address={collectionAddress}  chain={collectionInfo?collectionChainID:'4'}/>
+                      )
+                    })} */}
                     { !isActiveBuyNow && nfts.map((item, index) => {
                       return (
-                        <NFTBox nft={item} index={index} key={index}  col_url={col_url} col_address={collectionInfo.address}  chain={collectionInfo?collectionInfo.chain:'eth'}/>
+                        <NFTBox nft={item} index={index} key={index}  col_url={col_url} col_address={collectionAddress}  chain={collectionInfo?collectionChainID:'4'}/>
                       )
                     })}
                     { isActiveBuyNow && listNFTs && buyComponet()}
@@ -790,3 +836,5 @@ const Collection: NextPage = () => {
 }
 
 export default Collection
+
+

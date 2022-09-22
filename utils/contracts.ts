@@ -11,6 +11,7 @@ import ERC20Abi from '../constants/abis/ERC20.json'
 import ONFTCore721 from '../constants/abis/ONFTCore721.json'
 import ONFTCore1155 from '../constants/abis/ONFTCore1155.json'
 import LZEndpointABI from '../constants/abis/LayerzeroEndpoint.json'
+import CurrencyManagerABI from '../constants/abis/CurrencyManager.json'
 import veSTG from '../constants/abis/veSTG.json'
 import RoyaltyFeeManagerABI from '../constants/abis/RoyaltyFeeManager.json'
 
@@ -74,7 +75,7 @@ export const getVeSTGInstance = (contractAddress: string, chainId: number, signe
   return getContractInstanceByAddr(contractAddress, veSTG, chainId, signer)
 }
 
-export const getRoyaltyFeeMangerInstance = (contractAddress: string,chainId: number) => {
+export const getRoyaltyFeeMangerInstance = (contractAddress: string, chainId: number) => {
   const provider = getProvider(chainId)
   return new ethers.Contract(
     contractAddress,
@@ -101,5 +102,10 @@ export const validateContract = async (chainId: number, address: string): Promis
 }
 
 export const getCurrencyInstance = (address: string, chainId: number, signer: any) => {
-  return getContractInstanceByAddr(address, ERC20Abi, chainId, signer)
+  if (!address) return null
+  return getContractInstanceByAddr(address, ERC20Abi, chainId, signer);
+}
+
+export const getCurrencyManagerInstance = (chainId: number, signer: any) => {
+  return getContractInstance('CurrencyManager', CurrencyManagerABI, chainId, signer);
 }

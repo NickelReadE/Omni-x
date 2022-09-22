@@ -74,7 +74,7 @@ export const collectionsSlice = createSlice({
 })
 
 //actions
-export const { setCollectionNFTs,setCollectionAllNFTs, setCollectionInfo, setNFTInfo, clearCollections, startGetNFTs, setCollectionOwners, setCollections, setCollectionsForCard, setRoyalty } = collectionsSlice.actions
+export const { setCollectionNFTs, setCollectionAllNFTs, setCollectionsForCard, setCollectionInfo, setNFTInfo, clearCollections, startGetNFTs, setCollectionOwners, setCollections, setRoyalty } = collectionsSlice.actions
 
 export const clearCollectionNFTs = () => (dispatch: Dispatch<any>) => {
 	dispatch(clearCollections())
@@ -161,7 +161,6 @@ export const updateCollectionsForCard = (chainId: string, chainName: string) => 
 				if(Object.prototype.hasOwnProperty.call(element.address,chainId)){
 					const ownerdata = await collectionsService.getCollectionOwners(chainName, element.address[chainId])
 					ownerCnt = ownerdata.data
-					console.log(ownerdata)
 				}
 				setTimeout(
 					async function(){			
@@ -221,6 +220,7 @@ export const updateCollectionsForCard = (chainId: string, chainName: string) => 
 
 export const getRoyalty = (contractType:string, address: string, chainId:number, signer:any) => async (dispatch: Dispatch<any>) => {
 	try{
+		console.log(contractType, address, chainId)
 		if(contractType==='ERC721'){
 			const NFTContract =  getERC721Instance(address,chainId,null)
 			// const supportedERP2981 = await NFTContract.supportsInterface(ERC2189_INTERFACE_ID)

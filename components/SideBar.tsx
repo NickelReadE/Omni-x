@@ -7,8 +7,8 @@ import LazyLoad from 'react-lazyload'
 import { Dialog } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import useWallet from '../hooks/useWallet'
-import { getUserNFTs, selectUser, selectUserNFTs } from '../redux/reducers/userReducer'
-import { NFTItem } from '../interface/interface'
+import {getUserNFTs, selectRefreshBalance, selectUser, selectUserNFTs} from '../redux/reducers/userReducer'
+import {NFTItem} from '../interface/interface'
 import {
   getLayerZeroEndpointInstance,
   getERC721Instance,
@@ -17,7 +17,7 @@ import {
   getOmnixBridgeInstance, getONFTCore721Instance, getONFTCore1155Instance, getCurrencyInstance,
 } from '../utils/contracts'
 import regExpFormat from '../helpers/regExpFormat'
-import {getChainIdFromName, getLayerzeroChainId,getChainInfo, getProvider} from '../utils/constants'
+import {getChainIdFromName, getLayerzeroChainId, getChainInfo, getAddressByName, getProvider} from '../utils/constants'
 import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
 import UserEdit from './user/UserEdit'
@@ -25,11 +25,6 @@ import useBridge from '../hooks/useBridge'
 import useProgress from '../hooks/useProgress'
 import useContract from '../hooks/useContract'
 import {PendingTxType} from '../contexts/contract'
-import usd from '../constants/abis/USD.json'
-import omni from '../constants/abis/Omni.json'
-import omniAddress from '../constants/OMNI.json'
-import usdcAddress  from '../constants/USDC.json'
-import usdtAddress  from '../constants/USDT.json'
 
 interface RefObject {
   offsetHeight: number
@@ -88,9 +83,9 @@ const SideBar: React.FC = () => {
   const [usdcBalance, setUsdcBalance] = useState(0)
   const [usdtBalance, setUsdtBalance] = useState(0)
 
-
   const nfts = useSelector(selectUserNFTs)
   const user = useSelector(selectUser)
+  const refreshBalance = useSelector(selectRefreshBalance)
 
   const [selectedNFTItem, setSelectedNFTItem] = useState<NFTItem>()
   const [isONFTCore, setIsONFTCore] = useState(false)
@@ -521,34 +516,28 @@ const SideBar: React.FC = () => {
   useEffect(()=>{
     const getBalance = async() => {
       try {
-        const key = chainId.toString() as keyof typeof omniAddress
-        //OMNI
-        const contractOmniAddress = omniAddress[key]
-        if(contractOmniAddress!=''){
-          const omniContract =  new ethers.Contract(contractOmniAddress, omni, signer)
-          const omni_balance = await omniContract.balanceOf(address)
-          setOmniBalance(Number(ethers.utils.formatEther(omni_balance)))
+        {
+          const omniContract = getCurrencyInstance(getAddressByName('OMNI', chainId), chainId, signer)
+          const balance = await omniContract?.balanceOf(address)
+          setOmniBalance(Number(ethers.utils.formatEther(balance || '0')))
         }
-        //USDC
-        const contractUSDCAddress = usdcAddress[key]
-        if(contractUSDCAddress!=''){
-          const usdContract =  new ethers.Contract(contractUSDCAddress, omni, signer)
-          const usdc_balance = await usdContract.balanceOf(address)
-          setUsdcBalance(Number(ethers.utils.formatEther(usdc_balance)))
+
+        {
+          const usdContract = getCurrencyInstance(getAddressByName('USDC', chainId), chainId, signer)
+          const balance = await usdContract?.balanceOf(address)
+          setUsdcBalance(Number(ethers.utils.formatEther(balance || '0')))
         }
-        //USDT
-        const contractUSDTAddress = usdtAddress[key]
-        if(contractUSDTAddress!=''){
-          const usdTContract =  new ethers.Contract(contractUSDTAddress, usd, signer)
-          const usdt_balance = await usdTContract.balanceOf(address)
-          setUsdtBalance(Number(ethers.utils.formatEther(usdt_balance)))
+        
+        {
+          const usdContract = getCurrencyInstance(getAddressByName('USDT', chainId), chainId, signer)
+          const balance = await usdContract?.balanceOf(address)
+          setUsdtBalance(Number(ethers.utils.formatEther(balance || '0')))
         }
-        //Native Token
-        const balance = await provider?.getBalance(address!)
-        if(Number(balance)===0 || balance===undefined){
-          setNativeBalance('0')
-        }else{
-          setNativeBalance((Number(balance)/Math.pow(10,18)).toFixed(4))
+
+        {
+          //Native Token
+          const balance = await provider?.getBalance(address!)
+          setNativeBalance(Number(ethers.utils.formatEther(balance || '0')).toFixed(4))
         }
       } catch (error) {
         console.log(error)
@@ -557,28 +546,14 @@ const SideBar: React.FC = () => {
     if(signer!=undefined && address!=undefined){
       getBalance()
     }
-  },[signer,address])
-
-  useEffect(() => {
-    (async () => {
-      const allHistories = localStorage.getItem('txHistories')
-      const txInfos = allHistories ? JSON.parse(allHistories) : []
-
-      for (let i = 0; i < txInfos.length; i++) {
-        const txInfo = txInfos[i]
-        if (!txInfo.destTxHash) {
-          await listenONFTEvents(txInfo, i)
-        }
-      }
-    })()
-  }, [listenONFTEvents])
+  },[signer, address, chainId, refreshBalance])
 
   const setLogout = async() => {
     console.log('clicked disconnect')
     await disconnect()
     window.location.reload()
   }
-
+  
   return (
     <>
       { !onMenu &&
@@ -785,7 +760,7 @@ const SideBar: React.FC = () => {
                 <span className="font-semibold w-auto text-[16px]">OMNI balance: {regExpFormat(omniBalance)}</span>
                 <span className="font-semibold w-auto text-[16px]">USDC balance: {regExpFormat(usdcBalance)}</span>
                 <span className="font-semibold w-auto text-[16px]">USDT balance: {regExpFormat(usdtBalance)}</span>
-                <span className="font-semibold w-auto text-[16px]">{getChainInfo(chainId)?.nativeCurrency.symbol} balance: {regExpFormat(nativeBalance)}</span>
+                <span className="font-semibold w-auto text-[16px]">{getChainInfo(chainId)?.nativeCurrency.symbol} balance: {nativeBalance}</span>
                 <span className="w-auto text-[16px]">Staking: coming soon</span>
                 {/* <div className="w-full flex flex-row font-semibold text-[14px]">
                   <div className="bg-g-200 w-[88px] px-[11px] py-[9px]">

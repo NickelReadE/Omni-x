@@ -3,10 +3,13 @@ import Link from 'next/link'
 import classNames from '../helpers/classNames'
 import useProgress from '../hooks/useProgress'
 import useWallet from '../hooks/useWallet'
+import { useDispatch } from 'react-redux'
+import { openSnackBar } from '../redux/reducers/snackBarReducer'
 import ProcessingTransaction from './transaction/ProcessingTransaction'
 import { Menu } from '@headlessui/react'
 import { getSearchText } from '../redux/reducers/headerReducer'
-import { useDispatch } from 'react-redux'
+import { updateRefreshBalance } from '../redux/reducers/userReducer'
+import { getOmniInstance } from '../utils/contracts'
 
 type HeaderProps = {
   menu: string
@@ -43,6 +46,17 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
     })
   }
 
+  const onOmniFaucet = async () => {
+    const chainId = provider?.network.chainId as number
+    const omni = getOmniInstance(chainId, signer)
+
+    const tx = await omni.mint({ gasLimit: '300000' })
+    await tx.wait()
+
+    dispatch(updateRefreshBalance())
+    dispatch(openSnackBar({ message: 'You received an 10000 $OMNI soon', status: 'success' }))
+  }
+  
   const onClear = () => {
     clearHistories()
   }
@@ -172,6 +186,9 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
                 </div>
               </div>
           }
+          <div className='absolute right-[100px] top-[20px]'>
+            <button className='bg-gradient-to-br from-[#F3F9FF] to-[#DBE1E9] border-2 border-[#A0B3CC] rounded-lg text-black text-lg p-[10px]' onClick={() => onOmniFaucet()}>Get Test OMNI</button>
+          </div>
         </div>
       </nav>
     </>

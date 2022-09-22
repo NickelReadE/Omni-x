@@ -42,6 +42,13 @@ const Collections: NextPage = () => {
   const collections = useSelector(selectCollections)
   const collectionsForCard = useSelector(selectCollectionsForCard)
   const orders = useSelector(selectOrders)
+
+  
+  useEffect(() => {
+    if(provider?._network){
+      dispatch(updateCollectionsForCard(provider._network.chainId.toString(), getChainNameById(provider._network.chainId) ) as any)
+    }
+  }, [provider?._network])
   
   useEffect(() => {
     if(provider?._network){
