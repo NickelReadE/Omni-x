@@ -10,12 +10,6 @@ import ConfirmSell from './collections/ConfirmSell'
 import { prependOnceListener } from 'process'
 
 import useWallet from '../hooks/useWallet'
-import { SupportedChainId } from '../types'
-import { postMakerOrder } from '../utils/makeOrder'
-import { ethers } from 'ethers'
-import { addDays } from 'date-fns'
-import { getCollectionInfo, selectCollectionInfo, getCollectionOwners, selectCollectionOwners } from '../redux/reducers/collectionsReducer'
-import { convertUSDTtoETH } from '../utils/convertRate'
 
 import { useDispatch, useSelector } from 'react-redux'
 import editStyle from '../styles/nftbox.module.scss'

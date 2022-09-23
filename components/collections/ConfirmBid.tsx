@@ -7,8 +7,8 @@ import useWallet from '../../hooks/useWallet'
 
 import CustomSelect from './CustomSelect'
 import Select from 'react-select'
-
-import { currencies_list } from '../../utils/constants'
+import { IBidData } from '../../interface/interface'
+import { CURRENCIES_LIST } from '../../utils/constants'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,7 +35,7 @@ interface IConfirmBidProps {
   openBidDlg: boolean,
   nftImage: string,
   nftTitle: string,
-  onSubmit: any
+  onSubmit?: (bidData: IBidData) => void
 }
 
 const ConfirmBid: React.FC<IConfirmBidProps> = ({
@@ -53,7 +53,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
   const [selectedOption, setSelectedOption] = useState(null)
   const [price_in_usd, setPriceInUSD] = useState('')
   const [price, setPrice] = useState(0)
-  const [currency, setCurrency] = useState(currencies_list[4][0])//rinkeby as default
+  const [currency, setCurrency] = useState(CURRENCIES_LIST[0])
   const [period, setPeriod] = useState(period_list[2])
 
   const onChangePrice = (e: any) => {
@@ -69,7 +69,12 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
   }, [price])
 
   const onBid = () => {
-    onSubmit(currency.address, price, period.period)
+    if (onSubmit) {
+      onSubmit({
+        currencyName: currency.text,
+        price
+      })
+    }
   }
 
   return (
@@ -84,7 +89,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
           <div>
             <p className="text-[#6C757D] text-[18px] font-semibold">Bid Price</p>
             <div className="flex justify-start items-center mt-5">
-              <CustomSelect optionData={currencies_list[provider?._network?.chainId as number]} value={currency} onChange={(value: any) => setCurrency(value)} />
+              <CustomSelect optionData={CURRENCIES_LIST} value={currency} onChange={(value: any) => setCurrency(value)} />
               <input type="text" value={price} className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg" onChange={onChangePrice}/>
               <span className="px-4 text-[#ADB5BD] font-light">{price_in_usd}</span>
             </div>
