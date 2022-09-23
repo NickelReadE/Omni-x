@@ -1,20 +1,53 @@
 import React from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { chain_list } from '../utils/utils'
+import { IPropsNFTItem } from '../interface/interface'
+import LazyLoad from 'react-lazyload'
+import {useDraggable} from '@dnd-kit/core'
+import ConfirmSell from './collections/ConfirmSell'
+import { prependOnceListener } from 'process'
+
+import useWallet from '../hooks/useWallet'
+
+import { useDispatch, useSelector } from 'react-redux'
 import editStyle from '../styles/nftbox.module.scss'
 import classNames from '../helpers/classNames'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import Hgreg from '../public/images/gregs/logo.png'
 import Loading from '../public/images/loading_f.gif'
 const CollectionCard = (props:any) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
+  const [chain, setChain] = useState('eth')
   const [image, setImage] = useState(props.collection.profile_image)
   const [imageError, setImageError] = useState(false)
+  const [openSellDlg, setOpenSellDlg] = React.useState(false)
+  ///only in the beta version
+  const [islisted,setList] = useState(false)
+  const [itemCounts, setItemCounts] = useState(0)
+  const [ownerNum, setOwnerNum] = useState(0)
+  const {
+    provider,
+    address
+  } = useWallet()
 
+  const dispatch = useDispatch()
+  const {attributes, listeners, setNodeRef, transform} = useDraggable({
+    id: `draggable-${1}`,
+    data: {
+      type: 'NFT',
+    }
+  })
+  const style = transform ? {
+    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+    zIndex: 99
+  } : undefined
   return (
     <div className={classNames(' border-[2px] border-[#F6F8FC] w-[340px] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F6F8FC]', editStyle.nftContainer)}>
-      <div className='relative'>
+      <div className='relative'  style={style} >
         <div >
-          <img className='nft-image w-[340px] background-fill' src={imageError?'/images/omnix_logo_black_1.png':image} alt="nft-image" onError={()=>{setImageError(true)}} data-src={image} />
+          <img className='nft-image w-[340px] background-fill' src={imageError?'/images/omnix_logo_black_1.png':image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={image} />
         </div>
         <div className={classNames('absolute w-full h-full  flex items-center justify-center  ', editStyle.actionBtn)}>
           <div>
@@ -87,6 +120,8 @@ const CollectionCard = (props:any) => {
           </div>
         </div>
       </div>
+
+
     </div>
   )
 }

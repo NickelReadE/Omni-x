@@ -10,16 +10,18 @@ const Home: NextPage = () => {
   const [isBlur, setIsBlur] = React.useState<boolean>(false)
 
   React.useEffect(() => {
-    if(context.address) {
-      if(Number(context.provider?._network?.chainId)>0){
-        if(supportChainIDs.includes(context.provider?._network?.chainId as number)){
-          setIsBlur(false)
-        }
-      } else {
-        window.location.reload()
-      }
+    if(context.address){
+      setIsBlur(false)
     } else setIsBlur(true)
   }, [context])
+
+  React.useEffect(()=>{
+    if(Number(context.provider?._network?.chainId)>0){
+      if(supportChainIDs.includes(context.provider?._network.chainId as number)){
+        setIsBlur(false)
+      } else setIsBlur(true)
+    }
+  },[context.provider?._network?.chainId])
 
   return (
     <>

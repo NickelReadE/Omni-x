@@ -16,10 +16,10 @@ const MetaMaskConnect = ({onConnect, context}:ConnectButtonProps): JSX.Element =
   const [chainId, setChainID] = React.useState<number>(4)
 
   React.useEffect(()=>{
-    if(context.address) {
-      if(Number(context.provider?._network?.chainId)>0){
-        setChainID(context.provider?._network?.chainId as number)
-        if(supportChainIDs.includes(context.provider?._network?.chainId as number)){
+    if(context.address && context.provider && context.provider._network && context.provider._network.chainId) {
+      if(Number(context.provider._network.chainId)>0){
+        setChainID(context.provider._network.chainId as number)
+        if(supportChainIDs.includes(context.provider._network.chainId as number)){
           setShow(false)
         }
       }

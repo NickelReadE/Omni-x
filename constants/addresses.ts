@@ -20,7 +20,7 @@ const rinkebyAddresses: Addresses = {
 
 export const addressesByNetwork: { [chainId in SupportedChainId]: Addresses } = {
   [SupportedChainId.RINKEBY]: rinkebyAddresses,
-}
+};
 
 export const chains = ['eth', 'bsc', 'matic', 'avalanche', 'fantom', 'optimism', 'arbitrum']
 
