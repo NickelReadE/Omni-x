@@ -3,8 +3,6 @@ import { makeStyles, createStyles } from '@material-ui/core/styles'
 import Dialog from '@material-ui/core/Dialog'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import useWallet from '../../hooks/useWallet'
-
 import CustomSelect from './CustomSelect'
 import Select from 'react-select'
 import { IBidData } from '../../interface/interface'
@@ -45,10 +43,6 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
   nftTitle,
   onSubmit
 }) => {
-  const {
-    provider,
-  } = useWallet()
-
   const classes = useStyles()
   const [price_in_usd, setPriceInUSD] = useState('')
   const [price, setPrice] = useState(0)

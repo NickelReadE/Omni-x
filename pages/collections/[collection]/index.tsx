@@ -1,24 +1,19 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, Fragment, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import type { NextPage } from 'next'
 import { Listbox, Transition, Switch } from '@headlessui/react'
-import {ethers} from 'ethers'
-
 import Discord from '../../../public/images/discord.png'
 import Twitter from '../../../public/images/twitter.png'
 import Web from '../../../public/images/web.png'
-import Ethereum from '../../../public/sidebar/ethereum.png'
 import Explorer from '../../../public/images/exp.png'
-
-import { getCollectionNFTs, selectCollectionNFTs, getCollectionInfo,getCollectionAllNFTs, getRoyalty,selectCollectionInfo, clearCollectionNFTs, selectGetNFTs, getCollectionOwners, selectCollectionOwners,selectCollectionAllNFTs, selectRoyalty, getNFTInfo } from '../../../redux/reducers/collectionsReducer'
-import { selectAssetPrices} from '../../../redux/reducers/feeddataReducer'
+import { getCollectionNFTs, selectCollectionNFTs, getCollectionInfo,getCollectionAllNFTs, getRoyalty,selectCollectionInfo, clearCollectionNFTs, selectGetNFTs, selectCollectionAllNFTs, selectRoyalty } from '../../../redux/reducers/collectionsReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import NFTBox from '../../../components/collections/NFTBox'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import CircularProgress from '@material-ui/core/CircularProgress'
-
 import LazyLoad from 'react-lazyload'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import Accordion from '@material-ui/core/Accordion'
@@ -34,14 +29,12 @@ import SearchIcon from '@material-ui/icons/Search'
 import Chip from '@material-ui/core/Chip'
 import classNames from '../../../helpers/classNames'
 import editStyle from '../../../styles/collection.module.scss'
-import { info } from 'console'
-import ordersReducer, { getOrders, selectOrders, getLastSaleOrders,selectBidOrders,selectLastSaleOrders } from '../../../redux/reducers/ordersReducer'
+import { getOrders, selectOrders, getLastSaleOrders } from '../../../redux/reducers/ordersReducer'
 import { IGetOrderRequest , ICollectionInfoFromLocal} from '../../../interface/interface'
-import { getChainInfo, getChainIdFromName, chain_list_ } from '../../../utils/constants'
-import { convertETHtoUSDT, convertUSDTtoETH } from '../../../utils/convertRate'
+import { getChainInfo, getChainIdFromName } from '../../../utils/constants'
 import { useMoralisWeb3Api, useMoralis } from 'react-moralis'
 import useWallet from '../../../hooks/useWallet'
-import { currencies_list,getChainNameFromId } from '../../../utils/constants'
+import { getChainNameFromId } from '../../../utils/constants'
 
 const sort_fields = [
   { id: 1, name: 'price: low to high', value: 'price', unavailable: false },
@@ -131,15 +124,13 @@ const useStyles = makeStyles((theme: Theme) =>
 const Collection: NextPage = () => {
   const { isInitialized, Moralis } = useMoralis()
   const [currentTab, setCurrentTab] = useState<string>('items')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [expandedMenu, setExpandedMenu] = useState(0)
   const [selected, setSelected] = useState(sort_fields[0])
   const [enabled, setEnabled] = useState(false)
   const [collectionAddress, setCollectionAddress] = useState('')
   const [collectionChainID, setCollectionChainID] = useState('')
   const [collectionChainName,setCollectionChainName] = useState('')
-
-
-  // const [nfts,setNFTs] = useState<any>({})
 
   const [hasMoreNFTs, setHasMoreNFTs] = useState(true)
 
@@ -155,36 +146,29 @@ const Collection: NextPage = () => {
 
   const collectionInfo = useSelector(selectCollectionInfo)
 
-  // const collectionOwners = useSelector(selectCollectionOwners)
   const royalty = useSelector(selectRoyalty)
   const orders = useSelector(selectOrders)
-  const assetPrices = useSelector(selectAssetPrices)
 
   const [imageError, setImageError] = useState(false)
   const classes = useStyles()
 
   const [searchObj, setSearchObj] = useState<any>({})
   const [filterObj, setFilterObj] = useState<any>({})
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [clearFilter, setClearFilter] = useState(false)
 
   const [isActiveBuyNow, setIsActiveBuyNow] = useState<boolean>(false)
   const [listNFTs, setListNFTs] = useState<any>([])
-  const [ordersForCollection, setOrdersForCollection] = useState<any>([])
   const [collectionInfoFromLocal, setCollectionInfoFromLocal] = useState<ICollectionInfoFromLocal>()
-
   const [explorerUrl, setExplorerUrl] = useState('')
-
   const [contractType, setContractType] = useState('')
-
-  const [floorPrice, setFloorPrice] = useState(0)
-
   const finishedGetting = useSelector(selectGetNFTs)
 
   const {
     provider,
     signer
   } = useWallet()
-  
+
   const Web3Api = useMoralisWeb3Api()
 
   const fetchCollectionMetaData = async() => {
@@ -231,7 +215,7 @@ const Collection: NextPage = () => {
 
       setPage(0)
     }
-  }, [col_url,provider]) 
+  }, [col_url,provider])
 
   useEffect(()=>{
     if(nfts.length>0){
@@ -335,7 +319,7 @@ const Collection: NextPage = () => {
       setClearFilter(true)
     }
   }
-  
+
   const searchFilter = (searchValue: string, attrKey: string) => {
     const newObj = {[attrKey]: searchValue}
     setFilterObj((prevState: any) => {
@@ -369,15 +353,15 @@ const Collection: NextPage = () => {
     if(isActiveBuyNow && collectionInfo && allNFTs.length>0){
       const temp = []
       for(let i=0;i<allNFTs.length;i++){
-        for(let j=0; j<orders.length;j++){  
+        for(let j=0; j<orders.length;j++){
           if(collectionAddress==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
-            temp.push(allNFTs[i]) 
-            break         
+            temp.push(allNFTs[i])
+            break
           }
         }
       }
-      setListNFTs(temp)    
-    } 
+      setListNFTs(temp)
+    }
   },[isActiveBuyNow,collectionInfo,allNFTs])
   // useEffect(()=>{
   //   if(collectionInfo && allNFTs.length>0){
@@ -386,18 +370,18 @@ const Collection: NextPage = () => {
   //       let order:any = null
   //       for(let j=0; j<orders.length;j++){
   //         if(collectionAddress==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
-  //           order = orders[j]         
+  //           order = orders[j]
   //         }
   //       }
   //       if(order){
   //         tempOrders.push(order)
-  //       }        
-  //     }      
+  //       }
+  //     }
   //     console.log(tempOrders)
-  //     setOrdersForCollection(tempOrders)     
-  //   } 
+  //     setOrdersForCollection(tempOrders)
+  //   }
   // },[collectionInfo,allNFTs])
-  // useEffect(()=>{   
+  // useEffect(()=>{
   //   if(ordersForCollection.length > 0 && assetPrices){
   //     let lowPrice: any = Number.MAX_VALUE
   //     ordersForCollection.map((order: { price: any, currencyAddress:any }) => {
@@ -409,7 +393,7 @@ const Collection: NextPage = () => {
   //       }
   //       if(lowPrice > priceAsUSD){
   //         lowPrice  = priceAsUSD
-  //       }             
+  //       }
   //     })
   //     if(lowPrice === Number.MAX_VALUE){
   //       lowPrice = 0
@@ -418,12 +402,14 @@ const Collection: NextPage = () => {
   //   }else if(ordersForCollection.length ===0){
   //     setFloorPrice(0)
   //   }
-   
+
   // },[ordersForCollection])
   useEffect(()=> {
-    if (isInitialized && collectionAddress && collectionChainName) {
-      fetchCollectionMetaData()
-    }
+    (async () => {
+      if (isInitialized && collectionAddress && collectionChainName) {
+        await fetchCollectionMetaData()
+      }
+    })()
   }, [isInitialized, Moralis,collectionInfo])
   useEffect(()=>{
     if(contractType!=='' && collectionInfo){
@@ -434,20 +420,20 @@ const Collection: NextPage = () => {
     <>
       <div className={classNames('w-full', 'mt-20', 'pr-[70px]' ,'pt-[30px]', 'relative', editStyle.collection)}>
         <div className="w-[100%] h-[100%] mt-20">
-          <img className={classNames(editStyle.bannerImg)} src={collectionInfo&&collectionInfo.banner_image ? collectionInfo.banner_image : ''} />
-          <div className={classNames(editStyle.bannerOpacity)} /> 
+          <img alt={'bannerImage'} className={classNames(editStyle.bannerImg)} src={collectionInfo&&collectionInfo.banner_image ? collectionInfo.banner_image : ''} />
+          <div className={classNames(editStyle.bannerOpacity)} />
         </div>
         <div className="flex space-x-8 items-end ml-[70px]">
           <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="logo" />}>
-            <img className="w-[200px] h-[200px]" src={imageError?'/images/omnix_logo_black_1.png':(collectionInfo&&collectionInfo.profile_image ? collectionInfo.profile_image : '/images/omnix_logo_black_1.png')} alt="logo" onError={(e)=>{setImageError(true)}} data-src={collectionInfo&&collectionInfo.profile_image ? collectionInfo.profile_image : ''} />
+            <img className="w-[200px] h-[200px]" src={imageError?'/images/omnix_logo_black_1.png':(collectionInfo&&collectionInfo.profile_image ? collectionInfo.profile_image : '/images/omnix_logo_black_1.png')} alt="logo" onError={()=>{setImageError(true)}} data-src={collectionInfo&&collectionInfo.profile_image ? collectionInfo.profile_image : ''} />
           </LazyLoad>
           <div className="flex relative  text-lg font-bold text-center items-center">
             <div className={'select-none inline-block p-4 text-xxl font-extrabold '}>
-              {collectionInfo?collectionInfo.name:''}                  
-            </div> 
+              {collectionInfo?collectionInfo.name:''}
+            </div>
             <div className="w-[30px] h-[30px] bg-[#B444F9] rounded-[30px] flex items-center justify-center">
               <div className=" w-[15px] h-[9px] border-b-[3px] border-l-[3px] border-white -rotate-45 "></div>
-            </div> 
+            </div>
             { collectionInfo&&collectionInfo.discord?
               <Link href={collectionInfo.discord}>
                 <a className="p-2 flex items-center">
@@ -486,18 +472,18 @@ const Collection: NextPage = () => {
                 <Image src={Explorer} alt='website' />
               </a>
             </Link>
-              
+
           </div>
-        </div>  
+        </div>
         <div className='w-full  mt-[-100px] border-b-2 border-[#E9ECEF]'>
           <div className="flex">
-            <div className="w-[320px] min-w-[320px]"/>              
+            <div className="w-[320px] min-w-[320px]"/>
           </div>
           <div className="flex">
             <div className="w-[320px] min-w-[320px]">
             </div>
             <div className="flex w-full justify-between items-end">
-              <div className="flex flex-col">                
+              <div className="flex flex-col">
                 <ul className="flex relative justify-item-stretch text-lg font-bold text-center">
                   <li
                     className={`select-none inline-block p-4  w-32	 cursor-pointer z-30 ${currentTab === 'items' ? 'text-[#1E1C21] border-b-2 border-black': ' text-[#A0B3CC]'} `}
@@ -508,19 +494,19 @@ const Collection: NextPage = () => {
                   <li className={'select-none inline-block p-4  w-32	 cursor-pointer  z-10  text-[#A0B3CC]'}>stats</li>
                 </ul>
               </div>
-              
+
               <ul className="flex space-x-4 relative justify-item-stretch items-end text-md font-bold text-center pb-[5px]">
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <span className="mr-[22px] ">Items</span>
-                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.itemsCnt:0}</span>           
+                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.itemsCnt:0}</span>
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <span className="mr-[22px] ">Owners</span>
-                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.ownerCnt:0}</span>           
+                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.ownerCnt:0}</span>
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <span className="mr-[22px] ">Listed</span>
-                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.orderCnt:0}</span>           
+                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.orderCnt:0}</span>
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <span className="mr-[22px] ">Royalty Fee</span>
@@ -573,7 +559,7 @@ const Collection: NextPage = () => {
           </div>
           <div className="col-span-1"></div>
         </div>
-      </div>    
+      </div>
       <div className="w-full pr-[70px]">
         <div className="flex">
           <div className="w-[320px] min-w-[320px]">
@@ -637,7 +623,7 @@ const Collection: NextPage = () => {
                               return <FormControlLabel
                                 key={valueIndex}
                                 classes={{label:classes.frmLabel, root: classes.frmLabel}}
-                                control={<Checkbox checked={Array.isArray(searchObj[key]) && searchObj[key].indexOf(attrs[key].values[valueKey][3], 0) > -1 ? true : false} onChange={(e) => {searchAttrsCheck(e.target.checked, key, attrs[key].values[valueKey][3])}} color="default" inputProps={{ 'aria-label': 'checkbox with default color' }} />}
+                                control={<Checkbox checked={Array.isArray(searchObj[key]) && searchObj[key].indexOf(attrs[key].values[valueKey][3], 0) > -1} onChange={(e) => {searchAttrsCheck(e.target.checked, key, attrs[key].values[valueKey][3])}} color="default" inputProps={{ 'aria-label': 'checkbox with default color' }} />}
                                 label={
                                   <div className="flex items-center justify-between">
                                     <span className="font-bold text-[#4d5358]">{attrs[key].values[valueKey][3]}</span>
@@ -754,9 +740,9 @@ const Collection: NextPage = () => {
               </div>
             </div>
             <div className="mt-5">
-            
+
               {
-                Object.keys(searchObj).map((attrKey, attrIndex) => {
+                Object.keys(searchObj).map((attrKey) => {
                   return searchObj[attrKey].map((item: any, index: any) => {
                     return <Chip
                       label={item}
