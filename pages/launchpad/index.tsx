@@ -2,18 +2,24 @@ import type { NextPage } from 'next'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import NftForLaunch from '../../components/NftForLaunch'
+import { useMoralisWeb3Api, useMoralis } from 'react-moralis'
+import axios from 'axios'
 import Image from 'next/image'
 import Link from 'next/link'
 import { getCollections, selectCollections } from '../../redux/reducers/collectionsReducer'
-import styles from '../styles/launchpad.module.scss'
-import classNames from '../../helpers/classNames'
 const Launchpad: NextPage = () => {
   const collections = useSelector(selectCollections)
   const [isShow, setIsShow] = useState(false)
-  const [collectionsForLive, setCcollectionsForLive] = useState([])
-  const [collectionsForComing, setCcollectionsForComing] = useState([])
+  const [collectionsForLive, setCcollectionsForLive] = useState<any>([])
+  const [collectionsForComing, setCcollectionsForComing] = useState<any>([])
   const [sampleCollection, setSampleCollection] = useState<any>({})
   const dispatch = useDispatch()
+
+  const { isInitialized, Moralis } = useMoralis()
+  const fetchCollectionItemCounts = async() => {   
+    
+
+  }
   useEffect(() => {
     dispatch(getCollections() as any)
   }, [])
@@ -27,6 +33,11 @@ const Launchpad: NextPage = () => {
       setSampleCollection(samples[0])
     }
   }, [collections])
+  useEffect(()=> {
+    if (isInitialized && collectionsForComing.length>0) {
+      fetchCollectionItemCounts()
+    }
+  }, [isInitialized, Moralis,collectionsForComing])
   return (
     <div className='mt-[75px] w-full px-[130px] pt-[50px]'>
       <div className='flex  justify-between'>
@@ -77,7 +88,7 @@ const Launchpad: NextPage = () => {
           <p className='w-[830px] text-xg1 text-[#A0B3CC]'>
             {sampleCollection.description?sampleCollection.description:'Description'}
           </p>
-          <Link href='/collections/tiny_dinos'>
+          <Link href={`/collections/${sampleCollection.col_url?sampleCollection.col_url:''}`}>
             <button className='mt-[25px] px-2 py-1 w-[170px]  bg-[#B444F9] text-white rounded-lg'>
               view collection
             </button>
