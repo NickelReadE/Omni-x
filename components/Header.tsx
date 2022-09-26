@@ -56,7 +56,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
     dispatch(updateRefreshBalance())
     dispatch(openSnackBar({ message: 'You received an 10000 $OMNI soon', status: 'success' }))
   }
-  
+
   const onClear = () => {
     clearHistories()
   }
@@ -136,7 +136,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
 
           {
             histories.length > 0 &&
-              <div className={'absolute right-[100px] h-[90px] flex items-center'}>
+              <div className={'absolute right-[250px] h-[90px] flex items-center'}>
                 <div className={'relative'}>
                   <Menu>
                     <Menu.Button className={'w-[250px] h-[40px] bg-[#F6F8FC] px-[18px] flex items-center justify-between'} style={{ borderRadius: '20px', border: '1.5px solid #000000'}}>
@@ -186,6 +186,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
                 </div>
               </div>
           }
+
           <div className='absolute right-[100px] top-[20px]'>
             <button className='bg-gradient-to-br from-[#F3F9FF] to-[#DBE1E9] border-2 border-[#A0B3CC] rounded-lg text-black text-lg p-[10px]' onClick={() => onOmniFaucet()}>Get Test OMNI</button>
           </div>
