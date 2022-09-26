@@ -68,8 +68,7 @@ const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
     token_id: nft?.token_id
   })
 
-
-  const chainIcon = getChainIconById(chain)
+  const chainIcon = useMemo(() => getChainIconById(chain), [chain])
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
   const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
   const isOwner = order?.signer?.toLowerCase() == address?.toLowerCase() // owner?.toLowerCase() == address?.toLowerCase()

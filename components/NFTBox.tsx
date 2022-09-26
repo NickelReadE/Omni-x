@@ -111,7 +111,9 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     }
   },[nft])
   const chainId = getChainIdFromName(nft?.chain)
-  const chainIcon = getChainIconById(chainId.toString())
+  const chainIcon = useMemo(() => {
+    return getChainIconById(chainId.toString())
+  }, [chainId])
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
   const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
 
