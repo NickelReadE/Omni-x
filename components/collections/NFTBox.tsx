@@ -68,7 +68,9 @@ const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
     token_id: nft?.token_id
   })
 
-  const chainIcon = useMemo(() => getChainIconById(chain), [chain])
+  const chainIcon = useMemo(() => {
+    return getChainIconById(chain ? chain : '4')
+  }, [chain])
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
   const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
   const isOwner = order?.signer?.toLowerCase() == address?.toLowerCase() // owner?.toLowerCase() == address?.toLowerCase()
@@ -92,7 +94,7 @@ const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
             <div className="mr-3 flex items-center">
               {/* <div className={classNames("mr-3 flex items-center cursor-pointer bg-[url('/images/round-refresh.png')] hover:bg-[url('/images/round-refresh_hover.png')] bg-cover w-[20px] h-[20px]", editStyle.refreshBtn)}></div> */}
               <div className="flex items-center ml-1">
-                <img alt={'chainIcon'} src={chainIcon} className="w-[16px] h-[16px]" />
+                <img alt={'chainIcon1'} src={chainIcon} className="w-[16px] h-[16px]" />
               </div>
             </div>
           </div>
