@@ -194,8 +194,15 @@ const Collection: NextPage = () => {
       chain: chain as any,
       address: collectionAddress
     }
-    const metaData = await Web3Api.token.getNFTMetadata(options)
-    setContractType(metaData.contract_type)
+    console.log(options)
+    try{
+      const metaData = await Web3Api.token.getNFTMetadata(options)
+      console.log(metaData)
+      setContractType(metaData.contract_type)
+    }catch(err){
+      console.log(err)
+    }    
+    
   }
 
   useEffect(() => {
@@ -289,7 +296,7 @@ const Collection: NextPage = () => {
       }
 
     }
-  }, [collectionInfo])
+  }, [collectionAddress])
 
   useEffect(() => {
     if ( collectionInfo ) {
@@ -427,9 +434,10 @@ const Collection: NextPage = () => {
     if (isInitialized && collectionAddress && collectionChainName) {
       fetchCollectionMetaData()
     }
-  }, [isInitialized, Moralis,collectionInfo])
+  }, [isInitialized, Moralis, collectionChainName])
   
   useEffect(()=>{
+    console.log(contractType, collectionChainName)
     if(contractType!=='' && collectionChainName){
       dispatch(getRoyalty(contractType, collectionAddress, getChainIdFromName(collectionChainName) ,signer) as any)
     }
@@ -576,25 +584,7 @@ const Collection: NextPage = () => {
             </div>
           </div>
           <div className="col-span-1"></div>
-        </div>
-
-        <div className='w-full mt-8 border-b-2 border-[#E9ECEF]'>
-          <div className="flex">
-            <div className="w-[320px] min-w-[320px]">
-            </div>
-            <div className="px-12">
-              <ul className="flex relative justify-item-stretch text-xl font-bold text-center">
-                <li
-                  className={`select-none inline-block p-4 rounded-t-[8px] w-40 cursor-pointer z-30 ${currentTab === 'items' ? 'bg-[#E9ECEF] text-[#1E1C21] shadow-[1px_-1px_4px_1px_rgba(233,236,239,1)]' : 'bg-[#F6F8FC] text-[#ADB5BD] shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)]'} `}
-                  onClick={() => setCurrentTab('items')}>
-                  items
-                </li>
-                <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-20 bg-[#F6F8FC] text-[#ADB5BD]'}>activity</li>
-                <li className={'select-none inline-block p-4 rounded-t-[8px] w-40 shadow-[1px_-1px_4px_1px_rgba(0,0,0,0.1)] z-10 bg-[#F6F8FC] text-[#ADB5BD]'}>stats</li>
-              </ul>
-            </div>
-          </div>
-        </div>
+        </div>        
       </div>
       
 
