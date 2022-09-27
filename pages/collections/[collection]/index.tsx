@@ -182,6 +182,7 @@ const Collection: NextPage = () => {
       chain: collectionInfo.chain,
     }
     const metaData = await Moralis.Web3API.token.getNFTMetadata(options)
+
     setContractType(metaData.contract_type)
   }
   useEffect(() => {

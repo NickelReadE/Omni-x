@@ -226,12 +226,8 @@ export const chain_list: {[key: string]: number} = {
   'arbitrum-rinkeby': 421611,
   'optimism-kovan': 69,
   'fantom-testnet': 4002,
+  'goerli': 5
 }
-
-export const getChainIdFromName = (name: string): number => {
-  return chain_list[name]
-}
-
 export const chain_list_: {[key: number]: string} = {
   1 : 'eth ',
   56 : 'bsc',
@@ -244,15 +240,19 @@ export const chain_list_: {[key: number]: string} = {
   4 : 'rinkeby',
   80001 : 'mumbai',
   43113 : 'avalanche testnet',
-  421611:'arbitrum-rinkeby',
-  69:'optimism-kovan',
-  4002:'fantom-testnet'
+  421611: 'arbitrum-rinkeby',
+  69: 'optimism-kovan',
+  4002: 'fantom-testnet',
+  5: 'goerli'
+}
+
+export const getChainIdFromName = (name: string): number => {
+  return chain_list[name]
 }
 
 export const getChainNameFromId = (id: number): string => {
   return chain_list_[id]
 }
-
 
 export const getAddressByName = (name: 'Omnix' | 'Omnix1155' | 'LayerZeroEndpoint', chainId: number) => {
   if (name === 'Omnix') {
@@ -283,3 +283,28 @@ export const getChainInfo = (chainId: number) => {
   }
   return null
 }
+
+export const isSupportedOnMoralis = (chainId: number) : boolean => {  
+  return supportedChainsOnMoralis.includes(chainId)
+}
+export const isSupportedOnAlchemy = (chainId: number) : boolean => {  
+  return supportedChainsOnAlchemy.includes(chainId)
+}
+export const APIkeysForAlchemy:{[key:number]:string} = {
+  420:'fOwhgLzJfvGdNS-3lSaj2Sc8wIIeoR-Q',
+  421613:'iSGCCiweawjOPFX-x5Btptlsg4gBLmG9',
+  5:'GiAm8CDGn_xhxD18nV4Wunc332XKeZ2w'
+}
+export const getAPIkeyForAlchemy = (key:number):string =>{
+ return APIkeysForAlchemy[key]
+}
+const supportedChainsOnMoralis:Array<number> = [
+  80001,
+  97,
+  43113
+]
+const supportedChainsOnAlchemy: Array<number> = [
+  420,
+  5,
+  421613
+]

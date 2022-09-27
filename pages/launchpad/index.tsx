@@ -2,42 +2,45 @@ import type { NextPage } from 'next'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import NftForLaunch from '../../components/NftForLaunch'
-import { useMoralisWeb3Api, useMoralis } from 'react-moralis'
-import axios from 'axios'
 import Image from 'next/image'
 import Link from 'next/link'
-import { getCollections, selectCollections } from '../../redux/reducers/collectionsReducer'
+import axios from 'axios'
+import collectionsReducer, { getCollections, selectCollections, getCollectionsForComingAndLive, selectCollectionsForComing, selectCollectionsForLive } from '../../redux/reducers/collectionsReducer'
+import {isSupportedOnMoralis,isSupportedOnAlchemy, getChainNameFromId, getAPIkeyForAlchemy} from '../../utils/constants'
+import Loading from '../../public/images/loading_f.gif'
 const Launchpad: NextPage = () => {
-  const collections = useSelector(selectCollections)
-  const [isShow, setIsShow] = useState(false)
-  const [collectionsForLive, setCcollectionsForLive] = useState<any>([])
-  const [collectionsForComing, setCcollectionsForComing] = useState<any>([])
   const [sampleCollection, setSampleCollection] = useState<any>({})
-  const dispatch = useDispatch()
-
-  const { isInitialized, Moralis } = useMoralis()
-  const fetchCollectionItemCounts = async() => {   
-    
-
+  const collections = useSelector(selectCollections)
+  const comingFromReduce = useSelector(selectCollectionsForComing)
+  const liveFromReduce = useSelector(selectCollectionsForLive)
+  const localComing = localStorage.getItem('NftComing')
+  const localLive = localStorage.getItem('NftLive')
+  let collectionsForComing = []
+  let collectionsForLive = []
+  if(localComing){
+    collectionsForComing = JSON.parse(localComing)
+  }else{
+    collectionsForComing = comingFromReduce
   }
+  if(localLive){
+    collectionsForLive = JSON.parse(localLive)
+  }else{
+    collectionsForLive = liveFromReduce
+  } 
+  
+  const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(getCollections() as any)
+    dispatch(getCollections() as any)    
   }, [])
-  useEffect(() => {
-    setCcollectionsForLive(collections.filter((collection: { mint_status: string }) => collection.mint_status === 'Live'))
-    
-    setCcollectionsForComing(collections.filter((collection: { mint_status: string }) => collection.mint_status === 'Upcoming'))
-    
-    const samples = collections.filter((collection:{col_url: string}) => collection.col_url === 'kanpai_pandas')
-    if(samples.length > 0){
-      setSampleCollection(samples[0])
+  useEffect(() => { 
+    if(collections?.length > 0){     
+      dispatch(getCollectionsForComingAndLive() as any)   
+      const samples = collections.filter((collection:{col_url: string}) => collection.col_url === 'kanpai_pandas')
+      if(samples?.length > 0){
+        setSampleCollection(samples[0])
+      }
     }
   }, [collections])
-  useEffect(()=> {
-    if (isInitialized && collectionsForComing.length>0) {
-      fetchCollectionItemCounts()
-    }
-  }, [isInitialized, Moralis,collectionsForComing])
   return (
     <div className='mt-[75px] w-full px-[130px] pt-[50px]'>
       <div className='flex  justify-between'>
@@ -97,15 +100,20 @@ const Launchpad: NextPage = () => {
       </div>
       <div className='mt-[80px]'>
         {
-          collectionsForLive.length>0 &&
+          (collectionsForLive?.length<=0 || collectionsForComing?.length<=0) &&
+            <Image src={Loading} alt='Loading...' width='80px' height='80px'/>
+
+        }
+        {
+          collectionsForLive?.length>0 &&
           <div className=''>            
             <p className='font-bold text-xl2 mb-[24px]'>
               Live Launches              
             </p>
             <div className='flex flex-wrap space-x-12'>
               {
-                collectionsForLive.map((collection: { mint_status: string, count: string, col_url:string, name:string, profile_image:string, price:string }, index) => {
-                  return <NftForLaunch key={index} typeNFT={collection.mint_status} items={collection.count} col_url={collection.col_url} name={collection.name} img={collection.profile_image} price={collection.price} />
+                collectionsForLive.map((collection: { mint_status: string, totalCnt: string, col_url:string, name:string, profile_image:string, price:string }, index:any) => {
+                  return <NftForLaunch key={index} typeNFT={collection.mint_status} items={collection.totalCnt} col_url={collection.col_url} name={collection.name} img={collection.profile_image} price={collection.price} />
                 })
               }
             </div>
@@ -113,15 +121,15 @@ const Launchpad: NextPage = () => {
           
         }
         {
-          collectionsForComing.length>0 &&
+          collectionsForComing?.length>0 &&
           <div className=''>            
             <p className='font-bold text-xl2 mb-[24px]'>
               Upcoming              
             </p>
             <div className='flex flex-wrap space-x-12'>
               {
-                collectionsForComing.map((collection: { mint_status: string, count: string, col_url:string, name:string, profile_image:string, price:string }, index) => {
-                  return <NftForLaunch key={index} typeNFT={collection.mint_status} items={collection.count} col_url={collection.col_url} name={collection.name} img={collection.profile_image} price={collection.price} />
+                collectionsForComing.map((collection: { mint_status: string, totalCnt: string, col_url:string, name:string, profile_image:string, price:string }, index:any) => {
+                  return <NftForLaunch key={index} typeNFT={collection.mint_status} items={collection.totalCnt} col_url={collection.col_url} name={collection.name} img={collection.profile_image} price={collection.price} />
                 })
               }
             </div>

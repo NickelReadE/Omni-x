@@ -69,7 +69,8 @@ const Mint: NextPage = () => {
   const [isSwitchingNetwork,setIsSwitchingNetwork] = useState<boolean>(false)
   const [price, setPrice] = useState(0)
   const [startId, setStartId] = useState(0)
- 
+  const [totalCnt, setTotalCnt] = useState(0)
+  const [mintedCnt, setMintedCnt] = useState(0)
   const decrease = ():void => {
     if(mintNum > 1) {
       setMintNum(mintNum - 1)
@@ -105,11 +106,9 @@ const Mint: NextPage = () => {
       setOwnToken(tokenlist)
 
       const priceT = await tokenContract.price()
-      console.log('price',parseFloat(ethers.utils.formatEther(priceT)))
       setPrice(parseFloat(ethers.utils.formatEther(priceT)))
       const max_mint = await tokenContract.maxMintId()
       const nextId = await tokenContract.nextMintId()
-      console.log(max_mint, nextId)
       setTotalNFTCount(Number(max_mint))
       setNextTokenId(Number(nextId))
       setSubStrateIndex(10)
@@ -148,7 +147,6 @@ const Mint: NextPage = () => {
   //     const saleFlag = await tokenContract._saleStarted()
   //     if(saleFlag && publicmintFlag) {
   //       const currentBalance = await library.getBalance(account)
-  //       console.log(currentBalance)
 
   //       mintResult = await tokenContract.publicMint(mintNum, {value: ethers.utils.parseEther((collectionInfo.price*mintNum).toString())})
   //       const receipt = await mintResult.wait()
@@ -191,7 +189,6 @@ const Mint: NextPage = () => {
   // }
   const mint = async ():Promise<void> => {
     if(chainId===undefined){
-      console.log(chainId)
       return
     }
     const provider = new ethers.providers.Web3Provider(window.ethereum)
@@ -213,11 +210,9 @@ const Mint: NextPage = () => {
       const publicmintFlag = await tokenContract._publicSaleStarted()
       const saleFlag = await tokenContract._saleStarted()      
       const currentBalance = await provider.getBalance(address?address:'')
-      
-      console.log('currentBalance', currentBalance)
-      console.log(mintNum, price)
+
       mintResult = await tokenContract.publicMint(mintNum, {value: ethers.utils.parseEther((price*mintNum).toString())})
-      console.log('mintResult', mintResult)
+      
       const receipt = await mintResult.wait()
       if(receipt!=null){
         setIsMinting(false)
@@ -310,7 +305,16 @@ const Mint: NextPage = () => {
   useEffect(()=>{
     dispatch(getCollectionInfo(col_url) as any)  
   },[]) 
-
+  useEffect(()=>{
+    if(Number(nextTokenId)>=0 && startId >=0){
+      setMintedCnt(Number(nextTokenId) - startId)
+    }
+  },[nextTokenId, startId])
+  useEffect(()=>{
+    if(Number(totalNFTCount)>=0 && startId >=0){
+      setTotalCnt(Number(totalNFTCount) - startId)
+    }
+  },[totalNFTCount, startId])
   return (
     <>      
       <ToastContainer />
@@ -329,7 +333,7 @@ const Mint: NextPage = () => {
             <div className={mintstyles.mintDataGrid}>
               <div className={mintstyles.mintDataWrap}>
                 <h5>minted</h5>
-                <span>{Number(nextTokenId) - startId}/{Number(totalNFTCount) - startId}</span>
+                <span>{mintedCnt>0?mintedCnt:0}/{totalCnt>0?totalCnt:0}</span>
               </div>
               <span className={mintstyles.line}></span>
               <div className={mintstyles.mintDataWrap}>

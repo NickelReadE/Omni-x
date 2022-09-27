@@ -37,7 +37,11 @@ const NftForLaunch = (pro:ITypeNFT) => {
 
   const getPrice = async () =>{
     try{
-      const chainId = provider?._network?.chainId  
+      const chainId = provider?._network?.chainId 
+      if(chainId === undefined || collectionInfo.address === undefined) 
+      {
+        return
+      }
       const tokenContract =  new ethers.Contract(collectionInfo.address[chainId?chainId:0], AdvancedONT, signer)
       const priceT = await tokenContract.price()
       setPrice(Number(ethers.utils.formatEther(priceT)))
