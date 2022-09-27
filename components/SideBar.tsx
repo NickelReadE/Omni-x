@@ -35,7 +35,6 @@ interface RefObject {
   offsetHeight: number
 }
 
-const env = process.env.NEXT_PUBLICE_ENVIRONMENT || 'testnet'
 const useStyles = makeStyles({
   paper: {
     padding: '0rem 2rem 0rem 0rem',

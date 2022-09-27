@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import {PendingTxType} from '../../contexts/contract'
 import Image from 'next/image'
 import arrowRight from '../../public/images/arrowRight.png'
