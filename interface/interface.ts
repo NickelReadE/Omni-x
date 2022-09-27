@@ -125,4 +125,27 @@ export interface IListingData {
 export interface IBidData {
   price: number,
   currencyName: string
+  orderCnt:string
+}
+
+export interface ITypeNFT{
+  typeNFT:string,
+  items:string,
+  col_url:string,
+  name:string,
+  img:string,
+  price:string
+}
+
+export interface contractInfo{
+  [key: string]: {
+    address: string,
+    imageSVG: string,
+    name: string,
+    price: number,
+    chainId: string,
+    unit: string,
+    color: string,
+    index: number
+  }
 }

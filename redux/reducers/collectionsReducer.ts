@@ -1,18 +1,20 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { Dispatch } from 'react'
-import { useSelector } from 'react-redux'
 import { IGetOrderRequest } from '../../interface/interface'
 import { collectionsService } from '../../services/collections'
 import { getOrders } from './ordersReducer'
 import { getAssetPrices } from './feeddataReducer'
 import { openSnackBar } from './snackBarReducer'
 import { getERC721Instance, getERC1155Instance, getRoyaltyFeeMangerInstance } from '../../utils/contracts'
-import { ERC2189_INTERFACE_ID } from '../../utils/constants'
 import { RoyaltyFeeManagerAddress } from '../../constants/addresses'
 import { convertETHtoUSDT, convertUSDTtoETH } from '../../utils/convertRate'
 import { currencies_list } from '../../utils/constants'
 import { getChainInfo, getChainIdFromName } from '../../utils/constants'
 import { ethers } from 'ethers'
+import { isSupportedOnAlchemy, isSupportedOnMoralis } from '../../utils/constants'
+import { getAPIkeyForAlchemy } from '../../utils/constants'
+import { getChainNameFromId } from '../../utils/constants'
+import axios from 'axios'
 interface CollectionState{
 	nfts:any[],
 	allNFTs: {},
@@ -22,7 +24,9 @@ interface CollectionState{
 	owners:number,
 	collections:any[],
 	collectionsForCard:any[],
-	royalty:number
+	royalty:number,
+	collectionsForComing:any[],
+	collectionsForLive:any[]
 }
 //reducers
 export const collectionsSlice = createSlice({
@@ -36,7 +40,9 @@ export const collectionsSlice = createSlice({
 		owners: 0,
 		collections: [],
 		collectionsForCard:[],
-		royalty: 0
+		royalty: 0,
+		collectionsForComing:[],
+		collectionsForLive:[]		
 	} as CollectionState,
 	reducers: {
 		setCollectionNFTs: (state, action) => {
@@ -68,13 +74,34 @@ export const collectionsSlice = createSlice({
 			state.collectionsForCard = action.payload === undefined ? '' : action.payload
 		},
 		setRoyalty: (state, action) =>{
-			state.royalty = action.payload === undefined ? '' : action.payload
+					state.royalty = action.payload === undefined ? '' : action.payload
+		},
+		setCollectionsForComing: (state, action) =>{			
+			
+			state.collectionsForComing = action.payload === undefined ? '' : action.payload
+		},
+		setCollectionsForLive: (state, action) =>{
+						
+			state.collectionsForLive = action.payload === undefined ? '' : action.payload
 		}
 	}
 })
 
 //actions
-export const { setCollectionNFTs, setCollectionAllNFTs, setCollectionsForCard, setCollectionInfo, setNFTInfo, clearCollections, startGetNFTs, setCollectionOwners, setCollections, setRoyalty } = collectionsSlice.actions
+export const { 
+		setCollectionNFTs,
+		setCollectionAllNFTs, 
+		setCollectionInfo, 
+		setNFTInfo, 
+		clearCollections, 
+		startGetNFTs, 
+		setCollectionOwners, 
+		setCollections, 
+		setCollectionsForCard, 
+		setRoyalty,
+		setCollectionsForComing,
+		setCollectionsForLive
+    } = collectionsSlice.actions
 
 export const clearCollectionNFTs = () => (dispatch: Dispatch<any>) => {
 	dispatch(clearCollections())
@@ -278,6 +305,16 @@ export const getRoyalty = (contractType:string, address: string, chainId:number,
 const  getItemscount = (collection:any):Promise<number> => {
 	return new Promise<number> (async (ret) => {
 		let totalCnt =0
+	})
+}
+export const getCollectionsForComingAndLive = () => async(dispatch: Dispatch<any>, getState:() => any) =>{
+	const collections = getState().collectionsState.collections
+	const collectionsForLive = collections.filter((collection: { mint_status: string }) => collection.mint_status === 'Live')
+	const collectinosForComing = collections.filter((collection: { mint_status: string }) => collection.mint_status === 'Upcoming')
+	if(collectionsForLive.length > 0){	
+		let resCollectionsForLive:any[] = []
+		for(const collection of collectionsForLive){ 		  
+		  let totalCnt =0
 		  const collectionAdr = Array.from(Object.keys(collection.address)) 		  
 		  for ( const key of collectionAdr ) {			
 			if(isSupportedOnAlchemy(parseInt(key))){
@@ -314,8 +351,53 @@ const  getItemscount = (collection:any):Promise<number> => {
 		  
 		  const newCollection = Object.assign({totalCnt: totalCnt}, data)
 		  resCollectionsForLive = [...resCollectionsForLive, newCollection]
-		ret(1)
-	})
+		}		
+		localStorage.setItem('NftLive',JSON.stringify(resCollectionsForLive))
+		dispatch(setCollectionsForLive(resCollectionsForLive))
+	}
+	if(collectinosForComing.length > 0){	
+		let resCollectionsForComing:any[] = []	
+		for (const collection of collectinosForComing){ 		  
+		  let totalCnt =0
+		  const collectionAdr = Array.from(Object.keys(collection.address)) 
+		  for ( const key of collectionAdr ) {			
+			if(isSupportedOnAlchemy(parseInt(key))){
+			  const options = {
+				method: 'GET',
+				url: `https://eth-mainnet.g.alchemy.com/nft/v2/${getAPIkeyForAlchemy(parseInt(key))}/getNFTsForCollection`,
+				params: {
+				  withMetadata: 'false',
+				  contractAddress:collection.address[key]
+				},
+				headers: {accept: 'application/json'}
+			  };
+			  
+			  const resp = await axios.request(options);
+			  if ( resp.data.nfts.length > 0 ) {
+				totalCnt += resp.data.nfts.length
+			  }			
+			}
+			if(isSupportedOnMoralis(parseInt(key))){
+			  const options = {
+				method: 'GET',
+				url: `https://deep-index.moralis.io/api/v2/nft/${collection.address[key]}`,
+				params: {chain: getChainNameFromId(parseInt(key)), format: 'decimal'},
+				headers: {accept: 'application/json', 'X-API-Key': 'leaSlfD5P1cgV4T1h72OfbaYRF4oYlEqdlXkmKUc9456mKeK8JrghLHNB2NIc8oN'}
+			  };
+			  const resp = await axios.request(options);
+			  if ( resp.data.total > 0 ) {
+				totalCnt += resp.data.total
+			  }
+			  
+			}
+		  }
+		  const data = JSON.parse(JSON.stringify(collection))
+		  const newCollection = Object.assign({totalCnt: totalCnt}, data)
+		  resCollectionsForComing.push(newCollection)	  			
+		}	
+		localStorage.setItem('NftComing',JSON.stringify(resCollectionsForComing))
+		dispatch(setCollectionsForComing(resCollectionsForComing))
+	}
 }
 //selectors
 export const selectCollectionNFTs = (state: any) => state.collectionsState.nfts
@@ -327,5 +409,7 @@ export const selectCollections = (state: any) => state.collectionsState.collecti
 export const selectCollectionAllNFTs = (state: any) => state.collectionsState.allNFTs
 export const selectCollectionsForCard = (state: any) => state.collectionsState.collectionsForCard
 export const selectRoyalty = (state: any) => state.collectionsState.royalty
+export const selectCollectionsForComing = (state: any) => state.collectionsState.collectinosForComing
+export const selectCollectionsForLive = (state: any) => state.collectionsState.collectionsForLive
 
 export default collectionsSlice.reducer

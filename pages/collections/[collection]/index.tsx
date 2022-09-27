@@ -42,7 +42,6 @@ import { convertETHtoUSDT, convertUSDTtoETH } from '../../../utils/convertRate'
 import { useMoralisWeb3Api, useMoralis } from 'react-moralis'
 import useWallet from '../../../hooks/useWallet'
 import { currencies_list,getChainNameFromId } from '../../../utils/constants'
-import { getChainNameById } from '../../../utils/constants'
 
 const sort_fields = [
   { id: 1, name: 'price: low to high', value: 'price', unavailable: false },
@@ -194,15 +193,9 @@ const Collection: NextPage = () => {
       chain: chain as any,
       address: collectionAddress
     }
-    console.log(options)
-    try{
-      const metaData = await Web3Api.token.getNFTMetadata(options)
-      console.log(metaData)
-      setContractType(metaData.contract_type)
-    }catch(err){
-      console.log(err)
-    }    
-    
+    const metaData = await Moralis.Web3API.token.getNFTMetadata(options)
+
+    setContractType(metaData.contract_type)
   }
 
   useEffect(() => {

@@ -2,13 +2,15 @@ import React from 'react'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+<<<<<<< HEAD
 import { chain_list } from '../utils/utils'
 import { IPropsNFTItem } from '../interface/interface'
 import LazyLoad from 'react-lazyload'
+=======
+>>>>>>> 07684a05f6c3de81b72f386f20ad243b576acd1d
 import {useDraggable} from '@dnd-kit/core'
-import ConfirmSell from './collections/ConfirmSell'
-import { prependOnceListener } from 'process'
 
+<<<<<<< HEAD
 import useWallet from '../hooks/useWallet'
 import { SupportedChainId } from '../types'
 import { postMakerOrder } from '../utils/makeOrder'
@@ -22,21 +24,18 @@ import editStyle from '../styles/nftbox.module.scss'
 import classNames from '../helpers/classNames'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Hgreg from '../public/images/gregs/logo.png'
+=======
+import { useDispatch,  } from 'react-redux'
+import editStyle from '../styles/nftbox.module.scss'
+import classNames from '../helpers/classNames'
+>>>>>>> 07684a05f6c3de81b72f386f20ad243b576acd1d
 import Loading from '../public/images/loading_f.gif'
 const CollectionCard = (props:any) => {
 
-  const [chain, setChain] = useState('eth')
   const [image, setImage] = useState(props.collection.profile_image)
   const [imageError, setImageError] = useState(false)
-  const [openSellDlg, setOpenSellDlg] = React.useState(false)
   ///only in the beta version
-  const [islisted,setList] = useState(false)
-  const [itemCounts, setItemCounts] = useState(0)
-  const [ownerNum, setOwnerNum] = useState(0)
-  const {
-    provider,
-    address
-  } = useWallet()
+ 
 
   const dispatch = useDispatch()
   const {attributes, listeners, setNodeRef, transform} = useDraggable({
@@ -48,7 +47,11 @@ const CollectionCard = (props:any) => {
   const style = transform ? {
     transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
     zIndex: 99
+<<<<<<< HEAD
   } : undefined
+=======
+  } : undefined  
+>>>>>>> 07684a05f6c3de81b72f386f20ad243b576acd1d
   return (
     <div className={classNames(' border-[2px] border-[#F6F8FC] w-[340px] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F6F8FC]', editStyle.nftContainer)}>
       <div className='relative'  style={style} >
@@ -69,6 +72,7 @@ const CollectionCard = (props:any) => {
       <div className="flex flex-row mt-2.5 justify-start">
         <div className="ml-3 text-[#000000] text-[20px] font-bold ">
           {props.collection.name}
+<<<<<<< HEAD
         </div>
       </div>
       
@@ -95,6 +99,52 @@ const CollectionCard = (props:any) => {
                 <img src='/svgs/omni_asset.svg' className='w-[16px]' alt='asset img'></img>
               </div>
             </div>  
+=======
+        </div>        
+      </div>
+      
+      <div className="grid grid-rows-6 grid-flow-col gap-1 p-2">
+        <div className={classNames('row-span-6 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
+          <div className='text-[14px] font-extrabold  mb-1 w-[60px]'>Floor</div>
+          <div className='flex flex-col space-y-2' >
+            <div className=' flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
+              <span className='font-medium text-[12px] mr-[4px]'>{props.card?0:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+              <img src='/svgs/eth_asset.svg' className='w-[16px]' alt='asset img'></img>
+            </div>
+            <div className='flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
+              <span className='font-medium text-[12px] mr-[4px]' >{props.card?0:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+              <img src='/svgs/usd_asset.svg' className='w-[16px]' alt='asset img'></img>
+            </div>
+            <div className='flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
+              <span className='font-medium text-[12px] mr-[px]'>{props.card?0:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+              <img src='/svgs/omni_asset.svg' className='w-[16px]' alt='asset img'></img>
+            </div>
+          </div>            
+        </div>
+        <div className={classNames('row-span-2 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)}>
+          <div className='text-[14px] flex flex-row justify-between'>
+            <span className='font-extrabold mr-[1px]'>Items</span>
+            <span className='font-medium text-[12px]'>{props.card?props.card.itemsCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+          </div>
+        </div>
+        <div  className={classNames('row-span-2 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
+          <div className='text-[14px] flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
+            <span className='font-extrabold mr-[1px]'>Owners</span>
+            <span className='font-medium text-[12px]'>{props.card?props.card.ownerCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+          </div>
+        </div>
+        <div className={classNames('row-span-2 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
+          <div className='text-[14px] flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
+            <span className='font-extrabold mr-[1px]'>Listed</span>
+            <span className='font-medium text-[12px]'>{props.card?props.card.orderCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+          </div>
+        </div>
+        <div className={classNames('row-span-3 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
+          <div className='text-[14px] font-extrabold mb-1'>Volume(Total)</div>
+          <div className='text-[14px] flex flex-row '>
+            <span className='mr-1 text-[12px]'>{props.card?0:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+            <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img>
+>>>>>>> 07684a05f6c3de81b72f386f20ad243b576acd1d
           </div>
           
                       
@@ -105,7 +155,11 @@ const CollectionCard = (props:any) => {
             <div className='flex flex-row mr-4'>
               <span className='font-medium mr-1 text-[12px]'>{props.card?0:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
               <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img>
+<<<<<<< HEAD
             </div>
+=======
+            </div>               
+>>>>>>> 07684a05f6c3de81b72f386f20ad243b576acd1d
             <span className='font-medium text-[#38B000] text-[12px]'> {props.card?'0%':<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
           </div>
         </div>

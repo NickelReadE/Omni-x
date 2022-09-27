@@ -15,6 +15,7 @@ import LZEndpoint from '../constants/LayerzeroEndpoints.json'
 import ChainIds from '../constants/chainIds.json'
 import CHAINS from '../constants/chains.json'
 
+
 const omnixBridge: any = OmnixBridge
 const omnixBridge1155: any = OmnixBridge1155
 const omnixExchange: any = OmnixExchange
@@ -55,6 +56,11 @@ export type ContractName =
   'StargateRouter' |
   'StargatePoolManager' |
   'CurrencyManager'
+
+const environments: any = {
+  mainnet: ['ethereum', 'bsc', 'avalanche', 'polygon', 'arbitrum', 'optimism', 'fantom'],
+  testnet: ['rinkeby', 'bsc-testnet', 'fuji', 'mumbai', 'arbitrum-rinkeby', 'optimism-kovan', 'fantom-testnet']
+}
 
 export const rpcProviders: { [key: number]: string } = {
   1:'https://mainnet.infura.io/v3/20504cdcff23477c9ed314d042d85a74',
@@ -301,11 +307,10 @@ export const chain_list: {[key: string]: number} = {
   'arbitrum-rinkeby': 421611,
   'optimism-kovan': 69,
   'fantom-testnet': 4002,
+  'goerli': 5
 }
 
-export const getChainIdFromName = (name: string): number => {
-  return chain_list[name]
-}
+
 export const supportChainIDs = [4,80001,43113,421611,69,4002,97]
 
 export const chain_list_: {[key: number]: string} = {
@@ -320,9 +325,14 @@ export const chain_list_: {[key: number]: string} = {
   4 : 'rinkeby',
   80001 : 'mumbai',
   43113 : 'avalanche testnet',
-  421611:'arbitrum-rinkeby',
-  69:'optimism-kovan',
-  4002:'fantom-testnet'
+  421611: 'arbitrum-rinkeby',
+  69: 'optimism-kovan',
+  4002: 'fantom-testnet',
+  5: 'goerli'
+}
+
+export const getChainIdFromName = (name: string): number => {
+  return chain_list[name]
 }
 
 export const getChainNameFromId = (id: number): string => {
@@ -475,3 +485,27 @@ export const getBlockExplorer = (chainId: number) => {
   }
   return null
 }
+export const isSupportedOnMoralis = (chainId: number) : boolean => {  
+  return supportedChainsOnMoralis.includes(chainId)
+}
+export const isSupportedOnAlchemy = (chainId: number) : boolean => {  
+  return supportedChainsOnAlchemy.includes(chainId)
+}
+export const APIkeysForAlchemy:{[key:number]:string} = {
+  420:'fOwhgLzJfvGdNS-3lSaj2Sc8wIIeoR-Q',
+  421613:'iSGCCiweawjOPFX-x5Btptlsg4gBLmG9',
+  5:'GiAm8CDGn_xhxD18nV4Wunc332XKeZ2w'
+}
+export const getAPIkeyForAlchemy = (key:number):string =>{
+ return APIkeysForAlchemy[key]
+}
+const supportedChainsOnMoralis:Array<number> = [
+  80001,
+  97,
+  43113
+]
+const supportedChainsOnAlchemy: Array<number> = [
+  420,
+  5,
+  421613
+]
