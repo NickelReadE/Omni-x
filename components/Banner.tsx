@@ -61,14 +61,14 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
 
   useEffect(() => {
     if (isInitialized && address) {
-      fetchNFTByAddress('eth',String(GregContractAddress['eth']))
-      fetchNFTByAddress('bsc',String(GregContractAddress['bsc']))
-      fetchNFTByAddress('polygon',String(GregContractAddress['polygon']))
-      fetchNFTByAddress('avalanche',String(GregContractAddress['avalanche'])) 
-      fetchNFTByAddress('fantom',String(GregContractAddress['fantom']))
-      chainsFroSTG.map((chain)=>{
-        fetchToken(chain)
-      })
+      // fetchNFTByAddress('eth',String(GregContractAddress['eth']))
+      // fetchNFTByAddress('bsc',String(GregContractAddress['bsc']))
+      // fetchNFTByAddress('polygon',String(GregContractAddress['polygon']))
+      // fetchNFTByAddress('avalanche',String(GregContractAddress['avalanche'])) 
+      // fetchNFTByAddress('fantom',String(GregContractAddress['fantom']))
+      // chainsFroSTG.map((chain)=>{
+      //   fetchToken(chain)
+      // })
     }
   }, [isInitialized, Moralis, address])
 

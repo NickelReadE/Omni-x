@@ -37,8 +37,8 @@ const MetaMaskConnect = ({onConnect, context}:ConnectButtonProps): JSX.Element =
     } else {
       return(
         <div>
-          <div>Current network is not supported <br></br> Please switch network into Rinkeby</div>
-          <div className='flex justify-center mt-20'><SwitchButton  chainID={4} /></div>
+          <div>Current network is not supported <br></br> Please switch network into Goerli</div>
+          <div className='flex justify-center mt-20'><SwitchButton  chainID={5} /></div>
         </div>
       )
     }

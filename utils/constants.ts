@@ -65,6 +65,7 @@ export const rpcProviders: { [key: number]: string } = {
   10:'https://mainnet.optimism.io',
   42161:'https://arb1.arbitrum.io/rpc',
   4: 'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+  5:'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
   97: 'https://data-seed-prebsc-1-s1.binance.org:8545',
   43113: 'https://api.avax-test.network/ext/bc/C/rpc',
   80001: 'https://polygon-mumbai.g.alchemy.com/v2/H2EfIYrKg--DbTdHW37WJaSVuaJvTF0T',
@@ -98,8 +99,8 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
     logo: '/svgs/fantom.svg',
     roundedLogo: '/images/roundedColorEthereum.png',
     explorerLogo: '/images/ethereumExplorer.png',
-    officialName: 'Fantom',
-    currency: 'FTM'
+    officialName: 'Ethereum',
+    currency: 'ETH'
   },
   56: {
     name: 'bsc',
@@ -156,6 +157,14 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
     explorerLogo: '/images/ethereumExplorer.png',
     officialName: 'Rinkeby',
     currency: 'ETH'
+  },
+  5: {
+    name: 'eth',
+    logo: '/svgs/ethereum.svg',
+    roundedLogo: '/images/roundedColorEthereum.png',
+    explorerLogo: '/images/ethereumExplorer.png',
+    officialName: 'Goerli',
+    currency: 'GoerliETH'
   },
   97: {
     name: 'bsc-testnet',
@@ -254,6 +263,11 @@ export const currencies_list: { [key: number]: Array<{ value: number; text: stri
     { value: 1, text: 'USDC', icon: 'payment/usdc.png', address: '0x1717A0D5C8705EE89A8aD6E808268D6A826C97A4' },
     { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad' },
   ],
+  5:  [
+    { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '' },
+    { value: 1, text: 'USDC', icon: 'payment/usdc.png', address: '' },
+    { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '' },
+  ],
   97:  [
     { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0xBfB4D3441f190014C5111f566e6AbE8a93E862D8' },
     { value: 1, text: 'USDC', icon: 'payment/usdc.png', address: '' },
@@ -287,15 +301,16 @@ export const currencies_list: { [key: number]: Array<{ value: number; text: stri
 }
 
 export const chain_list: {[key: string]: number} = {
-  'eth': 1,
-  'bsc': 56,
-  'matic': 137,
-  'avalanche': 43114,
-  'fantom': 250,
-  'optimism': 10,
-  'arbitrum': 42161,
+  // 'eth': 1,
+  // 'bsc': 56,
+  // 'matic': 137,
+  // 'avalanche': 43114,
+  // 'fantom': 250,
+  // 'optimism': 10,
+  // 'arbitrum': 42161,
   'bsc testnet': 97,
-  'rinkeby': 4,
+  'goerli': 5,
+  'eth': 5,
   'mumbai': 80001,
   'avalanche testnet': 43113,
   'arbitrum-rinkeby': 421611,
@@ -306,7 +321,7 @@ export const chain_list: {[key: string]: number} = {
 export const getChainIdFromName = (name: string): number => {
   return chain_list[name]
 }
-export const supportChainIDs = [4,80001,43113,421611,69,4002,97]
+export const supportChainIDs = [5,80001,43113,421611,69,4002,97]
 
 export const chain_list_: {[key: number]: string} = {
   1 : 'eth ',
@@ -318,6 +333,7 @@ export const chain_list_: {[key: number]: string} = {
   42161 : 'arbitrum',
   97 : 'bsc testnet',
   4 : 'rinkeby',
+  5: 'goerli',
   80001 : 'mumbai',
   43113 : 'avalanche testnet',
   421611:'arbitrum-rinkeby',
@@ -361,7 +377,6 @@ export const getAddressByName = (name: ContractName, chainId: number) => {
 
 export const getProvider = (chainId: number) => {
   const rpcURL = rpcProviders[chainId]
-
   return new ethers.providers.JsonRpcProvider(
     rpcURL,
     {

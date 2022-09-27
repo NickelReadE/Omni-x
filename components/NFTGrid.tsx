@@ -13,7 +13,7 @@ import {  getCollectionInfo,getCollectionAllNFTs, selectCollectionAllNFTs,select
 
 const chainList = [
   { chain: 'all', img_url: '/svgs/all_chain.svg', title: 'all NFTs', disabled: false},
-  { chain: 'rinkeby', img_url: '/svgs/ethereum.svg', title: 'Ethereum', disabled: false},
+  { chain: 'eth', img_url: '/svgs/ethereum.svg', title: 'Ethereum', disabled: false},
   { chain: 'mumbai', img_url: '/svgs/polygon.svg', title: 'Polygon', disabled: false},
   { chain: 'avalanche testnet', img_url: '/svgs/avax.svg', title: 'Avalanche', disabled: false},
   { chain: 'bsc testnet', img_url: '/svgs/binance.svg', title: 'BNB Chain', disabled: false},

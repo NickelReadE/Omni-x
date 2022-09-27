@@ -31,7 +31,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     signer
   } = useWallet()
 
-  const chain = provider?.network.chainId
+  const chain = provider?.network?.chainId
   const {attributes, listeners, setNodeRef, transform} = useDraggable({
     id: `draggable-${index}`,
     data: {
@@ -115,7 +115,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       }
     }
   },[nft])
-  const chainId = getChainIdFromName(nft?.chain)
+  const chainId = getChainIdFromName(nft.chain)
   const chainIcon = getChainIconById(chainId.toString())
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
   const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
