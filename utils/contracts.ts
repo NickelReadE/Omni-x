@@ -103,7 +103,7 @@ export const validateContract = async (chainId: number, address: string): Promis
 
 export const getCurrencyInstance = (address: string, chainId: number, signer: any) => {
   if (!address) return null
-  return getContractInstanceByAddr(address, ERC20Abi, chainId, signer);
+  return getContractInstanceByAddr(address, ERC20Abi, chainId, signer)
 }
 
 export const getCurrencyManagerInstance = (chainId: number, signer: any) => {

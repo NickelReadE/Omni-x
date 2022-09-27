@@ -8,7 +8,7 @@ import { supportChainIDs } from '../utils/constants'
 
 type ConnectButtonProps = {
   onConnect: () => Promise<void>
-  
+
   context:WalletContextType
 }
 const MetaMaskConnect = ({onConnect, context}:ConnectButtonProps): JSX.Element => {
@@ -38,12 +38,12 @@ const MetaMaskConnect = ({onConnect, context}:ConnectButtonProps): JSX.Element =
       return(
         <div>
           <div>Current network is not supported <br></br> Please switch network into Rinkeby</div>
-          <div className='flex justify-center mt-20'><SwitchButton  chainID={4} /></div>
+          <div className='flex justify-center mt-20'><SwitchButton chainID={5} /></div>
         </div>
       )
     }
   }
-  
+
   return (
     <>
       {show && <div className="flex justify-center items-center w-screen h-screen bg-[#ffffff90] fixed z-[1]">

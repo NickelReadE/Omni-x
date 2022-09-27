@@ -13,19 +13,19 @@ interface IRpcDatafeed{
   [key: string]: string
 }
 export const chain_list:IChain = {
-	'eth': "eth",
-	'bsc': "bsc",
-	'matic': "matic",
-	'avalanche': "avalanche",
-	'fantom': "fantom",
-	'optimism': "optimism",
-	'arbitrum': "arbitrum",
-	'bsc testnet': "bsc",
-	'rinkeby': "eth",
-	'mumbai': "matic",
-	'avalanche testnet': "avalanche"
+  'eth': 'eth',
+  'bsc': 'bsc',
+  'matic': 'matic',
+  'avalanche': 'avalanche',
+  'fantom': 'fantom',
+  'optimism': 'optimism',
+  'arbitrum': 'arbitrum',
+  'bsc testnet': 'bsc',
+  'rinkeby': 'eth',
+  'mumbai': 'matic',
+  'avalanche testnet': 'avalanche'
 }
-	
+
 export const crypto_list:ICryptoObj = {
   'eth':{
     'eth':'0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419',
@@ -44,7 +44,7 @@ export const crypto_list:ICryptoObj = {
 }
 
 export const rpcDatafeedProvider:IRpcDatafeed = {
-	'eth':'https://rpc.ankr.com/eth',
+  'eth':'https://rpc.ankr.com/eth',
   'bsc':'https://rpc.ankr.com/bsc',
   'arbitrm':'https://rpc.ankr.com/arbitrum',
   'avalanche':'https://rpc.ankr.com/avalanche',
@@ -54,7 +54,7 @@ export const rpcDatafeedProvider:IRpcDatafeed = {
 
 }
 export const rpcGasProvider:IRpcDatafeed = {
-	'eth':'https://rpc.ankr.com/eth',
+  'eth':'https://rpc.ankr.com/eth',
   'bsc':'https://rpc.ankr.com/bsc',
   'arbitrm':'https://rpc.ankr.com/arbitrum',
   'avalanche':'https://api.avax.network/ext/bc/C/rpc',

@@ -1,6 +1,6 @@
 import {ethers} from 'ethers'
-import OmnixBridge from '../constants/OmnixBridge.json'
-import OmnixBridge1155 from '../constants/OmnixBridge1155.json'
+import OmnixBridge from '../constants/addresses/OmnixBridge.json'
+import OmnixBridge1155 from '../constants/addresses/OmnixBridge1155.json'
 import OmnixExchange from '../constants/OmnixExchange.json'
 import Strategy from '../constants/Strategy.json'
 import TransferSelectorNFT from '../constants/TransferSelectorNFT.json'
@@ -11,8 +11,8 @@ import USDT from '../constants/USDT.json'
 import Stargate from '../constants/Stargate.json'
 import StargatePoolManager from '../constants/StargatePoolManager.json'
 import CurrencyManager from '../constants/CurrencyManager.json'
-import LZEndpoint from '../constants/LayerzeroEndpoints.json'
-import ChainIds from '../constants/chainIds.json'
+import LZEndpoint from '../constants/layerzero/LayerzeroEndpoints.json'
+import ChainIds from '../constants/layerzero/chainIds.json'
 import CHAINS from '../constants/chains.json'
 
 const omnixBridge: any = OmnixBridge
@@ -33,7 +33,7 @@ const chainIds: any = ChainIds
 export const PROTOCAL_FEE = 2
 export const CREATOR_FEE = 2
 
-const SUSPPORTED_CHAIN_IDS = [1, 56, 137, 43114, 250, 10, 42161, 4, 97, 43113, 80001, 421611, 69, 4002]
+const SUPPORTED_CHAIN_IDS = [1, 56, 137, 43114, 250, 10, 42161, 5, 97, 43113, 80001, 421613, 420, 4002]
 
 export const CURRENCIES_LIST = [
   { value: 0, text: 'OMNI', icon: 'payment/omni.png' },
@@ -65,11 +65,14 @@ export const rpcProviders: { [key: number]: string } = {
   10:'https://mainnet.optimism.io',
   42161:'https://arb1.arbitrum.io/rpc',
   4: 'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+  5: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
   97: 'https://data-seed-prebsc-1-s1.binance.org:8545',
   43113: 'https://api.avax-test.network/ext/bc/C/rpc',
   80001: 'https://polygon-mumbai.g.alchemy.com/v2/H2EfIYrKg--DbTdHW37WJaSVuaJvTF0T',
   421611: 'https://rinkeby.arbitrum.io/rpc',
+  421613: 'https://goerli-rollup.arbitrum.io/rpc',
   69: 'https://kovan.optimism.io',
+  420: 'https://goerli.optimism.io',
   4002: 'https://rpc.testnet.fantom.network'
 }
 
@@ -80,7 +83,7 @@ export const ERC712_INTERFACE_ID = '0x80ac58cd'
 export const ERC2189_INTERFACE_ID = '0x2a55205a'
 
 export const getChainIcons = (chainId: number) => {
-  if (SUSPPORTED_CHAIN_IDS.includes(chainId)) {
+  if (SUPPORTED_CHAIN_IDS.includes(chainId)) {
     return {
       icon: chainInfos[chainId].roundedLogo,
       explorer: chainInfos[chainId].explorerLogo,
@@ -95,7 +98,7 @@ export const getChainIcons = (chainId: number) => {
 export const chainInfos: { [key: number]: { name: string; logo: string, roundedLogo: string, explorerLogo: string, officialName: string, currency: string } } = {
   1: {
     name: 'eth',
-    logo: '/svgs/fantom.svg',
+    logo: '/svgs/ethereum.svg',
     roundedLogo: '/images/roundedColorEthereum.png',
     explorerLogo: '/images/ethereumExplorer.png',
     officialName: 'Fantom',
@@ -103,7 +106,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   56: {
     name: 'bsc',
-    logo: '/svgs/fantom.svg',
+    logo: '/svgs/binance.svg',
     roundedLogo: '/images/roundedColorBinance.png',
     explorerLogo: '/images/binanceExplorer.png',
     officialName: 'Fantom',
@@ -111,7 +114,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   137: {
     name: 'polygon',
-    logo: '/svgs/fantom.svg',
+    logo: '/svgs/polygon.svg',
     roundedLogo: '/images/roundedColorPolygon.png',
     explorerLogo: '/images/polygonExplorer.png',
     officialName: 'Fantom',
@@ -119,7 +122,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   43114: {
     name: 'avalanche',
-    logo: '/svgs/fantom.svg',
+    logo: '/svgs/avax.svg',
     roundedLogo: '/images/roundedColorAvalanche.png',
     explorerLogo: '/images/avalancheExplorer.png',
     officialName: 'Fantom',
@@ -135,7 +138,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   10: {
     name: 'optimism',
-    logo: '/svgs/fantom.svg',
+    logo: '/svgs/optimism.svg',
     roundedLogo: '/images/roundedColorOptimism.png',
     explorerLogo: '/images/optimismExplorer.png',
     officialName: 'Fantom',
@@ -143,13 +146,13 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   42161: {
     name: 'arbitrum',
-    logo: '/svgs/fantom.svg',
+    logo: '/svgs/arbitrum.svg',
     roundedLogo: '/images/roundedColorArbitrum.png',
     explorerLogo: '/images/arbitrumExplorer.png',
     officialName: 'Fantom',
     currency: 'FTM'
   },
-  4: {
+  5: {
     name: 'rinkeby',
     logo: '/svgs/ethereum.svg',
     roundedLogo: '/images/roundedColorEthereum.png',
@@ -181,16 +184,16 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
     officialName: 'Mumbai',
     currency: 'MATIC'
   },
-  421611: {
-    name: 'arbitrum-rinkeby',
+  421613: {
+    name: 'arbitrum-goerli',
     logo: '/svgs/arbitrum.svg',
     roundedLogo: '/images/roundedColorArbitrum.png',
     explorerLogo: '/images/arbitrumExplorer.png',
     officialName: 'Arbitrum',
     currency: 'ArbETH'
   },
-  69: {
-    name: 'optimism-kovan',
+  420: {
+    name: 'optimism-goerli',
     logo: '/svgs/optimism.svg',
     roundedLogo: '/images/roundedColorOptimism.png',
     explorerLogo: '/images/optimismExplorer.png',
@@ -205,7 +208,6 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
     officialName: 'Fantom',
     currency: 'FTM'
   },
-
 }
 
 export const getLayerzeroChainId = (chainId: number): number => {
@@ -296,17 +298,20 @@ export const chain_list: {[key: string]: number} = {
   'arbitrum': 42161,
   'bsc testnet': 97,
   'rinkeby': 4,
+  'goerli': 5,
   'mumbai': 80001,
   'avalanche testnet': 43113,
   'arbitrum-rinkeby': 421611,
+  'arbitrum-goerli': 421613,
   'optimism-kovan': 69,
+  'optimism-goerli': 420,
   'fantom-testnet': 4002,
 }
 
 export const getChainIdFromName = (name: string): number => {
   return chain_list[name]
 }
-export const supportChainIDs = [4,80001,43113,421611,69,4002,97]
+export const supportChainIDs = [5,80001,43113,421613,420,4002,97]
 
 export const chain_list_: {[key: number]: string} = {
   1 : 'eth ',
@@ -394,7 +399,7 @@ export const getCurrencyIconByAddress = (address?: string) => {
       return `/images/${currency.icon}`
     }
   }
-  
+
   return `/images/${CURRENCIES_LIST[0].icon}`
 }
 
@@ -421,7 +426,7 @@ const chainIcons = Object.values(chainInfos).reduce((acc, cur) => {
 
 export const getChainIconByCurrencyAddress = (address?: string) => {
   const currency_addr_list = [oft, usdc, usdt]
-  
+
   for (let idx = 0; idx < currency_addr_list.length; idx++) {
     const chainIdx = Object.values(currency_addr_list[idx]).indexOf(address)
     if (chainIdx != -1) {
@@ -429,20 +434,20 @@ export const getChainIconByCurrencyAddress = (address?: string) => {
       return (chainIcons as any)[chainName]
     }
   }
-  
+
   return (chainIcons as any)['rinkeby']
 }
 
 export const isUsdcOrUsdt = (address?: string) => {
   const currency_addr_list = [usdc, usdt]
-  
+
   for (let idx = 0; idx < currency_addr_list.length; idx++) {
     const chainIdx = Object.values(currency_addr_list[idx]).indexOf(address)
     if (chainIdx != -1) {
       return true
     }
   }
-  
+
   return false
 }
 
