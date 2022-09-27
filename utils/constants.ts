@@ -95,7 +95,7 @@ export const getChainIcons = (chainId: number) => {
 export const chainInfos: { [key: number]: { name: string; logo: string, roundedLogo: string, explorerLogo: string, officialName: string, currency: string } } = {
   1: {
     name: 'eth',
-    logo: '/svgs/fantom.svg',
+    logo: '/svgs/ethereum.svg',
     roundedLogo: '/images/roundedColorEthereum.png',
     explorerLogo: '/images/ethereumExplorer.png',
     officialName: 'Fantom',
@@ -103,7 +103,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   56: {
     name: 'bsc',
-    logo: '/svgs/fantom.svg',
+    logo: '/svgs/binance.svg',
     roundedLogo: '/images/roundedColorBinance.png',
     explorerLogo: '/images/binanceExplorer.png',
     officialName: 'Fantom',
@@ -111,7 +111,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   137: {
     name: 'polygon',
-    logo: '/svgs/fantom.svg',
+    logo: '/svgs/polygon.svg',
     roundedLogo: '/images/roundedColorPolygon.png',
     explorerLogo: '/images/polygonExplorer.png',
     officialName: 'Fantom',
@@ -119,7 +119,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   43114: {
     name: 'avalanche',
-    logo: '/svgs/fantom.svg',
+    logo: '/svgs/avalanche.svg',
     roundedLogo: '/images/roundedColorAvalanche.png',
     explorerLogo: '/images/avalancheExplorer.png',
     officialName: 'Fantom',
@@ -135,7 +135,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   10: {
     name: 'optimism',
-    logo: '/svgs/fantom.svg',
+    logo: '/svgs/optimism.svg',
     roundedLogo: '/images/roundedColorOptimism.png',
     explorerLogo: '/images/optimismExplorer.png',
     officialName: 'Fantom',
@@ -143,7 +143,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   42161: {
     name: 'arbitrum',
-    logo: '/svgs/fantom.svg',
+    logo: '/svgs/arbitrum.svg',
     roundedLogo: '/images/roundedColorArbitrum.png',
     explorerLogo: '/images/arbitrumExplorer.png',
     officialName: 'Fantom',
@@ -394,7 +394,7 @@ export const getCurrencyIconByAddress = (address?: string) => {
       return `/images/${currency.icon}`
     }
   }
-  
+
   return `/images/${CURRENCIES_LIST[0].icon}`
 }
 
@@ -421,7 +421,7 @@ const chainIcons = Object.values(chainInfos).reduce((acc, cur) => {
 
 export const getChainIconByCurrencyAddress = (address?: string) => {
   const currency_addr_list = [oft, usdc, usdt]
-  
+
   for (let idx = 0; idx < currency_addr_list.length; idx++) {
     const chainIdx = Object.values(currency_addr_list[idx]).indexOf(address)
     if (chainIdx != -1) {
@@ -429,20 +429,20 @@ export const getChainIconByCurrencyAddress = (address?: string) => {
       return (chainIcons as any)[chainName]
     }
   }
-  
+
   return (chainIcons as any)['rinkeby']
 }
 
 export const isUsdcOrUsdt = (address?: string) => {
   const currency_addr_list = [usdc, usdt]
-  
+
   for (let idx = 0; idx < currency_addr_list.length; idx++) {
     const chainIdx = Object.values(currency_addr_list[idx]).indexOf(address)
     if (chainIdx != -1) {
       return true
     }
   }
-  
+
   return false
 }
 

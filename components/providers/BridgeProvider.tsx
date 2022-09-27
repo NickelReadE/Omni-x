@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {BigNumber, ethers} from 'ethers'
+import {ethers} from 'ethers'
 import {BridgeContext, UnwrapInfo} from '../../contexts/bridge'
 import useWallet from '../../hooks/useWallet'
 import {
