@@ -500,7 +500,8 @@ const SideBar: React.FC = () => {
 
     return () => {
       if (window.ethereum) {
-        window.ethereum.removeListener('chainChanged', null)
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        window.ethereum.removeListener('chainChanged', () => {})
       }
     }
   }, [window.ethereum])
