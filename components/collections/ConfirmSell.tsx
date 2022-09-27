@@ -45,8 +45,6 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
 }) => {
   const classes = useStyles()
   const [sellType, setSellType] = useState('fixed')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [price_in_usd, setPriceInUSD] = useState('')
   const [price, setPrice] = useState(0)
   const [currency, setCurrency] = useState(CURRENCIES_LIST[0])
   const [period, setPeriod] = useState(period_list[2])
@@ -54,14 +52,6 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
   const onChangePrice = (e: any) => {
     setPrice(e.target.value)
   }
-
-  useEffect(() => {
-    if ( price >= 0 ) {
-      setPriceInUSD(`~ $${price} USD`)
-    } else {
-      setPriceInUSD('')
-    }
-  }, [price])
 
   const onListing = () => {
     if (onSubmit) {
