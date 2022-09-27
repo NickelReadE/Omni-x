@@ -398,9 +398,6 @@ export const getCurrencyIconByAddress = (address?: string) => {
   return `/images/${CURRENCIES_LIST[0].icon}`
 }
 
-export const getChainNameById = (chainId: number) => {
-  return chainInfos[chainId].name
-}
 
 export const getCurrencyNameAddress = (address?: string) => {
   const currency_addr_list = [oft, usdc, usdt]

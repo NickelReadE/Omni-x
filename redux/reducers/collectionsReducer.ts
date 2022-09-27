@@ -156,6 +156,7 @@ export const updateCollectionsForCard = (chainId: string, chainName: string) => 
 		const info = await collectionsService.getCollections()		
 		await info.data.map(async (element:any, index:number)=>{
 			console.log('chain', chainId,chainName, 'address', element.address)
+
 			setTimeout(async function(){
 				let ownerCnt = 0
 				if(Object.prototype.hasOwnProperty.call(element.address,chainId)){
@@ -274,6 +275,48 @@ export const getRoyalty = (contractType:string, address: string, chainId:number,
 	
 }
 
+const  getItemscount = (collection:any):Promise<number> => {
+	return new Promise<number> (async (ret) => {
+		let totalCnt =0
+		  const collectionAdr = Array.from(Object.keys(collection.address)) 		  
+		  for ( const key of collectionAdr ) {			
+			if(isSupportedOnAlchemy(parseInt(key))){
+			  const options = {
+				method: 'GET',
+				url: `https://eth-mainnet.g.alchemy.com/nft/v2/${getAPIkeyForAlchemy(parseInt(key))}/getNFTsForCollection`,
+				params: {
+				  withMetadata: 'false',
+				  contractAddress:collection.address[key]
+				},
+				headers: {accept: 'application/json'}
+			  };
+			  
+			  const resp = await axios.request(options);
+			  if ( resp.data.nfts.length > 0 ) {
+				totalCnt += resp.data.nfts.length
+			  }			
+			}
+			if(isSupportedOnMoralis(parseInt(key))){
+			  const options = {
+				method: 'GET',
+				url: `https://deep-index.moralis.io/api/v2/nft/${collection.address[key]}`,
+				params: {chain: getChainNameFromId(parseInt(key)), format: 'decimal'},
+				headers: {accept: 'application/json', 'X-API-Key': 'leaSlfD5P1cgV4T1h72OfbaYRF4oYlEqdlXkmKUc9456mKeK8JrghLHNB2NIc8oN'}
+			  };
+			  const resp = await axios.request(options);
+			  if ( resp.data.total > 0 ) {
+				totalCnt += resp.data.total
+			  }
+			  
+			}
+		  }
+		  const data = JSON.parse(JSON.stringify(collection))
+		  
+		  const newCollection = Object.assign({totalCnt: totalCnt}, data)
+		  resCollectionsForLive = [...resCollectionsForLive, newCollection]
+		ret(1)
+	})
+}
 //selectors
 export const selectCollectionNFTs = (state: any) => state.collectionsState.nfts
 export const selectCollectionInfo = (state: any) => state.collectionsState.info
