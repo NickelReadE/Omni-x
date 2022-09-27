@@ -31,8 +31,6 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
   const { isInitialized, Moralis } = useMoralis()
   const { address } = useWallet()
   const [avatarError, setAvatarError] = useState(false)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [bShowSettingIcon, setShowSettingIcon] = React.useState(false)
   const [isGregHolder, setIsGregHolder] = useState(false)
   const [isStgStacker, setIsStgStacker] = useState(false)
   const [balances, setBalanceSTG] = useState(0)
@@ -82,7 +80,7 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
           blur && menu ==='home'? 'blur-sm' : ''
         )}
       >
-        <div onMouseEnter={() => setShowSettingIcon(true)} onMouseLeave={() => setShowSettingIcon(false)}>
+        <div>
           <Carousel slides={slides} />
         </div>
         {menu === 'home' && (
