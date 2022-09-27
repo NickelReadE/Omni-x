@@ -24,14 +24,14 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   const [isShowBtn, SetIsShowBtn] = useState(false)
   const [isWhitelisted, setIsWhitelisted] = useState(false)
   const collections = useSelector(selectCollections)
-
+  const [chain, setChain] = useState<number>()
   const {
     provider,
     address,
     signer
   } = useWallet()
 
-  const chain = provider?.network.chainId
+  
   const {attributes, listeners, setNodeRef, transform} = useDraggable({
     id: `draggable-${index}`,
     data: {
@@ -115,6 +115,11 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       }
     }
   },[nft])
+  React.useEffect(()=>{
+    if(provider?.network.chainId){
+      setChain(provider?.network.chainId)
+    }
+  },[provider?.network])
   const chainId = getChainIdFromName(nft?.chain)
   const chainIcon = getChainIconById(chainId.toString())
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)

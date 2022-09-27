@@ -9,11 +9,10 @@ import { collectionsService } from "../services/collections"
 import { userService } from "../services/users"
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from "../types"
 import { SaleType } from "../types/enum"
-import { ContractName, CREATOR_FEE, getAddressByName, getChainNameById, getCurrencyNameAddress, getLayerzeroChainId, isUsdcOrUsdt, PROTOCAL_FEE } from "../utils/constants"
+import { ContractName, CREATOR_FEE, getAddressByName, getChainNameFromId, getCurrencyNameAddress, getLayerzeroChainId, isUsdcOrUsdt, PROTOCAL_FEE } from "../utils/constants"
 import { getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, getOmnixExchangeInstance, getTransferSelectorNftInstance } from "../utils/contracts"
 import { acceptOrder, postMakerOrder } from "../utils/makeOrder"
 import { useEffect } from 'react'
-import { getChainNameFromId } from '../utils/constants'
 export type TradingFunction = {
   openSellDlg: boolean,
   openBidDlg: boolean,
@@ -316,7 +315,7 @@ const useTrading = ({
             types: ['uint16'],
           },
         },
-        getChainNameById(chainId),
+        getChainNameFromId(chainId),
         true
       )
 

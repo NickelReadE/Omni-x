@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { collectionsService } from "../services/collections"
 import { userService } from "../services/users"
-import { getChainNameById } from "../utils/constants"
+import { getChainNameFromId } from "../utils/constants"
 
 export type OwnershipFunction = {
   owner?: string,
@@ -16,7 +16,7 @@ const getNFTOwnership = async (collection_address_map: {[chainId: string]: strin
   for (const chain_id in collection_address_map) {
     tokenIdOwner = await collectionsService.getNFTOwner(
       collection_address_map[chain_id],
-      getChainNameById(Number(chain_id)),
+      getChainNameFromId(Number(chain_id)),
       token_id
     )
 

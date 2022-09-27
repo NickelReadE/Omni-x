@@ -499,12 +499,12 @@ export const APIkeysForAlchemy:{[key:number]:string} = {
 export const getAPIkeyForAlchemy = (key:number):string =>{
  return APIkeysForAlchemy[key]
 }
-const supportedChainsOnMoralis:Array<number> = [
+export const supportedChainsOnMoralis:Array<number> = [
   80001,
   97,
   43113
 ]
-const supportedChainsOnAlchemy: Array<number> = [
+export const supportedChainsOnAlchemy: Array<number> = [
   420,
   5,
   421613

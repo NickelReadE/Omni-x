@@ -73,7 +73,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
       onSubmit({
         currencyName: currency.text,
         price
-      })
+      } as any)
     }
   }
 

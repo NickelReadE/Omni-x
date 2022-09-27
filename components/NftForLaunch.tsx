@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-import React from 'react'
-
-interface ITypeNFT{
-  typeNFT:string
-}
-=======
 import React,{useEffect, useState} from 'react'
 import { ITypeNFT } from '../interface/interface'
 import Link from 'next/link'
@@ -16,7 +9,6 @@ import useWallet from '../hooks/useWallet'
 
 import editStyle from '../styles/nftbox.module.scss'
 import classNames from '../helpers/classNames'
->>>>>>> 07684a05f6c3de81b72f386f20ad243b576acd1d
 
 const NftForLaunch = (pro:ITypeNFT) => {
   const [price, setPrice] = useState(0)
