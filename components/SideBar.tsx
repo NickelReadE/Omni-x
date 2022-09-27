@@ -26,8 +26,6 @@ import useBridge from '../hooks/useBridge'
 import useProgress from '../hooks/useProgress'
 import useContract from '../hooks/useContract'
 import {PendingTxType} from '../contexts/contract'
-import Moralis from 'moralis'
-import onChainChanged = Moralis.onChainChanged
 
 interface RefObject {
   offsetHeight: number
@@ -502,7 +500,7 @@ const SideBar: React.FC = () => {
 
     return () => {
       if (window.ethereum) {
-        window.ethereum.removeListener('chainChanged', onChainChanged)
+        window.ethereum.removeListener('chainChanged', null)
       }
     }
   }, [window.ethereum])
