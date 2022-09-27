@@ -27,14 +27,14 @@ const MetaMaskConnect = ({onConnect, context}:ConnectButtonProps): JSX.Element =
   },[context])
 
   const signSection = () => {
-    if(supportChainIDs.includes(chainId)&&!context.address){
+    if(!context.address){
       return(
         <div>
           <div>Please sign-in by connecting your wallet</div>
           <div className='flex justify-center mt-20'><ConnectButton onConnect={onConnect} /></div>
         </div>
       )
-    } else {
+    } else if(!supportChainIDs.includes(chainId)&&context.address){
       return(
         <div>
           <div>Current network is not supported <br></br> Please switch network into Goerli</div>
