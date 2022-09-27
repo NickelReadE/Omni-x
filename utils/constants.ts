@@ -153,11 +153,11 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
     currency: 'FTM'
   },
   5: {
-    name: 'rinkeby',
+    name: 'goerli',
     logo: '/svgs/ethereum.svg',
     roundedLogo: '/images/roundedColorEthereum.png',
     explorerLogo: '/images/ethereumExplorer.png',
-    officialName: 'Rinkeby',
+    officialName: 'Goerli',
     currency: 'ETH'
   },
   97: {
