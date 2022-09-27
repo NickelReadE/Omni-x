@@ -14,6 +14,7 @@ import useOrderStatics from '../hooks/useOrderStatics'
 import useTrading from '../hooks/useTrading'
 import { ethers } from 'ethers'
 import { getCurrencyIconByAddress } from '../utils/constants'
+import {ChainIds} from '../types/enum'
 
 const NFTBox = ({nft, index}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
@@ -27,7 +28,12 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     signer
   } = useWallet()
 
-  const chain = provider?.network.chainId
+  const chain = useMemo(() => {
+    if (provider && provider?.network) {
+      return provider?.network.chainId
+    }
+    return ChainIds.ETHEREUM
+  }, [provider])
   const {attributes, listeners, setNodeRef, transform} = useDraggable({
     id: `draggable-${index}`,
     data: {

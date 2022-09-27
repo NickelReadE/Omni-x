@@ -230,8 +230,6 @@ const SideBar: React.FC = () => {
     if (!signer) return
     if (!chainId) return
     const senderChainId = getChainIdFromName(selectedNFTItem.chain)
-    console.log(chainId)
-    console.log(senderChainId)
     if (chainId !== senderChainId) {
       return await switchNetwork(senderChainId)
     }

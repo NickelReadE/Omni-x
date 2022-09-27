@@ -3615,7 +3615,14 @@
     "infoURL": "https://optimism.io",
     "shortName": "ogor",
     "chainId": 420,
-    "networkId": 420
+    "networkId": 420,
+    "explorers": [
+      {
+        "name": "Optimism Georli Explorer",
+        "url": "https://goerli-optimism.etherscan.io",
+        "standard": "EIP3091"
+      }
+    ]
   },
   {
     "name": "Rupaya",
