@@ -347,6 +347,9 @@ const Mint: NextPage = () => {
                     chainId === (env === 'testnet' ? 4 : 1) && <img src="/sidebar/ethereum.png" className="m-auto h-[35px]" />
                   }
                   {
+                    chainId === (env === 'testnet' ? 5 : 1) && <img src="/sidebar/ethereum.png" className="m-auto h-[35px]" />
+                  }
+                  {
                     chainId === (env === 'testnet' ? 421611 : 1) && <img src="/sidebar/arbitrum.png" className="m-auto h-[35px]" />
                   }
                   {
