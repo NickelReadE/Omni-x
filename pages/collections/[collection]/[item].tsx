@@ -29,7 +29,6 @@ const Item: NextPage = () => {
   const [currentTab, setCurrentTab] = useState<string>('items')
   
   const nftInfo = useSelector(selectNFTInfo)
-
   const dispatch = useDispatch()
   const {
     provider,
@@ -40,11 +39,28 @@ const Item: NextPage = () => {
   const router = useRouter()
   const col_url = router.query.collection as string
   const token_id = router.query.item as string
-  const chain_id = provider?._network?.chainId
-  const chain_name = chain_id && getChainNameFromId(chain_id)
+  let chain_id = provider?._network?.chainId
   const collection_address_map = nftInfo?.collection?.address
-  const collection_address = chain_id && getCollectionAddress(collection_address_map, chain_id)
+  let collection_address = chain_id && getCollectionAddress(collection_address_map, chain_id)
 
+  //update this logic in the constants
+  useEffect(()=>{
+    if(nftInfo && nftInfo.collection){
+      const start_ids = nftInfo.collection.start_ids
+      let temp_value = 0
+      Object.keys(start_ids).map((Key) => {
+        if(Number(start_ids[Key])<Number(token_id)){
+          if(temp_value<=Number(start_ids[Key])){
+            temp_value = Number(start_ids[Key])
+            collection_address = nftInfo.collection.address[Key]
+            chain_id = Number(Key)
+          }
+        }
+      })
+    }
+  },[nftInfo])
+
+  const chain_name = chain_id && getChainNameFromId(chain_id)
   // ownership hook
   const {
     owner,
@@ -127,7 +143,7 @@ const Item: NextPage = () => {
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
   const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
 
-  console.log('-isListed, isAuction, owner, address-', isListed, isAuction, owner, address, nftInfo)
+  // console.log('-isListed, isAuction, owner, address-', isListed, isAuction, owner, address, nftInfo)
 
   return (
     <>

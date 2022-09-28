@@ -50,7 +50,6 @@ const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
     }
     return []
   }, [chain, col_address])
-  console.log(collection_address_map)
 
   // ownership hook
   // const {
