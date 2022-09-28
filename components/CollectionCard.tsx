@@ -10,13 +10,11 @@ import classNames from '../helpers/classNames'
 import Loading from '../public/images/loading_f.gif'
 const CollectionCard = (props:any) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [image, setImage] = useState(props.collection.profile_image)
+  const [image] = useState(props.collection.profile_image)
   const [imageError, setImageError] = useState(false)
   ///only in the beta version
- 
 
-  const dispatch = useDispatch()
-  const {attributes, listeners, setNodeRef, transform} = useDraggable({
+  const { transform} = useDraggable({
     id: `draggable-${1}`,
     data: {
       type: 'NFT',

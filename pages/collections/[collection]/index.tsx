@@ -9,10 +9,9 @@ import {ethers} from 'ethers'
 import Discord from '../../../public/images/discord.png'
 import Twitter from '../../../public/images/twitter.png'
 import Web from '../../../public/images/web.png'
-import Ethereum from '../../../public/sidebar/ethereum.png'
 import Explorer from '../../../public/images/exp.png'
 
-import { getCollectionNFTs, selectCollectionNFTs, getCollectionInfo,getCollectionAllNFTs, getRoyalty,selectCollectionInfo, clearCollectionNFTs, selectGetNFTs, getCollectionOwners, selectCollectionOwners,selectCollectionAllNFTs, selectRoyalty } from '../../../redux/reducers/collectionsReducer'
+import { getCollectionNFTs, selectCollectionNFTs, getCollectionInfo,getCollectionAllNFTs, getRoyalty,selectCollectionInfo, clearCollectionNFTs, selectGetNFTs, getCollectionOwners, selectCollectionAllNFTs, selectRoyalty } from '../../../redux/reducers/collectionsReducer'
 import { selectAssetPrices} from '../../../redux/reducers/feeddataReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
@@ -35,12 +34,12 @@ import SearchIcon from '@material-ui/icons/Search'
 import Chip from '@material-ui/core/Chip'
 import classNames from '../../../helpers/classNames'
 import editStyle from '../../../styles/collection.module.scss'
-import { info } from 'console'
-import ordersReducer, { getOrders, selectOrders, getLastSaleOrders,selectBidOrders,selectLastSaleOrders } from '../../../redux/reducers/ordersReducer'
+
+import  { getOrders, selectOrders, getLastSaleOrders, } from '../../../redux/reducers/ordersReducer'
 import { IGetOrderRequest , ICollectionInfoFromLocal} from '../../../interface/interface'
 import { getChainInfo, getChainIdFromName } from '../../../utils/constants'
 import { convertETHtoUSDT, convertUSDTtoETH } from '../../../utils/convertRate'
-import { useMoralisWeb3Api, useMoralis } from 'react-moralis'
+import { useMoralis } from 'react-moralis'
 import useWallet from '../../../hooks/useWallet'
 import { currencies_list } from '../../../utils/constants'
 
@@ -153,8 +152,7 @@ const Collection: NextPage = () => {
   const allNFTs = useSelector(selectCollectionAllNFTs)
 
   const collectionInfo = useSelector(selectCollectionInfo)
-
-  const collectionOwners = useSelector(selectCollectionOwners)
+ 
   const royalty = useSelector(selectRoyalty)
   const orders = useSelector(selectOrders)
   const assetPrices = useSelector(selectAssetPrices)
@@ -210,15 +208,7 @@ const Collection: NextPage = () => {
         status: ['VALID'],
         sort: 'OLDEST'
       }
-      dispatch(getOrders(request) as any)
-      const bidRequest: IGetOrderRequest = {
-        isOrderAsk: false,
-        collection: collectionInfo.address,
-        startTime: Math.floor(Date.now() / 1000).toString(),
-        endTime: Math.floor(Date.now() / 1000).toString(),
-        status: ['VALID'],
-        sort: 'PRICE_ASC'
-      }
+      dispatch(getOrders(request) as any)     
       console.log('2',orders)
       const excutedRequest: IGetOrderRequest = {
         collection: collectionInfo.address,
@@ -406,7 +396,7 @@ const Collection: NextPage = () => {
         </div>
         <div className="flex space-x-8 items-end ml-[70px]">
           <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="logo" />}>
-            <img className="w-[200px] h-[200px]" src={imageError?'/images/omnix_logo_black_1.png':(collectionInfo&&collectionInfo.profile_image ? collectionInfo.profile_image : '/images/omnix_logo_black_1.png')} alt="logo" onError={(e)=>{setImageError(true)}} data-src={collectionInfo&&collectionInfo.profile_image ? collectionInfo.profile_image : ''} />
+            <img className="w-[200px] h-[200px]" src={imageError?'/images/omnix_logo_black_1.png':(collectionInfo&&collectionInfo.profile_image ? collectionInfo.profile_image : '/images/omnix_logo_black_1.png')} alt="logo" onError={()=>{setImageError(true)}} data-src={collectionInfo&&collectionInfo.profile_image ? collectionInfo.profile_image : ''} />
           </LazyLoad>
           <div className="flex relative  text-lg font-bold text-center items-center">
             <div className={'select-none inline-block p-4 text-xxl font-extrabold '}>
@@ -724,7 +714,7 @@ const Collection: NextPage = () => {
             <div className="mt-5">
             
               {
-                Object.keys(searchObj).map((attrKey, attrIndex) => {
+                Object.keys(searchObj).map((attrKey) => {
                   return searchObj[attrKey].map((item: any, index: any) => {
                     return <Chip
                       label={item}
