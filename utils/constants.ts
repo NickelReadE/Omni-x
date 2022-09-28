@@ -473,9 +473,7 @@ export const isUsdcOrUsdt = (address?: string) => {
 
 export const getProfileLink = (chain_id: number, ownerType: string, owner: string) => {
   if(ownerType=='address'){
-    console.log(chain_id)
     const explorer_link = getBlockExplorer(chain_id)
-    console.log(explorer_link)
     return (explorer_link+'/address/'+owner)
   }
   return ''
