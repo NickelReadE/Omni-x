@@ -1,12 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, Fragment, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import type { NextPage } from 'next'
-import Link from 'next/link'
 import Image from 'next/image'
-import LazyLoad from 'react-lazyload'
-
 import { getCollections, selectCollections, updateCollectionsForCard, selectCollectionsForCard} from '../../redux/reducers/collectionsReducer'
-import {getOrders, selectOrders} from '../../redux/reducers/ordersReducer'
+import {getOrders} from '../../redux/reducers/ordersReducer'
 import pfp from '../../public/images/pfp.png'
 import photography from '../../public/images/photography.png'
 import gaming from '../../public/images/gaming.png'
@@ -16,12 +14,11 @@ import generative from '../../public/images/generative.png'
 import utility from '../../public/images/utility.png'
 import domains from '../../public/images/domains.png'
 import fashion from '../../public/images/fashion.png'
-
-
-import ImageList from '../../components/ImageList'
 import Slider from '../../components/Slider'
 import CollectionCard from '../../components/CollectionCard'
 import { IGetOrderRequest } from '../../interface/interface'
+import useWallet from '../../hooks/useWallet'
+import { getChainNameById } from '../../utils/constants'
 
 const serviceSlides: Array<React.ReactNode> = []
 serviceSlides.push(<Image src={pfp} alt="image - 25" layout='responsive' width={230} height={263} />)
@@ -35,34 +32,51 @@ serviceSlides.push(<Image src={domains} alt="image - 28" layout='responsive' wid
 serviceSlides.push(<Image src={fashion} alt="image - 29" layout='responsive' width={230} height={263} />)
 
 const Collections: NextPage = () => {
-  const [omniSlides, setOmniSlides] = useState<Array<React.ReactNode>>([])  
+  const [omniSlides, setOmniSlides] = useState<Array<React.ReactNode>>([])
   const dispatch = useDispatch()
   const collections = useSelector(selectCollections)
   const collectionsForCard = useSelector(selectCollectionsForCard)
-  const orders = useSelector(selectOrders)
-  
+
+  const {
+    provider,
+  } = useWallet()
+
+  useEffect(() => {
+    if(provider?._network){
+      dispatch(updateCollectionsForCard(provider._network.chainId.toString(), getChainNameById(provider._network.chainId) ) as any)
+    }
+  }, [provider?._network])
+
   useEffect(() => {
     dispatch(getCollections() as any)
-    dispatch(updateCollectionsForCard() as any)
   }, [])
 
   useEffect(() => {
     const slides: Array<React.ReactNode> = []
-    const  localCards = localStorage.getItem('cards') 
+    const  localCards = localStorage.getItem('cards')
     if(localCards===null){
-      if(collections.length>0 && collectionsForCard.length>0){
-        localStorage.setItem('cards',JSON.stringify(collectionsForCard))
-        collections.map((item: any,index:number) => {
-          slides.push(                     
-            <CollectionCard collection={item} card={collectionsForCard[index]}/>           
-          )
-        })
+      if(collections.length>0){
+        if(collectionsForCard.length>0){
+          localStorage.setItem('cards',JSON.stringify(collectionsForCard))
+          collections.map((item: any) => {
+            slides.push(
+              <CollectionCard collection={item} card={collectionsForCard.find((card: { col_url: any })=>card.col_url == item.col_url)}/>
+            )
+          })
+        }else{
+          collections.map((item: any) => {
+            slides.push(
+              <CollectionCard collection={item} card={null}/>
+            )
+          })
+        }
+
       }
     }else{
       if(collections.length>0){
-        collections.map((item: any,index:number) => {
-          slides.push(                     
-            <CollectionCard collection={item} card={collectionsForCard.length>0?collectionsForCard[index]:JSON.parse(localCards)[index]}/>           
+        collections.map((item: any) => {
+          slides.push(
+            <CollectionCard collection={item} card={collectionsForCard.length>0?collectionsForCard.find((card: { col_url: any })=>card.col_url == item.col_url):JSON.parse(localCards).find((card: { col_url: any })=>card.col_url==item.col_url)}/>
           )
         })
       }
@@ -71,18 +85,17 @@ const Collections: NextPage = () => {
   }, [collections ,collectionsForCard])
   useEffect(()=>{
     const request: IGetOrderRequest = {
-      isOrderAsk: true,      
+      isOrderAsk: true,
       status: ['VALID'],
       sort: 'PRICE_ASC'
     }
     dispatch(getOrders(request) as any)
   },[])
- 
+
   return (
     <>
       <div className='pt-10'>
-        <Slider  title="Beta Collections" cards={omniSlides} />    
-
+        <Slider  title="Beta Collections" cards={omniSlides} />
       </div>
     </>
   )

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Header from './Header'
 import { useRouter } from 'next/router'
@@ -8,7 +8,6 @@ import SideBar from './SideBar'
 import useWallet  from '../hooks/useWallet'
 import SnackbarComponent from './SnackBar'
 import Banner from './Banner'
-import default_slides from '../utils/defaultSlides'
 import Link from 'next/link'
 import PriceFeed from './PriceFeed'
 
@@ -21,7 +20,7 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
   const {
     address,
   } = useWallet()
-  
+
   const [ menu, setMenu ] = useState('home')
   const updatingUser = useSelector(selectUpdatingUser)
 
@@ -30,7 +29,7 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
   const user = useSelector(selectUser)
 
   const [collectionMenu, setCollectionMenu] = useState<boolean>(false)
-  
+
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -56,7 +55,7 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
   }, [router.pathname])
 
   useEffect(()=>{
-    setIsBlur(address?false:true)
+    setIsBlur(!address)
   }, [address])
 
   useEffect(() => {
@@ -74,7 +73,7 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
       const new_slides:Array<React.ReactNode> = []
       new_slides.push(<Link href={'/collections/azuki_god'}><a><img src='/images/banner-4.png' alt="banner - 1" className={'banner-slider'} /></a></Link>)
       new_slides.push(<Link href={'/collections/mmlmt7'}><a><img src='/images/banner-6.png' alt="banner - 3" className={'banner-slider'} /></a></Link>)
-      new_slides.push(<Link href={'/collections/gregs_eth_test'}><a><img src='/images/banner-5.png' alt="banner - 2" className={'banner-slider'} /></a></Link>)
+      new_slides.push(<Link href={'/collections/kith_friends'}><a><img src='/images/banner-5.png' alt="banner - 2" className={'banner-slider'} /></a></Link>)
       setCurrentSlides(new_slides)
     } else if ( menu === 'home' ) {
       const new_slides:Array<React.ReactNode> = []
@@ -85,7 +84,7 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
         setCurrentSlides(new_slides)
       }
     }
-  }, [menu])
+  }, [menu, user.banners])
 
   return (
     <>
@@ -105,7 +104,7 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
         </div>
         {children}
         <PriceFeed/>
-        
+
       </main>
     </>
   )

@@ -29,8 +29,8 @@ const getCollectionInfo = async (col_url: string) => {
     return res.data
 }
 
-const getCollectionOwners = async (col_url: string) => {
-    const res = await API.post(`collections/${col_url}`)
+const getCollectionOwners = async (chain: string, address: string) => {
+    const res = await API.post(`collections/${chain}/${address}`)
     return res.data
 }
 
@@ -44,8 +44,8 @@ const getCollections = async () => {
     return res.data
 }
 
-const getNFTOwner = async (col_url: string, token_id: string) => {
-    const res = await API.get(`collections/owner/${col_url}/${token_id}`)
+const getNFTOwner = async (col_address: string, collection_chain_name: string, token_id: string) => {
+    const res = await API.get(`collections/owner/${col_address}/${collection_chain_name}/${token_id}`)
     return res.data.owner
 }
 // const getCollectionAllNfts = async (col_url: string) => {

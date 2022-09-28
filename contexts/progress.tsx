@@ -1,26 +1,20 @@
 import { createContext } from 'react'
-import {NFTItem} from '../interface/interface'
-import {BigNumber} from 'ethers'
-
-export type PendingTxType = {
-  txHash: string,
-  type: 'bridge' | 'buy' | 'sell' | 'bid',
-  senderChainId: number | undefined,
-  targetChainId: number | undefined,
-  itemName: string | undefined
-}
+import {PendingTxType} from './contract'
 
 export type ProgressContextType = {
+  histories: PendingTxType[],
   pending: boolean,
-  txInfo: PendingTxType | null,
-  setPendingTxInfo: (txInfo: PendingTxType | null) => Promise<void>,
-  estimateGasFee: (selectedNFTItem: NFTItem, senderChainId: number, targetChainId: number) => Promise<BigNumber>,
+  setPending: (pending: boolean) => void,
+  addTxToHistories: (txInfo: PendingTxType) => number,
+  updateHistory: (historyIndex: number, txInfo: PendingTxType) => void,
+  clearHistories: () => void
 }
 
 export const ProgressContext = createContext<ProgressContextType>({
+  histories: [],
   pending: false,
-  txInfo: null,
-  setPendingTxInfo: async () => undefined,
-  estimateGasFee: async () => BigNumber.from('0'),
+  setPending: () => undefined,
+  addTxToHistories: () => -1,
+  updateHistory: () => undefined,
+  clearHistories: () => undefined,
 })
-

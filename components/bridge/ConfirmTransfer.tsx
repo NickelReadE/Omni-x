@@ -1,6 +1,5 @@
 import React, {useState} from 'react'
 import {NFTItem} from '../../interface/interface'
-import useWallet from '../../hooks/useWallet'
 import LazyLoad from 'react-lazyload'
 import {chainInfos} from '../../utils/constants'
 import {BigNumber, ethers} from 'ethers'
@@ -59,8 +58,8 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
                   {
                     selectedNFTItem &&
                       <>
-                        <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image"/>}>
-                          <img className="rounded-[8px]" src={imageError ? '/images/omnix_logo_black_1.png' : image} alt="nft-image" onError={(e) => {
+                        <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image"/>} style={{ width: '100%', height: '100%' }}>
+                          <img className="rounded-[8px]" src={imageError ? '/images/omnix_logo_black_1.png' : image} style={{ width: '100%', height: '100%' }} alt="nft-image" onError={() => {
                             setImageError(true)
                           }} data-src={image}/>
                         </LazyLoad>

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, Fragment, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -133,6 +134,7 @@ const Collection: NextPage = () => {
   const{signer} = useWallet()
   const { isInitialized, Moralis } = useMoralis()
   const [currentTab, setCurrentTab] = useState<string>('items')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [expandedMenu, setExpandedMenu] = useState(0)
   const [selected, setSelected] = useState(sort_fields[0])
   const [enabled, setEnabled] = useState(false)
@@ -162,6 +164,7 @@ const Collection: NextPage = () => {
 
   const [searchObj, setSearchObj] = useState<any>({})
   const [filterObj, setFilterObj] = useState<any>({})
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [clearFilter, setClearFilter] = useState(false)
 
   const [isActiveBuyNow, setIsActiveBuyNow] = useState<boolean>(false)

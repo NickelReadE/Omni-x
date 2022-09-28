@@ -13,7 +13,8 @@ export const userSlice = createSlice({
         user: {},
         nfts: [],
         isGregHolder:false,
-        heroSkin:'logo'
+        heroSkin:'logo',
+        refreshBalance: 0
     },
     reducers: {
         setUser: (state, action) => {
@@ -33,12 +34,15 @@ export const userSlice = createSlice({
         },
         setHeroSkin: (state, action) => {
             state.heroSkin = action.payload === undefined?false : action.payload
+        },
+        updateRefreshBalance: (state) => {
+            state.refreshBalance = (state.refreshBalance || 0) + 1
         }
     }
 })
 
 //actions
-export const { setUser, setUpdatingUser, setGettingUser, setUserNFTs, setIsGregHolder, setHeroSkin } = userSlice.actions
+export const { setUser, setUpdatingUser, setGettingUser, setUserNFTs, setIsGregHolder, setHeroSkin, updateRefreshBalance } = userSlice.actions
 
 export const getUser = (address: string) => async (dispatch: Dispatch<any>) => {
     dispatch(setGettingUser(true))
@@ -98,6 +102,7 @@ export const updateHeroSkin = (name: String) => async (dispatch: Dispatch<any>) 
         console.log("failed to update heroSkin")
     }
 }
+
 //selectors
 export const selectUser = (state: any) => state.userState.user
 export const selectUpdatingUser = (state: any) => state.userState.updatingUser
@@ -105,5 +110,6 @@ export const selectGettingUser = (state: any) => state.userState.gettingUser
 export const selectUserNFTs = (state: any) => state.userState.nfts
 export const selectIsGregHolder = (state: any) => state.userState.isGregHolder
 export const selectHeroSkin = (state: any) => state.userState.heroSkin
+export const selectRefreshBalance = (state: any) => state.userState.refreshBalance
 
 export default userSlice.reducer

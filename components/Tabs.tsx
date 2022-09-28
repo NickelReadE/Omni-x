@@ -1,18 +1,9 @@
-import React, {useEffect} from 'react'
-import Image from 'next/image'
+import React from 'react'
 import NFTGrid from './NFTGrid'
 import WatchList from './WatchList'
-import Feed from './Feed'
 import Stats from './Stats'
-import pfp from '../public/images/image 29.png'
-import image_19 from '../public/images/image 19.png'
-import {FeedItem} from '../interface/interface'
-import useWallet from '../hooks/useWallet'
-import {useDispatch, useSelector} from 'react-redux'
-import {getUserNFTs, selectUserNFTs} from '../redux/reducers/userReducer'
-// import { selectSearchText } from '../redux/reducers/headerReducer'
-// import { getNFTInfo } from '../redux/reducers/collectionsReducer'
-
+import { useSelector} from 'react-redux'
+import { selectUserNFTs} from '../redux/reducers/userReducer'
 import { makeStyles } from '@material-ui/core/styles'
 import Dialog from '@material-ui/core/Dialog'
 import UserEdit from './user/UserEdit'
@@ -34,28 +25,11 @@ const Tabs = ({blur}: TabProps) => {
   const [bOpenModal, setOpenModal] = React.useState(false)
   const classes = useStyles()
 
-  const dispatch = useDispatch()
-
-  const {
-    address
-  } = useWallet()
-
   const nfts = useSelector(selectUserNFTs)
-  // const searchText = useSelector(selectSearchText)
 
-  const updateModal = (name: string):void => {
+  const updateModal = ():void => {
     setOpenModal(false)
   }
-
-  // useEffect(()=>{
-  //   if(searchText!='') {
-  //     const col_url = searchText.split('#')[0]
-  //     const token_id = searchText.split('#')[1]
-  //     if(col_url!=undefined&&token_id!=''){
-  //       dispatch(getNFTInfo(col_url, token_id) as any)
-  //     }
-  //   }
-  // },[searchText])
 
   return (
     <div className="flex justify-center">

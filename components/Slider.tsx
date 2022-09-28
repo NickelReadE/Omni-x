@@ -1,12 +1,9 @@
 import React from 'react'
-import Link from 'next/link'
-import { Autoplay } from 'swiper'
-import { Swiper, SwiperSlide } from 'swiper/react'
+import Image from 'next/image'
+import Loading from '../public/images/loading_f.gif'
 import 'swiper/css'
-
 import { IPropsSlider } from '../interface/interface'
-import { Divider } from '@material-ui/core'
-import CircularProgress from '@material-ui/core/CircularProgress'
+
 const Slider = (props: IPropsSlider) => {
   return (
     <>
@@ -19,20 +16,20 @@ const Slider = (props: IPropsSlider) => {
           >
             {props.title}
           </div>
-          
-          <div className="py-4 mt-5">           
+
+          <div className="py-4 mt-5">
             <div className="w-full flex flex-wrap justify-center gap-12">
               {
                 props.cards.length ===0 &&
-                <CircularProgress />
+                <Image src={Loading} alt='Loading...' width='80px' height='80px'/>
               }
               {props.cards.map((item, index) => (
                 <div className='w-[340px]' key={index} >
                   {item}
                 </div>
               ))}
-            </div>  
-                       
+            </div>
+
           </div>
         </div>
       </div>

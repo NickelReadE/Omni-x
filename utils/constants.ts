@@ -1,6 +1,16 @@
 import {ethers} from 'ethers'
 import OmnixBridge from '../constants/OmnixBridge.json'
 import OmnixBridge1155 from '../constants/OmnixBridge1155.json'
+import OmnixExchange from '../constants/OmnixExchange.json'
+import Strategy from '../constants/Strategy.json'
+import TransferSelectorNFT from '../constants/TransferSelectorNFT.json'
+import FundManager from '../constants/FundManager.json'
+import OFT from '../constants/OFT.json'
+import USDC from '../constants/USDC.json'
+import USDT from '../constants/USDT.json'
+import Stargate from '../constants/Stargate.json'
+import StargatePoolManager from '../constants/StargatePoolManager.json'
+import CurrencyManager from '../constants/CurrencyManager.json'
 import LZEndpoint from '../constants/LayerzeroEndpoints.json'
 import ChainIds from '../constants/chainIds.json'
 import CHAINS from '../constants/chains.json'
@@ -8,14 +18,45 @@ import CHAINS from '../constants/chains.json'
 
 const omnixBridge: any = OmnixBridge
 const omnixBridge1155: any = OmnixBridge1155
+const omnixExchange: any = OmnixExchange
+const strategy: any = Strategy
+const transferSelectorNFT: any = TransferSelectorNFT
+const fundManager: any = FundManager
+const oft: any = OFT
+const usdc: any = USDC
+const usdt: any = USDT
+const stargate: any = Stargate
+const stargatePoolManager: any = StargatePoolManager
+const currencyManager: any = CurrencyManager
 const lzEndpoint: any = LZEndpoint
 const chainIds: any = ChainIds
 
 
-const environments: any = {
-  mainnet: ['ethereum', 'bsc', 'avalanche', 'polygon', 'arbitrum', 'optimism', 'fantom'],
-  testnet: ['rinkeby', 'bsc-testnet', 'fuji', 'mumbai', 'arbitrum-rinkeby', 'optimism-kovan', 'fantom-testnet']
-}
+export const PROTOCAL_FEE = 2
+export const CREATOR_FEE = 2
+
+const SUSPPORTED_CHAIN_IDS = [1, 56, 137, 43114, 250, 10, 42161, 4, 97, 43113, 80001, 421611, 69, 4002]
+
+export const CURRENCIES_LIST = [
+  { value: 0, text: 'OMNI', icon: 'payment/omni.png' },
+  { value: 1, text: 'USDC', icon: 'payment/usdc.png' },
+  { value: 2, text: 'USDT', icon: 'payment/usdt.png' },
+]
+
+export type ContractName =
+  'Omnix' |
+  'Omnix1155' |
+  'LayerZeroEndpoint' |
+  'OmnixExchange' |
+  'Strategy' |
+  'OMNI' |
+  'USDC' |
+  'USDT' |
+  'TransferSelectorNFT' |
+  'FundManager' |
+  'StargateRouter' |
+  'StargatePoolManager' |
+  'CurrencyManager'
 
 export const rpcProviders: { [key: number]: string } = {
   1:'https://mainnet.infura.io/v3/20504cdcff23477c9ed314d042d85a74',
@@ -40,103 +81,139 @@ export const ERC1155_INTERFACE_ID = '0xd9b67a26'
 export const ERC712_INTERFACE_ID = '0x80ac58cd'
 export const ERC2189_INTERFACE_ID = '0x2a55205a'
 
-export const chainInfos: { [key: number]: { name: string; logo: string, officialName: string, currency: string } } = {
+export const getChainIcons = (chainId: number) => {
+  if (SUSPPORTED_CHAIN_IDS.includes(chainId)) {
+    return {
+      icon: chainInfos[chainId].roundedLogo,
+      explorer: chainInfos[chainId].explorerLogo,
+    }
+  }
+  return {
+    icon: chainInfos[1].roundedLogo,
+    explorer: chainInfos[1].explorerLogo,
+  }
+}
+
+export const chainInfos: { [key: number]: { name: string; logo: string, roundedLogo: string, explorerLogo: string, officialName: string, currency: string } } = {
   1: {
     name: 'eth',
-    logo: '/svgs/fantom.svg',
+    logo: '/svgs/ethereum.svg',
+    roundedLogo: '/images/roundedColorEthereum.png',
+    explorerLogo: '/images/ethereumExplorer.png',
     officialName: 'Fantom',
     currency: 'FTM'
   },
   56: {
     name: 'bsc',
-    logo: '/svgs/fantom.svg',
+    logo: '/svgs/binance.svg',
+    roundedLogo: '/images/roundedColorBinance.png',
+    explorerLogo: '/images/binanceExplorer.png',
     officialName: 'Fantom',
     currency: 'FTM'
   },
   137: {
     name: 'polygon',
-    logo: '/svgs/fantom.svg',
+    logo: '/svgs/polygon.svg',
+    roundedLogo: '/images/roundedColorPolygon.png',
+    explorerLogo: '/images/polygonExplorer.png',
     officialName: 'Fantom',
     currency: 'FTM'
   },
   43114: {
     name: 'avalanche',
-    logo: '/svgs/fantom.svg',
+    logo: '/svgs/avalanche.svg',
+    roundedLogo: '/images/roundedColorAvalanche.png',
+    explorerLogo: '/images/avalancheExplorer.png',
     officialName: 'Fantom',
     currency: 'FTM'
   },
   250: {
     name: 'fantom',
     logo: '/svgs/fantom.svg',
+    roundedLogo: '/images/roundedColorFantom.png',
+    explorerLogo: '/images/fantomExplorer.png',
     officialName: 'Fantom',
     currency: 'FTM'
   },
   10: {
     name: 'optimism',
-    logo: '/svgs/fantom.svg',
+    logo: '/svgs/optimism.svg',
+    roundedLogo: '/images/roundedColorOptimism.png',
+    explorerLogo: '/images/optimismExplorer.png',
     officialName: 'Fantom',
     currency: 'FTM'
   },
   42161: {
     name: 'arbitrum',
-    logo: '/svgs/fantom.svg',
+    logo: '/svgs/arbitrum.svg',
+    roundedLogo: '/images/roundedColorArbitrum.png',
+    explorerLogo: '/images/arbitrumExplorer.png',
     officialName: 'Fantom',
     currency: 'FTM'
   },
   4: {
     name: 'rinkeby',
     logo: '/svgs/ethereum.svg',
+    roundedLogo: '/images/roundedColorEthereum.png',
+    explorerLogo: '/images/ethereumExplorer.png',
     officialName: 'Rinkeby',
     currency: 'ETH'
   },
   97: {
     name: 'bsc-testnet',
     logo: '/svgs/binance.svg',
+    roundedLogo: '/images/roundedColorBinance.png',
+    explorerLogo: '/images/binanceExplorer.png',
     officialName: 'BSC',
     currency: 'BNB'
   },
   43113: {
     name: 'fuji',
     logo: '/svgs/avax.svg',
+    roundedLogo: '/images/roundedColorAvalanche.png',
+    explorerLogo: '/images/avalancheExplorer.png',
     officialName: 'Fuji',
     currency: 'AVAX'
   },
   80001: {
     name: 'mumbai',
     logo: '/svgs/polygon.svg',
+    roundedLogo: '/images/roundedColorPolygon.png',
+    explorerLogo: '/images/polygonExplorer.png',
     officialName: 'Mumbai',
     currency: 'MATIC'
   },
   421611: {
     name: 'arbitrum-rinkeby',
     logo: '/svgs/arbitrum.svg',
+    roundedLogo: '/images/roundedColorArbitrum.png',
+    explorerLogo: '/images/arbitrumExplorer.png',
     officialName: 'Arbitrum',
     currency: 'ArbETH'
   },
   69: {
     name: 'optimism-kovan',
     logo: '/svgs/optimism.svg',
+    roundedLogo: '/images/roundedColorOptimism.png',
+    explorerLogo: '/images/optimismExplorer.png',
     officialName: 'Optimism',
     currency: 'ETH'
   },
   4002: {
     name: 'fantom-testnet',
     logo: '/svgs/fantom.svg',
+    roundedLogo: '/images/roundedColorFantom.png',
+    explorerLogo: '/images/fantomExplorer.png',
     officialName: 'Fantom',
     currency: 'FTM'
   },
-  
+
 }
 
 export const getLayerzeroChainId = (chainId: number): number => {
   return chainIds[chainInfos[chainId].name]
 }
 
-// export const currencies_list = [
-//   { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0xc375c320cae7b874cb54a46f7158bbfb09bbf879' },
-//   { value: 1, text: 'USDC', icon: 'payment/usdc.png', address: '0xeb8f08a975ab53e34d8a0330e0d34de942c95926' },
-//   { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad' },
-// ]
 
 export const currencies_list: { [key: number]: Array<{ value: number; text: string, icon: string, address: string }> } = {
   1: [
@@ -177,7 +254,7 @@ export const currencies_list: { [key: number]: Array<{ value: number; text: stri
   4:  [
     { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0xE9956C00aaeCa65C89F4C9AcDEbd36A1784F0B86' },
     { value: 1, text: 'USDC', icon: 'payment/usdc.png', address: '0x1717A0D5C8705EE89A8aD6E808268D6A826C97A4' },
-    { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '' },
+    { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad' },
   ],
   97:  [
     { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0xBfB4D3441f190014C5111f566e6AbE8a93E862D8' },
@@ -190,22 +267,22 @@ export const currencies_list: { [key: number]: Array<{ value: number; text: stri
     { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '' },
   ],
   80001:  [
-    { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0xc375c320cae7b874cb54a46f7158bbfb09bbf879' },
+    { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0x48894014441Aaf5015EF52a9eC49e147f965cB8b' },
     { value: 1, text: 'USDC', icon: 'payment/usdc.png', address: '0x742DfA5Aa70a8212857966D491D67B09Ce7D6ec7' },
     { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '' },
   ],
   421611:  [
-    { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0xc375c320cae7b874cb54a46f7158bbfb09bbf879' },
+    { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '' },
     { value: 1, text: 'USDC', icon: 'payment/usdc.png', address: '0x1EA8Fb2F671620767f41559b663b86B1365BBc3d' },
     { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '' },
   ],
   69:  [
-    { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0xc375c320cae7b874cb54a46f7158bbfb09bbf879' },
+    { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '' },
     { value: 1, text: 'USDC', icon: 'payment/usdc.png', address: '0x567f39d9e6d02078F357658f498F80eF087059aa' },
     { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '' },
   ],
   4002:  [
-    { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0xc375c320cae7b874cb54a46f7158bbfb09bbf879' },
+    { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '' },
     { value: 1, text: 'USDC', icon: 'payment/usdc.png', address: '0x076488D244A73DA4Fa843f5A8Cd91F655CA81a1e' },
     { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '' },
   ],
@@ -228,6 +305,12 @@ export const chain_list: {[key: string]: number} = {
   'fantom-testnet': 4002,
   'goerli': 5
 }
+
+export const getChainIdFromName = (name: string): number => {
+  return chain_list[name]
+}
+export const supportChainIDs = [4,80001,43113,421611,69,4002,97]
+
 export const chain_list_: {[key: number]: string} = {
   1 : 'eth ',
   56 : 'bsc',
@@ -246,21 +329,38 @@ export const chain_list_: {[key: number]: string} = {
   5: 'goerli'
 }
 
-export const getChainIdFromName = (name: string): number => {
-  return chain_list[name]
-}
 
 export const getChainNameFromId = (id: number): string => {
   return chain_list_[id]
 }
 
-export const getAddressByName = (name: 'Omnix' | 'Omnix1155' | 'LayerZeroEndpoint', chainId: number) => {
+export const getAddressByName = (name: ContractName, chainId: number) => {
   if (name === 'Omnix') {
     return omnixBridge[chainInfos[chainId].name]
   } else if (name === 'Omnix1155') {
     return omnixBridge1155[chainInfos[chainId].name]
   } else if (name === 'LayerZeroEndpoint') {
     return lzEndpoint[chainInfos[chainId].name]
+  } else if (name === 'OmnixExchange') {
+    return omnixExchange[chainInfos[chainId].name]
+  } else if (name === 'Strategy') {
+    return strategy[chainInfos[chainId].name]
+  } else if (name === 'OMNI') {
+    return oft[chainInfos[chainId].name]
+  } else if (name === 'USDC') {
+    return usdc[chainId.toString()]
+  } else if (name === 'USDT') {
+    return usdt[chainId.toString()]
+  } else if (name === 'TransferSelectorNFT') {
+    return transferSelectorNFT[chainInfos[chainId].name]
+  } else if (name === 'FundManager') {
+    return fundManager[chainInfos[chainId].name]
+  } else if (name === 'StargateRouter') {
+    return stargate[chainInfos[chainId].name].router
+  } else if (name === 'StargatePoolManager') {
+    return stargatePoolManager[chainInfos[chainId].name]
+  } else if (name === 'CurrencyManager') {
+    return currencyManager[chainId.toString()]
   }
 }
 
@@ -308,3 +408,102 @@ const supportedChainsOnAlchemy: Array<number> = [
   5,
   421613
 ]
+const loopCurrencies = (currencies: any, idx: number, address?: string) => {
+  if (Object.values(currencies).indexOf(address) != -1) {
+    return CURRENCIES_LIST[idx]
+  }
+  return null
+}
+
+export const getCurrencyIconByAddress = (address?: string) => {
+  const currency_addr_list = [oft, usdc, usdt]
+  for (let idx = 0; idx < currency_addr_list.length; idx++) {
+    const currency = loopCurrencies(currency_addr_list[idx], idx, address)
+    if (currency) {
+      return `/images/${currency.icon}`
+    }
+  }
+
+  return `/images/${CURRENCIES_LIST[0].icon}`
+}
+
+export const getChainNameById = (chainId: number) => {
+  return chainInfos[chainId].name
+}
+
+export const getCurrencyNameAddress = (address?: string) => {
+  const currency_addr_list = [oft, usdc, usdt]
+  for (let idx = 0; idx < currency_addr_list.length; idx++) {
+    const currency = loopCurrencies(currency_addr_list[idx], idx, address)
+    if (currency) {
+      return currency.text
+    }
+  }
+
+  return CURRENCIES_LIST[0].text
+}
+
+const chainIcons = Object.values(chainInfos).reduce((acc, cur) => {
+  Object.assign(acc, { [cur.name]: cur.logo} )
+  return acc
+}, {})
+
+export const getChainIconByCurrencyAddress = (address?: string) => {
+  const currency_addr_list = [oft, usdc, usdt]
+
+  for (let idx = 0; idx < currency_addr_list.length; idx++) {
+    const chainIdx = Object.values(currency_addr_list[idx]).indexOf(address)
+    if (chainIdx != -1) {
+      const chainName = Object.keys(currency_addr_list[idx])[chainIdx]
+      return (chainIcons as any)[chainName]
+    }
+  }
+
+  return (chainIcons as any)['rinkeby']
+}
+
+export const isUsdcOrUsdt = (address?: string) => {
+  const currency_addr_list = [usdc, usdt]
+
+  for (let idx = 0; idx < currency_addr_list.length; idx++) {
+    const chainIdx = Object.values(currency_addr_list[idx]).indexOf(address)
+    if (chainIdx != -1) {
+      return true
+    }
+  }
+
+  return false
+}
+
+export const getProfileLink = (chainName: string, ownerType: string, owner: string) => {
+  if (chainName=='rinkeby' ) {
+    if(ownerType=='address') {
+      return 'https://rinkeby.etherscan.io/address/' + owner
+    }
+  }
+
+  return ''
+}
+
+export const getChainIcon = (chain: string) => {
+  return (chainIcons as any)[chain]
+}
+
+export const getChainIconById = (chainId?: string) => {
+  return chainId && chainInfos[Number(chainId)]?.logo
+}
+
+export const getCollectionAddress = (col_addresses: any, chain_id: number) => {
+  if(col_addresses){
+    return col_addresses[chain_id.toString()]
+  }
+  return null
+}
+
+export const getBlockExplorer = (chainId: number) => {
+  const chainInfo = getChainInfo(chainId)
+  if (chainInfo) {
+    return chainInfo.explorers?.[0]?.url
+  }
+  return null
+}

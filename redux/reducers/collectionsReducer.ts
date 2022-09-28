@@ -3,11 +3,18 @@ import { Dispatch } from 'react'
 import { IGetOrderRequest } from '../../interface/interface'
 import { collectionsService } from '../../services/collections'
 import { getOrders } from './ordersReducer'
+import { getAssetPrices } from './feeddataReducer'
+import { openSnackBar } from './snackBarReducer'
 import { getERC721Instance, getERC1155Instance, getRoyaltyFeeMangerInstance } from '../../utils/contracts'
 import { RoyaltyFeeManagerAddress } from '../../constants/addresses'
+import { convertETHtoUSDT, convertUSDTtoETH } from '../../utils/convertRate'
+import { currencies_list } from '../../utils/constants'
+import { getChainInfo, getChainIdFromName } from '../../utils/constants'
+import { ethers } from 'ethers'
 import { isSupportedOnAlchemy, isSupportedOnMoralis } from '../../utils/constants'
 import { getAPIkeyForAlchemy } from '../../utils/constants'
 import { getChainNameFromId } from '../../utils/constants'
+import { supportedChainsOnMoralis, supportedChainsOnAlchemy } from '../../utils/constants'
 import axios from 'axios'
 interface CollectionState{
 	nfts:any[],
@@ -130,10 +137,11 @@ export const getCollectionInfo = (col_url: string) => async (dispatch: Dispatch<
 	}
 }
 
-export const getCollectionOwners = (col_url: string) => async (dispatch: Dispatch<any>) => {
+export const getCollectionOwners = (collection:any) => async (dispatch: Dispatch<any>) => {
 	try {
-		const info = await collectionsService.getCollectionOwners(col_url)
-		dispatch(setCollectionOwners(info))
+		const cnt = await getOwnercount(collection)
+		console.log(cnt)
+		dispatch(setCollectionOwners(cnt))
 	} catch (error) {
 		console.log("getCollectionInfo error ? ", error)
 	}
@@ -157,7 +165,7 @@ export const getCollections = () => async (dispatch: Dispatch<any>) => {
 	}
 }
 
-export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, getState: () => any) => {
+export const updateCollectionsForCard = (chainId: string, chainName: string) => async (dispatch: Dispatch<any>, getState: () => any) => {
 	try {
 		const request: IGetOrderRequest = {
 			isOrderAsk: true,
@@ -168,27 +176,65 @@ export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, ge
 		}
 	  	await dispatch(getOrders(request))
 		const orders = getState().ordersState.orders
+		let ethPrice = getState().feeddataState.assetPrices.eth
+		if(ethPrice===undefined){
+			await dispatch(getAssetPrices())
+			ethPrice = getState().feeddataState.assetPrices.eth
+		}
 		let collectionsF : any[] = []
-		const info = await collectionsService.getCollections()		
+		const info = await collectionsService.getCollections()	
+		console.log(info)	
 		await info.data.map(async (element:any, index:number)=>{
+			//console.log('chain', chainId,chainName, 'address', element.address)
+			const itemsCnt = await getItemscount(element)
+			const ownersCnt = await getOwnercount(element)
+			//console.log('itemsCnt',itemsCnt)
+			console.log('ownersCnt',ownersCnt)
+			
+			//console.log('ownersCnt', ownersCnt)
 			setTimeout(async function(){
-				const ownerCnt = await collectionsService.getCollectionOwners(element.col_url as string)
+								
 				setTimeout(
-					async function(){				
-						let orderCnt = 0	
+					async function(){			
+						let ordersForCollection: { price: any; currencyAddress: any }[] = []	
 						const nfts = await collectionsService.getCollectionAllNFTs(element.col_url as string , '', '')
 						const collectionInfo  = await collectionsService.getCollectionInfo(element.col_url as string)
 						setTimeout(async function(){
 							nfts.data.map((nft:any)=>{
-								for(const order of orders){
-									if(collectionInfo.data.address==order.collectionAddress&& nft.token_id==order.tokenId && order.isOrderAsk){
-										orderCnt++
-										break										
+								let order:any = null
+								for(const orderi of orders){
+									if(collectionInfo.data.address==orderi.collectionAddress&& nft.token_id==orderi.tokenId ){
+										order = orderi										
 									}
+								}
+								if(order !== null){
+									ordersForCollection.push(order)
 								}								
 								
 							})
-							collectionsF.push({col_url:element.col_url, itemsCnt:collectionInfo.data.count, ownerCnt:ownerCnt.data, orderCnt:orderCnt})		
+							let lowPrice: any = Number.MAX_VALUE
+							if(ordersForCollection.length > 0 ){								
+								ordersForCollection.map((order: { price: any, currencyAddress:any }) => {
+								  let priceAsUSD = 0
+								  if(currencies_list[getChainIdFromName(collectionInfo.data.chain)].find(({address}) => address===order.currencyAddress)){
+									priceAsUSD = parseFloat(ethers.utils.formatEther(order.price))
+								  }else{
+									priceAsUSD = convertETHtoUSDT(parseFloat(ethers.utils.formatEther(order.price)), ethPrice)
+								  }
+								  if(lowPrice > priceAsUSD){
+									lowPrice  = priceAsUSD
+								  }             
+								})
+								if(lowPrice === Number.MAX_VALUE){
+								  lowPrice = 0
+								}								
+							}else{
+								lowPrice = 0
+							}
+							if(lowPrice>0){
+								lowPrice = lowPrice.toFixed(4)
+							}
+							collectionsF.push({col_url:element.col_url, itemsCnt:itemsCnt, ownerCnt:ownersCnt, orderCnt:ordersForCollection.length, floorPrice:{usd:lowPrice,eth:lowPrice>0?convertUSDTtoETH(lowPrice,ethPrice).toFixed(4):0}})		
 							if(collectionsF.length===info.data.length){
 								localStorage.setItem('cards',JSON.stringify(collectionsF))
 								dispatch(setCollectionsForCard(collectionsF))			
@@ -206,6 +252,7 @@ export const updateCollectionsForCard = () => async (dispatch: Dispatch<any>, ge
 
 export const getRoyalty = (contractType:string, address: string, chainId:number, signer:any) => async (dispatch: Dispatch<any>) => {
 	try{
+		console.log(contractType, address, chainId)
 		if(contractType==='ERC721'){
 			const NFTContract =  getERC721Instance(address,chainId,null)
 			// const supportedERP2981 = await NFTContract.supportsInterface(ERC2189_INTERFACE_ID)
@@ -241,7 +288,6 @@ export const getRoyalty = (contractType:string, address: string, chainId:number,
 			// 	setRoyalty(parseInt(royaltyInfo[1])/100.0)
 	
 			// }
-			console.log('NFT1155',NFTContract)
 			try{
 				const royalty = await NFTContract.royaltyInfo(1,100)
 				dispatch(setRoyalty(parseInt(royalty[1])))
@@ -259,6 +305,7 @@ export const getRoyalty = (contractType:string, address: string, chainId:number,
 	
 	
 }
+
 
 export const getCollectionsForComingAndLive = () => async(dispatch: Dispatch<any>, getState:() => any) =>{
 	const collections = getState().collectionsState.collections
@@ -351,6 +398,81 @@ export const getCollectionsForComingAndLive = () => async(dispatch: Dispatch<any
 		localStorage.setItem('NftComing',JSON.stringify(resCollectionsForComing))
 		dispatch(setCollectionsForComing(resCollectionsForComing))
 	}
+}
+const  getItemscount = (collection:any):Promise<number> => {
+	return new Promise<number> (async (ret) => {
+		let totalCnt =0
+		  const collectionAdr = Array.from(Object.keys(collection.address)) 		  
+		  for ( const key of collectionAdr ) {			
+			if(isSupportedOnAlchemy(parseInt(key))){
+			  const options = {
+				method: 'GET',
+				url: `https://eth-mainnet.g.alchemy.com/nft/v2/${getAPIkeyForAlchemy(parseInt(key))}/getNFTsForCollection`,
+				params: {
+				  withMetadata: 'false',
+				  contractAddress:collection.address[key]
+				},
+				headers: {accept: 'application/json'}
+			  };
+			  
+			  const resp = await axios.request(options);
+			  if ( resp.data.nfts.length > 0 ) {
+				totalCnt += resp.data.nfts.length
+			  }			
+			}
+			if(isSupportedOnMoralis(parseInt(key))){
+			  const options = {
+				method: 'GET',
+				url: `https://deep-index.moralis.io/api/v2/nft/${collection.address[key]}`,
+				params: {chain: getChainNameFromId(parseInt(key)), format: 'decimal'},
+				headers: {accept: 'application/json', 'X-API-Key': 'leaSlfD5P1cgV4T1h72OfbaYRF4oYlEqdlXkmKUc9456mKeK8JrghLHNB2NIc8oN'}
+			  };
+			  const resp = await axios.request(options);
+			  if ( resp.data.total > 0 ) {
+				totalCnt += resp.data.total
+			  }
+			  
+			}
+		  }
+		  ret(totalCnt)
+	})
+}
+const getOwnercount = (collection:any):Promise<number> => {
+	return new Promise<number>(async (ret)=>{
+		let totalCnt:number = 0
+		for(const id  in supportedChainsOnMoralis){			
+			if(collection.address[supportedChainsOnMoralis[id]]){				
+				const options = {
+					method: 'GET',
+					url: `https://deep-index.moralis.io/api/v2/nft/${collection.address[supportedChainsOnMoralis[id]]}/owners`,
+					params: {chain: getChainNameFromId(supportedChainsOnMoralis[id]), format: 'decimal'},
+					headers: {accept: 'application/json', 'X-API-Key': 'leaSlfD5P1cgV4T1h72OfbaYRF4oYlEqdlXkmKUc9456mKeK8JrghLHNB2NIc8oN'}
+				}
+				const response = await axios.request(options)				
+				if(response?.data){
+					totalCnt += response.data.total
+				}				
+			}
+		}
+		for(const id  in supportedChainsOnAlchemy){
+			if(collection.address[supportedChainsOnAlchemy[id]]){
+				const options = {
+					method: 'GET',
+					url: `https://eth-mainnet.g.alchemy.com/nft/v2/${getAPIkeyForAlchemy(supportedChainsOnAlchemy[id])}/getOwnersForCollection`,
+					params: {withTokenBalances: 'false',contractAddress:collection.address[supportedChainsOnAlchemy[id]]},
+					headers: {accept: 'application/json'}
+				  };
+				  
+				const response = await axios.request(options)
+				if(response?.data){
+					console.log('Alchemy',response)
+				}					
+				
+				
+			}
+		}
+		ret (totalCnt)
+	})
 }
 //selectors
 export const selectCollectionNFTs = (state: any) => state.collectionsState.nfts

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react'
 import NFTBox from './NFTBox'
 import NFTbox from './collections/NFTBox'
@@ -8,8 +9,7 @@ import useWallet from '../hooks/useWallet'
 import { useDispatch, useSelector } from 'react-redux'
 import { getCollections } from '../redux/reducers/collectionsReducer'
 import { selectSearchText } from '../redux/reducers/headerReducer'
-import { selectNFTInfo } from '../redux/reducers/collectionsReducer'
-import {  getCollectionInfo,getCollectionAllNFTs, selectCollectionAllNFTs,selectCollectionInfo } from '../redux/reducers/collectionsReducer'
+import { getCollectionInfo,getCollectionAllNFTs, selectCollectionAllNFTs,selectCollectionInfo } from '../redux/reducers/collectionsReducer'
 
 const chainList = [
   { chain: 'all', img_url: '/svgs/all_chain.svg', title: 'all NFTs', disabled: false},
@@ -29,7 +29,6 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
   const [tokenID, setTokenID] = useState(0)
 
   const {
-    provider,
     address
   } = useWallet()
   const dispatch = useDispatch()
@@ -59,7 +58,7 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
 
   },[searchText])
 
-  
+
   useEffect(() => {
     if(allNFTs && tokenID>0){
       setNFT(allNFTs[tokenID-1])
@@ -113,15 +112,19 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
         <div className="flex relative justify-start bg-[#F8F9FA] pl-2 pr-2 w-fit" style={{'width':'100%'}}>
           {
             chainList.map((item, index) => {
-              return <div key={index} className={`grid justify-items-center content-center p-3 font-medium cursor-pointer m-[1px] min-w-[80px]  ${chain == item.chain ? 'bg-[#C8D6E8]' : ''} `} onClick={() =>{item.disabled ? undefined : setChain(item.chain)}}>
-                <img src={item.img_url} className="w-[21px] h-[22px] " />
+              return <div
+                key={index}
+                className={`grid justify-items-center content-center p-3 font-medium cursor-pointer m-[1px] min-w-[80px] ${chain == item.chain ? 'bg-[#C8D6E8]' : ''} `}
+                onClick={() =>{setChain(!item.disabled ? item.chain : chain)}}
+              >
+                <img alt={'listing'} src={item.img_url} className="w-[21px] h-[22px] " />
               </div>
             })
           }
           <div className="flex p-3 font-medium cursor-pointer text-[#6C757D] absolute right-0">
-            <img src='/images/listing.png' className="w-[21px] h-[22px]"/>
+            <img alt={'listing'} src='/images/listing.png' className="w-[21px] h-[22px]"/>
             <span>active listing</span>
-            <img src='/images/downArrow.png' className="w-[10px] h-[7px] ml-5 mt-auto mb-auto"/>
+            <img alt={'listing'} src='/images/downArrow.png' className="w-[10px] h-[7px] ml-5 mt-auto mb-auto"/>
           </div>
         </div>
         <div className="grid grid-cols-4 gap-6 2xl:grid-cols-5 2xl:gap-10 mt-4">
