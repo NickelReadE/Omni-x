@@ -125,7 +125,6 @@ const Item: NextPage = () => {
   const profileLink = chain_name && ownerType && owner && getProfileLink(chain_name, ownerType, owner)
   const currencyChainIcon = getChainIconByCurrencyAddress(order?.currencyAddress)
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
-  console.log(currencyIcon)
   const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
 
   console.log('-isListed, isAuction, owner, address-', isListed, isAuction, owner, address, nftInfo)

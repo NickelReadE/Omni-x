@@ -14,6 +14,9 @@ import useTrading from '../../hooks/useTrading'
 import useOrderStatics from '../../hooks/useOrderStatics'
 import ConfirmSell from './ConfirmSell'
 import useOwnership from '../../hooks/useOwnership'
+//import reducer
+import { selectCollectionInfo } from '../../redux/reducers/collectionsReducer'
+import { useSelector } from 'react-redux'
 
 const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
@@ -24,6 +27,21 @@ const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
     address
   } = useWallet()
 
+  const collectionInfo = useSelector(selectCollectionInfo)
+  //update this logic in the constants
+  const start_ids = collectionInfo.start_ids
+  const token_id = nft.token_id
+  let temp_value:Number = 0
+  Object.keys(start_ids).map((Key) => {
+    if(Number(start_ids[Key])<Number(token_id)){
+      if(temp_value<=Number(start_ids[Key])){
+        temp_value = Number(start_ids[Key])
+        col_address = collectionInfo.address[Key]
+        chain = Key
+      }
+    }
+  })
+
   const collection_address_map = useMemo(() => {
     if (chain && col_address) {
       return {
@@ -32,6 +50,7 @@ const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
     }
     return []
   }, [chain, col_address])
+  console.log(collection_address_map)
 
   // ownership hook
   // const {

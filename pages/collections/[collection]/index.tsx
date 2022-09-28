@@ -221,8 +221,10 @@ const Collection: NextPage = () => {
   },[collectionInfo,provider])
 
   useEffect(() => {
-    if ( col_url && provider?._network) {
+    if(col_url){
       dispatch(getCollectionInfo(col_url) as any)
+    }
+    if ( col_url && provider?._network) {
       // dispatch(getCollectionOwners(col_url) as any)
       const localData = localStorage.getItem('cards')
       if(localData){
@@ -795,7 +797,7 @@ const Collection: NextPage = () => {
                     })} */}
                     { !isActiveBuyNow && nfts.map((item, index) => {
                       return (
-                        <NFTBox nft={item} index={index} key={index}  col_url={col_url} col_address={collectionAddress}  chain={collectionInfo?collectionChainID:'4'}/>
+                        <NFTBox nft={item} index={index} key={index}  col_url={col_url} col_address={collectionAddress}  chain={collectionInfo?collectionChainID:'5'}/>
                       )
                     })}
                     { isActiveBuyNow && listNFTs && buyComponet()}
