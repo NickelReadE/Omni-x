@@ -361,23 +361,37 @@ const Collection: NextPage = () => {
     const temp = []
     for(let i = 0;i<listNFTs.length;i++){
       temp.push(
-        <NFTBox nft={listNFTs[i]} index={i} key={i}  col_url={col_url} col_address={collectionAddress}  chain={collectionInfo?collectionChainID:'4'}/>
+        <NFTBox nft={listNFTs[i]} index={i} key={i}  col_url={col_url} col_address={collectionAddress}  chain={collectionInfo?collectionChainID:'5'}/>
       )
     }
     return temp
   }
 
+
   useEffect(()=>{
     if(isActiveBuyNow && collectionInfo && allNFTs.length>0){
       const temp = []
       for(let i=0;i<allNFTs.length;i++){
+        const start_ids = collectionInfo.start_ids
+        const token_id = allNFTs[i].token_id
+        let collection_address=''
+        let temp_value = 0
+        Object.keys(start_ids).map((Key) => {
+          if(Number(start_ids[Key])<Number(token_id)){
+            if(temp_value<=Number(start_ids[Key])){
+              temp_value = Number(start_ids[Key])
+              collection_address = collectionInfo.address[Key].toLowerCase()
+            }
+          }
+        })
         for(let j=0; j<orders.length;j++){  
-          if(collectionAddress==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
+          if(collection_address==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
             temp.push(allNFTs[i]) 
             break         
           }
         }
       }
+      console.log(temp)
       setListNFTs(temp)    
     } 
   },[isActiveBuyNow,collectionInfo,allNFTs])

@@ -80,6 +80,17 @@ export const ERC1155_INTERFACE_ID = '0xd9b67a26'
 export const ERC712_INTERFACE_ID = '0x80ac58cd'
 export const ERC2189_INTERFACE_ID = '0x2a55205a'
 
+export const NETWORK_TYPE : {[key:number]:string} = {
+  5 : 'goerli',
+  97: 'bsc testnet',
+  80001: 'mumbai',
+  43113 : 'avalanche testnet',
+  420 : 'optimism',
+  421613 :'arbitrum',
+  4002 : 'fantom-testnet',
+}
+
+
 export const getChainIcons = (chainId: number) => {
   if (SUSPPORTED_CHAIN_IDS.includes(chainId)) {
     return {
@@ -338,7 +349,9 @@ export const chain_list_: {[key: number]: string} = {
   43113 : 'avalanche testnet',
   421611:'arbitrum-rinkeby',
   69:'optimism-kovan',
-  4002:'fantom-testnet'
+  4002:'fantom-testnet',
+  420 : 'optimism',
+  421613 :'arbitrum'
 }
 
 export const getChainNameFromId = (id: number): string => {
@@ -462,9 +475,33 @@ export const isUsdcOrUsdt = (address?: string) => {
 }
 
 export const getProfileLink = (chainName: string, ownerType: string, owner: string) => {
-  if (chainName=='rinkeby' ) {
+  if (chainName=='goerli' ) {
     if(ownerType=='address') {
-      return 'https://rinkeby.etherscan.io/address/' + owner
+      return 'https://goerli.etherscan.io/address/' + owner
+    }
+  } else   if (chainName=='bsc testnet' ) {
+    if(ownerType=='address') {
+      return 'https://testnet.bscscan.com/address/' + owner
+    }
+  } else   if (chainName=='mumbai' ) {
+    if(ownerType=='address') {
+      return 'https://mumbai.polygonscan.com/address/' + owner
+    }
+  } else   if (chainName=='avalanche testnet' ) {
+    if(ownerType=='address') {
+      return 'https://testnet.avascan.info/blockchain/all/address/' + owner
+    }
+  } else   if (chainName=='fantom-testnet' ) {
+    if(ownerType=='address') {
+      return 'https://testnet.ftmscan.com/address/' + owner
+    }
+  } else   if (chainName=='optimism' ) {
+    if(ownerType=='address') {
+      return 'https://goerli-optimism.etherscan.io/address/' + owner
+    }
+  } else   if (chainName=='arbitrum' ) {
+    if(ownerType=='address') {
+      return 'https://goerli-rollup-explorer.arbitrum.io/address/' + owner
     }
   }
 

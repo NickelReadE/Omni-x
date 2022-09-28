@@ -49,7 +49,8 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       try {
         // IPFS Gateway: A server that will return IPFS files from a "normal" URL.
         const image_uri = JSON.parse(metadata).image
-        return image_uri.replace('ipfs://', 'https://ipfs.io/ipfs/')
+        if(image_uri)
+          return image_uri.replace('ipfs://', 'https://ipfs.io/ipfs/')
       } catch (err) {
         console.log('NFTBox err? ', err)
       }
@@ -60,7 +61,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   const collection_address_map = useMemo(() => {
     if (chain && nft?.token_address) {
       return {
-        [chain]: nft.token_address
+        [getChainIdFromName(nft.chain)]: nft.token_address
       }
     }
     return []

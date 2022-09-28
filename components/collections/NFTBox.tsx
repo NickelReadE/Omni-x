@@ -45,7 +45,7 @@ const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
   const collection_address_map = useMemo(() => {
     if (chain && col_address) {
       return {
-        [chain]: col_address
+        [chain]: col_address.toLowerCase()
       }
     }
     return []
@@ -118,7 +118,7 @@ const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
           </div>
           <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
             <div className="text-[#000000] text-[14px] font-bold  mt-3 ml-3">
-              {nft.name}
+              {nft.name}#{nft.token_id}
             </div>
             <div className="mr-3 flex items-center">
               {/* <div className={classNames("mr-3 flex items-center cursor-pointer bg-[url('/images/round-refresh.png')] hover:bg-[url('/images/round-refresh_hover.png')] bg-cover w-[20px] h-[20px]", editStyle.refreshBtn)}></div> */}

@@ -112,7 +112,7 @@ const useTrading = ({
       startTime: Math.floor(Date.now() / 1000).toString(),
       endTime: Math.floor(Date.now() / 1000).toString(),
       status: ['VALID'],
-      sort: 'OLDEST'
+      sort: 'NEWEST'
     }
     dispatch(getOrders(request) as any)
   }
@@ -122,8 +122,8 @@ const useTrading = ({
       isOrderAsk: false,
       collection: order_collection_address,
       tokenId: token_id,
-      startTime: Math.floor(Date.now() / 1000).toString(),
-      endTime: Math.floor(Date.now() / 1000).toString(),
+      // startTime: Math.floor(Date.now() / 1000).toString(),
+      // endTime: Math.floor(Date.now() / 1000).toString(),
       status: ['VALID'],
       sort: 'PRICE_ASC'
     }
@@ -157,7 +157,7 @@ const useTrading = ({
     const amount = ethers.utils.parseUnits('1', 0)
     const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
     const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
-    const chainId = provider?.network.chainId || 4
+    const chainId = provider?.network.chainId || 5
     const lzChainId = getLayerzeroChainId(chainId)
     const startTime = Date.now()
 
@@ -205,7 +205,7 @@ const useTrading = ({
 
     console.log('-buy-', order)
 
-    const chainId = provider?.network.chainId || 4
+    const chainId = provider?.network.chainId || 5
     const lzChainId = getLayerzeroChainId(chainId)
     const omniAddress = getAddressByName(getCurrencyNameAddress(order.currencyAddress) as ContractName, chainId)
     
@@ -343,7 +343,7 @@ const useTrading = ({
       return
     }
 
-    const chainId = provider?.network.chainId || 4
+    const chainId = provider?.network.chainId || 5
     const lzChainId = getLayerzeroChainId(chainId)
     
     const omnixExchange = getOmnixExchangeInstance(chainId, signer)
