@@ -1,20 +1,16 @@
 import { addDays } from "date-fns"
-import { BigNumber, BigNumberish, ethers, Signer } from "ethers"
+import { BigNumber, BigNumberish, ethers } from "ethers"
 import { Dispatch, SetStateAction, useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { IBidData, IGetOrderRequest, IListingData, IOrder, OrderStatus } from "../interface/interface"
 import { getLastSaleOrders, getOrders } from "../redux/reducers/ordersReducer"
 import { openSnackBar } from "../redux/reducers/snackBarReducer"
-import { collectionsService } from "../services/collections"
-import { userService } from "../services/users"
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from "../types"
 import { SaleType } from "../types/enum"
 import { ContractName, CREATOR_FEE, getAddressByName, getChainNameById, getCurrencyNameAddress, getLayerzeroChainId, isUsdcOrUsdt, PROTOCAL_FEE } from "../utils/constants"
 import { getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, getOmnixExchangeInstance, getTransferSelectorNftInstance } from "../utils/contracts"
 import { acceptOrder, postMakerOrder } from "../utils/makeOrder"
-import { useEffect } from 'react'
 import { getChainNameFromId } from '../utils/constants'
-import { useMemo } from "react"
 import { ChainIds } from "../types/enum"
 
 export type TradingFunction = {
@@ -161,7 +157,7 @@ const useTrading = ({
     const amount = ethers.utils.parseUnits('1', 0)
     const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
     const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
-    const chainId = useMemo(() => { if (provider && provider?.network) { return provider?.network.chainId } return ChainIds.ETHEREUM }, [provider])
+    const chainId = provider?.network.chainId || ChainIds.ETHEREUM
     const lzChainId = getLayerzeroChainId(chainId)
     const startTime = Date.now()
 
@@ -207,7 +203,7 @@ const useTrading = ({
       return
     }
 
-    const chainId = useMemo(() => { if (provider && provider?.network) { return provider?.network.chainId } return ChainIds.ETHEREUM }, [provider])
+    const chainId = provider?.network.chainId || ChainIds.ETHEREUM
     const lzChainId = getLayerzeroChainId(chainId)
     const omniAddress = getAddressByName(getCurrencyNameAddress(order.currencyAddress) as ContractName, chainId)
     
@@ -273,7 +269,7 @@ const useTrading = ({
       return
     }
 
-    const chainId = useMemo(() => { if (provider && provider?.network) { return provider?.network.chainId } return ChainIds.ETHEREUM }, [provider])
+    const chainId = provider?.network.chainId || ChainIds.ETHEREUM
     const lzChainId = getLayerzeroChainId(chainId)
 
     const currency = getAddressByName(bidData.currencyName as ContractName, chainId)
