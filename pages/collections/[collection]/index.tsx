@@ -10,7 +10,7 @@ import Twitter from '../../../public/images/twitter.png'
 import Web from '../../../public/images/web.png'
 import Explorer from '../../../public/images/exp.png'
 import Loading from '../../../public/images/loading_f.gif'
-import { getCollectionNFTs, selectCollectionNFTs, getCollectionInfo,getCollectionAllNFTs, getRoyalty,selectCollectionInfo, clearCollectionNFTs, selectGetNFTs, getCollectionOwners, selectCollectionOwners,selectCollectionAllNFTs, selectRoyalty } from '../../../redux/reducers/collectionsReducer'
+import { getCollectionNFTs, selectCollectionNFTs, getCollectionInfo,getCollectionAllNFTs, getRoyalty,selectCollectionInfo, clearCollectionNFTs, selectGetNFTs,selectCollectionAllNFTs, selectRoyalty } from '../../../redux/reducers/collectionsReducer'
 import { selectAssetPrices} from '../../../redux/reducers/feeddataReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
@@ -35,7 +35,7 @@ import editStyle from '../../../styles/collection.module.scss'
 
 import { getOrders, selectOrders, getLastSaleOrders,} from '../../../redux/reducers/ordersReducer'
 import { IGetOrderRequest , ICollectionInfoFromLocal} from '../../../interface/interface'
-import { getChainInfo, getChainIdFromName, chain_list_ } from '../../../utils/constants'
+import { getChainInfo, getChainIdFromName } from '../../../utils/constants'
 import {  convertUSDTtoETH } from '../../../utils/convertRate'
 import { useMoralisWeb3Api, useMoralis } from 'react-moralis'
 import useWallet from '../../../hooks/useWallet'
@@ -169,14 +169,13 @@ const Collection: NextPage = () => {
 
   const [isActiveBuyNow, setIsActiveBuyNow] = useState<boolean>(false)
   const [listNFTs, setListNFTs] = useState<any>([])
-  const [ordersForCollection, setOrdersForCollection] = useState<any>([])
   const [collectionInfoFromLocal, setCollectionInfoFromLocal] = useState<ICollectionInfoFromLocal>()
 
   const [explorerUrl, setExplorerUrl] = useState('')
 
   const [contractType, setContractType] = useState('')
 
-  const [floorPrice, setFloorPrice] = useState(0)
+  const [floorPrice] = useState(0)
 
   const finishedGetting = useSelector(selectGetNFTs)
 
@@ -438,12 +437,12 @@ const Collection: NextPage = () => {
     <>
       <div className={classNames('w-full', 'mt-20', 'pr-[70px]' ,'pt-[30px]', 'relative', editStyle.collection)}>
         <div className="w-[100%] h-[100%] mt-20">
-          <img className={classNames(editStyle.bannerImg)} src={collectionInfo&&collectionInfo.banner_image ? collectionInfo.banner_image : ''} />
+          <img className={classNames(editStyle.bannerImg)} src={collectionInfo&&collectionInfo.banner_image ? collectionInfo.banner_image : ''} alt='' />
           <div className={classNames(editStyle.bannerOpacity)} /> 
         </div>
         <div className="flex space-x-8 items-end ml-[70px]">
           <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="logo" />}>
-            <img className="w-[200px] h-[200px]" src={imageError?'/images/omnix_logo_black_1.png':(collectionInfo&&collectionInfo.profile_image ? collectionInfo.profile_image : '/images/omnix_logo_black_1.png')} alt="logo" onError={(e)=>{setImageError(true)}} data-src={collectionInfo&&collectionInfo.profile_image ? collectionInfo.profile_image : ''} />
+            <img className="w-[200px] h-[200px]" src={imageError?'/images/omnix_logo_black_1.png':(collectionInfo&&collectionInfo.profile_image ? collectionInfo.profile_image : '/images/omnix_logo_black_1.png')} alt="logo" onError={()=>{setImageError(true)}} data-src={collectionInfo&&collectionInfo.profile_image ? collectionInfo.profile_image : ''} />
           </LazyLoad>
           <div className="flex relative  text-lg font-bold text-center items-center">
             <div className={'select-none inline-block p-4 text-xxl font-extrabold '}>

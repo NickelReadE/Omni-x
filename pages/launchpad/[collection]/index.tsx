@@ -6,11 +6,11 @@ import MinusSign from '../../../public/images/minus-sign.png'
 import PlusSign from '../../../public/images/plus-sign.png'
 import mintstyles from '../../../styles/mint.module.scss'
 import { ethers } from 'ethers'
-import React, { useState , useEffect } from 'react'
+import React, { useState , useEffect, useCallback } from 'react'
 import { getCollectionInfo, selectCollectionInfo } from '../../../redux/reducers/collectionsReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import AdvancedONT from '../../../constants/abis/AdvancedONT.json'
-import earlysupporter from '../../../constants/whitelist/earlysupporter.json'
+//import earlysupporter from '../../../constants/whitelist/earlysupporter.json'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Slide } from 'react-toastify'
@@ -20,8 +20,8 @@ import useWallet from '../../../hooks/useWallet'
 
 
 //video 
-import { MerkleTree } from 'merkletreejs'
-import keccak256  from 'keccak256'
+//import { MerkleTree } from 'merkletreejs'
+//import keccak256  from 'keccak256'
 
 const Mint: NextPage = () => {
   const {
@@ -33,10 +33,9 @@ const Mint: NextPage = () => {
   const router = useRouter()
   const col_url = router.query.collection as string 
   const dispatch = useDispatch()
-  const collectionInfo = useSelector(selectCollectionInfo)  
-  const [account, setAccount] = useState<any>()
+  const collectionInfo = useSelector(selectCollectionInfo)    
   const [chainId, setChainId] = useState<any>()
-  const [toChain, setToChain] = useState<string>('1')
+  const [toChain] = useState<string>('1')
   const [mintNum, setMintNum] = useState<number>(1)
   const [totalNFTCount, setTotalNFTCount] = useState<number>(0)
   const [nextTokenId, setNextTokenId] = useState<number>(0)
@@ -66,8 +65,7 @@ const Mint: NextPage = () => {
     })
   }
 
-  const getInfo = async ():Promise<void> => {
-    
+  const getInfo = useCallback(async ():Promise<void> => {    
     try{    
       
       const tokenContract =  new ethers.Contract(collectionInfo.address[chainId?chainId:0], AdvancedONT, signer)
@@ -99,9 +97,8 @@ const Mint: NextPage = () => {
       }
     } catch(error){
       console.log(error)
-    }
-    
-  }
+    }    
+  },[address,chainId, collectionInfo.address, collectionInfo.start_ids, signer])
 
   // const mint = async ():Promise<void> => {
   //   console.log("STarted to mint")
@@ -175,9 +172,9 @@ const Mint: NextPage = () => {
 
     // second private sale
     
-    const wladdress = earlysupporter
-    const leafNodes = wladdress.map(addr => keccak256(addr))
-    const merkleTree = new MerkleTree(leafNodes, keccak256,{sortPairs: true})
+    //const wladdress = earlysupporter
+    //const leafNodes = wladdress.map(addr => keccak256(addr))
+    //const merkleTree = new MerkleTree(leafNodes, keccak256,{sortPairs: true})
     //const merkleProof = merkleTree.getHexProof(keccak256(account))
     //const library = await provider.getBalance(address?address:'')
     let mintResult
@@ -245,11 +242,11 @@ const Mint: NextPage = () => {
     const calculateFee = async():Promise<void> => {
       try{
         if(transferNFT){
-          const provider = new ethers.providers.Web3Provider(window.ethereum)
-          const signer = provider.getSigner()
+          //const provider = new ethers.providers.Web3Provider(window.ethereum)
+          //const signer = provider.getSigner()
           // const tokenContract =  new ethers.Contract(addresses[`${Number(chainId).toString(10)}`].address, AdvancedONT.abi, signer)
-          const adapterParam = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 200000])
-          const fee:any =[0.001] //await tokenContract.estimateSendFee(addresses[toChain].chainId, account,transferNFT,false,adapterParam)
+          //const adapterParam = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 200000])
+          //const fee:any =[0.001] //await tokenContract.estimateSendFee(addresses[toChain].chainId, account,transferNFT,false,adapterParam)
           // setEstimateFee('Estimate Fee :'+(Number(fee[0])/Math.pow(10,18)*1.1).toFixed(10)+addresses[chainId].unit)
         }else{
           //setEstimateFee('')
@@ -265,14 +262,14 @@ const Mint: NextPage = () => {
       }
     }
     calculateFee()
-  },[toChain,transferNFT])
+  },[toChain,transferNFT,chainId])
 
 
   useEffect(()=>{
     if(chainId && provider && address && collectionInfo){
       getInfo()
     }
-  },[provider,address,collectionInfo,chainId])
+  },[provider,address,collectionInfo,chainId,getInfo])
   useEffect(()=>{
     if(provider?._network){
       setChainId(provider._network.chainId)
@@ -280,7 +277,7 @@ const Mint: NextPage = () => {
   },[provider?._network])
   useEffect(()=>{
     dispatch(getCollectionInfo(col_url) as any)  
-  },[]) 
+  },[col_url,dispatch]) 
   useEffect(()=>{
     if(Number(nextTokenId)>=0 && startId >=0){
       setMintedCnt(Number(nextTokenId) - startId)
@@ -320,28 +317,28 @@ const Mint: NextPage = () => {
                     {(price*mintNum).toFixed(2)}                    
                   </div>
                   {
-                    chainId === (env === 'testnet' ? 4 : 1) && <img src="/sidebar/ethereum.png" className="m-auto h-[35px]" />
+                    chainId === (env === 'testnet' ? 4 : 1) && <img src="/sidebar/ethereum.png" className="m-auto h-[35px]" alt=''/>
                   }
                   {
-                    chainId === (env === 'testnet' ? 5 : 1) && <img src="/sidebar/ethereum.png" className="m-auto h-[35px]" />
+                    chainId === (env === 'testnet' ? 5 : 1) && <img src="/sidebar/ethereum.png" className="m-auto h-[35px]" alt=''/>
                   }
                   {
-                    chainId === (env === 'testnet' ? 421611 : 1) && <img src="/sidebar/arbitrum.png" className="m-auto h-[35px]" />
+                    chainId === (env === 'testnet' ? 421611 : 1) && <img src="/sidebar/arbitrum.png" className="m-auto h-[35px]" alt=''/>
                   }
                   {
-                    chainId === (env === 'testnet' ? 43113 : 1) && <img src="/sidebar/avax.png" className="m-auto h-[35px]" />
+                    chainId === (env === 'testnet' ? 43113 : 1) && <img src="/sidebar/avax.png" className="m-auto h-[35px]" alt=''/>
                   }
                   {
-                    chainId === (env === 'testnet' ? 97 : 1) && <img src="/sidebar/binance.png" className="m-auto h-[35px]" />
+                    chainId === (env === 'testnet' ? 97 : 1) && <img src="/sidebar/binance.png" className="m-auto h-[35px]" alt=''/>
                   }
                   {
-                    chainId === (env === 'testnet' ? 4002 : 1) && <img src="/sidebar/fantom.png" className="m-auto h-[35px]" />
+                    chainId === (env === 'testnet' ? 4002 : 1) && <img src="/sidebar/fantom.png" className="m-auto h-[35px]" alt=''/>
                   }
                   {
-                    chainId === (env === 'testnet' ? 69 : 1) && <img src="/sidebar/optimism.png" className="m-auto h-[35px]" />
+                    chainId === (env === 'testnet' ? 69 : 1) && <img src="/sidebar/optimism.png" className="m-auto h-[35px]" alt=''/>
                   }
                   {
-                    chainId === 80001 && <img src="/sidebar/polygon.png" className="m-auto h-[35px]" />
+                    chainId === 80001 && <img src="/sidebar/polygon.png" className="m-auto h-[35px]" alt=''/>
                   }
                 </div>
               </div>

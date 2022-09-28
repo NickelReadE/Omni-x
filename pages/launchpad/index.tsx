@@ -29,7 +29,7 @@ const Launchpad: NextPage = () => {
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(getCollections() as any)    
-  }, [])
+  }, [dispatch])
   useEffect(() => { 
     if(collections?.length > 0){     
       dispatch(getCollectionsForComingAndLive() as any)   
@@ -38,7 +38,7 @@ const Launchpad: NextPage = () => {
         setSampleCollection(samples[0])
       }
     }
-  }, [collections])
+  }, [collections,dispatch])
   return (
     <div className='mt-[75px] w-full px-[130px] pt-[50px]'>
       <div className='flex  justify-between'>

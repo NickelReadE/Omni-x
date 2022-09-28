@@ -1,4 +1,4 @@
-import React,{useEffect, useState} from 'react'
+import React,{useCallback, useEffect, useState} from 'react'
 import { ITypeNFT } from '../interface/interface'
 import Link from 'next/link'
 import { ethers } from 'ethers'
@@ -19,7 +19,7 @@ const NftForLaunch = (pro:ITypeNFT) => {
   } = useWallet()
   const dispatch = useDispatch()
   const collectionInfo = useSelector(selectCollectionInfo)
-  const getPrice = async () =>{
+  const getPrice = useCallback(async () =>{
     try{
       const chainId = provider?._network?.chainId 
       if(chainId === undefined || collectionInfo.address === undefined) 
@@ -33,7 +33,7 @@ const NftForLaunch = (pro:ITypeNFT) => {
       console.log(error)
     }
     
-  }
+  },[collectionInfo.address, provider?._network.chainId, signer])
   useEffect(()=>{
     dispatch(getCollectionInfo(pro.col_url) as any)
   },[dispatch, pro.col_url])
@@ -114,5 +114,4 @@ const NftForLaunch = (pro:ITypeNFT) => {
    
   )
 }
-
 export default NftForLaunch
