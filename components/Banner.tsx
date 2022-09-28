@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -7,8 +8,7 @@ import classNames from '../helpers/classNames'
 import Twitter from '../public/images/twitter.png'
 import Web from '../public/images/web.png'
 import { useSelector, useDispatch } from 'react-redux'
-import { selectUser, selectHeroSkin , updateIsGregHolder} from '../redux/reducers/userReducer'
-import { makeStyles } from '@material-ui/core/styles'
+import { selectUser, updateIsGregHolder} from '../redux/reducers/userReducer'
 import Carousel from './carousel'
 import {chainsFroSTG, GregContractAddress, veSTGContractAddress } from '../constants/addresses'
 import { getChainIdFromName } from '../utils/constants'
@@ -22,41 +22,31 @@ type BannerProps = {
   menu: string
 }
 
-const useStyles = makeStyles({
-  paper: {
-    padding: '2rem',
-    width: '90%',
-    maxWidth: '100%',
-  },
-})
 const timeout = (delay: number) =>{
   return new Promise( res => setTimeout(res, delay) )
 }
 const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
-  
-  const disptach = useDispatch()  
+  const disptach = useDispatch()
   const cuser = useSelector(selectUser)
-  const skinName = useSelector(selectHeroSkin)
   const { isInitialized, Moralis } = useMoralis()
   const { address } = useWallet()
-  const classes = useStyles()
   const [avatarError, setAvatarError] = useState(false)
-  const [bOpenModal, setOpenModal] = React.useState(false)
-  const [bShowSettingIcon, setShowSettingIcon] = React.useState(false)
   const [isGregHolder, setIsGregHolder] = useState(false)
   const [isStgStacker, setIsStgStacker] = useState(false)
   const [balances, setBalanceSTG] = useState(0)
   const DEFAULT_AVATAR = 'uploads\\default_avatar.png'
+
   const fetchNFTByAddress = async(chain:'eth'|'bsc'|'polygon'|'avalanche'|'fantom',contractAddress:string) =>{
-    timeout(1000)
+    await timeout(1000)
     const nft= await Moralis.Web3API.account.getNFTsForContract({chain: chain, address:address?address:'',token_address: contractAddress})
     if(nft.total){
       setIsGregHolder(true)
     }
-  } 
+  }
+
   const fetchToken =async(chain:string)=>{
-    const veSTGInstance = getVeSTGInstance(veSTGContractAddress[chain], getChainIdFromName(chain) , null)   
-    setBalanceSTG(await veSTGInstance.balanceOf(address))      
+    const veSTGInstance = getVeSTGInstance(veSTGContractAddress[chain], getChainIdFromName(chain) , null)
+    setBalanceSTG(await veSTGInstance.balanceOf(address))
   }
 
   useEffect(() => {
@@ -90,7 +80,7 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
           blur && menu ==='home'? 'blur-sm' : ''
         )}
       >
-        <div onMouseEnter={() => setShowSettingIcon(true)} onMouseLeave={() => setShowSettingIcon(false)}>
+        <div>
           <Carousel slides={slides} />
         </div>
         {menu === 'home' && (
@@ -107,17 +97,17 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
                 </div>
               } */}
               <div className="bottom-[0rem] left-[4rem]  absolute">
-                <Image 
-                  src={avatarError||cuser.avatar===undefined||cuser.avatar===DEFAULT_AVATAR?'/images/default_avatar.png':(process.env.API_URL + cuser.avatar)} 
-                  alt="avatar" 
-                  onError={(e)=>{cuser.avatar&&setAvatarError(true)}} 
+                <Image
+                  src={avatarError||cuser.avatar===undefined||cuser.avatar===DEFAULT_AVATAR?'/images/default_avatar.png':(process.env.API_URL + cuser.avatar)}
+                  alt="avatar"
+                  onError={()=>{cuser.avatar&&setAvatarError(true)}}
                   width={200}
                   height={200}
                   className={'rounded-[8px]'}
                 />
-              </div>              
-              <div className="flex flex-col ml-[20rem] mt-[10px]">                
-                  
+              </div>
+              <div className="flex flex-col ml-[20rem] mt-[10px]">
+
                 <div className="flex flex-row h-8">
                   <div className="flex items-center text-[26px] text-slate-800 font-semibold mr-[16px]">{cuser.username ? cuser.username : 'username'}</div>
                   {
@@ -126,8 +116,8 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
                   {
                     isStgStacker&&<Image src={Stg} alt="avatar" width='30px' height='30px' />
                   }
-                </div>                                
-               
+                </div>
+
                 <div className="text-[#6C757D] text-[16px] text-slate-800">
                   {cuser.bio?cuser.bio:'You can see the short description about your account'}
                 </div>
@@ -151,7 +141,7 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
             </div>
           </div>
         )}
-      </div>   
+      </div>
       {/* <div className="w-full md:w-auto">
         <Dialog open={bOpenModal} onClose={() => setOpenModal(false)} aria-labelledby='simple-dialog-title' maxWidth={'xl'} classes={{ paper: classes.paper }}>
           <UserEdit updateModal={updateModal} />

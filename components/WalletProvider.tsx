@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useCallback, useEffect, useState } from 'react'
 import { ethers, Signer } from 'ethers'
 import Web3Modal, { IProviderOptions, providers } from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
@@ -65,7 +66,7 @@ export const WalletProvider = ({
   )
 
   const handleChainChanged = useCallback(
-    () => { 
+    () => {
       //window.location.reload()
     },
     []
@@ -92,9 +93,9 @@ export const WalletProvider = ({
 
   const switchNetwork = useCallback(async (chainId: number) => {
     const chainInfo = getChainInfo(chainId)
-    const CHAIN_ID = chainInfo?.chainId || 4
+    const CHAIN_ID = chainInfo?.chainId || 5
     if (window.ethereum) {
-      if (window.ethereum.networkVersion !== 4) {
+      if (window.ethereum.networkVersion !== 5) {
         try {
           await window.ethereum.request({
             method: 'wallet_switchEthereumChain',
@@ -180,7 +181,9 @@ export const WalletProvider = ({
       setSigner(signer)
       setAddress(await signer.getAddress())
     }
-    initCached()
+    (async () => {
+      await initCached()
+    })()
   }, [web3Modal, handleAccountsChanged])
 
   return (

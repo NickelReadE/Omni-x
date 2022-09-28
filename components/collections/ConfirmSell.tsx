@@ -1,17 +1,14 @@
-import React, {useEffect, useState} from 'react'
-
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
+import React, {useState} from 'react'
+import { makeStyles, createStyles } from '@material-ui/core/styles'
 import Dialog from '@material-ui/core/Dialog'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import useWallet from '../../hooks/useWallet'
-
 import CustomSelect from './CustomSelect'
 import Select from 'react-select'
 import { IListingData } from '../../interface/interface'
 import { CURRENCIES_LIST } from '../../utils/constants'
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     root: {
       margin: 0,
@@ -46,13 +43,8 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
   nftTitle,
   onSubmit
 }) => {
-  const {
-    provider,
-  } = useWallet()
-
   const classes = useStyles()
   const [sellType, setSellType] = useState('fixed')
-  const [price_in_usd, setPriceInUSD] = useState('')
   const [price, setPrice] = useState(0)
   const [currency, setCurrency] = useState(CURRENCIES_LIST[0])
   const [period, setPeriod] = useState(period_list[2])
@@ -60,14 +52,6 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
   const onChangePrice = (e: any) => {
     setPrice(e.target.value)
   }
-
-  useEffect(() => {
-    if ( price >= 0 ) {
-      setPriceInUSD(`~ $${price} USD`)
-    } else {
-      setPriceInUSD('')
-    }
-  }, [price])
 
   const onListing = () => {
     if (onSubmit) {
@@ -133,7 +117,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
               </div>
 
               <div>
-                <img className='rounded-[8px] max-w-[250px]' src={nftImage} />
+                <img alt={'nftImage'} className='rounded-[8px] max-w-[250px]' src={nftImage} />
                 <p className='mt-2 text-center text-[#6C757D] font-medium'>{nftTitle}</p>
               </div>
             </div>
@@ -192,7 +176,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
                 </div>
               </div>
               <div>
-                <img className='rounded-[8px] max-w-[250px]' src={nftImage} />
+                <img alt={'nftImage'} className='rounded-[8px] max-w-[250px]' src={nftImage} />
                 <p className='mt-2 text-center text-[#6C757D] font-medium'>{nftTitle}</p>
               </div>
             </div>

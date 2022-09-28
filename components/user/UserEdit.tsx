@@ -1,23 +1,18 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef, useState, useCallback } from 'react'
-
 import Cropper from 'react-easy-crop'
-import { Listbox, Transition, Switch } from '@headlessui/react'
+import { Listbox } from '@headlessui/react'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Dialog from '@material-ui/core/Dialog'
 import Slider from '@material-ui/core/Slider'
-
 import { getCroppedImg} from './CanvasUtils'
-
 import Image from 'next/image'
-import Close from '../../public/images/close.png'
-import Default from '../../public/images/banner-1.png'
 import Twitter from '../../public/images/twitter.png'
 import Web from '../../public/images/web.png'
 import Photo from '../../public/images/photo.png'
 import useWallet from '../../hooks/useWallet'
-import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
-import { updateUser, getUser, selectUser, selectIsGregHolder, selectHeroSkin, updateHeroSkin} from '../../redux/reducers/userReducer'
+import { updateUser, getUser, selectUser, selectHeroSkin, updateHeroSkin} from '../../redux/reducers/userReducer'
 import classNames from '../../helpers/classNames'
 import editStyle from '../../styles/useredit.module.scss'
 import UserSVG from '../../public/svgs/user.svg'
@@ -27,17 +22,12 @@ import EthIMG from '../../public/images/payment/eth.png'
 import OmniIMG from '../../public/images/payment/omni.png'
 import UsdcIMG from '../../public/images/payment/usdc.png'
 import UsdtIMG from '../../public/images/payment/usdt.png'
-import {heroGregSkins, skinNames} from '../../constants/gregSkin'
-
+import {skinNames} from '../../constants/gregSkin'
 
 interface IUserEditProps {
   updateModal: (arg: string) => void
 }
-const sort_fields = [
-  { id: 1, name: 'price: low to high', value: 'price', unavailable: false },
-  { id: 2, name: 'price: high to low', value: '-price', unavailable: false },
-  { id: 3, name: 'Highest last sale',  value: 'price', unavailable: false},
-]
+
 const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
   const updateProfileFormRef = useRef<HTMLFormElement>(null)
 
@@ -68,7 +58,6 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
 
   const dispatch = useDispatch()
   const user = useSelector(selectUser)
-  const router = useRouter()
 
   const context = useWallet()
 
@@ -285,7 +274,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
         <div className="basis-5/6 pl-4  mt-[1rem]" style={{position: 'relative'}}>
           {
             selectedTab == 0 &&
-            <form 
+            <form
               ref={updateProfileFormRef}
               onSubmit={updateProfile}
             >
@@ -379,7 +368,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
               </div>
               <div className="flex mt-5 w-full">
                 <div>
-                  <div 
+                  <div
                     className="relative cursor-pointer"
                     onClick={onClickAvatar}
                   >
@@ -431,10 +420,10 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                     </div>
                     {isGregHolder&&
                       <div>
-                        <div 
+                        <div
                           className="relative cursor-pointer"
                           onClick={onClickAvatar}
-                        >                        
+                        >
                           <img
                             src={`/images/gregs/Alien_${gregName}.png`}
                             alt="avatar"
@@ -483,9 +472,9 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                         </Listbox>
                       </div>
                     }
-                    
+
                   </div>
-                  
+
                   <div className="w-full mb-3 mt-3 flex items-center">
                     <div className="text-[#6C757D] mr-2">
                       <Image src={Twitter} alt="tiwitter" />
@@ -526,7 +515,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
           }
           {
             selectedTab == 1 &&
-            <form 
+            <form
               ref={updateProfileFormRef}
               onSubmit={updateProfile}
             >
@@ -572,7 +561,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                   <div className="inline-block align-middle ml-4">
                     <p className='text-[#ADB5BD] text-lg leading-6 font-medium'>Minimum Bid</p>
                     <p className='text-[#ADB5BD] text-base leading-5'>no alerts unless bid exceeds this value:</p>
-                    
+
                     <span className={classNames('basis-1/6',editStyle.etherspan)}>
                       <input className="w-32 my-4" type="text" placeholder='0.005' disabled={true} />
                     </span>
@@ -592,7 +581,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
           }
           {
             selectedTab == 2 &&
-            <form 
+            <form
               ref={updateProfileFormRef}
               onSubmit={updateProfile}
             >
@@ -678,16 +667,16 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
           }
         </div>
       </div>
-      <img src={'/images/gregs/Alien_1a.png'} className=' w-[0px] hidden'/>
-      <img src={'/images/gregs/Alien_1b.png'} className=' w-[0px] hidden'/>
-      <img src={'/images/gregs/Alien_2a.png'} className=' w-[0px] hidden'/>
-      <img src={'/images/gregs/Alien_2b.png'} className=' w-[0px] hidden'/>
-      <img src={'/images/gregs/Alien_3a.png'} className=' w-[0px] hidden'/>
-      <img src={'/images/gregs/Alien_3b.png'} className=' w-[0px] hidden'/>
-      <img src={'/images/gregs/Alien_4a.png'} className=' w-[0px] hidden'/>
-      <img src={'/images/gregs/Alien_4b.png'} className=' w-[0px] hidden'/>
-      <img src={'/images/gregs/Alien_5a.png'} className=' w-[0px] hidden'/>
-      <img src={'/images/gregs/Alien_5b.png'} className=' w-[0px] hidden'/>
+      <img alt={'alienIcon'} src={'/images/gregs/Alien_1a.png'} className=' w-[0px] hidden'/>
+      <img alt={'alienIcon'} src={'/images/gregs/Alien_1b.png'} className=' w-[0px] hidden'/>
+      <img alt={'alienIcon'} src={'/images/gregs/Alien_2a.png'} className=' w-[0px] hidden'/>
+      <img alt={'alienIcon'} src={'/images/gregs/Alien_2b.png'} className=' w-[0px] hidden'/>
+      <img alt={'alienIcon'} src={'/images/gregs/Alien_3a.png'} className=' w-[0px] hidden'/>
+      <img alt={'alienIcon'} src={'/images/gregs/Alien_3b.png'} className=' w-[0px] hidden'/>
+      <img alt={'alienIcon'} src={'/images/gregs/Alien_4a.png'} className=' w-[0px] hidden'/>
+      <img alt={'alienIcon'} src={'/images/gregs/Alien_4b.png'} className=' w-[0px] hidden'/>
+      <img alt={'alienIcon'} src={'/images/gregs/Alien_5a.png'} className=' w-[0px] hidden'/>
+      <img alt={'alienIcon'} src={'/images/gregs/Alien_5b.png'} className=' w-[0px] hidden'/>
 
     </>
   )

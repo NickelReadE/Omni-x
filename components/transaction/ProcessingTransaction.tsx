@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import {PendingTxType} from '../../contexts/contract'
 import Image from 'next/image'
 import arrowRight from '../../public/images/arrowRight.png'
@@ -9,7 +9,6 @@ type ProcessingTransactionProps = {
 }
 
 const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Element => {
-  const [pending, setPending] = useState(true)
   const [hovered, setHovered] = useState(false)
   const [targetHovered, setTargetHovered] = useState(false)
 
@@ -31,10 +30,6 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
     }
   }
 
-  useEffect(() => {
-    setPending(!txInfo.destTxHash)
-  }, [txInfo])
-
   const onHover = (type: 'sender' | 'target') => {
     if (type === 'sender') {
       setHovered(true)
@@ -42,7 +37,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
       setTargetHovered(true)
     }
   }
-  
+
   const onLeave = (type: 'sender' | 'target') => {
     if (type === 'sender') {
       setHovered(false)
@@ -50,7 +45,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
       setTargetHovered(false)
     }
   }
-  
+
   return (
     <>
       <div className={'rounded-[8px] w-[250px] md:order-2 mr-[70px] px-4 flex flex-col justify-center py-2'}>
@@ -65,6 +60,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
                 onMouseEnter={() => onHover('sender')}
                 onMouseLeave={() => onLeave('sender')}
                 src={hovered ? getChainIcons(txInfo.senderChainId).explorer : getChainIcons(txInfo.senderChainId).icon}
+                style={{ cursor: (hovered) ? 'pointer' : 'auto' }}
                 alt="chain icon"
                 width={18}
                 height={18}
@@ -74,7 +70,8 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
               <Image
                 width={18}
                 height={18}
-                onMouseEnter={() => onHover('target')} onMouseLeave={() => onLeave('target')}
+                onMouseEnter={() => onHover('target')}
+                onMouseLeave={() => onLeave('target')}
                 src={(targetHovered && txInfo.destTxHash) ? getChainIcons(txInfo.targetChainId).explorer : getChainIcons(txInfo.targetChainId).icon}
                 style={{ cursor: (txInfo && txInfo.destTxHash) ? 'pointer' : 'auto', opacity: (txInfo && txInfo.destTxHash) ? 1 : 0.4 }}
                 onClick={onViewExplorerOnDest}

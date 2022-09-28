@@ -1,4 +1,5 @@
-import React, { useState, useEffect, Fragment, useMemo } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect, Fragment } from 'react'
 import LazyLoad from 'react-lazyload'
 import type { NextPage } from 'next'
 import Link from 'next/link'
@@ -8,13 +9,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { ethers } from 'ethers'
 import ConfirmSell from '../../../components/collections/ConfirmSell'
 import ConfirmBid from '../../../components/collections/ConfirmBid'
-
 import { getNFTInfo, selectNFTInfo } from '../../../redux/reducers/collectionsReducer'
 import useWallet from '../../../hooks/useWallet'
 import useTrading from '../../../hooks/useTrading'
-import { getChainIcon, getChainIconByCurrencyAddress, getChainNameFromId, getCollectionAddress, getCurrencyIconByAddress, getProfileLink } from '../../../utils/constants'
-
-import PngCheck from '../../../public/images/check.png' 
+import { getChainIcon, getChainNameFromId, getCollectionAddress, getCurrencyIconByAddress, getProfileLink } from '../../../utils/constants'
+import PngCheck from '../../../public/images/check.png'
 import PngSub from '../../../public/images/subButton.png'
 import PngEther from '../../../public/images/collections/ethereum.png'
 import useOrderStatics from '../../../hooks/useOrderStatics'
@@ -27,7 +26,7 @@ const truncate = (str: string) => {
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('items')
-  
+
   const nftInfo = useSelector(selectNFTInfo)
   const dispatch = useDispatch()
   const {
@@ -83,10 +82,10 @@ const Item: NextPage = () => {
     highestBidCoin,
     lastSale,
     lastSaleCoin
-  } = useOrderStatics({ 
-    nft: nftInfo?.nft, 
+  } = useOrderStatics({
+    nft: nftInfo?.nft,
     collection_address_map,
-    isDetailPage: true 
+    isDetailPage: true
   })
 
   const order_collection_address = order?.collectionAddress
@@ -126,7 +125,7 @@ const Item: NextPage = () => {
       dispatch(getNFTInfo(col_url, token_id) as any)
     }
   }, [col_url, token_id])
-  
+
   // order api call
   useEffect(() => {
     if (nftInfo) {
@@ -139,12 +138,9 @@ const Item: NextPage = () => {
 
   // profile link
   const profileLink = chain_name && ownerType && owner && getProfileLink(chain_name, ownerType, owner)
-  const currencyChainIcon = getChainIconByCurrencyAddress(order?.currencyAddress)
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
   const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
-
-  // console.log('-isListed, isAuction, owner, address-', isListed, isAuction, owner, address, nftInfo)
-
+  
   return (
     <>
       {nftInfo?.nft?.token_id === Number(token_id) && nftInfo?.collection?.col_url === col_url &&
@@ -153,7 +149,7 @@ const Item: NextPage = () => {
             <div className="grid grid-cols-3 2xl:gap-12 lg:gap-1 xl:gap-4">
               <div className="col-span-1 h-full">
                 <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image"/>}>
-                  <img className='rounded-[8px]' src={imageError?'/images/omnix_logo_black_1.png':nftInfo.nft.image} alt="nft-image" onError={(e)=>{setImageError(true)}} data-src={nftInfo.nft.image} />
+                  <img className='rounded-[8px]' src={imageError?'/images/omnix_logo_black_1.png':nftInfo.nft.image} alt="nft-image" onError={()=>{setImageError(true)}} data-src={nftInfo.nft.image} />
                 </LazyLoad>
               </div>
               <div className="col-span-2">
@@ -178,14 +174,14 @@ const Item: NextPage = () => {
                           </Link>
                         </h1>
                       )}
-                      
+
                     </div>
                     <div className="flex justify-between items-center mt-6">
                       {order && (
                         <>
                           <h1 className="text-[#1E1C21] text-[60px] font-normal">{formattedPrice}</h1>
                           <div className="mr-5">
-                            {currencyIcon && 
+                            {currencyIcon &&
                               <img
                                 src={`${currencyIcon}`}
                                 className='mr-[8px] w-[21px]'
@@ -249,17 +245,17 @@ const Item: NextPage = () => {
                   <div className="">
                     <div className="mb-3">
                       <div className="">
-                        { isListed && !isAuction && owner?.toLowerCase() != address?.toLowerCase() && 
+                        { isListed && !isAuction && owner?.toLowerCase() != address?.toLowerCase() &&
                           <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]" onClick={()=>onBuy(order)}>buy</button>
                         }
-                        { owner?.toLowerCase() == address?.toLowerCase() && 
+                        { owner?.toLowerCase() == address?.toLowerCase() &&
                           <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={() => {setOpenSellDlg(true)}}>sell</button>
                         }
                       </div>
                     </div>
                   </div>
                   <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
-                    { owner && address && owner.toLowerCase() != address.toLowerCase() && 
+                    { owner && address && owner.toLowerCase() != address.toLowerCase() &&
                       <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]" onClick={() => {setOpenBidDlg(true)}}>bid</button>
                     }
                   </div>

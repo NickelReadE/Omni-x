@@ -31,8 +31,6 @@ export function rotateSize(width : number, height : number, rotation : any) {
 export async function getCroppedImg(
   imageSrc : string,
   pixelCrop : any,
-  rotation = 0,
-  flip = { horizontal: false, vertical: false }
 ) {
   const image = await createImage(imageSrc)
   const canvas = document.createElement('canvas')

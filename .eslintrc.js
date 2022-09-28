@@ -13,6 +13,8 @@ module.exports = {
     semi: ['error', 'never'],
     indent: ['error', 2],
     quotes: [2, 'single', { avoidEscape: true }],
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@next/next/no-img-element': 'off'
   },
   env: {
     browser: true,

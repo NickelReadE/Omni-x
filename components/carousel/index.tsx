@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect, useRef } from 'react'
 import { useSwipeable } from 'react-swipeable'
 import Style from '../../styles/carousel.module.scss'
 
@@ -6,6 +7,7 @@ const Carousel = (props: any): JSX.Element => {
   const [slideTotal, setSlideTotal] = useState(0)
   const [slideCurrent, setSlideCurrent] = useState(-1)
   const [slides, setSlides] = useState<any>([])
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [height, setHeight] = useState('0px')
   const nextRef = useRef<HTMLDivElement>(null)
   const handlers = useSwipeable({
@@ -128,7 +130,7 @@ const Carousel = (props: any): JSX.Element => {
       } else {
         preactiveSlide = slide[slideTotal]
       }
-      slide.forEach((slid, index) => {
+      slide.forEach((slid) => {
         if (slid.class.includes(Style.proactivede)) {
           slid.class = `${Style.sliderSingle} ${Style.preactivede}`
         }
