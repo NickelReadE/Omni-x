@@ -12,7 +12,7 @@ import classNames from '../../helpers/classNames'
 import useTrading from '../../hooks/useTrading'
 import useOrderStatics from '../../hooks/useOrderStatics'
 import ConfirmSell from './ConfirmSell'
-import useOwnership from '../../hooks/useOwnership'
+// import useOwnership from '../../hooks/useOwnership'
 //import reducer
 import { selectCollectionInfo } from '../../redux/reducers/collectionsReducer'
 import { useSelector } from 'react-redux'

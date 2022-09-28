@@ -169,14 +169,6 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
     roundedLogo: '/images/roundedColorEthereum.png',
     explorerLogo: '/images/ethereumExplorer.png',
     officialName: 'Goerli',
-    currency: 'ETH'
-  },
-  5: {
-    name: 'goerli',
-    logo: '/svgs/ethereum.svg',
-    roundedLogo: '/images/roundedColorEthereum.png',
-    explorerLogo: '/images/ethereumExplorer.png',
-    officialName: 'Goerli',
     currency: 'GoerliETH'
   },
   97: {
@@ -313,13 +305,13 @@ export const currencies_list: { [key: number]: Array<{ value: number; text: stri
 }
 
 export const chain_list: {[key: string]: number} = {
-  // 'eth': 1,
-  // 'bsc': 56,
-  // 'matic': 137,
-  // 'avalanche': 43114,
-  // 'fantom': 250,
-  // 'optimism': 10,
-  // 'arbitrum': 42161,
+  'eth': 1,
+  'bsc': 56,
+  'matic': 137,
+  'avalanche': 43114,
+  'fantom': 250,
+  'optimism': 10,
+  'arbitrum': 42161,
   'bsc testnet': 97,
   'rinkeby': 4,
   'goerli': 5,

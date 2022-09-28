@@ -886,7 +886,7 @@ const SideBar: React.FC = () => {
                 <span className="font-g-300">Select destination chain:</span>
                 <div className="flex flex-row w-full space-x-[15px]">
                   <button onClick={() => handleTargetChainChange(5)} className={targetChain === 5 ? 'border border-g-300' : ''}>
-                    <img src="/svgs/ethereum.svg" width={24} height={28} />
+                    <img src="/svgs/ethereum.svg" width={24} height={28} alt='eth'/>
                   </button>
                   <button onClick={() => handleTargetChainChange(ChainIds.ETHEREUM)} className={targetChain === ChainIds.ETHEREUM ? 'border border-g-300' : ''}>
                     <img alt={'networkIcon'} src="/svgs/ethereum.svg" width={24} height={28} />

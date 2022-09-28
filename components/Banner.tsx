@@ -11,6 +11,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { selectUser, updateIsGregHolder} from '../redux/reducers/userReducer'
 import Carousel from './carousel'
 import {chainsFroSTG, GregContractAddress, veSTGContractAddress } from '../constants/addresses'
+
 import { getChainIdFromName } from '../utils/constants'
 import { getVeSTGInstance } from '../utils/contracts'
 import Hgreg from '../public/images/gregs/logo.png'
@@ -51,14 +52,14 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
 
   useEffect(() => {
     if (isInitialized && address) {
-      // fetchNFTByAddress('eth',String(GregContractAddress['eth']))
-      // fetchNFTByAddress('bsc',String(GregContractAddress['bsc']))
-      // fetchNFTByAddress('polygon',String(GregContractAddress['polygon']))
-      // fetchNFTByAddress('avalanche',String(GregContractAddress['avalanche'])) 
-      // fetchNFTByAddress('fantom',String(GregContractAddress['fantom']))
-      // chainsFroSTG.map((chain)=>{
-      //   fetchToken(chain)
-      // })
+      fetchNFTByAddress('eth',String(GregContractAddress['eth']))
+      fetchNFTByAddress('bsc',String(GregContractAddress['bsc']))
+      fetchNFTByAddress('polygon',String(GregContractAddress['polygon']))
+      fetchNFTByAddress('avalanche',String(GregContractAddress['avalanche'])) 
+      fetchNFTByAddress('fantom',String(GregContractAddress['fantom']))
+      chainsFroSTG.map((chain)=>{
+        fetchToken(chain)
+      })
     }
   }, [isInitialized, Moralis, address])
 
