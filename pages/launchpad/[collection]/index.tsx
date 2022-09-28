@@ -30,7 +30,6 @@ const Mint: NextPage = () => {
     signer,
     address
   } = useWallet()
-  const env = process.env.NEXT_PUBLICE_ENVIRONMENT || 'testnet'
   const router = useRouter()
   const col_url = router.query.collection as string 
   const dispatch = useDispatch()
