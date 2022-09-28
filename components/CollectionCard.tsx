@@ -70,19 +70,19 @@ const CollectionCard = (props:any) => {
         <div className={classNames('row-span-2 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)}>
           <div className='text-[14px] flex flex-row justify-between'>
             <span className='font-extrabold mr-[1px]'>Items</span>
-            <span className='font-medium text-[12px]'>{props.card?props.cardprops.card.itemsCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+            <span className='font-medium text-[12px]'>{props.card?props.cardprops.card.itemsCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
           </div>
         </div>
         <div  className={classNames('row-span-2 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
           <div className='text-[14px] flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
             <span className='font-extrabold mr-[1px]'>Owners</span>
-            <span className='font-medium text-[12px]'>{props.card?props.cardprops.card.ownerCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+            <span className='font-medium text-[12px]'>{props.card?props.cardprops.card.ownerCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
           </div>
         </div>
         <div className={classNames('row-span-2 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
           <div className='text-[14px] flex flex-row justify-between' style={{justifyContent: 'space-between'}}>
             <span className='font-extrabold mr-[1px]'>Listed</span>
-            <span className='font-medium text-[12px]'>{props.card?props.cardprops.card.orderCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+            <span className='font-medium text-[12px]'>{props.card?props.cardprops.card.orderCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
           </div>
         </div>
         <div className={classNames('row-span-3 col-span-1 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >

@@ -25,7 +25,6 @@ import earlysupporter from '../../../constants/whitelist/earlysupporter.json'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Slide } from 'react-toastify'
-import { contractInfo } from '../../../interface/interface'
 import classNames from '../../../helpers/classNames'
 import useWallet from '../../../hooks/useWallet'
 
