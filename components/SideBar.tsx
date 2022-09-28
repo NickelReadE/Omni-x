@@ -492,6 +492,7 @@ const SideBar: React.FC = () => {
 
   useEffect(()=>{
     if(window.ethereum){
+      setChainID(parseInt(window.ethereum.networkVersion))
       window.ethereum.on('chainChanged', function (networkId:string) {
         setChainID(parseInt(networkId))
         //window.location.reload()
@@ -576,8 +577,11 @@ const SideBar: React.FC = () => {
             </div>
             <div className="w-full 0">
               <div className="sidebar-icon">
-                {
+              {
                   chainId === (env === 'testnet' ? 4 : 1) && <img alt={'networkIcon'} src="/sidebar/ethereum.png" className="m-auto h-[45px]" />
+                }
+                {
+                  chainId === (env === 'testnet' ? 5 : 1) && <img alt={'networkIcon'} src="/sidebar/ethereum.png" className="m-auto h-[45px]" />
                 }
                 {
                   chainId === (env === 'testnet' ? 421611 : 1) && <img alt={'networkIcon'} src="/sidebar/arbitrum.png" className="m-auto h-[45px]" />
@@ -972,7 +976,7 @@ const SideBar: React.FC = () => {
             <div className="w-full 0">
               <div className="sidebar-icon">
                 {
-                  chainId === (env === 'testnet' ? 4 : 1) && <img alt={'networkIcon'} src="/sidebar/ethereum.png" className="m-auto h-[45px]" />
+                  chainId === (env === 'testnet' ? 5 : 1) && <img alt={'networkIcon'} src="/sidebar/ethereum.png" className="m-auto h-[45px]" />
                 }
                 {
                   chainId === (env === 'testnet' ? 421611 : 1) && <img alt={'networkIcon'} src="/sidebar/arbitrum.png" className="m-auto h-[45px]" />
