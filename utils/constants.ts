@@ -34,7 +34,7 @@ const chainIds: any = ChainIds
 export const PROTOCAL_FEE = 2
 export const CREATOR_FEE = 2
 
-const SUPPORTED_CHAIN_IDS = [1, 56, 137, 43114, 250, 10, 42161, 5, 97, 43113, 80001, 421613, 420, 4002]
+const SUPPORTED_CHAIN_IDS = [5, 56, 137, 43114, 250, 10, 42161, 5, 97, 43113, 80001, 421613, 420, 4002]
 
 export const CURRENCIES_LIST = [
   { value: 0, text: 'OMNI', icon: 'payment/omni.png' },
