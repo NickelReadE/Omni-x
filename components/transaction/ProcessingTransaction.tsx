@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import {PendingTxType} from '../../contexts/contract'
 import Image from 'next/image'
 import arrowRight from '../../public/images/arrowRight.png'
@@ -9,8 +9,6 @@ type ProcessingTransactionProps = {
 }
 
 const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Element => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [pending, setPending] = useState(true)
   const [hovered, setHovered] = useState(false)
   const [targetHovered, setTargetHovered] = useState(false)
 
@@ -31,10 +29,6 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
       }
     }
   }
-
-  useEffect(() => {
-    setPending(!txInfo.destTxHash)
-  }, [txInfo])
 
   const onHover = (type: 'sender' | 'target') => {
     if (type === 'sender') {
@@ -66,6 +60,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
                 onMouseEnter={() => onHover('sender')}
                 onMouseLeave={() => onLeave('sender')}
                 src={hovered ? getChainIcons(txInfo.senderChainId).explorer : getChainIcons(txInfo.senderChainId).icon}
+                style={{ cursor: (hovered) ? 'pointer' : 'auto' }}
                 alt="chain icon"
                 width={18}
                 height={18}
@@ -75,7 +70,8 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
               <Image
                 width={18}
                 height={18}
-                onMouseEnter={() => onHover('target')} onMouseLeave={() => onLeave('target')}
+                onMouseEnter={() => onHover('target')}
+                onMouseLeave={() => onLeave('target')}
                 src={(targetHovered && txInfo.destTxHash) ? getChainIcons(txInfo.targetChainId).explorer : getChainIcons(txInfo.targetChainId).icon}
                 style={{ cursor: (txInfo && txInfo.destTxHash) ? 'pointer' : 'auto', opacity: (txInfo && txInfo.destTxHash) ? 1 : 0.4 }}
                 onClick={onViewExplorerOnDest}

@@ -36,7 +36,6 @@ const Collections: NextPage = () => {
   const dispatch = useDispatch()
   const collections = useSelector(selectCollections)
   const collectionsForCard = useSelector(selectCollectionsForCard)
-  const orders = useSelector(selectOrders)
 
   
   useEffect(() => {

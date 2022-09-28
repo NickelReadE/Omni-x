@@ -27,10 +27,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
   })
   const { pending, histories, clearHistories } = useProgress()
   const dispatch = useDispatch()
-  const {
-    provider,
-    signer,
-  } = useWallet()
+  const { provider, signer } = useWallet()
 
   const handleMouseOver = (hoverMenu: string) => {
     setHovering({
