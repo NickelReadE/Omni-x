@@ -1,8 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef, useState } from 'react'
 import type { NextPage } from 'next'
 import Image from 'next/image'
 import Close from '../../public/images/close.png'
-import Default from '../../public/images/banner-1.png'
 import Twitter from '../../public/images/twitter.png'
 import Web from '../../public/images/web.png'
 import Photo from '../../public/images/photo.png'
@@ -32,7 +32,7 @@ const UserEdit: NextPage = () => {
     if ( context.address != undefined ) {
       dispatch(getUser(context.address) as any)
     }
-  }, [context.address])
+  }, [context.address, dispatch])
 
   useEffect(() => {
     if ( user.address != undefined ) {
@@ -98,14 +98,14 @@ const UserEdit: NextPage = () => {
       const address = context.address?context.address:''
       formData.append('address', address)
       dispatch(updateUser(formData) as any)
-      router.push('/')
+      await router.push('/')
     }
   }
 
   return (
     <>
       <div className="mt-44 px-32 w-full">
-        <form 
+        <form
           ref={updateProfileFormRef}
           onSubmit={updateProfile}
         >
@@ -147,7 +147,7 @@ const UserEdit: NextPage = () => {
                   </div>
                   <div className="border-image">
                     <Image
-                      src={(typeof banner_1 == 'string')?banner_1:URL.createObjectURL(banner_1)}
+                      src={(typeof banner_1 === 'string')?banner_1:URL.createObjectURL(banner_1)}
                       alt="first image"
                       layout="responsive"
                       width={200}
@@ -211,7 +211,7 @@ const UserEdit: NextPage = () => {
           </div>
           <div className="flex mt-5 w-full">
             <div>
-              <div 
+              <div
                 className="relative cursor-pointer"
                 onClick={onClickAvatar}
               >

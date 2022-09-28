@@ -4,9 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import NftForLaunch from '../../components/NftForLaunch'
 import Image from 'next/image'
 import Link from 'next/link'
-import axios from 'axios'
-import collectionsReducer, { getCollections, selectCollections, getCollectionsForComingAndLive, selectCollectionsForComing, selectCollectionsForLive } from '../../redux/reducers/collectionsReducer'
-import {isSupportedOnMoralis,isSupportedOnAlchemy, getChainNameFromId, getAPIkeyForAlchemy} from '../../utils/constants'
+import  { getCollections, selectCollections, getCollectionsForComingAndLive, selectCollectionsForComing, selectCollectionsForLive } from '../../redux/reducers/collectionsReducer'
 import Loading from '../../public/images/loading_f.gif'
 const Launchpad: NextPage = () => {
   const [sampleCollection, setSampleCollection] = useState<any>({})

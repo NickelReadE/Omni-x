@@ -115,18 +115,6 @@ export interface ICollectionInfoFromLocal{
   floorPrice:{eth:string, usd:string}
 }
 
-export interface IListingData {
-  price: number,
-  currencyName: string,
-  period: number,
-  isAuction: boolean
-}
-
-export interface IBidData {
-  price: number,
-  currencyName: string
-  orderCnt:string
-}
 
 export interface ITypeNFT{
   typeNFT:string,
@@ -148,4 +136,17 @@ export interface contractInfo{
     color: string,
     index: number
   }
+}
+
+
+export interface IListingData {
+  price: number,
+  currencyName: string,
+  period: number,
+  isAuction: boolean
+}
+
+export interface IBidData {
+  price: number,
+  currencyName: string
 }

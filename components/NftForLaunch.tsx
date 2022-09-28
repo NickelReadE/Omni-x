@@ -19,22 +19,6 @@ const NftForLaunch = (pro:ITypeNFT) => {
   } = useWallet()
   const dispatch = useDispatch()
   const collectionInfo = useSelector(selectCollectionInfo)
-  useEffect(()=>{
-    dispatch(getCollectionInfo(pro.col_url) as any)
-  },[])
-  useEffect(()=>{
-    if(provider?._network && collectionInfo){
-      getPrice()
-    }    
-  },[provider?._network,collectionInfo])
-  useEffect(()=>{
-    if(collectionInfo){
-      if(Object.prototype.hasOwnProperty.call(collectionInfo, 'mintFinish')){
-        setTime(collectionInfo.mintFinish)
-      }
-    }
-  },[collectionInfo])
-
   const getPrice = async () =>{
     try{
       const chainId = provider?._network?.chainId 
@@ -50,8 +34,23 @@ const NftForLaunch = (pro:ITypeNFT) => {
     }
     
   }
-  const typeNFT = pro.typeNFT
-  
+  useEffect(()=>{
+    dispatch(getCollectionInfo(pro.col_url) as any)
+  },[dispatch, pro.col_url])
+  useEffect(()=>{
+    if(provider?._network && collectionInfo){
+      getPrice()
+    }    
+  },[getPrice,provider?._network,collectionInfo])
+  useEffect(()=>{
+    if(collectionInfo){
+      if(Object.prototype.hasOwnProperty.call(collectionInfo, 'mintFinish')){
+        setTime(collectionInfo.mintFinish)
+      }
+    }
+  },[collectionInfo])
+
+    
   return (
     
     <div className=' border-[#F8F9FA]  rounded-[8px] hover:cursor-pointer'>

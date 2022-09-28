@@ -1,5 +1,5 @@
 import React from 'react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { chain_list } from '../utils/utils'
@@ -22,14 +22,12 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import Hgreg from '../public/images/gregs/logo.png'
 import Loading from '../public/images/loading_f.gif'
 const CollectionCard = (props:any) => {
-
-  const [image, setImage] = useState(props.collection.profile_image)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [image] = useState(props.collection.profile_image)
   const [imageError, setImageError] = useState(false)
   ///only in the beta version
- 
 
-  const dispatch = useDispatch()
-  const {attributes, listeners, setNodeRef, transform} = useDraggable({
+  const { transform} = useDraggable({
     id: `draggable-${1}`,
     data: {
       type: 'NFT',
@@ -50,16 +48,16 @@ const CollectionCard = (props:any) => {
             <Link href={`/collections/${props.collection.col_url}`}>
               <div className='w-[230px] text-[18px] text-white	 text-extrabold text-center items-center bg-[#B444F9] rounded-lg mb-[24px]  py-[7px] hover:cursor-pointer'>view collection</div>
             </Link>
-
+            
             <div className='w-[230px] text-[18px] text-white	 text-extrabold text-center items-center bg-[#38B000] rounded-lg  py-[7px]'>make a collection bid</div>
           </div>
-
+          
         </div>
       </div>
       <div className="flex flex-row mt-2.5 justify-start">
         <div className="ml-3 text-[#000000] text-[20px] font-bold ">
           {props.collection.name}
-        </div>
+        </div>        
       </div>
       
       <div className="flex flex-row space-x-2 justify-between p-2">        

@@ -251,7 +251,6 @@ export const updateCollectionsForCard = (chainId: string, chainName: string) => 
 
 export const getRoyalty = (contractType:string, address: string, chainId:number, signer:any) => async (dispatch: Dispatch<any>) => {
 	try{
-		console.log(contractType, address, chainId)
 		if(contractType==='ERC721'){
 			const NFTContract =  getERC721Instance(address,chainId,null)
 			// const supportedERP2981 = await NFTContract.supportsInterface(ERC2189_INTERFACE_ID)
@@ -304,7 +303,6 @@ export const getRoyalty = (contractType:string, address: string, chainId:number,
 	
 	
 }
-
 
 export const getCollectionsForComingAndLive = () => async(dispatch: Dispatch<any>, getState:() => any) =>{
 	const collections = getState().collectionsState.collections
@@ -464,12 +462,12 @@ const getOwnercount = (collection:any):Promise<number> => {
 				  
 				const response = await axios.request(options)
 				if(response?.data){
-					totalCnt += response.data.ownerAddresses.length
+					console.log('Alchemy',response)
 				}					
 				
 				
 			}
-		}		
+		}
 		ret (totalCnt)
 	})
 }

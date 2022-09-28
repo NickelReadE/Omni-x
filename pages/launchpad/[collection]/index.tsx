@@ -1,31 +1,19 @@
 import type { NextPage } from 'next'
-import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import MintImgBottom from '../../../public/images/mintImg-bg.png'
-import EthereumImageSVG from '../../../public/svgs/ethereum.svg'
-import BscscanImageSVG from '../../../public/svgs/binance.svg'
-import AvaxImageSVG from '../../../public/svgs/avax.svg'
-import PolygonImageSVG from '../../../public/svgs/polygon.svg'
-import ArbitrumImageSVG from '../../../public/svgs/arbitrum.svg'
-import FantomImageSVG from '../../../public/svgs/fantom.svg'
-import OptimisticImageSVG from '../../../public/svgs/optimism.svg'
+
 import MinusSign from '../../../public/images/minus-sign.png'
 import PlusSign from '../../../public/images/plus-sign.png'
 import mintstyles from '../../../styles/mint.module.scss'
-import WalletConnectProvider  from '@walletconnect/web3-provider'
-import Web3Modal from 'web3modal'
 import { ethers } from 'ethers'
 import React, { useState , useEffect } from 'react'
 import { getCollectionInfo, selectCollectionInfo } from '../../../redux/reducers/collectionsReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import AdvancedONT from '../../../constants/abis/AdvancedONT.json'
-import ethereumwl from '../../../constants/whitelist/ethereum.json'
 import earlysupporter from '../../../constants/whitelist/earlysupporter.json'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Slide } from 'react-toastify'
-import { contractInfo } from '../../../interface/interface'
 import classNames from '../../../helpers/classNames'
 import useWallet from '../../../hooks/useWallet'
 
@@ -34,39 +22,27 @@ import useWallet from '../../../hooks/useWallet'
 //video 
 import { MerkleTree } from 'merkletreejs'
 import keccak256  from 'keccak256'
-import { cornersOfRectangle } from '@dnd-kit/core/dist/utilities/algorithms/helpers'
 
 const Mint: NextPage = () => {
   const {
     provider,
     signer,
-    address,    
-    disconnect,
-    connect: connectWallet,    
-    switchNetwork
+    address
   } = useWallet()
   const env = process.env.NEXT_PUBLICE_ENVIRONMENT || 'testnet'
   const router = useRouter()
   const col_url = router.query.collection as string 
   const dispatch = useDispatch()
-  const collectionInfo = useSelector(selectCollectionInfo)   
-  const [library, setLibrary] = useState<any>()
+  const collectionInfo = useSelector(selectCollectionInfo)  
   const [account, setAccount] = useState<any>()
-  const [network, setNetwork] = useState<string>('1')
   const [chainId, setChainId] = useState<any>()
   const [toChain, setToChain] = useState<string>('1')
   const [mintNum, setMintNum] = useState<number>(1)
-  const [ownToken, setOwnToken] = useState<Array<number>>([])
   const [totalNFTCount, setTotalNFTCount] = useState<number>(0)
   const [nextTokenId, setNextTokenId] = useState<number>(0)
-  const [substrateIndex, setSubStrateIndex] = useState<number>(0)
-  const [transferNFT, setTransferNFT] = useState<number>(0)
-  const [init, setInitial] = useState<boolean>(false)
-  const [isMinting,setIsMinting] = useState<boolean>(false)
-  const [estimateFee, setEstimateFee] = useState<string>('')
-  const [mintable, setMintable] = useState<boolean>(false)
-  const [isTransferring,setIsTransferring] = useState<boolean>(false)
-  const [isSwitchingNetwork,setIsSwitchingNetwork] = useState<boolean>(false)
+  const [transferNFT] = useState<number>(0)
+  const [isMinting,setIsMinting] = useState<boolean>(false)  
+  const [isSwitchingNetwork] = useState<boolean>(false)
   const [price, setPrice] = useState(0)
   const [startId, setStartId] = useState(0)
   const [totalCnt, setTotalCnt] = useState(0)
@@ -103,7 +79,7 @@ const Mint: NextPage = () => {
         tokenlist.push(Number(token))
       }
 
-      setOwnToken(tokenlist)
+      //setOwnToken(tokenlist)
 
       const priceT = await tokenContract.price()
       setPrice(parseFloat(ethers.utils.formatEther(priceT)))
@@ -111,15 +87,15 @@ const Mint: NextPage = () => {
       const nextId = await tokenContract.nextMintId()
       setTotalNFTCount(Number(max_mint))
       setNextTokenId(Number(nextId))
-      setSubStrateIndex(10)
+      //setSubStrateIndex(10)
 
       const publicmintFlag = await tokenContract._publicSaleStarted()
       const saleFlag = await tokenContract._saleStarted()
       if(!saleFlag && !publicmintFlag){
-        setMintable(false)
+        //setMintable(false)
         //errorToast('Sale has not started on '+ provider?._network.name)
       } else {
-        setMintable(true)
+        //setMintable(true)
       }
     } catch(error){
       console.log(error)
@@ -202,14 +178,14 @@ const Mint: NextPage = () => {
     const wladdress = earlysupporter
     const leafNodes = wladdress.map(addr => keccak256(addr))
     const merkleTree = new MerkleTree(leafNodes, keccak256,{sortPairs: true})
-    const merkleProof = merkleTree.getHexProof(keccak256(account))
-    const library = await provider.getBalance(address?address:'')
+    //const merkleProof = merkleTree.getHexProof(keccak256(account))
+    //const library = await provider.getBalance(address?address:'')
     let mintResult
     setIsMinting(true)
     try {
-      const publicmintFlag = await tokenContract._publicSaleStarted()
-      const saleFlag = await tokenContract._saleStarted()      
-      const currentBalance = await provider.getBalance(address?address:'')
+      //const publicmintFlag = await tokenContract._publicSaleStarted()
+      //const saleFlag = await tokenContract._saleStarted()      
+      ///const currentBalance = await provider.getBalance(address?address:'')
 
       mintResult = await tokenContract.publicMint(mintNum, {value: ethers.utils.parseEther((price*mintNum).toString())})
       
@@ -276,7 +252,7 @@ const Mint: NextPage = () => {
           const fee:any =[0.001] //await tokenContract.estimateSendFee(addresses[toChain].chainId, account,transferNFT,false,adapterParam)
           // setEstimateFee('Estimate Fee :'+(Number(fee[0])/Math.pow(10,18)*1.1).toFixed(10)+addresses[chainId].unit)
         }else{
-          setEstimateFee('')
+          //setEstimateFee('')
         }
       } catch(error){
         console.log(error)
@@ -345,6 +321,9 @@ const Mint: NextPage = () => {
                   </div>
                   {
                     chainId === (env === 'testnet' ? 4 : 1) && <img src="/sidebar/ethereum.png" className="m-auto h-[35px]" />
+                  }
+                  {
+                    chainId === (env === 'testnet' ? 5 : 1) && <img src="/sidebar/ethereum.png" className="m-auto h-[35px]" />
                   }
                   {
                     chainId === (env === 'testnet' ? 421611 : 1) && <img src="/sidebar/arbitrum.png" className="m-auto h-[35px]" />

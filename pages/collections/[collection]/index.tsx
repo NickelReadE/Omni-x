@@ -1,14 +1,13 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, Fragment, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import type { NextPage } from 'next'
 import { Listbox, Transition, Switch } from '@headlessui/react'
-import {ethers} from 'ethers'
 
 import Discord from '../../../public/images/discord.png'
 import Twitter from '../../../public/images/twitter.png'
 import Web from '../../../public/images/web.png'
-import Ethereum from '../../../public/sidebar/ethereum.png'
 import Explorer from '../../../public/images/exp.png'
 import Loading from '../../../public/images/loading_f.gif'
 import { getCollectionNFTs, selectCollectionNFTs, getCollectionInfo,getCollectionAllNFTs, getRoyalty,selectCollectionInfo, clearCollectionNFTs, selectGetNFTs, getCollectionOwners, selectCollectionOwners,selectCollectionAllNFTs, selectRoyalty } from '../../../redux/reducers/collectionsReducer'
@@ -17,7 +16,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import NFTBox from '../../../components/collections/NFTBox'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import CircularProgress from '@material-ui/core/CircularProgress'
 
 import LazyLoad from 'react-lazyload'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
@@ -34,14 +32,14 @@ import SearchIcon from '@material-ui/icons/Search'
 import Chip from '@material-ui/core/Chip'
 import classNames from '../../../helpers/classNames'
 import editStyle from '../../../styles/collection.module.scss'
-import { info } from 'console'
-import ordersReducer, { getOrders, selectOrders, getLastSaleOrders,selectBidOrders,selectLastSaleOrders } from '../../../redux/reducers/ordersReducer'
+
+import { getOrders, selectOrders, getLastSaleOrders,} from '../../../redux/reducers/ordersReducer'
 import { IGetOrderRequest , ICollectionInfoFromLocal} from '../../../interface/interface'
 import { getChainInfo, getChainIdFromName, chain_list_ } from '../../../utils/constants'
-import { convertETHtoUSDT, convertUSDTtoETH } from '../../../utils/convertRate'
+import {  convertUSDTtoETH } from '../../../utils/convertRate'
 import { useMoralisWeb3Api, useMoralis } from 'react-moralis'
 import useWallet from '../../../hooks/useWallet'
-import { currencies_list,getChainNameFromId } from '../../../utils/constants'
+import { getChainNameFromId } from '../../../utils/constants'
 
 const sort_fields = [
   { id: 1, name: 'price: low to high', value: 'price', unavailable: false },
@@ -131,6 +129,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const Collection: NextPage = () => {
   const { isInitialized, Moralis } = useMoralis()
   const [currentTab, setCurrentTab] = useState<string>('items')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [expandedMenu, setExpandedMenu] = useState(0)
   const [selected, setSelected] = useState(sort_fields[0])
   const [enabled, setEnabled] = useState(false)
@@ -144,7 +143,7 @@ const Collection: NextPage = () => {
   const [hasMoreNFTs, setHasMoreNFTs] = useState(true)
 
   const router = useRouter()
-
+  
   const col_url = router.query.collection as string
   const display_per_page = 20
   const [page, setPage] = useState(0)
@@ -165,6 +164,7 @@ const Collection: NextPage = () => {
 
   const [searchObj, setSearchObj] = useState<any>({})
   const [filterObj, setFilterObj] = useState<any>({})
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [clearFilter, setClearFilter] = useState(false)
 
   const [isActiveBuyNow, setIsActiveBuyNow] = useState<boolean>(false)
@@ -193,8 +193,7 @@ const Collection: NextPage = () => {
       chain: chain as any,
       address: collectionAddress
     }
-    const metaData = await Moralis.Web3API.token.getNFTMetadata(options)
-
+    const metaData = await Web3Api.token.getNFTMetadata(options)
     setContractType(metaData.contract_type)
   }
 
@@ -231,7 +230,7 @@ const Collection: NextPage = () => {
       if(localData){
         setCollectionInfoFromLocal((JSON.parse(localData)).find((element: ICollectionInfoFromLocal) => element.col_url===col_url))
       }
-
+      
       setPage(0)
     }
   }, [col_url,provider?._network]) 
@@ -263,7 +262,7 @@ const Collection: NextPage = () => {
       dispatch(getLastSaleOrders(excutedRequest) as any)
     }
   },[nfts])
-
+  
 
   const onChangeSort = (item: any) => {
     setSelected(item)
@@ -362,7 +361,7 @@ const Collection: NextPage = () => {
     const temp = []
     for(let i = 0;i<listNFTs.length;i++){
       temp.push(
-        <NFTBox nft={listNFTs[i]} index={i} key={i}  col_url={col_url} col_address={collectionAddress}  chain={collectionInfo?collectionChainID:'4'}/>
+        <NFTBox nft={listNFTs[i]} index={i} key={i}  col_url={col_url} col_address={collectionInfo.address}  chain={collectionInfo?collectionInfo.chain:'eth'}/>
       )
     }
     return temp
@@ -373,7 +372,7 @@ const Collection: NextPage = () => {
       const temp = []
       for(let i=0;i<allNFTs.length;i++){
         for(let j=0; j<orders.length;j++){  
-          if(collectionAddress==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
+          if(collectionInfo.address==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
             temp.push(allNFTs[i]) 
             break         
           }
@@ -529,7 +528,7 @@ const Collection: NextPage = () => {
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <span className="mr-[22px] ">Royalty Fee</span>
-                  <span >{royalty}%</span>
+                  <span >{royalty}%</span>           
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex flex-col space-y-4 justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <div className="flex flex-col">
@@ -539,7 +538,7 @@ const Collection: NextPage = () => {
                     <div className="flex flex-row">
                       <span className="mr-[10px] ">0</span>
                       <img src='/svgs/eth_asset.svg' alt='asset'></img>
-                    </div>
+                    </div>                      
                   </div>
                   <div className="flex flex-col">
                     <div className="flex justify-start">
@@ -548,9 +547,8 @@ const Collection: NextPage = () => {
                     <div className="flex flex-row">
                       <span className="mr-[10px] ">0</span>
                       <img src='/svgs/eth_asset.svg' alt='asset'></img>
-                    </div>
-                  </div>
-
+                    </div>                      
+                  </div>                               
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <div className="flex flex-col space-y-2">
@@ -559,15 +557,15 @@ const Collection: NextPage = () => {
                     </div>
                     <div className="flex flex-col space-y-1">
                       <div className="flex flex-row justify-between">
-                        <span className="mr-[22px] ">{collectionInfoFromLocal?collectionInfoFromLocal.floorPrice?.eth:0}</span>
+                        <span className="mr-[22px] ">{floorPrice==0?0:convertUSDTtoETH(floorPrice,assetPrices.eth?assetPrices.eth:1500).toFixed(4)}</span>
                         <img src='/svgs/eth_asset.svg' alt='asset'></img>
                       </div>
                       <div className="flex flex-row justify-between">
-                        <span className="mr-[22px] ">{collectionInfoFromLocal?collectionInfoFromLocal.floorPrice?.usd:0}</span>
+                        <span className="mr-[22px] ">{floorPrice==0?0:floorPrice.toFixed(4)}</span>
                         <img src='/svgs/usd_asset.svg' alt='asset'></img>
                       </div>
                       <div className="flex flex-row justify-between">
-                        <span className="mr-[22px] ">{collectionInfoFromLocal?collectionInfoFromLocal.floorPrice?.usd:0}</span>
+                        <span className="mr-[22px] ">{floorPrice==0?0:floorPrice.toFixed(4)}</span>
                         <img src='/svgs/omni_asset.svg' alt='asset'></img>
                       </div>
                     </div>
@@ -764,7 +762,7 @@ const Collection: NextPage = () => {
             <div className="mt-5">
             
               {
-                Object.keys(searchObj).map((attrKey, attrIndex) => {
+                Object.keys(searchObj).map((attrKey) => {
                   return searchObj[attrKey].map((item: any, index: any) => {
                     return <Chip
                       label={item}
@@ -796,14 +794,9 @@ const Collection: NextPage = () => {
                   }
                 >
                   <div className="grid 2xl:grid-cols-5 gap-4 xl:grid-cols-3 md:grid-cols-2 p-1">
-                    {/* { !isActiveBuyNow && nfts.map((item, index) => {
-                      return (
-                        <NFTBox nft={item} index={index} key={index}  col_url={col_url} col_address={collectionAddress}  chain={collectionInfo?collectionChainID:'4'}/>
-                      )
-                    })} */}
                     { !isActiveBuyNow && nfts.map((item, index) => {
                       return (
-                        <NFTBox nft={item} index={index} key={index}  col_url={col_url} col_address={collectionAddress}  chain={collectionInfo?collectionChainID:'4'}/>
+                        <NFTBox nft={item} index={index} key={index}  col_url={col_url} col_address={collectionInfo.address}  chain={collectionInfo?collectionInfo.chain:'eth'}/>
                       )
                     })}
                     { isActiveBuyNow && listNFTs && buyComponet()}

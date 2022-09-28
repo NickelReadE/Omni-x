@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "next lint --max-warnings=0",
     "test": "jest"
   },
   "dependencies": {
@@ -35,7 +35,7 @@
     "magic-sdk": "7.0.0",
     "keccak256": "^1.0.6",
     "merkletreejs": "^0.2.32",
-    "moralis": "^1.11.0",
+    "moralis": "1.11.0",
     "next": "^12.2.4-canary.11",
     "next-optimized-images": "^2.6.2",
     "next-redux-wrapper": "^7.0.5",
