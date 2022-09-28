@@ -577,7 +577,7 @@ const SideBar: React.FC = () => {
             </div>
             <div className="w-full 0">
               <div className="sidebar-icon">
-              {
+                {
                   chainId === (env === 'testnet' ? 4 : 1) && <img alt={'networkIcon'} src="/sidebar/ethereum.png" className="m-auto h-[45px]" />
                 }
                 {
