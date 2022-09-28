@@ -14,12 +14,12 @@ import { getCollectionInfo,getCollectionAllNFTs, selectCollectionAllNFTs,selectC
 const chainList = [
   { chain: 'all', img_url: '/svgs/all_chain.svg', title: 'all NFTs', disabled: false},
   { chain: 'goerli', img_url: '/svgs/ethereum.svg', title: 'Ethereum', disabled: false},
-  { chain: 'mumbai', img_url: '/svgs/polygon.svg', title: 'Polygon', disabled: false},
-  { chain: 'avalanche testnet', img_url: '/svgs/avax.svg', title: 'Avalanche', disabled: false},
   { chain: 'bsc testnet', img_url: '/svgs/binance.svg', title: 'BNB Chain', disabled: false},
-  { chain: 'fantom', img_url: '/svgs/fantom.svg', title: 'Fantom', disabled: false},
-  { chain: 'optimism', img_url: '/svgs/optimism.svg', title: 'Optimism', disabled: false},
+  { chain: 'avalanche testnet', img_url: '/svgs/avax.svg', title: 'Avalanche', disabled: false},
+  { chain: 'mumbai', img_url: '/svgs/polygon.svg', title: 'Polygon', disabled: false},
   { chain: 'arbitrum', img_url: '/svgs/arbitrum.svg', title: 'Arbitrum', disabled: false},
+  { chain: 'optimism', img_url: '/svgs/optimism.svg', title: 'Optimism', disabled: false},
+  { chain: 'fantom', img_url: '/svgs/fantom.svg', title: 'Fantom', disabled: false},
 ]
 const NFTGrid = ({ nfts }: IPropsImage) => {
   const [chain, setChain] = useState('all')

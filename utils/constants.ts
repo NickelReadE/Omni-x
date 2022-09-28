@@ -471,37 +471,13 @@ export const isUsdcOrUsdt = (address?: string) => {
   return false
 }
 
-export const getProfileLink = (chainName: string, ownerType: string, owner: string) => {
-  if (chainName=='goerli' ) {
-    if(ownerType=='address') {
-      return 'https://goerli.etherscan.io/address/' + owner
-    }
-  } else   if (chainName=='bsc testnet' ) {
-    if(ownerType=='address') {
-      return 'https://testnet.bscscan.com/address/' + owner
-    }
-  } else   if (chainName=='mumbai' ) {
-    if(ownerType=='address') {
-      return 'https://mumbai.polygonscan.com/address/' + owner
-    }
-  } else   if (chainName=='avalanche testnet' ) {
-    if(ownerType=='address') {
-      return 'https://testnet.avascan.info/blockchain/all/address/' + owner
-    }
-  } else   if (chainName=='fantom-testnet' ) {
-    if(ownerType=='address') {
-      return 'https://testnet.ftmscan.com/address/' + owner
-    }
-  } else   if (chainName=='optimism' ) {
-    if(ownerType=='address') {
-      return 'https://goerli-optimism.etherscan.io/address/' + owner
-    }
-  } else   if (chainName=='arbitrum' ) {
-    if(ownerType=='address') {
-      return 'https://goerli-rollup-explorer.arbitrum.io/address/' + owner
-    }
+export const getProfileLink = (chain_id: number, ownerType: string, owner: string) => {
+  if(ownerType=='address'){
+    console.log(chain_id)
+    const explorer_link = getBlockExplorer(chain_id)
+    console.log(explorer_link)
+    return (explorer_link+'/address/'+owner)
   }
-
   return ''
 }
 
@@ -526,4 +502,20 @@ export const getBlockExplorer = (chainId: number) => {
     return chainInfo.explorers?.[0]?.url
   }
   return null
+}
+
+export const findCollection = (addresses:any,start_ids:any,token_id:string)=>{
+  let temp_value = 0
+  let collection_address = ''
+  let chain_id = 0
+  Object.keys(start_ids).map((Key) => {
+    if(Number(start_ids[Key])<Number(token_id)){
+      if(temp_value<=Number(start_ids[Key])){
+        temp_value = Number(start_ids[Key])
+        collection_address = addresses[Key]
+        chain_id = Number(Key)
+      }
+    }
+  })
+  return [collection_address,chain_id]
 }

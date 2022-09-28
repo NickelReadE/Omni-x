@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { IPropsNFTItem } from '../../interface/interface'
 import LazyLoad from 'react-lazyload'
 import { ethers } from 'ethers'
-import { getCurrencyIconByAddress, getChainIconById, getChainNameFromId } from '../../utils/constants'
+import { getCurrencyIconByAddress, getChainIconById, getChainNameFromId,findCollection } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'
 import ConfirmBid from './ConfirmBid'
 import editStyle from '../../styles/nftbox.module.scss'
@@ -12,12 +12,10 @@ import classNames from '../../helpers/classNames'
 import useTrading from '../../hooks/useTrading'
 import useOrderStatics from '../../hooks/useOrderStatics'
 import ConfirmSell from './ConfirmSell'
-// import useOwnership from '../../hooks/useOwnership'
-//import reducer
 import { selectCollectionInfo } from '../../redux/reducers/collectionsReducer'
 import { useSelector } from 'react-redux'
 
-const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
+const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
   const [isShowBtn, SetIsShowBtn] = useState(false)
   const {
@@ -27,20 +25,17 @@ const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
   } = useWallet()
 
   const collectionInfo = useSelector(selectCollectionInfo)
-  //update this logic in the constants
   const start_ids = collectionInfo.start_ids
   const token_id = nft.token_id
-  let temp_value = 0
-  Object.keys(start_ids).map((Key) => {
-    if(Number(start_ids[Key])<Number(token_id)){
-      if(temp_value<=Number(start_ids[Key])){
-        temp_value = Number(start_ids[Key])
-        col_address = collectionInfo.address[Key]
-        chain = Key
-      }
+  const collection = useMemo(() => {
+    if (start_ids && token_id) {
+      return findCollection(collectionInfo.address,start_ids,token_id)
     }
-  })
-
+    return undefined
+  }, [start_ids, token_id, collectionInfo.address])
+  const  col_address = collection?.[0] as string
+  const chain = collection?.[1] as string
+  //update this logic in the constants
   const collection_address_map = useMemo(() => {
     if (chain && col_address) {
       return {
@@ -88,7 +83,7 @@ const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
   })
 
   const chainIcon = useMemo(() => {
-    return getChainIconById(chain ? chain : '4')
+    return getChainIconById(chain ? chain : '5')
   }, [chain])
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
   const formattedPrice = order?.price && ethers.utils.formatEther(order.price)

@@ -125,14 +125,14 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
               </div>
               <div className="flex ml-[]">
                 <Link href={cuser.twitter?cuser.twitter:''}>
-                  <a>
+                  <a target="_blank">
                     <div className="mr-6">
                       <Image src={Twitter} alt='twitter' />
                     </div>
                   </a>
                 </Link>
                 <Link href={cuser.website?cuser.website:''}>
-                  <a>
+                  <a target="_blank">
                     <div className="mr-6">
                       <Image src={Web} alt='website' />
                     </div>

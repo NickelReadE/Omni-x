@@ -14,6 +14,9 @@ import { getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, get
 import { acceptOrder, postMakerOrder } from "../utils/makeOrder"
 import { useEffect } from 'react'
 import { getChainNameFromId } from '../utils/constants'
+import { useMemo } from "react"
+import { ChainIds } from "../types/enum"
+
 export type TradingFunction = {
   openSellDlg: boolean,
   openBidDlg: boolean,
@@ -147,6 +150,7 @@ const useTrading = ({
     )
   }
 
+
   const onListing = async (listingData: IListingData) => {
     if (owner_collection_chain != chain_name) {
       dispatch(openSnackBar({ message: `Please switch network to ${owner_collection_chain}`, status: 'warning' }))
@@ -157,7 +161,7 @@ const useTrading = ({
     const amount = ethers.utils.parseUnits('1', 0)
     const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
     const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
-    const chainId = provider?.network.chainId || 5
+    const chainId = useMemo(() => { if (provider && provider?.network) { return provider?.network.chainId } return ChainIds.ETHEREUM }, [provider])
     const lzChainId = getLayerzeroChainId(chainId)
     const startTime = Date.now()
 
@@ -203,9 +207,7 @@ const useTrading = ({
       return
     }
 
-    console.log('-buy-', order)
-
-    const chainId = provider?.network.chainId || 5
+    const chainId = useMemo(() => { if (provider && provider?.network) { return provider?.network.chainId } return ChainIds.ETHEREUM }, [provider])
     const lzChainId = getLayerzeroChainId(chainId)
     const omniAddress = getAddressByName(getCurrencyNameAddress(order.currencyAddress) as ContractName, chainId)
     
@@ -218,8 +220,6 @@ const useTrading = ({
       return
     }
     const omnixExchange = getOmnixExchangeInstance(chainId, signer)
-    console.log(omnixExchange)
-    console.log( ethers.utils.defaultAbiCoder.encode(['uint16','uint16'], order?.params))
     const makerAsk : MakerOrderWithSignature = {
       isOrderAsk: order.isOrderAsk,
       signer: order?.signer,
@@ -245,8 +245,6 @@ const useTrading = ({
       params: ethers.utils.defaultAbiCoder.encode(['uint16'], [lzChainId])
     }
 
-    // console.log('--buy----', makerAsk, takerBid)
-
     const approveTxs = []
 
     approveTxs.push(await approve(omni, address, omnixExchange.address, takerBid.price))
@@ -259,8 +257,6 @@ const useTrading = ({
     await Promise.all(approveTxs.filter(Boolean).map(tx => tx.wait()))
 
     const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
-
-    // console.log('---lzFee---', lzFee)
 
     await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
 
@@ -277,7 +273,7 @@ const useTrading = ({
       return
     }
 
-    const chainId = provider?.network.chainId as number
+    const chainId = useMemo(() => { if (provider && provider?.network) { return provider?.network.chainId } return ChainIds.ETHEREUM }, [provider])
     const lzChainId = getLayerzeroChainId(chainId)
 
     const currency = getAddressByName(bidData.currencyName as ContractName, chainId)

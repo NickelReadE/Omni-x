@@ -209,7 +209,6 @@ const Collection: NextPage = () => {
       dispatch(getCollectionInfo(col_url) as any)
     }
     if ( col_url && provider?._network) {
-      // dispatch(getCollectionOwners(col_url) as any)
       const localData = localStorage.getItem('cards')
       if(localData){
         setCollectionInfoFromLocal((JSON.parse(localData)).find((element: ICollectionInfoFromLocal) => element.col_url===col_url))
@@ -341,7 +340,7 @@ const Collection: NextPage = () => {
     const temp = []
     for(let i = 0;i<listNFTs.length;i++){
       temp.push(
-        <NFTBox nft={listNFTs[i]} index={i} key={i}  col_url={col_url} col_address={collectionAddress}  chain={collectionInfo?collectionChainID:'5'}/>
+        <NFTBox nft={listNFTs[i]} index={i} key={i}  col_url={col_url}/>
       )
     }
     return temp
@@ -371,7 +370,6 @@ const Collection: NextPage = () => {
           }
         }
       }
-      console.log(temp)
       setListNFTs(temp)    
     } 
   },[isActiveBuyNow,collectionInfo,allNFTs])
@@ -448,34 +446,34 @@ const Collection: NextPage = () => {
             </div>
             { collectionInfo&&collectionInfo.discord?
               <Link href={collectionInfo.discord}>
-                <a className="p-2 flex items-center">
+                <a target="_blank" className="p-2 flex items-center">
                   <Image src={Discord} width={25} height={21} alt='discord' />
                 </a>
               </Link>
               :
-              <a className="p-2 flex items-center">
+              <a target="_blank" className="p-2 flex items-center">
                 <Image src={Discord} width={25} height={21} alt='discord' />
               </a>
             }
             { collectionInfo&&collectionInfo.twitter?
               <Link href={collectionInfo.twitter}>
-                <a className="p-2 flex items-center">
+                <a target="_blank" className="p-2 flex items-center">
                   <Image src={Twitter} alt='twitter' />
                 </a>
               </Link>
               :
-              <a className="p-2 flex items-center">
+              <a target="_blank" className="p-2 flex items-center">
                 <Image src={Twitter} alt='twitter' />
               </a>
             }
             { collectionInfo&&collectionInfo.website?
               <Link href={collectionInfo.website}>
-                <a className="p-2 flex items-center">
+                <a target="_blank" className="p-2 flex items-center">
                   <Image src={Web} alt='website' />
                 </a>
               </Link>
               :
-              <a className="p-2 flex items-center">
+              <a target="_blank" className="p-2 flex items-center">
                 <Image src={Web} alt='website' />
               </a>
             }
@@ -578,12 +576,13 @@ const Collection: NextPage = () => {
             <ul className='flex flex-col space-y-4'>
               <li className="w-full">
                 <div
-                  className={`w-full px-4 py-4 text-left text-g-600  font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`} onClick={()=>setIsActiveBuyNow(!isActiveBuyNow)}
+                  className={`w-full px-4 py-4 text-left text-g-600  font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`} 
                 >
                   Buy Now
                   <Switch
                     checked={enabled}
                     onChange={setEnabled}
+                    onClick={()=>setIsActiveBuyNow(!isActiveBuyNow)}
                     className={`${enabled ? 'bg-[#E9ECEF]' : 'bg-[#E9ECEF]'}
                     pull-right relative inline-flex h-[22px] w-[57px] shrink-0 cursor-pointer rounded-full border-2 border-[#6C757D] transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
                   >
@@ -596,6 +595,7 @@ const Collection: NextPage = () => {
                   </Switch>
                 </div>
               </li>
+              <hr/>
               { collectionInfo && collectionInfo.attrs && Object.keys(collectionInfo.attrs).map((key, idx) => {
                 const attrs = collectionInfo.attrs
                 return <li className="w-full" key={idx}>
@@ -652,6 +652,7 @@ const Collection: NextPage = () => {
                       </div>
                     </AccordionDetails>
                   </Accordion>
+                  <hr/>
                 </li>
               })}
               {/* <li className="w-full">
@@ -786,14 +787,9 @@ const Collection: NextPage = () => {
                   }
                 >
                   <div className="grid 2xl:grid-cols-5 gap-4 xl:grid-cols-3 md:grid-cols-2 p-1">
-                    {/* { !isActiveBuyNow && nfts.map((item, index) => {
-                      return (
-                        <NFTBox nft={item} index={index} key={index}  col_url={col_url} col_address={collectionAddress}  chain={collectionInfo?collectionChainID:'4'}/>
-                      )
-                    })} */}
                     { !isActiveBuyNow && nfts.map((item, index) => {
                       return (
-                        <NFTBox nft={item} index={index} key={index}  col_url={col_url} col_address={collectionAddress}  chain={collectionInfo?collectionChainID:'5'}/>
+                        <NFTBox nft={item} index={index} key={index}  col_url={col_url} />
                       )
                     })}
                     { isActiveBuyNow && listNFTs && buyComponet()}
