@@ -150,7 +150,7 @@ const Collection: NextPage = () => {
 
   const dispatch = useDispatch()
   const nfts = useSelector(selectCollectionNFTs)
-  console.log(nfts)
+  //console.log(nfts)
   const allNFTs = useSelector(selectCollectionAllNFTs)
 
   const collectionInfo = useSelector(selectCollectionInfo)
@@ -428,7 +428,7 @@ const Collection: NextPage = () => {
   }, [isInitialized, Moralis, collectionChainName])
   
   useEffect(()=>{
-    console.log(contractType, collectionChainName)
+    //console.log(contractType, collectionChainName)
     if(contractType!=='' && collectionChainName){
       dispatch(getRoyalty(contractType, collectionAddress, getChainIdFromName(collectionChainName) ,signer) as any)
     }

@@ -98,12 +98,7 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
       dispatch(getLastSaleOrders(excutedRequest) as any)
     }
   },[nfts])
-
-  // useEffect(()=>{
-  //   if(nfts.length>0){
-  //     console.log(nfts)
-  //   }
-  // },[nfts])
+  
 
 
   return (

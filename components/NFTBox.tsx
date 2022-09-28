@@ -80,7 +80,6 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   const order_collection_address = order?.collectionAddress
   const order_collection_chain = orderChainId && getChainNameFromId(orderChainId)
 
-  // console.log('-nft-', nft)
   const {
     openSellDlg,
     setOpenSellDlg,

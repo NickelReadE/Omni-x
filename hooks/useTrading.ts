@@ -202,7 +202,7 @@ const useTrading = ({
       return
     }
 
-    console.log('-buy-', order)
+    
 
     const chainId = provider?.network.chainId || 4
     const lzChainId = getLayerzeroChainId(chainId)
@@ -217,8 +217,6 @@ const useTrading = ({
       return
     }
     const omnixExchange = getOmnixExchangeInstance(chainId, signer)
-    console.log(omnixExchange)
-    console.log( ethers.utils.defaultAbiCoder.encode(['uint16','uint16'], order?.params))
     const makerAsk : MakerOrderWithSignature = {
       isOrderAsk: order.isOrderAsk,
       signer: order?.signer,

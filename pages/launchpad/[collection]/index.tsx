@@ -16,6 +16,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { Slide } from 'react-toastify'
 import classNames from '../../../helpers/classNames'
 import useWallet from '../../../hooks/useWallet'
+import {ChainIds} from '../../../types/enum'
 
 
 
@@ -317,28 +318,25 @@ const Mint: NextPage = () => {
                     {(price*mintNum).toFixed(2)}                    
                   </div>
                   {
-                    chainId === (env === 'testnet' ? 4 : 1) && <img src="/sidebar/ethereum.png" className="m-auto h-[35px]" alt=''/>
+                    chainId === ChainIds.ETHEREUM && <img alt={'networkIcon'} src="/sidebar/ethereum.png" className="m-auto h-[45px]" />
                   }
                   {
-                    chainId === (env === 'testnet' ? 5 : 1) && <img src="/sidebar/ethereum.png" className="m-auto h-[35px]" alt=''/>
+                    chainId === ChainIds.ARBITRUM && <img alt={'networkIcon'} src="/sidebar/arbitrum.png" className="m-auto h-[45px]" />
                   }
                   {
-                    chainId === (env === 'testnet' ? 421611 : 1) && <img src="/sidebar/arbitrum.png" className="m-auto h-[35px]" alt=''/>
+                    chainId === ChainIds.AVALANCHE && <img alt={'networkIcon'} src="/sidebar/avax.png" className="m-auto h-[45px]" />
                   }
                   {
-                    chainId === (env === 'testnet' ? 43113 : 1) && <img src="/sidebar/avax.png" className="m-auto h-[35px]" alt=''/>
+                    chainId === ChainIds.BINANCE && <img alt={'networkIcon'} src="/sidebar/binance.png" className="m-auto h-[45px]" />
                   }
                   {
-                    chainId === (env === 'testnet' ? 97 : 1) && <img src="/sidebar/binance.png" className="m-auto h-[35px]" alt=''/>
+                    chainId === ChainIds.FANTOM && <img alt={'networkIcon'} src="/sidebar/fantom.png" className="m-auto h-[45px]" />
                   }
                   {
-                    chainId === (env === 'testnet' ? 4002 : 1) && <img src="/sidebar/fantom.png" className="m-auto h-[35px]" alt=''/>
+                    chainId === ChainIds.OPTIMISM && <img alt={'networkIcon'} src="/sidebar/optimism.png" className="m-auto h-[45px]" />
                   }
                   {
-                    chainId === (env === 'testnet' ? 69 : 1) && <img src="/sidebar/optimism.png" className="m-auto h-[35px]" alt=''/>
-                  }
-                  {
-                    chainId === 80001 && <img src="/sidebar/polygon.png" className="m-auto h-[35px]" alt=''/>
+                    chainId === ChainIds.POLYGON && <img alt={'networkIcon'} src="/sidebar/polygon.png" className="m-auto h-[45px]" />
                   }
                 </div>
               </div>

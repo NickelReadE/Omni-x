@@ -105,7 +105,7 @@ const Item: NextPage = () => {
   // nft info api call
   useEffect(() => {
     if (col_url && token_id ) {
-      console.log('-getting nft info-')
+      //console.log('-getting nft info-')
       dispatch(getNFTInfo(col_url, token_id) as any)
     }
   }, [col_url, token_id])
@@ -113,7 +113,7 @@ const Item: NextPage = () => {
   // order api call
   useEffect(() => {
     if (nftInfo) {
-      console.log('-getting orders-')
+      //console.log('-getting orders-')
       getListOrders()
       getBidOrders()
       getLastSaleOrder()

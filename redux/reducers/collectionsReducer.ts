@@ -182,13 +182,13 @@ export const updateCollectionsForCard = (chainId: string, chainName: string) => 
 		}
 		let collectionsF : any[] = []
 		const info = await collectionsService.getCollections()	
-		console.log(info)	
+		//console.log(info)	
 		await info.data.map(async (element:any, index:number)=>{
 			//console.log('chain', chainId,chainName, 'address', element.address)
 			const itemsCnt = await getItemscount(element)
 			const ownersCnt = await getOwnercount(element)
 			//console.log('itemsCnt',itemsCnt)
-			console.log('ownersCnt',ownersCnt)
+			//console.log('ownersCnt',ownersCnt)
 			
 			//console.log('ownersCnt', ownersCnt)
 			setTimeout(async function(){
@@ -462,7 +462,7 @@ const getOwnercount = (collection:any):Promise<number> => {
 				  
 				const response = await axios.request(options)
 				if(response?.data){
-					console.log('Alchemy',response)
+					//console.log('Alchemy',response)
 				}					
 				
 				
