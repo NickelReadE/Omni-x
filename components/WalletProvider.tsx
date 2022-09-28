@@ -93,9 +93,9 @@ export const WalletProvider = ({
 
   const switchNetwork = useCallback(async (chainId: number) => {
     const chainInfo = getChainInfo(chainId)
-    const CHAIN_ID = chainInfo?.chainId || 4
+    const CHAIN_ID = chainInfo?.chainId || 5
     if (window.ethereum) {
-      if (window.ethereum.networkVersion !== 4) {
+      if (window.ethereum.networkVersion !== 5) {
         try {
           await window.ethereum.request({
             method: 'wallet_switchEthereumChain',
