@@ -309,7 +309,7 @@ export const chain_list: {[key: string]: number} = {
 export const getChainIdFromName = (name: string): number => {
   return chain_list[name]
 }
-export const supportChainIDs = [4,80001,43113,421611,69,4002,97]
+export const supportChainIDs = [4,80001,43113,421611,69,4002,97,5]
 
 export const chain_list_: {[key: number]: string} = {
   1 : 'eth ',
