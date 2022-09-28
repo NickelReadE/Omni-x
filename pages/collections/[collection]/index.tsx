@@ -39,7 +39,7 @@ import { getChainNameFromId } from '../../../utils/constants'
 const sort_fields = [
   { id: 1, name: 'price: low to high', value: 'price', unavailable: false },
   { id: 2, name: 'price: high to low', value: '-price', unavailable: false },
-  { id: 3, name: 'Highest last sale',  value: 'price', unavailable: false},
+  { id: 3, name: 'Highest last sale',  value: '-last_sale', unavailable: false},
 ]
 
 const useStyles = makeStyles((theme: Theme) =>

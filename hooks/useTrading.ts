@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from "react-redux"
 import { IBidData, IGetOrderRequest, IListingData, IOrder, OrderStatus } from "../interface/interface"
 import { getLastSaleOrders, getOrders } from "../redux/reducers/ordersReducer"
 import { openSnackBar } from "../redux/reducers/snackBarReducer"
-import { collectionsService } from "../services/collections"
+import { collectionsService } from '../services/collections'
+
 import { userService } from "../services/users"
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from "../types"
 import { SaleType } from "../types/enum"
@@ -150,6 +151,7 @@ const useTrading = ({
     )
   }
 
+  const chainId = useMemo(() => { if (provider && provider?.network) { return provider?.network.chainId } return ChainIds.ETHEREUM }, [provider])
 
   const onListing = async (listingData: IListingData) => {
     if (owner_collection_chain != chain_name) {
@@ -161,7 +163,6 @@ const useTrading = ({
     const amount = ethers.utils.parseUnits('1', 0)
     const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
     const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
-    const chainId = useMemo(() => { if (provider && provider?.network) { return provider?.network.chainId } return ChainIds.ETHEREUM }, [provider])
     const lzChainId = getLayerzeroChainId(chainId)
     const startTime = Date.now()
 
@@ -187,6 +188,7 @@ const useTrading = ({
       chain_name,
       true
     )
+    await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,listingData.price)
 
     if (!listingData.isAuction) {
       const transferSelector = getTransferSelectorNftInstance(chainId, signer)
@@ -207,7 +209,6 @@ const useTrading = ({
       return
     }
 
-    const chainId = useMemo(() => { if (provider && provider?.network) { return provider?.network.chainId } return ChainIds.ETHEREUM }, [provider])
     const lzChainId = getLayerzeroChainId(chainId)
     const omniAddress = getAddressByName(getCurrencyNameAddress(order.currencyAddress) as ContractName, chainId)
     
@@ -261,6 +262,10 @@ const useTrading = ({
     await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
 
     await updateOrderStatus(order, 'EXECUTED')
+
+    await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
+    await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(order?.price))
+
 
     dispatch(openSnackBar({ message: 'Bought an NFT', status: 'success' }))
     getLastSaleOrder()
@@ -378,6 +383,8 @@ const useTrading = ({
     await omnixExchange.connect(signer as any).matchBidWithTakerAsk(takerAsk, makerBid, { value: lzFee })
 
     await updateOrderStatus(bidOrder, 'EXECUTED')
+    await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
+    await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(bidOrder?.price))
 
     dispatch(openSnackBar({ message: 'Accepted a Bid', status: 'success' }))
     getLastSaleOrder()
