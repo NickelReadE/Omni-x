@@ -31,7 +31,7 @@ const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
   //update this logic in the constants
   const start_ids = collectionInfo.start_ids
   const token_id = nft.token_id
-  let temp_value:Number = 0
+  let temp_value = 0
   Object.keys(start_ids).map((Key) => {
     if(Number(start_ids[Key])<Number(token_id)){
       if(temp_value<=Number(start_ids[Key])){
