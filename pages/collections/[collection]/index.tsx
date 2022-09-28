@@ -231,15 +231,11 @@ const Collection: NextPage = () => {
       dispatch(getOrders(request) as any)
       const bidRequest: IGetOrderRequest = {
         isOrderAsk: false,
-        collection: collectionAddress,
-        // startTime: Math.floor(Date.now() / 1000).toString(),
-        // endTime: Math.floor(Date.now() / 1000).toString(),
         status: ['VALID'],
         sort: 'PRICE_ASC'
       }
       dispatch(getOrders(bidRequest) as any)
       const excutedRequest: IGetOrderRequest = {
-        collection: collectionAddress,
         status: ['EXECUTED'],
         sort: 'UPDATE_OLDEST'
       }

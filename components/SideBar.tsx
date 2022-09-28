@@ -497,10 +497,16 @@ const SideBar: React.FC = () => {
     if(window.ethereum){
       window.ethereum.on('chainChanged', function (networkId:string) {
         setChainID(parseInt(networkId))
-        //window.location.reload()
       })
     }
   }, [])
+
+  useEffect(()=>{
+    const chain_id = provider?._network?.chainId
+    if(Number(chain_id)>0){
+      setChainID(Number(chain_id))
+    }
+  },[provider?._network?.chainId])
 
   const updateModal = (status: boolean) => {
     setConfirmTransfer(status)
@@ -885,9 +891,6 @@ const SideBar: React.FC = () => {
                 </div>
                 <span className="font-g-300">Select destination chain:</span>
                 <div className="flex flex-row w-full space-x-[15px]">
-                  <button onClick={() => handleTargetChainChange(5)} className={targetChain === 5 ? 'border border-g-300' : ''}>
-                    <img src="/svgs/ethereum.svg" width={24} height={28} alt='eth'/>
-                  </button>
                   <button onClick={() => handleTargetChainChange(ChainIds.ETHEREUM)} className={targetChain === ChainIds.ETHEREUM ? 'border border-g-300' : ''}>
                     <img alt={'networkIcon'} src="/svgs/ethereum.svg" width={24} height={28} />
                   </button>

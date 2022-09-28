@@ -14,6 +14,7 @@ const getNFTOwnership = async (collection_address_map: {[chainId: string]: strin
   let tokenIdOwner = []
   let tokenChainId = 0
   for (const chain_id in collection_address_map) {
+    if(Number(chain_id)===4002) continue
     tokenIdOwner = await collectionsService.getNFTOwner(
       collection_address_map[chain_id],
       NETWORK_TYPE[Number(chain_id)],

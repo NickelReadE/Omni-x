@@ -47,7 +47,8 @@ const useOrderStatics = ({
   const orders = useSelector(selectOrders)
   const bidOrders = useSelector(selectBidOrders) as IOrder[]
   const lastSaleOrders = useSelector(selectLastSaleOrders)
-  
+  console.log(lastSaleOrders)
+
   const collection_addresses = useMemo(() => (
     collection_address_map
       ? Object.values(collection_address_map) as string[]
