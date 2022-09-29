@@ -66,16 +66,16 @@ const Mint: NextPage = () => {
   }
 
   const getInfo = useCallback(async ():Promise<void> => {    
-    try{    
+    try{  
       
       const tokenContract =  new ethers.Contract(collectionInfo.address[chainId?chainId:0], AdvancedONT, signer)
       setStartId(Number(collectionInfo.start_ids[chainId?chainId:0]))      
-      const result =await tokenContract.balanceOf(address)
-      const tokenlist = []
-      for (let i = 0; i < Number(result); i++) {
-        const token = await tokenContract.tokenOfOwnerByIndex(address, i)
-        tokenlist.push(Number(token))
-      }
+      // const result =await tokenContract.balanceOf(address)
+      // const tokenlist = []
+      // for (let i = 0; i < Number(result); i++) {
+      //   const token = await tokenContract.tokenOfOwnerByIndex(address, i)
+      //   tokenlist.push(Number(token))
+      // }
 
       //setOwnToken(tokenlist)
 
@@ -317,26 +317,32 @@ const Mint: NextPage = () => {
                     {(price*mintNum).toFixed(2)}                    
                   </div>
                   {
-                    chainId === ChainIds.ETHEREUM && <img alt={'networkIcon'} src="/sidebar/ethereum.png" className="m-auto h-[45px]" />
+                    chainId &&
+                    <>
+                      {
+                        chainId === ChainIds.ETHEREUM && <img alt={'networkIcon'} src="/sidebar/ethereum.png" className="m-auto h-[45px]" />
+                      }
+                      {
+                        chainId === ChainIds.ARBITRUM && <img alt={'networkIcon'} src="/sidebar/arbitrum.png" className="m-auto h-[45px]" />
+                      }
+                      {
+                        chainId === ChainIds.AVALANCHE && <img alt={'networkIcon'} src="/sidebar/avax.png" className="m-auto h-[45px]" />
+                      }
+                      {
+                        chainId === ChainIds.BINANCE && <img alt={'networkIcon'} src="/sidebar/binance.png" className="m-auto h-[45px]" />
+                      }
+                      {
+                        chainId === ChainIds.FANTOM && <img alt={'networkIcon'} src="/sidebar/fantom.png" className="m-auto h-[45px]" />
+                      }
+                      {
+                        chainId === ChainIds.OPTIMISM && <img alt={'networkIcon'} src="/sidebar/optimism.png" className="m-auto h-[45px]" />
+                      }
+                      {
+                        chainId === ChainIds.POLYGON && <img alt={'networkIcon'} src="/sidebar/polygon.png" className="m-auto h-[45px]" />
+                      }
+                    </>
                   }
-                  {
-                    chainId === ChainIds.ARBITRUM && <img alt={'networkIcon'} src="/sidebar/arbitrum.png" className="m-auto h-[45px]" />
-                  }
-                  {
-                    chainId === ChainIds.AVALANCHE && <img alt={'networkIcon'} src="/sidebar/avax.png" className="m-auto h-[45px]" />
-                  }
-                  {
-                    chainId === ChainIds.BINANCE && <img alt={'networkIcon'} src="/sidebar/binance.png" className="m-auto h-[45px]" />
-                  }
-                  {
-                    chainId === ChainIds.FANTOM && <img alt={'networkIcon'} src="/sidebar/fantom.png" className="m-auto h-[45px]" />
-                  }
-                  {
-                    chainId === ChainIds.OPTIMISM && <img alt={'networkIcon'} src="/sidebar/optimism.png" className="m-auto h-[45px]" />
-                  }
-                  {
-                    chainId === ChainIds.POLYGON && <img alt={'networkIcon'} src="/sidebar/polygon.png" className="m-auto h-[45px]" />
-                  }
+                  
                 </div>
               </div>
               <span className={mintstyles.line}></span>

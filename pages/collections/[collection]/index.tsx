@@ -192,8 +192,13 @@ const Collection: NextPage = () => {
       chain: chain as any,
       address: collectionAddress
     }
-    const metaData = await Web3Api.token.getNFTMetadata(options)
-    setContractType(metaData.contract_type)
+    try{
+      const metaData = await Web3Api.token.getNFTMetadata(options)
+      setContractType(metaData.contract_type)
+    }catch(error){
+      console.log(error)
+    }
+    
   }
 
   useEffect(() => {

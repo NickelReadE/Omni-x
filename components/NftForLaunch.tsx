@@ -33,7 +33,7 @@ const NftForLaunch = (pro:ITypeNFT) => {
       console.log(error)
     }
     
-  },[collectionInfo.address, provider?._network.chainId, signer])
+  },[collectionInfo.address, provider?._network?.chainId, signer])
   useEffect(()=>{
     dispatch(getCollectionInfo(pro.col_url) as any)
   },[dispatch, pro.col_url])
@@ -49,8 +49,6 @@ const NftForLaunch = (pro:ITypeNFT) => {
       }
     }
   },[collectionInfo])
-
-    
   return (
     
     <div className=' border-[#F8F9FA]  rounded-[8px] hover:cursor-pointer'>
