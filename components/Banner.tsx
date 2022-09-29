@@ -77,7 +77,7 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
         className={classNames(
           'w-full',
           'mt-[134px]',
-          'h-[300px]',
+          menu==='home'? 'h-[500px]':'h-[300px]',
           blur && menu ==='home'? 'blur-sm' : ''
         )}
       >
@@ -87,16 +87,6 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
         {menu === 'home' && (
           <div className="flex justify-center w-full ">
             <div className="flex justify-between justify-center fw-60 mt-5 relative">
-              {/* {
-                bShowSettingIcon &&
-                <div className="-top-[7rem] left-[1rem] absolute" onMouseEnter={() => setShowSettingIcon(true)} onMouseLeave={() => setShowSettingIcon(false)}>
-                  <a className="cursor-pointer" onClick={() => setOpenModal(true)}>
-                    <div className="p-2 rounded-full bg-[#adb5bd]/[.5] w-[50px] h-[50px]">
-                      <Image src={Setting} alt="avatar"/>
-                    </div>
-                  </a>
-                </div>
-              } */}
               <div className="bottom-[0rem] left-[4rem]  absolute">
                 <Image
                   src={avatarError||cuser.avatar===undefined||cuser.avatar===DEFAULT_AVATAR?'/images/default_avatar.png':(process.env.API_URL + cuser.avatar)}
@@ -143,11 +133,6 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
           </div>
         )}
       </div>
-      {/* <div className="w-full md:w-auto">
-        <Dialog open={bOpenModal} onClose={() => setOpenModal(false)} aria-labelledby='simple-dialog-title' maxWidth={'xl'} classes={{ paper: classes.paper }}>
-          <UserEdit updateModal={updateModal} />
-        </Dialog>
-      </div> */}
     </>
   )
 }
