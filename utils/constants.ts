@@ -364,8 +364,8 @@ export const chain_list_: {[key: number]: string} = {
   421611:'arbitrum-rinkeby',
   69:'optimism-kovan',
   4002:'fantom-testnet',
-  420 : 'optimism',
-  421613 :'arbitrum'
+  420 : 'optimism-goerli',
+  421613 :'arbitrum-goerli'
 }
 
 
