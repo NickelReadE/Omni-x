@@ -8,7 +8,7 @@ import { openSnackBar } from "../redux/reducers/snackBarReducer"
 import { collectionsService } from '../services/collections'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from "../types"
 import { SaleType } from "../types/enum"
-import { ContractName, CREATOR_FEE, getAddressByName, getChainNameById, getCurrencyNameAddress, getLayerzeroChainId, isUsdcOrUsdt, PROTOCAL_FEE } from "../utils/constants"
+import { ContractName, CREATOR_FEE, getAddressByName, getChainNameById, getCurrencyNameAddress, getLayerzeroChainId, isUsdcOrUsdt, PROTOCAL_FEE, validateCurrencyName } from "../utils/constants"
 import { getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, getOmnixExchangeInstance, getTransferSelectorNftInstance } from "../utils/contracts"
 import { acceptOrder, postMakerOrder } from "../utils/makeOrder"
 import { getChainNameFromId } from '../utils/constants'
@@ -206,12 +206,13 @@ const useTrading = ({
 
     const chainId = provider?.network.chainId || ChainIds.ETHEREUM
     const lzChainId = getLayerzeroChainId(chainId)
-    const omniAddress = getAddressByName(getCurrencyNameAddress(order.currencyAddress) as ContractName, chainId)
+    const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
+    const currencyAddress = getAddressByName(validateCurrencyName(currencyName, chainId), chainId)
     
-    if (!(await checkValid(omniAddress, order?.price, chainId))) {
+    if (!(await checkValid(currencyAddress, order?.price, chainId))) {
       return
     }
-    const omni = getCurrencyInstance(omniAddress, chainId, signer)
+    const omni = getCurrencyInstance(currencyAddress, chainId, signer)
     if (!omni) {
       dispatch(openSnackBar({ message: 'Could not find the currency', status: 'warning' }))
       return
@@ -255,6 +256,7 @@ const useTrading = ({
 
     const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
     
+    console.log('---lzFee---', ethers.utils.formatEther(lzFee), makerAsk)
     const balance = await provider?.getBalance(address!)
     if (balance.lt(lzFee)) {
       dispatch(openSnackBar({ message: `Not enough balance ${ethers.utils.formatEther(lzFee)}`, status: 'warning' }))
