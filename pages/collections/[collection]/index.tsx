@@ -143,7 +143,7 @@ const Collection: NextPage = () => {
   const router = useRouter()
   
   const col_url = router.query.collection as string
-  const display_per_page = 20
+  const display_per_page = 1000
   const [page, setPage] = useState(0)
 
   const dispatch = useDispatch()
@@ -276,7 +276,7 @@ const Collection: NextPage = () => {
   }, [nfts, selectGetNFTs])
 
   useEffect(() => {
-    if( collectionInfo ) {
+    if( collectionChainName && collectionAddress ) {
       const chainStr = collectionChainName
       const chainInfo:any =  getChainInfo(getChainIdFromName(chainStr))
       if(chainInfo){
@@ -284,7 +284,7 @@ const Collection: NextPage = () => {
         setExplorerUrl(mainUrl)
       }
     }
-  }, [collectionInfo])
+  }, [collectionChainName,collectionAddress])
 
   const initAction = async () => {
     await dispatch(clearCollectionNFTs() as any)

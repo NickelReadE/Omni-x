@@ -180,16 +180,16 @@ export const updateCollectionsForCard = (chainId: string, chainName: string) => 
             status: ['VALID'],
             sort: 'OLDEST'
         }
-        await dispatch(getOrders(request))
+        dispatch(getOrders(request))
         const orders = await getState().ordersState.orders
         let ethPrice = getState().feeddataState.assetPrices.eth
         if(ethPrice===undefined){
-            await dispatch(getAssetPrices())
+            dispatch(getAssetPrices())
             ethPrice = getState().feeddataState.assetPrices.eth
         }
         let collectionsF : any[] = []
-        const info = await collectionsService.getCollections()	
-        //console.log(info)	
+        const info = await collectionsService.getCollections()
+        
         for await  (const element of info.data){            
             const itemsCnt = await getItemscount(element)
             const ownersCnt = await getOwnercount(element)            

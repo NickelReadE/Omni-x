@@ -527,8 +527,7 @@ const SideBar: React.FC = () => {
         {
           const usdContract = getCurrencyInstance(getAddressByName('USDC', chainId), chainId, signer)
           const balance = await usdContract?.balanceOf(address)          
-          if(balance){
-            console.log('USDC',balance, chainId, address)
+          if(balance){            
             setUsdcBalance(Number((balance/10^6 || '0')))
           }          
         }
