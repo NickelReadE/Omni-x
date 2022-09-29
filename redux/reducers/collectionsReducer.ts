@@ -121,6 +121,7 @@ export const getCollectionOwners = (chain: string, address: string) => async (di
 export const getNFTInfo = (col_url: string, token_id: string) => async (dispatch: Dispatch<any>) => {
 	try {
 		const info = await collectionsService.getNFTInfo(col_url, token_id)
+		console.log(info)
 		dispatch(setNFTInfo(info))
 	} catch (error) {
 		console.log("getNFTInfo error ? ", error)

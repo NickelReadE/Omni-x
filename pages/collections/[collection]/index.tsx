@@ -137,7 +137,7 @@ const Collection: NextPage = () => {
   const router = useRouter()
 
   const col_url = router.query.collection as string
-  const display_per_page = 20
+  const display_per_page = 1000
   const [page, setPage] = useState(0)
 
   const dispatch = useDispatch()
@@ -208,7 +208,7 @@ const Collection: NextPage = () => {
   useEffect(() => {
     if(col_url){
       dispatch(getCollectionInfo(col_url) as any)
-      dispatch(getCollectionAllNFTs(col_url,selected.value, searchObj) as any)
+      // dispatch(getCollectionAllNFTs(col_url,selected.value, searchObj) as any)
     }
     if ( col_url && provider?._network) {
       const localData = localStorage.getItem('cards')
@@ -354,11 +354,11 @@ const Collection: NextPage = () => {
 
 
   useEffect(()=>{
-    if(isActiveBuyNow && collectionInfo && allNFTs.length>0){
+    if(isActiveBuyNow && collectionInfo && nfts.length>0){
       const temp = []
-      for(let i=0;i<allNFTs.length;i++){
+      for(let i=0;i<nfts.length;i++){
         const start_ids = collectionInfo.start_ids
-        const token_id = allNFTs[i].token_id
+        const token_id = nfts[i].token_id
         let collection_address=''
         let temp_value = 0
         Object.keys(start_ids).map((Key) => {
@@ -370,56 +370,16 @@ const Collection: NextPage = () => {
           }
         })
         for(let j=0; j<orders.length;j++){  
-          if(collection_address==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
-            temp.push(allNFTs[i]) 
+          if(collection_address==orders[j].collectionAddress&& nfts[i].token_id==orders[j].tokenId){
+            temp.push(nfts[i]) 
             break         
           }
         }
       }
       setListNFTs(temp)    
     } 
-  },[isActiveBuyNow,collectionInfo,allNFTs])
-  // useEffect(()=>{
-  //   if(collectionInfo && allNFTs.length>0){
-  //     const tempOrders = []
-  //     for(let i=0;i<allNFTs.length;i++){
-  //       let order:any = null
-  //       for(let j=0; j<orders.length;j++){
-  //         if(collectionAddress==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
-  //           order = orders[j]
-  //         }
-  //       }
-  //       if(order){
-  //         tempOrders.push(order)
-  //       }
-  //     }
-  //     console.log(tempOrders)
-  //     setOrdersForCollection(tempOrders)
-  //   }
-  // },[collectionInfo,allNFTs])
-  // useEffect(()=>{
-  //   if(ordersForCollection.length > 0 && assetPrices){
-  //     let lowPrice: any = Number.MAX_VALUE
-  //     ordersForCollection.map((order: { price: any, currencyAddress:any }) => {
-  //       let priceAsUSD = 0
-  //       if(currencies_list[getChainIdFromName(collectionChainName)].find(({address}) => address===order.currencyAddress)){
-  //         priceAsUSD = parseFloat(ethers.utils.formatEther(order.price))
-  //       }else{
-  //         priceAsUSD = convertETHtoUSDT(parseFloat(ethers.utils.formatEther(order.price)), assetPrices.eth)
-  //       }
-  //       if(lowPrice > priceAsUSD){
-  //         lowPrice  = priceAsUSD
-  //       }
-  //     })
-  //     if(lowPrice === Number.MAX_VALUE){
-  //       lowPrice = 0
-  //     }
-  //     setFloorPrice(lowPrice)
-  //   }else if(ordersForCollection.length ===0){
-  //     setFloorPrice(0)
-  //   }
-
-  // },[ordersForCollection])
+  },[isActiveBuyNow,collectionInfo,nfts])
+  
   useEffect(()=> {
     (async () => {
       if (isInitialized && collectionAddress && collectionChainName) {
