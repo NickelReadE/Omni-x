@@ -5,7 +5,7 @@ import Aggregator from '../constants/abis/AggregatvorV3.json'
 interface PriceData {
   [key:string]: string
 }
-const getPriceforUSD = async( chain:string, crypto:string) => {
+export const getPriceforUSD = async( chain:string, crypto:string) => {
   const provider = new ethers.providers.JsonRpcProvider(rpcDatafeedProvider[chain])
   const priceFeed = new ethers.Contract(crypto_list[chain][crypto], Aggregator, provider)
   let result:any = 0

@@ -22,6 +22,7 @@ import {
     currencies_list,
     getNetworForAlchemy
     } from '../../utils/constants'
+import { getPriceforUSD } from '../../services/datafeed'
 import finalPropsSelectorFactory from 'react-redux/es/connect/selectorFactory'
 interface CollectionState{
     nfts:any[],
@@ -182,11 +183,10 @@ export const updateCollectionsForCard = (chainId: string, chainName: string) => 
         }
         dispatch(getOrders(request))
         const orders = await getState().ordersState.orders
-        let ethPrice = getState().feeddataState.assetPrices.eth
-        if(ethPrice===undefined){
-            dispatch(getAssetPrices())
-            ethPrice = getState().feeddataState.assetPrices.eth
-        }
+        let ethPrice = await  getPriceforUSD('eth','eth')
+        
+                 
+        
         let collectionsF : any[] = []
         const info = await collectionsService.getCollections()
         
@@ -449,14 +449,14 @@ const getOwnercount = (collection:any):Promise<number> => {
                 }				
             }
         }
-        for(const key  in supportedChainsOnAlchemy){
+        for(const key  of supportedChainsOnAlchemy){
             if(collection.address[supportedChainsOnAlchemy[key]]){
                 const settings = {
-                    apiKey: getAPIkeyForAlchemy(parseInt(key)), // Replace with your Alchemy API Key.
-                    network: getNetworForAlchemy(parseInt(key)), // Replace with your network.
+                    apiKey: getAPIkeyForAlchemy(key), // Replace with your Alchemy API Key.
+                    network: getNetworForAlchemy(key), // Replace with your network.
                 };				
                 const alchemy = new Alchemy(settings);			
-                
+                console.log(settings)
                 const resp = await alchemy.nft.getNftsForContract(collection.address[supportedChainsOnMoralis[key]])						  
                 if ( resp?.nfts) {
                     totalCnt += resp.nfts.length
