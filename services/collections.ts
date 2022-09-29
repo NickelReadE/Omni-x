@@ -13,6 +13,26 @@ const getCollectionNFTs = async (col_url: string, page: Number, display_per_page
     return res.data
 }
 
+const updateCollectionNFTListPrice =async (col_url:string,token_id:number,price:number) => {
+    const option = {
+        col_url,
+        token_id,
+        price
+    }
+    const res = await API.post(`collections/nfts/updateListPrice`,option)
+    return res.data
+}
+
+const updateCollectionNFTSalePrice =async (col_url:string,token_id:number,price:number) => {
+    const option = {
+        col_url,
+        token_id,
+        price
+    }
+    const res = await API.post(`collections/nfts/updateSalePrice`,option)
+    return res.data
+}
+
 const getCollectionAllNFTs = async (col_url: string,sort: String, searchObj: Object) => {
     const option = {
         col_url,
@@ -48,13 +68,6 @@ const getNFTOwner = async (col_address: string, collection_chain_name: string, t
     const res = await API.get(`collections/owner/${col_address}/${collection_chain_name}/${token_id}`)
     return res.data.owner
 }
-// const getCollectionAllNfts = async (col_url: string) => {
-//     const option = {
-//         col_url
-//     }
-//     const res = await API.post(`collections/allnfts`, option)
-//     return res.data
-// }
 
 export const collectionsService = {
     getCollectionNFTs,
@@ -63,5 +76,7 @@ export const collectionsService = {
     getNFTInfo,
     getCollections,
     getNFTOwner,
-    getCollectionAllNFTs
+    getCollectionAllNFTs,
+    updateCollectionNFTListPrice,
+    updateCollectionNFTSalePrice
 }

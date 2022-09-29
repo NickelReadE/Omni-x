@@ -12,12 +12,14 @@ import ConfirmBid from '../../../components/collections/ConfirmBid'
 import { getNFTInfo, selectNFTInfo } from '../../../redux/reducers/collectionsReducer'
 import useWallet from '../../../hooks/useWallet'
 import useTrading from '../../../hooks/useTrading'
-import { getChainIcon, getChainNameFromId, getCollectionAddress, getCurrencyIconByAddress, getProfileLink } from '../../../utils/constants'
+import { getChainIcon, getChainNameFromId, getCurrencyIconByAddress, getProfileLink } from '../../../utils/constants'
 import PngCheck from '../../../public/images/check.png'
 import PngSub from '../../../public/images/subButton.png'
 import PngEther from '../../../public/images/collections/ethereum.png'
 import useOrderStatics from '../../../hooks/useOrderStatics'
 import useOwnership from '../../../hooks/useOwnership'
+import { findCollection } from '../../../utils/constants'
+import { useMemo } from 'react'
 
 const truncate = (str: string) => {
   return str.length > 12 ? str.substring(0, 9) + '...' : str
@@ -28,7 +30,6 @@ const Item: NextPage = () => {
   const [currentTab, setCurrentTab] = useState<string>('items')
 
   const nftInfo = useSelector(selectNFTInfo)
-
   const dispatch = useDispatch()
   const {
     provider,
@@ -39,11 +40,17 @@ const Item: NextPage = () => {
   const router = useRouter()
   const col_url = router.query.collection as string
   const token_id = router.query.item as string
-  const chain_id = provider?._network?.chainId
-  const chain_name = chain_id && getChainNameFromId(chain_id)
   const collection_address_map = nftInfo?.collection?.address
-  const collection_address = chain_id && getCollectionAddress(collection_address_map, chain_id)
 
+  const collectionInfo = useMemo(() => {
+    if (nftInfo && nftInfo.collection && token_id) {
+      const start_ids = nftInfo.collection.start_ids
+      return findCollection(nftInfo.collection.address,start_ids,token_id)
+    }
+    return undefined
+  }, [nftInfo,token_id])
+  const  collection_address = collectionInfo?.[0]
+  const chain_id = collectionInfo?.[1]
   // ownership hook
   const {
     owner,
@@ -105,7 +112,6 @@ const Item: NextPage = () => {
   // nft info api call
   useEffect(() => {
     if (col_url && token_id ) {
-      console.log('-getting nft info-')
       dispatch(getNFTInfo(col_url, token_id) as any)
     }
   }, [col_url, token_id])
@@ -113,7 +119,6 @@ const Item: NextPage = () => {
   // order api call
   useEffect(() => {
     if (nftInfo) {
-      console.log('-getting orders-')
       getListOrders()
       getBidOrders()
       getLastSaleOrder()
@@ -121,10 +126,10 @@ const Item: NextPage = () => {
   }, [nftInfo, owner])
 
   // profile link
-  const profileLink = chain_name && ownerType && owner && getProfileLink(chain_name, ownerType, owner)
+  const profileLink = chain_id && ownerType && owner && getProfileLink(Number(chain_id), ownerType, owner)
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
   const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
-
+  
   return (
     <>
       {nftInfo?.nft?.token_id === Number(token_id) && nftInfo?.collection?.col_url === col_url &&

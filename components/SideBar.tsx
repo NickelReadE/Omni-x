@@ -497,10 +497,16 @@ const SideBar: React.FC = () => {
     if(window.ethereum){
       window.ethereum.on('chainChanged', function (networkId:string) {
         setChainID(parseInt(networkId))
-        //window.location.reload()
       })
     }
   }, [])
+
+  useEffect(()=>{
+    const chain_id = provider?._network?.chainId
+    if(Number(chain_id)>0){
+      setChainID(Number(chain_id))
+    }
+  },[provider?._network?.chainId])
 
   const updateModal = (status: boolean) => {
     setConfirmTransfer(status)
@@ -576,24 +582,23 @@ const SideBar: React.FC = () => {
                   chainId === ChainIds.ETHEREUM && <img alt={'networkIcon'} src="/sidebar/ethereum.png" className="m-auto h-[45px]" />
                 }
                 {
-                  chainId === ChainIds.ARBITRUM && <img alt={'networkIcon'} src="/sidebar/arbitrum.png" className="m-auto h-[45px]" />
+                  chainId === ChainIds.BINANCE && <img alt={'networkIcon'} src="/sidebar/binance.png" className="m-auto h-[45px]" />
                 }
                 {
                   chainId === ChainIds.AVALANCHE && <img alt={'networkIcon'} src="/sidebar/avax.png" className="m-auto h-[45px]" />
                 }
                 {
-                  chainId === ChainIds.BINANCE && <img alt={'networkIcon'} src="/sidebar/binance.png" className="m-auto h-[45px]" />
+                  chainId === ChainIds.POLYGON && <img alt={'networkIcon'} src="/sidebar/polygon.png" className="m-auto h-[45px]" />
                 }
                 {
-                  chainId === ChainIds.FANTOM && <img alt={'networkIcon'} src="/sidebar/fantom.png" className="m-auto h-[45px]" />
+                  chainId === ChainIds.ARBITRUM && <img alt={'networkIcon'} src="/sidebar/arbitrum.png" className="m-auto h-[45px]" />
                 }
                 {
                   chainId === ChainIds.OPTIMISM && <img alt={'networkIcon'} src="/sidebar/optimism.png" className="m-auto h-[45px]" />
                 }
                 {
-                  chainId === ChainIds.POLYGON && <img alt={'networkIcon'} src="/sidebar/polygon.png" className="m-auto h-[45px]" />
+                  chainId === ChainIds.FANTOM && <img alt={'networkIcon'} src="/sidebar/fantom.png" className="m-auto h-[45px]" />
                 }
-
               </div>
             </div>
             <div className="w-full 0">
@@ -676,15 +681,14 @@ const SideBar: React.FC = () => {
                   </button>
                 </li>
                 <li className="w-full">
-                  <button className="w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(ChainIds.ARBITRUM)}>
+                  <button className="w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(ChainIds.BINANCE)}>
                     <div className="flex flex-row w-[130px]">
-                      <div className="flex items-center w-[36px] h-[36px] ">
-                        <img alt={'networkIcon'} src="/svgs/arbitrum.svg" width={24} height={28} />
+                      <div className="flex items-center w-[36px] h-[36px] m-auto">
+                        <img alt={'networkIcon'} src="/svgs/binance.svg" width={24} height={28} />
                       </div>
-                      <span className=" flex items-center ml-4 ">Arbitrum</span>
+                      <span className="flex items-center ml-4 w-[80px]">BNB Chain</span>
                     </div>
                   </button>
-
                 </li>
                 <li className="w-full">
                   <button className="w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(ChainIds.AVALANCHE)}>
@@ -697,22 +701,22 @@ const SideBar: React.FC = () => {
                   </button>
                 </li>
                 <li className="w-full">
-                  <button className="w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(ChainIds.BINANCE)}>
+                  <button className="flex items-center w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(ChainIds.POLYGON)}>
                     <div className="flex flex-row w-[130px]">
                       <div className="flex items-center w-[36px] h-[36px] m-auto">
-                        <img alt={'networkIcon'} src="/svgs/binance.svg" width={24} height={28} />
+                        <img alt={'networkIcon'} src="/svgs/polygon.svg" width={24} height={28} />
                       </div>
-                      <span className="flex items-center ml-4 w-[80px]">BNB Chain</span>
+                      <span className="ml-4 w-[80px] flex items-center">Polygon</span>
                     </div>
                   </button>
                 </li>
                 <li className="w-full">
-                  <button className="w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(ChainIds.FANTOM)}>
+                  <button className="w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(ChainIds.ARBITRUM)}>
                     <div className="flex flex-row w-[130px]">
-                      <div className="flex items-center w-[36px] h-[36px] m-auto">
-                        <img alt={'networkIcon'} src="/svgs/fantom.svg" width={24} height={28} />
+                      <div className="flex items-center w-[36px] h-[36px] ">
+                        <img alt={'networkIcon'} src="/svgs/arbitrum.svg" width={24} height={28} />
                       </div>
-                      <span className="flex items-center ml-4 w-[80px]">Fantom</span>
+                      <span className=" flex items-center ml-4 ">Arbitrum</span>
                     </div>
                   </button>
                 </li>
@@ -727,15 +731,15 @@ const SideBar: React.FC = () => {
                   </button>
                 </li>
                 <li className="w-full">
-                  <button className="flex items-center w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(ChainIds.POLYGON)}>
+                  <button className="w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(ChainIds.FANTOM)}>
                     <div className="flex flex-row w-[130px]">
                       <div className="flex items-center w-[36px] h-[36px] m-auto">
-                        <img alt={'networkIcon'} src="/svgs/polygon.svg" width={24} height={28} />
+                        <img alt={'networkIcon'} src="/svgs/fantom.svg" width={24} height={28} />
                       </div>
-                      <span className="ml-4 w-[80px] flex items-center">Polygon</span>
+                      <span className="flex items-center ml-4 w-[80px]">Fantom</span>
                     </div>
                   </button>
-                </li>
+                </li>             
               </ul>
             }
           </li>

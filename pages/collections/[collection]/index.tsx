@@ -39,7 +39,7 @@ import { getChainNameFromId } from '../../../utils/constants'
 const sort_fields = [
   { id: 1, name: 'price: low to high', value: 'price', unavailable: false },
   { id: 2, name: 'price: high to low', value: '-price', unavailable: false },
-  { id: 3, name: 'Highest last sale',  value: 'price', unavailable: false},
+  { id: 3, name: 'Highest last sale',  value: '-last_sale', unavailable: false},
 ]
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -163,6 +163,7 @@ const Collection: NextPage = () => {
   const [explorerUrl, setExplorerUrl] = useState('')
   const [contractType, setContractType] = useState('')
   const finishedGetting = useSelector(selectGetNFTs)
+  const [bInit, setInit] = useState(false)
 
   const {
     provider,
@@ -205,9 +206,11 @@ const Collection: NextPage = () => {
   },[collectionInfo,provider])
 
   useEffect(() => {
-    if ( col_url && provider?._network) {
+    if(col_url){
       dispatch(getCollectionInfo(col_url) as any)
-      // dispatch(getCollectionOwners(col_url) as any)
+      dispatch(getCollectionAllNFTs(col_url,selected.value, searchObj) as any)
+    }
+    if ( col_url && provider?._network) {
       const localData = localStorage.getItem('cards')
       if(localData){
         setCollectionInfoFromLocal((JSON.parse(localData)).find((element: ICollectionInfoFromLocal) => element.col_url===col_url))
@@ -229,15 +232,11 @@ const Collection: NextPage = () => {
       dispatch(getOrders(request) as any)
       const bidRequest: IGetOrderRequest = {
         isOrderAsk: false,
-        collection: collectionAddress,
-        // startTime: Math.floor(Date.now() / 1000).toString(),
-        // endTime: Math.floor(Date.now() / 1000).toString(),
         status: ['VALID'],
         sort: 'PRICE_ASC'
       }
       dispatch(getOrders(bidRequest) as any)
       const excutedRequest: IGetOrderRequest = {
-        collection: collectionAddress,
         status: ['EXECUTED'],
         sort: 'UPDATE_OLDEST'
       }
@@ -245,12 +244,10 @@ const Collection: NextPage = () => {
     }
   },[nfts])
 
-
   const onChangeSort = (item: any) => {
     setSelected(item)
     dispatch(clearCollectionNFTs() as any)
     dispatch(getCollectionNFTs(col_url, 0, display_per_page, item.value, searchObj) as any)
-    dispatch(getCollectionAllNFTs(col_url,selected.value, searchObj) as any)
     setPage(0)
   }
 
@@ -268,20 +265,26 @@ const Collection: NextPage = () => {
         const mainUrl =chainInfo?.explorers[0]?.url+'/address/'+collectionAddress
         setExplorerUrl(mainUrl)
       }
-
     }
   }, [collectionInfo])
 
+  const initAction = async () => {
+    await dispatch(clearCollectionNFTs() as any)
+    await setInit(true)
+    await setHasMoreNFTs(true)
+  }
+
   useEffect(() => {
+    initAction()
     if ( collectionInfo ) {
-      dispatch(clearCollectionNFTs() as any)
       dispatch(getCollectionNFTs(col_url, 0, display_per_page, selected.value, searchObj) as any)
-      dispatch(getCollectionAllNFTs(col_url,selected.value, searchObj) as any)
       setPage(0)
     }
   }, [searchObj])
 
   const fetchMoreData = () => {
+    if ( !bInit )
+      return
     if( collectionInfo && nfts.length >= collectionInfo.count ) {
       setHasMoreNFTs(false)
       return
@@ -343,25 +346,38 @@ const Collection: NextPage = () => {
     const temp = []
     for(let i = 0;i<listNFTs.length;i++){
       temp.push(
-        <NFTBox nft={listNFTs[i]} index={i} key={i}  col_url={col_url} col_address={collectionAddress}  chain={collectionInfo?collectionChainID:'4'}/>
+        <NFTBox nft={listNFTs[i]} index={i} key={i}  col_url={col_url}/>
       )
     }
     return temp
   }
 
+
   useEffect(()=>{
     if(isActiveBuyNow && collectionInfo && allNFTs.length>0){
       const temp = []
       for(let i=0;i<allNFTs.length;i++){
-        for(let j=0; j<orders.length;j++){
-          if(collectionAddress==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
-            temp.push(allNFTs[i])
-            break
+        const start_ids = collectionInfo.start_ids
+        const token_id = allNFTs[i].token_id
+        let collection_address=''
+        let temp_value = 0
+        Object.keys(start_ids).map((Key) => {
+          if(Number(start_ids[Key])<Number(token_id)){
+            if(temp_value<=Number(start_ids[Key])){
+              temp_value = Number(start_ids[Key])
+              collection_address = collectionInfo.address[Key].toLowerCase()
+            }
+          }
+        })
+        for(let j=0; j<orders.length;j++){  
+          if(collection_address==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
+            temp.push(allNFTs[i]) 
+            break         
           }
         }
       }
-      setListNFTs(temp)
-    }
+      setListNFTs(temp)    
+    } 
   },[isActiveBuyNow,collectionInfo,allNFTs])
   // useEffect(()=>{
   //   if(collectionInfo && allNFTs.length>0){
@@ -436,34 +452,34 @@ const Collection: NextPage = () => {
             </div>
             { collectionInfo&&collectionInfo.discord?
               <Link href={collectionInfo.discord}>
-                <a className="p-2 flex items-center">
+                <a target="_blank" className="p-2 flex items-center">
                   <Image src={Discord} width={25} height={21} alt='discord' />
                 </a>
               </Link>
               :
-              <a className="p-2 flex items-center">
+              <a target="_blank" className="p-2 flex items-center">
                 <Image src={Discord} width={25} height={21} alt='discord' />
               </a>
             }
             { collectionInfo&&collectionInfo.twitter?
               <Link href={collectionInfo.twitter}>
-                <a className="p-2 flex items-center">
+                <a target="_blank" className="p-2 flex items-center">
                   <Image src={Twitter} alt='twitter' />
                 </a>
               </Link>
               :
-              <a className="p-2 flex items-center">
+              <a target="_blank" className="p-2 flex items-center">
                 <Image src={Twitter} alt='twitter' />
               </a>
             }
             { collectionInfo&&collectionInfo.website?
               <Link href={collectionInfo.website}>
-                <a className="p-2 flex items-center">
+                <a target="_blank" className="p-2 flex items-center">
                   <Image src={Web} alt='website' />
                 </a>
               </Link>
               :
-              <a className="p-2 flex items-center">
+              <a target="_blank" className="p-2 flex items-center">
                 <Image src={Web} alt='website' />
               </a>
             }
@@ -498,7 +514,8 @@ const Collection: NextPage = () => {
               <ul className="flex space-x-4 relative justify-item-stretch items-end text-md font-bold text-center pb-[5px]">
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <span className="mr-[22px] ">Items</span>
-                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.itemsCnt:0}</span>
+                  {/* <span >{collectionInfoFromLocal?collectionInfoFromLocal.itemsCnt:0}</span> */}
+                  <span >{collectionInfo?.count}</span>
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <span className="mr-[22px] ">Owners</span>
@@ -566,12 +583,13 @@ const Collection: NextPage = () => {
             <ul className='flex flex-col space-y-4'>
               <li className="w-full">
                 <div
-                  className={`w-full px-4 py-4 text-left text-g-600  font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`} onClick={()=>setIsActiveBuyNow(!isActiveBuyNow)}
+                  className={`w-full px-4 py-4 text-left text-g-600  font-semibold  ${expandedMenu==1?'active':''}`} 
                 >
                   Buy Now
                   <Switch
                     checked={enabled}
                     onChange={setEnabled}
+                    onClick={()=>setIsActiveBuyNow(!isActiveBuyNow)}
                     className={`${enabled ? 'bg-[#E9ECEF]' : 'bg-[#E9ECEF]'}
                     pull-right relative inline-flex h-[22px] w-[57px] shrink-0 cursor-pointer rounded-full border-2 border-[#6C757D] transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
                   >
@@ -584,6 +602,7 @@ const Collection: NextPage = () => {
                   </Switch>
                 </div>
               </li>
+              <hr/>
               { collectionInfo && collectionInfo.attrs && Object.keys(collectionInfo.attrs).map((key, idx) => {
                 const attrs = collectionInfo.attrs
                 return <li className="w-full" key={idx}>
@@ -640,6 +659,7 @@ const Collection: NextPage = () => {
                       </div>
                     </AccordionDetails>
                   </Accordion>
+                  <hr/>
                 </li>
               })}
               {/* <li className="w-full">
@@ -774,14 +794,9 @@ const Collection: NextPage = () => {
                   }
                 >
                   <div className="grid 2xl:grid-cols-5 gap-4 xl:grid-cols-3 md:grid-cols-2 p-1">
-                    {/* { !isActiveBuyNow && nfts.map((item, index) => {
-                      return (
-                        <NFTBox nft={item} index={index} key={index}  col_url={col_url} col_address={collectionAddress}  chain={collectionInfo?collectionChainID:'4'}/>
-                      )
-                    })} */}
                     { !isActiveBuyNow && nfts.map((item, index) => {
                       return (
-                        <NFTBox nft={item} index={index} key={index}  col_url={col_url} col_address={collectionAddress}  chain={collectionInfo?collectionChainID:'4'}/>
+                        <NFTBox nft={item} index={index} key={index}  col_url={col_url} />
                       )
                     })}
                     { isActiveBuyNow && listNFTs && buyComponet()}
