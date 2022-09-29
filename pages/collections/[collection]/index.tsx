@@ -704,7 +704,7 @@ const Collection: NextPage = () => {
                                 </span>
                                 {selected ? (
                                   <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                                    <i className="fa fa-chevron-down h-5 w-5"></i>
+                                    <i className="fa fa-chevron-down w-5"></i>
                                   </span>
                                 ) : null}
                               </>
