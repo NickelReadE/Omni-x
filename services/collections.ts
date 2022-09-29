@@ -19,9 +19,7 @@ const updateCollectionNFTListPrice =async (col_url:string,token_id:number,price:
         token_id,
         price
     }
-    console.log("list->",option)
     const res = await API.post(`collections/nfts/updateListPrice`,option)
-    console.log(res.data)
     return res.data
 }
 
@@ -31,9 +29,7 @@ const updateCollectionNFTSalePrice =async (col_url:string,token_id:number,price:
         token_id,
         price
     }
-    console.log("sale->",option)
     const res = await API.post(`collections/nfts/updateSalePrice`,option)
-    console.log(res.data)
     return res.data
 }
 

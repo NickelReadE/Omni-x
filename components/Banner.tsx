@@ -77,7 +77,7 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
         className={classNames(
           'w-full',
           'mt-[134px]',
-          'h-[500px]',
+          'h-[300px]',
           blur && menu ==='home'? 'blur-sm' : ''
         )}
       >

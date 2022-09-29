@@ -245,6 +245,7 @@ const Collection: NextPage = () => {
 
   const onChangeSort = (item: any) => {
     setSelected(item)
+    setHasMoreNFTs(true)
     dispatch(clearCollectionNFTs() as any)
     dispatch(getCollectionNFTs(col_url, 0, display_per_page, item.value, searchObj) as any)
     dispatch(getCollectionAllNFTs(col_url,selected.value, searchObj) as any)
@@ -576,7 +577,7 @@ const Collection: NextPage = () => {
             <ul className='flex flex-col space-y-4'>
               <li className="w-full">
                 <div
-                  className={`w-full px-4 py-4 text-left text-g-600  font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`} 
+                  className={`w-full px-4 py-4 text-left text-g-600  font-semibold  ${expandedMenu==1?'active':''}`} 
                 >
                   Buy Now
                   <Switch

@@ -116,7 +116,7 @@ const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
             <div className="flex items-center ml-3">
               {isListed && <>
                 <img src={currencyIcon || '/svgs/ethereum.svg'} className="w-[18px] h-[18px]" alt='icon'/>
-                <span className="text-[#000000] text-[18px] font-extrabold ml-2">{formattedPrice}</span>
+                <span className="text-[#000000] text-[18px] font-extrabold ml-2">{Number(formattedPrice)>=1000?`${Number(formattedPrice)/1000}K`:formattedPrice}</span>
               </>}
             </div>
           </div>
@@ -127,28 +127,28 @@ const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
           {lastSale && <>
             <span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span>
             <img alt={'saleIcon'} src={lastSaleCoin} className="w-[18px] h-[18px]" />&nbsp;
-            <span className="text-[#6C757D] text-[14px]font-bold">{lastSale}</span>
+            <span className="text-[#6C757D] text-[14px]font-bold">{Number(lastSale)>=1000?`${Number(lastSale)/1000}K`:lastSale}</span>
           </>}
           {!lastSale && highestBid && <>
             <span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span>
             <img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;
-            <span className="text-[#6C757D] text-[14px] font-bold">{highestBid}</span>
+            <span className="text-[#6C757D] text-[14px] font-bold">{Number(highestBid)>=1000?`${Number(highestBid)/1000}K`:highestBid}</span>
           </>}
         </div></a></Link>
         <div className="flex items-center ml-3">
           <div>&nbsp;</div>
           {isShowBtn && isOwner && (
-            <div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#B00000]" onClick={() => {setOpenSellDlg(true)}}>
+            <div className="ml-2 mr-2 py-[1px] px-4 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#B00000]" onClick={() => {setOpenSellDlg(true)}}>
               {'Sell'}
             </div>
           )}
           {isShowBtn && !isOwner && isListed && !isAuction && (
-            <div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]" onClick={()=>onBuy(order)}>
+            <div className="ml-2 mr-2 py-[1px] px-4 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]" onClick={()=>onBuy(order)}>
               {'Buy now'}
             </div>
           )}
           {isShowBtn && !isOwner && isListed && isAuction && (
-            <div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]" onClick={() => setOpenBidDlg(true)}>
+            <div className="ml-2 mr-2 py-[1px] px-4 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]" onClick={() => setOpenBidDlg(true)}>
               {'Bid'}
             </div>
           )}
