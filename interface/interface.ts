@@ -115,6 +115,30 @@ export interface ICollectionInfoFromLocal{
   floorPrice:{eth:string, usd:string}
 }
 
+
+export interface ITypeNFT{
+  typeNFT:string,
+  items:string,
+  col_url:string,
+  name:string,
+  img:string,
+  price:string
+}
+
+export interface contractInfo{
+  [key: string]: {
+    address: string,
+    imageSVG: string,
+    name: string,
+    price: number,
+    chainId: string,
+    unit: string,
+    color: string,
+    index: number
+  }
+}
+
+
 export interface IListingData {
   price: number,
   currencyName: string,

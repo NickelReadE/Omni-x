@@ -18,8 +18,7 @@ import Slider from '../../components/Slider'
 import CollectionCard from '../../components/CollectionCard'
 import { IGetOrderRequest } from '../../interface/interface'
 import useWallet from '../../hooks/useWallet'
-import { getChainNameById } from '../../utils/constants'
-
+import { getChainNameFromId } from '../../utils/constants'
 const serviceSlides: Array<React.ReactNode> = []
 serviceSlides.push(<Image src={pfp} alt="image - 25" layout='responsive' width={230} height={263} />)
 serviceSlides.push(<Image src={photography} alt="image - 26" layout='responsive' width={230} height={263} />)
@@ -32,32 +31,28 @@ serviceSlides.push(<Image src={domains} alt="image - 28" layout='responsive' wid
 serviceSlides.push(<Image src={fashion} alt="image - 29" layout='responsive' width={230} height={263} />)
 
 const Collections: NextPage = () => {
-  const [omniSlides, setOmniSlides] = useState<Array<React.ReactNode>>([])
+  const {provider} = useWallet()
+  const [omniSlides, setOmniSlides] = useState<Array<React.ReactNode>>([])  
   const dispatch = useDispatch()
   const collections = useSelector(selectCollections)
   const collectionsForCard = useSelector(selectCollectionsForCard)
 
-  const {
-    provider,
-  } = useWallet()
-
+  
   useEffect(() => {
     if(provider?._network){
-      dispatch(updateCollectionsForCard(provider._network.chainId.toString(), getChainNameById(provider._network.chainId) ) as any)
+      dispatch(updateCollectionsForCard(provider._network.chainId.toString(), getChainNameFromId(provider._network.chainId) ) as any)
     }
   }, [provider?._network])
 
-  useEffect(() => {
+  useEffect(()=>{
     dispatch(getCollections() as any)
-  }, [])
-
+  },[])
   useEffect(() => {
     const slides: Array<React.ReactNode> = []
     const  localCards = localStorage.getItem('cards')
     if(localCards===null){
       if(collections.length>0){
-        if(collectionsForCard.length>0){
-          localStorage.setItem('cards',JSON.stringify(collectionsForCard))
+        if(collectionsForCard.length>0){          
           collections.map((item: any) => {
             slides.push(
               <CollectionCard collection={item} card={collectionsForCard.find((card: { col_url: any })=>card.col_url == item.col_url)}/>
