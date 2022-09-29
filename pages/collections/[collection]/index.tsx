@@ -31,7 +31,6 @@ import SearchIcon from '@material-ui/icons/Search'
 import Chip from '@material-ui/core/Chip'
 import classNames from '../../../helpers/classNames'
 import editStyle from '../../../styles/collection.module.scss'
-import { getBlockExplorer } from '../../../utils/constants'
 
 import { getOrders, selectOrders, getLastSaleOrders,} from '../../../redux/reducers/ordersReducer'
 import { IGetOrderRequest , ICollectionInfoFromLocal} from '../../../interface/interface'
