@@ -65,6 +65,7 @@ const useTrading = ({
 
   const chain_id = provider?._network?.chainId
   const chain_name = chain_id && getChainNameFromId(chain_id)
+  let decimal = 0
 
   const checkValid = async (currency: string, price: string, chainId: number) => {
     if (currency===''){
@@ -94,6 +95,8 @@ const useTrading = ({
 
     const currencyContract = getCurrencyInstance(currency, chainId, signer)
     const balance = await currencyContract?.balanceOf(address)
+    console.log(currencyContract)
+    decimal = await currencyContract?.decimals()
     if (balance.lt(BigNumber.from(price))) {
       dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))
       setOpenBidDlg(false)
@@ -268,7 +271,7 @@ const useTrading = ({
     await updateOrderStatus(order, 'EXECUTED')
 
     await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
-    await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(order?.price))
+    await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(order?.price)/10**decimal as number)
 
 
     dispatch(openSnackBar({ message: 'Bought an NFT', status: 'success' }))
@@ -388,7 +391,7 @@ const useTrading = ({
 
     await updateOrderStatus(bidOrder, 'EXECUTED')
     await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
-    await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(bidOrder?.price))
+    await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(bidOrder?.price)/10**decimal as number)
 
     dispatch(openSnackBar({ message: 'Accepted a Bid', status: 'success' }))
     getLastSaleOrder()
