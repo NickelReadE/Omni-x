@@ -163,7 +163,7 @@ const Collection: NextPage = () => {
   const [explorerUrl, setExplorerUrl] = useState('')
   const [contractType, setContractType] = useState('')
   const finishedGetting = useSelector(selectGetNFTs)
-  const [bInit, setInit] = useState(false);
+  const [bInit, setInit] = useState(false)
 
   const {
     provider,
@@ -271,15 +271,11 @@ const Collection: NextPage = () => {
   const initAction = async () => {
     await dispatch(clearCollectionNFTs() as any)
     await setInit(true)
-    await setHasMoreNFTs(true);
+    await setHasMoreNFTs(true)
   }
 
-  // useEffect(() => {
-  //   setInit(false);
-  // }, []);
-
   useEffect(() => {
-    initAction();
+    initAction()
     if ( collectionInfo ) {
       dispatch(getCollectionNFTs(col_url, 0, display_per_page, selected.value, searchObj) as any)
       setPage(0)
