@@ -42,7 +42,7 @@ import { getChainNameFromId } from '../../../utils/constants'
 const sort_fields = [
   { id: 1, name: 'price: low to high', value: 'price', unavailable: false },
   { id: 2, name: 'price: high to low', value: '-price', unavailable: false },
-  { id: 3, name: 'Highest last sale',  value: 'price', unavailable: false},
+  { id: 3, name: 'Highest last sale',  value: '-last_sale', unavailable: false},
 ]
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -174,6 +174,7 @@ const Collection: NextPage = () => {
   //const [floorPrice] = useState(0)
 
   const finishedGetting = useSelector(selectGetNFTs)
+  const [bInit, setInit] = useState(false)
 
   const {
     provider,
@@ -225,6 +226,9 @@ const Collection: NextPage = () => {
     
     if ( col_url && provider?._network) {
       dispatch(getCollectionInfo(col_url) as any)
+      dispatch(getCollectionAllNFTs(col_url,selected.value, searchObj) as any)
+    }
+    if ( col_url && provider?._network) {
       const localData = localStorage.getItem('cards')
       if(localData){
         setCollectionInfoFromLocal((JSON.parse(localData)).find((element: ICollectionInfoFromLocal) => element.col_url===col_url))
@@ -246,28 +250,22 @@ const Collection: NextPage = () => {
       dispatch(getOrders(request) as any)
       const bidRequest: IGetOrderRequest = {
         isOrderAsk: false,
-        collection: collectionAddress,
-        // startTime: Math.floor(Date.now() / 1000).toString(),
-        // endTime: Math.floor(Date.now() / 1000).toString(),
         status: ['VALID'],
         sort: 'PRICE_ASC'
       }
       dispatch(getOrders(bidRequest) as any)
       const excutedRequest: IGetOrderRequest = {
-        collection: collectionAddress,
         status: ['EXECUTED'],
         sort: 'UPDATE_OLDEST'
       }
       dispatch(getLastSaleOrders(excutedRequest) as any)
     }
   },[nfts])
-  
 
   const onChangeSort = (item: any) => {
     setSelected(item)
     dispatch(clearCollectionNFTs() as any)
     dispatch(getCollectionNFTs(col_url, 0, display_per_page, item.value, searchObj) as any)
-    dispatch(getCollectionAllNFTs(col_url,selected.value, searchObj) as any)
     setPage(0)
   }
 
@@ -285,20 +283,26 @@ const Collection: NextPage = () => {
         const mainUrl =chainInfo?.explorers[0]?.url+'/address/'+collectionAddress
         setExplorerUrl(mainUrl)
       }
-
     }
-  }, [collectionAddress])
+  }, [collectionInfo])
+
+  const initAction = async () => {
+    await dispatch(clearCollectionNFTs() as any)
+    await setInit(true)
+    await setHasMoreNFTs(true)
+  }
 
   useEffect(() => {
+    initAction()
     if ( collectionInfo ) {
-      dispatch(clearCollectionNFTs() as any)
       dispatch(getCollectionNFTs(col_url, 0, display_per_page, selected.value, searchObj) as any)
-      dispatch(getCollectionAllNFTs(col_url,selected.value, searchObj) as any)
       setPage(0)
     }
   }, [searchObj])
 
   const fetchMoreData = () => {
+    if ( !bInit )
+      return
     if( collectionInfo && nfts.length >= collectionInfo.count ) {
       setHasMoreNFTs(false)
       return
@@ -360,18 +364,31 @@ const Collection: NextPage = () => {
     const temp = []
     for(let i = 0;i<listNFTs.length;i++){
       temp.push(
-        <NFTBox nft={listNFTs[i]} index={i} key={i}  col_url={col_url} col_address={collectionInfo.address}  chain={collectionInfo?collectionInfo.chain:'eth'}/>
+        <NFTBox nft={listNFTs[i]} index={i} key={i}  col_url={col_url}/>
       )
     }
     return temp
   }
 
+
   useEffect(()=>{
     if(isActiveBuyNow && collectionInfo && allNFTs.length>0){
       const temp = []
       for(let i=0;i<allNFTs.length;i++){
+        const start_ids = collectionInfo.start_ids
+        const token_id = allNFTs[i].token_id
+        let collection_address=''
+        let temp_value = 0
+        Object.keys(start_ids).map((Key) => {
+          if(Number(start_ids[Key])<Number(token_id)){
+            if(temp_value<=Number(start_ids[Key])){
+              temp_value = Number(start_ids[Key])
+              collection_address = collectionInfo.address[Key].toLowerCase()
+            }
+          }
+        })
         for(let j=0; j<orders.length;j++){  
-          if(collectionInfo.address==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
+          if(collection_address==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
             temp.push(allNFTs[i]) 
             break         
           }
@@ -379,7 +396,48 @@ const Collection: NextPage = () => {
       }
       setListNFTs(temp)    
     } 
-  },[isActiveBuyNow,collectionInfo,allNFTs]) 
+  },[isActiveBuyNow,collectionInfo,allNFTs])
+  // useEffect(()=>{
+  //   if(collectionInfo && allNFTs.length>0){
+  //     const tempOrders = []
+  //     for(let i=0;i<allNFTs.length;i++){
+  //       let order:any = null
+  //       for(let j=0; j<orders.length;j++){
+  //         if(collectionAddress==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
+  //           order = orders[j]
+  //         }
+  //       }
+  //       if(order){
+  //         tempOrders.push(order)
+  //       }
+  //     }
+  //     console.log(tempOrders)
+  //     setOrdersForCollection(tempOrders)
+  //   }
+  // },[collectionInfo,allNFTs])
+  // useEffect(()=>{
+  //   if(ordersForCollection.length > 0 && assetPrices){
+  //     let lowPrice: any = Number.MAX_VALUE
+  //     ordersForCollection.map((order: { price: any, currencyAddress:any }) => {
+  //       let priceAsUSD = 0
+  //       if(currencies_list[getChainIdFromName(collectionChainName)].find(({address}) => address===order.currencyAddress)){
+  //         priceAsUSD = parseFloat(ethers.utils.formatEther(order.price))
+  //       }else{
+  //         priceAsUSD = convertETHtoUSDT(parseFloat(ethers.utils.formatEther(order.price)), assetPrices.eth)
+  //       }
+  //       if(lowPrice > priceAsUSD){
+  //         lowPrice  = priceAsUSD
+  //       }
+  //     })
+  //     if(lowPrice === Number.MAX_VALUE){
+  //       lowPrice = 0
+  //     }
+  //     setFloorPrice(lowPrice)
+  //   }else if(ordersForCollection.length ===0){
+  //     setFloorPrice(0)
+  //   }
+
+  // },[ordersForCollection])
   useEffect(()=> {
     if (collectionAddress && collectionChainName) {
       fetchCollectionMetaData()
@@ -393,8 +451,8 @@ const Collection: NextPage = () => {
     <>
       <div className={classNames('w-full', 'mt-20', 'pr-[70px]' ,'pt-[30px]', 'relative', editStyle.collection)}>
         <div className="w-[100%] h-[100%] mt-20">
-          <img className={classNames(editStyle.bannerImg)} src={collectionInfo&&collectionInfo.banner_image ? collectionInfo.banner_image : ''} alt='' />
-          <div className={classNames(editStyle.bannerOpacity)} /> 
+          <img alt={'bannerImage'} className={classNames(editStyle.bannerImg)} src={collectionInfo&&collectionInfo.banner_image ? collectionInfo.banner_image : ''} />
+          <div className={classNames(editStyle.bannerOpacity)} />
         </div>
         <div className="flex space-x-8 items-end ml-[70px]">
           <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="logo" />}>
@@ -402,41 +460,41 @@ const Collection: NextPage = () => {
           </LazyLoad>
           <div className="flex relative  text-lg font-bold text-center items-center">
             <div className={'select-none inline-block p-4 text-xxl font-extrabold '}>
-              {collectionInfo?collectionInfo.name:''}                  
-            </div> 
+              {collectionInfo?collectionInfo.name:''}
+            </div>
             <div className="w-[30px] h-[30px] bg-[#B444F9] rounded-[30px] flex items-center justify-center">
               <div className=" w-[15px] h-[9px] border-b-[3px] border-l-[3px] border-white -rotate-45 "></div>
-            </div> 
+            </div>
             { collectionInfo&&collectionInfo.discord?
               <Link href={collectionInfo.discord}>
-                <a className="p-2 flex items-center">
+                <a target="_blank" className="p-2 flex items-center">
                   <Image src={Discord} width={25} height={21} alt='discord' />
                 </a>
               </Link>
               :
-              <a className="p-2 flex items-center">
+              <a target="_blank" className="p-2 flex items-center">
                 <Image src={Discord} width={25} height={21} alt='discord' />
               </a>
             }
             { collectionInfo&&collectionInfo.twitter?
               <Link href={collectionInfo.twitter}>
-                <a className="p-2 flex items-center">
+                <a target="_blank" className="p-2 flex items-center">
                   <Image src={Twitter} alt='twitter' />
                 </a>
               </Link>
               :
-              <a className="p-2 flex items-center">
+              <a target="_blank" className="p-2 flex items-center">
                 <Image src={Twitter} alt='twitter' />
               </a>
             }
             { collectionInfo&&collectionInfo.website?
               <Link href={collectionInfo.website}>
-                <a className="p-2 flex items-center">
+                <a target="_blank" className="p-2 flex items-center">
                   <Image src={Web} alt='website' />
                 </a>
               </Link>
               :
-              <a className="p-2 flex items-center">
+              <a target="_blank" className="p-2 flex items-center">
                 <Image src={Web} alt='website' />
               </a>
             }
@@ -445,18 +503,18 @@ const Collection: NextPage = () => {
                 <Image src={Explorer} alt='website' />
               </a>
             </Link>
-              
+
           </div>
-        </div>  
+        </div>
         <div className='w-full  mt-[-100px] border-b-2 border-[#E9ECEF]'>
           <div className="flex">
-            <div className="w-[320px] min-w-[320px]"/>              
+            <div className="w-[320px] min-w-[320px]"/>
           </div>
           <div className="flex">
             <div className="w-[320px] min-w-[320px]">
             </div>
             <div className="flex w-full justify-between items-end">
-              <div className="flex flex-col">                
+              <div className="flex flex-col">
                 <ul className="flex relative justify-item-stretch text-lg font-bold text-center">
                   <li
                     className={`select-none inline-block p-4  w-32	 cursor-pointer z-30 ${currentTab === 'items' ? 'text-[#1E1C21] border-b-2 border-black': ' text-[#A0B3CC]'} `}
@@ -467,7 +525,7 @@ const Collection: NextPage = () => {
                   <li className={'select-none inline-block p-4  w-32	 cursor-pointer  z-10  text-[#A0B3CC]'}>stats</li>
                 </ul>
               </div>
-              
+
               <ul className="flex space-x-4 relative justify-item-stretch items-end text-md font-bold text-center pb-[5px]">
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <span className="mr-[22px] ">Items</span>
@@ -541,12 +599,13 @@ const Collection: NextPage = () => {
             <ul className='flex flex-col space-y-4'>
               <li className="w-full">
                 <div
-                  className={`w-full px-4 py-4 text-left text-g-600  font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`} onClick={()=>setIsActiveBuyNow(!isActiveBuyNow)}
+                  className={`w-full px-4 py-4 text-left text-g-600  font-semibold  ${expandedMenu==1?'active':''}`} 
                 >
                   Buy Now
                   <Switch
                     checked={enabled}
                     onChange={setEnabled}
+                    onClick={()=>setIsActiveBuyNow(!isActiveBuyNow)}
                     className={`${enabled ? 'bg-[#E9ECEF]' : 'bg-[#E9ECEF]'}
                     pull-right relative inline-flex h-[22px] w-[57px] shrink-0 cursor-pointer rounded-full border-2 border-[#6C757D] transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
                   >
@@ -559,6 +618,7 @@ const Collection: NextPage = () => {
                   </Switch>
                 </div>
               </li>
+              <hr/>
               { collectionInfo && collectionInfo.attrs && Object.keys(collectionInfo.attrs).map((key, idx) => {
                 const attrs = collectionInfo.attrs
                 return <li className="w-full" key={idx}>
@@ -598,7 +658,7 @@ const Collection: NextPage = () => {
                               return <FormControlLabel
                                 key={valueIndex}
                                 classes={{label:classes.frmLabel, root: classes.frmLabel}}
-                                control={<Checkbox checked={Array.isArray(searchObj[key]) && searchObj[key].indexOf(attrs[key].values[valueKey][3], 0) > -1 ? true : false} onChange={(e) => {searchAttrsCheck(e.target.checked, key, attrs[key].values[valueKey][3])}} color="default" inputProps={{ 'aria-label': 'checkbox with default color' }} />}
+                                control={<Checkbox checked={Array.isArray(searchObj[key]) && searchObj[key].indexOf(attrs[key].values[valueKey][3], 0) > -1} onChange={(e) => {searchAttrsCheck(e.target.checked, key, attrs[key].values[valueKey][3])}} color="default" inputProps={{ 'aria-label': 'checkbox with default color' }} />}
                                 label={
                                   <div className="flex items-center justify-between">
                                     <span className="font-bold text-[#4d5358]">{attrs[key].values[valueKey][3]}</span>
@@ -615,6 +675,7 @@ const Collection: NextPage = () => {
                       </div>
                     </AccordionDetails>
                   </Accordion>
+                  <hr/>
                 </li>
               })}
               {/* <li className="w-full">
@@ -715,7 +776,7 @@ const Collection: NextPage = () => {
               </div>
             </div>
             <div className="mt-5">
-            
+
               {
                 Object.keys(searchObj).map((attrKey) => {
                   return searchObj[attrKey].map((item: any, index: any) => {
@@ -751,7 +812,7 @@ const Collection: NextPage = () => {
                   <div className="grid 2xl:grid-cols-5 gap-4 xl:grid-cols-3 md:grid-cols-2 p-1">
                     { !isActiveBuyNow && nfts.map((item, index) => {
                       return (
-                        <NFTBox nft={item} index={index} key={index}  col_url={col_url} col_address={collectionInfo.address}  chain={collectionInfo?collectionInfo.chain:'eth'}/>
+                        <NFTBox nft={item} index={index} key={index}  col_url={col_url} />
                       )
                     })}
                     { isActiveBuyNow && listNFTs && buyComponet()}
@@ -767,5 +828,3 @@ const Collection: NextPage = () => {
 }
 
 export default Collection
-
-

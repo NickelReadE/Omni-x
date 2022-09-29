@@ -11,6 +11,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { selectUser, updateIsGregHolder} from '../redux/reducers/userReducer'
 import Carousel from './carousel'
 import {chainsFroSTG, GregContractAddress, veSTGContractAddress } from '../constants/addresses'
+
 import { getChainIdFromName } from '../utils/constants'
 import { getVeSTGInstance } from '../utils/contracts'
 import Hgreg from '../public/images/gregs/logo.png'
@@ -54,7 +55,7 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
       fetchNFTByAddress('eth',String(GregContractAddress['eth']))
       fetchNFTByAddress('bsc',String(GregContractAddress['bsc']))
       fetchNFTByAddress('polygon',String(GregContractAddress['polygon']))
-      fetchNFTByAddress('avalanche',String(GregContractAddress['avalanche']))
+      fetchNFTByAddress('avalanche',String(GregContractAddress['avalanche'])) 
       fetchNFTByAddress('fantom',String(GregContractAddress['fantom']))
       chainsFroSTG.map((chain)=>{
         fetchToken(chain)
@@ -76,7 +77,7 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
         className={classNames(
           'w-full',
           'mt-[134px]',
-          'h-[500px]',
+          menu==='home'? 'h-[500px]':'h-[300px]',
           blur && menu ==='home'? 'blur-sm' : ''
         )}
       >
@@ -86,16 +87,6 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
         {menu === 'home' && (
           <div className="flex justify-center w-full ">
             <div className="flex justify-between justify-center fw-60 mt-5 relative">
-              {/* {
-                bShowSettingIcon &&
-                <div className="-top-[7rem] left-[1rem] absolute" onMouseEnter={() => setShowSettingIcon(true)} onMouseLeave={() => setShowSettingIcon(false)}>
-                  <a className="cursor-pointer" onClick={() => setOpenModal(true)}>
-                    <div className="p-2 rounded-full bg-[#adb5bd]/[.5] w-[50px] h-[50px]">
-                      <Image src={Setting} alt="avatar"/>
-                    </div>
-                  </a>
-                </div>
-              } */}
               <div className="bottom-[0rem] left-[4rem]  absolute">
                 <Image
                   src={avatarError||cuser.avatar===undefined||cuser.avatar===DEFAULT_AVATAR?'/images/default_avatar.png':(process.env.API_URL + cuser.avatar)}
@@ -124,14 +115,14 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
               </div>
               <div className="flex ml-[]">
                 <Link href={cuser.twitter?cuser.twitter:''}>
-                  <a>
+                  <a target="_blank">
                     <div className="mr-6">
                       <Image src={Twitter} alt='twitter' />
                     </div>
                   </a>
                 </Link>
                 <Link href={cuser.website?cuser.website:''}>
-                  <a>
+                  <a target="_blank">
                     <div className="mr-6">
                       <Image src={Web} alt='website' />
                     </div>
@@ -142,11 +133,6 @@ const Banner =  ({ slides, blur, menu }: BannerProps): JSX.Element => {
           </div>
         )}
       </div>
-      {/* <div className="w-full md:w-auto">
-        <Dialog open={bOpenModal} onClose={() => setOpenModal(false)} aria-labelledby='simple-dialog-title' maxWidth={'xl'} classes={{ paper: classes.paper }}>
-          <UserEdit updateModal={updateModal} />
-        </Dialog>
-      </div> */}
     </>
   )
 }

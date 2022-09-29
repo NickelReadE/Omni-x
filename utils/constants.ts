@@ -88,6 +88,17 @@ export const ERC1155_INTERFACE_ID = '0xd9b67a26'
 export const ERC712_INTERFACE_ID = '0x80ac58cd'
 export const ERC2189_INTERFACE_ID = '0x2a55205a'
 
+export const NETWORK_TYPE : {[key:number]:string} = {
+  5 : 'goerli',
+  97: 'bsc testnet',
+  80001: 'mumbai',
+  43113 : 'avalanche testnet',
+  420 : 'optimism',
+  421613 :'arbitrum',
+  4002 : 'fantom-testnet',
+}
+
+
 export const getChainIcons = (chainId: number) => {
   if (SUPPORTED_CHAIN_IDS.includes(chainId)) {
     return {
@@ -107,8 +118,8 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
     logo: '/svgs/ethereum.svg',
     roundedLogo: '/images/roundedColorEthereum.png',
     explorerLogo: '/images/ethereumExplorer.png',
-    officialName: 'Fantom',
-    currency: 'FTM'
+    officialName: 'Ethereum',
+    currency: 'ETH'
   },
   56: {
     name: 'bsc',
@@ -164,7 +175,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
     roundedLogo: '/images/roundedColorEthereum.png',
     explorerLogo: '/images/ethereumExplorer.png',
     officialName: 'Goerli',
-    currency: 'ETH'
+    currency: 'GoerliETH'
   },
   97: {
     name: 'bsc testnet',
@@ -220,6 +231,17 @@ export const getLayerzeroChainId = (chainId: number): number => {
   return chainIds[chainInfos[chainId].name]
 }
 
+export const chainList = [
+  { chain: 'all', img_url: '/svgs/all_chain.svg', title: 'all NFTs', disabled: false},
+  { chain: 'goerli', img_url: '/svgs/ethereum.svg', title: 'Ethereum', disabled: false},
+  { chain: 'bsc testnet', img_url: '/svgs/binance.svg', title: 'BNB Chain', disabled: false},
+  { chain: 'avalanche testnet', img_url: '/svgs/avax.svg', title: 'Avalanche', disabled: false},
+  { chain: 'mumbai', img_url: '/svgs/polygon.svg', title: 'Polygon', disabled: false},
+  { chain: 'arbitrum', img_url: '/svgs/arbitrum.svg', title: 'Arbitrum', disabled: false},
+  { chain: 'optimism', img_url: '/svgs/optimism.svg', title: 'Optimism', disabled: false},
+  { chain: 'fantom', img_url: '/svgs/fantom.svg', title: 'Fantom', disabled: false},
+]
+
 
 export const currencies_list: { [key: number]: Array<{ value: number; text: string, icon: string, address: string }> } = {
   1: [
@@ -261,6 +283,11 @@ export const currencies_list: { [key: number]: Array<{ value: number; text: stri
     { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0xE9956C00aaeCa65C89F4C9AcDEbd36A1784F0B86' },
     { value: 1, text: 'USDC', icon: 'payment/usdc.png', address: '0x1717A0D5C8705EE89A8aD6E808268D6A826C97A4' },
     { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad' },
+  ],
+  5:  [
+    { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '' },
+    { value: 1, text: 'USDC', icon: 'payment/usdc.png', address: '' },
+    { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '' },
   ],
   97:  [
     { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0xBfB4D3441f190014C5111f566e6AbE8a93E862D8' },
@@ -317,7 +344,9 @@ export const chain_list: {[key: string]: number} = {
 export const getChainIdFromName = (name: string): number => {
   return chain_list[name]
 }
+
 export const supportChainIDs = [5,80001,43113,421613,420,4002,97]
+
 
 export const chain_list_: {[key: number]: string} = {
   1 : 'eth ',
@@ -329,12 +358,14 @@ export const chain_list_: {[key: number]: string} = {
   42161 : 'arbitrum',
   97 : 'bsc testnet',
   4 : 'rinkeby',
+  5: 'goerli',
   80001 : 'mumbai',
   43113 : 'avalanche testnet',
-  421611: 'arbitrum-rinkeby',
-  69: 'optimism-kovan',
-  4002: 'fantom-testnet',
-  5: 'goerli'
+  421611:'arbitrum-rinkeby',
+  69:'optimism-kovan',
+  4002:'fantom-testnet',
+  420 : 'optimism',
+  421613 :'arbitrum'
 }
 
 
@@ -374,7 +405,6 @@ export const getAddressByName = (name: ContractName, chainId: number) => {
 
 export const getProvider = (chainId: number) => {
   const rpcURL = rpcProviders[chainId]
-
   return new ethers.providers.JsonRpcProvider(
     rpcURL,
     {
@@ -456,13 +486,23 @@ export const isUsdcOrUsdt = (address?: string) => {
   return false
 }
 
-export const getProfileLink = (chainName: string, ownerType: string, owner: string) => {
-  if (chainName=='rinkeby' ) {
-    if(ownerType=='address') {
-      return 'https://rinkeby.etherscan.io/address/' + owner
-    }
+export const validateCurrencyName = (currencyName: ContractName, chainId: number) => {
+  if (chainId === ChainIds.bsc || chainId == ChainIds['bsc testnet']) {
+    if (currencyName === 'USDC')
+      return 'USDT'
   }
+  else {
+    if (currencyName === 'USDT')
+      return 'USDC'
+  }
+  return 'OMNI'
+}
 
+export const getProfileLink = (chain_id: number, ownerType: string, owner: string) => {
+  if(ownerType=='address'){
+    const explorer_link = getBlockExplorer(chain_id)
+    return (explorer_link+'/address/'+owner)
+  }
   return ''
 }
 
@@ -520,3 +560,19 @@ export const supportedChainsOnAlchemy: Array<number> = [
   5,
   421613
 ]
+
+export const findCollection = (addresses:any,start_ids:any,token_id:string)=>{
+  let temp_value = 0
+  let collection_address = ''
+  let chain_id = 0
+  Object.keys(start_ids).map((Key) => {
+    if(Number(start_ids[Key])<Number(token_id)){
+      if(temp_value<=Number(start_ids[Key])){
+        temp_value = Number(start_ids[Key])
+        collection_address = addresses[Key]
+        chain_id = Number(Key)
+      }
+    }
+  })
+  return [collection_address,chain_id]
+}

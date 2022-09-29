@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { IPropsNFTItem } from '../../interface/interface'
 import LazyLoad from 'react-lazyload'
 import { ethers } from 'ethers'
-import { getCurrencyIconByAddress, getChainIconById, getChainNameFromId } from '../../utils/constants'
+import { getCurrencyIconByAddress, getChainIconById, getChainNameFromId,findCollection } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'
 import ConfirmBid from './ConfirmBid'
 import editStyle from '../../styles/nftbox.module.scss'
@@ -12,8 +12,10 @@ import classNames from '../../helpers/classNames'
 import useTrading from '../../hooks/useTrading'
 import useOrderStatics from '../../hooks/useOrderStatics'
 import ConfirmSell from './ConfirmSell'
+import { selectCollectionInfo } from '../../redux/reducers/collectionsReducer'
+import { useSelector } from 'react-redux'
 
-const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
+const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
   const [isShowBtn, SetIsShowBtn] = useState(false)
   const {
@@ -22,10 +24,22 @@ const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
     address
   } = useWallet()
 
+  const collectionInfo = useSelector(selectCollectionInfo)
+  const start_ids = collectionInfo.start_ids
+  const token_id = nft.token_id
+  const collection = useMemo(() => {
+    if (start_ids && token_id) {
+      return findCollection(collectionInfo.address,start_ids,token_id)
+    }
+    return undefined
+  }, [start_ids, token_id, collectionInfo.address])
+  const  col_address = collection?.[0] as string
+  const chain = collection?.[1] as string
+  //update this logic in the constants
   const collection_address_map = useMemo(() => {
     if (chain && col_address) {
       return {
-        [chain]: col_address
+        [chain]: col_address.toLowerCase()
       }
     }
     return []
@@ -69,7 +83,7 @@ const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
   })
 
   const chainIcon = useMemo(() => {
-    return getChainIconById(chain ? chain : '4')
+    return getChainIconById(chain ? chain : '5')
   }, [chain])
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
   const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
@@ -89,7 +103,7 @@ const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
           </div>
           <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
             <div className="text-[#000000] text-[14px] font-bold  mt-3 ml-3">
-              {nft.name}
+              {nft.name}#{nft.token_id}
             </div>
             <div className="mr-3 flex items-center">
               {/* <div className={classNames("mr-3 flex items-center cursor-pointer bg-[url('/images/round-refresh.png')] hover:bg-[url('/images/round-refresh_hover.png')] bg-cover w-[20px] h-[20px]", editStyle.refreshBtn)}></div> */}
@@ -102,7 +116,7 @@ const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
             <div className="flex items-center ml-3">
               {isListed && <>
                 <img src={currencyIcon || '/svgs/ethereum.svg'} className="w-[18px] h-[18px]" alt='icon'/>
-                <span className="text-[#000000] text-[18px] font-extrabold ml-2">{formattedPrice}</span>
+                <span className="text-[#000000] text-[18px] font-extrabold ml-2">{Number(formattedPrice)>=1000?`${Number(formattedPrice)/1000}K`:formattedPrice}</span>
               </>}
             </div>
           </div>
@@ -113,28 +127,28 @@ const NFTBox = ({nft, col_url, col_address, chain}: IPropsNFTItem) => {
           {lastSale && <>
             <span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span>
             <img alt={'saleIcon'} src={lastSaleCoin} className="w-[18px] h-[18px]" />&nbsp;
-            <span className="text-[#6C757D] text-[14px]font-bold">{lastSale}</span>
+            <span className="text-[#6C757D] text-[14px]font-bold">{Number(lastSale)>=1000?`${Number(lastSale)/1000}K`:lastSale}</span>
           </>}
           {!lastSale && highestBid && <>
             <span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span>
             <img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;
-            <span className="text-[#6C757D] text-[14px] font-bold">{highestBid}</span>
+            <span className="text-[#6C757D] text-[14px] font-bold">{Number(highestBid)>=1000?`${Number(highestBid)/1000}K`:highestBid}</span>
           </>}
         </div></a></Link>
         <div className="flex items-center ml-3">
           <div>&nbsp;</div>
           {isShowBtn && isOwner && (
-            <div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#B00000]" onClick={() => {setOpenSellDlg(true)}}>
+            <div className="ml-2 mr-2 py-[1px] px-4 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#B00000]" onClick={() => {setOpenSellDlg(true)}}>
               {'Sell'}
             </div>
           )}
           {isShowBtn && !isOwner && isListed && !isAuction && (
-            <div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]" onClick={()=>onBuy(order)}>
+            <div className="ml-2 mr-2 py-[1px] px-4 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]" onClick={()=>onBuy(order)}>
               {'Buy now'}
             </div>
           )}
           {isShowBtn && !isOwner && isListed && isAuction && (
-            <div className="ml-2 mr-2 py-[1px] px-5 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]" onClick={() => setOpenBidDlg(true)}>
+            <div className="ml-2 mr-2 py-[1px] px-4 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]" onClick={() => setOpenBidDlg(true)}>
               {'Bid'}
             </div>
           )}

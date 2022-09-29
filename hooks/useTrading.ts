@@ -1,18 +1,19 @@
 import { addDays } from "date-fns"
-import { BigNumber, BigNumberish, ethers, Signer } from "ethers"
+import { BigNumber, BigNumberish, ethers } from "ethers"
 import { Dispatch, SetStateAction, useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { IBidData, IGetOrderRequest, IListingData, IOrder, OrderStatus } from "../interface/interface"
 import { getLastSaleOrders, getOrders } from "../redux/reducers/ordersReducer"
 import { openSnackBar } from "../redux/reducers/snackBarReducer"
-import { collectionsService } from "../services/collections"
-import { userService } from "../services/users"
+import { collectionsService } from '../services/collections'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from "../types"
 import { SaleType } from "../types/enum"
-import { ContractName, CREATOR_FEE, getAddressByName, getChainNameFromId, getCurrencyNameAddress, getLayerzeroChainId, isUsdcOrUsdt, PROTOCAL_FEE } from "../utils/constants"
+import { ContractName, CREATOR_FEE, getAddressByName, getChainNameById, getCurrencyNameAddress, getLayerzeroChainId, isUsdcOrUsdt, PROTOCAL_FEE, validateCurrencyName } from "../utils/constants"
 import { getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, getOmnixExchangeInstance, getTransferSelectorNftInstance } from "../utils/contracts"
 import { acceptOrder, postMakerOrder } from "../utils/makeOrder"
-import { useEffect } from 'react'
+import { getChainNameFromId } from '../utils/constants'
+import { ChainIds } from "../types/enum"
+
 export type TradingFunction = {
   openSellDlg: boolean,
   openBidDlg: boolean,
@@ -64,6 +65,7 @@ const useTrading = ({
 
   const chain_id = provider?._network?.chainId
   const chain_name = chain_id && getChainNameFromId(chain_id)
+  let decimal = 0
 
   const checkValid = async (currency: string, price: string, chainId: number) => {
     if (currency===''){
@@ -74,13 +76,13 @@ const useTrading = ({
 
     const currencyMangerContract = getCurrencyManagerInstance(chainId, signer)
     if (currencyMangerContract===null){
-      dispatch(openSnackBar({ message: "This network doesn't support currencies", status: 'error' }))
+      dispatch(openSnackBar({ message: `This network doesn't support currencies`, status: 'error' }))
       setOpenBidDlg(false)
       return false
     }
 
     if (!await currencyMangerContract.isCurrencyWhitelisted(currency)) {
-      dispatch(openSnackBar({ message: 'USDC currency is not whitelisted in this network', status: 'error' }))
+      dispatch(openSnackBar({ message: `Currency(${currency}) is not whitelisted in this network`, status: 'error' }))
       setOpenBidDlg(false)
       return false
     }
@@ -93,6 +95,8 @@ const useTrading = ({
 
     const currencyContract = getCurrencyInstance(currency, chainId, signer)
     const balance = await currencyContract?.balanceOf(address)
+    console.log(currencyContract)
+    decimal = await currencyContract?.decimals()
     if (balance.lt(BigNumber.from(price))) {
       dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))
       setOpenBidDlg(false)
@@ -111,7 +115,7 @@ const useTrading = ({
       startTime: Math.floor(Date.now() / 1000).toString(),
       endTime: Math.floor(Date.now() / 1000).toString(),
       status: ['VALID'],
-      sort: 'OLDEST'
+      sort: 'NEWEST'
     }
     dispatch(getOrders(request) as any)
   }
@@ -121,8 +125,8 @@ const useTrading = ({
       isOrderAsk: false,
       collection: order_collection_address,
       tokenId: token_id,
-      startTime: Math.floor(Date.now() / 1000).toString(),
-      endTime: Math.floor(Date.now() / 1000).toString(),
+      // startTime: Math.floor(Date.now() / 1000).toString(),
+      // endTime: Math.floor(Date.now() / 1000).toString(),
       status: ['VALID'],
       sort: 'PRICE_ASC'
     }
@@ -156,7 +160,7 @@ const useTrading = ({
     const amount = ethers.utils.parseUnits('1', 0)
     const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
     const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
-    const chainId = provider?.network.chainId || 4
+    const chainId = provider?.network.chainId || ChainIds.ETHEREUM
     const lzChainId = getLayerzeroChainId(chainId)
     const startTime = Date.now()
 
@@ -182,6 +186,7 @@ const useTrading = ({
       chain_name,
       true
     )
+    await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,listingData.price)
 
     if (!listingData.isAuction) {
       const transferSelector = getTransferSelectorNftInstance(chainId, signer)
@@ -202,16 +207,15 @@ const useTrading = ({
       return
     }
 
-    
-
-    const chainId = provider?.network.chainId || 4
+    const chainId = provider?.network.chainId || ChainIds.ETHEREUM
     const lzChainId = getLayerzeroChainId(chainId)
-    const omniAddress = getAddressByName(getCurrencyNameAddress(order.currencyAddress) as ContractName, chainId)
+    const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
+    const currencyAddress = getAddressByName(validateCurrencyName(currencyName, chainId), chainId)
     
-    if (!(await checkValid(omniAddress, order?.price, chainId))) {
+    if (!(await checkValid(currencyAddress, order?.price, chainId))) {
       return
     }
-    const omni = getCurrencyInstance(omniAddress, chainId, signer)
+    const omni = getCurrencyInstance(currencyAddress, chainId, signer)
     if (!omni) {
       dispatch(openSnackBar({ message: 'Could not find the currency', status: 'warning' }))
       return
@@ -242,8 +246,6 @@ const useTrading = ({
       params: ethers.utils.defaultAbiCoder.encode(['uint16'], [lzChainId])
     }
 
-    // console.log('--buy----', makerAsk, takerBid)
-
     const approveTxs = []
 
     approveTxs.push(await approve(omni, address, omnixExchange.address, takerBid.price))
@@ -256,12 +258,21 @@ const useTrading = ({
     await Promise.all(approveTxs.filter(Boolean).map(tx => tx.wait()))
 
     const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
-
-    // console.log('---lzFee---', lzFee)
+    
+    // console.log('---lzFee---', ethers.utils.formatEther(lzFee), makerAsk)
+    const balance = await provider?.getBalance(address!)
+    if (balance.lt(lzFee)) {
+      dispatch(openSnackBar({ message: `Not enough balance ${ethers.utils.formatEther(lzFee)}`, status: 'warning' }))
+      return
+    }
 
     await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
 
     await updateOrderStatus(order, 'EXECUTED')
+
+    await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
+    await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(order?.price)/10**decimal as number)
+
 
     dispatch(openSnackBar({ message: 'Bought an NFT', status: 'success' }))
     getLastSaleOrder()
@@ -274,7 +285,7 @@ const useTrading = ({
       return
     }
 
-    const chainId = provider?.network.chainId as number
+    const chainId = provider?.network.chainId || ChainIds.ETHEREUM
     const lzChainId = getLayerzeroChainId(chainId)
 
     const currency = getAddressByName(bidData.currencyName as ContractName, chainId)
@@ -340,7 +351,7 @@ const useTrading = ({
       return
     }
 
-    const chainId = provider?.network.chainId || 4
+    const chainId = provider?.network.chainId || 5
     const lzChainId = getLayerzeroChainId(chainId)
     
     const omnixExchange = getOmnixExchangeInstance(chainId, signer)
@@ -379,6 +390,8 @@ const useTrading = ({
     await omnixExchange.connect(signer as any).matchBidWithTakerAsk(takerAsk, makerBid, { value: lzFee })
 
     await updateOrderStatus(bidOrder, 'EXECUTED')
+    await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
+    await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(bidOrder?.price)/10**decimal as number)
 
     dispatch(openSnackBar({ message: 'Accepted a Bid', status: 'success' }))
     getLastSaleOrder()

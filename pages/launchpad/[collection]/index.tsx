@@ -10,6 +10,7 @@ import React, { useState , useEffect, useCallback } from 'react'
 import { getCollectionInfo, selectCollectionInfo } from '../../../redux/reducers/collectionsReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import AdvancedONT from '../../../constants/abis/AdvancedONT.json'
+import { getAdvancedInstance } from '../../../utils/contracts'
 //import earlysupporter from '../../../constants/whitelist/earlysupporter.json'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -67,17 +68,9 @@ const Mint: NextPage = () => {
 
   const getInfo = useCallback(async ():Promise<void> => {    
     try{  
-      
-      const tokenContract =  new ethers.Contract(collectionInfo.address[chainId?chainId:0], AdvancedONT, signer)
+      const tokenContract = getAdvancedInstance(collectionInfo.address[chainId?chainId:0], chainId, null)
+      //const tokenContract =  new ethers.Contract(collectionInfo.address[chainId?chainId:0], AdvancedONT, signer)
       setStartId(Number(collectionInfo.start_ids[chainId?chainId:0]))      
-      // const result =await tokenContract.balanceOf(address)
-      // const tokenlist = []
-      // for (let i = 0; i < Number(result); i++) {
-      //   const token = await tokenContract.tokenOfOwnerByIndex(address, i)
-      //   tokenlist.push(Number(token))
-      // }
-
-      //setOwnToken(tokenlist)
 
       const priceT = await tokenContract.price()
       setPrice(parseFloat(ethers.utils.formatEther(priceT)))
@@ -167,7 +160,8 @@ const Mint: NextPage = () => {
     }
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner()
-    const tokenContract =  new ethers.Contract(collectionInfo?.address[chainId], AdvancedONT, signer)
+    const tokenContract = getAdvancedInstance(collectionInfo?.address[chainId], chainId, signer)
+    //const tokenContract =  new ethers.Contract(collectionInfo?.address[chainId], AdvancedONT, signer)
     //first private sale
     //let wladdress = ethereumwl
 
@@ -234,11 +228,6 @@ const Mint: NextPage = () => {
       )
     }
   }
-  if(window.ethereum){
-    window.ethereum.on('chainChanged', function (networkId:string) {      
-      setChainId(parseInt(networkId))
-    }) 
-  }
   useEffect(() => {
     const calculateFee = async():Promise<void> => {
       try{
@@ -265,6 +254,19 @@ const Mint: NextPage = () => {
     calculateFee()
   },[toChain,transferNFT,chainId])
 
+  useEffect(()=>{
+    const chainChangedListener = (networkId:string) => {
+      setChainId(parseInt(networkId))
+    }
+    if(window.ethereum){
+      window.ethereum.on('chainChanged', chainChangedListener)
+    }
+    return () => {
+      if (window.ethereum) {
+        window.ethereum.removeListener('chainChanged', chainChangedListener)
+      }
+    }
+  }, [])
 
   useEffect(()=>{
     if(chainId && provider && address && collectionInfo){
