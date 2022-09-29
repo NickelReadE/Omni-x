@@ -14,7 +14,7 @@ import CurrencyManager from '../constants/CurrencyManager.json'
 import LZEndpoint from '../constants/layerzero/LayerzeroEndpoints.json'
 import ChainIds from '../constants/layerzero/chainIds.json'
 import CHAINS from '../constants/chains.json'
-
+import { Network } from "alchemy-sdk"
 
 const omnixBridge: any = OmnixBridge
 const omnixBridge1155: any = OmnixBridge1155
@@ -499,8 +499,16 @@ export const APIkeysForAlchemy:{[key:number]:string} = {
   421613:'iSGCCiweawjOPFX-x5Btptlsg4gBLmG9',
   5:'GiAm8CDGn_xhxD18nV4Wunc332XKeZ2w'
 }
+export const NetworksForAlchemy:{[key:number]:Network} = {
+  420: Network.OPT_GOERLI,
+  421613:Network.ARB_GOERLI,
+  5:Network.ETH_GOERLI
+}
 export const getAPIkeyForAlchemy = (key:number):string =>{
  return APIkeysForAlchemy[key]
+}
+export const getNetworForAlchemy = (key:number):Network =>{
+  return NetworksForAlchemy[key]
 }
 export const supportedChainsOnMoralis:Array<number> = [
   80001,

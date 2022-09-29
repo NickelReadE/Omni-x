@@ -31,7 +31,7 @@ const Launchpad: NextPage = () => {
     dispatch(getCollections() as any)    
   }, [dispatch])
   useEffect(() => { 
-    if(collections?.length > 0){     
+    if(collections?.length > 0){           
       dispatch(getCollectionsForComingAndLive() as any)   
       const samples = collections.filter((collection:{col_url: string}) => collection.col_url === 'kanpai_pandas')
       if(samples?.length > 0){

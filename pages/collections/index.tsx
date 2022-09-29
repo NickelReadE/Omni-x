@@ -44,12 +44,6 @@ const Collections: NextPage = () => {
     }
   }, [provider?._network])
 
-  useEffect(() => {
-    if(provider?._network){
-      dispatch(updateCollectionsForCard(provider._network.chainId.toString(), getChainNameFromId(provider._network.chainId) ) as any)
-    }
-    
-  }, [provider?._network])
   useEffect(()=>{
     dispatch(getCollections() as any)
   },[])
@@ -58,8 +52,7 @@ const Collections: NextPage = () => {
     const  localCards = localStorage.getItem('cards')
     if(localCards===null){
       if(collections.length>0){
-        if(collectionsForCard.length>0){
-          localStorage.setItem('cards',JSON.stringify(collectionsForCard))
+        if(collectionsForCard.length>0){          
           collections.map((item: any) => {
             slides.push(
               <CollectionCard collection={item} card={collectionsForCard.find((card: { col_url: any })=>card.col_url == item.col_url)}/>

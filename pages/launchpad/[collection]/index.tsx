@@ -98,7 +98,7 @@ const Mint: NextPage = () => {
     } catch(error){
       console.log(error)
     }    
-  },[address,chainId, collectionInfo.address, collectionInfo.start_ids, signer])
+  },[chainId, collectionInfo.address, collectionInfo.start_ids, signer])
 
   // const mint = async ():Promise<void> => {
   //   console.log("STarted to mint")

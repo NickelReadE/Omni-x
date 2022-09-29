@@ -508,37 +508,47 @@ const SideBar: React.FC = () => {
   }
 
   useEffect(()=>{
-    const getBalance = async() => {
+    const getBalance = async() => {     
       try {
         {
           const omniContract = getCurrencyInstance(getAddressByName('OMNI', chainId), chainId, signer)
           const balance = await omniContract?.balanceOf(address)
-          setOmniBalance(Number(ethers.utils.formatEther(balance || '0')))
+          if(balance){
+            setOmniBalance(Number(ethers.utils.formatEther(balance || '0')))
+          }          
         }
 
         {
           const usdContract = getCurrencyInstance(getAddressByName('USDC', chainId), chainId, signer)
-          const balance = await usdContract?.balanceOf(address)
-          setUsdcBalance(Number(ethers.utils.formatEther(balance || '0')))
+          const balance = await usdContract?.balanceOf(address)          
+          if(balance){
+            console.log('USDC',balance, chainId, address)
+            setUsdcBalance(Number((balance/10^6 || '0')))
+          }          
         }
 
         {
           const usdContract = getCurrencyInstance(getAddressByName('USDT', chainId), chainId, signer)
           const balance = await usdContract?.balanceOf(address)
-          setUsdtBalance(Number(ethers.utils.formatEther(balance || '0')))
+          if(balance){
+            setUsdtBalance(Number(ethers.utils.formatEther(balance || '0')))
+          }
+          
         }
 
         {
           //Native Token
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           const balance = await provider?.getBalance(address!)
-          setNativeBalance(Number(ethers.utils.formatEther(balance || '0')).toFixed(4))
+          if(balance){
+            setNativeBalance(Number(ethers.utils.formatEther(balance || '0')).toFixed(4))
+          }          
         }
       } catch (error) {
         console.log(error)
       }
     }
-    if(signer!=undefined && address!=undefined){
+    if(signer!=undefined && address!=undefined && chainId!==undefined){
       getBalance()
     }
   },[signer, address, chainId, refreshBalance])
