@@ -168,7 +168,7 @@ const Item: NextPage = () => {
                     <div className="flex justify-between items-center mt-6">
                       {order && (
                         <>
-                          <h1 className="text-[#1E1C21] text-[60px] font-normal">{formattedPrice}</h1>
+                          <h1 className="text-[#1E1C21] text-[60px] font-normal">{Number(formattedPrice)>=1000?`${Number(formattedPrice)/1000}K`:formattedPrice}</h1>
                           <div className="mr-5">
                             {currencyIcon &&
                               <img
@@ -182,9 +182,9 @@ const Item: NextPage = () => {
                       )}
                     </div>
                     <div className="mb-3">
-                      <span className='font-normal font-[16px]'>{formattedPrice && '$'}{formattedPrice}</span>
-                      <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-bold">Highest Bid: <span className="font-bold">{highestBid}</span></h1>{highestBidCoin&&<Image src={highestBidCoin} width={15} height={16} alt="chain  logo" />}</div>
-                      <div className="flex justify-start items-center"><h1 className="mr-3 font-bold">Last Sale: <span className="font-bold">{lastSale != 0 && lastSale}</span></h1>{lastSaleCoin&&<Image src={lastSaleCoin} width={15} height={16} alt="chain logo" />}</div>
+                      <span className='font-normal font-[16px]'>{formattedPrice && '$'}{Number(formattedPrice)>=1000?`${Number(formattedPrice)/1000}K`:formattedPrice}</span>
+                      <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-bold">Highest Bid: <span className="font-bold">{Number(highestBid)>=1000?`${Number(highestBid)/1000}K`:highestBid}</span></h1>{highestBidCoin&&<Image src={highestBidCoin} width={15} height={16} alt="chain  logo" />}</div>
+                      <div className="flex justify-start items-center"><h1 className="mr-3 font-bold">Last Sale: <span className="font-bold">{lastSale != 0 && Number(lastSale)>=1000?`${Number(lastSale)/1000}K`:lastSale}</span></h1>{lastSaleCoin&&<Image src={lastSaleCoin} width={15} height={16} alt="chain logo" />}</div>
                     </div>
                   </div>
                   <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
