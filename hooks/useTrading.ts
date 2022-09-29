@@ -256,7 +256,7 @@ const useTrading = ({
 
     const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
     
-    console.log('---lzFee---', ethers.utils.formatEther(lzFee), makerAsk)
+    // console.log('---lzFee---', ethers.utils.formatEther(lzFee), makerAsk)
     const balance = await provider?.getBalance(address!)
     if (balance.lt(lzFee)) {
       dispatch(openSnackBar({ message: `Not enough balance ${ethers.utils.formatEther(lzFee)}`, status: 'warning' }))
