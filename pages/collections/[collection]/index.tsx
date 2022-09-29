@@ -8,7 +8,7 @@ import Discord from '../../../public/images/discord.png'
 import Twitter from '../../../public/images/twitter.png'
 import Web from '../../../public/images/web.png'
 import Explorer from '../../../public/images/exp.png'
-import { getCollectionNFTs, selectCollectionNFTs, getCollectionInfo,getCollectionAllNFTs, getRoyalty,selectCollectionInfo, clearCollectionNFTs, selectGetNFTs, selectCollectionAllNFTs, selectRoyalty } from '../../../redux/reducers/collectionsReducer'
+import { getCollectionNFTs, selectCollectionNFTs, getCollectionInfo, getRoyalty,selectCollectionInfo, clearCollectionNFTs, selectGetNFTs, selectRoyalty } from '../../../redux/reducers/collectionsReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import NFTBox from '../../../components/collections/NFTBox'
@@ -142,7 +142,6 @@ const Collection: NextPage = () => {
 
   const dispatch = useDispatch()
   const nfts = useSelector(selectCollectionNFTs)
-  const allNFTs = useSelector(selectCollectionAllNFTs)
 
   const collectionInfo = useSelector(selectCollectionInfo)
 
@@ -208,7 +207,6 @@ const Collection: NextPage = () => {
   useEffect(() => {
     if(col_url){
       dispatch(getCollectionInfo(col_url) as any)
-      // dispatch(getCollectionAllNFTs(col_url,selected.value, searchObj) as any)
     }
     if ( col_url && provider?._network) {
       const localData = localStorage.getItem('cards')
@@ -379,7 +377,7 @@ const Collection: NextPage = () => {
       setListNFTs(temp)    
     } 
   },[isActiveBuyNow,collectionInfo,nfts])
-  
+
   useEffect(()=> {
     (async () => {
       if (isInitialized && collectionAddress && collectionChainName) {
