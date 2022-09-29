@@ -471,6 +471,18 @@ export const isUsdcOrUsdt = (address?: string) => {
   return false
 }
 
+export const validateCurrencyName = (currencyName: ContractName, chainId: number) => {
+  if (chainId === ChainIds.bsc || chainId == ChainIds['bsc-testnet']) {
+    if (currencyName === 'USDC')
+      return 'USDT'
+  }
+  else {
+    if (currencyName === 'USDT')
+      return 'USDC'
+  }
+  return 'OMNI'
+}
+
 export const getProfileLink = (chain_id: number, ownerType: string, owner: string) => {
   if(ownerType=='address'){
     const explorer_link = getBlockExplorer(chain_id)
