@@ -9,7 +9,6 @@ import { ethers } from 'ethers'
 import React, { useState , useEffect, useCallback } from 'react'
 import { getCollectionInfo, selectCollectionInfo } from '../../../redux/reducers/collectionsReducer'
 import { useDispatch, useSelector } from 'react-redux'
-import AdvancedONT from '../../../constants/abis/AdvancedONT.json'
 import { getAdvancedInstance } from '../../../utils/contracts'
 //import earlysupporter from '../../../constants/whitelist/earlysupporter.json'
 import { ToastContainer, toast } from 'react-toastify'
@@ -28,7 +27,6 @@ import {ChainIds} from '../../../types/enum'
 const Mint: NextPage = () => {
   const {
     provider,
-    signer,
     address
   } = useWallet()
   const router = useRouter()
@@ -92,7 +90,7 @@ const Mint: NextPage = () => {
     } catch(error){
       console.log(error)
     }    
-  },[chainId, collectionInfo.address, collectionInfo.start_ids, signer])
+  },[chainId, collectionInfo.address, collectionInfo.start_ids])
 
   // const mint = async ():Promise<void> => {
   //   console.log("STarted to mint")
