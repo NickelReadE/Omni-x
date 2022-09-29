@@ -75,13 +75,13 @@ const useTrading = ({
 
     const currencyMangerContract = getCurrencyManagerInstance(chainId, signer)
     if (currencyMangerContract===null){
-      dispatch(openSnackBar({ message: "This network doesn't support currencies", status: 'error' }))
+      dispatch(openSnackBar({ message: `This network doesn't support currencies`, status: 'error' }))
       setOpenBidDlg(false)
       return false
     }
 
     if (!await currencyMangerContract.isCurrencyWhitelisted(currency)) {
-      dispatch(openSnackBar({ message: 'USDC currency is not whitelisted in this network', status: 'error' }))
+      dispatch(openSnackBar({ message: `Currency(${currency}) is not whitelisted in this network`, status: 'error' }))
       setOpenBidDlg(false)
       return false
     }
@@ -254,6 +254,12 @@ const useTrading = ({
     await Promise.all(approveTxs.filter(Boolean).map(tx => tx.wait()))
 
     const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
+    
+    const balance = await provider?.getBalance(address!)
+    if (balance.lt(lzFee)) {
+      dispatch(openSnackBar({ message: `Not enough balance ${ethers.utils.formatEther(lzFee)}`, status: 'warning' }))
+      return
+    }
 
     await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
 
