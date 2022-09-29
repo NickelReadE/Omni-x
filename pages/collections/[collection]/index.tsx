@@ -163,6 +163,7 @@ const Collection: NextPage = () => {
   const [explorerUrl, setExplorerUrl] = useState('')
   const [contractType, setContractType] = useState('')
   const finishedGetting = useSelector(selectGetNFTs)
+  const [bInit, setInit] = useState(false);
 
   const {
     provider,
@@ -207,6 +208,7 @@ const Collection: NextPage = () => {
   useEffect(() => {
     if(col_url){
       dispatch(getCollectionInfo(col_url) as any)
+      dispatch(getCollectionAllNFTs(col_url,selected.value, searchObj) as any)
     }
     if ( col_url && provider?._network) {
       const localData = localStorage.getItem('cards')
@@ -242,13 +244,10 @@ const Collection: NextPage = () => {
     }
   },[nfts])
 
-
   const onChangeSort = (item: any) => {
     setSelected(item)
-    setHasMoreNFTs(true)
     dispatch(clearCollectionNFTs() as any)
     dispatch(getCollectionNFTs(col_url, 0, display_per_page, item.value, searchObj) as any)
-    dispatch(getCollectionAllNFTs(col_url,selected.value, searchObj) as any)
     setPage(0)
   }
 
@@ -266,20 +265,30 @@ const Collection: NextPage = () => {
         const mainUrl =chainInfo?.explorers[0]?.url+'/address/'+collectionAddress
         setExplorerUrl(mainUrl)
       }
-
     }
   }, [collectionInfo])
 
+  const initAction = async () => {
+    await dispatch(clearCollectionNFTs() as any)
+    await setInit(true)
+    await setHasMoreNFTs(true);
+  }
+
+  // useEffect(() => {
+  //   setInit(false);
+  // }, []);
+
   useEffect(() => {
+    initAction();
     if ( collectionInfo ) {
-      dispatch(clearCollectionNFTs() as any)
       dispatch(getCollectionNFTs(col_url, 0, display_per_page, selected.value, searchObj) as any)
-      dispatch(getCollectionAllNFTs(col_url,selected.value, searchObj) as any)
       setPage(0)
     }
   }, [searchObj])
 
   const fetchMoreData = () => {
+    if ( !bInit )
+      return
     if( collectionInfo && nfts.length >= collectionInfo.count ) {
       setHasMoreNFTs(false)
       return
@@ -509,7 +518,8 @@ const Collection: NextPage = () => {
               <ul className="flex space-x-4 relative justify-item-stretch items-end text-md font-bold text-center pb-[5px]">
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <span className="mr-[22px] ">Items</span>
-                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.itemsCnt:0}</span>
+                  {/* <span >{collectionInfoFromLocal?collectionInfoFromLocal.itemsCnt:0}</span> */}
+                  <span >{collectionInfo?.count}</span>
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <span className="mr-[22px] ">Owners</span>
