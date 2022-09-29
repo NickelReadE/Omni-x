@@ -59,7 +59,7 @@ export type ContractName =
 
 const environments: any = {
   mainnet: ['ethereum', 'bsc', 'avalanche', 'polygon', 'arbitrum', 'optimism', 'fantom'],
-  testnet: ['rinkeby', 'bsc-testnet', 'fuji', 'mumbai', 'arbitrum-rinkeby', 'optimism-kovan', 'fantom-testnet']
+  testnet: ['rinkeby', 'bsc testnet', 'fuji', 'mumbai', 'arbitrum-rinkeby', 'optimism-kovan', 'fantom-testnet']
 }
 
 export const rpcProviders: { [key: number]: string } = {
@@ -167,7 +167,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
     currency: 'ETH'
   },
   97: {
-    name: 'bsc-testnet',
+    name: 'bsc testnet',
     logo: '/svgs/binance.svg',
     roundedLogo: '/images/roundedColorBinance.png',
     explorerLogo: '/images/binanceExplorer.png',

@@ -83,6 +83,7 @@ const Mint: NextPage = () => {
       setPrice(parseFloat(ethers.utils.formatEther(priceT)))
       const max_mint = await tokenContract.maxMintId()
       const nextId = await tokenContract.nextMintId()
+      console.log('Max_Mint',max_mint)
       setTotalNFTCount(Number(max_mint))
       setNextTokenId(Number(nextId))
       //setSubStrateIndex(10)
