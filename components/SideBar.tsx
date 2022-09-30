@@ -265,7 +265,7 @@ const SideBar: React.FC = () => {
     if (isONFTCore) {
       if (selectedNFTItem.contract_type === 'ERC721') {
         const onftCoreInstance = getONFTCore721Instance(selectedNFTItem.token_address, provider?._network?.chainId, signer)
-        const targetONFTCoreAddress = await onftCoreInstance.trustedRemoteLookup(lzTargetChainId)
+        const targetONFTCoreAddress = await onftCoreInstance.getTrustedRemote(lzTargetChainId)
         const tx = await onftCoreInstance.sendFrom(
           address,
           lzTargetChainId,
@@ -295,7 +295,7 @@ const SideBar: React.FC = () => {
         await tx.wait()
       } else if (selectedNFTItem.contract_type === 'ERC1155') {
         const onft1155CoreInstance = getONFTCore1155Instance(selectedNFTItem.token_address, provider?._network?.chainId, signer)
-        const targetONFT1155CoreAddress = await onft1155CoreInstance.trustedRemoteLookup(lzTargetChainId)
+        const targetONFT1155CoreAddress = await onft1155CoreInstance.getTrustedRemote(lzTargetChainId)
         const blockNumber = await targetProvider.getBlockNumber()
         const tx = await onft1155CoreInstance.sendFrom(
           _signerAddress,
@@ -514,22 +514,22 @@ const SideBar: React.FC = () => {
   }
 
   useEffect(()=>{
-    const getBalance = async() => {     
+    const getBalance = async() => {
       try {
         {
           const omniContract = getCurrencyInstance(getAddressByName('OMNI', chainId), chainId, signer)
           const balance = await omniContract?.balanceOf(address)
           if(balance){
             setOmniBalance(Number(ethers.utils.formatEther(balance || '0')))
-          }          
+          }
         }
 
         {
           const usdContract = getCurrencyInstance(getAddressByName('USDC', chainId), chainId, signer)
-          const balance = await usdContract?.balanceOf(address)          
-          if(balance){            
+          const balance = await usdContract?.balanceOf(address)
+          if(balance){
             setUsdcBalance(Number((balance/10^6 || '0')))
-          }          
+          }
         }
 
         {
@@ -538,7 +538,7 @@ const SideBar: React.FC = () => {
           if(balance){
             setUsdtBalance(Number(ethers.utils.formatEther(balance || '0')))
           }
-          
+
         }
 
         {
@@ -547,7 +547,7 @@ const SideBar: React.FC = () => {
           const balance = await provider?.getBalance(address!)
           if(balance){
             setNativeBalance(Number(ethers.utils.formatEther(balance || '0')).toFixed(4))
-          }          
+          }
         }
       } catch (error) {
         console.log(error)
@@ -749,7 +749,7 @@ const SideBar: React.FC = () => {
                       <span className="flex items-center ml-4 w-[80px]">Fantom</span>
                     </div>
                   </button>
-                </li>             
+                </li>
               </ul>
             }
           </li>
