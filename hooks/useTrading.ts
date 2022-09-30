@@ -8,7 +8,7 @@ import { openSnackBar } from "../redux/reducers/snackBarReducer"
 import { collectionsService } from '../services/collections'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from "../types"
 import { SaleType } from "../types/enum"
-import { ContractName, CREATOR_FEE, getAddressByName, getChainNameById, getCurrencyNameAddress, getLayerzeroChainId, isUsdcOrUsdt, PROTOCAL_FEE, validateCurrencyName } from "../utils/constants"
+import { ContractName, CREATOR_FEE, formatCurrency, getAddressByName, getChainNameById, getCurrencyNameAddress, getLayerzeroChainId, isUsdcOrUsdt, PROTOCAL_FEE, validateCurrencyName } from "../utils/constants"
 import { getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, getOmnixExchangeInstance, getTransferSelectorNftInstance } from "../utils/contracts"
 import { acceptOrder, postMakerOrder } from "../utils/makeOrder"
 import { getChainNameFromId } from '../utils/constants'
@@ -156,12 +156,12 @@ const useTrading = ({
       return
     }
 
-    const price = ethers.utils.parseEther(listingData.price.toString())
     const amount = ethers.utils.parseUnits('1', 0)
     const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
     const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
     const chainId = provider?.network.chainId || ChainIds.ETHEREUM
     const lzChainId = getLayerzeroChainId(chainId)
+    const price = formatCurrency(listingData.price, listingData.currencyName) // ethers.utils.parseEther(listingData.price.toString())
     const startTime = Date.now()
 
     await postMakerOrder(
@@ -210,7 +210,8 @@ const useTrading = ({
     const chainId = provider?.network.chainId || ChainIds.ETHEREUM
     const lzChainId = getLayerzeroChainId(chainId)
     const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
-    const currencyAddress = getAddressByName(validateCurrencyName(currencyName, chainId), chainId)
+    const newCurrencyName = validateCurrencyName(currencyName, chainId)
+    const currencyAddress = getAddressByName(newCurrencyName, chainId)
     
     if (!(await checkValid(currencyAddress, order?.price, chainId))) {
       return

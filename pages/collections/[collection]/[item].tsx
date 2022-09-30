@@ -183,7 +183,7 @@ const Item: NextPage = () => {
                     </div>
                     <div className="mb-3">
                       <span className='font-normal font-[16px]'>{formattedPrice && '$'}{formattedPrice}</span>
-                      <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-bold">Highest Bid: <span className="font-bold">{highestBid}</span></h1>{highestBidCoin&&<Image src={highestBidCoin} width={15} height={16} alt="chain  logo" />}</div>
+                      <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-bold">Highest Bid: <span className="font-bold">{highestBid != 0 && highestBid}</span></h1>{highestBidCoin&&<Image src={highestBidCoin} width={15} height={16} alt="chain  logo" />}</div>
                       <div className="flex justify-start items-center"><h1 className="mr-3 font-bold">Last Sale: <span className="font-bold">{lastSale != 0 && lastSale}</span></h1>{lastSaleCoin&&<Image src={lastSaleCoin} width={15} height={16} alt="chain logo" />}</div>
                     </div>
                   </div>

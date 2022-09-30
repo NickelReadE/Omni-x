@@ -4,7 +4,7 @@ import { useSelector } from "react-redux"
 import { IOrder } from "../interface/interface"
 import { selectBidOrders, selectLastSaleOrders, selectOrders } from "../redux/reducers/ordersReducer"
 import { SaleType } from "../types/enum"
-import { getCurrencyIconByAddress } from "../utils/constants"
+import { formatCurrency, getCurrencyIconByAddress, getCurrencyNameAddress } from "../utils/constants"
 
 export type OrderStatics = {
   order?: IOrder,
@@ -16,11 +16,6 @@ export type OrderStatics = {
   highestBidCoin?:  string,
   lastSale?: number,
   lastSaleCoin?:  string,
-}
-
-const formatEther = (price?: string) => {
-  if (!price) return undefined
-  return Number(ethers.utils.formatEther(price))
 }
 
 const findOrder = (orders: IOrder[], token_id: number, collection_addresses: string[], isDetailPage: boolean) => {
@@ -79,8 +74,9 @@ const useOrderStatics = ({
   }, [bidOrders, collection_addresses])
 
   const highestBidOrder = (sortedBids && sortedBids.length > 0) ? sortedBids[0] : undefined
-  const highestBid = formatEther(highestBidOrder?.price)
   const highestBidCoin = highestBidOrder?.currencyAddress && getCurrencyIconByAddress(highestBidOrder?.currencyAddress)
+  const highestBidCurrencyName = getCurrencyNameAddress(highestBidOrder?.currencyAddress)
+  const highestBid = Number(formatCurrency(highestBidOrder?.price || 0, highestBidCurrencyName))
 
   // last sale
   const lastSaleOrder = useMemo(() => {
@@ -89,8 +85,9 @@ const useOrderStatics = ({
     }
     return undefined
   }, [lastSaleOrders, nft, collection_addresses, isDetailPage])
-  const lastSale = formatEther(lastSaleOrder?.price)
   const lastSaleCoin = lastSaleOrder?.currencyAddress && getCurrencyIconByAddress(lastSaleOrder?.currencyAddress)
+  const lastSaleCurrencyName = getCurrencyNameAddress(lastSaleOrder?.currencyAddress)
+  const lastSale = Number(formatCurrency(lastSaleOrder?.price || 0, lastSaleCurrencyName))
 
   const isListed = !!order
   const isAuction = order?.params?.[1] == SaleType.AUCTION
