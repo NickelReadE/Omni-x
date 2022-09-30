@@ -3,8 +3,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { IPropsNFTItem } from '../../interface/interface'
 import LazyLoad from 'react-lazyload'
-import { ethers } from 'ethers'
-import { getCurrencyIconByAddress, getChainIconById, getChainNameFromId,findCollection } from '../../utils/constants'
+import { getCurrencyIconByAddress, getChainIconById, getChainNameFromId,findCollection, getCurrencyNameAddress, formatCurrency } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'
 import ConfirmBid from './ConfirmBid'
 import editStyle from '../../styles/nftbox.module.scss'
@@ -86,7 +85,7 @@ const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
     return getChainIconById(chain ? chain : '5')
   }, [chain])
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
-  const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
+  const formattedPrice = formatCurrency(order?.price || 0, getCurrencyNameAddress(order?.currencyAddress))
   const isOwner = order?.signer?.toLowerCase() == address?.toLowerCase() // owner?.toLowerCase() == address?.toLowerCase()
 
   return (
@@ -124,12 +123,12 @@ const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
       </Link>
       <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle  font-['RetniSans']">
         <Link href={`/collections/${col_url}/${nft.token_id}`}><a><div className="flex items-center ml-3">
-          {lastSale && <>
+          {lastSale != 0 && <>
             <span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span>
             <img alt={'saleIcon'} src={lastSaleCoin} className="w-[18px] h-[18px]" />&nbsp;
             <span className="text-[#6C757D] text-[14px]font-bold">{Number(lastSale)>=1000?`${Number(lastSale)/1000}K`:lastSale}</span>
           </>}
-          {!lastSale && highestBid && <>
+          {!lastSale && highestBid != 0 && <>
             <span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span>
             <img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;
             <span className="text-[#6C757D] text-[14px] font-bold">{Number(highestBid)>=1000?`${Number(highestBid)/1000}K`:highestBid}</span>

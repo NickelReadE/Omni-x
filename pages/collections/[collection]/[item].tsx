@@ -12,7 +12,7 @@ import ConfirmBid from '../../../components/collections/ConfirmBid'
 import { getNFTInfo, selectNFTInfo } from '../../../redux/reducers/collectionsReducer'
 import useWallet from '../../../hooks/useWallet'
 import useTrading from '../../../hooks/useTrading'
-import { getChainIcon, getChainNameFromId, getCurrencyIconByAddress, getProfileLink } from '../../../utils/constants'
+import { formatCurrency, getChainIcon, getChainNameFromId, getCurrencyIconByAddress, getCurrencyNameAddress, getProfileLink } from '../../../utils/constants'
 import PngCheck from '../../../public/images/check.png'
 import PngSub from '../../../public/images/subButton.png'
 import PngEther from '../../../public/images/collections/ethereum.png'
@@ -128,7 +128,7 @@ const Item: NextPage = () => {
   // profile link
   const profileLink = chain_id && ownerType && owner && getProfileLink(Number(chain_id), ownerType, owner)
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
-  const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
+  const formattedPrice = formatCurrency(order?.price || 0, getCurrencyNameAddress(order?.currencyAddress))
   
   return (
     <>

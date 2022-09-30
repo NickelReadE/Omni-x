@@ -8,11 +8,10 @@ import ConfirmSell from './collections/ConfirmSell'
 import useWallet from '../hooks/useWallet'
 import { selectCollections } from '../redux/reducers/collectionsReducer'
 import { useSelector } from 'react-redux'
-import { getChainIconById,getChainIdFromName, getChainNameFromId } from '../utils/constants'
+import { formatCurrency, getChainIconById,getChainIdFromName, getChainNameFromId, getCurrencyNameAddress } from '../utils/constants'
 import Router from 'next/router'
 import useOrderStatics from '../hooks/useOrderStatics'
 import useTrading from '../hooks/useTrading'
-import { ethers } from 'ethers'
 import { getCurrencyIconByAddress } from '../utils/constants'
 import {ChainIds} from '../types/enum'
 
@@ -127,7 +126,8 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     return getChainIconById('1')
   }, [chainId])
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
-  const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
+  const formattedPrice = formatCurrency(order?.price || 0, getCurrencyNameAddress(order?.currencyAddress))
+
 
   return (
     <div className='border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]'onMouseEnter={() => SetIsShowBtn(true)} onMouseLeave={() => SetIsShowBtn(false)}>
@@ -165,12 +165,12 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       </div> */}
       <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
         <div className="flex items-center ml-3">
-          {lastSale && <>
+          {lastSale != 0 && <>
             <span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span>
             <img src={lastSaleCoin} className="w-[18px] h-[18px]" alt="" />&nbsp;
             <span className="text-[#6C757D] text-[14px]font-bold">{Number(lastSale)>=1000?`${Number(lastSale)/1000}K`:lastSale}</span>
           </>}
-          {!lastSale && highestBid && <>
+          {!lastSale && highestBid != 0 && <>
             <span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span>
             <img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;
             <span className="text-[#6C757D] text-[14px] font-bold">{Number(highestBid)>=1000?`${Number(highestBid)/1000}K`:highestBid}</span>

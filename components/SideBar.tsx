@@ -21,7 +21,7 @@ import {
   getONFTCore721Instance,
 } from '../utils/contracts'
 import regExpFormat from '../helpers/regExpFormat'
-import {getAddressByName, getChainIdFromName, getChainInfo, getLayerzeroChainId, getProvider} from '../utils/constants'
+import {formatCurrency, getAddressByName, getChainIdFromName, getChainInfo, getLayerzeroChainId, getProvider} from '../utils/constants'
 import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
 import UserEdit from './user/UserEdit'
@@ -519,26 +519,19 @@ const SideBar: React.FC = () => {
         {
           const omniContract = getCurrencyInstance(getAddressByName('OMNI', chainId), chainId, signer)
           const balance = await omniContract?.balanceOf(address)
-          if(balance){
-            setOmniBalance(Number(ethers.utils.formatEther(balance || '0')))
-          }
+          setOmniBalance(Number(formatCurrency(balance, 'OMNI')))
         }
 
         {
           const usdContract = getCurrencyInstance(getAddressByName('USDC', chainId), chainId, signer)
           const balance = await usdContract?.balanceOf(address)
-          if(balance){
-            setUsdcBalance(Number((balance/10^6 || '0')))
-          }
+          setUsdcBalance(Number(formatCurrency(balance, 'USDC')))
         }
 
         {
           const usdContract = getCurrencyInstance(getAddressByName('USDT', chainId), chainId, signer)
           const balance = await usdContract?.balanceOf(address)
-          if(balance){
-            setUsdtBalance(Number(ethers.utils.formatEther(balance || '0')))
-          }
-
+          setUsdtBalance(Number(formatCurrency(balance, 'USDT')))
         }
 
         {

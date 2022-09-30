@@ -1,4 +1,4 @@
-import {ethers} from 'ethers'
+import {BigNumber, BigNumberish, ethers} from 'ethers'
 import OmnixBridge from '../constants/addresses/OmnixBridge.json'
 import OmnixBridge1155 from '../constants/addresses/OmnixBridge1155.json'
 import OmnixExchange from '../constants/OmnixExchange.json'
@@ -14,6 +14,7 @@ import CurrencyManager from '../constants/CurrencyManager.json'
 import LZEndpoint from '../constants/layerzero/LayerzeroEndpoints.json'
 import ChainIds from '../constants/layerzero/chainIds.json'
 import CHAINS from '../constants/chains.json'
+import { ChainIds as ChainIDS } from '../types/enum'
 import { Network } from "alchemy-sdk"
 
 const omnixBridge: any = OmnixBridge
@@ -37,9 +38,9 @@ export const CREATOR_FEE = 2
 const SUPPORTED_CHAIN_IDS = [5, 56, 137, 43114, 250, 10, 42161, 5, 97, 43113, 80001, 421613, 420, 4002]
 
 export const CURRENCIES_LIST = [
-  { value: 0, text: 'OMNI', icon: 'payment/omni.png' },
-  { value: 1, text: 'USDC', icon: 'payment/usdc.png' },
-  { value: 2, text: 'USDT', icon: 'payment/usdt.png' },
+  { value: 0, text: 'OMNI', decimals: 18, icon: 'payment/omni.png' },
+  { value: 1, text: 'USDC', decimals: 6, icon: 'payment/usdc.png' },
+  { value: 2, text: 'USDT', decimals: 6, icon: 'payment/usdt.png' },
 ]
 
 export type ContractName =
@@ -454,6 +455,21 @@ export const getCurrencyNameAddress = (address?: string) => {
   return CURRENCIES_LIST[0].text
 }
 
+const DECIMAL_MAP = (CURRENCIES_LIST.reduce((acc, c) => {
+  (acc as any)[c.text] = c.decimals
+  return acc
+}, {})) as any
+
+export const formatCurrency = (price: BigNumberish, currencyName: string) => {
+  if (price) return ethers.utils.formatUnits(price, DECIMAL_MAP[currencyName])
+  return '0'
+}
+
+export const parseCurrency = (price: string, currencyName: string) => {
+  if (price) return ethers.utils.parseUnits(price, DECIMAL_MAP[currencyName])
+  return BigNumber.from(0)
+}
+
 const chainIcons = Object.values(chainInfos).reduce((acc, cur) => {
   Object.assign(acc, { [cur.name]: cur.logo} )
   return acc
@@ -575,4 +591,12 @@ export const findCollection = (addresses:any,start_ids:any,token_id:string)=>{
     }
   })
   return [collection_address,chain_id]
+}
+
+export const getValidCurrencies = (chainId: number) => {
+  if (chainId === ChainIDS.BINANCE) {
+    return [CURRENCIES_LIST[0], CURRENCIES_LIST[2]]
+  }
+
+  return [CURRENCIES_LIST[0], CURRENCIES_LIST[1]]
 }
