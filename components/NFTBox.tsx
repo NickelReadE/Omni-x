@@ -12,7 +12,6 @@ import { formatCurrency, getChainIconById,getChainIdFromName, getChainNameFromId
 import Router from 'next/router'
 import useOrderStatics from '../hooks/useOrderStatics'
 import useTrading from '../hooks/useTrading'
-import { ethers } from 'ethers'
 import { getCurrencyIconByAddress } from '../utils/constants'
 import {ChainIds} from '../types/enum'
 
