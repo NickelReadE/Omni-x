@@ -8,7 +8,7 @@ import ConfirmSell from './collections/ConfirmSell'
 import useWallet from '../hooks/useWallet'
 import { selectCollections } from '../redux/reducers/collectionsReducer'
 import { useSelector } from 'react-redux'
-import { getChainIconById,getChainIdFromName, getChainNameFromId } from '../utils/constants'
+import { formatCurrency, getChainIconById,getChainIdFromName, getChainNameFromId, getCurrencyNameAddress } from '../utils/constants'
 import Router from 'next/router'
 import useOrderStatics from '../hooks/useOrderStatics'
 import useTrading from '../hooks/useTrading'
@@ -128,7 +128,8 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     return getChainIconById('1')
   }, [chainId])
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
-  const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
+  const formattedPrice = formatCurrency(order?.price || 0, getCurrencyNameAddress(order?.currencyAddress))
+
 
   return (
     <div className='border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]'onMouseEnter={() => SetIsShowBtn(true)} onMouseLeave={() => SetIsShowBtn(false)}>

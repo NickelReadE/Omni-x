@@ -1,4 +1,4 @@
-import {BigNumberish, ethers} from 'ethers'
+import {BigNumber, BigNumberish, ethers} from 'ethers'
 import OmnixBridge from '../constants/addresses/OmnixBridge.json'
 import OmnixBridge1155 from '../constants/addresses/OmnixBridge1155.json'
 import OmnixExchange from '../constants/OmnixExchange.json'
@@ -14,6 +14,7 @@ import CurrencyManager from '../constants/CurrencyManager.json'
 import LZEndpoint from '../constants/layerzero/LayerzeroEndpoints.json'
 import ChainIds from '../constants/layerzero/chainIds.json'
 import CHAINS from '../constants/chains.json'
+import { ChainIds as ChainIDS } from '../types/enum'
 
 const omnixBridge: any = OmnixBridge
 const omnixBridge1155: any = OmnixBridge1155
@@ -460,6 +461,11 @@ export const formatCurrency = (price: BigNumberish, currencyName: string) => {
   return '0'
 }
 
+export const parseCurrency = (price: string, currencyName: string) => {
+  if (price) return ethers.utils.parseUnits(price, DECIMAL_MAP[currencyName])
+  return BigNumber.from(0)
+}
+
 const chainIcons = Object.values(chainInfos).reduce((acc, cur) => {
   Object.assign(acc, { [cur.name]: cur.logo} )
   return acc
@@ -549,4 +555,12 @@ export const findCollection = (addresses:any,start_ids:any,token_id:string)=>{
     }
   })
   return [collection_address,chain_id]
+}
+
+export const getValidCurrencies = (chainId: number) => {
+  if (chainId === ChainIDS.BINANCE) {
+    return [CURRENCIES_LIST[0], CURRENCIES_LIST[2]]
+  }
+
+  return [CURRENCIES_LIST[0], CURRENCIES_LIST[1]]
 }

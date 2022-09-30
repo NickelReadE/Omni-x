@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { IPropsNFTItem } from '../../interface/interface'
 import LazyLoad from 'react-lazyload'
 import { ethers } from 'ethers'
-import { getCurrencyIconByAddress, getChainIconById, getChainNameFromId,findCollection } from '../../utils/constants'
+import { getCurrencyIconByAddress, getChainIconById, getChainNameFromId,findCollection, getCurrencyNameAddress, formatCurrency } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'
 import ConfirmBid from './ConfirmBid'
 import editStyle from '../../styles/nftbox.module.scss'
@@ -86,7 +86,7 @@ const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
     return getChainIconById(chain ? chain : '5')
   }, [chain])
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
-  const formattedPrice = order?.price && ethers.utils.formatEther(order.price)
+  const formattedPrice = formatCurrency(order?.price || 0, getCurrencyNameAddress(order?.currencyAddress))
   const isOwner = order?.signer?.toLowerCase() == address?.toLowerCase() // owner?.toLowerCase() == address?.toLowerCase()
 
   return (

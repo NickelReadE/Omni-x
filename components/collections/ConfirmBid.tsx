@@ -6,7 +6,9 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import CustomSelect from './CustomSelect'
 import Select from 'react-select'
 import { IBidData } from '../../interface/interface'
-import { CURRENCIES_LIST } from '../../utils/constants'
+import { CURRENCIES_LIST, getValidCurrencies } from '../../utils/constants'
+import useWallet from '../../hooks/useWallet'
+import { ChainIds } from '../../types/enum'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -48,6 +50,9 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
   const [price, setPrice] = useState(0)
   const [currency, setCurrency] = useState(CURRENCIES_LIST[0])
   const [period, setPeriod] = useState(period_list[2])
+  const { provider } = useWallet()
+  const chainId = provider?.network?.chainId || ChainIds.ETHEREUM
+  const validCurrencies = getValidCurrencies(chainId)
 
   const onChangePrice = (e: any) => {
     setPrice(e.target.value)
@@ -82,7 +87,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
           <div>
             <p className="text-[#6C757D] text-[18px] font-semibold">Bid Price</p>
             <div className="flex justify-start items-center mt-5">
-              <CustomSelect optionData={CURRENCIES_LIST} value={currency} onChange={(value: any) => setCurrency(value)} />
+              <CustomSelect optionData={validCurrencies} value={currency} onChange={(value: any) => setCurrency(value)} />
               <input type="text" value={price} className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg" onChange={onChangePrice}/>
               <span className="px-4 text-[#ADB5BD] font-light">{price_in_usd}</span>
             </div>

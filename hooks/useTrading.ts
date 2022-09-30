@@ -8,7 +8,7 @@ import { openSnackBar } from "../redux/reducers/snackBarReducer"
 import { collectionsService } from '../services/collections'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from "../types"
 import { SaleType } from "../types/enum"
-import { ContractName, CREATOR_FEE, formatCurrency, getAddressByName, getChainNameById, getCurrencyNameAddress, getLayerzeroChainId, isUsdcOrUsdt, PROTOCAL_FEE, validateCurrencyName } from "../utils/constants"
+import { ContractName, CREATOR_FEE, getAddressByName, getChainNameById, getCurrencyNameAddress, getLayerzeroChainId, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from "../utils/constants"
 import { getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, getOmnixExchangeInstance, getTransferSelectorNftInstance } from "../utils/contracts"
 import { acceptOrder, postMakerOrder } from "../utils/makeOrder"
 import { getChainNameFromId } from '../utils/constants'
@@ -161,8 +161,10 @@ const useTrading = ({
     const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
     const chainId = provider?.network.chainId || ChainIds.ETHEREUM
     const lzChainId = getLayerzeroChainId(chainId)
-    const price = formatCurrency(listingData.price, listingData.currencyName) // ethers.utils.parseEther(listingData.price.toString())
+    const price = parseCurrency(listingData.price.toString(), listingData.currencyName) // ethers.utils.parseEther(listingData.price.toString())
     const startTime = Date.now()
+
+    console.log('-listing-', listingData.price, price)
 
     await postMakerOrder(
       provider as any,
