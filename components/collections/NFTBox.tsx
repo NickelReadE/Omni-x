@@ -24,14 +24,13 @@ const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
   } = useWallet()
 
   const collectionInfo = useSelector(selectCollectionInfo)
-  const start_ids = collectionInfo.start_ids
   const token_id = nft.token_id
   const collection = useMemo(() => {
-    if (start_ids && token_id) {
-      return findCollection(collectionInfo.address,start_ids,token_id)
+    if (token_id) {
+      return findCollection(collectionInfo.address,nft,token_id)
     }
     return undefined
-  }, [start_ids, token_id, collectionInfo.address])
+  }, [nft, token_id, collectionInfo.address])
   const  col_address = collection?.[0] as string
   const chain = collection?.[1] as string
   //update this logic in the constants
