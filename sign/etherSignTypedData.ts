@@ -42,7 +42,7 @@ export const etherSignTypedData = async (
 
   if (wallet === Wallet.METAMASK) {
     const resp = await provider.send("eth_signTypedData_v4", [address, JSON.stringify(rpcData)]);
-    console.log(resp)
+    //console.log(resp)
     return resp // MetaMask injected
   }
 

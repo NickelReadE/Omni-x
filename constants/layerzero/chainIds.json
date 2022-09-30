@@ -9,7 +9,7 @@
 
   "rinkeby":          10001,
   "goerli":           10021,
-  "bsc-testnet":      10002,
+  "bsc testnet":      10002,
   "fuji":             10006,
   "mumbai":           10009,
   "arbitrum-rinkeby": 10010,

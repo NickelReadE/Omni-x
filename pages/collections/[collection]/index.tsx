@@ -4,16 +4,18 @@ import Link from 'next/link'
 import Image from 'next/image'
 import type { NextPage } from 'next'
 import { Listbox, Transition, Switch } from '@headlessui/react'
+
 import Discord from '../../../public/images/discord.png'
 import Twitter from '../../../public/images/twitter.png'
 import Web from '../../../public/images/web.png'
 import Explorer from '../../../public/images/exp.png'
-import { getCollectionNFTs, selectCollectionNFTs, getCollectionInfo,getCollectionAllNFTs, getRoyalty,selectCollectionInfo, clearCollectionNFTs, selectGetNFTs, selectCollectionAllNFTs, selectRoyalty } from '../../../redux/reducers/collectionsReducer'
+import Loading from '../../../public/images/loading_f.gif'
+import { getCollectionNFTs, selectCollectionNFTs, getCollectionInfo, getRoyalty,selectCollectionInfo, clearCollectionNFTs, selectGetNFTs, selectRoyalty } from '../../../redux/reducers/collectionsReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import NFTBox from '../../../components/collections/NFTBox'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import CircularProgress from '@material-ui/core/CircularProgress'
+
 import LazyLoad from 'react-lazyload'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import Accordion from '@material-ui/core/Accordion'
@@ -29,10 +31,11 @@ import SearchIcon from '@material-ui/icons/Search'
 import Chip from '@material-ui/core/Chip'
 import classNames from '../../../helpers/classNames'
 import editStyle from '../../../styles/collection.module.scss'
-import { getOrders, selectOrders, getLastSaleOrders } from '../../../redux/reducers/ordersReducer'
+
+import { getOrders, selectOrders, getLastSaleOrders,} from '../../../redux/reducers/ordersReducer'
 import { IGetOrderRequest , ICollectionInfoFromLocal} from '../../../interface/interface'
 import { getChainInfo, getChainIdFromName } from '../../../utils/constants'
-import { useMoralisWeb3Api, useMoralis } from 'react-moralis'
+//import { useMoralisWeb3Api, useMoralis } from 'react-moralis'
 import useWallet from '../../../hooks/useWallet'
 import { getChainNameFromId } from '../../../utils/constants'
 
@@ -122,27 +125,29 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const Collection: NextPage = () => {
-  const { isInitialized, Moralis } = useMoralis()
+  //const { isInitialized, Moralis } = useMoralis()
   const [currentTab, setCurrentTab] = useState<string>('items')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [expandedMenu, setExpandedMenu] = useState(0)
   const [selected, setSelected] = useState(sort_fields[0])
   const [enabled, setEnabled] = useState(false)
   const [collectionAddress, setCollectionAddress] = useState('')
-  const [collectionChainID, setCollectionChainID] = useState('')
+  //const [collectionChainID, setCollectionChainID] = useState('')
   const [collectionChainName,setCollectionChainName] = useState('')
+
+
+  // const [nfts,setNFTs] = useState<any>({})
 
   const [hasMoreNFTs, setHasMoreNFTs] = useState(true)
 
   const router = useRouter()
-
+  
   const col_url = router.query.collection as string
-  const display_per_page = 20
+  const display_per_page = 1000
   const [page, setPage] = useState(0)
 
   const dispatch = useDispatch()
   const nfts = useSelector(selectCollectionNFTs)
-  const allNFTs = useSelector(selectCollectionAllNFTs)
 
   const collectionInfo = useSelector(selectCollectionInfo)
 
@@ -155,13 +160,18 @@ const Collection: NextPage = () => {
   const [searchObj, setSearchObj] = useState<any>({})
   const [filterObj, setFilterObj] = useState<any>({})
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [clearFilter, setClearFilter] = useState(false)
+  //const [clearFilter, setClearFilter] = useState(false)
 
   const [isActiveBuyNow, setIsActiveBuyNow] = useState<boolean>(false)
   const [listNFTs, setListNFTs] = useState<any>([])
   const [collectionInfoFromLocal, setCollectionInfoFromLocal] = useState<ICollectionInfoFromLocal>()
+
   const [explorerUrl, setExplorerUrl] = useState('')
-  const [contractType, setContractType] = useState('')
+
+  //const [contractType, setContractType] = useState('')
+
+  //const [floorPrice] = useState(0)
+
   const finishedGetting = useSelector(selectGetNFTs)
   const [bInit, setInit] = useState(false)
 
@@ -169,29 +179,35 @@ const Collection: NextPage = () => {
     provider,
     signer
   } = useWallet()
-
-  const Web3Api = useMoralisWeb3Api()
+  
+  //const Web3Api = useMoralisWeb3Api()
 
   const fetchCollectionMetaData = async() => {
-    const chain = '0x'+Number(collectionChainID).toString(16)
-    const  options = {
-      chain: chain as any,
-      address: collectionAddress
+    //const chain = '0x'+Number(collectionChainID).toString(16)
+    // const  options = {
+    //   chain: chain as any,
+    //   address: collectionAddress
+    // }
+    try{
+      //const metaData = await Web3Api.token.getNFTMetadata(options)      
+      //setContractType(metaData.contract_type)
+    }catch(error){
+      console.log(error)
     }
-    const metaData = await Web3Api.token.getNFTMetadata(options)
-    setContractType(metaData.contract_type)
+    
   }
 
   useEffect(() => {
     if(collectionInfo && collectionInfo.address && provider?._network?.chainId) {
       let default_key:any
       let flag = false
-      Object.keys(collectionInfo.address).map((key, idx)=>{
-        if(key==(provider?._network?.chainId).toString()){
+      Object.keys(collectionInfo.address).map((key,idx)=>{
+        const chainId = (provider?._network?.chainId).toString()        
+        if(key===chainId){          
           flag = true
           setCollectionAddress(collectionInfo.address[key])
-          setCollectionChainID(key)
-          setCollectionChainName(getChainNameFromId(provider?._network?.chainId))
+          //setCollectionChainID(key)
+          setCollectionChainName(getChainNameFromId(provider?._network?.chainId))          
         }
         if(idx===0) {
           default_key = key
@@ -199,26 +215,26 @@ const Collection: NextPage = () => {
       })
       if(!flag) {
         setCollectionAddress(collectionInfo.address[default_key])
-        setCollectionChainID(default_key)
-        setCollectionChainName(getChainNameFromId(default_key as number))
+        //setCollectionChainID(default_key)
+        setCollectionChainName(getChainNameFromId(default_key as number))        
       }
     }
-  },[collectionInfo,provider])
+  },[collectionInfo,provider?._network])
 
   useEffect(() => {
-    if(col_url){
+    
+    if ( col_url && provider?._network) {
       dispatch(getCollectionInfo(col_url) as any)
-      dispatch(getCollectionAllNFTs(col_url,selected.value, searchObj) as any)
     }
     if ( col_url && provider?._network) {
       const localData = localStorage.getItem('cards')
       if(localData){
         setCollectionInfoFromLocal((JSON.parse(localData)).find((element: ICollectionInfoFromLocal) => element.col_url===col_url))
       }
-
+      
       setPage(0)
     }
-  }, [col_url,provider])
+  }, [col_url,provider?._network]) 
 
   useEffect(()=>{
     if(nfts.length>0){
@@ -258,7 +274,7 @@ const Collection: NextPage = () => {
   }, [nfts, selectGetNFTs])
 
   useEffect(() => {
-    if( collectionInfo ) {
+    if( collectionChainName && collectionAddress ) {
       const chainStr = collectionChainName
       const chainInfo:any =  getChainInfo(getChainIdFromName(chainStr))
       if(chainInfo){
@@ -266,7 +282,7 @@ const Collection: NextPage = () => {
         setExplorerUrl(mainUrl)
       }
     }
-  }, [collectionInfo])
+  }, [collectionChainName,collectionAddress])
 
   const initAction = async () => {
     await dispatch(clearCollectionNFTs() as any)
@@ -319,10 +335,10 @@ const Collection: NextPage = () => {
       }
     })
     if(bChecked || existFilter) {
-      setClearFilter(true)
+      //setClearFilter(true)
     }
   }
-
+  
   const searchFilter = (searchValue: string, attrKey: string) => {
     const newObj = {[attrKey]: searchValue}
     setFilterObj((prevState: any) => {
@@ -354,11 +370,11 @@ const Collection: NextPage = () => {
 
 
   useEffect(()=>{
-    if(isActiveBuyNow && collectionInfo && allNFTs.length>0){
+    if(isActiveBuyNow && collectionInfo && nfts.length>0){
       const temp = []
-      for(let i=0;i<allNFTs.length;i++){
+      for(let i=0;i<nfts.length;i++){
         const start_ids = collectionInfo.start_ids
-        const token_id = allNFTs[i].token_id
+        const token_id = nfts[i].token_id
         let collection_address=''
         let temp_value = 0
         Object.keys(start_ids).map((Key) => {
@@ -370,68 +386,25 @@ const Collection: NextPage = () => {
           }
         })
         for(let j=0; j<orders.length;j++){  
-          if(collection_address==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
-            temp.push(allNFTs[i]) 
+          if(collection_address==orders[j].collectionAddress&& nfts[i].token_id==orders[j].tokenId){
+            temp.push(nfts[i]) 
             break         
           }
         }
       }
       setListNFTs(temp)    
     } 
-  },[isActiveBuyNow,collectionInfo,allNFTs])
-  // useEffect(()=>{
-  //   if(collectionInfo && allNFTs.length>0){
-  //     const tempOrders = []
-  //     for(let i=0;i<allNFTs.length;i++){
-  //       let order:any = null
-  //       for(let j=0; j<orders.length;j++){
-  //         if(collectionAddress==orders[j].collectionAddress&& allNFTs[i].token_id==orders[j].tokenId){
-  //           order = orders[j]
-  //         }
-  //       }
-  //       if(order){
-  //         tempOrders.push(order)
-  //       }
-  //     }
-  //     console.log(tempOrders)
-  //     setOrdersForCollection(tempOrders)
-  //   }
-  // },[collectionInfo,allNFTs])
-  // useEffect(()=>{
-  //   if(ordersForCollection.length > 0 && assetPrices){
-  //     let lowPrice: any = Number.MAX_VALUE
-  //     ordersForCollection.map((order: { price: any, currencyAddress:any }) => {
-  //       let priceAsUSD = 0
-  //       if(currencies_list[getChainIdFromName(collectionChainName)].find(({address}) => address===order.currencyAddress)){
-  //         priceAsUSD = parseFloat(ethers.utils.formatEther(order.price))
-  //       }else{
-  //         priceAsUSD = convertETHtoUSDT(parseFloat(ethers.utils.formatEther(order.price)), assetPrices.eth)
-  //       }
-  //       if(lowPrice > priceAsUSD){
-  //         lowPrice  = priceAsUSD
-  //       }
-  //     })
-  //     if(lowPrice === Number.MAX_VALUE){
-  //       lowPrice = 0
-  //     }
-  //     setFloorPrice(lowPrice)
-  //   }else if(ordersForCollection.length ===0){
-  //     setFloorPrice(0)
-  //   }
+  },[isActiveBuyNow,collectionInfo,nfts])
 
-  // },[ordersForCollection])
   useEffect(()=> {
-    (async () => {
-      if (isInitialized && collectionAddress && collectionChainName) {
-        await fetchCollectionMetaData()
-      }
-    })()
-  }, [isInitialized, Moralis,collectionInfo])
-  useEffect(()=>{
-    if(contractType!=='' && collectionInfo){
-      dispatch(getRoyalty(contractType, collectionAddress, getChainIdFromName(collectionChainName) ,signer) as any)
+    if (collectionAddress && collectionChainName) {
+      fetchCollectionMetaData()
     }
-  },[contractType,collectionInfo])
+  }, [collectionChainName])
+  
+  useEffect(()=>{    
+    dispatch(getRoyalty('ERC721', '0x4aA142f1Db95B50dA7ca22267Da557050f9A7Ec9', 5 ,signer) as any)
+  },[collectionAddress])
   return (
     <>
       <div className={classNames('w-full', 'mt-20', 'pr-[70px]' ,'pt-[30px]', 'relative', editStyle.collection)}>
@@ -514,20 +487,19 @@ const Collection: NextPage = () => {
               <ul className="flex space-x-4 relative justify-item-stretch items-end text-md font-bold text-center pb-[5px]">
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <span className="mr-[22px] ">Items</span>
-                  {/* <span >{collectionInfoFromLocal?collectionInfoFromLocal.itemsCnt:0}</span> */}
-                  <span >{collectionInfo?.count}</span>
+                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.itemsCnt:0}</span>           
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <span className="mr-[22px] ">Owners</span>
-                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.ownerCnt:0}</span>
+                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.ownerCnt:0}</span>           
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <span className="mr-[22px] ">Listed</span>
-                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.orderCnt:0}</span>
+                  <span >{collectionInfoFromLocal?collectionInfoFromLocal.orderCnt:0}</span>           
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <span className="mr-[22px] ">Royalty Fee</span>
-                  <span >{royalty}%</span>
+                  <span >{royalty}%</span>           
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex flex-col space-y-4 justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <div className="flex flex-col">
@@ -537,7 +509,7 @@ const Collection: NextPage = () => {
                     <div className="flex flex-row">
                       <span className="mr-[10px] ">0</span>
                       <img src='/svgs/eth_asset.svg' alt='asset'></img>
-                    </div>
+                    </div>                      
                   </div>
                   <div className="flex flex-col">
                     <div className="flex justify-start">
@@ -546,9 +518,8 @@ const Collection: NextPage = () => {
                     <div className="flex flex-row">
                       <span className="mr-[10px] ">0</span>
                       <img src='/svgs/eth_asset.svg' alt='asset'></img>
-                    </div>
-                  </div>
-
+                    </div>                      
+                  </div>                               
                 </li>
                 <li className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <div className="flex flex-col space-y-2">
@@ -557,15 +528,15 @@ const Collection: NextPage = () => {
                     </div>
                     <div className="flex flex-col space-y-1">
                       <div className="flex flex-row justify-between">
-                        <span className="mr-[22px] ">{collectionInfoFromLocal?collectionInfoFromLocal.floorPrice?.eth:0}</span>
+                        <span className="mr-[22px] ">{collectionInfoFromLocal?collectionInfoFromLocal.floorPrice.eth:0}</span>
                         <img src='/svgs/eth_asset.svg' alt='asset'></img>
                       </div>
                       <div className="flex flex-row justify-between">
-                        <span className="mr-[22px] ">{collectionInfoFromLocal?collectionInfoFromLocal.floorPrice?.usd:0}</span>
+                        <span className="mr-[22px] ">{collectionInfoFromLocal?collectionInfoFromLocal.floorPrice.usd:0}</span>
                         <img src='/svgs/usd_asset.svg' alt='asset'></img>
                       </div>
                       <div className="flex flex-row justify-between">
-                        <span className="mr-[22px] ">{collectionInfoFromLocal?collectionInfoFromLocal.floorPrice?.usd:0}</span>
+                        <span className="mr-[22px] ">{collectionInfoFromLocal?collectionInfoFromLocal.floorPrice.usd:0}</span>
                         <img src='/svgs/omni_asset.svg' alt='asset'></img>
                       </div>
                     </div>
@@ -575,8 +546,11 @@ const Collection: NextPage = () => {
             </div>
           </div>
           <div className="col-span-1"></div>
-        </div>
+        </div>        
       </div>
+      
+
+
       <div className="w-full pr-[70px]">
         <div className="flex">
           <div className="w-[320px] min-w-[320px]">
@@ -746,7 +720,7 @@ const Collection: NextPage = () => {
                                 </span>
                                 {selected ? (
                                   <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                                    <i className="fa fa-chevron-down h-5 w-5"></i>
+                                    <i className="fa fa-chevron-down w-5"></i>
                                   </span>
                                 ) : null}
                               </>
@@ -785,7 +759,7 @@ const Collection: NextPage = () => {
                   loader={
                     <div className='flex justify-center items-center'>
                       <div className="flex justify-center items-center w-[90%] h-[100px]">
-                        {!isActiveBuyNow&&<CircularProgress />}
+                        {!isActiveBuyNow&&<Image src={Loading} alt='Loading...' width='80px' height='80px'/>}
                       </div>
                     </div>
                   }

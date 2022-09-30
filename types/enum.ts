@@ -1,5 +1,5 @@
 export enum SupportedChainId {
-    RINKEBY = 10001,
+    RINKEBY = 10001   
 }
 
 export enum ChainIds {

@@ -14,6 +14,7 @@ import LZEndpointABI from '../constants/abis/LayerzeroEndpoint.json'
 import CurrencyManagerABI from '../constants/abis/CurrencyManager.json'
 import veSTG from '../constants/abis/veSTG.json'
 import RoyaltyFeeManagerABI from '../constants/abis/RoyaltyFeeManager.json'
+import AdvancedONT from '../constants/abis/AdvancedONT.json'
 
 export const getContractInstanceByAddr = (address: string, abi: any, chainId: number, signer: any) => {
   if (signer === null) {
@@ -46,6 +47,10 @@ export const getOmnixBridge1155Instance = (chainId: number, signer: any) => {
 
 export const getERC721Instance = (contractAddress: string, chainId: number, signer: any) => {
   return getContractInstanceByAddr(contractAddress, ERC721ABI, chainId, signer)
+}
+
+export const getAdvancedInstance = (contractAddress: string, chainId: number, signer: any) => {
+  return getContractInstanceByAddr(contractAddress, AdvancedONT, chainId, signer)
 }
 
 export const getERC1155Instance = (contractAddress: string, chainId: number, signer: any) => {

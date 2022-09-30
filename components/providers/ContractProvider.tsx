@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {ReactNode, useCallback} from 'react'
+import {ReactNode, useEffect} from 'react'
 import { PendingTxType, ContractContext } from '../../contexts/contract'
 import { getOmnixBridge1155Instance, getOmnixBridgeInstance, getONFTCore1155Instance, getONFTCore721Instance } from '../../utils/contracts'
 import { useDispatch } from 'react-redux'
@@ -18,7 +18,7 @@ export const ContractProvider = ({
   const { address, provider } = useWallet()
   const { updateHistory } = useProgress()
 
-  const listenONFTEvents = useCallback(async (txInfo: PendingTxType, historyIndex: number) => {
+  const listenONFTEvents = async (txInfo: PendingTxType, historyIndex: number) => {
     if (txInfo.type === 'bridge' && address && provider?._network?.chainId) {
       if (txInfo.isONFTCore) {
         if (txInfo.contractType === 'ERC721') {
@@ -166,7 +166,21 @@ export const ContractProvider = ({
         }
       }
     }
-  }, [address, provider?._network?.chainId])
+  }
+
+  useEffect(() => {
+    (async () => {
+      if (address && provider?._network?.chainId) {
+        const allHistories = localStorage.getItem('txHistories')
+        const txInfos = allHistories ? JSON.parse(allHistories) : []
+        await Promise.all(
+          txInfos.map(async (txInfo: PendingTxType) => {
+            await listenONFTEvents(txInfo, txInfos.indexOf(txInfo))
+          })
+        )
+      }
+    })()
+  }, [address, provider])
 
   return (
     <ContractContext.Provider

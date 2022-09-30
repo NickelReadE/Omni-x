@@ -15,6 +15,7 @@ import LZEndpoint from '../constants/layerzero/LayerzeroEndpoints.json'
 import ChainIds from '../constants/layerzero/chainIds.json'
 import CHAINS from '../constants/chains.json'
 import { ChainIds as ChainIDS } from '../types/enum'
+import { Network } from "alchemy-sdk"
 
 const omnixBridge: any = OmnixBridge
 const omnixBridge1155: any = OmnixBridge1155
@@ -34,7 +35,7 @@ const chainIds: any = ChainIds
 export const PROTOCAL_FEE = 2
 export const CREATOR_FEE = 2
 
-const SUPPORTED_CHAIN_IDS = [1, 56, 137, 43114, 250, 10, 42161, 5, 97, 43113, 80001, 421613, 420, 4002]
+const SUPPORTED_CHAIN_IDS = [5, 56, 137, 43114, 250, 10, 42161, 5, 97, 43113, 80001, 421613, 420, 4002]
 
 export const CURRENCIES_LIST = [
   { value: 0, text: 'OMNI', decimals: 18, icon: 'payment/omni.png' },
@@ -56,6 +57,11 @@ export type ContractName =
   'StargateRouter' |
   'StargatePoolManager' |
   'CurrencyManager'
+
+const environments: any = {
+  mainnet: ['ethereum', 'bsc', 'avalanche', 'polygon', 'arbitrum', 'optimism', 'fantom'],
+  testnet: ['rinkeby', 'bsc testnet', 'fuji', 'mumbai', 'arbitrum-rinkeby', 'optimism-kovan', 'fantom-testnet']
+}
 
 export const rpcProviders: { [key: number]: string } = {
   1:'https://mainnet.infura.io/v3/20504cdcff23477c9ed314d042d85a74',
@@ -173,7 +179,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
     currency: 'GoerliETH'
   },
   97: {
-    name: 'bsc-testnet',
+    name: 'bsc testnet',
     logo: '/svgs/binance.svg',
     roundedLogo: '/images/roundedColorBinance.png',
     explorerLogo: '/images/binanceExplorer.png',
@@ -359,9 +365,10 @@ export const chain_list_: {[key: number]: string} = {
   421611:'arbitrum-rinkeby',
   69:'optimism-kovan',
   4002:'fantom-testnet',
-  420 : 'optimism',
-  421613 :'arbitrum'
+  420 : 'optimism-goerli',
+  421613 :'arbitrum-goerli'
 }
+
 
 export const getChainNameFromId = (id: number): string => {
   return chain_list_[id]
@@ -435,9 +442,6 @@ export const getCurrencyIconByAddress = (address?: string) => {
   return `/images/${CURRENCIES_LIST[0].icon}`
 }
 
-export const getChainNameById = (chainId: number) => {
-  return chainInfos[chainId].name
-}
 
 export const getCurrencyNameAddress = (address?: string) => {
   const currency_addr_list = [oft, usdc, usdt]
@@ -499,7 +503,7 @@ export const isUsdcOrUsdt = (address?: string) => {
 }
 
 export const validateCurrencyName = (currencyName: ContractName, chainId: number) => {
-  if (chainId === ChainIds.bsc || chainId == ChainIds['bsc-testnet']) {
+  if (chainId === ChainIds.bsc || chainId == ChainIds['bsc testnet']) {
     if (currencyName === 'USDC')
       return 'USDT'
   }
@@ -540,6 +544,38 @@ export const getBlockExplorer = (chainId: number) => {
   }
   return null
 }
+export const isSupportedOnMoralis = (chainId: number) : boolean => {  
+  return supportedChainsOnMoralis.includes(chainId)
+}
+export const isSupportedOnAlchemy = (chainId: number) : boolean => {  
+  return supportedChainsOnAlchemy.includes(chainId)
+}
+export const APIkeysForAlchemy:{[key:number]:string} = {
+  420:'fOwhgLzJfvGdNS-3lSaj2Sc8wIIeoR-Q',
+  421613:'iSGCCiweawjOPFX-x5Btptlsg4gBLmG9',
+  5:'GiAm8CDGn_xhxD18nV4Wunc332XKeZ2w'
+}
+export const NetworksForAlchemy:{[key:number]:Network} = {
+  420: Network.OPT_GOERLI,
+  421613:Network.ARB_GOERLI,
+  5:Network.ETH_GOERLI
+}
+export const getAPIkeyForAlchemy = (key:number):string =>{
+ return APIkeysForAlchemy[key]
+}
+export const getNetworForAlchemy = (key:number):Network =>{
+  return NetworksForAlchemy[key]
+}
+export const supportedChainsOnMoralis:Array<number> = [
+  80001,
+  97,
+  43113
+]
+export const supportedChainsOnAlchemy: Array<number> = [
+  420,
+  5,
+  421613
+]
 
 export const findCollection = (addresses:any,start_ids:any,token_id:string)=>{
   let temp_value = 0

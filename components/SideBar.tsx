@@ -265,7 +265,7 @@ const SideBar: React.FC = () => {
     if (isONFTCore) {
       if (selectedNFTItem.contract_type === 'ERC721') {
         const onftCoreInstance = getONFTCore721Instance(selectedNFTItem.token_address, provider?._network?.chainId, signer)
-        const targetONFTCoreAddress = await onftCoreInstance.trustedRemoteLookup(lzTargetChainId)
+        const targetONFTCoreAddress = await onftCoreInstance.getTrustedRemote(lzTargetChainId)
         const tx = await onftCoreInstance.sendFrom(
           address,
           lzTargetChainId,
@@ -295,7 +295,7 @@ const SideBar: React.FC = () => {
         await tx.wait()
       } else if (selectedNFTItem.contract_type === 'ERC1155') {
         const onft1155CoreInstance = getONFTCore1155Instance(selectedNFTItem.token_address, provider?._network?.chainId, signer)
-        const targetONFT1155CoreAddress = await onft1155CoreInstance.trustedRemoteLookup(lzTargetChainId)
+        const targetONFT1155CoreAddress = await onft1155CoreInstance.getTrustedRemote(lzTargetChainId)
         const blockNumber = await targetProvider.getBlockNumber()
         const tx = await onft1155CoreInstance.sendFrom(
           _signerAddress,
@@ -495,6 +495,7 @@ const SideBar: React.FC = () => {
 
   useEffect(()=>{
     if(window.ethereum){
+      setChainID(parseInt(window.ethereum.networkVersion))
       window.ethereum.on('chainChanged', function (networkId:string) {
         setChainID(parseInt(networkId))
       })
@@ -537,13 +538,15 @@ const SideBar: React.FC = () => {
           //Native Token
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           const balance = await provider?.getBalance(address!)
-          setNativeBalance(Number(ethers.utils.formatEther(balance || '0')).toFixed(4))
+          if(balance){
+            setNativeBalance(Number(ethers.utils.formatEther(balance || '0')).toFixed(4))
+          }
         }
       } catch (error) {
         console.log(error)
       }
     }
-    if(signer!=undefined && address!=undefined){
+    if(signer!=undefined && address!=undefined && chainId!==undefined){
       getBalance()
     }
   },[signer, address, chainId, refreshBalance])
@@ -739,7 +742,7 @@ const SideBar: React.FC = () => {
                       <span className="flex items-center ml-4 w-[80px]">Fantom</span>
                     </div>
                   </button>
-                </li>             
+                </li>
               </ul>
             }
           </li>

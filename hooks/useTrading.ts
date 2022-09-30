@@ -8,7 +8,7 @@ import { openSnackBar } from "../redux/reducers/snackBarReducer"
 import { collectionsService } from '../services/collections'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from "../types"
 import { SaleType } from "../types/enum"
-import { ContractName, CREATOR_FEE, getAddressByName, getChainNameById, getCurrencyNameAddress, getLayerzeroChainId, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from "../utils/constants"
+import { ContractName, CREATOR_FEE, getAddressByName, getCurrencyNameAddress, getLayerzeroChainId, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from "../utils/constants"
 import { getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, getOmnixExchangeInstance, getTransferSelectorNftInstance } from "../utils/contracts"
 import { acceptOrder, postMakerOrder } from "../utils/makeOrder"
 import { getChainNameFromId } from '../utils/constants'
@@ -327,7 +327,7 @@ const useTrading = ({
             types: ['uint16'],
           },
         },
-        getChainNameById(chainId),
+        getChainNameFromId(chainId),
         true
       )
 
