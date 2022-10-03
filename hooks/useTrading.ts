@@ -275,6 +275,7 @@ const useTrading = ({
 
     await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
     await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(order?.price)/10**decimal as number)
+    await collectionsService.updateCollectionNFTChainID(collection_name,token_id,Number(chainId))
 
 
     dispatch(openSnackBar({ message: 'Bought an NFT', status: 'success' }))
@@ -395,6 +396,8 @@ const useTrading = ({
     await updateOrderStatus(bidOrder, 'EXECUTED')
     await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
     await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(bidOrder?.price)/10**decimal as number)
+    await collectionsService.updateCollectionNFTChainID(collection_name,token_id,Number(chainId))
+
 
     dispatch(openSnackBar({ message: 'Accepted a Bid', status: 'success' }))
     getLastSaleOrder()

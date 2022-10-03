@@ -577,19 +577,9 @@ export const supportedChainsOnAlchemy: Array<number> = [
   421613
 ]
 
-export const findCollection = (addresses:any,start_ids:any,token_id:string)=>{
-  let temp_value = 0
-  let collection_address = ''
-  let chain_id = 0
-  Object.keys(start_ids).map((Key) => {
-    if(Number(start_ids[Key])<Number(token_id)){
-      if(temp_value<=Number(start_ids[Key])){
-        temp_value = Number(start_ids[Key])
-        collection_address = addresses[Key]
-        chain_id = Number(Key)
-      }
-    }
-  })
+export const findCollection = (addresses:any,nft:any,token_id:string)=>{
+  const chain_id = nft.chain_id
+  const collection_address = addresses[chain_id]
   return [collection_address,chain_id]
 }
 

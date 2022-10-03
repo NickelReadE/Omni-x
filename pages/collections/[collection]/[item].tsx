@@ -43,9 +43,8 @@ const Item: NextPage = () => {
   const collection_address_map = nftInfo?.collection?.address
 
   const collectionInfo = useMemo(() => {
-    if (nftInfo && nftInfo.collection && token_id) {
-      const start_ids = nftInfo.collection.start_ids
-      return findCollection(nftInfo.collection.address,start_ids,token_id)
+    if (nftInfo && nftInfo.collection && nftInfo.nft && token_id) {
+      return findCollection(nftInfo.collection.address,nftInfo.nft,token_id)
     }
     return undefined
   }, [nftInfo,token_id])
