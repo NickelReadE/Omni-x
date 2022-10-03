@@ -86,12 +86,13 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
             &&
             <div className='flex items-center justify-between'>
               <span className="text-[#38B000] w-[30px] truncate" style={{fontSize: 14, lineHeight: '18px', fontWeight: 700}}>
-                buy:
+                {txInfo?.type === 'buy' ? 'buy' : 'apt'}:
               </span>
               <Image
                 onMouseEnter={() => onHover('sender')}
                 onMouseLeave={() => onLeave('sender')}
-                src={hovered ? getChainIcons(txInfo.senderChainId).explorer : getChainIcons(txInfo.senderChainId).icon}
+                src={(hovered && txInfo.txHash) ? getChainIcons(txInfo.senderChainId).explorer : getChainIcons(txInfo.senderChainId).icon}
+                style={{ cursor: (txInfo && txInfo.txHash) ? 'pointer' : 'auto', opacity: (txInfo && txInfo.txHash) ? 1 : 0.4 }}
                 alt="chain icon"
                 width={18}
                 height={18}

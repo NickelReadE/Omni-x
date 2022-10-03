@@ -9,7 +9,7 @@ import { collectionsService } from '../services/collections'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from "../types"
 import { SaleType } from "../types/enum"
 import { ContractName, CREATOR_FEE, getAddressByName, getChainIdFromName, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from "../utils/constants"
-import { getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, getOmnixExchangeInstance, getTransferSelectorNftInstance } from "../utils/contracts"
+import { getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, getOmnixExchangeInstance, getONFTCore721Instance, getTransferSelectorNftInstance } from "../utils/contracts"
 import { acceptOrder, postMakerOrder } from "../utils/makeOrder"
 import { getChainNameFromId } from '../utils/constants'
 import { ChainIds } from "../types/enum"
@@ -208,7 +208,6 @@ const useTrading = ({
     setOpenSellDlg(false)
   }
 
-  
   const onBuy = async (order?: IOrder) => {
     if (!order) {
       dispatch(openSnackBar({ message: 'Not listed', status: 'warning' }))
@@ -279,16 +278,33 @@ const useTrading = ({
 
     const isONFTCore = false // await validateONFT(selectedNFTItem)
     const orderChainId = getChainIdFromName(order.chain)
-    const targetProvider = getProvider(orderChainId)
-    const blockNumber = await targetProvider.getBlockNumber()
+    const blockNumber = await provider.getBlockNumber()
+    const targetProvier = getProvider(orderChainId)
+    const targetBlockNumber = await targetProvier.getBlockNumber()
+    let targetCollectionAddress = ''
+    if (isONFTCore) {
+      const onftCoreInstance = getONFTCore721Instance(order.collectionAddress, orderChainId, null)
+      targetCollectionAddress = await onftCoreInstance.getTrustedRemote(getLayerzeroChainId(chainId))
+    }
+
+    // PendingTxType
+    // senderChainId: chain id of seller
+    // senderAddress: collection address of seller
+    // senderBlockNumber: block of seller chain
+    // destTxHash: tx hash of buyer
+    // targetChainId: chain id of buyer
+    // targetAddress: collection address of buyer
+    // targetBlockNumber: block of buyer chain
     const pendingTx: PendingTxType = {
-      txHash: tx.hash,
       type: 'buy',
       senderChainId: orderChainId,
+      senderAddress: order.collectionAddress,
+      senderBlockNumber: targetBlockNumber,
+      destTxHash: tx.hash,
       targetChainId: chainId,
-      targetAddress: order.collectionAddress,
+      targetAddress: targetCollectionAddress,
       isONFTCore,
-      contractType: selectedNFTItem.contract_type,
+      contractType: selectedNFTItem.contract_type || 'ERC721',
       nftItem: selectedNFTItem,
       targetBlockNumber: blockNumber,
       itemName: selectedNFTItem.name
@@ -419,20 +435,39 @@ const useTrading = ({
 
     const isONFTCore = false // await validateONFT(selectedNFTItem)
     const orderChainId = getChainIdFromName(bidOrder.chain)
-    const targetProvider = getProvider(orderChainId)
-    const blockNumber = await targetProvider.getBlockNumber()
+    const blockNumber = await provider.getBlockNumber()
+    const targetProvier = getProvider(orderChainId)
+    const targetBlockNumber = await targetProvier.getBlockNumber()
+    let targetCollectionAddress = ''
+
+    if (isONFTCore) {
+      const onftCoreInstance = getONFTCore721Instance(bidOrder.collectionAddress, chainId, null)
+      targetCollectionAddress = await onftCoreInstance.getTrustedRemote(getLayerzeroChainId(orderChainId))
+    }
+
+    // PendingTxType
+    // txHash: tx hash of seller
+    // senderChainId: chain id of seller
+    // senderAddress: collection address of seller
+    // sellerBlockNumber: block of buyer chain
+    // targetChainId: chain id of buyer
+    // targetAddress: collection address of buyer
+    // targetBlockNumber: block of buyer chain
     const pendingTx: PendingTxType = {
-      txHash: tx.hash,
       type: 'accept',
+      txHash: tx.hash,
       senderChainId: chainId,
+      senderAddress: bidOrder.collectionAddress,
+      senderBlockNumber: blockNumber,
       targetChainId: orderChainId,
-      targetAddress: '',
+      targetAddress: targetCollectionAddress,
+      targetBlockNumber: targetBlockNumber,
       isONFTCore,
-      contractType: selectedNFTItem.contract_type,
+      contractType: selectedNFTItem.contract_type || 'ERC721',
       nftItem: selectedNFTItem,
-      targetBlockNumber: blockNumber,
       itemName: selectedNFTItem.name
     }
+
     const historyIndex = addTxToHistories(pendingTx)
     await listenONFTEvents(pendingTx, historyIndex)
     await tx.wait()
