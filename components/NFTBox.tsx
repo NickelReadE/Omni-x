@@ -97,7 +97,8 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     owner: address,
     owner_collection_address: nft.token_address,
     owner_collection_chain: nft.chain,
-    token_id: nft?.token_id
+    token_id: nft?.token_id,
+    selectedNFTItem: nft
   })
   const doubleClickToSetDetailLink = () => {
     for(let i = 0;i<collections.length;i++){
