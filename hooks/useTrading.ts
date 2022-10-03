@@ -284,9 +284,9 @@ const useTrading = ({
     const pendingTx: PendingTxType = {
       txHash: tx.hash,
       type: 'buy',
-      senderChainId: chainId,
-      targetChainId: orderChainId,
-      targetAddress: '',
+      senderChainId: orderChainId,
+      targetChainId: chainId,
+      targetAddress: order.collectionAddress,
       isONFTCore,
       contractType: selectedNFTItem.contract_type,
       nftItem: selectedNFTItem,
