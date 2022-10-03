@@ -51,7 +51,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
       <div className={'rounded-[8px] w-[250px] md:order-2 mr-[70px] px-4 flex flex-col justify-center py-2'}>
         {
           txInfo?.type === 'bridge'
-            ?
+            &&
             <div className='flex items-center justify-between'>
               <span className="text-[#38B000] w-[30px] truncate" style={{fontSize: 14, lineHeight: '18px', fontWeight: 700}}>
                 xfer:
@@ -82,6 +82,36 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
             :
             <div />
         }
+
+        {
+          (txInfo?.type === 'buy' || txInfo?.type === 'accept')
+            &&
+            <div className='flex items-center justify-between'>
+              <span className="text-[#38B000] w-[30px] truncate" style={{fontSize: 14, lineHeight: '18px', fontWeight: 700}}>
+                buy:
+              </span>
+              <Image
+                onMouseEnter={() => onHover('sender')}
+                onMouseLeave={() => onLeave('sender')}
+                src={hovered ? getChainIcons(txInfo.senderChainId).explorer : getChainIcons(txInfo.senderChainId).icon}
+                alt="chain icon"
+                width={18}
+                height={18}
+                onClick={onViewExplorer}
+              />
+              <Image src={arrowRight} alt="arrowRight" />
+              <Image
+                width={18}
+                height={18}
+                onMouseEnter={() => onHover('target')} onMouseLeave={() => onLeave('target')}
+                src={(targetHovered && txInfo.destTxHash) ? getChainIcons(txInfo.targetChainId).explorer : getChainIcons(txInfo.targetChainId).icon}
+                style={{ cursor: (txInfo && txInfo.destTxHash) ? 'pointer' : 'auto', opacity: (txInfo && txInfo.destTxHash) ? 1 : 0.4 }}
+                onClick={onViewExplorerOnDest}
+                alt="chain icon"
+              />
+              <span className="text-md text-gray-500 w-[120px] truncate">{txInfo?.itemName}</span>
+            </div>
+          }
       </div>
     </>
   )

@@ -106,7 +106,8 @@ const Item: NextPage = () => {
     owner,
     owner_collection_address: ownedCollectionAddress,
     owner_collection_chain: ownerChainId && getChainNameFromId(ownerChainId),
-    token_id
+    token_id,
+    selectedNFTItem: nftInfo?.nft
   })
 
   // nft info api call

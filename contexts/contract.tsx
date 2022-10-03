@@ -4,7 +4,7 @@ import {NFTItem} from '../interface/interface'
 export type PendingTxType = {
   txHash: string,
   destTxHash?: string | undefined,
-  type: 'bridge' | 'buy' | 'sell' | 'bid',
+  type: 'bridge' | 'buy' | 'accept' | 'approve',
   senderChainId: number,
   targetChainId: number,
   targetAddress: string,

@@ -8,11 +8,14 @@ import { openSnackBar } from "../redux/reducers/snackBarReducer"
 import { collectionsService } from '../services/collections'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from "../types"
 import { SaleType } from "../types/enum"
-import { ContractName, CREATOR_FEE, getAddressByName, getCurrencyNameAddress, getLayerzeroChainId, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from "../utils/constants"
+import { ContractName, CREATOR_FEE, getAddressByName, getChainIdFromName, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from "../utils/constants"
 import { getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, getOmnixExchangeInstance, getTransferSelectorNftInstance } from "../utils/contracts"
 import { acceptOrder, postMakerOrder } from "../utils/makeOrder"
 import { getChainNameFromId } from '../utils/constants'
 import { ChainIds } from "../types/enum"
+import useProgress from "./useProgress"
+import { PendingTxType } from "../contexts/contract"
+import useContract from "./useContract"
 
 export type TradingFunction = {
   openSellDlg: boolean,
@@ -56,12 +59,15 @@ const useTrading = ({
   order_collection_address,
   owner,
   owner_collection_chain,
-  token_id
+  token_id,
+  selectedNFTItem
 }: any): TradingFunction => {
   const [openSellDlg, setOpenSellDlg] = useState(false)
   const [openBidDlg, setOpenBidDlg] = useState(false)
 
   const dispatch = useDispatch()
+  const { addTxToHistories } = useProgress()
+  const { listenONFTEvents } = useContract()
 
   const chain_id = provider?._network?.chainId
   const chain_name = chain_id && getChainNameFromId(chain_id)
@@ -268,14 +274,33 @@ const useTrading = ({
       dispatch(openSnackBar({ message: `Not enough balance ${ethers.utils.formatEther(lzFee)}`, status: 'warning' }))
       return
     }
+        
+    const tx = await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
 
-    await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
+    const isONFTCore = false // await validateONFT(selectedNFTItem)
+    const orderChainId = getChainIdFromName(order.chain)
+    const targetProvider = getProvider(orderChainId)
+    const blockNumber = await targetProvider.getBlockNumber()
+    const pendingTx: PendingTxType = {
+      txHash: tx.hash,
+      type: 'buy',
+      senderChainId: chainId,
+      targetChainId: orderChainId,
+      targetAddress: '',
+      isONFTCore,
+      contractType: selectedNFTItem.contract_type,
+      nftItem: selectedNFTItem,
+      targetBlockNumber: blockNumber,
+      itemName: selectedNFTItem.name
+    }
+    const historyIndex = addTxToHistories(pendingTx)
+    await listenONFTEvents(pendingTx, historyIndex)
 
+    await tx.wait()
     await updateOrderStatus(order, 'EXECUTED')
 
     await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
     await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(order?.price)/10**decimal as number)
-
 
     dispatch(openSnackBar({ message: 'Bought an NFT', status: 'success' }))
     getLastSaleOrder()
@@ -390,7 +415,27 @@ const useTrading = ({
 
     const lzFee = await omnixExchange.connect(signer as any).getLzFeesForBidWithTakerAsk(takerAsk, makerBid)
     
-    await omnixExchange.connect(signer as any).matchBidWithTakerAsk(takerAsk, makerBid, { value: lzFee })
+    const tx = await omnixExchange.connect(signer as any).matchBidWithTakerAsk(takerAsk, makerBid, { value: lzFee })
+
+    const isONFTCore = false // await validateONFT(selectedNFTItem)
+    const orderChainId = getChainIdFromName(bidOrder.chain)
+    const targetProvider = getProvider(orderChainId)
+    const blockNumber = await targetProvider.getBlockNumber()
+    const pendingTx: PendingTxType = {
+      txHash: tx.hash,
+      type: 'accept',
+      senderChainId: chainId,
+      targetChainId: orderChainId,
+      targetAddress: '',
+      isONFTCore,
+      contractType: selectedNFTItem.contract_type,
+      nftItem: selectedNFTItem,
+      targetBlockNumber: blockNumber,
+      itemName: selectedNFTItem.name
+    }
+    const historyIndex = addTxToHistories(pendingTx)
+    await listenONFTEvents(pendingTx, historyIndex)
+    await tx.wait()
 
     await updateOrderStatus(bidOrder, 'EXECUTED')
     await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
