@@ -79,8 +79,6 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
               />
               <span className="text-md text-gray-500 w-[120px] truncate">{txInfo?.itemName}</span>
             </div>
-            :
-            <div />
         }
 
         {
@@ -111,7 +109,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
               />
               <span className="text-md text-gray-500 w-[120px] truncate">{txInfo?.itemName}</span>
             </div>
-          }
+        }
       </div>
     </>
   )
