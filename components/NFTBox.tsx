@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useState } from 'react'
 import { IPropsNFTItem } from '../interface/interface'
 import LazyLoad from 'react-lazyload'
@@ -18,7 +18,6 @@ import {ChainIds} from '../types/enum'
 const NFTBox = ({nft, index}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
   const [isShowBtn, SetIsShowBtn] = useState(false)
-  const [isWhitelisted, setIsWhitelisted] = useState(false)
   const collections = useSelector(selectCollections)
 
   const {
@@ -81,6 +80,10 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   const order_collection_address = order?.collectionAddress
   const order_collection_chain = orderChainId && getChainNameFromId(orderChainId)
 
+  const nft_collection = useMemo(() => {
+    return collections?.find((c: any) => nft.name == c.name)
+  }, [collections, nft])
+
   const {
     openSellDlg,
     setOpenSellDlg,
@@ -89,7 +92,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     provider,
     signer,
     address,
-    collection_name: nft.name,
+    collection_name: nft_collection?.col_url,
     collection_address: nft.token_address,
     collection_chain: getChainNameFromId(chain ? Number(chain) : 4),
     order_collection_address,
@@ -101,34 +104,26 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     selectedNFTItem: nft
   })
   const doubleClickToSetDetailLink = () => {
-    for(let i = 0;i<collections.length;i++){
-      if(nft.name == collections[i].name){
-        const {pathname} = Router
-        if(pathname == '/' ){
-          Router.push(`/collections/${collections[i].col_url}/${nft.token_id}`)
-        }
-      }
+    const {pathname} = Router
+    if(pathname == '/' ){
+      Router.push(`/collections/${nft_collection.col_url}/${nft.token_id}`)
     }
   }
-  React.useEffect(()=>{
-    for(let i = 0;i<collections.length;i++){
-      if(nft.name == collections[i].name){
-        setIsWhitelisted(true)
-      }
-    }
-  },[nft])
+
   const chainId = useMemo(() => {
     return getChainIdFromName(nft?.chain)
   }, [nft])
+
   const chainIcon = useMemo(() => {
     if (chainId) {
       return getChainIconById(chainId.toString())
     }
     return getChainIconById('1')
   }, [chainId])
+
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
   const formattedPrice = formatCurrency(order?.price || 0, getCurrencyNameAddress(order?.currencyAddress))
-
+  const isWhitelisted = !!nft_collection
 
   return (
     <div className='border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]'onMouseEnter={() => SetIsShowBtn(true)} onMouseLeave={() => SetIsShowBtn(false)}>

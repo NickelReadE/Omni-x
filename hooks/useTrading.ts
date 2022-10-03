@@ -170,8 +170,6 @@ const useTrading = ({
     const price = parseCurrency(listingData.price.toString(), listingData.currencyName) // ethers.utils.parseEther(listingData.price.toString())
     const startTime = Date.now()
 
-    console.log('-listing-', listingData.price, price)
-
     await postMakerOrder(
       provider as any,
       true,
@@ -194,7 +192,8 @@ const useTrading = ({
       chain_name,
       true
     )
-    await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,listingData.price)
+
+    await collectionsService.updateCollectionNFTListPrice(collection_name, token_id, listingData.price)
 
     if (!listingData.isAuction) {
       const transferSelector = getTransferSelectorNftInstance(chainId, signer)
