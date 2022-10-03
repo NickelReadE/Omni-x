@@ -1,11 +1,10 @@
-import {useState, ReactNode, useEffect, useCallback} from 'react'
+import {ReactNode, useEffect} from 'react'
 import { PendingTxType, ContractContext } from '../../contexts/contract'
 import { getERC1155Instance, getERC721Instance, getOmnixBridge1155Instance, getOmnixBridgeInstance, getONFTCore1155Instance, getONFTCore721Instance } from '../../utils/contracts'
 import { useDispatch } from 'react-redux'
 import { getUserNFTs } from '../../redux/reducers/userReducer'
 import useWallet from '../../hooks/useWallet'
 import useProgress from '../../hooks/useProgress'
-import {getLayerzeroChainId} from '../../utils/constants'
 
 type ContractProviderProps = {
   children?: ReactNode
@@ -15,10 +14,10 @@ export const ContractProvider = ({
   children,
 }: ContractProviderProps): JSX.Element => {
   const dispatch = useDispatch()
-  const { address, signer, provider } = useWallet()
-  const { histories, updateHistory } = useProgress()
+  const { address, provider } = useWallet()
+  const { updateHistory } = useProgress()
 
-  const listenONFTCoreEvents = useCallback(async (txInfo: PendingTxType, historyIndex: number) => {
+  const listenONFTCoreEvents = async (txInfo: PendingTxType, historyIndex: number) => {
     if (address && provider?._network?.chainId) {
       if (txInfo.contractType === 'ERC721') {
         const targetCoreInstance = getONFTCore721Instance(txInfo.targetAddress, txInfo.targetChainId, null)
@@ -90,9 +89,9 @@ export const ContractProvider = ({
         }
       }
     }
-  }, [address, provider?._network?.chainId])
+  }
 
-  const listenBridgeEvents = useCallback(async (txInfo: PendingTxType, historyIndex: number) => {
+  const listenBridgeEvents = async (txInfo: PendingTxType, historyIndex: number) => {
     if (address && provider?._network?.chainId) {
       if (txInfo.contractType === 'ERC721') {
         const noSignerOmniXInstance = getOmnixBridgeInstance(txInfo.targetChainId, null)
@@ -168,9 +167,9 @@ export const ContractProvider = ({
         }
       }
     }
-  }, [address, provider?._network?.chainId])
+  }
 
-  const listenNFTEvents = useCallback(async (txInfo: PendingTxType, historyIndex: number) => {
+  const listenNFTEvents = async (txInfo: PendingTxType, historyIndex: number) => {
     if (address && provider?._network?.chainId) {
       if (txInfo.contractType === 'ERC721') {
         const targetCoreInstance = getERC721Instance(txInfo.targetAddress, txInfo.targetChainId, null)
@@ -242,9 +241,9 @@ export const ContractProvider = ({
         }
       }
     }
-  }, [address, provider?._network?.chainId])
+  }
 
-  const listenONFTEvents = useCallback(async (txInfo: PendingTxType, historyIndex: number) => {
+  const listenONFTEvents = async (txInfo: PendingTxType, historyIndex: number) => {
     if (txInfo.type === 'bridge') {
       if (txInfo.isONFTCore) {
         listenONFTCoreEvents(txInfo, historyIndex)
@@ -259,7 +258,21 @@ export const ContractProvider = ({
         listenNFTEvents(txInfo, historyIndex)
       }
     }
-  }, [listenONFTCoreEvents, listenBridgeEvents, listenNFTEvents])
+  }
+
+  useEffect(() => {
+    (async () => {
+      if (address && provider?._network?.chainId) {
+        const allHistories = localStorage.getItem('txHistories')
+        const txInfos = allHistories ? JSON.parse(allHistories) : []
+        await Promise.all(
+          txInfos.map(async (txInfo: PendingTxType) => {
+            await listenONFTEvents(txInfo, txInfos.indexOf(txInfo))
+          })
+        )
+      }
+    })()
+  }, [address, provider])
 
   return (
     <ContractContext.Provider
