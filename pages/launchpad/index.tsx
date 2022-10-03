@@ -81,7 +81,11 @@ const Launchpad: NextPage = () => {
         </div>
       </div>
       <div className='flex  justify-between mt-[30px]'>
-        <img className='w-[600px]' src={sampleCollection.profile_image?sampleCollection.profile_image:'/images/nft.png'} alt='NFT'></img>
+        
+        <Link href={`/launchpad/${sampleCollection.col_url?sampleCollection.col_url:''}`}>
+          <img className='w-[600px] hover: cursor-pointer' src={sampleCollection.profile_image?sampleCollection.profile_image:'/images/nft.png'} alt='NFT'></img>
+        </Link>
+
         <div className='flex flex-col'>
           <p className='text-xxl2'>
             {sampleCollection.name?sampleCollection.name:'Collection Name'}
