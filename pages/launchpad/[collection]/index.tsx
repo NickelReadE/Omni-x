@@ -66,6 +66,7 @@ const Mint: NextPage = () => {
 
   const getInfo = useCallback(async ():Promise<void> => {    
     try{  
+      //console.log('chainId', chainId)
       const tokenContract = getAdvancedInstance(collectionInfo.address[chainId?chainId:0], chainId, null)
       //const tokenContract =  new ethers.Contract(collectionInfo.address[chainId?chainId:0], AdvancedONT, signer)
       setStartId(Number(collectionInfo.start_ids[chainId?chainId:0]))      
