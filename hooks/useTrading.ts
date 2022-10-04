@@ -14,6 +14,7 @@ import { acceptOrder, postMakerOrder } from "../utils/makeOrder"
 import { getChainNameFromId } from '../utils/constants'
 import { ChainIds } from "../types/enum"
 import { ca } from "date-fns/locale"
+import { useMemo } from "react"
 
 export type TradingFunction = {
   openSellDlg: boolean,
@@ -67,7 +68,13 @@ const useTrading = ({
   const chain_id = provider?._network?.chainId
   const chain_name = chain_id && getChainNameFromId(chain_id)
   let decimal = 0
-  collection_name = collection_name.replace(' ','_').toLowerCase()
+  collection_name = useMemo(() => {
+    if (collection_name) {
+      return collection_name = collection_name.replace(' ','_').toLowerCase()
+    }
+  }, [collection_name])
+
+  
 
   const checkValid = async (currency: string, price: string, chainId: number) => {
     if (currency===''){
