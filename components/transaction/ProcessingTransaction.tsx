@@ -82,11 +82,42 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
         }
 
         {
+          (txInfo?.type === 'buy')
+            &&
+            <div className='flex items-center justify-between'>
+              <span className="text-[#38B000] w-[30px] truncate" style={{fontSize: 14, lineHeight: '18px', fontWeight: 700}}>
+                buy:
+              </span>
+              <Image
+                width={18}
+                height={18}
+                onMouseEnter={() => onHover('target')} onMouseLeave={() => onLeave('target')}
+                src={(targetHovered && txInfo.destTxHash) ? getChainIcons(txInfo.targetChainId).explorer : getChainIcons(txInfo.targetChainId).icon}
+                style={{ cursor: (txInfo && txInfo.destTxHash) ? 'pointer' : 'auto', opacity: (txInfo && txInfo.destTxHash) ? 1 : 0.4 }}
+                onClick={onViewExplorerOnDest}
+                alt="chain icon"
+              />
+              <Image src={arrowRight} alt="arrowRight" />
+              <Image
+                onMouseEnter={() => onHover('sender')}
+                onMouseLeave={() => onLeave('sender')}
+                src={(hovered && txInfo.txHash) ? getChainIcons(txInfo.senderChainId).explorer : getChainIcons(txInfo.senderChainId).icon}
+                style={{ cursor: (txInfo && txInfo.txHash) ? 'pointer' : 'auto', opacity: (txInfo && txInfo.txHash) ? 1 : 0.4 }}
+                alt="chain icon"
+                width={18}
+                height={18}
+                onClick={onViewExplorer}
+              />
+              <span className="text-md text-gray-500 w-[120px] truncate">{txInfo?.itemName}</span>
+            </div>
+        }
+
+        {
           (txInfo?.type === 'buy' || txInfo?.type === 'accept')
             &&
             <div className='flex items-center justify-between'>
               <span className="text-[#38B000] w-[30px] truncate" style={{fontSize: 14, lineHeight: '18px', fontWeight: 700}}>
-                {txInfo?.type === 'buy' ? 'buy' : 'apt'}:
+                apt:
               </span>
               <Image
                 onMouseEnter={() => onHover('sender')}
