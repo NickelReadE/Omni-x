@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {ReactNode, useEffect} from 'react'
 import { PendingTxType, ContractContext } from '../../contexts/contract'
 import { getERC1155Instance, getERC721Instance, getOmnixBridge1155Instance, getOmnixBridgeInstance, getONFTCore1155Instance, getONFTCore721Instance } from '../../utils/contracts'

@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { useState } from 'react'
 import { IPropsNFTItem } from '../interface/interface'
 import LazyLoad from 'react-lazyload'
