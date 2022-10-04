@@ -77,7 +77,8 @@ const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
     owner: order?.signer, // owner,
     owner_collection_address: order_collection_address, // ownedCollectionAddress,
     owner_collection_chain: order_collection_chain, // ownerChainId && getChainNameFromId(ownerChainId),
-    token_id: nft?.token_id
+    token_id: nft?.token_id,
+    selectedNFTItem: nft
   })
 
   const chainIcon = useMemo(() => {
