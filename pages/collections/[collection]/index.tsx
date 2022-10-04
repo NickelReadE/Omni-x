@@ -243,7 +243,7 @@ const Collection: NextPage = () => {
         startTime: Math.floor(Date.now() / 1000).toString(),
         endTime: Math.floor(Date.now() / 1000).toString(),
         status: ['VALID'],
-        sort: 'OLDEST'
+        sort: 'NEWEST'
       }
       dispatch(getOrders(request) as any)
       const bidRequest: IGetOrderRequest = {

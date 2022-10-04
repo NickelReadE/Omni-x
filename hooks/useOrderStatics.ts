@@ -26,7 +26,7 @@ const findOrder = (orders: IOrder[], token_id: number, collection_addresses: str
     }
   }
   else {
-    return [...orders].reverse().find(order => (
+    return [...orders].find(order => (
       collection_addresses.indexOf(order.collectionAddress) != -1
       && token_id === Number(order.tokenId)
     ))

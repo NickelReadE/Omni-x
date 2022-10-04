@@ -13,6 +13,7 @@ import { getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, get
 import { acceptOrder, postMakerOrder } from "../utils/makeOrder"
 import { getChainNameFromId } from '../utils/constants'
 import { ChainIds } from "../types/enum"
+import { ca } from "date-fns/locale"
 
 export type TradingFunction = {
   openSellDlg: boolean,
@@ -66,6 +67,7 @@ const useTrading = ({
   const chain_id = provider?._network?.chainId
   const chain_name = chain_id && getChainNameFromId(chain_id)
   let decimal = 0
+  collection_name = collection_name.replace(' ','_').toLowerCase()
 
   const checkValid = async (currency: string, price: string, chainId: number) => {
     if (currency===''){
@@ -188,6 +190,7 @@ const useTrading = ({
       chain_name,
       true
     )
+    console.log(collection_name)
     await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,listingData.price)
 
     if (!listingData.isAuction) {
@@ -269,18 +272,21 @@ const useTrading = ({
       return
     }
 
-    await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
+    const tx = await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
+    const receipt = await tx.wait()
+    if(receipt!=null){
+      console.log("buy order excuting")
+      await updateOrderStatus(order, 'EXECUTED')
 
-    await updateOrderStatus(order, 'EXECUTED')
-
-    await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
-    await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(order?.price)/10**decimal as number)
-    await collectionsService.updateCollectionNFTChainID(collection_name,token_id,Number(chainId))
-
-
-    dispatch(openSnackBar({ message: 'Bought an NFT', status: 'success' }))
-    getLastSaleOrder()
-    getListOrders()
+      await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
+      await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(order?.price)/10**decimal as number)
+      await collectionsService.updateCollectionNFTChainID(collection_name,token_id,Number(chainId))
+  
+  
+      dispatch(openSnackBar({ message: 'Bought an NFT', status: 'success' }))
+      getLastSaleOrder()
+      getListOrders()
+    }
   }
 
   const onBid = async (bidData: IBidData, order?: IOrder) => {
@@ -391,18 +397,21 @@ const useTrading = ({
 
     const lzFee = await omnixExchange.connect(signer as any).getLzFeesForBidWithTakerAsk(takerAsk, makerBid)
     
-    await omnixExchange.connect(signer as any).matchBidWithTakerAsk(takerAsk, makerBid, { value: lzFee })
+    const tx = await omnixExchange.connect(signer as any).matchBidWithTakerAsk(takerAsk, makerBid, { value: lzFee })
 
-    await updateOrderStatus(bidOrder, 'EXECUTED')
-    await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
-    await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(bidOrder?.price)/10**decimal as number)
-    await collectionsService.updateCollectionNFTChainID(collection_name,token_id,Number(chainId))
+    const receipt = await tx.wait()
+    if(receipt!=null){
+      await updateOrderStatus(bidOrder, 'EXECUTED')
+      await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
+      await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(bidOrder?.price)/10**decimal as number)
+      await collectionsService.updateCollectionNFTChainID(collection_name,token_id,Number(chainId))
 
 
-    dispatch(openSnackBar({ message: 'Accepted a Bid', status: 'success' }))
-    getLastSaleOrder()
-    getListOrders()
-    getBidOrders()
+      dispatch(openSnackBar({ message: 'Accepted a Bid', status: 'success' }))
+      getLastSaleOrder()
+      getListOrders()
+      getBidOrders()
+    }
   }
 
   return {

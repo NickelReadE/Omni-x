@@ -26,7 +26,7 @@ const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
   const collectionInfo = useSelector(selectCollectionInfo)
   const token_id = nft.token_id
   const collection = useMemo(() => {
-    if (token_id) {
+    if (token_id && collectionInfo.address) {
       return findCollection(collectionInfo.address,nft,token_id)
     }
     return undefined

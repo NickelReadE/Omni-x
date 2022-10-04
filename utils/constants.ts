@@ -590,3 +590,21 @@ export const getValidCurrencies = (chainId: number) => {
 
   return [CURRENCIES_LIST[0], CURRENCIES_LIST[1]]
 }
+
+export const  base_nft = {
+  _id:0,
+  name:"",
+  image:"",
+  os_image:"",
+  animation_url:null,
+  os_animation_url:null,
+  custom_id:0,
+  token_id:0,
+  attributes:null,
+  score:"",
+  rank:null,
+  name1:"",
+  price:0,
+  last_sale:0,
+  chain_id:5
+}

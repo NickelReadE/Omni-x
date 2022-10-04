@@ -10,6 +10,7 @@ import React, { useState , useEffect, useCallback } from 'react'
 import { getCollectionInfo, selectCollectionInfo } from '../../../redux/reducers/collectionsReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAdvancedInstance } from '../../../utils/contracts'
+import { base_nft } from '../../../utils/constants'
 //import earlysupporter from '../../../constants/whitelist/earlysupporter.json'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -17,6 +18,9 @@ import { Slide } from 'react-toastify'
 import classNames from '../../../helpers/classNames'
 import useWallet from '../../../hooks/useWallet'
 import {ChainIds} from '../../../types/enum'
+import next from 'next'
+import fetch from 'node-fetch'
+import { collectionsService } from '../../../services/collections'
 
 
 
@@ -66,93 +70,26 @@ const Mint: NextPage = () => {
 
   const getInfo = useCallback(async ():Promise<void> => {    
     try{  
-      //console.log('chainId', chainId)
       const tokenContract = getAdvancedInstance(collectionInfo.address[chainId?chainId:0], chainId, null)
-      //const tokenContract =  new ethers.Contract(collectionInfo.address[chainId?chainId:0], AdvancedONT, signer)
       setStartId(Number(collectionInfo.start_ids[chainId?chainId:0]))      
 
       const priceT = await tokenContract.price()
       setPrice(parseFloat(ethers.utils.formatEther(priceT)))
       const max_mint = await tokenContract.maxMintId()
       const nextId = await tokenContract.nextMintId()
-      console.log('Max_Mint',max_mint)
       setTotalNFTCount(Number(max_mint))
       setNextTokenId(Number(nextId))
-      //setSubStrateIndex(10)
 
       const publicmintFlag = await tokenContract._publicSaleStarted()
       const saleFlag = await tokenContract._saleStarted()
-      if(!saleFlag && !publicmintFlag){
-        //setMintable(false)
-        //errorToast('Sale has not started on '+ provider?._network.name)
-      } else {
-        //setMintable(true)
-      }
+      // if(!saleFlag && !publicmintFlag){
+      // } else {
+      // }
     } catch(error){
       console.log(error)
     }    
   },[chainId, collectionInfo.address, collectionInfo.start_ids])
 
-  // const mint = async ():Promise<void> => {
-  //   console.log("STarted to mint")
-  //   const provider = new ethers.providers.Web3Provider(window.ethereum)
-  //   const signer = provider.getSigner()
-  //   const tokenContract =  new ethers.Contract(collectionInfo.address[chainId?chainId:0], AdvancedONT, signer)
-  //   //first private sale
-  //   //let wladdress = ethereumwl
-
-  //   // second private sale
-  //   const wladdress = earlysupporter
-  //   const leafNodes = wladdress.map(addr => keccak256(addr))
-  //   const merkleTree = new MerkleTree(leafNodes, keccak256,{sortPairs: true})
-  //   const merkleProof = merkleTree.getHexProof(keccak256(account))
-  //   let mintResult
-  //   setIsMinting(true)
-  //   try {
-  //     const publicmintFlag = await tokenContract._publicSaleStarted()
-  //     const saleFlag = await tokenContract._saleStarted()
-  //     if(saleFlag && publicmintFlag) {
-  //       const currentBalance = await library.getBalance(account)
-
-  //       mintResult = await tokenContract.publicMint(mintNum, {value: ethers.utils.parseEther((collectionInfo.price*mintNum).toString())})
-  //       const receipt = await mintResult.wait()
-  //       if(receipt!=null){
-  //         setIsMinting(false)
-  //         getInfo()
-  //       }
-  //       // add the the function to get the emit from the contract and call the getInfo()
-  //     } else if (saleFlag) {
-
-  //       const currentBalance = await tokenContract.balanceOf(account)
-  //       if(Number(currentBalance) + mintNum > 5){
-  //         errorToast('You have already minted ' + String(Number(currentBalance)) + ' gregs \n' + 'Can"t mint more than 5 gregs in private sale')
-  //         setIsMinting(false)
-  //       } else{
-  //         mintResult = await tokenContract.mint(mintNum,merkleProof, {value: ethers.utils.parseEther((collectionInfo.price*mintNum).toString())})
-  //         // add the the function to get the emit from the contract and call the getInfo()
-  //         const receipt = await mintResult.wait()
-  //         if(receipt!=null){
-  //           setIsMinting(false)
-  //           getInfo()
-  //         }
-  //       }
-  //     } 
-  //   } catch (e:any) {
-  //     console.log(e)
-  //     if(e['code'] == 4001){
-  //       errorToast('user denied transaction signature')
-  //     } else {
-  //       const currentBalance = await library.getBalance(account)
-        
-  //       if(Number(currentBalance)/Math.pow(10,18)<collectionInfo.price*mintNum){
-  //         errorToast('There is not enough money to mint nft')
-  //       } else {
-  //         errorToast('your address is not whitelisted on '+ provider?._network.name)
-  //       }
-  //     }
-  //     setIsMinting(false)
-  //   }
-  // }
   const mint = async ():Promise<void> => {
     if(chainId===undefined){
       return
@@ -160,28 +97,23 @@ const Mint: NextPage = () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner()
     const tokenContract = getAdvancedInstance(collectionInfo?.address[chainId], chainId, signer)
-    //const tokenContract =  new ethers.Contract(collectionInfo?.address[chainId], AdvancedONT, signer)
-    //first private sale
-    //let wladdress = ethereumwl
+    const nextId = await tokenContract.nextMintId()
 
-    // second private sale
-    
-    //const wladdress = earlysupporter
-    //const leafNodes = wladdress.map(addr => keccak256(addr))
-    //const merkleTree = new MerkleTree(leafNodes, keccak256,{sortPairs: true})
-    //const merkleProof = merkleTree.getHexProof(keccak256(account))
-    //const library = await provider.getBalance(address?address:'')
     let mintResult
     setIsMinting(true)
     try {
-      //const publicmintFlag = await tokenContract._publicSaleStarted()
-      //const saleFlag = await tokenContract._saleStarted()      
-      ///const currentBalance = await provider.getBalance(address?address:'')
-
       mintResult = await tokenContract.publicMint(mintNum, {value: ethers.utils.parseEther((price*mintNum).toString())})
       
       const receipt = await mintResult.wait()
+
       if(receipt!=null){
+        for(let i=1;i<=mintNum;i++){
+          const tokenId = Number(nextId)+i
+          const nextIDMetadataURI = await tokenContract.tokenURI(tokenId as any)
+          if(nextIDMetadataURI){
+            await collectionsService.addNFT(col_url,tokenId,chainId,nextIDMetadataURI)
+          }
+        }
         setIsMinting(false)
         getInfo()
       }      
