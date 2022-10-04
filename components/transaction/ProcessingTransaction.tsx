@@ -82,7 +82,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
         }
 
         {
-          (txInfo?.type === 'buy')
+          txInfo?.type === 'buy'
             &&
             <div className='flex items-center justify-between'>
               <span className="text-[#38B000] w-[30px] truncate" style={{fontSize: 14, lineHeight: '18px', fontWeight: 700}}>
@@ -113,7 +113,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
         }
 
         {
-          (txInfo?.type === 'buy' || txInfo?.type === 'accept')
+          txInfo?.type === 'accept'
             &&
             <div className='flex items-center justify-between'>
               <span className="text-[#38B000] w-[30px] truncate" style={{fontSize: 14, lineHeight: '18px', fontWeight: 700}}>
