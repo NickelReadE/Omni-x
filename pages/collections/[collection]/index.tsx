@@ -373,7 +373,7 @@ const Collection: NextPage = () => {
     if(isActiveBuyNow && collectionInfo && nfts.length>0){
       const temp = []
       for(let i=0;i<nfts.length;i++){
-        let collection_address=collectionInfo.address[nfts[i].chain_id].toLowerCase()
+        const collection_address=collectionInfo.address[nfts[i].chain_id].toLowerCase()
 
         for(let j=0; j<orders.length;j++){  
           if(collection_address==orders[j].collectionAddress&& nfts[i].token_id==orders[j].tokenId){
