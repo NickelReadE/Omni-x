@@ -10,7 +10,7 @@ import React, { useState , useEffect, useCallback } from 'react'
 import { getCollectionInfo, selectCollectionInfo } from '../../../redux/reducers/collectionsReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAdvancedInstance } from '../../../utils/contracts'
-import { base_nft } from '../../../utils/constants'
+// import { base_nft } from '../../../utils/constants'
 //import earlysupporter from '../../../constants/whitelist/earlysupporter.json'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -18,8 +18,8 @@ import { Slide } from 'react-toastify'
 import classNames from '../../../helpers/classNames'
 import useWallet from '../../../hooks/useWallet'
 import {ChainIds} from '../../../types/enum'
-import next from 'next'
-import fetch from 'node-fetch'
+// import next from 'next'
+// import fetch from 'node-fetch'
 import { collectionsService } from '../../../services/collections'
 
 
@@ -80,8 +80,8 @@ const Mint: NextPage = () => {
       setTotalNFTCount(Number(max_mint))
       setNextTokenId(Number(nextId))
 
-      const publicmintFlag = await tokenContract._publicSaleStarted()
-      const saleFlag = await tokenContract._saleStarted()
+      // const publicmintFlag = await tokenContract._publicSaleStarted()
+      // const saleFlag = await tokenContract._saleStarted()
       // if(!saleFlag && !publicmintFlag){
       // } else {
       // }
