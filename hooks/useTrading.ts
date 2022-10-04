@@ -101,7 +101,7 @@ const useTrading = ({
 
     const currencyContract = getCurrencyInstance(currency, chainId, signer)
     const balance = await currencyContract?.balanceOf(address)
-    console.log(currencyContract)
+
     decimal = await currencyContract?.decimals()
     if (balance.lt(BigNumber.from(price))) {
       dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))

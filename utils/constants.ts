@@ -523,6 +523,8 @@ export const getProfileLink = (chain_id: number, ownerType: string, owner: strin
 }
 
 export const getChainIcon = (chain: string) => {
+  if (chain === 'bsc-testnet')
+    return (chainIcons as any)['bsc testnet']
   return (chainIcons as any)[chain]
 }
 
