@@ -286,7 +286,7 @@ export const currencies_list: { [key: number]: Array<{ value: number; text: stri
     { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad' },
   ],
   5:  [
-    { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '' },
+    { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0x918460AE47177f1Ce471a384f1a5768b6e443138' },
     { value: 1, text: 'USDC', icon: 'payment/usdc.png', address: '' },
     { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '' },
   ],

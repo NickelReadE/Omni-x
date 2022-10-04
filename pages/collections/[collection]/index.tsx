@@ -373,18 +373,8 @@ const Collection: NextPage = () => {
     if(isActiveBuyNow && collectionInfo && nfts.length>0){
       const temp = []
       for(let i=0;i<nfts.length;i++){
-        const start_ids = collectionInfo.start_ids
-        const token_id = nfts[i].token_id
-        let collection_address=''
-        let temp_value = 0
-        Object.keys(start_ids).map((Key) => {
-          if(Number(start_ids[Key])<Number(token_id)){
-            if(temp_value<=Number(start_ids[Key])){
-              temp_value = Number(start_ids[Key])
-              collection_address = collectionInfo.address[Key].toLowerCase()
-            }
-          }
-        })
+        let collection_address=collectionInfo.address[nfts[i].chain_id].toLowerCase()
+
         for(let j=0; j<orders.length;j++){  
           if(collection_address==orders[j].collectionAddress&& nfts[i].token_id==orders[j].tokenId){
             temp.push(nfts[i]) 
