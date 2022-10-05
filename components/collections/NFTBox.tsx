@@ -51,7 +51,7 @@ const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
     highestBid,
     highestBidCoin,
     lastSale,
-    lastSaleCoin
+    lastSaleCoin,
   } = useOrderStatics({ nft, collection_address_map })
 
   const order_collection_address = order?.collectionAddress
