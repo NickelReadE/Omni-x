@@ -619,11 +619,11 @@ const SideBar: React.FC = () => {
                 <img alt={'networkIcon'} src="/sidebar/bridge.svg" className="m-auto" />
               </div>
             </div>
-            <div className="w-full 0">
+            {/*<div className="w-full 0">
               <div className="sidebar-icon">
                 <img alt={'networkIcon'} src="/sidebar/cart.svg" className="m-auto" />
               </div>
-            </div>
+            </div>*/}
           </div>
 
         </div>
@@ -928,7 +928,7 @@ const SideBar: React.FC = () => {
               </div>
             }
           </li>
-          <li className="w-full">
+          {/*<li className="w-full">
             <button
               className={`w-full text-left rounded-full px-[24px] py-[12px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==6?'active':''}`}
               onClick={() => toggleMenu(6)}
@@ -948,7 +948,7 @@ const SideBar: React.FC = () => {
                 </button>
               </div>
             }
-          </li>
+          </li>*/}
         </ul>
 
         <div
@@ -1028,7 +1028,7 @@ const SideBar: React.FC = () => {
                 </ul>
               }
             </div>
-            <div className="w-full 0">
+            {/*<div className="w-full 0">
               <div className="sidebar-icon">
                 <img alt={'networkIcon'} src="/sidebar/cart.svg" className="m-auto" />
               </div>
@@ -1036,7 +1036,7 @@ const SideBar: React.FC = () => {
                 <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{height: offsetMenu + 'px'}}>
                 </ul>
               }
-            </div>
+            </div>*/}
           </div>
 
         </div>
