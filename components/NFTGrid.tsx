@@ -1,19 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from 'react'
+import React, {useState, useEffect} from 'react'
 import NFTBox from './NFTBox'
 import NFTbox from './collections/NFTBox'
-import { IPropsImage } from '../interface/interface'
-import { getOrders,getLastSaleOrders } from '../redux/reducers/ordersReducer'
-import { IGetOrderRequest } from '../interface/interface'
+import {IPropsImage} from '../interface/interface'
+import {getOrders, getLastSaleOrders} from '../redux/reducers/ordersReducer'
+import {IGetOrderRequest} from '../interface/interface'
 import useWallet from '../hooks/useWallet'
-import { useDispatch, useSelector } from 'react-redux'
-import { getCollections } from '../redux/reducers/collectionsReducer'
-import { selectSearchText } from '../redux/reducers/headerReducer'
-import { getCollectionInfo,getCollectionAllNFTs, selectCollectionAllNFTs,selectCollectionInfo } from '../redux/reducers/collectionsReducer'
-import { chainList } from '../utils/constants'
+import {useDispatch, useSelector} from 'react-redux'
+import {getCollections} from '../redux/reducers/collectionsReducer'
+import {selectSearchText} from '../redux/reducers/headerReducer'
+import {
+  getCollectionInfo,
+  getCollectionAllNFTs,
+  selectCollectionAllNFTs,
+  selectCollectionInfo
+} from '../redux/reducers/collectionsReducer'
+import {chainInfos} from '../utils/constants'
+import {SUPPORTED_CHAIN_IDS} from '../constants/addresses'
+import {ChainIds} from '../types/enum'
 
-const NFTGrid = ({ nfts }: IPropsImage) => {
-  const [chain, setChain] = useState('all')
+const NFTGrid = ({nfts}: IPropsImage) => {
+  const [chain, setChain] = useState(-1)
   const [isSearch, setSearch] = useState(false)
   const [nft, setNFT] = useState(null)
   const [colURL, setColURL] = useState('')
@@ -30,39 +37,39 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
   const allNFTs = useSelector(selectCollectionAllNFTs)
   const collectionInfo = useSelector(selectCollectionInfo)
 
-  useEffect(()=>{
-    if(searchText==''){
+  useEffect(() => {
+    if (searchText == '') {
       setSearch(false)
-    }else{
-      if(col_url!=''&&Number(token_id)>0){
+    } else {
+      if (col_url != '' && Number(token_id) > 0) {
         setSearch(true)
         setColURL(col_url)
         setTokenID(Number(token_id))
-        if(colURL!=col_url){
-          dispatch(getCollectionAllNFTs(col_url,'','') as any)
+        if (colURL != col_url) {
+          dispatch(getCollectionAllNFTs(col_url, '', '') as any)
         }
         dispatch(getCollectionInfo(col_url) as any)
-      } else{
+      } else {
         setSearch(false)
       }
     }
 
-  },[searchText])
+  }, [searchText])
 
 
   useEffect(() => {
-    if(allNFTs && tokenID>0){
-      setNFT(allNFTs[tokenID-1])
+    if (allNFTs && tokenID > 0) {
+      setNFT(allNFTs[tokenID - 1])
     }
-  }, [allNFTs,tokenID])
+  }, [allNFTs, tokenID])
 
   useEffect(() => {
     dispatch(getCollections() as any)
   }, [])
 
 
-  useEffect(()=> {
-    if(nfts.length>0){
+  useEffect(() => {
+    if (nfts.length > 0) {
       const request: IGetOrderRequest = {
         isOrderAsk: true,
         signer: address,
@@ -88,15 +95,34 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
       }
       dispatch(getLastSaleOrders(excutedRequest) as any)
     }
-  },[nfts])
-  
-
+  }, [nfts])
 
   return (
     <>
       <div className="w-full mb-5 ">
-        <div className="flex relative justify-start bg-[#F8F9FA] pl-2 pr-2 w-fit" style={{'width':'100%'}}>
+        <div className="flex relative justify-start bg-[#F8F9FA] pl-2 pr-2 w-fit" style={{'width': '100%'}}>
+          <div
+            className={`grid justify-items-center content-center p-3 font-medium cursor-pointer m-[1px] min-w-[80px] ${chain === -1 ? 'bg-[#C8D6E8]' : ''} `}
+            onClick={() => {
+              setChain(-1)
+            }}
+          >
+            <img alt={'listing'} src="/svgs/all_chain.svg" className="w-[21px] h-[22px] "/>
+          </div>
           {
+            SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
+              return <div
+                key={index}
+                className={`grid justify-items-center content-center p-3 font-medium cursor-pointer m-[1px] min-w-[80px] ${chain === networkId ? 'bg-[#C8D6E8]' : ''} `}
+                onClick={() => {
+                  setChain(networkId)
+                }}
+              >
+                <img alt={'listing'} src={chainInfos[networkId].logo} className="w-[21px] h-[22px] "/>
+              </div>
+            })
+          }
+          {/*{
             chainList.map((item, index) => {
               return <div
                 key={index}
@@ -106,29 +132,36 @@ const NFTGrid = ({ nfts }: IPropsImage) => {
                 <img alt={'listing'} src={item.img_url} className="w-[21px] h-[22px] " />
               </div>
             })
-          }
+          }*/}
           <div className="flex p-3 font-medium cursor-pointer text-[#6C757D] absolute right-0">
-            <img alt={'listing'} src='/images/listing.png' className="w-[21px] h-[22px]"/>
+            <img alt={'listing'} src="/images/listing.png" className="w-[21px] h-[22px]"/>
             <span>active listing</span>
-            <img alt={'listing'} src='/images/downArrow.png' className="w-[10px] h-[7px] ml-5 mt-auto mb-auto"/>
+            <img alt={'listing'} src="/images/downArrow.png" className="w-[10px] h-[7px] ml-5 mt-auto mb-auto"/>
           </div>
         </div>
         <div className="grid grid-cols-4 gap-6 2xl:grid-cols-5 2xl:gap-10 mt-4">
-          {!isSearch&&nfts.map((item, index) => {
-            if(chain == 'all'){
+          {!isSearch && nfts.map((item, index) => {
+            if (chain == -1) {
               return (
                 <NFTBox nft={item} index={index} key={index}/>
               )
             } else {
-              if(chain == item.chain) {
+              if (chain == item.chain_id) {
                 return (
-                  <NFTBox nft={item} index={index} key={index} />
+                  <NFTBox nft={item} index={index} key={index}/>
                 )
               }
             }
           })}
           {
-            isSearch&&nft!=null&&<NFTbox nft={nft} index={1} col_url={col_url} col_address={collectionInfo.address}  chain={collectionInfo?collectionInfo.chain:'goerli'}/>
+            isSearch && nft != null &&
+            <NFTbox
+              nft={nft}
+              index={1}
+              col_url={col_url}
+              col_address={collectionInfo.address}
+              chain={collectionInfo ? collectionInfo.chain : 'goerli'}
+            />
           }
         </div>
       </div>
