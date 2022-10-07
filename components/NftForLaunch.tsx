@@ -22,7 +22,7 @@ const NftForLaunch = (pro: ITypeNFT) => {
   const collectionInfo = useSelector(selectCollectionInfo)
   const getPrice = useCallback(async () => {
     try {
-      if (chainId === undefined || collectionInfo.address === undefined) {
+      if (chainId === undefined || collectionInfo.address === undefined || !provider) {
         return
       }
       const tokenContract = new ethers.Contract(collectionInfo.address[chainId ? chainId : ChainIds.ETHEREUM], AdvancedONT, provider)
@@ -32,9 +32,11 @@ const NftForLaunch = (pro: ITypeNFT) => {
       console.log(error)
     }
   }, [collectionInfo, chainId, provider])
+
   useEffect(() => {
     dispatch(getCollectionInfo(pro.col_url) as any)
   }, [dispatch, pro.col_url])
+
   useEffect(() => {
     (async() => {
       if (collectionInfo) {
