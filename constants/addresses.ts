@@ -19,10 +19,6 @@ const rinkebyAddresses: Addresses = {
   REMOTE_ADDRESS_MANAGER: '0xdA0c422fC4C1c876C5355ED679ac4B709A2750AD',
 }
 
-export const addressesByNetwork: { [chainId in SupportedChainId]: Addresses } = {
-  [SupportedChainId.RINKEBY]: rinkebyAddresses,
-};
-
 export const chains = ['eth', 'bsc', 'matic', 'avalanche', 'fantom', 'optimism', 'arbitrum']
 
 export const SUPPORTED_CHAIN_IDS = [ChainIds.ETHEREUM, ChainIds.BINANCE, ChainIds.AVALANCHE, ChainIds.POLYGON, ChainIds.ARBITRUM, ChainIds.OPTIMISM, ChainIds.FANTOM]

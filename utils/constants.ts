@@ -546,16 +546,16 @@ export const getBlockExplorer = (chainId: number) => {
   }
   return null
 }
-export const isSupportedOnMoralis = (chainId: number) : boolean => {  
+export const isSupportedOnMoralis = (chainId: number) : boolean => {
   return supportedChainsOnMoralis.includes(chainId)
 }
-export const isSupportedOnAlchemy = (chainId: number) : boolean => {  
+export const isSupportedOnAlchemy = (chainId: number) : boolean => {
   return supportedChainsOnAlchemy.includes(chainId)
 }
 export const APIkeysForAlchemy:{[key:number]:string} = {
-  420:'fOwhgLzJfvGdNS-3lSaj2Sc8wIIeoR-Q',
-  421613:'iSGCCiweawjOPFX-x5Btptlsg4gBLmG9',
-  5:'GiAm8CDGn_xhxD18nV4Wunc332XKeZ2w'
+  420:'sgvs6yc178bgz4WZLz1s1NQ5ZDDmHZKb',
+  421613:'1tOv1HhfJDGiv7p3dUMVvJGuRoyWm4ff',
+  5:'4k8yRytMmfl7bEmKCQXWYrb_bx3BZ0K3'
 }
 export const NetworksForAlchemy:{[key:number]:Network} = {
   420: Network.OPT_GOERLI,

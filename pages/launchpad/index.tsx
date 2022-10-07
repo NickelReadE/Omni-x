@@ -24,15 +24,16 @@ const Launchpad: NextPage = () => {
     collectionsForLive = JSON.parse(localLive)
   }else{
     collectionsForLive = liveFromReduce
-  } 
-  
+  }
+
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(getCollections() as any)    
+    dispatch(getCollections() as any)
   }, [dispatch])
-  useEffect(() => { 
-    if(collections?.length > 0){           
-      dispatch(getCollectionsForComingAndLive() as any)   
+
+  useEffect(() => {
+    if(collections?.length > 0){
+      dispatch(getCollectionsForComingAndLive() as any)
       const samples = collections.filter((collection:{col_url: string}) => collection.col_url === 'kanpai_pandas')
       if(samples?.length > 0){
         setSampleCollection(samples[0])
@@ -71,7 +72,7 @@ const Launchpad: NextPage = () => {
                 </a>
               </Link>
             </div>
-            
+
           </div>
         </div>
       </div>
@@ -81,7 +82,7 @@ const Launchpad: NextPage = () => {
         </div>
       </div>
       <div className='flex  justify-between mt-[30px]'>
-        
+
         <Link href={`/launchpad/${sampleCollection.col_url?sampleCollection.col_url:''}`}>
           <img className='w-[600px] hover: cursor-pointer' src={sampleCollection.profile_image?sampleCollection.profile_image:'/images/nft.png'} alt='NFT'></img>
         </Link>
@@ -108,9 +109,9 @@ const Launchpad: NextPage = () => {
         }
         {
           collectionsForLive?.length>0 &&
-          <div className=''>            
+          <div className=''>
             <p className='font-bold text-xl2 mb-[24px]'>
-              Live Launches              
+              Live Launches
             </p>
             <div className='flex flex-wrap space-x-12'>
               {
@@ -120,13 +121,13 @@ const Launchpad: NextPage = () => {
               }
             </div>
           </div>
-          
+
         }
         {
           collectionsForComing?.length>0 &&
-          <div className=''>            
+          <div className=''>
             <p className='font-bold text-xl2 mb-[24px]'>
-              Upcoming              
+              Upcoming
             </p>
             <div className='flex flex-wrap space-x-12'>
               {
@@ -136,7 +137,7 @@ const Launchpad: NextPage = () => {
               }
             </div>
           </div>
-          
+
         }
       </div>
       <div className='bg-l-50 px-[40px] py-[30px] mt-[100px] mb-[50px]'>

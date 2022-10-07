@@ -21,6 +21,7 @@ export const WalletProvider = ({
   const [signer, setSigner] = useState<Signer>()
   const [web3Modal, setWeb3Modal] = useState<Web3Modal>()
   const [address, setAddress] = useState<string>()
+  const [chainId, setChainId] = useState<number>()
 
   const resolveName = useCallback(
     async (name: string) => {
@@ -65,12 +66,9 @@ export const WalletProvider = ({
     []
   )
 
-  const handleChainChanged = useCallback(
-    () => {
-      //window.location.reload()
-    },
-    []
-  )
+  const handleChainChanged = (networkId:string) => {
+    setChainId(parseInt(networkId))
+  }
   const connect = useCallback(async () => {
     if (!web3Modal) throw new Error('web3Modal not initialized')
     try {
@@ -80,6 +78,8 @@ export const WalletProvider = ({
       instance.on('chainChanged', handleChainChanged)
       const provider = new ethers.providers.Web3Provider(instance)
       const signer = provider.getSigner()
+      const network = await provider.getNetwork()
+      setChainId(network.chainId)
       setSigner(signer)
       setAddress(await signer.getAddress())
       return signer
@@ -175,13 +175,15 @@ export const WalletProvider = ({
       }else{
         const cachedProviderName = JSON.parse(cachedProviderJson)
         instance = await web3Modal.connectTo(cachedProviderName)
-      } 
-      
+      }
+
       if (!instance) return
       instance.on('accountsChanged', handleAccountsChanged)
       instance.on('chainChanged', handleChainChanged)
       const provider = new ethers.providers.Web3Provider(instance, 'any')
       const signer = provider.getSigner()
+      const network = await provider.getNetwork()
+      setChainId(network.chainId)
       setProvider(provider)
       setSigner(signer)
       setAddress(await signer.getAddress())
@@ -197,6 +199,7 @@ export const WalletProvider = ({
         provider,
         signer,
         address,
+        chainId,
         web3Modal,
         resolveName,
         lookupAddress,
