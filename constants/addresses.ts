@@ -1,4 +1,5 @@
-import { SupportedChainId, Addresses } from '../types'
+import {Addresses, SupportedChainId} from '../types'
+import {ChainIds} from '../types/enum'
 
 const rinkebyAddresses: Addresses = {
   EXECUTION_MANAGER: '0x288d35d00e07Ab7eCF32BB5c44FF1c7c73c154b3',
@@ -18,11 +19,9 @@ const rinkebyAddresses: Addresses = {
   REMOTE_ADDRESS_MANAGER: '0xdA0c422fC4C1c876C5355ED679ac4B709A2750AD',
 }
 
-export const addressesByNetwork: { [chainId in SupportedChainId]: Addresses } = {
-  [SupportedChainId.RINKEBY]: rinkebyAddresses,
-};
-
 export const chains = ['eth', 'bsc', 'matic', 'avalanche', 'fantom', 'optimism', 'arbitrum']
+
+export const SUPPORTED_CHAIN_IDS = [ChainIds.ETHEREUM, ChainIds.BINANCE, ChainIds.AVALANCHE, ChainIds.POLYGON, ChainIds.ARBITRUM, ChainIds.OPTIMISM, ChainIds.FANTOM]
 
 export const GregContractAddress:{[key:string]:string} = {
   'eth':'0x7FFE2672C100bFb0094ad0B4d592Dd9f9416f1AC',

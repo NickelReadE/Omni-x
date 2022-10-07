@@ -7,6 +7,10 @@ import {ContractProvider} from './providers/ContractProvider'
 import { MoralisProvider } from 'react-moralis'
 import Layout from './Layout'
 
+const MORALIS_SERVER_URL = process.env.NEXT_MORALIS_SERVER_URL || 'https://9b3skk0haj33.grandmoralis.com:2053/server'
+const MORALIS_APP_ID = process.env.NEXT_MORALIS_APP_ID || '0BU7yNfbYcvrcWEAsD35Ty3CMRJhPvgcVCacmam5'
+const MORALIS_SECRET = process.env.NEXT_MORALIS_SECRET || 'ErEG80UwJVJ0dQ2mdKweipKGeXWcOKCcSF5R87xD2H92tZeeQKT0hyACfDXPFBNp'
+
 type AppProps = {
     children?: React.ReactNode
 }
@@ -14,7 +18,7 @@ type AppProps = {
 function App({children}: AppProps) {
   return (
     <React.StrictMode>
-      <MoralisProvider serverUrl='https://bbxcpkwdxpay.usemoralis.com:2053/server' appId="rhzWnBuSjhbxwz3Fwho5CYJBW7ecyUrjo17TV8ye" jsKey="l9SXYutcus034DMhALJjh6RFA26tu9Il0NJkFwYg">
+      <MoralisProvider serverUrl={MORALIS_SERVER_URL} appId={MORALIS_APP_ID} jsKey={MORALIS_SECRET}>
         <WalletProvider>
           <BridgeProvider>
             <ProgressProvider>

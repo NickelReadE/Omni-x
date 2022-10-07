@@ -26,7 +26,7 @@ const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
   const collectionInfo = useSelector(selectCollectionInfo)
   const token_id = nft.token_id
   const collection = useMemo(() => {
-    if (token_id) {
+    if (token_id && collectionInfo.address) {
       return findCollection(collectionInfo.address,nft,token_id)
     }
     return undefined
@@ -51,7 +51,7 @@ const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
     highestBid,
     highestBidCoin,
     lastSale,
-    lastSaleCoin
+    lastSaleCoin,
   } = useOrderStatics({ nft, collection_address_map })
 
   const order_collection_address = order?.collectionAddress
@@ -102,7 +102,7 @@ const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
           </div>
           <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
             <div className="text-[#000000] text-[14px] font-bold  mt-3 ml-3">
-              {nft.name}#{nft.token_id}
+              {nft.name}
             </div>
             <div className="mr-3 flex items-center">
               {/* <div className={classNames("mr-3 flex items-center cursor-pointer bg-[url('/images/round-refresh.png')] hover:bg-[url('/images/round-refresh_hover.png')] bg-cover w-[20px] h-[20px]", editStyle.refreshBtn)}></div> */}

@@ -3,6 +3,7 @@ import { useMemo } from "react"
 import { useSelector } from "react-redux"
 import { IOrder } from "../interface/interface"
 import { selectBidOrders, selectLastSaleOrders, selectOrders } from "../redux/reducers/ordersReducer"
+import { selectCollectionInfo } from "../redux/reducers/collectionsReducer"
 import { SaleType } from "../types/enum"
 import { formatCurrency, getCurrencyIconByAddress, getCurrencyNameAddress } from "../utils/constants"
 
@@ -26,7 +27,7 @@ const findOrder = (orders: IOrder[], token_id: number, collection_addresses: str
     }
   }
   else {
-    return [...orders].reverse().find(order => (
+    return [...orders].find(order => (
       collection_addresses.indexOf(order.collectionAddress) != -1
       && token_id === Number(order.tokenId)
     ))
@@ -42,12 +43,19 @@ const useOrderStatics = ({
   const orders = useSelector(selectOrders)
   const bidOrders = useSelector(selectBidOrders) as IOrder[]
   const lastSaleOrders = useSelector(selectLastSaleOrders)
+  const collectionInfo = useSelector(selectCollectionInfo)
 
   const collection_addresses = useMemo(() => (
     collection_address_map
       ? Object.values(collection_address_map) as string[]
       : []
   ), [collection_address_map])
+
+  const collection_addresses_sale = useMemo(() => (
+    collectionInfo.address
+      ? Object.values(collectionInfo.address) as string[]
+      : []
+  ), [collectionInfo.address])
   // order
   const order = useMemo(() => {
     if (orders?.length > 0 && nft) {
@@ -81,10 +89,10 @@ const useOrderStatics = ({
   // last sale
   const lastSaleOrder = useMemo(() => {
     if (lastSaleOrders?.length > 0  && nft) {
-      return findOrder(lastSaleOrders, Number(nft.token_id), collection_addresses, isDetailPage)
+      return findOrder(lastSaleOrders, Number(nft.token_id), collection_addresses_sale, isDetailPage)
     }
     return undefined
-  }, [lastSaleOrders, nft, collection_addresses, isDetailPage])
+  }, [lastSaleOrders, nft, collection_addresses_sale, isDetailPage])
   const lastSaleCoin = lastSaleOrder?.currencyAddress && getCurrencyIconByAddress(lastSaleOrder?.currencyAddress)
   const lastSaleCurrencyName = getCurrencyNameAddress(lastSaleOrder?.currencyAddress)
   const lastSale = Number(formatCurrency(lastSaleOrder?.price || 0, lastSaleCurrencyName))

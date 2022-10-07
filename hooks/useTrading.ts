@@ -13,6 +13,8 @@ import { getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, get
 import { acceptOrder, postMakerOrder } from "../utils/makeOrder"
 import { getChainNameFromId } from '../utils/constants'
 import { ChainIds } from "../types/enum"
+import { ca } from "date-fns/locale"
+import { useMemo } from "react"
 import useProgress from "./useProgress"
 import { PendingTxType } from "../contexts/contract"
 import useContract from "./useContract"
@@ -72,6 +74,13 @@ const useTrading = ({
   const chain_id = provider?._network?.chainId
   const chain_name = chain_id && getChainNameFromId(chain_id)
   let decimal = 0
+  collection_name = useMemo(() => {
+    if (collection_name) {
+      return collection_name = collection_name.replace(' ','_').toLowerCase()
+    }
+  }, [collection_name])
+
+  
 
   const checkValid = async (currency: string, price: string, chainId: number) => {
     if (currency===''){
@@ -472,16 +481,19 @@ const useTrading = ({
     await listenONFTEvents(pendingTx, historyIndex)
     await tx.wait()
 
-    await updateOrderStatus(bidOrder, 'EXECUTED')
-    await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
-    await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(bidOrder?.price)/10**decimal as number)
-    await collectionsService.updateCollectionNFTChainID(collection_name,token_id,Number(chainId))
+    const receipt = await tx.wait()
+    if(receipt!=null){
+      await updateOrderStatus(bidOrder, 'EXECUTED')
+      await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
+      await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(bidOrder?.price)/10**decimal as number)
+      await collectionsService.updateCollectionNFTChainID(collection_name,token_id,Number(chainId))
 
 
-    dispatch(openSnackBar({ message: 'Accepted a Bid', status: 'success' }))
-    getLastSaleOrder()
-    getListOrders()
-    getBidOrders()
+      dispatch(openSnackBar({ message: 'Accepted a Bid', status: 'success' }))
+      getLastSaleOrder()
+      getListOrders()
+      getBidOrders()
+    }
   }
 
   return {

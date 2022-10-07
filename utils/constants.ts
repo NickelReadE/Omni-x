@@ -286,7 +286,7 @@ export const currencies_list: { [key: number]: Array<{ value: number; text: stri
     { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad' },
   ],
   5:  [
-    { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '' },
+    { value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0x918460AE47177f1Ce471a384f1a5768b6e443138' },
     { value: 1, text: 'USDC', icon: 'payment/usdc.png', address: '' },
     { value: 2, text: 'USDT', icon: 'payment/usdt.png', address: '' },
   ],
@@ -546,16 +546,16 @@ export const getBlockExplorer = (chainId: number) => {
   }
   return null
 }
-export const isSupportedOnMoralis = (chainId: number) : boolean => {  
+export const isSupportedOnMoralis = (chainId: number) : boolean => {
   return supportedChainsOnMoralis.includes(chainId)
 }
-export const isSupportedOnAlchemy = (chainId: number) : boolean => {  
+export const isSupportedOnAlchemy = (chainId: number) : boolean => {
   return supportedChainsOnAlchemy.includes(chainId)
 }
 export const APIkeysForAlchemy:{[key:number]:string} = {
-  420:'fOwhgLzJfvGdNS-3lSaj2Sc8wIIeoR-Q',
-  421613:'iSGCCiweawjOPFX-x5Btptlsg4gBLmG9',
-  5:'GiAm8CDGn_xhxD18nV4Wunc332XKeZ2w'
+  420:'sgvs6yc178bgz4WZLz1s1NQ5ZDDmHZKb',
+  421613:'1tOv1HhfJDGiv7p3dUMVvJGuRoyWm4ff',
+  5:'4k8yRytMmfl7bEmKCQXWYrb_bx3BZ0K3'
 }
 export const NetworksForAlchemy:{[key:number]:Network} = {
   420: Network.OPT_GOERLI,
@@ -591,4 +591,22 @@ export const getValidCurrencies = (chainId: number) => {
   }
 
   return [CURRENCIES_LIST[0], CURRENCIES_LIST[1]]
+}
+
+export const  base_nft = {
+  _id:0,
+  name:"",
+  image:"",
+  os_image:"",
+  animation_url:null,
+  os_animation_url:null,
+  custom_id:0,
+  token_id:0,
+  attributes:null,
+  score:"",
+  rank:null,
+  name1:"",
+  price:0,
+  last_sale:0,
+  chain_id:5
 }

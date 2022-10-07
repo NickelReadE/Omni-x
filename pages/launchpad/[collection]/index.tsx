@@ -1,45 +1,40 @@
 import type { NextPage } from 'next'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-
-import MinusSign from '../../../public/images/minus-sign.png'
-import PlusSign from '../../../public/images/plus-sign.png'
-import mintstyles from '../../../styles/mint.module.scss'
 import { ethers } from 'ethers'
 import React, { useState , useEffect, useCallback } from 'react'
-import { getCollectionInfo, selectCollectionInfo } from '../../../redux/reducers/collectionsReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAdvancedInstance } from '../../../utils/contracts'
-//import earlysupporter from '../../../constants/whitelist/earlysupporter.json'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Slide } from 'react-toastify'
+import { getCollectionInfo, selectCollectionInfo } from '../../../redux/reducers/collectionsReducer'
+import MinusSign from '../../../public/images/minus-sign.png'
+import PlusSign from '../../../public/images/plus-sign.png'
+import mintstyles from '../../../styles/mint.module.scss'
 import classNames from '../../../helpers/classNames'
 import useWallet from '../../../hooks/useWallet'
 import {ChainIds} from '../../../types/enum'
-
-
-
-//video 
-//import { MerkleTree } from 'merkletreejs'
-//import keccak256  from 'keccak256'
+import { collectionsService } from '../../../services/collections'
+import {SUPPORTED_CHAIN_IDS} from '../../../constants/addresses'
+import {chainInfos} from '../../../utils/constants'
 
 const Mint: NextPage = () => {
   const {
+    chainId,
     provider,
     address
   } = useWallet()
   const router = useRouter()
-  const col_url = router.query.collection as string 
+  const col_url = router.query.collection as string
   const dispatch = useDispatch()
-  const collectionInfo = useSelector(selectCollectionInfo)    
-  const [chainId, setChainId] = useState<any>()
+  const collectionInfo = useSelector(selectCollectionInfo)
   const [toChain] = useState<string>('1')
   const [mintNum, setMintNum] = useState<number>(1)
   const [totalNFTCount, setTotalNFTCount] = useState<number>(0)
   const [nextTokenId, setNextTokenId] = useState<number>(0)
   const [transferNFT] = useState<number>(0)
-  const [isMinting,setIsMinting] = useState<boolean>(false)  
+  const [isMinting,setIsMinting] = useState<boolean>(false)
   const [isSwitchingNetwork] = useState<boolean>(false)
   const [price, setPrice] = useState(0)
   const [startId, setStartId] = useState(0)
@@ -64,95 +59,22 @@ const Mint: NextPage = () => {
     })
   }
 
-  const getInfo = useCallback(async ():Promise<void> => {    
-    try{  
-      //console.log('chainId', chainId)
-      const tokenContract = getAdvancedInstance(collectionInfo.address[chainId?chainId:0], chainId, null)
-      //const tokenContract =  new ethers.Contract(collectionInfo.address[chainId?chainId:0], AdvancedONT, signer)
-      setStartId(Number(collectionInfo.start_ids[chainId?chainId:0]))      
+  const getInfo = useCallback(async ():Promise<void> => {
+    try{
+      const tokenContract = getAdvancedInstance(collectionInfo.address[chainId ? chainId : 0], (chainId ? chainId : ChainIds.ETHEREUM), null)
+      setStartId(Number(collectionInfo.start_ids[chainId ? chainId : 0]))
 
       const priceT = await tokenContract.price()
       setPrice(parseFloat(ethers.utils.formatEther(priceT)))
       const max_mint = await tokenContract.maxMintId()
       const nextId = await tokenContract.nextMintId()
-      console.log('Max_Mint',max_mint)
       setTotalNFTCount(Number(max_mint))
       setNextTokenId(Number(nextId))
-      //setSubStrateIndex(10)
-
-      const publicmintFlag = await tokenContract._publicSaleStarted()
-      const saleFlag = await tokenContract._saleStarted()
-      if(!saleFlag && !publicmintFlag){
-        //setMintable(false)
-        //errorToast('Sale has not started on '+ provider?._network.name)
-      } else {
-        //setMintable(true)
-      }
     } catch(error){
       console.log(error)
-    }    
-  },[chainId, collectionInfo.address, collectionInfo.start_ids])
+    }
+  },[chainId, collectionInfo])
 
-  // const mint = async ():Promise<void> => {
-  //   console.log("STarted to mint")
-  //   const provider = new ethers.providers.Web3Provider(window.ethereum)
-  //   const signer = provider.getSigner()
-  //   const tokenContract =  new ethers.Contract(collectionInfo.address[chainId?chainId:0], AdvancedONT, signer)
-  //   //first private sale
-  //   //let wladdress = ethereumwl
-
-  //   // second private sale
-  //   const wladdress = earlysupporter
-  //   const leafNodes = wladdress.map(addr => keccak256(addr))
-  //   const merkleTree = new MerkleTree(leafNodes, keccak256,{sortPairs: true})
-  //   const merkleProof = merkleTree.getHexProof(keccak256(account))
-  //   let mintResult
-  //   setIsMinting(true)
-  //   try {
-  //     const publicmintFlag = await tokenContract._publicSaleStarted()
-  //     const saleFlag = await tokenContract._saleStarted()
-  //     if(saleFlag && publicmintFlag) {
-  //       const currentBalance = await library.getBalance(account)
-
-  //       mintResult = await tokenContract.publicMint(mintNum, {value: ethers.utils.parseEther((collectionInfo.price*mintNum).toString())})
-  //       const receipt = await mintResult.wait()
-  //       if(receipt!=null){
-  //         setIsMinting(false)
-  //         getInfo()
-  //       }
-  //       // add the the function to get the emit from the contract and call the getInfo()
-  //     } else if (saleFlag) {
-
-  //       const currentBalance = await tokenContract.balanceOf(account)
-  //       if(Number(currentBalance) + mintNum > 5){
-  //         errorToast('You have already minted ' + String(Number(currentBalance)) + ' gregs \n' + 'Can"t mint more than 5 gregs in private sale')
-  //         setIsMinting(false)
-  //       } else{
-  //         mintResult = await tokenContract.mint(mintNum,merkleProof, {value: ethers.utils.parseEther((collectionInfo.price*mintNum).toString())})
-  //         // add the the function to get the emit from the contract and call the getInfo()
-  //         const receipt = await mintResult.wait()
-  //         if(receipt!=null){
-  //           setIsMinting(false)
-  //           getInfo()
-  //         }
-  //       }
-  //     } 
-  //   } catch (e:any) {
-  //     console.log(e)
-  //     if(e['code'] == 4001){
-  //       errorToast('user denied transaction signature')
-  //     } else {
-  //       const currentBalance = await library.getBalance(account)
-        
-  //       if(Number(currentBalance)/Math.pow(10,18)<collectionInfo.price*mintNum){
-  //         errorToast('There is not enough money to mint nft')
-  //       } else {
-  //         errorToast('your address is not whitelisted on '+ provider?._network.name)
-  //       }
-  //     }
-  //     setIsMinting(false)
-  //   }
-  // }
   const mint = async ():Promise<void> => {
     if(chainId===undefined){
       return
@@ -160,39 +82,34 @@ const Mint: NextPage = () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner()
     const tokenContract = getAdvancedInstance(collectionInfo?.address[chainId], chainId, signer)
-    //const tokenContract =  new ethers.Contract(collectionInfo?.address[chainId], AdvancedONT, signer)
-    //first private sale
-    //let wladdress = ethereumwl
+    const nextId = await tokenContract.nextMintId()
 
-    // second private sale
-    
-    //const wladdress = earlysupporter
-    //const leafNodes = wladdress.map(addr => keccak256(addr))
-    //const merkleTree = new MerkleTree(leafNodes, keccak256,{sortPairs: true})
-    //const merkleProof = merkleTree.getHexProof(keccak256(account))
-    //const library = await provider.getBalance(address?address:'')
     let mintResult
     setIsMinting(true)
     try {
-      //const publicmintFlag = await tokenContract._publicSaleStarted()
-      //const saleFlag = await tokenContract._saleStarted()      
-      ///const currentBalance = await provider.getBalance(address?address:'')
-
       mintResult = await tokenContract.publicMint(mintNum, {value: ethers.utils.parseEther((price*mintNum).toString())})
-      
+
       const receipt = await mintResult.wait()
+
       if(receipt!=null){
+        for(let i=1;i<=mintNum;i++){
+          const tokenId = Number(nextId)+i
+          const nextIDMetadataURI = await tokenContract.tokenURI(tokenId as any)
+          if(nextIDMetadataURI){
+            await collectionsService.addNFT(col_url,tokenId,chainId,nextIDMetadataURI)
+          }
+        }
         setIsMinting(false)
         getInfo()
-      }      
-       
+      }
+
     } catch (e:any) {
       console.log(e)
       if(e['code'] == 4001){
         errorToast('user denied transaction signature')
       } else {
         const currentBalance = await provider.getBalance(address?address:'')
-        
+
         if(Number(currentBalance)/Math.pow(10,18)<collectionInfo.price*mintNum){
           errorToast('There is not enough money to mint nft')
         } else {
@@ -254,32 +171,15 @@ const Mint: NextPage = () => {
   },[toChain,transferNFT,chainId])
 
   useEffect(()=>{
-    const chainChangedListener = (networkId:string) => {
-      setChainId(parseInt(networkId))
-    }
-    if(window.ethereum){
-      window.ethereum.on('chainChanged', chainChangedListener)
-    }
-    return () => {
-      if (window.ethereum) {
-        window.ethereum.removeListener('chainChanged', chainChangedListener)
+    (async () => {
+      if(chainId && provider && address && collectionInfo){
+        await getInfo()
       }
-    }
-  }, [])
-
-  useEffect(()=>{
-    if(chainId && provider && address && collectionInfo){
-      getInfo()
-    }
+    })()
   },[provider,address,collectionInfo,chainId,getInfo])
   useEffect(()=>{
-    if(provider?._network){
-      setChainId(provider._network.chainId)
-    }
-  },[provider?._network])
-  useEffect(()=>{
-    dispatch(getCollectionInfo(col_url) as any)  
-  },[col_url,dispatch]) 
+    dispatch(getCollectionInfo(col_url) as any)
+  },[col_url,dispatch])
   useEffect(()=>{
     if(Number(nextTokenId)>=0 && startId >=0){
       setMintedCnt(Number(nextTokenId) - startId)
@@ -291,9 +191,9 @@ const Mint: NextPage = () => {
     }
   },[totalNFTCount, startId])
   return (
-    <>      
+    <>
       <ToastContainer />
-      <div className={classNames(mintstyles.mintHero, 'font-RetniSans')}>         
+      <div className={classNames(mintstyles.mintHero, 'font-RetniSans')}>
         <div className={classNames(mintstyles.container, 'flex justify-between px-[150px]')}>
           <div className={mintstyles.mintImgWrap}>
             <div className={mintstyles.mintImgT}>
@@ -303,7 +203,7 @@ const Mint: NextPage = () => {
           <div >
             <h1 className='font-bold text-xxl2'>{collectionInfo.name?collectionInfo.name:'Collection Name'}</h1>
             <div className={mintstyles.mintDescSec}>
-              <p className='font-bold text-[#A0B3CC] text-xg1 w-[830px]'>{collectionInfo.description? collectionInfo.description: 'Descriptoin here'}</p>
+              <p className='font-bold text-[#A0B3CC] text-xg1 w-[830px]'>{collectionInfo.description? collectionInfo.description: 'Description here'}</p>
             </div>
             <div className={mintstyles.mintDataGrid}>
               <div className={mintstyles.mintDataWrap}>
@@ -316,35 +216,14 @@ const Mint: NextPage = () => {
                 {/* <span>{chainId?addresses[`${Number(chainId)}`].price:0}<Image src={chainId?addresses[`${Number(chainId)}`].imageSVG:EthereumImageSVG} width={29.84} height={25.46} alt='ikon'></Image></span> */}
                 <div className='flex flex-row space-x-2 items-center mt-[15px]'>
                   <div className='text-xg1 '>
-                    {(price*mintNum).toFixed(2)}                    
+                    {(price*mintNum).toFixed(2)}
                   </div>
                   {
                     chainId &&
-                    <>
-                      {
-                        chainId === ChainIds.ETHEREUM && <img alt={'networkIcon'} src="/sidebar/ethereum.png" className="m-auto h-[45px]" />
-                      }
-                      {
-                        chainId === ChainIds.ARBITRUM && <img alt={'networkIcon'} src="/sidebar/arbitrum.png" className="m-auto h-[45px]" />
-                      }
-                      {
-                        chainId === ChainIds.AVALANCHE && <img alt={'networkIcon'} src="/sidebar/avax.png" className="m-auto h-[45px]" />
-                      }
-                      {
-                        chainId === ChainIds.BINANCE && <img alt={'networkIcon'} src="/sidebar/binance.png" className="m-auto h-[45px]" />
-                      }
-                      {
-                        chainId === ChainIds.FANTOM && <img alt={'networkIcon'} src="/sidebar/fantom.png" className="m-auto h-[45px]" />
-                      }
-                      {
-                        chainId === ChainIds.OPTIMISM && <img alt={'networkIcon'} src="/sidebar/optimism.png" className="m-auto h-[45px]" />
-                      }
-                      {
-                        chainId === ChainIds.POLYGON && <img alt={'networkIcon'} src="/sidebar/polygon.png" className="m-auto h-[45px]" />
-                      }
-                    </>
+                    SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
+                      return chainId === networkId && <img key={index} alt={'networkIcon'} src={chainInfos[networkId].logo || chainInfos[ChainIds.ETHEREUM].logo} className="m-auto h-[45px]" />
+                    })
                   }
-                  
                 </div>
               </div>
               <span className={mintstyles.line}></span>
@@ -357,12 +236,12 @@ const Mint: NextPage = () => {
                 </div>
               </div>
             </div>
-            <div className='w-fit	 px-2 py-1 text-white border-2 border-[#B444F9] bg-[#B444F9] rounded-lg transition-all duration-300 ease-in-out hover:scale-105 hover:drop-shadow-[0_10px_10px_rgba(180,68,249,0.7)] active:scale-100 active:drop-shadow-[0_5px_5px_rgba(180,68,249,0.8)]'>
+            <div className='w-fit px-2 py-1 text-white border-2 border-[#B444F9] bg-[#B444F9] rounded-lg transition-all duration-300 ease-in-out hover:scale-105 hover:drop-shadow-[0_10px_10px_rgba(180,68,249,0.7)] active:scale-100 active:drop-shadow-[0_5px_5px_rgba(180,68,249,0.8)]'>
               {mintButton()}
             </div>
           </div>
         </div>
-      </div>    
+      </div>
     </>
   )
 }
