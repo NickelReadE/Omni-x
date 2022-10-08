@@ -31,7 +31,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     }
     return ChainIds.ETHEREUM
   }, [provider])
-  
+
   const {attributes, listeners, setNodeRef, transform} = useDraggable({
     id: `draggable-${index}`,
     data: {
@@ -99,6 +99,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     owner: address,
     owner_collection_address: nft.token_address,
     owner_collection_chain: nft.chain,
+    owner_collection_chain_id: nft.chain_id,
     token_id: nft?.token_id,
     selectedNFTItem: nft
   })
@@ -136,7 +137,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       </div>
       <div className="flex flex-row mt-2.5 justify-between align-middle font-['RetniSans']">
         <div className="ml-3 text-[#000000] text-[14px] font-bold">
-          {JSON.parse(nft.metadata)?.name}
+          {JSON.parse(nft.metadata || '{}')?.name}
         </div>
         <div className="mr-3 flex items-center">
           <div className="flex items-center ml-1">

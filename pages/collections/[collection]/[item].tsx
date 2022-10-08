@@ -105,6 +105,7 @@ const Item: NextPage = () => {
     owner,
     owner_collection_address: ownedCollectionAddress,
     owner_collection_chain: ownerChainId && getChainNameFromId(ownerChainId),
+    owner_collection_chain_id: ownerChainId,
     token_id,
     selectedNFTItem: nftInfo?.nft
   })
@@ -129,7 +130,7 @@ const Item: NextPage = () => {
   const profileLink = chain_id && ownerType && owner && getProfileLink(Number(chain_id), ownerType, owner)
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
   const formattedPrice = formatCurrency(order?.price || 0, getCurrencyNameAddress(order?.currencyAddress))
-  
+
   return (
     <>
       {nftInfo?.nft?.token_id === Number(token_id) && nftInfo?.collection?.col_url === col_url &&
@@ -273,7 +274,7 @@ const Item: NextPage = () => {
                         return <div className="px-5 py-2 bg-[#b444f926] border-2 border-[#B444F9] rounded-[8px]" key={idx}>
                           <p className="text-[#B444F9] text-[12px] font-bold">{item[0]}</p>
                           <div className="flex justify-start items-center mt-2">
-                            <p className="text-[#1E1C21] text-[18px] font-bold">{item[1]}<span className="ml-3 font-normal">[{trait[1]}%]</span></p>
+                            <p className="text-[#1E1C21] text-[18px] font-bold">{item[1]}<span className="ml-3 font-normal">[{trait ? trait[1] : 0}%]</span></p>
                             <p className="ml-5 mr-3 text-[#1E1C21] text-[18px] ml-auto">{order && order.price && ethers.utils.formatEther(order.price)}</p>
                             <Image src={PngEther} alt="" />
                           </div>

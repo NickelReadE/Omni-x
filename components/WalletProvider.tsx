@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from 'react'
+import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import { ethers, Signer } from 'ethers'
 import Web3Modal, { IProviderOptions, providers } from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
 import WalletLink from 'walletlink'
-import { getChainInfo } from '../utils/constants'
+import {getChainInfo, getChainNameFromId} from '../utils/constants'
 import { WalletContext } from '../contexts/wallet'
+import {ChainIds} from '../types/enum'
 
 const cachedLookupAddress = new Map<string, string | undefined>()
 const cachedResolveName = new Map<string, string | undefined>()
@@ -21,7 +22,8 @@ export const WalletProvider = ({
   const [signer, setSigner] = useState<Signer>()
   const [web3Modal, setWeb3Modal] = useState<Web3Modal>()
   const [address, setAddress] = useState<string>()
-  const [chainId, setChainId] = useState<number>()
+  const [chainId, setChainId] = useState<number>(ChainIds.ETHEREUM)
+  const [chainName, setChainName] = useState<string>('')
 
   const resolveName = useCallback(
     async (name: string) => {
@@ -68,6 +70,7 @@ export const WalletProvider = ({
 
   const handleChainChanged = (networkId:string) => {
     setChainId(parseInt(networkId))
+    setChainName(getChainNameFromId(parseInt(networkId)))
   }
   const connect = useCallback(async () => {
     if (!web3Modal) throw new Error('web3Modal not initialized')
@@ -80,6 +83,7 @@ export const WalletProvider = ({
       const signer = provider.getSigner()
       const network = await provider.getNetwork()
       setChainId(network.chainId)
+      setChainName(getChainNameFromId(network.chainId))
       setSigner(signer)
       setAddress(await signer.getAddress())
       return signer
@@ -184,6 +188,7 @@ export const WalletProvider = ({
       const signer = provider.getSigner()
       const network = await provider.getNetwork()
       setChainId(network.chainId)
+      setChainName(getChainNameFromId(network.chainId))
       setProvider(provider)
       setSigner(signer)
       setAddress(await signer.getAddress())
@@ -200,6 +205,7 @@ export const WalletProvider = ({
         signer,
         address,
         chainId,
+        chainName,
         web3Modal,
         resolveName,
         lookupAddress,

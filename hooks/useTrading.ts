@@ -1,23 +1,24 @@
-import { addDays } from "date-fns"
-import { BigNumber, BigNumberish, ethers } from "ethers"
-import { Dispatch, SetStateAction, useState } from "react"
-import { useDispatch } from "react-redux"
-import { IBidData, IGetOrderRequest, IListingData, IOrder, OrderStatus } from "../interface/interface"
-import { getLastSaleOrders, getOrders } from "../redux/reducers/ordersReducer"
-import { openSnackBar } from "../redux/reducers/snackBarReducer"
+import { addDays } from 'date-fns'
+import { BigNumber, BigNumberish, ethers } from 'ethers'
+import { Dispatch, SetStateAction, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { IBidData, IGetOrderRequest, IListingData, IOrder, OrderStatus } from '../interface/interface'
+import { getLastSaleOrders, getOrders } from '../redux/reducers/ordersReducer'
+import { openSnackBar } from '../redux/reducers/snackBarReducer'
 import { collectionsService } from '../services/collections'
-import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from "../types"
-import { SaleType } from "../types/enum"
-import { ContractName, CREATOR_FEE, getAddressByName, getChainIdFromName, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from "../utils/constants"
-import { getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, getOmnixExchangeInstance, getONFTCore721Instance, getTransferSelectorNftInstance } from "../utils/contracts"
-import { acceptOrder, postMakerOrder } from "../utils/makeOrder"
+import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../types'
+import { SaleType } from '../types/enum'
+import { ContractName, CREATOR_FEE, getAddressByName, getChainIdFromName, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from '../utils/constants'
+import { getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, getOmnixExchangeInstance, getONFTCore721Instance, getTransferSelectorNftInstance } from '../utils/contracts'
+import { acceptOrder, postMakerOrder } from '../utils/makeOrder'
 import { getChainNameFromId } from '../utils/constants'
-import { ChainIds } from "../types/enum"
-import { ca } from "date-fns/locale"
-import { useMemo } from "react"
-import useProgress from "./useProgress"
-import { PendingTxType } from "../contexts/contract"
-import useContract from "./useContract"
+import { ChainIds } from '../types/enum'
+import { ca } from 'date-fns/locale'
+import { useMemo } from 'react'
+import useProgress from './useProgress'
+import { PendingTxType } from '../contexts/contract'
+import useContract from './useContract'
+import useWallet from './useWallet'
 
 export type TradingFunction = {
   openSellDlg: boolean,
@@ -61,9 +62,11 @@ const useTrading = ({
   order_collection_address,
   owner,
   owner_collection_chain,
+  owner_collection_chain_id,
   token_id,
   selectedNFTItem
 }: any): TradingFunction => {
+  const { chainId, chainName } = useWallet()
   const [openSellDlg, setOpenSellDlg] = useState(false)
   const [openBidDlg, setOpenBidDlg] = useState(false)
 
@@ -71,16 +74,12 @@ const useTrading = ({
   const { addTxToHistories } = useProgress()
   const { listenONFTEvents } = useContract()
 
-  const chain_id = provider?._network?.chainId
-  const chain_name = chain_id && getChainNameFromId(chain_id)
   let decimal = 0
   collection_name = useMemo(() => {
     if (collection_name) {
       return collection_name = collection_name.replace(' ','_').toLowerCase()
     }
   }, [collection_name])
-
-  
 
   const checkValid = async (currency: string, price: string, chainId: number) => {
     if (currency===''){
@@ -91,7 +90,7 @@ const useTrading = ({
 
     const currencyMangerContract = getCurrencyManagerInstance(chainId, signer)
     if (currencyMangerContract===null){
-      dispatch(openSnackBar({ message: `This network doesn't support currencies`, status: 'error' }))
+      dispatch(openSnackBar({ message: 'This network doesn\'t support currencies', status: 'error' }))
       setOpenBidDlg(false)
       return false
     }
@@ -166,7 +165,7 @@ const useTrading = ({
   }
 
   const onListing = async (listingData: IListingData) => {
-    if (owner_collection_chain != chain_name) {
+    if (owner_collection_chain_id != chainId) {
       dispatch(openSnackBar({ message: `Please switch network to ${owner_collection_chain}`, status: 'warning' }))
       return
     }
@@ -174,7 +173,6 @@ const useTrading = ({
     const amount = ethers.utils.parseUnits('1', 0)
     const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
     const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
-    const chainId = provider?.network.chainId || ChainIds.ETHEREUM
     const lzChainId = getLayerzeroChainId(chainId)
     const price = parseCurrency(listingData.price.toString(), listingData.currencyName) // ethers.utils.parseEther(listingData.price.toString())
     const startTime = Date.now()
@@ -198,7 +196,7 @@ const useTrading = ({
           types: ['uint16', 'uint16'],
         },
       },
-      chain_name,
+      chainName,
       true
     )
 
@@ -227,7 +225,7 @@ const useTrading = ({
     const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
     const newCurrencyName = validateCurrencyName(currencyName, chainId)
     const currencyAddress = getAddressByName(newCurrencyName, chainId)
-    
+
     if (!(await checkValid(currencyAddress, order?.price, chainId))) {
       return
     }
@@ -274,14 +272,14 @@ const useTrading = ({
     await Promise.all(approveTxs.filter(Boolean).map(tx => tx.wait()))
 
     const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
-    
+
     // console.log('---lzFee---', ethers.utils.formatEther(lzFee), makerAsk)
     const balance = await provider?.getBalance(address!)
     if (balance.lt(lzFee)) {
       dispatch(openSnackBar({ message: `Not enough balance ${ethers.utils.formatEther(lzFee)}`, status: 'warning' }))
       return
     }
-        
+
     const tx = await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
 
     const isONFTCore = false // await validateONFT(selectedNFTItem)
@@ -351,7 +349,7 @@ const useTrading = ({
     }
 
     try {
-      
+
       const omni = getCurrencyInstance(currency, chainId, signer)
 
       if (!omni) {
@@ -399,14 +397,14 @@ const useTrading = ({
   }
 
   const onAccept = async (bidOrder: IOrder) => {
-    if (owner_collection_chain != chain_name) {
+    if (owner_collection_chain != chainName) {
       dispatch(openSnackBar({ message: `Please switch network to ${owner_collection_chain}`, status: 'warning' }))
       return
     }
 
     const chainId = provider?.network.chainId || 5
     const lzChainId = getLayerzeroChainId(chainId)
-    
+
     const omnixExchange = getOmnixExchangeInstance(chainId, signer)
     const makerBid : MakerOrderWithSignature = {
       isOrderAsk: false,
@@ -439,7 +437,7 @@ const useTrading = ({
     await approveNft(nftContract, address, transferManagerAddr, token_id)
 
     const lzFee = await omnixExchange.connect(signer as any).getLzFeesForBidWithTakerAsk(takerAsk, makerBid)
-    
+
     const tx = await omnixExchange.connect(signer as any).matchBidWithTakerAsk(takerAsk, makerBid, { value: lzFee })
 
     const isONFTCore = false // await validateONFT(selectedNFTItem)
