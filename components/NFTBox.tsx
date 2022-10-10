@@ -12,9 +12,9 @@ import Router from 'next/router'
 import useOrderStatics from '../hooks/useOrderStatics'
 import useTrading from '../hooks/useTrading'
 import { getCurrencyIconByAddress } from '../utils/constants'
-import {ChainIds} from '../types/enum'
 
 const NFTBox = ({nft, index}: IPropsNFTItem) => {
+  const { chainId } = useWallet()
   const [imageError, setImageError] = useState(false)
   const [isShowBtn, SetIsShowBtn] = useState(false)
   const collections = useSelector(selectCollections)
@@ -24,13 +24,6 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     address,
     signer
   } = useWallet()
-
-  const chain = useMemo(() => {
-    if (provider && provider?.network) {
-      return provider?.network.chainId
-    }
-    return ChainIds.ETHEREUM
-  }, [provider])
 
   const {attributes, listeners, setNodeRef, transform} = useDraggable({
     id: `draggable-${index}`,
@@ -59,13 +52,13 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   }, [nft])
 
   const collection_address_map = useMemo(() => {
-    if (chain && nft?.token_address) {
+    if (chainId && nft?.token_address) {
       return {
         [getChainIdFromName(nft.chain)]: nft.token_address
       }
     }
     return []
-  }, [chain, nft])
+  }, [chainId, nft])
 
   const {
     order,
@@ -93,7 +86,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     address,
     collection_name: nft_collection?.col_url,
     collection_address: nft.token_address,
-    collection_chain: getChainNameFromId(chain ? Number(chain) : 4),
+    collection_chain: getChainNameFromId(chainId),
     order_collection_address,
     order_collection_chain,
     owner: address,
@@ -110,16 +103,16 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     }
   }
 
-  const chainId = useMemo(() => {
+  const nftChainId = useMemo(() => {
     return getChainIdFromName(nft?.chain)
   }, [nft])
 
   const chainIcon = useMemo(() => {
-    if (chainId) {
-      return getChainIconById(chainId.toString())
+    if (nftChainId) {
+      return getChainIconById(nftChainId.toString())
     }
     return getChainIconById('1')
-  }, [chainId])
+  }, [nftChainId])
 
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
   const formattedPrice = formatCurrency(order?.price || 0, getCurrencyNameAddress(order?.currencyAddress))

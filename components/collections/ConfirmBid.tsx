@@ -50,8 +50,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
   const [price, setPrice] = useState(0)
   const [currency, setCurrency] = useState(CURRENCIES_LIST[0])
   const [period, setPeriod] = useState(period_list[2])
-  const { provider } = useWallet()
-  const chainId = provider?.network?.chainId || ChainIds.ETHEREUM
+  const { chainId } = useWallet()
   const validCurrencies = getValidCurrencies(chainId)
 
   const onChangePrice = (e: any) => {

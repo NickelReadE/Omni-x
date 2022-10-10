@@ -27,7 +27,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
   })
   const { pending, histories, clearHistories } = useProgress()
   const dispatch = useDispatch()
-  const { provider, signer } = useWallet()
+  const { signer, chainId } = useWallet()
 
   const handleMouseOver = (hoverMenu: string) => {
     setHovering({
@@ -44,7 +44,6 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
   }
 
   const onOmniFaucet = async () => {
-    const chainId = provider?.network.chainId as number
     const omni = getOmniInstance(chainId, signer)
 
     const tx = await omni.mint({ gasLimit: '300000' })

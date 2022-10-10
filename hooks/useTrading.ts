@@ -12,8 +12,6 @@ import { ContractName, CREATOR_FEE, getAddressByName, getChainIdFromName, getCur
 import { getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, getOmnixExchangeInstance, getONFTCore721Instance, getTransferSelectorNftInstance } from '../utils/contracts'
 import { acceptOrder, postMakerOrder } from '../utils/makeOrder'
 import { getChainNameFromId } from '../utils/constants'
-import { ChainIds } from '../types/enum'
-import { ca } from 'date-fns/locale'
 import { useMemo } from 'react'
 import useProgress from './useProgress'
 import { PendingTxType } from '../contexts/contract'
@@ -336,7 +334,6 @@ const useTrading = ({
       return
     }
 
-    const chainId = provider?.network.chainId || ChainIds.ETHEREUM
     const lzChainId = getLayerzeroChainId(chainId)
 
     const currency = getAddressByName(bidData.currencyName as ContractName, chainId)
@@ -401,9 +398,7 @@ const useTrading = ({
       return
     }
 
-    const chainId = provider?.network.chainId || 5
     const lzChainId = getLayerzeroChainId(chainId)
-
     const omnixExchange = getOmnixExchangeInstance(chainId, signer)
     const makerBid : MakerOrderWithSignature = {
       isOrderAsk: false,

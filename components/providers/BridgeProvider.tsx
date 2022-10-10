@@ -11,7 +11,7 @@ import {
 } from '../../utils/contracts'
 import {
   ERC1155_INTERFACE_ID,
-  ERC712_INTERFACE_ID, ERC721_INTERFACE_ID,
+  ERC721_INTERFACE_ID,
   getAddressByName,
   getChainIdFromName,
   getLayerzeroChainId, ONFT1155_CORE_INTERFACE_ID,
@@ -141,7 +141,7 @@ export const BridgeProvider = ({
         if (!nft.name?.startsWith('Ow')) return false
         const ERC721Instance = getERC721Instance(nft.token_address, chainId, null)
         const noSignerOmniXInstance = getOmnixBridgeInstance(chainId, null)
-        const isERC721 = await ERC721Instance.supportsInterface(ERC712_INTERFACE_ID)
+        const isERC721 = await ERC721Instance.supportsInterface(ERC721_INTERFACE_ID)
         if (isERC721) {
           const originAddress = await noSignerOmniXInstance.originAddresses(nft.token_address)
           const originERC721Instance = getERC721Instance(originAddress, chainId, null)
@@ -223,7 +223,7 @@ export const BridgeProvider = ({
           if (selectedItem.contract_type === 'ERC721') {
             const ERC721Instance = getERC721Instance(selectedItem.token_address, chainId, null)
             const noSignerOmniXInstance = getOmnixBridgeInstance(chainId, null)
-            const isERC721 = await ERC721Instance.supportsInterface(ERC712_INTERFACE_ID)
+            const isERC721 = await ERC721Instance.supportsInterface(ERC721_INTERFACE_ID)
             if (isERC721) {
               const originAddress = await noSignerOmniXInstance.originAddresses(selectedItem.token_address)
               const isValid = await validateContract(provider?._network?.chainId, originAddress)
