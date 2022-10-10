@@ -11,7 +11,7 @@ import {
 } from '../../utils/contracts'
 import {
   ERC1155_INTERFACE_ID,
-  ERC712_INTERFACE_ID,
+  ERC712_INTERFACE_ID, ERC721_INTERFACE_ID,
   getAddressByName,
   getChainIdFromName,
   getLayerzeroChainId, ONFT1155_CORE_INTERFACE_ID,
@@ -107,7 +107,6 @@ export const BridgeProvider = ({
       if (selectedNFTItem.contract_type === 'ERC721') {
         const onftCoreInstance = getONFTCore721Instance(selectedNFTItem.token_address, 0, signer)
         const estimatedFee = await onftCoreInstance.estimateSendFee(lzTargetChainId, _signerAddress, selectedNFTItem.token_id, false, '0x')
-        // const estimatedFee = await lzEndpointInstance.estimateFees(lzTargetChainId, selectedNFTItem.token_address, _payload, false, '0x')
         return estimatedFee.nativeFee
       } else if (selectedNFTItem.contract_type === 'ERC1155') {
         const contractInstance = getOmnixBridge1155Instance(senderChainId, signer)
@@ -194,11 +193,11 @@ export const BridgeProvider = ({
   }
 
   const validateONFT = async (nft: NFTItem) => {
-    const chainId = getChainIdFromName(nft.chain)
+    const chainId = nft.chain_id
     try {
       if (nft.contract_type === 'ERC721') {
         const ERC721Instance = getERC721Instance(nft.token_address, chainId, null)
-        const isERC721 = await ERC721Instance.supportsInterface('0x80ac58cd')
+        const isERC721 = await ERC721Instance.supportsInterface(ERC721_INTERFACE_ID)
         const isONFTERC721 = await ERC721Instance.supportsInterface(ONFT_CORE_INTERFACE_ID)
         return !!(isERC721 && isONFTERC721)
       } else if (nft.contract_type === 'ERC1155') {

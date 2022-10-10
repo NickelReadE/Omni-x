@@ -65,6 +65,7 @@ export const ItemTypes = {
 export interface IGetOrderRequest {
   isOrderAsk?: boolean,
   chain?: string,
+  chain_id?: number,
   collection?: string,
   tokenId?: string,
   signer?: string,
@@ -81,6 +82,7 @@ export interface IGetOrderRequest {
 
 export interface IOrder {
   chain: string,
+  chain_id: number,
   collectionAddress: string,
   tokenId: string,
   isOrderAsk: boolean,

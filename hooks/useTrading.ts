@@ -197,6 +197,7 @@ const useTrading = ({
         },
       },
       chainName,
+      chainId,
       true
     )
 
@@ -344,14 +345,12 @@ const useTrading = ({
     const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
     const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
 
-    if (!checkValid(currency, price.toString(), chainId)) {
+    if (!await checkValid(currency, price.toString(), chainId)) {
       return
     }
 
     try {
-
       const omni = getCurrencyInstance(currency, chainId, signer)
-
       if (!omni) {
         dispatch(openSnackBar({ message: 'Could not find the currency', status: 'warning' }))
         return
@@ -376,6 +375,7 @@ const useTrading = ({
           },
         },
         getChainNameFromId(chainId),
+        chainId, // TODO: check chainId usage
         true
       )
 

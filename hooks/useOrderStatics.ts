@@ -1,11 +1,11 @@
-import { BigNumber, ethers } from "ethers"
-import { useMemo } from "react"
-import { useSelector } from "react-redux"
-import { IOrder } from "../interface/interface"
-import { selectBidOrders, selectLastSaleOrders, selectOrders } from "../redux/reducers/ordersReducer"
-import { selectCollectionInfo } from "../redux/reducers/collectionsReducer"
-import { SaleType } from "../types/enum"
-import { formatCurrency, getCurrencyIconByAddress, getCurrencyNameAddress } from "../utils/constants"
+import { BigNumber } from 'ethers'
+import { useMemo } from 'react'
+import { useSelector } from 'react-redux'
+import { IOrder } from '../interface/interface'
+import { selectBidOrders, selectLastSaleOrders, selectOrders } from '../redux/reducers/ordersReducer'
+import { selectCollectionInfo } from '../redux/reducers/collectionsReducer'
+import { SaleType } from '../types/enum'
+import { formatCurrency, getCurrencyIconByAddress, getCurrencyNameAddress } from '../utils/constants'
 
 export type OrderStatics = {
   order?: IOrder,
@@ -25,9 +25,8 @@ const findOrder = (orders: IOrder[], token_id: number, collection_addresses: str
       && token_id === Number(orders[0].tokenId)) {
       return orders[0]
     }
-  }
-  else {
-    return [...orders].find(order => (
+  } else {
+    return [...orders].find(order => ( // TODO: find last order by timestamp
       collection_addresses.indexOf(order.collectionAddress) != -1
       && token_id === Number(order.tokenId)
     ))

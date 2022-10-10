@@ -56,6 +56,7 @@ const SideBar: React.FC = () => {
     provider,
     signer,
     address,
+    chainId,
     disconnect,
     connect: connectWallet,
     switchNetwork
@@ -72,7 +73,6 @@ const SideBar: React.FC = () => {
   const [expandedMenu, setExpandedMenu] = useState(0)
   const [fixed, setFixed] = useState(false)
   const [confirmTransfer, setConfirmTransfer] = useState(false)
-  const [chainId, setChainID] = useState(ChainIds.ETHEREUM)
   const [isFirstDrag, setIsFirstDrag] = useState(true)
   const DEFAULT_AVATAR = 'uploads\\default_avatar.png'
 
@@ -136,7 +136,6 @@ const SideBar: React.FC = () => {
         })
         const metadata = nfts[index].metadata
         setImageError(false)
-        // setChain(chain_list[nfts[index].chain])
         if (metadata) {
           try {
             // IPFS Gateway: A server that will return IPFS files from a "normal" URL.
@@ -237,9 +236,8 @@ const SideBar: React.FC = () => {
     if (!user) return
     if (!signer) return
     if (!chainId) return
-    const senderChainId = getChainIdFromName(selectedNFTItem.chain)
-    if (chainId !== senderChainId) {
-      return await switchNetwork(senderChainId)
+    if (chainId !== selectedNFTItem.chain_id) {
+      return await switchNetwork(selectedNFTItem.chain_id)
     }
     if (chainId === targetChain) return
 
@@ -262,18 +260,18 @@ const SideBar: React.FC = () => {
   const onTransfer = async () => {
     if (!selectedNFTItem) return
     if (!signer) return
-    if (!provider?._network?.chainId) return
-    if (provider?._network?.chainId === targetChain) return
+    if (!chainId) return
+    if (chainId === targetChain) return
     if (!address) return
 
-    const lzEndpointInstance = getLayerZeroEndpointInstance(provider?._network?.chainId, provider)
+    const lzEndpointInstance = getLayerZeroEndpointInstance(chainId, provider)
     const lzTargetChainId = getLayerzeroChainId(targetChain)
     const _signerAddress = address
 
     const targetProvider = getProvider(targetChain)
     if (isONFTCore) {
       if (selectedNFTItem.contract_type === 'ERC721') {
-        const onftCoreInstance = getONFTCore721Instance(selectedNFTItem.token_address, provider?._network?.chainId, signer)
+        const onftCoreInstance = getONFTCore721Instance(selectedNFTItem.token_address, chainId, signer)
         const targetONFTCoreAddress = await onftCoreInstance.getTrustedRemote(lzTargetChainId)
         const tx = await onftCoreInstance.sendFrom(
           address,
@@ -289,7 +287,7 @@ const SideBar: React.FC = () => {
         const pendingTx: PendingTxType = {
           txHash: tx.hash,
           type: 'bridge',
-          senderChainId: provider?._network?.chainId,
+          senderChainId: chainId,
           targetChainId: targetChain,
           targetAddress: targetONFTCoreAddress,
           isONFTCore: true,
@@ -303,7 +301,7 @@ const SideBar: React.FC = () => {
         onLeave()
         await tx.wait()
       } else if (selectedNFTItem.contract_type === 'ERC1155') {
-        const onft1155CoreInstance = getONFTCore1155Instance(selectedNFTItem.token_address, provider?._network?.chainId, signer)
+        const onft1155CoreInstance = getONFTCore1155Instance(selectedNFTItem.token_address, chainId, signer)
         const targetONFT1155CoreAddress = await onft1155CoreInstance.getTrustedRemote(lzTargetChainId)
         const blockNumber = await targetProvider.getBlockNumber()
         const tx = await onft1155CoreInstance.sendFrom(
@@ -321,7 +319,7 @@ const SideBar: React.FC = () => {
         const pendingTx: PendingTxType = {
           txHash: tx.hash,
           type: 'bridge',
-          senderChainId: provider?._network?.chainId,
+          senderChainId: chainId,
           targetChainId: targetChain,
           targetAddress: targetONFT1155CoreAddress,
           targetBlockNumber: blockNumber,
@@ -336,7 +334,7 @@ const SideBar: React.FC = () => {
       }
     } else {
       if (selectedNFTItem.contract_type === 'ERC721') {
-        const contractInstance = getOmnixBridgeInstance(provider?._network?.chainId, signer)
+        const contractInstance = getOmnixBridgeInstance(chainId, signer)
         const erc721Instance = getERC721Instance(selectedNFTItem.token_address, 0, signer)
         const noSignerOmniXInstance = getOmnixBridgeInstance(targetChain, null)
         const dstAddress = await noSignerOmniXInstance.persistentAddresses(selectedNFTItem.token_address)
@@ -357,7 +355,7 @@ const SideBar: React.FC = () => {
         const pendingTx: PendingTxType = {
           txHash: tx.hash,
           type: 'bridge',
-          senderChainId: provider?._network?.chainId,
+          senderChainId: chainId,
           targetChainId: targetChain,
           targetAddress: '',
           isONFTCore: false,
@@ -372,7 +370,7 @@ const SideBar: React.FC = () => {
         await tx.wait()
         setSelectedNFTItem(undefined)
       } else if (selectedNFTItem.contract_type === 'ERC1155') {
-        const contractInstance = getOmnixBridge1155Instance(provider?._network?.chainId, signer)
+        const contractInstance = getOmnixBridge1155Instance(chainId, signer)
         const noSignerOmniX1155Instance = getOmnixBridge1155Instance(targetChain, null)
         const erc1155Instance = getERC1155Instance(selectedNFTItem.token_address, 0, signer)
         const dstAddress = await noSignerOmniX1155Instance.persistentAddresses(selectedNFTItem.token_address)
@@ -401,7 +399,7 @@ const SideBar: React.FC = () => {
         const pendingTx: PendingTxType = {
           txHash: tx.hash,
           type: 'bridge',
-          senderChainId: provider?._network?.chainId,
+          senderChainId: chainId,
           targetChainId: targetChain,
           targetAddress: '',
           isONFTCore: false,
@@ -421,7 +419,7 @@ const SideBar: React.FC = () => {
   }
 
   const handleUnwrap = useCallback(async () => {
-    if (provider?._network?.chainId && unwrapInfo) {
+    if (chainId && unwrapInfo) {
       try {
         if (unwrapInfo.type === 'ERC721') {
           const contractInstance = getOmnixBridgeInstance(unwrapInfo.chainId, signer)
@@ -456,10 +454,10 @@ const SideBar: React.FC = () => {
         setUnwrap(false)
       }
     }
-  }, [provider?._network?.chainId, unwrapInfo, signer, address, dispatch])
+  }, [chainId, unwrapInfo, signer, address, dispatch])
 
   const onUnwrap = async () => {
-    if (provider?._network?.chainId && selectedUnwrapInfo) {
+    if (chainId && selectedUnwrapInfo) {
       try {
         if (selectedUnwrapInfo.type === 'ERC721') {
           const contractInstance = getOmnixBridgeInstance(selectedUnwrapInfo.chainId, signer)
@@ -501,22 +499,6 @@ const SideBar: React.FC = () => {
       }
     })()
   }, [handleUnwrap, unwrapInfo])
-
-  useEffect(()=>{
-    if(window.ethereum){
-      setChainID(parseInt(window.ethereum.networkVersion))
-      window.ethereum.on('chainChanged', function (networkId:string) {
-        setChainID(parseInt(networkId))
-      })
-    }
-  }, [])
-
-  useEffect(()=>{
-    const chain_id = provider?._network?.chainId
-    if(Number(chain_id)>0){
-      setChainID(Number(chain_id))
-    }
-  },[provider?._network?.chainId])
 
   const updateModal = (status: boolean) => {
     setConfirmTransfer(status)
