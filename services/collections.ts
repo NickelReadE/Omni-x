@@ -1,4 +1,3 @@
-import { chain_list } from '../utils/utils'
 import API from './api'
 
 const getCollectionNFTs = async (col_url: string, page: number, display_per_page: number, sort: string, searchObj: Object) => {

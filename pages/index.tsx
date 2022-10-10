@@ -28,7 +28,7 @@ const Home: NextPage = () => {
       {isBlur &&
         <MetaMaskConnect
           onConnect={async () => {
-            context.connect()
+            await context.connect()
           }}
           context={context}
         />

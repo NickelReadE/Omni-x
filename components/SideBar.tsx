@@ -25,7 +25,6 @@ import {
   chainInfos,
   formatCurrency,
   getAddressByName,
-  getChainIdFromName,
   getChainInfo,
   getLayerzeroChainId,
   getProvider

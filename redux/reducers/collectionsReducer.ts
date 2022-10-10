@@ -3,8 +3,6 @@ import {Dispatch} from 'react'
 import {IGetOrderRequest} from '../../interface/interface'
 import {collectionsService} from '../../services/collections'
 import {getOrders} from './ordersReducer'
-import {getAssetPrices} from './feeddataReducer'
-import {openSnackBar} from './snackBarReducer'
 import {getERC721Instance, getERC1155Instance, getRoyaltyFeeMangerInstance} from '../../utils/contracts'
 import {RoyaltyFeeManagerAddress} from '../../constants/addresses'
 import {convertETHtoUSDT, convertUSDTtoETH} from '../../utils/convertRate'
@@ -23,7 +21,6 @@ import {
   getNetworForAlchemy
 } from '../../utils/constants'
 import {getPriceforUSD} from '../../services/datafeed'
-import finalPropsSelectorFactory from 'react-redux/es/connect/selectorFactory'
 
 interface CollectionState {
   nfts: any[],
@@ -222,7 +219,6 @@ export const updateCollectionsForCard = (chainId: string, chainName: string) => 
       if (ordersForCollection.length > 0) {
         for await (const order of ordersForCollection) {
           let priceAsUSD = 0
-          console.log(order);
           if (currencies_list[getChainIdFromName(order.chain)].find(({address}) => address === order.currencyAddress)) {
             priceAsUSD = parseFloat(ethers.utils.formatEther(order.price))
           } else {

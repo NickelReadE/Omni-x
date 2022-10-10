@@ -1,13 +1,13 @@
-import { createStore, applyMiddleware, combineReducers } from "redux"
-import { composeWithDevTools } from "redux-devtools-extension"
+import { createStore, applyMiddleware, combineReducers } from 'redux'
+import { composeWithDevTools } from 'redux-devtools-extension'
 import { HYDRATE, createWrapper } from 'next-redux-wrapper'
 import thunkMiddleware from 'redux-thunk'
-import userReducer from "./reducers/userReducer"
-import collectionsReducer from "./reducers/collectionsReducer"
-import snackBarReducer from "./reducers/snackBarReducer"
-import ordersReducer from "./reducers/ordersReducer"
-import feeddataReducer from "./reducers/feeddataReducer"
-import headerReducer from "./reducers/headerReducer"
+import userReducer from './reducers/userReducer'
+import collectionsReducer from './reducers/collectionsReducer'
+import snackBarReducer from './reducers/snackBarReducer'
+import ordersReducer from './reducers/ordersReducer'
+import feeddataReducer from './reducers/feeddataReducer'
+import headerReducer from './reducers/headerReducer'
 
 const bindMiddleware = (middleware: any) => {
   if (process.env.NODE_ENV !== 'production') {

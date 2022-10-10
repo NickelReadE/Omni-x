@@ -8,7 +8,6 @@ import Select from 'react-select'
 import { IBidData } from '../../interface/interface'
 import { CURRENCIES_LIST, getValidCurrencies } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'
-import { ChainIds } from '../../types/enum'
 
 const useStyles = makeStyles(() =>
   createStyles({
