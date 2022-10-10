@@ -221,7 +221,6 @@ const useTrading = ({
       return
     }
 
-    const chainId = provider?.network.chainId || ChainIds.ETHEREUM
     const lzChainId = getLayerzeroChainId(chainId)
     const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
     const newCurrencyName = validateCurrencyName(currencyName, chainId)

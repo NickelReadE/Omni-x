@@ -15,7 +15,7 @@ import LZEndpoint from '../constants/layerzero/LayerzeroEndpoints.json'
 import ChainIds from '../constants/layerzero/chainIds.json'
 import CHAINS from '../constants/chains.json'
 import { ChainIds as ChainIDS } from '../types/enum'
-import { Network } from "alchemy-sdk"
+import { Network } from 'alchemy-sdk'
 
 const omnixBridge: any = OmnixBridge
 const omnixBridge1155: any = OmnixBridge1155
@@ -230,7 +230,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
 }
 
 export const getLayerzeroChainId = (chainId: number): number => {
-  return chainIds[chainInfos[chainId].name]
+  return chainIds[chainId.toString()]
 }
 
 export const chainList = [
@@ -564,7 +564,7 @@ export const NetworksForAlchemy:{[key:number]:Network} = {
   5:Network.ETH_GOERLI
 }
 export const getAPIkeyForAlchemy = (key:number):string =>{
- return APIkeysForAlchemy[key]
+  return APIkeysForAlchemy[key]
 }
 export const getNetworForAlchemy = (key:number):Network =>{
   return NetworksForAlchemy[key]
@@ -594,19 +594,19 @@ export const getValidCurrencies = (chainId: number) => {
   return [CURRENCIES_LIST[0], CURRENCIES_LIST[1]]
 }
 
-export const  base_nft = {
+export const base_nft = {
   _id:0,
-  name:"",
-  image:"",
-  os_image:"",
+  name:'',
+  image:'',
+  os_image:'',
   animation_url:null,
   os_animation_url:null,
   custom_id:0,
   token_id:0,
   attributes:null,
-  score:"",
+  score:'',
   rank:null,
-  name1:"",
+  name1:'',
   price:0,
   last_sale:0,
   chain_id:5
