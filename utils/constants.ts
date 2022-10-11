@@ -453,6 +453,16 @@ export const parseCurrency = (price: string, currencyName: string) => {
   return BigNumber.from(0)
 }
 
+export const visualizeNumber = (price: string | number | undefined) => {
+  if (!price) return '0'
+  const decimalized = Number(price)
+
+  if (decimalized / 1000 >= 0) return `${(~~decimalized / 1000)}K`
+  if (decimalized / 1e6 >= 0) return `${(~~decimalized / 1e6)}M`
+
+  return decimalized
+}
+
 const chainIcons = Object.values(chainInfos).reduce((acc, cur) => {
   Object.assign(acc, {[cur.name]: cur.logo})
   return acc

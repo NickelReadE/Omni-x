@@ -7,7 +7,7 @@ import ConfirmSell from './collections/ConfirmSell'
 import useWallet from '../hooks/useWallet'
 import { selectCollections } from '../redux/reducers/collectionsReducer'
 import { useSelector } from 'react-redux'
-import { formatCurrency, getChainIconById,getChainIdFromName, getChainNameFromId, getCurrencyNameAddress } from '../utils/constants'
+import { formatCurrency, getChainIconById,getChainIdFromName, getChainNameFromId, getCurrencyNameAddress, visualizeNumber } from '../utils/constants'
 import Router from 'next/router'
 import useOrderStatics from '../hooks/useOrderStatics'
 import useTrading from '../hooks/useTrading'
@@ -142,7 +142,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
         <div className="flex items-center ml-3">
           {isListed && <>
             <img src={currencyIcon || '/svgs/ethereum.svg'} className="w-[18px] h-[18px]" alt='icon'/>
-            <span className="text-[#000000] text-[18px] font-extrabold ml-2">{Number(formattedPrice)>=1000?`${Number(formattedPrice)/1000}K`:formattedPrice}</span>
+            <span className="text-[#000000] text-[18px] font-extrabold ml-2">{visualizeNumber(formattedPrice)}</span>
           </>}
         </div>
       </div>
@@ -157,12 +157,12 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
           {lastSale != 0 && <>
             <span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span>
             <img src={lastSaleCoin} className="w-[18px] h-[18px]" alt="" />&nbsp;
-            <span className="text-[#6C757D] text-[14px]font-bold">{Number(lastSale)>=1000?`${Number(lastSale)/1000}K`:lastSale}</span>
+            <span className="text-[#6C757D] text-[14px]font-bold">{visualizeNumber(lastSale)}</span>
           </>}
           {!lastSale && highestBid != 0 && <>
             <span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span>
             <img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;
-            <span className="text-[#6C757D] text-[14px] font-bold">{Number(highestBid)>=1000?`${Number(highestBid)/1000}K`:highestBid}</span>
+            <span className="text-[#6C757D] text-[14px] font-bold">{visualizeNumber(highestBid)}</span>
           </>}
         </div>
         <div className="flex items-center ml-3">
