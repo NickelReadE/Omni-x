@@ -10,6 +10,7 @@ export enum ChainIds {
     ARBITRUM = 421613,
     OPTIMISM = 420,
     FANTOM = 4002,
+    APTOS = 2222,    // should be fixed later
 }
 
 export enum SaleType {
