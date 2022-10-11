@@ -221,6 +221,14 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
     officialName: 'Fantom',
     currency: 'FTM'
   },
+  2222: {
+    name: 'aptos-testnet',
+    logo: '/svgs/aptos.svg',
+    roundedLogo: '/svgs/aptos.svg',
+    explorerLogo: '/svgs/aptos.svg',
+    officialName: 'Aptos',
+    currency: 'APT'
+  }
 }
 
 export const getLayerzeroChainId = (chainId: number): number => {
@@ -457,8 +465,10 @@ export const visualizeNumber = (price: string | number | undefined) => {
   if (!price) return '0'
   const decimalized = Number(price)
 
-  if (decimalized / 1000 >= 0) return `${(~~decimalized / 1000)}K`
-  if (decimalized / 1e6 >= 0) return `${(~~decimalized / 1e6)}M`
+  if (decimalized / 1e12 >= 1) return `${(decimalized / 1e12).toPrecision(5)}T`
+  if (decimalized / 1e9 >= 1) return `${(~~decimalized / 1e9)}B`
+  if (decimalized / 1e6 >= 1) return `${(~~decimalized / 1e6)}M`
+  if (decimalized / 1000 >= 1) return `${(~~decimalized / 1000)}K`
 
   return decimalized
 }
