@@ -8,6 +8,7 @@ import OmniABI from '../constants/abis/Omni.json'
 import ERC721ABI from '../constants/abis/ERC721.json'
 import ERC1155ABI from '../constants/abis/ERC1155.json'
 import ERC20Abi from '../constants/abis/ERC20.json'
+import USDAbi from '../constants/abis/USD.json'
 import ONFTCore721 from '../constants/abis/ONFTCore721.json'
 import ONFTCore1155 from '../constants/abis/ONFTCore1155.json'
 import LZEndpointABI from '../constants/abis/LayerzeroEndpoint.json'
@@ -113,4 +114,9 @@ export const getCurrencyInstance = (address: string, chainId: number, signer: an
 
 export const getCurrencyManagerInstance = (chainId: number, signer: any) => {
   return getContractInstance('CurrencyManager', CurrencyManagerABI, chainId, signer);
+}
+
+export const getUSDCInstance = (address: string, chainId: number, signer: any) => {
+  if (!address) return null
+  return getContractInstanceByAddr(address, USDAbi, chainId, signer)
 }

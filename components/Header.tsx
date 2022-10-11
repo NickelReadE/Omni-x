@@ -9,7 +9,7 @@ import ProcessingTransaction from './transaction/ProcessingTransaction'
 import { Menu } from '@headlessui/react'
 import { getSearchText } from '../redux/reducers/headerReducer'
 import { updateRefreshBalance } from '../redux/reducers/userReducer'
-import { getCurrencyInstance, getOmniInstance } from '../utils/contracts'
+import { getOmniInstance, getUSDCInstance } from '../utils/contracts'
 import { ContractName, getAddressByName, parseCurrency } from '../utils/constants'
 
 type HeaderProps = {
@@ -66,7 +66,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
         currencyAddr = getAddressByName(currencyName, chainId)
       }
       
-      const usdc = getCurrencyInstance(currencyAddr, chainId, signer)
+      const usdc = getUSDCInstance(currencyAddr, chainId, signer)
       if (usdc) {
         const tx = await usdc.mint(await signer.getAddress(), parseCurrency('1000', currencyName), { gasLimit: '300000' })
         await tx.wait()
