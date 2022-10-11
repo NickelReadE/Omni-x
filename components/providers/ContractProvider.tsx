@@ -17,12 +17,13 @@ export const ContractProvider = ({
   const dispatch = useDispatch()
   const { address, provider, chainId } = useWallet()
   const { updateHistory } = useProgress()
+  const UPDATE_TIMESTAMP = 10000
 
   const listenBridgeONFTCoreEvents = async (txInfo: PendingTxType, historyIndex: number) => {
     if (address && chainId) {
       if (txInfo.contractType === 'ERC721') {
         const targetCoreInstance = getONFTCore721Instance(txInfo.targetAddress, txInfo.targetChainId, null)
-        const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber, txInfo.targetBlockNumber + 2000)
+        const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber)
 
         const eventExist = events.filter((ev) => {
           return ev.args?._toAddress.toLowerCase() === address.toLowerCase()
@@ -30,7 +31,7 @@ export const ContractProvider = ({
         })
         if (eventExist.length === 0) {
           targetCoreInstance.on('ReceiveFromChain', async () => {
-            const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber, txInfo.targetBlockNumber + 2000)
+            const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber)
             const eventExist = events.filter((ev) => {
               return ev.args?._toAddress.toLowerCase() === address.toLowerCase()
                 && parseInt(ev.args?._tokenId) === parseInt(txInfo.nftItem.token_id)
@@ -45,7 +46,7 @@ export const ContractProvider = ({
             }
             setTimeout(() => {
               dispatch(getUserNFTs(address) as any)
-            }, 30000)
+            }, UPDATE_TIMESTAMP)
           })
         } else {
           updateHistory(historyIndex, {
@@ -56,7 +57,7 @@ export const ContractProvider = ({
         }
       } else if (txInfo.contractType === 'ERC1155') {
         const targetCoreInstance = getONFTCore1155Instance(txInfo.targetAddress, txInfo.targetChainId, null)
-        const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber, txInfo.targetBlockNumber + 2000)
+        const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber)
         const eventExist = events.filter((ev) => {
           return ev.args?._toAddress.toLowerCase() === address?.toLowerCase()
             && parseInt(ev.args?._tokenId) === parseInt(txInfo.nftItem.token_id)
@@ -64,7 +65,7 @@ export const ContractProvider = ({
         })
         if (eventExist.length === 0) {
           targetCoreInstance.on('ReceiveFromChain', async () => {
-            const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber, txInfo.targetBlockNumber + 2000)
+            const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber)
             const eventExist = events.filter((ev) => {
               return ev.args?._toAddress.toLowerCase() === address?.toLowerCase()
                 && ev.args?._tokenId === txInfo.nftItem.token_id
@@ -80,7 +81,7 @@ export const ContractProvider = ({
             }
             setTimeout(() => {
               dispatch(getUserNFTs(address) as any)
-            }, 30000)
+            }, UPDATE_TIMESTAMP)
           })
         } else {
           updateHistory(historyIndex, {
@@ -97,7 +98,7 @@ export const ContractProvider = ({
     if (address && provider?._network?.chainId) {
       if (txInfo.contractType === 'ERC721') {
         const noSignerOmniXInstance = getOmnixBridgeInstance(txInfo.targetChainId, null)
-        const events = await noSignerOmniXInstance.queryFilter(noSignerOmniXInstance.filters.LzReceive(), txInfo.targetBlockNumber, txInfo.targetBlockNumber + 2000)
+        const events = await noSignerOmniXInstance.queryFilter(noSignerOmniXInstance.filters.LzReceive(), txInfo.targetBlockNumber)
         const eventExist = events.filter((ev) => {
           return ev.args?.toAddress.toLowerCase() === address?.toLowerCase()
             && ev.args?.tokenId.toString() === txInfo.nftItem.token_id
@@ -105,7 +106,7 @@ export const ContractProvider = ({
 
         if (eventExist.length === 0) {
           noSignerOmniXInstance.on('LzReceive', async () => {
-            const events = await noSignerOmniXInstance.queryFilter(noSignerOmniXInstance.filters.LzReceive(), txInfo.targetBlockNumber, txInfo.targetBlockNumber + 2000)
+            const events = await noSignerOmniXInstance.queryFilter(noSignerOmniXInstance.filters.LzReceive(), txInfo.targetBlockNumber)
             const eventExist = events.filter((ev) => {
               return ev.args?.toAddress.toLowerCase() === address?.toLowerCase()
                 && ev.args?.tokenId.toString() === txInfo.nftItem.token_id
@@ -120,7 +121,7 @@ export const ContractProvider = ({
             }
             setTimeout(() => {
               dispatch(getUserNFTs(address) as any)
-            }, 30000)
+            }, UPDATE_TIMESTAMP)
           })
         } else {
           updateHistory(historyIndex,{
@@ -131,7 +132,7 @@ export const ContractProvider = ({
         }
       } else if (txInfo.contractType === 'ERC1155') {
         const noSignerOmniX1155Instance = getOmnixBridge1155Instance(txInfo.targetChainId, null)
-        const events = await noSignerOmniX1155Instance.queryFilter(noSignerOmniX1155Instance.filters.LzReceive(), txInfo.targetBlockNumber, txInfo.targetBlockNumber + 2000)
+        const events = await noSignerOmniX1155Instance.queryFilter(noSignerOmniX1155Instance.filters.LzReceive(), txInfo.targetBlockNumber)
         const eventExist = events.filter((ev) => {
           return ev.args?.toAddress === address
             && ev.args?.tokenId.toString() === txInfo.nftItem.token_id
@@ -140,7 +141,7 @@ export const ContractProvider = ({
 
         if (eventExist.length === 0) {
           noSignerOmniX1155Instance.on('LzReceive', async () => {
-            const events = await noSignerOmniX1155Instance.queryFilter(noSignerOmniX1155Instance.filters.LzReceive(), txInfo.targetBlockNumber, txInfo.targetBlockNumber + 2000)
+            const events = await noSignerOmniX1155Instance.queryFilter(noSignerOmniX1155Instance.filters.LzReceive(), txInfo.targetBlockNumber)
             const eventExist = events.filter((ev) => {
               return ev.args?.toAddress.toLowerCase() === address?.toLowerCase()
                 && ev.args?.tokenId.toString() === txInfo.nftItem.token_id
@@ -157,7 +158,7 @@ export const ContractProvider = ({
             if (address) {
               setTimeout(() => {
                 dispatch(getUserNFTs(address) as any)
-              }, 30000)
+              }, UPDATE_TIMESTAMP)
             }
           })
         } else {
@@ -175,7 +176,7 @@ export const ContractProvider = ({
     if (address && provider?._network?.chainId) {
       if (txInfo.contractType === 'ERC721') {
         const targetCoreInstance = getONFTCore721Instance(txInfo.targetAddress, txInfo.targetChainId, null)
-        const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber, txInfo.targetBlockNumber + 2000)
+        const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber)
 
         const eventExist = events.filter((ev) => {
           return ev.args?._toAddress.toLowerCase() === address.toLowerCase()
@@ -183,7 +184,7 @@ export const ContractProvider = ({
         })
         if (eventExist.length === 0) {
           targetCoreInstance.on('ReceiveFromChain', async () => {
-            const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber, txInfo.targetBlockNumber + 2000)
+            const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber)
             const eventExist = events.filter((ev) => {
               return ev.args?._toAddress.toLowerCase() === address.toLowerCase()
                 && parseInt(ev.args?._tokenId) === parseInt(txInfo.nftItem.token_id)
@@ -199,7 +200,7 @@ export const ContractProvider = ({
             }
             setTimeout(() => {
               dispatch(getUserNFTs(address) as any)
-            }, 30000)
+            }, UPDATE_TIMESTAMP)
           })
         } else {
           updateHistory(historyIndex, {
@@ -211,7 +212,7 @@ export const ContractProvider = ({
         }
       } else if (txInfo.contractType === 'ERC1155') {
         const targetCoreInstance = getONFTCore1155Instance(txInfo.targetAddress, txInfo.targetChainId, null)
-        const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber, txInfo.targetBlockNumber + 2000)
+        const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber)
         const eventExist = events.filter((ev) => {
           return ev.args?._toAddress.toLowerCase() === address?.toLowerCase()
             && parseInt(ev.args?._tokenId) === parseInt(txInfo.nftItem.token_id)
@@ -219,7 +220,7 @@ export const ContractProvider = ({
         })
         if (eventExist.length === 0) {
           targetCoreInstance.on('ReceiveFromChain', async () => {
-            const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber, txInfo.targetBlockNumber + 2000)
+            const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber)
             const eventExist = events.filter((ev) => {
               return ev.args?._toAddress.toLowerCase() === address?.toLowerCase()
                 && ev.args?._tokenId === txInfo.nftItem.token_id
@@ -236,7 +237,7 @@ export const ContractProvider = ({
             }
             setTimeout(() => {
               dispatch(getUserNFTs(address) as any)
-            }, 30000)
+            }, UPDATE_TIMESTAMP)
           })
         } else {
           updateHistory(historyIndex, {
@@ -253,14 +254,14 @@ export const ContractProvider = ({
     if (address && txInfo.senderAddress) {
       if (txInfo.contractType === 'ERC721') {
         const sellerNftInstance = getERC721Instance(txInfo.senderAddress, txInfo.senderChainId, null)
-        const events = await sellerNftInstance.queryFilter(sellerNftInstance.filters.Transfer(), txInfo.senderBlockNumber, txInfo.targetBlockNumber + 2000)
+        const events = await sellerNftInstance.queryFilter(sellerNftInstance.filters.Transfer(), txInfo.senderBlockNumber)
         const eventExist = events.filter((ev) => {
           return ev.args?.to.toLowerCase() === address.toLowerCase()
             && parseInt(ev.args?.tokenId) === parseInt(txInfo.nftItem.token_id)
         })
         if (eventExist.length === 0) {
           sellerNftInstance.on('Transfer', async () => {
-            const events = await sellerNftInstance.queryFilter(sellerNftInstance.filters.Transfer(), txInfo.senderBlockNumber, txInfo.targetBlockNumber + 2000)
+            const events = await sellerNftInstance.queryFilter(sellerNftInstance.filters.Transfer(), txInfo.senderBlockNumber)
             const eventExist = events.filter((ev) => {
               return ev.args?.to.toLowerCase() === address.toLowerCase()
                 && parseInt(ev.args?.tokenId) === parseInt(txInfo.nftItem.token_id)
@@ -276,7 +277,7 @@ export const ContractProvider = ({
             }
             setTimeout(() => {
               dispatch(getUserNFTs(address) as any)
-            }, 30000)
+            }, UPDATE_TIMESTAMP)
           })
         } else {
           updateHistory(historyIndex, {
@@ -288,7 +289,7 @@ export const ContractProvider = ({
         }
       } else if (txInfo.contractType === 'ERC1155') {
         const sellerNftInstance = getERC1155Instance(txInfo.senderAddress, txInfo.senderChainId, null)
-        const events = await sellerNftInstance.queryFilter(sellerNftInstance.filters.TransferSingle(), txInfo.senderBlockNumber, txInfo.targetBlockNumber + 2000)
+        const events = await sellerNftInstance.queryFilter(sellerNftInstance.filters.TransferSingle(), txInfo.senderBlockNumber)
         const eventExist = events.filter((ev) => {
           return ev.args?.to.toLowerCase() === address?.toLowerCase()
             && parseInt(ev.args?.tokenId) === parseInt(txInfo.nftItem.token_id)
@@ -296,7 +297,7 @@ export const ContractProvider = ({
         })
         if (eventExist.length === 0) {
           sellerNftInstance.on('TransferSingle', async () => {
-            const events = await sellerNftInstance.queryFilter(sellerNftInstance.filters.TransferSingle(), txInfo.senderBlockNumber, txInfo.targetBlockNumber + 2000)
+            const events = await sellerNftInstance.queryFilter(sellerNftInstance.filters.TransferSingle(), txInfo.senderBlockNumber)
             const eventExist = events.filter((ev) => {
               return ev.args?.to.toLowerCase() === address?.toLowerCase()
                 && ev.args?.tokenId === txInfo.nftItem.token_id
@@ -313,7 +314,7 @@ export const ContractProvider = ({
             }
             setTimeout(() => {
               dispatch(getUserNFTs(address) as any)
-            }, 30000)
+            }, UPDATE_TIMESTAMP)
           })
         } else {
           updateHistory(historyIndex, {
