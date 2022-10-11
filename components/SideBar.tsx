@@ -20,7 +20,6 @@ import {
   getONFTCore1155Instance,
   getONFTCore721Instance,
 } from '../utils/contracts'
-import regExpFormat from '../helpers/regExpFormat'
 import {
   chainInfos,
   formatCurrency,
