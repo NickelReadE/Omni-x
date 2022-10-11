@@ -567,6 +567,10 @@ export const findCollection = (addresses: any, nft: any, token_id: string) => {
 }
 
 export const getValidCurrencies = (chainId: number) => {
+  if (chainId === ChainIDS.ETHEREUM || chainId === ChainIDS.ARBITRUM || chainId === ChainIDS.OPTIMISM) {
+    return [CURRENCIES_LIST[0]]
+  }
+  
   if (chainId === ChainIDS.BINANCE) {
     return [CURRENCIES_LIST[0], CURRENCIES_LIST[2]]
   }
