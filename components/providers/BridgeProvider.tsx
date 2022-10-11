@@ -31,7 +31,8 @@ export const BridgeProvider = ({
   const {
     provider,
     signer,
-    address
+    address,
+    chainId
   } = useWallet()
 
   const [estimating, setEstimating] = useState(false)
@@ -52,7 +53,7 @@ export const BridgeProvider = ({
     try {
       const lzEndpointInstance = getLayerZeroEndpointInstance(senderChainId, provider)
       const lzTargetChainId = getLayerzeroChainId(targetChainId)
-      const _signerAddress = await signer?.getAddress()
+      const _signerAddress = address
 
       if (selectedNFTItem.contract_type === 'ERC721') {
         const contractInstance = getOmnixBridgeInstance(senderChainId, signer)
@@ -132,9 +133,9 @@ export const BridgeProvider = ({
   }
 
   const validateOwNFT = async (nft: NFTItem) => {
-    if (!provider?._network?.chainId) return false
-    const chainId = getChainIdFromName(nft.chain)
-    if (provider?._network?.chainId !== chainId) return false
+    if (!chainId) return false
+    const nftChainId = getChainIdFromName(nft.chain)
+    if (chainId !== nftChainId) return false
 
     try {
       if (nft.contract_type === 'ERC721') {
@@ -215,8 +216,8 @@ export const BridgeProvider = ({
 
   useEffect(() => {
     (async () => {
-      const filteredNFT = nfts.filter((item: { chain: string }) => (getChainIdFromName(item.chain) === provider?._network?.chainId))
-      if (provider?._network?.chainId && unwrapInfo === undefined) {
+      const filteredNFT = nfts.filter((item: { chain: string }) => (getChainIdFromName(item.chain) === chainId))
+      if (chainId && unwrapInfo === undefined) {
         let selectedItem = filteredNFT.filter((item: { name: string, contract_type: string }) => item.name?.startsWith('Ow') && item.contract_type === 'ERC721').length > 0 ? filteredNFT[0] : null
         if (selectedItem !== null) {
           const chainId = getChainIdFromName(selectedItem.chain)
@@ -226,7 +227,7 @@ export const BridgeProvider = ({
             const isERC721 = await ERC721Instance.supportsInterface(ERC721_INTERFACE_ID)
             if (isERC721) {
               const originAddress = await noSignerOmniXInstance.originAddresses(selectedItem.token_address)
-              const isValid = await validateContract(provider?._network?.chainId, originAddress)
+              const isValid = await validateContract(chainId, originAddress)
               if (isValid) {
                 const originERC721Instance = getERC721Instance(originAddress, chainId, null)
                 const owner = await originERC721Instance.ownerOf(selectedItem.token_id)
@@ -254,7 +255,7 @@ export const BridgeProvider = ({
           const isERC1155 = await ERC1155Instance.supportsInterface(ERC1155_INTERFACE_ID)
           if (isERC1155) {
             const originAddress = await noSignerOmniX1155Instance.originAddresses(selectedItem.token_address)
-            const isValid = await validateContract(provider?._network?.chainId, originAddress)
+            const isValid = await validateContract(chainId, originAddress)
             if (isValid) {
               const originERC1155Instance = getERC1155Instance(originAddress, chainId, null)
               const bridgeAddress = getAddressByName('Omnix1155', chainId)
@@ -274,7 +275,7 @@ export const BridgeProvider = ({
         }
       }
     })()
-  }, [nfts, provider?._network?.chainId, unwrapInfo])
+  }, [nfts, chainId, unwrapInfo])
 
   return (
     <BridgeContext.Provider

@@ -11,6 +11,7 @@ import useWallet from '../hooks/useWallet'
 import {getUserNFTs, selectRefreshBalance, selectUser, selectUserNFTs} from '../redux/reducers/userReducer'
 import {NFTItem} from '../interface/interface'
 import {
+  decodeFromBytes,
   getCurrencyInstance,
   getERC1155Instance,
   getERC721Instance,
@@ -271,7 +272,8 @@ const SideBar: React.FC = () => {
     if (isONFTCore) {
       if (selectedNFTItem.contract_type === 'ERC721') {
         const onftCoreInstance = getONFTCore721Instance(selectedNFTItem.token_address, chainId, signer)
-        const targetONFTCoreAddress = await onftCoreInstance.getTrustedRemote(lzTargetChainId)
+        const remoteAddresses = await onftCoreInstance.getTrustedRemote(lzTargetChainId)
+        const targetONFTCoreAddress = decodeFromBytes(remoteAddresses)
         const tx = await onftCoreInstance.sendFrom(
           address,
           lzTargetChainId,
@@ -301,7 +303,8 @@ const SideBar: React.FC = () => {
         await tx.wait()
       } else if (selectedNFTItem.contract_type === 'ERC1155') {
         const onft1155CoreInstance = getONFTCore1155Instance(selectedNFTItem.token_address, chainId, signer)
-        const targetONFT1155CoreAddress = await onft1155CoreInstance.getTrustedRemote(lzTargetChainId)
+        const remoteAddresses = await onft1155CoreInstance.getTrustedRemote(lzTargetChainId)
+        const targetONFT1155CoreAddress = decodeFromBytes(remoteAddresses)
         const blockNumber = await targetProvider.getBlockNumber()
         const tx = await onft1155CoreInstance.sendFrom(
           _signerAddress,

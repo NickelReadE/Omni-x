@@ -112,5 +112,9 @@ export const getCurrencyInstance = (address: string, chainId: number, signer: an
 }
 
 export const getCurrencyManagerInstance = (chainId: number, signer: any) => {
-  return getContractInstance('CurrencyManager', CurrencyManagerABI, chainId, signer);
+  return getContractInstance('CurrencyManager', CurrencyManagerABI, chainId, signer)
+}
+
+export const decodeFromBytes = (data: string) => {
+  return data.substring(0, 42)
 }
