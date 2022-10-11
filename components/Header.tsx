@@ -54,7 +54,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
       const tx = await omni.mint({ gasLimit: '300000' })
       await tx.wait()
 
-      dispatch(openSnackBar({ message: 'You received an 10000 $OMNI soon', status: 'success' }))
+      dispatch(openSnackBar({ message: 'You received an 10000 $OMNI', status: 'success' }))
     }
 
     // faucet usdc/usdt
@@ -71,7 +71,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
         const tx = await usdc.mint(await signer.getAddress(), parseCurrency('1000', currencyName), { gasLimit: '300000' })
         await tx.wait()
   
-        dispatch(openSnackBar({ message: `You received an 1000 $${currencyName} soon`, status: 'success' }))
+        dispatch(openSnackBar({ message: `You received an 1000 $${currencyName}`, status: 'success' }))
       }
       else {
         dispatch(openSnackBar({ message: `Not support $${currencyName} on this chain`, status: 'warning' }))
