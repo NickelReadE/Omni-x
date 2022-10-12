@@ -105,7 +105,6 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
         </div>
         {children}
         <PriceFeed/>
-
       </main>
     </>
   )
