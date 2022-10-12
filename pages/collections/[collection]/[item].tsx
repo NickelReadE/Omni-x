@@ -12,7 +12,7 @@ import ConfirmBid from '../../../components/collections/ConfirmBid'
 import { getNFTInfo, selectNFTInfo } from '../../../redux/reducers/collectionsReducer'
 import useWallet from '../../../hooks/useWallet'
 import useTrading from '../../../hooks/useTrading'
-import { formatCurrency, getChainIcon, getChainNameFromId, getCurrencyIconByAddress, getCurrencyNameAddress, getProfileLink, visualizeNumber } from '../../../utils/constants'
+import { formatCurrency, getChainIcon, getChainNameFromId, getCurrencyIconByAddress, getCurrencyNameAddress, getProfileLink, numberShortify } from '../../../utils/constants'
 import PngCheck from '../../../public/images/check.png'
 import PngSub from '../../../public/images/subButton.png'
 import PngEther from '../../../public/images/collections/ethereum.png'
@@ -169,7 +169,7 @@ const Item: NextPage = () => {
                     <div className="flex justify-between items-center mt-6">
                       {order && (
                         <>
-                          <h1 className="text-[#1E1C21] text-[60px] font-normal">{visualizeNumber(formattedPrice)}</h1>
+                          <h1 className="text-[#1E1C21] text-[60px] font-normal">{numberShortify(formattedPrice)}</h1>
                           <div className="mr-5">
                             {currencyIcon &&
                               <img
@@ -183,9 +183,9 @@ const Item: NextPage = () => {
                       )}
                     </div>
                     <div className="mb-3">
-                      <span className='font-normal font-[16px]'>{formattedPrice && '$'}{visualizeNumber(formattedPrice)}</span>
-                      <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-bold">Highest Bid: <span className="font-bold">{visualizeNumber(highestBid)}</span></h1>{highestBidCoin&&<Image src={highestBidCoin} width={15} height={16} alt="chain  logo" />}</div>
-                      <div className="flex justify-start items-center"><h1 className="mr-3 font-bold">Last Sale: <span className="font-bold">{lastSale != 0 && visualizeNumber(lastSale)}</span></h1>{lastSaleCoin&&<Image src={lastSaleCoin} width={15} height={16} alt="chain logo" />}</div>
+                      <span className='font-normal font-[16px]'>{formattedPrice && '$'}{numberShortify(formattedPrice)}</span>
+                      <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-bold">Highest Bid: <span className="font-bold">{numberShortify(highestBid)}</span></h1>{highestBidCoin&&<Image src={highestBidCoin} width={15} height={16} alt="chain  logo" />}</div>
+                      <div className="flex justify-start items-center"><h1 className="mr-3 font-bold">Last Sale: <span className="font-bold">{lastSale != 0 && numberShortify(lastSale)}</span></h1>{lastSaleCoin&&<Image src={lastSaleCoin} width={15} height={16} alt="chain logo" />}</div>
                     </div>
                   </div>
                   <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>

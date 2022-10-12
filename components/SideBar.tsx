@@ -28,7 +28,7 @@ import {
   getChainInfo,
   getLayerzeroChainId,
   getProvider,
-  visualizeNumber
+  numberLocalize
 } from '../utils/constants'
 import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
@@ -104,7 +104,7 @@ const SideBar: React.FC = () => {
   const [isONFT, setIsONFT] = useState(false)
   const [unwrap, setUnwrap] = useState(false)
   const [bOpenModal, setOpenModal] = React.useState(false)
-  const [nativeBalance, setNativeBalance] = useState('')
+  const [nativeBalance, setNativeBalance] = useState(0)
 
   const {setNodeRef} = useDroppable({
     id: 'droppable',
@@ -532,7 +532,7 @@ const SideBar: React.FC = () => {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           const balance = await provider?.getBalance(address!)
           if(balance){
-            setNativeBalance(Number(ethers.utils.formatEther(balance || '0')).toFixed(4))
+            setNativeBalance(Number(ethers.utils.formatEther(balance || '0')))
           }
         }
       } catch (error) {
@@ -681,10 +681,10 @@ const SideBar: React.FC = () => {
             </button>
             { expandedMenu == 3 &&
               <div className='flex flex-col w-full space-y-4 p-6 pt-8 pb-0' ref={menu_wallets}>
-                <span className="font-semibold w-auto text-[16px]">OMNI balance: {visualizeNumber(omniBalance)}</span>
-                <span className="font-semibold w-auto text-[16px]">USDC balance: {visualizeNumber(usdcBalance)}</span>
-                <span className="font-semibold w-auto text-[16px]">USDT balance: {visualizeNumber(usdtBalance)}</span>
-                <span className="font-semibold w-auto text-[16px]">{getChainInfo(chainId)?.nativeCurrency.symbol} balance: {visualizeNumber(nativeBalance)}</span>
+                <span className="font-semibold w-auto text-[16px]">OMNI balance: {numberLocalize(omniBalance)}</span>
+                <span className="font-semibold w-auto text-[16px]">USDC balance: {numberLocalize(usdcBalance)}</span>
+                <span className="font-semibold w-auto text-[16px]">USDT balance: {numberLocalize(usdtBalance)}</span>
+                <span className="font-semibold w-auto text-[16px]">{getChainInfo(chainId)?.nativeCurrency.symbol} balance: {numberLocalize(nativeBalance)}</span>
                 <span className="w-auto text-[16px]">Staking: coming soon</span>
                 {/* <div className="w-full flex flex-row font-semibold text-[14px]">
                   <div className="bg-g-200 w-[88px] px-[11px] py-[9px]">

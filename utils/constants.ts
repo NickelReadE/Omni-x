@@ -461,7 +461,7 @@ export const parseCurrency = (price: string, currencyName: string) => {
   return BigNumber.from(0)
 }
 
-export const visualizeNumber = (price: string | number | undefined) => {
+export const numberShortify = (price: string | number | undefined) => {
   if (!price) return '0'
   const decimalized = Number(price)
 
@@ -471,6 +471,11 @@ export const visualizeNumber = (price: string | number | undefined) => {
   if (decimalized / 1000 >= 1) return `${(~~decimalized / 1000)}K`
 
   return decimalized
+}
+
+export const numberLocalize = (price: number) => {
+  if (!price) return '0'
+  return price.toLocaleString()
 }
 
 const chainIcons = Object.values(chainInfos).reduce((acc, cur) => {

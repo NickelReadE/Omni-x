@@ -8,7 +8,7 @@ import View from '../public/images/view.png'
 import Fork from '../public/images/fork.png'
 import Report from '../public/images/report.png'
 import Alert from '../public/images/alert.png'
-import { visualizeNumber } from '../utils/constants'
+import { numberShortify } from '../utils/constants'
 const Feed = ({ feed }: IPropsFeed) => {
   return (
     <>
@@ -57,7 +57,7 @@ const Feed = ({ feed }: IPropsFeed) => {
                       <Image src={Love} alt="love" width={40} height={40} />
                     </span>
                     <span className="text-slate-400 text-2xl mr-3">
-                      {visualizeNumber(item.love)}
+                      {numberShortify(item.love)}
                     </span>
                   </div>
                   <div className="flex items-center">
@@ -65,7 +65,7 @@ const Feed = ({ feed }: IPropsFeed) => {
                       <Image src={View} alt="views" width={40} height={40} />
                     </span>
                     <span className="text-slate-400 text-2xl mr-3">
-                      {visualizeNumber(item.view)}
+                      {numberShortify(item.view)}
                     </span>
                   </div>
                   <div className="flex justify-between">
