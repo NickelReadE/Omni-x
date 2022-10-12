@@ -1,7 +1,3 @@
-interface IChain {
-   [key: string]: string
-}
-
 interface ICrypto{
 	[key: string]: string
 }
@@ -11,19 +7,6 @@ interface ICryptoObj{
 
 interface IRpcDatafeed{
   [key: string]: string
-}
-export const chain_list:IChain = {
-  'eth': 'eth',
-  'bsc': 'bsc',
-  'matic': 'matic',
-  'avalanche': 'avalanche',
-  'fantom': 'fantom',
-  'optimism': 'optimism',
-  'arbitrum': 'arbitrum',
-  'bsc testnet': 'bsc',
-  'rinkeby': 'eth',
-  'mumbai': 'matic',
-  'avalanche testnet': 'avalanche'
 }
 
 export const crypto_list:ICryptoObj = {
@@ -61,5 +44,4 @@ export const rpcGasProvider:IRpcDatafeed = {
   'fantom':'https://rpc.ankr.com/fantom',
   'optimism':'https://rpc.ankr.com/optimism',
   'polygon':'https://rpc.ankr.com/polygon'
-
 }
