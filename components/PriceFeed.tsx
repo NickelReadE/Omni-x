@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from 'react'
-import { getAssetPrices, getGasPrices, selectAssetPrices, selectGasPrices} from '../redux/reducers/feeddataReducer'
-import { useDispatch, useSelector } from 'react-redux'
+import React, {useEffect, useMemo} from 'react'
+import {getAssetPrices, getGasPrices, selectAssetPrices, selectGasPrices} from '../redux/reducers/feeddataReducer'
+import {useDispatch, useSelector} from 'react-redux'
+import Image from 'next/image'
 
 const PriceFeed = () => {
   const dispatch = useDispatch()
@@ -13,159 +14,81 @@ const PriceFeed = () => {
     dispatch(getGasPrices() as any)
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     updateDatafeed()
     const interval = setInterval(() => {
       updateDatafeed()
     }, 30000)
     return () => clearInterval(interval)
-  },[])
+  }, [])
+
+  const data = useMemo(() => {
+    if (assetPrices && gasPrices) {
+      return [
+        {
+          icon: '/images/roundedColorEthereum.png',
+          gasFee: gasPrices['eth'],
+          price: assetPrices['eth']
+        },
+        {
+          icon: '/svgs/arbitrum.svg',
+          gasFee: gasPrices['arbitrm'],
+          price: 0
+        },
+        {
+          icon: '/svgs/avax.svg',
+          gasFee: gasPrices['avalanche'],
+          price: assetPrices['avax']
+        },
+        {
+          icon: '/svgs/binance.svg',
+          gasFee: gasPrices['bsc'],
+          price: assetPrices['bnb']
+        },
+        {
+          icon: '/svgs/fantom.svg',
+          gasFee: gasPrices['fantom'],
+          price: assetPrices['ftm']
+        },
+        {
+          icon: '/svgs/polygon.svg',
+          gasFee: gasPrices['polygon'],
+          price: assetPrices['matic']
+        },
+        {
+          icon: '/svgs/optimism.svg',
+          gasFee: gasPrices['optimism'],
+          price: 0
+        },
+      ]
+    }
+    return []
+  }, [assetPrices, gasPrices])
 
   return (
-    <div className="fixed bottom-0 w-full z-[99] pr-[70px]">
-      <div className=' flex justify-center w-full px-10  bg-[#F6F8FC]  text-center'>
-
-        <div className='flex  mr-3'>
-          <div className='flex  mr-3'>
-            <span className='text-md font-bold  mr-1	'>
-              {'ETH'}
-            </span>
-            <span className='text-md font-normal  mr-1	'>
-              ${assetPrices.eth}
-            </span>
-
-          </div>
-          <div className='flex  mr-3'>
-            <span className='text-md font-bold  mr-1	'>
-              {'BNB'}
-            </span>
-            <span className='text-md font-normal  mr-1	'>
-              ${assetPrices.bnb}
-            </span>
-
-          </div>
-          <div className='flex  mr-3'>
-            <span className='text-md font-bold  mr-1	'>
-              {'AVAX'}
-            </span>
-            <span className='text-md font-normal  mr-1	'>
-              ${assetPrices.avax}
-            </span>
-
-          </div>
-          <div className='flex  mr-3'>
-            <span className='text-md font-bold  mr-1	'>
-              {'FTM'}
-            </span>
-            <span className='text-md font-normal  mr-1	'>
-              ${assetPrices.ftm}
-            </span>
-
-          </div>
-          <div className='flex  mr-3'>
-            <span className='text-md font-bold  mr-1	'>
-              {'MATIC'}
-            </span>
-            <span className='text-md font-normal  mr-1	'>
-              ${assetPrices.matic}
-            </span>
-          </div>
-        </div>
-        <div  className='flex mr-3'>
-          <div className="flex">
-            <span className='text-md font-bold  mr-1'>|</span>
-
-          </div>
-
-        </div>
-        <div className='flex'>
-          <div className="flex mr-3">
-            <span className='text-md font-bold  mr-1	'>
-              {'Ethereum'}
-            </span>
-            <span className='text-md font-normal  mr-1	'>
-              {gasPrices.eth}
-            </span>
-            <span className='text-md font-normal  mr-1	'>
-              {'Gwei'}
-            </span>
-
-          </div>
-          <div className="flex mr-3">
-            <span className='text-md font-bold  mr-1	'>
-              {'Avalanche'}
-            </span>
-            <span className='text-md font-normal  mr-1	'>
-              {gasPrices.avalanche}
-            </span>
-            <span className='text-md font-normal  mr-1	'>
-              {'nAVAX'}
-            </span>
-
-          </div>
-          <div className="flex mr-3">
-            <span className='text-md font-bold  mr-1	'>
-              {'Arbitrum'}
-            </span>
-            <span className='text-md font-normal  mr-1	'>
-              {gasPrices.arbitrm}
-            </span>
-            <span className='text-md font-normal  mr-1	'>
-              {'Gwei'}
-            </span>
-
-          </div>
-          <div className="flex mr-3">
-            <span className='text-md font-bold  mr-1	'>
-              {'Binance'}
-            </span>
-            <span className='text-md font-normal  mr-1	'>
-              {gasPrices.bsc}
-            </span>
-            <span className='text-md font-normal  mr-1	'>
-              {'Gwei'}
-            </span>
-
-          </div>
-          <div className="flex mr-3">
-            <span className='text-md font-bold  mr-1	'>
-              {'Fantom'}
-            </span>
-            <span className='text-md font-normal  mr-1	'>
-              {gasPrices.fantom}
-            </span>
-            <span className='text-md font-normal  mr-1	'>
-              {'Gwei'}
-            </span>
-
-          </div>
-          <div className="flex mr-3">
-            <span className='text-md font-bold  mr-1	'>
-              {'Optimism'}
-            </span>
-            <span className='text-md font-normal  mr-1	'>
-              {gasPrices.optimism}
-            </span>
-            <span className='text-md font-normal  mr-1	'>
-              {'Gwei'}
-            </span>
-
-          </div>
-          <div className="flex mr-3">
-            <span className='text-md font-bold  mr-1	'>
-              {'Polygon'}
-            </span>
-            <span className='text-md font-normal  mr-1	'>
-              {gasPrices.polygon}
-            </span>
-            <span className='text-md font-normal  mr-1	'>
-              {'Gwei'}
-            </span>
-          </div>
-
-        </div>
-
-
+    <div className="fixed bottom-0 w-full z-[99] pr-[70px] h-[42px] bg-[#F6F8FC]">
+      <div className="flex items-center justify-center h-full w-full px-10 text-center">
+        {
+          data.map((item, index) => {
+            return (
+              <div key={index} className="flex mr-3">
+                <Image alt={'chainIcon'} src={item.icon} width={20} height={20} />
+                {
+                  item.price > 0 &&
+                  <span className="text-[13px] text-black font-normal ml-1">
+                    ${item.price}
+                  </span>
+                }
+                {
+                  item.gasFee > 0 &&
+                  <span className="text-[13px] text-[#969696] font-normal ml-1">
+                    {item.gasFee} gwei
+                  </span>
+                }
+              </div>
+            )
+          })
+        }
       </div>
     </div>
   )
