@@ -67,15 +67,15 @@ export const rpcProviders: { [key: number]: string } = {
   10: 'https://mainnet.optimism.io',
   42161: 'https://arb1.arbitrum.io/rpc',
   4: 'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
-  5: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
-  97: 'https://data-seed-prebsc-1-s1.binance.org:8545',
-  43113: 'https://api.avax-test.network/ext/bc/C/rpc',
-  80001: 'https://polygon-mumbai.g.alchemy.com/v2/H2EfIYrKg--DbTdHW37WJaSVuaJvTF0T',
+  [ChainIDS.ETHEREUM]: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+  [ChainIDS.BINANCE]: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+  [ChainIDS.AVALANCHE]: 'https://api.avax-test.network/ext/bc/C/rpc',
+  [ChainIDS.POLYGON]: 'https://polygon-mumbai.g.alchemy.com/v2/PBnAhVXSPI5sRtN4YRc4Xadl6bFpkyFv',
   421611: 'https://rinkeby.arbitrum.io/rpc',
-  421613: 'https://goerli-rollup.arbitrum.io/rpc',
+  [ChainIDS.ARBITRUM]: 'https://goerli-rollup.arbitrum.io/rpc',
   69: 'https://kovan.optimism.io',
-  420: 'https://goerli.optimism.io',
-  4002: 'https://rpc.testnet.fantom.network'
+  [ChainIDS.OPTIMISM]: 'https://goerli.optimism.io',
+  [ChainIDS.FANTOM]: 'https://rpc.testnet.fantom.network'
 }
 
 export const ONFT_CORE_INTERFACE_ID = '0x7bb0080b'

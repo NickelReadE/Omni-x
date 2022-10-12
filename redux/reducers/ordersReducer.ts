@@ -32,17 +32,14 @@ export const { setOrders } = ordersSlice.actions
 export const { setBidOrders } = ordersSlice.actions
 export const { setLastSaleOrder } = ordersSlice.actions
 
-
 export const getOrders = (request: IGetOrderRequest) => async (dispatch: Dispatch<any>) => {
   try {
-    if (request.signer) {
-      const orders = await orderService.getOrders({...request, ...{signer: ethers.utils.getAddress(request.signer)}})
+    const orders = await orderService.getOrders({...request, ...{signer: request.signer ? ethers.utils.getAddress(request.signer) : undefined}})
 
-      if (request.isOrderAsk) {
-        dispatch(setOrders(orders))
-      } else {
-        dispatch(setBidOrders(orders))
-      }
+    if (request.isOrderAsk) {
+      dispatch(setOrders(orders))
+    } else {
+      dispatch(setBidOrders(orders))
     }
   } catch (error) {
     console.log('getOrders error ? ', error)
