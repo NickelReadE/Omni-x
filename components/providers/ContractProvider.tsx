@@ -173,7 +173,7 @@ export const ContractProvider = ({
   }
 
   const listenTradingONFTCoreEvents = async (txInfo: PendingTxType, historyIndex: number) => {
-    if (address && chainId && !txInfo.destTxHash) {
+    if (address && chainId && (!txInfo.destTxHash || !txInfo.txHash)) {
       if (txInfo.contractType === 'ERC721') {
         const targetCoreInstance = getONFTCore721Instance(txInfo.targetAddress, txInfo.targetChainId, null)
         const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber)
@@ -251,7 +251,7 @@ export const ContractProvider = ({
     }
   }
   const listenTradingEvents = async (txInfo: PendingTxType, historyIndex: number) => {
-    if (address && txInfo.senderAddress && !txInfo.destTxHash) {
+    if (address && txInfo.senderAddress && (!txInfo.destTxHash || !txInfo.txHash)) {
       if (txInfo.contractType === 'ERC721') {
         const sellerNftInstance = getERC721Instance(txInfo.senderAddress, txInfo.senderChainId, null)
         const events = await sellerNftInstance.queryFilter(sellerNftInstance.filters.Transfer(), txInfo.senderBlockNumber)

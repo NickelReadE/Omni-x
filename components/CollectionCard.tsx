@@ -5,12 +5,11 @@ import Image from 'next/image'
 
 import {useDraggable} from '@dnd-kit/core'
 
-import {numberExpression} from '../utils/numberExpress'
-
 import editStyle from '../styles/nftbox.module.scss'
 import classNames from '../helpers/classNames'
 
 import Loading from '../public/images/loading_f.gif'
+import { numberShortify } from '../utils/constants'
 const CollectionCard = (props:any) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [image] = useState(props.collection.profile_image)
@@ -68,7 +67,7 @@ const CollectionCard = (props:any) => {
             <div className='text-[14px] flex flex-col justify-center' style={{justifyContent: 'space-between'}}>
               <div className='text-[14px] font-extrabold  mb-1 text-center'>Floor</div>                      
               <div className='flex flex-row space-x-2 justify-center' >
-                <span className='font-medium text-[12px] mr-[px]'>{props.card?numberExpression(props.card.floorPrice.usd):<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+                <span className='font-medium text-[12px] mr-[px]'>{props.card?numberShortify(props.card.floorPrice.usd):<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
                 <img src='/svgs/omni_asset.svg' className='w-[16px]' alt='asset img'></img>
               </div>
             </div>  

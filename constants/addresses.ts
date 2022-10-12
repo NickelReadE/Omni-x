@@ -1,8 +1,8 @@
 import {ChainIds} from '../types/enum'
 
-export const chains = ['eth', 'bsc', 'matic', 'avalanche', 'fantom', 'optimism', 'arbitrum']
+export const chains = ['eth', 'bsc', 'matic', 'avalanche', 'fantom', 'optimism', 'arbitrum', 'aptos']
 
-export const SUPPORTED_CHAIN_IDS = [ChainIds.ETHEREUM, ChainIds.BINANCE, ChainIds.AVALANCHE, ChainIds.POLYGON, ChainIds.ARBITRUM, ChainIds.OPTIMISM, ChainIds.FANTOM]
+export const SUPPORTED_CHAIN_IDS = [ChainIds.ETHEREUM, ChainIds.BINANCE, ChainIds.AVALANCHE, ChainIds.POLYGON, ChainIds.ARBITRUM, ChainIds.OPTIMISM, ChainIds.FANTOM, ChainIds.APTOS]
 
 export const GregContractAddress:{[key:string]:string} = {
   'eth':'0x7FFE2672C100bFb0094ad0B4d592Dd9f9416f1AC',

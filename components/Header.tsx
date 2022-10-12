@@ -9,7 +9,8 @@ import ProcessingTransaction from './transaction/ProcessingTransaction'
 import { Menu } from '@headlessui/react'
 import { getSearchText } from '../redux/reducers/headerReducer'
 import { updateRefreshBalance } from '../redux/reducers/userReducer'
-import { getOmniInstance } from '../utils/contracts'
+import { getOmniInstance, getUSDCInstance } from '../utils/contracts'
+import { ContractName, getAddressByName, parseCurrency } from '../utils/constants'
 
 type HeaderProps = {
   menu: string
@@ -44,13 +45,40 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
   }
 
   const onOmniFaucet = async () => {
-    const omni = getOmniInstance(chainId, signer)
+    if (!signer) return
 
-    const tx = await omni.mint({ gasLimit: '300000' })
-    await tx.wait()
+    // faucet omni
+    {
+      const omni = getOmniInstance(chainId, signer)
+
+      const tx = await omni.mint({ gasLimit: '300000' })
+      await tx.wait()
+
+      dispatch(openSnackBar({ message: 'You received an 10000 $OMNI', status: 'success' }))
+    }
+
+    // faucet usdc/usdt
+    {
+      let currencyName: ContractName = 'USDC'
+      let currencyAddr = getAddressByName(currencyName, chainId)
+      if (!currencyAddr) {
+        currencyName = 'USDT'
+        currencyAddr = getAddressByName(currencyName, chainId)
+      }
+      
+      const usdc = getUSDCInstance(currencyAddr, chainId, signer)
+      if (usdc) {
+        const tx = await usdc.mint(await signer.getAddress(), parseCurrency('1000', currencyName), { gasLimit: '300000' })
+        await tx.wait()
+  
+        dispatch(openSnackBar({ message: `You received an 1000 $${currencyName}`, status: 'success' }))
+      }
+      else {
+        dispatch(openSnackBar({ message: `Not support $${currencyName} on this chain`, status: 'warning' }))
+      }
+    }
 
     dispatch(updateRefreshBalance())
-    dispatch(openSnackBar({ message: 'You received an 10000 $OMNI soon', status: 'success' }))
   }
 
   const onClear = () => {

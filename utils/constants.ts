@@ -108,7 +108,7 @@ export const getChainIcons = (chainId: number) => {
   }
 }
 
-export const chainInfos: { [key: number]: { name: string; logo: string, roundedLogo: string, explorerLogo: string, officialName: string, currency: string } } = {
+export const chainInfos: { [key: number]: { name: string; logo: string, roundedLogo: string, explorerLogo: string, officialName: string, currency: string, comingSoon?: boolean } } = {
   1: {
     name: 'eth',
     logo: '/svgs/ethereum.svg',
@@ -221,6 +221,15 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
     officialName: 'Fantom',
     currency: 'FTM'
   },
+  2222: {
+    name: 'aptos-testnet',
+    logo: '/svgs/aptos.svg',
+    roundedLogo: '/svgs/aptos.svg',
+    explorerLogo: '/svgs/aptos.svg',
+    officialName: 'Aptos',
+    currency: 'APT',
+    comingSoon: true
+  }
 }
 
 export const getLayerzeroChainId = (chainId: number): number => {
@@ -453,6 +462,23 @@ export const parseCurrency = (price: string, currencyName: string) => {
   return BigNumber.from(0)
 }
 
+export const numberShortify = (price: string | number | undefined) => {
+  if (!price) return '0'
+  const decimalized = Number(price)
+
+  if (decimalized / 1e12 >= 1) return `${(decimalized / 1e12).toPrecision(5)}T`
+  if (decimalized / 1e9 >= 1) return `${(~~decimalized / 1e9)}B`
+  if (decimalized / 1e6 >= 1) return `${(~~decimalized / 1e6)}M`
+  if (decimalized / 1000 >= 1) return `${(~~decimalized / 1000)}K`
+
+  return decimalized
+}
+
+export const numberLocalize = (price: number) => {
+  if (!price) return '0'
+  return price.toLocaleString()
+}
+
 const chainIcons = Object.values(chainInfos).reduce((acc, cur) => {
   Object.assign(acc, {[cur.name]: cur.logo})
   return acc
@@ -547,6 +573,10 @@ export const findCollection = (addresses: any, nft: any, token_id: string) => {
 }
 
 export const getValidCurrencies = (chainId: number) => {
+  if (chainId === ChainIDS.ETHEREUM || chainId === ChainIDS.ARBITRUM || chainId === ChainIDS.OPTIMISM) {
+    return [CURRENCIES_LIST[0]]
+  }
+  
   if (chainId === ChainIDS.BINANCE) {
     return [CURRENCIES_LIST[0], CURRENCIES_LIST[2]]
   }
