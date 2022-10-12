@@ -15,11 +15,11 @@ export const ContractProvider = ({
   children,
 }: ContractProviderProps): JSX.Element => {
   const dispatch = useDispatch()
-  const { address, provider } = useWallet()
+  const { address, provider, chainId } = useWallet()
   const { updateHistory } = useProgress()
 
   const listenBridgeONFTCoreEvents = async (txInfo: PendingTxType, historyIndex: number) => {
-    if (address && provider?._network?.chainId) {
+    if (address && chainId) {
       if (txInfo.contractType === 'ERC721') {
         const targetCoreInstance = getONFTCore721Instance(txInfo.targetAddress, txInfo.targetChainId, null)
         const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber, txInfo.targetBlockNumber + 2000)
@@ -334,8 +334,7 @@ export const ContractProvider = ({
       } else {
         await listenBridgeEvents(txInfo, historyIndex)
       }
-    }
-    else if (txInfo.type === 'buy' || txInfo.type === 'accept') {
+    } else if (txInfo.type === 'buy' || txInfo.type === 'accept') {
       console.log('-tx-', txInfo, historyIndex)
       if (txInfo.isONFTCore) {
         await listenTradingONFTCoreEvents(txInfo, historyIndex)

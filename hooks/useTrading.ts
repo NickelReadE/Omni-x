@@ -9,7 +9,15 @@ import { collectionsService } from '../services/collections'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../types'
 import { SaleType } from '../types/enum'
 import { ContractName, CREATOR_FEE, getAddressByName, getChainIdFromName, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from '../utils/constants'
-import { getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, getOmnixExchangeInstance, getONFTCore721Instance, getTransferSelectorNftInstance } from '../utils/contracts'
+import {
+  decodeFromBytes,
+  getCurrencyInstance,
+  getCurrencyManagerInstance,
+  getERC721Instance,
+  getOmnixExchangeInstance,
+  getONFTCore721Instance,
+  getTransferSelectorNftInstance
+} from '../utils/contracts'
 import { acceptOrder, postMakerOrder } from '../utils/makeOrder'
 import { getChainNameFromId } from '../utils/constants'
 import { useMemo } from 'react'
@@ -288,7 +296,8 @@ const useTrading = ({
     let targetCollectionAddress = ''
     if (isONFTCore) {
       const onftCoreInstance = getONFTCore721Instance(order.collectionAddress, orderChainId, null)
-      targetCollectionAddress = await onftCoreInstance.getTrustedRemote(getLayerzeroChainId(chainId))
+      const remoteAddresses = await onftCoreInstance.getTrustedRemote(getLayerzeroChainId(chainId))
+      targetCollectionAddress = decodeFromBytes(remoteAddresses)
     }
 
     // PendingTxType
@@ -443,7 +452,8 @@ const useTrading = ({
 
     if (isONFTCore) {
       const onftCoreInstance = getONFTCore721Instance(bidOrder.collectionAddress, chainId, null)
-      targetCollectionAddress = await onftCoreInstance.getTrustedRemote(getLayerzeroChainId(orderChainId))
+      const remoteAddresses = await onftCoreInstance.getTrustedRemote(getLayerzeroChainId(orderChainId))
+      targetCollectionAddress = decodeFromBytes(remoteAddresses)
     }
 
     // PendingTxType
