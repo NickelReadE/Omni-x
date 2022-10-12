@@ -108,7 +108,7 @@ export const getChainIcons = (chainId: number) => {
   }
 }
 
-export const chainInfos: { [key: number]: { name: string; logo: string, roundedLogo: string, explorerLogo: string, officialName: string, currency: string } } = {
+export const chainInfos: { [key: number]: { name: string; logo: string, roundedLogo: string, explorerLogo: string, officialName: string, currency: string, comingSoon?: boolean } } = {
   1: {
     name: 'eth',
     logo: '/svgs/ethereum.svg',
@@ -227,7 +227,8 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
     roundedLogo: '/svgs/aptos.svg',
     explorerLogo: '/svgs/aptos.svg',
     officialName: 'Aptos',
-    currency: 'APT'
+    currency: 'APT',
+    comingSoon: true
   }
 }
 

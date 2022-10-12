@@ -654,7 +654,7 @@ const SideBar: React.FC = () => {
                   SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
                     return (
                       <li key={index} className="w-full">
-                        <button className="w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(networkId)}>
+                        <button className="w-full hover:bg-l-50 pl-[70px] py-[7px]" disabled={!!chainInfos[networkId].comingSoon} onClick={() => onClickNetwork(networkId)}>
                           <div className="flex flex-row w-[130px]">
                             <div className="flex items-center w-[36px] h-[36px]">
                               <img alt={'networkIcon'} src={chainInfos[networkId].logo || chainInfos[ChainIds.ETHEREUM].logo} width={24} height={28} />
@@ -818,7 +818,7 @@ const SideBar: React.FC = () => {
                   {
                     SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
                       return (
-                        <button key={index} onClick={() => handleTargetChainChange(networkId)} className={targetChain === networkId ? 'border border-g-300' : ''}>
+                        <button key={index} disabled={!!chainInfos[networkId].comingSoon} onClick={() => handleTargetChainChange(networkId)} className={targetChain === networkId ? 'border border-g-300' : ''}>
                           <img alt={'networkIcon'} src={chainInfos[networkId].logo || chainInfos[ChainIds.ETHEREUM].logo} width={24} height={28} />
                         </button>
                       )
