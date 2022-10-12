@@ -467,8 +467,6 @@ const getOwnercount = (collection: any): Promise<number> => {
         if (resp?.nfts) {
           totalCnt += resp.nfts.length
         }
-
-
       }
     }
     ret(totalCnt)

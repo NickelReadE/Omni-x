@@ -1,11 +1,11 @@
-import { BigNumber } from 'ethers'
-import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
-import { IOrder } from '../interface/interface'
-import { selectBidOrders, selectLastSaleOrders, selectOrders } from '../redux/reducers/ordersReducer'
-import { selectCollectionInfo } from '../redux/reducers/collectionsReducer'
-import { SaleType } from '../types/enum'
-import { formatCurrency, getCurrencyIconByAddress, getCurrencyNameAddress } from '../utils/constants'
+import {BigNumber} from 'ethers'
+import {useMemo} from 'react'
+import {useSelector} from 'react-redux'
+import {IOrder} from '../interface/interface'
+import {selectBidOrders, selectLastSaleOrders, selectOrders} from '../redux/reducers/ordersReducer'
+import {selectCollectionInfo} from '../redux/reducers/collectionsReducer'
+import {SaleType} from '../types/enum'
+import {formatCurrency, getCurrencyIconByAddress, getCurrencyNameAddress} from '../utils/constants'
 
 export type OrderStatics = {
   order?: IOrder,
@@ -21,13 +21,15 @@ export type OrderStatics = {
 
 const findOrder = (orders: IOrder[], token_id: number, collection_addresses: string[], isDetailPage: boolean) => {
   if (isDetailPage) {
-    if (collection_addresses.indexOf(orders[0].collectionAddress) != -1
+    if (collection_addresses.map(address => address.toLowerCase()).indexOf(orders[0].collectionAddress.toLowerCase()) != -1
       && token_id === Number(orders[0].tokenId)) {
       return orders[0]
     }
   } else {
-    return [...orders].find(order => ( // TODO: find last order by timestamp
-      collection_addresses.indexOf(order.collectionAddress) != -1
+    return [...orders].sort((a, b) => {
+      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    }).find(order => ( // TODO: find last order by timestamp
+      collection_addresses.map(address => address.toLowerCase()).indexOf(order.collectionAddress.toLowerCase()) != -1
       && token_id === Number(order.tokenId)
     ))
   }
@@ -66,7 +68,7 @@ const useOrderStatics = ({
   // highest bid
   const sortedBids = useMemo(() => {
     if (bidOrders?.length > 0 && nft) {
-      const sortedBids = [...bidOrders]
+      return [...bidOrders]
         .filter(o => (collection_addresses.indexOf(o.collectionAddress) != -1
           && Number(nft.token_id) === Number(o.tokenId)))
         .sort((o1, o2) => {
@@ -75,10 +77,9 @@ const useOrderStatics = ({
           if (p1.eq(p2)) return 0
           return p2.sub(p1).isNegative() ? -1 : 1
         })
-      return sortedBids
     }
     return undefined
-  }, [bidOrders, collection_addresses])
+  }, [bidOrders, collection_addresses, nft])
 
   const highestBidOrder = (sortedBids && sortedBids.length > 0) ? sortedBids[0] : undefined
   const highestBidCoin = highestBidOrder?.currencyAddress && getCurrencyIconByAddress(highestBidOrder?.currencyAddress)
@@ -100,7 +101,7 @@ const useOrderStatics = ({
   const isAuction = order?.params?.[1] == SaleType.AUCTION
   return {
     order,
-    orderChainId: order && Number(Object.keys(collection_address_map)[collection_addresses.indexOf(order.collectionAddress)]),
+    orderChainId: order && Number(Object.keys(collection_address_map)[collection_addresses.map(address => address.toLowerCase()).indexOf(order.collectionAddress.toLowerCase())]),
     isListed,
     isAuction,
     sortedBids,

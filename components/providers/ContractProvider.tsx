@@ -20,7 +20,7 @@ export const ContractProvider = ({
   const UPDATE_TIMESTAMP = 10000
 
   const listenBridgeONFTCoreEvents = async (txInfo: PendingTxType, historyIndex: number) => {
-    if (address && chainId) {
+    if (address && chainId && !txInfo.destTxHash) {
       if (txInfo.contractType === 'ERC721') {
         const targetCoreInstance = getONFTCore721Instance(txInfo.targetAddress, txInfo.targetChainId, null)
         const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber)
@@ -95,7 +95,7 @@ export const ContractProvider = ({
   }
 
   const listenBridgeEvents = async (txInfo: PendingTxType, historyIndex: number) => {
-    if (address && provider?._network?.chainId) {
+    if (address && chainId && !txInfo.destTxHash) {
       if (txInfo.contractType === 'ERC721') {
         const noSignerOmniXInstance = getOmnixBridgeInstance(txInfo.targetChainId, null)
         const events = await noSignerOmniXInstance.queryFilter(noSignerOmniXInstance.filters.LzReceive(), txInfo.targetBlockNumber)
@@ -173,7 +173,7 @@ export const ContractProvider = ({
   }
 
   const listenTradingONFTCoreEvents = async (txInfo: PendingTxType, historyIndex: number) => {
-    if (address && provider?._network?.chainId) {
+    if (address && chainId && !txInfo.destTxHash) {
       if (txInfo.contractType === 'ERC721') {
         const targetCoreInstance = getONFTCore721Instance(txInfo.targetAddress, txInfo.targetChainId, null)
         const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber)
@@ -251,7 +251,7 @@ export const ContractProvider = ({
     }
   }
   const listenTradingEvents = async (txInfo: PendingTxType, historyIndex: number) => {
-    if (address && txInfo.senderAddress) {
+    if (address && txInfo.senderAddress && !txInfo.destTxHash) {
       if (txInfo.contractType === 'ERC721') {
         const sellerNftInstance = getERC721Instance(txInfo.senderAddress, txInfo.senderChainId, null)
         const events = await sellerNftInstance.queryFilter(sellerNftInstance.filters.Transfer(), txInfo.senderBlockNumber)
@@ -347,7 +347,7 @@ export const ContractProvider = ({
 
   useEffect(() => {
     (async () => {
-      if (address && provider?._network?.chainId) {
+      if (address && chainId) {
         const allHistories = localStorage.getItem('txHistories')
         const txInfos = allHistories ? JSON.parse(allHistories) : []
         await Promise.all(
