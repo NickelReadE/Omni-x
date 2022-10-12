@@ -4,6 +4,7 @@ import { IGetOrderRequest } from '../../interface/interface'
 import { orderService } from '../../services/orders'
 import { MakerOrderWithSignature } from '../../types'
 import { openSnackBar } from './snackBarReducer'
+import {ethers} from 'ethers'
 
 //reducers
 export const ordersSlice = createSlice({
@@ -34,12 +35,14 @@ export const { setLastSaleOrder } = ordersSlice.actions
 
 export const getOrders = (request: IGetOrderRequest) => async (dispatch: Dispatch<any>) => {
   try {
-    const orders = await orderService.getOrders(request)
+    if (request.signer) {
+      const orders = await orderService.getOrders({...request, ...{signer: ethers.utils.getAddress(request.signer)}})
 
-    if(request.isOrderAsk){
-      dispatch(setOrders(orders))
-    } else {
-      dispatch(setBidOrders(orders))
+      if (request.isOrderAsk) {
+        dispatch(setOrders(orders))
+      } else {
+        dispatch(setBidOrders(orders))
+      }
     }
   } catch (error) {
     console.log('getOrders error ? ', error)

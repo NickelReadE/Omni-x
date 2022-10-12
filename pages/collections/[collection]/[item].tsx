@@ -48,7 +48,7 @@ const Item: NextPage = () => {
     }
     return undefined
   }, [nftInfo,token_id])
-  const  collection_address = collectionInfo?.[0]
+  const collection_address = collectionInfo?.[0]
   const chain_id = collectionInfo?.[1]
   // ownership hook
   const {

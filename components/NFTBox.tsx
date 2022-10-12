@@ -14,16 +14,16 @@ import useTrading from '../hooks/useTrading'
 import { getCurrencyIconByAddress } from '../utils/constants'
 
 const NFTBox = ({nft, index}: IPropsNFTItem) => {
-  const { chainId } = useWallet()
-  const [imageError, setImageError] = useState(false)
-  const [isShowBtn, SetIsShowBtn] = useState(false)
-  const collections = useSelector(selectCollections)
-
   const {
     provider,
     address,
-    signer
+    signer,
+    chainId
   } = useWallet()
+
+  const [imageError, setImageError] = useState(false)
+  const [isShowBtn, SetIsShowBtn] = useState(false)
+  const collections = useSelector(selectCollections)
 
   const {attributes, listeners, setNodeRef, transform} = useDraggable({
     id: `draggable-${index}`,

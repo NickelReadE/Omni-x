@@ -101,7 +101,8 @@ export interface IOrder {
   r: string,
   s: string,
   hash: string,
-  status: OrderStatus
+  status: OrderStatus,
+  updatedAt: string,
 }
 
 export type OrderStatus = 'EXECUTED' | 'EXPIRED'

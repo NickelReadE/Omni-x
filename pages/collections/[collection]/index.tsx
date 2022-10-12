@@ -383,13 +383,12 @@ const Collection: NextPage = () => {
         const collection_address = collectionInfo.address[nfts[i].chain_id].toLowerCase()
 
         for (let j = 0; j < orders.length; j++) {
-          if (collection_address == orders[j].collectionAddress && nfts[i].token_id == orders[j].tokenId) {
+          if (collection_address == orders[j].collectionAddress.toLowerCase() && nfts[i].token_id == orders[j].tokenId) {
             temp.push(nfts[i])
             break
           }
         }
       }
-      console.log(temp)
       setListNFTs(temp)
     }
   }, [isActiveBuyNow, collectionInfo, nfts])
