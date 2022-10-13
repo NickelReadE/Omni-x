@@ -37,8 +37,6 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
   const [avatar, setAvatar] = useState(process.env.API_URL + 'uploads/default_avatar.png')
   const [gregName, setGregName] = useState(useSelector(selectHeroSkin))
   const [banner_1, setBanner_1] = useState(process.env.API_URL + DEFAULT_BANNER)
-  const [banner_2, setBanner_2] = useState(process.env.API_URL + DEFAULT_BANNER)
-  const [banner_3, setBanner_3] = useState(process.env.API_URL + DEFAULT_BANNER)
   const [bannerSelected, setBannerSelect] = useState(0)
   const [username, setUserName] = useState('')
   const [bio, setBio] = useState('')
@@ -71,8 +69,6 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
     if ( user.address != undefined ) {
       setAvatar(user.avatar === undefined || user.avatar === DEFAULT_AVATAR ? '/images/default_avatar.png': (process.env.API_URL + user.avatar))
       setBanner_1(user.banners[0] === undefined || user.banners[0] === DEFAULT_BANNER ? '/images/default_banner.png' : (process.env.API_URL + user.banners[0]))
-      setBanner_2(user.banners[1] === undefined || user.banners[1] === DEFAULT_BANNER ? '/images/default_banner.png' : (process.env.API_URL + user.banners[1]))
-      setBanner_3(user.banners[2] === undefined || user.banners[2] === DEFAULT_BANNER ? '/images/default_banner.png' : (process.env.API_URL + user.banners[2]))
       setUserName(user.username)
       setBio(user.bio)
       setTwitter(user.twitter)
@@ -123,12 +119,6 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
   const onClickBanner_1 = () => {
     document.getElementById('image_banner_1')?.click()
   }
-  const onClickBanner_2 = () => {
-    document.getElementById('image_banner_2')?.click()
-  }
-  const onClickBanner_3 = () => {
-    document.getElementById('image_banner_3')?.click()
-  }
 
   const updateProfile = async (e: React.SyntheticEvent) => {
     e.preventDefault()
@@ -139,16 +129,10 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
       const formData = new FormData(updateProfileFormRef.current)
       const address = context.address?context.address:''
       formData.append('address', address)
-      formData.append('greg',gregName)      
+      formData.append('greg',gregName)
 
       if ( banner_1 != process.env.API_URL + DEFAULT_BANNER && banner_1 != '/images/default_banner.png' ) {
         formData.append('banner_1', (await getFileFromUrl(banner_1, 'banner1.png')) as any)
-      }
-      if ( banner_2 != process.env.API_URL + DEFAULT_BANNER && banner_2 != '/images/default_banner.png' ) {
-        formData.append('banner_2', (await getFileFromUrl(banner_2, 'banner2.png')) as any)
-      }
-      if ( banner_3 != process.env.API_URL + DEFAULT_BANNER && banner_3 != '/images/default_banner.png' ) {
-        formData.append('banner_3', (await getFileFromUrl(banner_3, 'banner3.png')) as any)
       }
       dispatch(updateHeroSkin(gregName) as any)
       dispatch(updateUser(formData) as any)
@@ -194,12 +178,6 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
       switch(bannerSelected) {
       case 1:
         setBanner_1(croppedImage as string)
-        break
-      case 2:
-        setBanner_2(croppedImage as string)
-        break
-      case 3:
-        setBanner_3(croppedImage as string)
         break
       }
       setCropDlgOpen(false)
@@ -281,83 +259,22 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                 onChange={onChangeBanner_1}
                 className="hidden"
               />
-              <input
-                id="image_banner_2"
-                accept="image/*"
-                type="file"
-                onChange={onChangeBanner_2}
-                className="hidden"
-              />
-              <input
-                id="image_banner_3"
-                accept="image/*"
-                type="file"
-                onChange={onChangeBanner_3}
-                className="hidden"
-              />
               <div className="border-gray-300 bg-[#E9ECEF] border-2 p-5 px-10">
-                <div className="grid grid-cols-3 gap-4 w-full">
-                  <div>
-                    <div className="border-[#B444F9] mb-5 relative cursor-pointer" onClick={onClickBanner_1}>
-                      <div
-                        className="absolute z-10 top-[50%] mt-[-20px] left-[50%] ml-[-20px] bg-[#E9ECEF99] rounded-full w-[40px] h-[40px] p-2"
-                      >
-                        <Image src={Photo} alt="photo" />
-                      </div>
-                      <div className="border-image">
-                        <Image
-                          src={(typeof banner_1 == 'string')?banner_1:URL.createObjectURL(banner_1)}
-                          alt="first image1"
-                          layout="responsive"
-                          width={200}
-                          height={100}
-                        />
-                      </div>
+                <div className={'h-[200px]'}>
+                  <div className="border-[#B444F9] mb-5 relative cursor-pointer h-full" onClick={onClickBanner_1}>
+                    <div
+                      className="absolute z-10 top-[50%] mt-[-20px] left-[50%] ml-[-20px] bg-[#E9ECEF99] rounded-full w-[40px] h-[40px] p-2"
+                    >
+                      <Image src={Photo} alt="photo" />
                     </div>
-                    <div className="rounded-full mx-auto bg-[#B444F9] text-white center w-[47px] h-[47px] text-2xl text-center p-2">
-                      1
-                    </div>
-                  </div>
-                  <div>
-                    <div className="border-[#B444F9] mb-5 relative cursor-pointer" onClick={onClickBanner_2}>
-                      <div
-                        className="absolute z-10 top-[50%] mt-[-20px] left-[50%] ml-[-20px] bg-[#E9ECEF99] rounded-full w-[40px] h-[40px] p-2"
-                      >
-                        <Image src={Photo} alt="photo" />
-                      </div>
-                      <div className="border-image">
-                        <Image
-                          src={(typeof banner_2 == 'string')?banner_2:URL.createObjectURL(banner_2)}
-                          alt="first image"
-                          layout="responsive"
-                          width={200}
-                          height={100}
-                        />
-                      </div>
-                    </div>
-                    <div className="rounded-full mx-auto bg-[#B444F9] text-white center w-[47px] h-[47px] text-2xl text-center p-2">
-                      2
-                    </div>
-                  </div>
-                  <div>
-                    <div className="border-[#B444F9] mb-5 relative cursor-pointer" onClick={onClickBanner_3}>
-                      <div
-                        className="absolute z-10 top-[50%] mt-[-20px] left-[50%] ml-[-20px] bg-[#E9ECEF99] rounded-full w-[40px] h-[40px] p-2"
-                      >
-                        <Image src={Photo} alt="photo" />
-                      </div>
-                      <div className="border-image">
-                        <Image
-                          src={(typeof banner_3 == 'string')?banner_3:URL.createObjectURL(banner_3)}
-                          alt="first image"
-                          layout="responsive"
-                          width={200}
-                          height={100}
-                        />
-                      </div>
-                    </div>
-                    <div className="rounded-full mx-auto bg-[#B444F9] text-white center w-[47px] h-[47px] text-2xl text-center p-2">
-                      3
+                    <div className="border-image h-full">
+                      <Image
+                        src={(typeof banner_1 == 'string')?banner_1:URL.createObjectURL(banner_1)}
+                        alt="first image1"
+                        layout="fill"
+                        width={'100%'}
+                        height={'100%'}
+                      />
                     </div>
                   </div>
                 </div>
@@ -473,7 +390,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
 
                   <div className="w-full mb-3 mt-3 flex items-center">
                     <div className="text-[#6C757D] mr-2">
-                      <Image src={Twitter} alt="tiwitter" />
+                      <Image src={Twitter} alt="twitter" />
                     </div>
                     <input
                       type="text"
