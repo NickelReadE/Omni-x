@@ -93,26 +93,6 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
     }
   }
 
-  const onChangeBanner_2 = async (e: any) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0]
-      const imageDataUrl = await readFile(file)
-
-      setCropDlgOpen(true)
-      setImageSrc(imageDataUrl)
-      setBannerSelect(2)
-    }
-  }
-  const onChangeBanner_3 = async (e: any) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0]
-      const imageDataUrl = await readFile(file)
-
-      setCropDlgOpen(true)
-      setImageSrc(imageDataUrl)
-      setBannerSelect(3)
-    }
-  }
   const onClickAvatar = () => {
     document.getElementById('image_avatar')?.click()
   }
