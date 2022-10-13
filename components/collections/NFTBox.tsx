@@ -1,15 +1,13 @@
 import React, {useMemo} from 'react'
 import {useState} from 'react'
 import Link from 'next/link'
-import {IPropsNFTItem} from '../../interface/interface'
+import {IListingData, IPropsNFTItem} from '../../interface/interface'
 import LazyLoad from 'react-lazyload'
 import {
   getCurrencyIconByAddress,
   getChainIconById,
   getChainNameFromId,
   findCollection,
-  getCurrencyNameAddress,
-  formatCurrency,
   numberShortify
 } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'
@@ -22,7 +20,7 @@ import ConfirmSell from './ConfirmSell'
 import {selectCollectionInfo} from '../../redux/reducers/collectionsReducer'
 import {useSelector} from 'react-redux'
 
-const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
+const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
   const [isShowBtn, SetIsShowBtn] = useState(false)
   const {
@@ -54,12 +52,10 @@ const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
   const {
     order,
     orderChainId,
-    isListed,
     isAuction,
     highestBid,
     highestBidCoin,
     lastSale,
-    lastSaleCoin,
   } = useOrderStatics({nft, collection_address_map})
 
   const order_collection_address = order?.collectionAddress
@@ -93,14 +89,29 @@ const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
   const chainIcon = useMemo(() => {
     return getChainIconById(chain ? chain : '5')
   }, [chain])
-  const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
-  const formattedPrice = formatCurrency(order?.price || 0, getCurrencyNameAddress(order?.currencyAddress))
+  const currencyIcon = getCurrencyIconByAddress(nft.currency)
+
+  const isListed = useMemo(() => {
+    return nft.price > 0
+  }, [nft])
+
   const isOwner = useMemo(() => {
     if (nft && nft.owner) {
       return nft.owner.toLowerCase() === address?.toLowerCase()
     }
     return false
   }, [nft, address]) // owner?.toLowerCase() == address?.toLowerCase()
+
+  const lastSaleCoinIcon = useMemo(() => {
+    if (nft && nft.currency) {
+      return getCurrencyIconByAddress(nft.currency)
+    }
+  }, [nft])
+
+  const onListingAndRefresh = async (e: IListingData) => {
+    await onListing(e)
+    await onRefresh()
+  }
 
   return (
     <div
@@ -137,7 +148,7 @@ const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
               {isListed && <>
                 <img src={currencyIcon || '/svgs/ethereum.svg'} className="w-[18px] h-[18px]" alt="icon"/>
                 <span
-                  className="text-[#000000] text-[18px] font-extrabold ml-2">{numberShortify(formattedPrice)}</span>
+                  className="text-[#000000] text-[18px] font-extrabold ml-2">{numberShortify(nft.price)}</span>
               </>}
             </div>
           </div>
@@ -149,7 +160,7 @@ const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
             <div className="flex items-center ml-3">
               {lastSale != 0 && <>
                 <span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span>
-                <img alt={'saleIcon'} src={lastSaleCoin} className="w-[18px] h-[18px]"/>&nbsp;
+                <img alt={'saleIcon'} src={lastSaleCoinIcon} className="w-[18px] h-[18px]"/>&nbsp;
                 <span
                   className="text-[#6C757D] text-[14px]font-bold">{numberShortify(lastSale)}</span>
               </>}
@@ -191,7 +202,7 @@ const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
       </div>
 
       <ConfirmSell
-        onSubmit={onListing}
+        onSubmit={(e) => onListingAndRefresh(e)}
         handleSellDlgClose={() => {
           setOpenSellDlg(false)
         }}
