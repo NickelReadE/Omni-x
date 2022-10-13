@@ -52,6 +52,7 @@ const prepareMakerOrder = async(
   optionalParams: PostMakerOrderOptionalParams = {},
   chain: string,
   chain_id: number,
+  col_url: string,
 ) => {
   const now = Date.now()
   const { tokenId, params, startTime, endTime } = optionalParams
@@ -101,7 +102,8 @@ export const postMakerOrder = async(
   optionalParams: PostMakerOrderOptionalParams = {},
   chain: string,
   chain_id: number,
-  needSign: boolean
+  needSign: boolean,
+  col_url: string,
 ) => {
 
   const signer = library.getSigner()
@@ -123,6 +125,7 @@ export const postMakerOrder = async(
     optionalParams,
     chain,
     chain_id,
+    col_url,
   )
 
   return await orderService.createOrder(data)
@@ -147,6 +150,7 @@ export const updateMakerOrder = async (
   optionalParams: PostMakerOrderOptionalParams = {},
   chain: string,
   chain_id: number,
+  col_url: string,
 ) => {
   const signer = library.getSigner()
   const signerAddress = await signer.getAddress()
@@ -165,7 +169,8 @@ export const updateMakerOrder = async (
     currency,
     optionalParams,
     chain,
-    chain_id
+    chain_id,
+    col_url,
   )
 
   const order = await orderService.createOrder(data)

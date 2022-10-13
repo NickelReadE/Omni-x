@@ -40,6 +40,8 @@ export interface NFTItem {
   contract_type: string,
   chain: string,
   token_address: string,
+  owner: string,
+  collection_address: string,
   uri: string,
 }
 

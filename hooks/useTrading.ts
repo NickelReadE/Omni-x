@@ -204,10 +204,9 @@ const useTrading = ({
       },
       chainName,
       chainId,
-      true
+      true,
+      collection_name,
     )
-
-    await collectionsService.updateCollectionNFTListPrice(collection_name, token_id, listingData.price)
 
     if (!listingData.isAuction) {
       const transferSelector = getTransferSelectorNftInstance(chainId, signer)
@@ -216,7 +215,7 @@ const useTrading = ({
       await approveNft(nftContract, address, transferManagerAddr, token_id)
     }
 
-    dispatch(openSnackBar({ message: '  Success', status: 'success' }))
+    dispatch(openSnackBar({ message: 'Success', status: 'success' }))
     getListOrders()
     setOpenSellDlg(false)
   }
@@ -328,7 +327,7 @@ const useTrading = ({
     await tx.wait()
     await updateOrderStatus(order, 'EXECUTED')
 
-    await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
+    // await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
     await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(order?.price)/10**decimal as number)
     await collectionsService.updateCollectionNFTChainID(collection_name,token_id,Number(chainId))
 
@@ -381,7 +380,8 @@ const useTrading = ({
         },
         getChainNameFromId(chainId),
         chainId, // TODO: check chainId usage
-        true
+        true,
+        collection_name
       )
 
       const approveTxs = []
@@ -486,7 +486,7 @@ const useTrading = ({
     const receipt = await tx.wait()
     if(receipt!=null){
       await updateOrderStatus(bidOrder, 'EXECUTED')
-      await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
+      // await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
       await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(bidOrder?.price)/10**decimal as number)
       await collectionsService.updateCollectionNFTChainID(collection_name,token_id,Number(chainId))
 

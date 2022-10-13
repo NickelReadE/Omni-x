@@ -241,20 +241,21 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
               />
               <div className="border-gray-300 bg-[#E9ECEF] border-2 p-5 px-10">
                 <div className={'h-[200px]'}>
-                  <div className="border-[#B444F9] mb-5 relative cursor-pointer h-full" onClick={onClickBanner_1}>
+                  <div className="mb-5 relative cursor-pointer h-full" onClick={onClickBanner_1}>
                     <div
                       className="absolute z-10 top-[50%] mt-[-20px] left-[50%] ml-[-20px] bg-[#E9ECEF99] rounded-full w-[40px] h-[40px] p-2"
                     >
                       <Image src={Photo} alt="photo" />
                     </div>
-                    <div className="border-image h-full">
-                      <Image
-                        src={(typeof banner_1 == 'string')?banner_1:URL.createObjectURL(banner_1)}
-                        alt="first image1"
-                        layout="fill"
-                        width={'100%'}
-                        height={'100%'}
-                      />
+                    <div className="flex justify-center items-center">
+                      <div className="border-[#B444F9] h-full">
+                        <Image
+                          src={(typeof banner_1 == 'string')?banner_1:URL.createObjectURL(banner_1)}
+                          alt="first image1"
+                          layout="fill"
+                          objectFit={'contain'}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -42,18 +42,6 @@ const updateCollectionNFTChainID =async (col_url:string,token_id:number,chain_id
   return res.data
 }
 
-const addNFT = async(col_url:string,tokenId:number,chainId:any,nextIDMetadataURI:RequestInfo) => {
-  const option = {
-    col_url,
-    tokenId,
-    chainId,
-    nextIDMetadataURI
-  }
-  const res = await API.post('collections/addNFT',option)
-  console.log(res.data)
-  return res.data
-}
-
 const getCollectionAllNFTs = async (col_url: string,sort: string, searchObj: Object) => {
   const option = {
     col_url,
@@ -101,5 +89,4 @@ export const collectionsService = {
   updateCollectionNFTListPrice,
   updateCollectionNFTSalePrice,
   updateCollectionNFTChainID,
-  addNFT
 }

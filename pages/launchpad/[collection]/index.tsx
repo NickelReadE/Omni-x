@@ -1,21 +1,20 @@
-import type { NextPage } from 'next'
+import type {NextPage} from 'next'
 import Image from 'next/image'
-import { useRouter } from 'next/router'
-import { ethers } from 'ethers'
-import React, { useState , useEffect, useCallback } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { getAdvancedInstance } from '../../../utils/contracts'
-import { ToastContainer, toast } from 'react-toastify'
+import {useRouter} from 'next/router'
+import {ethers} from 'ethers'
+import React, {useState, useEffect, useCallback} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
+import {getAdvancedInstance} from '../../../utils/contracts'
+import {ToastContainer, toast} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { Slide } from 'react-toastify'
-import { getCollectionInfo, selectCollectionInfo } from '../../../redux/reducers/collectionsReducer'
+import {Slide} from 'react-toastify'
+import {getCollectionInfo, selectCollectionInfo} from '../../../redux/reducers/collectionsReducer'
 import MinusSign from '../../../public/images/minus-sign.png'
 import PlusSign from '../../../public/images/plus-sign.png'
 import mintstyles from '../../../styles/mint.module.scss'
 import classNames from '../../../helpers/classNames'
 import useWallet from '../../../hooks/useWallet'
 import {ChainIds} from '../../../types/enum'
-import { collectionsService } from '../../../services/collections'
 import {SUPPORTED_CHAIN_IDS} from '../../../constants/addresses'
 import {chainInfos} from '../../../utils/constants'
 
@@ -34,33 +33,33 @@ const Mint: NextPage = () => {
   const [totalNFTCount, setTotalNFTCount] = useState<number>(0)
   const [nextTokenId, setNextTokenId] = useState<number>(0)
   const [transferNFT] = useState<number>(0)
-  const [isMinting,setIsMinting] = useState<boolean>(false)
+  const [isMinting, setIsMinting] = useState<boolean>(false)
   const [isSwitchingNetwork] = useState<boolean>(false)
   const [price, setPrice] = useState(0)
   const [startId, setStartId] = useState(0)
   const [totalCnt, setTotalCnt] = useState(0)
   const [mintedCnt, setMintedCnt] = useState(0)
-  const decrease = ():void => {
-    if(mintNum > 1) {
+  const decrease = (): void => {
+    if (mintNum > 1) {
       setMintNum(mintNum - 1)
     }
   }
 
-  const increase = ():void => {
-    if(mintNum < 5) {
+  const increase = (): void => {
+    if (mintNum < 5) {
       setMintNum(mintNum + 1)
     }
   }
-  const errorToast = (error:string):void =>{
-    toast.error(error,{
+  const errorToast = (error: string): void => {
+    toast.error(error, {
       position: toast.POSITION.TOP_RIGHT,
       autoClose: 3000,
       transition: Slide
     })
   }
 
-  const getInfo = useCallback(async ():Promise<void> => {
-    try{
+  const getInfo = useCallback(async (): Promise<void> => {
+    try {
       const tokenContract = getAdvancedInstance(collectionInfo.address[chainId ? chainId : 0], (chainId ? chainId : ChainIds.ETHEREUM), null)
       setStartId(Number(collectionInfo.start_ids[chainId ? chainId : 0]))
 
@@ -70,50 +69,42 @@ const Mint: NextPage = () => {
       const nextId = await tokenContract.nextMintId()
       setTotalNFTCount(Number(max_mint))
       setNextTokenId(Number(nextId))
-    } catch(error){
+    } catch (error) {
       console.log(error)
     }
-  },[chainId, collectionInfo])
+  }, [chainId, collectionInfo])
 
-  const mint = async ():Promise<void> => {
-    if(chainId===undefined){
+  const mint = async (): Promise<void> => {
+    if (chainId === undefined) {
       return
     }
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner()
     const tokenContract = getAdvancedInstance(collectionInfo?.address[chainId], chainId, signer)
-    const nextId = await tokenContract.nextMintId()
 
     let mintResult
     setIsMinting(true)
     try {
-      mintResult = await tokenContract.publicMint(mintNum, {value: ethers.utils.parseEther((price*mintNum).toString())})
+      mintResult = await tokenContract.publicMint(mintNum, {value: ethers.utils.parseEther((price * mintNum).toString())})
 
       const receipt = await mintResult.wait()
 
-      if(receipt!=null){
-        for(let i=1;i<=mintNum;i++){
-          const tokenId = Number(nextId)+i
-          const nextIDMetadataURI = await tokenContract.tokenURI(tokenId as any)
-          if(nextIDMetadataURI){
-            await collectionsService.addNFT(col_url,tokenId,chainId,nextIDMetadataURI)
-          }
-        }
+      if (receipt != null) {
         setIsMinting(false)
-        getInfo()
+        await getInfo()
       }
 
-    } catch (e:any) {
+    } catch (e: any) {
       console.log(e)
-      if(e['code'] == 4001){
+      if (e['code'] == 4001) {
         errorToast('user denied transaction signature')
       } else {
-        const currentBalance = await provider.getBalance(address?address:'')
+        const currentBalance = await provider.getBalance(address ? address : '')
 
-        if(Number(currentBalance)/Math.pow(10,18)<collectionInfo.price*mintNum){
+        if (Number(currentBalance) / Math.pow(10, 18) < collectionInfo.price * mintNum) {
           errorToast('There is not enough money to mint nft')
         } else {
-          errorToast('your address is not whitelisted on '+ provider?._network.name)
+          errorToast('your address is not whitelisted on ' + provider?._network.name)
         }
       }
       setIsMinting(false)
@@ -121,45 +112,50 @@ const Mint: NextPage = () => {
   }
   const mintButton = () => {
     // if(mintable){
-    const tmp=1
-    if(tmp===1){
-      if(isMinting){
-        return(
-          <button type='button'  disabled><i  className='fa fa-spinner fa-spin font-bold text-xl  ' style={{'letterSpacing':'normal'}}/>mint now</button>
+    const tmp = 1
+    if (tmp === 1) {
+      if (isMinting) {
+        return (
+          <button type="button" disabled>
+            <i className="fa fa-spinner fa-spin font-bold text-xl"
+              style={{'letterSpacing': 'normal'}}
+            />
+            mint now
+          </button>
         )
       } else {
-        if(isSwitchingNetwork){
-          return(
-            <button type='button' disabled>mint now</button>
+        if (isSwitchingNetwork) {
+          return (
+            <button type="button" disabled>mint now</button>
           )
         } else {
-          return(
-            <button type='button' onClick={()=>mint()}>mint now</button>
+          return (
+            <button type="button" onClick={() => mint()}>mint now</button>
           )
         }
       }
-    } else{
-      return(
-        <button type='button'  disabled>mint now</button>
+    } else {
+      return (
+        <button type="button" disabled>mint now</button>
       )
     }
   }
   useEffect(() => {
-    const calculateFee = async():Promise<void> => {
-      try{
-        if(transferNFT){
+    const calculateFee = async (): Promise<void> => {
+      try {
+        if (transferNFT) {
           //const provider = new ethers.providers.Web3Provider(window.ethereum)
           //const signer = provider.getSigner()
           // const tokenContract =  new ethers.Contract(addresses[`${Number(chainId).toString(10)}`].address, AdvancedONT.abi, signer)
           //const adapterParam = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 200000])
           //const fee:any =[0.001] //await tokenContract.estimateSendFee(addresses[toChain].chainId, account,transferNFT,false,adapterParam)
           // setEstimateFee('Estimate Fee :'+(Number(fee[0])/Math.pow(10,18)*1.1).toFixed(10)+addresses[chainId].unit)
-        }else{
+        } else {
           //setEstimateFee('')
         }
-      } catch(error){
+      } catch (error) {
         console.log(error)
-        if(String(chainId) == toChain){
+        if (String(chainId) == toChain) {
           //errorToast(`${addresses[toChain].name} is currently unavailable for transfer`)
         } else {
           //errorToast('Please Check the Internet Connection!!!')
@@ -168,60 +164,65 @@ const Mint: NextPage = () => {
       }
     }
     calculateFee()
-  },[toChain,transferNFT,chainId])
+  }, [toChain, transferNFT, chainId])
 
-  useEffect(()=>{
+  useEffect(() => {
     (async () => {
-      if(chainId && provider && address && collectionInfo){
+      if (chainId && provider && address && collectionInfo) {
         await getInfo()
       }
     })()
-  },[provider,address,collectionInfo,chainId,getInfo])
-  useEffect(()=>{
+  }, [provider, address, collectionInfo, chainId, getInfo])
+  useEffect(() => {
     dispatch(getCollectionInfo(col_url) as any)
-  },[col_url,dispatch])
-  useEffect(()=>{
-    if(Number(nextTokenId)>=0 && startId >=0){
+  }, [col_url, dispatch])
+  useEffect(() => {
+    if (Number(nextTokenId) >= 0 && startId >= 0) {
       setMintedCnt(Number(nextTokenId) - startId)
     }
-  },[nextTokenId, startId])
-  useEffect(()=>{
-    if(Number(totalNFTCount)>=0 && startId >=0){
+  }, [nextTokenId, startId])
+  useEffect(() => {
+    if (Number(totalNFTCount) >= 0 && startId >= 0) {
       setTotalCnt(Number(totalNFTCount) - startId)
     }
-  },[totalNFTCount, startId])
+  }, [totalNFTCount, startId])
   return (
     <>
-      <ToastContainer />
+      <ToastContainer/>
       <div className={classNames(mintstyles.mintHero, 'font-RetniSans')}>
         <div className={classNames(mintstyles.container, 'flex justify-between px-[150px]')}>
           <div className={mintstyles.mintImgWrap}>
             <div className={mintstyles.mintImgT}>
-              <img className='w-[600px] rounded-md ' src={collectionInfo.profile_image?collectionInfo.profile_image:'/images/nft.png'} alt="nft-image" />
+              <img className="w-[600px] rounded-md "
+                src={collectionInfo.profile_image ? collectionInfo.profile_image : '/images/nft.png'}
+                alt="nft-image"/>
             </div>
           </div>
-          <div >
-            <h1 className='font-bold text-xxl2'>{collectionInfo.name?collectionInfo.name:'Collection Name'}</h1>
+          <div>
+            <h1 className="font-bold text-xxl2">{collectionInfo.name ? collectionInfo.name : 'Collection Name'}</h1>
             <div className={mintstyles.mintDescSec}>
-              <p className='font-bold text-[#A0B3CC] text-xg1 w-[830px]'>{collectionInfo.description? collectionInfo.description: 'Description here'}</p>
+              <p
+                className="font-bold text-[#A0B3CC] text-xg1 w-[830px]">{collectionInfo.description ? collectionInfo.description : 'Description here'}</p>
             </div>
             <div className={mintstyles.mintDataGrid}>
               <div className={mintstyles.mintDataWrap}>
                 <h5>minted</h5>
-                <span>{mintedCnt>0?mintedCnt:0}/{totalCnt>0?totalCnt:0}</span>
+                <span>{mintedCnt > 0 ? mintedCnt : 0}/{totalCnt > 0 ? totalCnt : 0}</span>
               </div>
               <span className={mintstyles.line}></span>
               <div className={mintstyles.mintDataWrap}>
                 <h5>price</h5>
                 {/* <span>{chainId?addresses[`${Number(chainId)}`].price:0}<Image src={chainId?addresses[`${Number(chainId)}`].imageSVG:EthereumImageSVG} width={29.84} height={25.46} alt='ikon'></Image></span> */}
-                <div className='flex flex-row space-x-2 items-center mt-[15px]'>
-                  <div className='text-xg1 '>
-                    {(price*mintNum).toFixed(2)}
+                <div className="flex flex-row space-x-2 items-center mt-[15px]">
+                  <div className="text-xg1 ">
+                    {(price * mintNum).toFixed(2)}
                   </div>
                   {
                     chainId &&
                     SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
-                      return chainId === networkId && <img key={index} alt={'networkIcon'} src={chainInfos[networkId].logo || chainInfos[ChainIds.ETHEREUM].logo} className="m-auto h-[45px]" />
+                      return chainId === networkId && <img key={index} alt={'networkIcon'}
+                        src={chainInfos[networkId].logo || chainInfos[ChainIds.ETHEREUM].logo}
+                        className="m-auto h-[45px]"/>
                     })
                   }
                 </div>
@@ -230,13 +231,14 @@ const Mint: NextPage = () => {
               <div className={mintstyles.mintDataWrap}>
                 <h5>quantity</h5>
                 <div className={mintstyles.counterWrap}>
-                  <button onClick={()=>decrease()}><Image src={MinusSign} alt='minus'></Image></button>
+                  <button onClick={() => decrease()}><Image src={MinusSign} alt="minus"></Image></button>
                   <span>{mintNum}</span>
-                  <button onClick={()=>increase()}><Image src={PlusSign} alt='plus'></Image></button>
+                  <button onClick={() => increase()}><Image src={PlusSign} alt="plus"></Image></button>
                 </div>
               </div>
             </div>
-            <div className='w-fit px-2 py-1 text-white border-2 border-[#B444F9] bg-[#B444F9] rounded-lg transition-all duration-300 ease-in-out hover:scale-105 hover:drop-shadow-[0_10px_10px_rgba(180,68,249,0.7)] active:scale-100 active:drop-shadow-[0_5px_5px_rgba(180,68,249,0.8)]'>
+            <div
+              className="w-fit px-2 py-1 text-white border-2 border-[#B444F9] bg-[#B444F9] rounded-lg transition-all duration-300 ease-in-out hover:scale-105 hover:drop-shadow-[0_10px_10px_rgba(180,68,249,0.7)] active:scale-100 active:drop-shadow-[0_5px_5px_rgba(180,68,249,0.8)]">
               {mintButton()}
             </div>
           </div>

@@ -82,10 +82,10 @@ const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
     collection_chain: getChainNameFromId(chain ? Number(chain) : 4),
     order_collection_address,
     order_collection_chain,
-    owner: order?.signer, // owner,
-    owner_collection_address: order_collection_address, // ownedCollectionAddress,
-    owner_collection_chain: order_collection_chain, // ownerChainId && getChainNameFromId(ownerChainId),
-    owner_collection_chain_id: orderChainId,
+    owner: nft?.owner, // owner,
+    owner_collection_address: nft.collection_address, // ownedCollectionAddress,
+    owner_collection_chain: nft.chain, // ownerChainId && getChainNameFromId(ownerChainId),
+    owner_collection_chain_id: nft.chain_id,
     token_id: nft?.token_id,
     selectedNFTItem: nft
   })
@@ -95,7 +95,12 @@ const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
   }, [chain])
   const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
   const formattedPrice = formatCurrency(order?.price || 0, getCurrencyNameAddress(order?.currencyAddress))
-  const isOwner = order?.signer?.toLowerCase() == address?.toLowerCase() // owner?.toLowerCase() == address?.toLowerCase()
+  const isOwner = useMemo(() => {
+    if (nft && nft.owner) {
+      return nft.owner.toLowerCase() === address?.toLowerCase()
+    }
+    return false
+  }, [nft, address]) // owner?.toLowerCase() == address?.toLowerCase()
 
   return (
     <div
