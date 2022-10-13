@@ -84,6 +84,7 @@ const prepareMakerOrder = async(
   return {
     ...makerOrder,
     signature: signatureHash,
+    col_url: col_url,
     chain,
     chain_id,
   }
