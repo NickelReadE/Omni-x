@@ -282,7 +282,7 @@ const Item: NextPage = () => {
                   currentTab == 'items' &&
                   <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 gap-4">
                     {
-                      Object.entries(nftInfo.nft.attributes).map((item, idx) => {
+                      Object.entries(currentNFT.attributes).map((item, idx) => {
                         const attrs = nftInfo.collection.attrs
                         const attr = attrs[item[0]]
                         const trait = attr[(item[1] as string).toLowerCase()]

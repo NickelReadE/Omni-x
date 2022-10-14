@@ -563,7 +563,10 @@ const Collection: NextPage = () => {
                                   checked={Array.isArray(searchObj[key]) && searchObj[key].indexOf(attrs[key].values[valueKey][3], 0) > -1}
                                   onChange={(e) => {
                                     searchAttrsCheck(e.target.checked, key, attrs[key].values[valueKey][3])
-                                  }} color="default" inputProps={{'aria-label': 'checkbox with default color'}}/>}
+                                  }}
+                                  color="default"
+                                  inputProps={{'aria-label': 'checkbox with default color'}}/>
+                                }
                                 label={
                                   <div className="flex items-center justify-between">
                                     <span className="font-bold text-[#4d5358]">{attrs[key].values[valueKey][3]}</span>
