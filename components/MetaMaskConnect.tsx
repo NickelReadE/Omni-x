@@ -1,6 +1,4 @@
 import React from 'react'
-import Fail from '../public/images/fail.png'
-import Image from 'next/image'
 import ConnectButton from './ConnectButton'
 import SwitchButton from './SwitchButton'
 import {WalletContextType} from '../contexts/wallet'
