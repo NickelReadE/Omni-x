@@ -40,7 +40,7 @@ import SearchIcon from '@material-ui/icons/Search'
 import Chip from '@material-ui/core/Chip'
 import classNames from '../../../helpers/classNames'
 import editStyle from '../../../styles/collection.module.scss'
-import {getLastSaleOrders, getOrders, selectOrders,} from '../../../redux/reducers/ordersReducer'
+import {getLastSaleOrders, getOrders} from '../../../redux/reducers/ordersReducer'
 import {IGetOrderRequest} from '../../../interface/interface'
 import {getBlockExplorer} from '../../../utils/constants'
 import useWallet from '../../../hooks/useWallet'
@@ -150,7 +150,6 @@ const Collection: NextPage = () => {
   const nfts = useSelector(selectCollectionNFTs)
   const collectionInfo = useSelector(selectCollectionInfo)
   const royalty = useSelector(selectRoyalty)
-  const orders = useSelector(selectOrders)
   const finishedGetting = useSelector(selectGetNFTs)
 
   const [imageError, setImageError] = useState(false)
