@@ -627,9 +627,6 @@ const SideBar: React.FC = () => {
             { expandedMenu == 1 &&
               <ul className='flex  flex-col w-full   pt-4 pb-0 text-g-600' ref={menu_profile}>
                 <li className="w-full">
-                  <button className="w-full flex justify-start py-[13px] pl-[100px] hover:bg-l-50">My Dashboard</button>
-                </li>
-                <li className="w-full">
                   <button className="w-full flex justify-start py-[13px] pl-[100px] hover:bg-l-50" onClick={()=>setOpenModal(true)}>Account Settings</button>
                 </li>
                 <li className="w-full">
