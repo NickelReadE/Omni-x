@@ -65,7 +65,7 @@ const CollectionCard = (props:any) => {
             <div className='text-[14px] flex flex-col justify-center' style={{justifyContent: 'space-between'}}>
               <div className='text-[14px] font-extrabold  mb-1 text-center'>Floor</div>
               <div className='flex flex-row space-x-2 justify-center' >
-                <span className='font-medium text-[12px] mr-[px]'>{props.collection?numberShortify(props.collection.floorPrice.usd):<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+                <span className='font-medium text-[12px] mr-[px]'>{props.collection?numberShortify(props.collection.floorPrice.omni):<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
                 <img src='/svgs/omni_asset.svg' className='w-[16px]' alt='asset img'></img>
               </div>
             </div>

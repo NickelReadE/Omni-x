@@ -483,7 +483,7 @@ const Collection: NextPage = () => {
                       </div>
                       <div className="flex flex-row justify-between">
                         <span
-                          className="mr-[22px] ">{collectionInfo && collectionInfo.floorPrice && (collectionInfo.floorPrice.usd || 0)}</span>
+                          className="mr-[22px] ">{collectionInfo && collectionInfo.floorPrice && (collectionInfo.floorPrice.omni || 0)}</span>
                         <img src="/svgs/omni_asset.svg" alt="asset"></img>
                       </div>
                     </div>
