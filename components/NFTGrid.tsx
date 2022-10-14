@@ -97,6 +97,10 @@ const NFTGrid = ({nfts}: IPropsImage) => {
     }
   }, [nfts])
 
+  const onRefresh = () => {
+    console.log('refresh')
+  }
+
   return (
     <>
       <div className="w-full mb-5 ">
@@ -143,12 +147,12 @@ const NFTGrid = ({nfts}: IPropsImage) => {
           {!isSearch && nfts.map((item, index) => {
             if (chain == -1) {
               return (
-                <NFTBox nft={item} index={index} key={index}/>
+                <NFTBox nft={item} index={index} key={index} onRefresh={onRefresh} />
               )
             } else {
               if (chain == item.chain_id) {
                 return (
-                  <NFTBox nft={item} index={index} key={index}/>
+                  <NFTBox nft={item} index={index} key={index} onRefresh={onRefresh} />
                 )
               }
             }
@@ -161,6 +165,7 @@ const NFTGrid = ({nfts}: IPropsImage) => {
               col_url={col_url}
               col_address={collectionInfo.address}
               chain={collectionInfo ? collectionInfo.chain : 'goerli'}
+              onRefresh={onRefresh}
             />
           }
         </div>
