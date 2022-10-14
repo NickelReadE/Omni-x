@@ -70,8 +70,6 @@ const Item: NextPage = () => {
     sortedBids,
     highestBid,
     highestBidCoin,
-    lastSale,
-    lastSaleCoin
   } = useOrderStatics({
     nft: nftInfo?.nft,
     collection_address_map,
@@ -126,10 +124,22 @@ const Item: NextPage = () => {
     }
   }, [nftInfo, owner])
 
+  const currentNFT = useMemo(() => {
+    return nftInfo?.nft
+  }, [nftInfo])
+
   // profile link
-  const profileLink = chain_id && ownerType && owner && getProfileLink(Number(chain_id), ownerType, owner)
-  const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
-  const formattedPrice = formatCurrency(order?.price || 0, getCurrencyNameAddress(order?.currencyAddress))
+  const profileLink = chain_id && ownerType && currentNFT?.owner && getProfileLink(Number(chain_id), ownerType, currentNFT?.owner)
+  const currencyIcon = getCurrencyIconByAddress(currentNFT?.currency)
+  const formattedPrice = currentNFT?.price
+
+  const lastSale = currentNFT?.last_sale
+  const lastSaleCoin = useMemo(() => {
+    if (currentNFT && currentNFT.last_sale_currency) {
+      return getCurrencyIconByAddress(currentNFT.last_sale_currency)
+    }
+    return null
+  }, [currentNFT])
 
   return (
     <>
@@ -157,10 +167,10 @@ const Item: NextPage = () => {
                   <div className="">
                     <div className="flex justify-start items-center">
                       <h1 className="text-[#1E1C21] text-[18px] font-bold">owner:</h1>
-                      {owner && ownerType=='address' && (
+                      {currentNFT?.owner && (
                         <h1 className="text-[#B444F9] text-[20px] font-normal underline ml-4 break-all lg:ml-1">
                           <Link href={profileLink || '#'}>
-                            <a target='_blank'>{truncate(owner)}</a>
+                            <a target='_blank'>{truncate(currentNFT?.owner)}</a>
                           </Link>
                         </h1>
                       )}
@@ -183,9 +193,14 @@ const Item: NextPage = () => {
                       )}
                     </div>
                     <div className="mb-3">
-                      <span className='font-normal font-[16px]'>{formattedPrice && '$'}{numberShortify(formattedPrice)}</span>
+                      <span className='font-normal font-[16px]'>{formattedPrice > 0 && '$'}{numberShortify(formattedPrice)}</span>
                       <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-bold">Highest Bid: <span className="font-bold">{numberShortify(highestBid)}</span></h1>{highestBidCoin&&<Image src={highestBidCoin} width={15} height={16} alt="chain  logo" />}</div>
-                      <div className="flex justify-start items-center"><h1 className="mr-3 font-bold">Last Sale: <span className="font-bold">{lastSale != 0 && numberShortify(lastSale)}</span></h1>{lastSaleCoin&&<Image src={lastSaleCoin} width={15} height={16} alt="chain logo" />}</div>
+                      <div className="flex justify-start items-center">
+                        <h1 className="mr-3 font-bold">
+                          Last Sale: <span className="font-bold">{lastSale != 0 && numberShortify(lastSale)}</span>
+                        </h1>
+                        {lastSaleCoin&&<Image src={lastSaleCoin} width={15} height={16} alt="chain logo" />}
+                      </div>
                     </div>
                   </div>
                   <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>

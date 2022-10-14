@@ -95,7 +95,7 @@ const useOrderStatics = ({
   }, [lastSaleOrders, nft, collection_addresses_sale, isDetailPage])
   const lastSaleCoin = lastSaleOrder?.currencyAddress && getCurrencyIconByAddress(lastSaleOrder?.currencyAddress)
   const lastSaleCurrencyName = getCurrencyNameAddress(lastSaleOrder?.currencyAddress)
-  const lastSale = Number(formatCurrency(nft.lastSale || 0, lastSaleCurrencyName))
+  const lastSale = Number(formatCurrency(nft?.lastSale || 0, lastSaleCurrencyName))
 
   const isListed = !!order
   const isAuction = order?.params?.[1] == SaleType.AUCTION

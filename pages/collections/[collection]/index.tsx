@@ -315,13 +315,8 @@ const Collection: NextPage = () => {
     if (isActiveBuyNow && collectionInfo && nfts.length > 0) {
       const temp = []
       for (let i = 0; i < nfts.length; i++) {
-        const collection_address = collectionInfo.address[nfts[i].chain_id].toLowerCase()
-
-        for (let j = 0; j < orders.length; j++) {
-          if (collection_address == orders[j].collectionAddress.toLowerCase() && nfts[i].token_id == orders[j].tokenId) {
-            temp.push(nfts[i])
-            break
-          }
+        if (nfts[i].price > 0) {
+          temp.push(nfts[i])
         }
       }
       setListNFTs(temp)

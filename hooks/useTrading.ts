@@ -25,7 +25,6 @@ import useProgress from './useProgress'
 import { PendingTxType } from '../contexts/contract'
 import useContract from './useContract'
 import useWallet from './useWallet'
-import {getCollectionNFTs} from '../redux/reducers/collectionsReducer'
 
 export type TradingFunction = {
   openSellDlg: boolean,
