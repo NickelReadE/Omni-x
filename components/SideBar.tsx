@@ -499,35 +499,37 @@ const SideBar: React.FC = () => {
 
   useEffect(()=>{
     const getBalance = async() => {
-      try {
-        {
-          const omniContract = getCurrencyInstance(getAddressByName('OMNI', chainId), chainId, signer)
-          const balance = await omniContract?.balanceOf(address)
-          setOmniBalance(Number(formatCurrency(balance, 'OMNI')))
-        }
-
-        {
-          const usdContract = getCurrencyInstance(getAddressByName('USDC', chainId), chainId, signer)
-          const balance = await usdContract?.balanceOf(address)
-          setUsdcBalance(Number(formatCurrency(balance, 'USDC')))
-        }
-
-        {
-          const usdContract = getCurrencyInstance(getAddressByName('USDT', chainId), chainId, signer)
-          const balance = await usdContract?.balanceOf(address)
-          setUsdtBalance(Number(formatCurrency(balance, 'USDT')))
-        }
-
-        {
-          //Native Token
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const balance = await provider?.getBalance(address!)
-          if(balance){
-            setNativeBalance(Number(ethers.utils.formatEther(balance || '0')))
+      if (chainId && address) {
+        try {
+          {
+            const omniContract = getCurrencyInstance(getAddressByName('OMNI', chainId), chainId, signer)
+            const balance = await omniContract?.balanceOf(address)
+            setOmniBalance(Number(formatCurrency(balance, 'OMNI')))
           }
+
+          {
+            const usdContract = getCurrencyInstance(getAddressByName('USDC', chainId), chainId, signer)
+            const balance = await usdContract?.balanceOf(address)
+            setUsdcBalance(Number(formatCurrency(balance, 'USDC')))
+          }
+
+          {
+            const usdContract = getCurrencyInstance(getAddressByName('USDT', chainId), chainId, signer)
+            const balance = await usdContract?.balanceOf(address)
+            setUsdtBalance(Number(formatCurrency(balance, 'USDT')))
+          }
+
+          {
+            //Native Token
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const balance = await provider?.getBalance(address!)
+            if (balance) {
+              setNativeBalance(Number(ethers.utils.formatEther(balance || '0')))
+            }
+          }
+        } catch (error) {
+          console.log(error)
         }
-      } catch (error) {
-        console.log(error)
       }
     }
     if(signer!=undefined && address!=undefined && chainId!==undefined){

@@ -17,7 +17,6 @@ module.exports = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
-
   rewrites: () => {
     return [
       {

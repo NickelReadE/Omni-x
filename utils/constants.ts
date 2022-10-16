@@ -408,7 +408,10 @@ export const getProvider = (chainId: number) => {
   )
 }
 
-export const getChainInfo = (chainId: number) => {
+export const getChainInfo = (chainId: number | undefined) => {
+  if (chainId === undefined) {
+    return null
+  }
   const filter = CHAINS.filter((item) => item.chainId === chainId)
   if (filter.length > 0) {
     return filter[0]

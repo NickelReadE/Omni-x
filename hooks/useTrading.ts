@@ -175,6 +175,7 @@ const useTrading = ({
       dispatch(openSnackBar({ message: `Please switch network to ${owner_collection_chain}`, status: 'warning' }))
       return
     }
+    if (!chainId || !chainName) return
 
     const amount = ethers.utils.parseUnits('1', 0)
     const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
@@ -225,6 +226,7 @@ const useTrading = ({
       dispatch(openSnackBar({ message: 'Not listed', status: 'warning' }))
       return
     }
+    if (!chainId || !chainName) return
 
     const lzChainId = getLayerzeroChainId(chainId)
     const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
@@ -341,6 +343,7 @@ const useTrading = ({
       dispatch(openSnackBar({ message: '  Please list first to place a bid', status: 'warning' }))
       return
     }
+    if (!chainId || !chainName) return
 
     const lzChainId = getLayerzeroChainId(chainId)
 
@@ -406,6 +409,7 @@ const useTrading = ({
       dispatch(openSnackBar({ message: `Please switch network to ${owner_collection_chain}`, status: 'warning' }))
       return
     }
+    if (!chainId || !chainName) return
 
     const lzChainId = getLayerzeroChainId(chainId)
     const omnixExchange = getOmnixExchangeInstance(chainId, signer)

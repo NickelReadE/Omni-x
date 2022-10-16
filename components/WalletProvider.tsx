@@ -1,11 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useCallback, useMemo, useState} from 'react'
-import { Signer } from 'ethers'
+import {ethers, Signer} from 'ethers'
 import {supportChains} from '../utils/constants'
 import { WalletContext } from '../contexts/wallet'
 import {useAccount, useConnect, useDisconnect, useNetwork, useProvider, useSigner} from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
-import {ChainIds} from '../types/enum'
 
 const cachedLookupAddress = new Map<string, string | undefined>()
 const cachedResolveName = new Map<string, string | undefined>()
@@ -44,13 +43,13 @@ export const WalletProvider = ({
     return addressWagmi
   }, [addressWagmi])
   const provider = useMemo(() => {
-    return providverWagmi
+    return providverWagmi as ethers.providers.JsonRpcProvider
   }, [providverWagmi])
   const chainId = useMemo(() => {
-    return chain?.id || ChainIds.ETHEREUM
+    return chain?.id
   }, [chain])
   const chainName = useMemo(() => {
-    return chain?.name || ''
+    return chain?.name
   }, [chain])
 
   const resolveName = useCallback(

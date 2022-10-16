@@ -9,7 +9,10 @@ const MetaMaskConnect = (): JSX.Element => {
   const [show, setShow] = React.useState<boolean>(true)
 
   const isSupportChain = React.useMemo(() => {
-    return supportChainIDs.includes(chainId)
+    if (chainId) {
+      return supportChainIDs.includes(chainId)
+    }
+    return false
   }, [chainId])
 
   React.useEffect(() => {

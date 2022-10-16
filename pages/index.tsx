@@ -17,11 +17,9 @@ const Home: NextPage = () => {
   }, [address])
 
   React.useEffect(()=>{
-    if(Number(chainId)>0){
-      if(supportChainIDs.includes(chainId as number)){
-        setIsBlur(false)
-      } else setIsBlur(true)
-    }
+    if(chainId && supportChainIDs.includes(chainId)){
+      setIsBlur(false)
+    } else setIsBlur(true)
   },[chainId])
 
   return (
