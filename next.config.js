@@ -10,6 +10,14 @@ module.exports = {
   images: {
     domains: ['localhost', 'bucket-26n19n.s3.amazonaws.com']
   },
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
+    ignoreBuildErrors: true,
+  },
+
   rewrites: () => {
     return [
       {
