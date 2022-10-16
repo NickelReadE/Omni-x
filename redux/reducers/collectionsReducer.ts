@@ -25,7 +25,7 @@ import {getPriceforUSD} from '../../services/datafeed'
 interface CollectionState {
   nfts: any[],
   allNFTs: {},
-  info: {},
+  info: null,
   nftInfo: {},
   finishedGetting: boolean,
   owners: number,
@@ -42,7 +42,7 @@ export const collectionsSlice = createSlice({
   initialState: {
     nfts: [],
     allNFTs: {},
-    info: {},
+    info: null,
     nftInfo: {},
     finishedGetting: false,
     owners: 0,

@@ -16,6 +16,7 @@ import ChainIds from '../constants/layerzero/chainIds.json'
 import CHAINS from '../constants/chains.json'
 import {ChainIds as ChainIDS} from '../types/enum'
 import {Network} from 'alchemy-sdk'
+import {Chain} from 'wagmi'
 
 const omnixBridge: any = OmnixBridge
 const omnixBridge1155: any = OmnixBridge1155
@@ -576,10 +577,36 @@ export const getValidCurrencies = (chainId: number) => {
   if (chainId === ChainIDS.ETHEREUM || chainId === ChainIDS.ARBITRUM || chainId === ChainIDS.OPTIMISM) {
     return [CURRENCIES_LIST[0]]
   }
-  
+
   if (chainId === ChainIDS.BINANCE) {
     return [CURRENCIES_LIST[0], CURRENCIES_LIST[2]]
   }
 
   return [CURRENCIES_LIST[0], CURRENCIES_LIST[1]]
+}
+
+export const supportChains = () => {
+  const allChains = supportChainIDs.map((chainId) => {
+    const chainInfo = getChainInfo(chainId)
+    if (chainInfo) {
+      return {
+        id: Number(chainInfo.chainId),
+        name: chainInfo.name,
+        network: chainInfo.shortName,
+        nativeCurrency: chainInfo.nativeCurrency,
+        rpcUrls: {
+          default: chainInfo.rpc.length > 0 ? chainInfo.rpc[0] : ''
+        },
+        blockExplorers: chainInfo.explorers?.length ? {
+          default: {
+            name: chainInfo.explorers[0].name,
+            url: chainInfo.explorers[0].url,
+          }
+        } : null,
+        testnet: true,
+      } as Chain
+    }
+    return null
+  })
+  return allChains.filter((chain) => chain !== null) as Chain[]
 }

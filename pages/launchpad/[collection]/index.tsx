@@ -60,24 +60,28 @@ const Mint: NextPage = () => {
 
   const getInfo = useCallback(async (): Promise<void> => {
     try {
-      const tokenContract = getAdvancedInstance(collectionInfo.address[chainId ? chainId : 0], (chainId ? chainId : ChainIds.ETHEREUM), null)
-      setStartId(Number(collectionInfo.start_ids[chainId ? chainId : 0]))
+      if (collectionInfo) {
+        const tokenContract = getAdvancedInstance(collectionInfo.address[chainId ? chainId : 0], (chainId ? chainId : ChainIds.ETHEREUM), null)
+        setStartId(Number(collectionInfo.start_ids[chainId ? chainId : 0]))
 
-      const priceT = await tokenContract.price()
-      setPrice(parseFloat(ethers.utils.formatEther(priceT)))
-      const max_mint = await tokenContract.maxMintId()
-      const nextId = await tokenContract.nextMintId()
-      setTotalNFTCount(Number(max_mint))
-      setNextTokenId(Number(nextId))
+        const priceT = await tokenContract.price()
+        setPrice(parseFloat(ethers.utils.formatEther(priceT)))
+        const max_mint = await tokenContract.maxMintId()
+        const nextId = await tokenContract.nextMintId()
+        setTotalNFTCount(Number(max_mint))
+        setNextTokenId(Number(nextId))
+      }
     } catch (error) {
       console.log(error)
     }
   }, [chainId, collectionInfo])
 
   const mint = async (): Promise<void> => {
-    if (chainId === undefined) {
+    if (chainId === undefined || !collectionInfo) {
       return
     }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner()
     const tokenContract = getAdvancedInstance(collectionInfo?.address[chainId], chainId, signer)
@@ -194,15 +198,15 @@ const Mint: NextPage = () => {
           <div className={mintstyles.mintImgWrap}>
             <div className={mintstyles.mintImgT}>
               <img className="w-[600px] rounded-md "
-                src={collectionInfo.profile_image ? collectionInfo.profile_image : '/images/nft.png'}
+                src={collectionInfo && collectionInfo.profile_image ? collectionInfo.profile_image : '/images/nft.png'}
                 alt="nft-image"/>
             </div>
           </div>
           <div>
-            <h1 className="font-bold text-xxl2">{collectionInfo.name ? collectionInfo.name : 'Collection Name'}</h1>
+            <h1 className="font-bold text-xxl2">{collectionInfo && collectionInfo.name ? collectionInfo.name : 'Collection Name'}</h1>
             <div className={mintstyles.mintDescSec}>
               <p
-                className="font-bold text-[#A0B3CC] text-xg1 w-[830px]">{collectionInfo.description ? collectionInfo.description : 'Description here'}</p>
+                className="font-bold text-[#A0B3CC] text-xg1 w-[830px]">{collectionInfo && collectionInfo.description ? collectionInfo.description : 'Description here'}</p>
             </div>
             <div className={mintstyles.mintDataGrid}>
               <div className={mintstyles.mintDataWrap}>
