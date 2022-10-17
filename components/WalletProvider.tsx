@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useCallback, useMemo, useState} from 'react'
+import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import {ethers, Signer} from 'ethers'
 import {supportChains} from '../utils/constants'
 import { WalletContext } from '../contexts/wallet'
@@ -36,8 +36,15 @@ export const WalletProvider = ({
     connector: new InjectedConnector({
       chains: supportedChains
     }),
+    onSuccess: () => {
+      localStorage.setItem('isWalletConnected', 'true')
+    }
   })
-  const { disconnect: disconnectWithInjector } = useDisconnect()
+  const { disconnect: disconnectWithInjector } = useDisconnect({
+    onSuccess: () => {
+      localStorage.setItem('isWalletConnected', 'false')
+    }
+  })
 
   const address = useMemo(() => {
     return addressWagmi
@@ -83,6 +90,14 @@ export const WalletProvider = ({
   const connect = () => {
     connectWithInjector()
   }
+
+  /*useEffect(() => {
+    return () => {
+      if (localStorage.getItem('isWalletConnected') === 'false') {
+        connectWithInjector()
+      }
+    }
+  }, [connectWithInjector])*/
 
   return (
     <WalletContext.Provider

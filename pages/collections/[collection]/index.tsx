@@ -161,7 +161,6 @@ const Collection: NextPage = () => {
   const [bInit, setInit] = useState(false)
 
   const {
-    provider,
     signer,
     chainId
   } = useWallet()
@@ -176,11 +175,11 @@ const Collection: NextPage = () => {
   }, [collectionInfo])
 
   useEffect(() => {
-    if (col_url && provider?._network) {
+    if (col_url) {
       dispatch(getCollectionInfo(col_url) as any)
       setPage(0)
     }
-  }, [col_url, provider?._network])
+  }, [col_url])
 
   useEffect(() => {
     if (nfts.length > 0) {

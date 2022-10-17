@@ -16,17 +16,17 @@ import useWallet from '../../hooks/useWallet'
 import {getChainNameFromId} from '../../utils/constants'
 
 const Collections: NextPage = () => {
-  const {provider, chainId} = useWallet()
+  const {chainId} = useWallet()
   const [omniSlides, setOmniSlides] = useState<Array<React.ReactNode>>([])
   const dispatch = useDispatch()
   const collections = useSelector(selectCollections)
   const collectionsForCard = useSelector(selectCollectionsForCard)
 
   useEffect(() => {
-    if (provider?._network) {
+    if (chainId) {
       dispatch(updateCollectionsForCard(chainId.toString(), getChainNameFromId(chainId)) as any)
     }
-  }, [provider?._network])
+  }, [chainId])
 
   useEffect(() => {
     dispatch(getCollections() as any)
