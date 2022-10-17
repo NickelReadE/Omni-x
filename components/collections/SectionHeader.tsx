@@ -20,7 +20,7 @@ const SectionHeader: React.FC<ISectionHeaderProps> = ({
   completed
 }) => {
   return (
-    <div className={classNames("section-header", active ? "active" : "")}>
+    <div className={classNames('section-header', active ? 'active' : '')}>
       <p className="section-no">{sectionNo}</p>
       <p className="section-title">{sectionTitle}</p>
       {completed && (

@@ -49,7 +49,7 @@ const ListingContent: React.FC<IListingContentProps> = ({
             onChangeCurrency={onChangeCurrency}
             period={period}
             onChangePeriod={onChangePeriod}
-            />
+          />
         ) : (
           <div>
             <ApproveSection 
@@ -57,7 +57,7 @@ const ListingContent: React.FC<IListingContentProps> = ({
               active={listingStep == ListingStep.StepApprove}
               completed={listingStep > ListingStep.StepApprove}
               txHash={approveTx}
-              />
+            />
             <ConfirmListingSection 
               processing={processing}
               active={listingStep == ListingStep.StepConfirm}

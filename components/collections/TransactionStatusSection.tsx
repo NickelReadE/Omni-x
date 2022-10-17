@@ -25,7 +25,7 @@ const TransactionStatusSection: React.FC<ITransactionStatusSectionProps> = ({
         
         <div className="tx-status-row">
           <p className="tx-status-name">transaction record:</p>
-          <a className="tx-status-value tx-hash-ellipsis" href={txHashLink} target="_blank">{txHash || ''}</a>
+          <a className="tx-status-value tx-hash-ellipsis" href={txHashLink} target="_blank" rel="noreferrer">{txHash || ''}</a>
         </div>
       </>)}
 

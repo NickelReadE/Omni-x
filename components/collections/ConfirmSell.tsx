@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react'
 import { makeStyles, createStyles } from '@material-ui/core/styles'
 import Dialog from '@material-ui/core/Dialog'
@@ -5,7 +6,6 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import { IListingData } from '../../interface/interface'
 import { CURRENCIES_LIST, PERIOD_LIST } from '../../utils/constants'
-import ListingSection from './ListingSection'
 import { ListingStep, SaleType } from '../../types/enum'
 import ListingContent from './ListingContent'
 
@@ -118,7 +118,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
         setStep(ListingStep.StepFail)
       ).finally(() => setProcessing(false))
     }
-  }, [listingStep, setStep])
+  }, [listingStep, currency, period, setStep])
 
   return (
     <Dialog open={openSellDlg} onClose={handleSellDlgClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
