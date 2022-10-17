@@ -231,12 +231,14 @@ const Collection: NextPage = () => {
   }
 
   useEffect(() => {
-    initAction()
+    (async () => {
+      await initAction()
+    })()
     if (collectionInfo) {
       dispatch(getCollectionNFTs(col_url, 0, display_per_page, selected.value, searchObj) as any)
       setPage(0)
     }
-  }, [searchObj])
+  }, [searchObj, collectionInfo])
 
   const fetchMoreData = () => {
     if (!bInit)

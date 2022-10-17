@@ -61,7 +61,7 @@ const approveNft = async (contract: any, owner?: string, operator?: string, toke
 
 const useTrading = ({
   provider,
-  signer,
+  signer: signerParam,
   address,
   collection_name,
   collection_address,
@@ -72,7 +72,7 @@ const useTrading = ({
   token_id,
   selectedNFTItem
 }: any): TradingFunction => {
-  const { chainId, chainName } = useWallet()
+  const { chainId, chainName, signer } = useWallet()
   const [openSellDlg, setOpenSellDlg] = useState(false)
   const [openBidDlg, setOpenBidDlg] = useState(false)
 
@@ -185,7 +185,7 @@ const useTrading = ({
     const startTime = Date.now()
 
     await postMakerOrder(
-      provider as any,
+      signer as any,
       true,
       collection_address,
       getAddressByName('Strategy', chainId),
@@ -363,7 +363,7 @@ const useTrading = ({
         return
       }
       await postMakerOrder(
-        provider as any,
+        signer as any,
         false,
         order?.collectionAddress,
         order?.strategy,

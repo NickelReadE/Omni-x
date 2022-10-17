@@ -79,6 +79,7 @@ const Item: NextPage = () => {
   const order_collection_address = order?.collectionAddress
   const order_collection_chain = orderChainId && getChainNameFromId(orderChainId)
 
+  console.log(signer)
   // trading hook
   const {
     openBidDlg,
@@ -285,7 +286,7 @@ const Item: NextPage = () => {
                       Object.entries(currentNFT.attributes).map((item, idx) => {
                         const attrs = nftInfo.collection.attrs
                         const attr = attrs[item[0]].values
-                        const trait = attr[(item[1] as string).toLowerCase()]
+                        const trait = attr[(item[1] as string)]
                         return <div className="px-5 py-2 bg-[#b444f926] border-2 border-[#B444F9] rounded-[8px]" key={idx}>
                           <p className="text-[#B444F9] text-[12px] font-bold">{item[0]}</p>
                           <div className="flex justify-start items-center mt-2">

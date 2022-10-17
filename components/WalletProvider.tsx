@@ -17,9 +17,7 @@ export const WalletProvider = ({
   children,
 }: WalletProviderProps): JSX.Element => {
   const { address: addressWagmi } = useAccount()
-  const providverWagmi = useProvider()
-  // eslint-disable-next-line no-empty-pattern
-  const {  } = useSigner({
+  const { data: signerWagmi } = useSigner({
     onSuccess: (data) => {
       if (data) {
         setSigner(data)
@@ -49,15 +47,22 @@ export const WalletProvider = ({
   const address = useMemo(() => {
     return addressWagmi
   }, [addressWagmi])
-  const provider = useMemo(() => {
-    return providverWagmi as ethers.providers.JsonRpcProvider
-  }, [providverWagmi])
   const chainId = useMemo(() => {
     return chain?.id
   }, [chain])
   const chainName = useMemo(() => {
     return chain?.name
   }, [chain])
+  const providverWagmi = useProvider({
+    chainId: chainId
+  })
+  const provider = useMemo(() => {
+    return providverWagmi as ethers.providers.JsonRpcProvider
+  }, [providverWagmi])
+
+  useEffect(() => {
+    setSigner(signerWagmi)
+  }, [signerWagmi])
 
   const resolveName = useCallback(
     async (name: string) => {
