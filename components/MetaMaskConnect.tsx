@@ -1,21 +1,22 @@
-import React from 'react'
-import ConnectButton from './ConnectButton'
+import { useEffect, useMemo, useState } from 'react'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
 import SwitchButton from './SwitchButton'
 import {supportChainIDs} from '../utils/constants'
 import useWallet from '../hooks/useWallet'
 
 const MetaMaskConnect = (): JSX.Element => {
   const { chainId, address, provider } = useWallet()
-  const [show, setShow] = React.useState<boolean>(true)
+  const [show, setShow] = useState<boolean>(true)
+  const { openConnectModal } = useConnectModal()
 
-  const isSupportChain = React.useMemo(() => {
+  const isSupportChain = useMemo(() => {
     if (chainId) {
       return supportChainIDs.includes(chainId)
     }
     return false
   }, [chainId])
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (address && provider && chainId) {
       if (isSupportChain) {
         setShow(false)
@@ -23,17 +24,14 @@ const MetaMaskConnect = (): JSX.Element => {
     } else setShow(true)
   }, [address, chainId, isSupportChain, provider])
 
+  useEffect(() => {
+    if (!address && openConnectModal) {
+      openConnectModal()
+    }
+  }, [address, openConnectModal])
+
   const signSection = () => {
-    if (!address) {
-      return (
-        <div>
-          <div>Please sign-in by connecting your wallet</div>
-          <div className="flex justify-center mt-12">
-            <ConnectButton />
-          </div>
-        </div>
-      )
-    } else if (!isSupportChain && address) {
+    if (!isSupportChain && address) {
       return (
         <div>
           <div>Current network is not supported <br></br> Please switch network into Goerli</div>
@@ -45,7 +43,7 @@ const MetaMaskConnect = (): JSX.Element => {
 
   return (
     <>
-      {show && <div className="flex justify-center items-center w-screen h-screen bg-[#ffffff90] fixed z-[1]">
+      {show && address && <div className="flex justify-center items-center w-screen h-screen bg-[#ffffff90] fixed z-[1]">
         <div
           className="flex flex-col justify-center border-4 border-[#1E1C21] p-20 rounded-[10px] bg-[#ffffff] text-[32px] font-bold">
           {signSection()}
