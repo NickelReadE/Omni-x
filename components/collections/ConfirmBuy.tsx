@@ -106,6 +106,8 @@ const ConfirmBuy: React.FC<IConfirmBuyProps> = ({
   }
 
   useEffect(() => {
+    if (buyStep === BuyStep.StepBuy) return
+
     doLogic().catch(() => {
       setProcessing(false)
       setStep(BuyStep.StepFail)

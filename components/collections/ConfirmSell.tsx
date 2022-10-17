@@ -75,8 +75,8 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
     }
     else if (listingStep === ListingStep.StepDone || listingStep === ListingStep.StepFail) {
       setStep(ListingStep.StepListing)
-      if (onListingDone) onListingDone()
       handleSellDlgClose()
+      if (onListingDone) onListingDone()
     }
   }
 
@@ -88,27 +88,33 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
       
       setProcessing(true)
 
-      if (tx !== undefined) {
+      if (tx === undefined) {
+        throw new Error('tx is not approved')
+      }
+      if (tx) {
         setApproveTx(tx.hash)
         await tx.wait()
       }
+
+      setStep(ListingStep.StepConfirm)
     }
     else if (listingStep === ListingStep.StepConfirm && onListingConfirm) {
-      const tx = await onListingConfirm({
+      await onListingConfirm({
         currencyName: currency.text,
         price,
         period: period.period,
         isAuction
       })
 
-      if (tx !== undefined) {
-        setStep(ListingStep.StepDone)
-      }
+      setProcessing(false)
+      setStep(ListingStep.StepDone)
     }
   }
 
   useEffect(() => {
-    doLogic().finally(() => {
+    if (listingStep === ListingStep.StepListing) return
+
+    doLogic().catch(() => {
       setProcessing(false)
       setStep(ListingStep.StepFail)
     })

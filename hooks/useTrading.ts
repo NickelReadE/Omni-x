@@ -195,7 +195,7 @@ const useTrading = ({
   const onListingConfirm = async (listingData: IListingData) => {
     if (owner_collection_chain_id != chainId) {
       dispatch(openSnackBar({ message: `Please switch network to ${owner_collection_chain}`, status: 'warning' }))
-      return undefined
+      return
     }
 
     const amount = ethers.utils.parseUnits('1', 0)
@@ -205,7 +205,7 @@ const useTrading = ({
     const price = parseCurrency(listingData.price.toString(), listingData.currencyName) // ethers.utils.parseEther(listingData.price.toString())
     const startTime = Date.now()
 
-    const task1 = postMakerOrder(
+    await postMakerOrder(
       provider as any,
       true,
       collection_address,
@@ -229,9 +229,7 @@ const useTrading = ({
       true
     )
 
-    const task2 = collectionsService.updateCollectionNFTListPrice(collection_name, token_id, listingData.price)
-
-    return Promise.all([task1, task2])
+    await collectionsService.updateCollectionNFTListPrice(collection_name, token_id, listingData.price)
   }
 
   const onListingDone = () => {

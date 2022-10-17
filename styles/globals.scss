@@ -238,7 +238,9 @@ button.sidebar {
         white-space: nowrap;
         width: 160px;
         overflow: hidden;
-        text-overflow: clip ellipsis clip 0 3ch;
+        text-overflow: ellipsis;
+        color: #B444F9;
+        text-decoration: underline;
     }
 }
 
