@@ -4,12 +4,14 @@ import { getBlockExplorer } from '../../utils/constants'
 
 interface ITransactionStatusSectionProps {
   processing: boolean,
-  txHash?: string
+  txHash?: string,
+  isTx: boolean
 }
 
 const TransactionStatusSection: React.FC<ITransactionStatusSectionProps> = ({
   processing,
-  txHash
+  txHash,
+  isTx
 }) => {
   const { chainId } = useWallet()
   const explorer = getBlockExplorer(chainId)
@@ -17,7 +19,7 @@ const TransactionStatusSection: React.FC<ITransactionStatusSectionProps> = ({
 
   return (
     <div className="tx-status-section">
-      {txHashLink && (<>
+      {isTx && (<>
         <div className="tx-status-row">
           <p className="tx-status-name">transaction status:</p>
           <p className="tx-status-value">{processing ? 'confirming...' : 'done'}</p>
@@ -29,7 +31,7 @@ const TransactionStatusSection: React.FC<ITransactionStatusSectionProps> = ({
         </div>
       </>)}
 
-      {!txHashLink && (<>
+      {!isTx && (<>
         <div className="tx-status-row">
           <p className="tx-status-name">action status:</p>
           <p className="tx-status-value">{processing ? 'waiting...' : 'done'}</p>

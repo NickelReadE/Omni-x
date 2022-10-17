@@ -6,18 +6,20 @@ interface IApproveSectionProps {
   processing: boolean,
   active: boolean,
   completed: boolean,
-  txHash?: string
+  txHash?: string,
+  sectionNo: number
 }
 
 const ApproveSection: React.FC<IApproveSectionProps> = ({
   processing,
   active,
   completed,
-  txHash
+  txHash,
+  sectionNo
 }) => {
   return (
     <div className="section-container">
-      <SectionHeader sectionNo={1} sectionTitle="Approve Collection" active={active} processing={processing} completed={completed}/>
+      <SectionHeader sectionNo={sectionNo} sectionTitle="Approve Collection" active={active} processing={processing} completed={completed}/>
 
       {active && (
         <div className="section-content">
@@ -28,7 +30,7 @@ const ApproveSection: React.FC<IApproveSectionProps> = ({
             This confirmation allows you to sell or buy both this NFT and any future NFT from this collection.
           </p>
 
-          <TransactionStatusSection processing={processing} txHash={txHash}/>
+          <TransactionStatusSection processing={processing} txHash={txHash} isTx={true}/>
         </div>
       )}
     </div>

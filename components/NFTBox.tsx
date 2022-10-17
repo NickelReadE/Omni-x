@@ -79,7 +79,9 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   const {
     openSellDlg,
     setOpenSellDlg,
-    onListing
+    onListingApprove,
+    onListingConfirm,
+    onListingDone
   } = useTrading({
     provider,
     signer,
@@ -173,7 +175,15 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
             </div>}
         </div>
       </div>
-      <ConfirmSell handleSellDlgClose={() => {setOpenSellDlg(false)}} openSellDlg={openSellDlg} nftImage={image} nftTitle={nft.name} onSubmit={onListing} />
+      <ConfirmSell
+        handleSellDlgClose={() => {setOpenSellDlg(false)}}
+        openSellDlg={openSellDlg}
+        nftImage={image}
+        nftTitle={nft.name}
+        onListingApprove={onListingApprove}
+        onListingConfirm={onListingConfirm}
+        onListingDone={onListingDone}
+      />
     </div>
   )
 }

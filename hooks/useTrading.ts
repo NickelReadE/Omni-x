@@ -8,7 +8,7 @@ import { openSnackBar } from '../redux/reducers/snackBarReducer'
 import { collectionsService } from '../services/collections'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../types'
 import { SaleType } from '../types/enum'
-import { ContractName, CREATOR_FEE, getAddressByName, getChainIdFromName, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from '../utils/constants'
+import { ContractName, CREATOR_FEE, formatCurrency, getAddressByName, getChainIdFromName, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from '../utils/constants'
 import {
   decodeFromBytes,
   getCurrencyInstance,
@@ -29,8 +29,10 @@ import useWallet from './useWallet'
 export type TradingFunction = {
   openSellDlg: boolean,
   openBidDlg: boolean,
+  openBuyDlg: boolean,
   setOpenSellDlg: Dispatch<SetStateAction<boolean>>,
   setOpenBidDlg: Dispatch<SetStateAction<boolean>>,
+  setOpenBuyDlg: Dispatch<SetStateAction<boolean>>,
   getListOrders: () => void,
   getBidOrders: () => void,
   getLastSaleOrder: () => void,
@@ -38,7 +40,10 @@ export type TradingFunction = {
   onListingApprove: (isAuction: boolean) => Promise<any>,
   onListingConfirm: (listingData: IListingData) => Promise<any>,
   onListingDone: () => void,
-  onBuy: (order?: IOrder) => Promise<void>,
+  onBuyApprove: (order?: IOrder) => Promise<any>,
+  onBuyConfirm: (order?: IOrder) => Promise<any>,
+  onBuyComplete: (order?: IOrder) => Promise<void>,
+  onBuyDone: () => void,
   onBid: (bidData: IBidData, order?: IOrder) => Promise<void>,
   onAccept: (bidOrder: IOrder) => Promise<void>,
 }
@@ -77,12 +82,12 @@ const useTrading = ({
   const { chainId, chainName } = useWallet()
   const [openSellDlg, setOpenSellDlg] = useState(false)
   const [openBidDlg, setOpenBidDlg] = useState(false)
+  const [openBuyDlg, setOpenBuyDlg] = useState(false)
 
   const dispatch = useDispatch()
   const { addTxToHistories } = useProgress()
   const { listenONFTEvents } = useContract()
 
-  let decimal = 0
   collection_name = useMemo(() => {
     if (collection_name) {
       return collection_name = collection_name.replace(' ','_').toLowerCase()
@@ -118,7 +123,6 @@ const useTrading = ({
     const currencyContract = getCurrencyInstance(currency, chainId, signer)
     const balance = await currencyContract?.balanceOf(address)
 
-    decimal = await currencyContract?.decimals()
     if (balance.lt(BigNumber.from(price))) {
       dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))
       setOpenBidDlg(false)
@@ -232,10 +236,45 @@ const useTrading = ({
 
   const onListingDone = () => {
     getListOrders()
-    setOpenSellDlg(false)
   }
 
-  const onBuy = async (order?: IOrder) => {
+  const onBuyApprove = async (order?: IOrder) => {
+    if (!order) {
+      dispatch(openSnackBar({ message: 'Not listed', status: 'warning' }))
+      return
+    }
+
+    const approveTxs = []
+
+    const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
+    const newCurrencyName = validateCurrencyName(currencyName, chainId)
+    const currencyAddress = getAddressByName(newCurrencyName, chainId)
+    
+    if (!(await checkValid(currencyAddress, order?.price, chainId))) {
+      return
+    }
+
+    const omni = getCurrencyInstance(currencyAddress, chainId, signer)
+
+    if (!omni) {
+      dispatch(openSnackBar({ message: 'Could not find the currency', status: 'warning' }))
+      return
+    }
+    
+    const omnixExchangeAddr = getAddressByName('OmnixExchange', chainId)
+
+    const buy_price = order?.price
+    approveTxs.push(await approve(omni, address, omnixExchangeAddr, buy_price))
+    approveTxs.push(await approve(omni, address, getAddressByName('FundManager', chainId), buy_price))
+
+    if (isUsdcOrUsdt(order?.currencyAddress)) {
+      approveTxs.push(await approve(omni, address, getAddressByName('StargatePoolManager', chainId), buy_price))
+    }
+
+    return approveTxs.filter(Boolean)
+  }
+
+  const onBuyConfirm = async (order?: IOrder) => {
     if (!order) {
       dispatch(openSnackBar({ message: 'Not listed', status: 'warning' }))
       return
@@ -279,17 +318,6 @@ const useTrading = ({
       minPercentageToAsk: order?.minPercentageToAsk || '0',
       params: ethers.utils.defaultAbiCoder.encode(['uint16'], [lzChainId])
     }
-
-    const approveTxs = []
-
-    approveTxs.push(await approve(omni, address, omnixExchange.address, takerBid.price))
-    approveTxs.push(await approve(omni, address, getAddressByName('FundManager', chainId), takerBid.price))
-
-    if (isUsdcOrUsdt(order?.currencyAddress)) {
-      approveTxs.push(await approve(omni, address, getAddressByName('StargatePoolManager', chainId), takerBid.price))
-    }
-
-    await Promise.all(approveTxs.filter(Boolean).map(tx => tx.wait()))
 
     const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
 
@@ -339,14 +367,25 @@ const useTrading = ({
     const historyIndex = addTxToHistories(pendingTx)
     await listenONFTEvents(pendingTx, historyIndex)
 
-    await tx.wait()
+    return tx
+  }
+
+  const onBuyComplete = async (order?: IOrder) => {
+    if (!order) {
+      dispatch(openSnackBar({ message: 'Not listed', status: 'warning' }))
+      return
+    }
+
     await updateOrderStatus(order, 'EXECUTED')
 
-    await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
-    await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(order?.price)/10**decimal as number)
-    await collectionsService.updateCollectionNFTChainID(collection_name,token_id,Number(chainId))
+    const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
 
-    dispatch(openSnackBar({ message: 'Bought an NFT', status: 'success' }))
+    await collectionsService.updateCollectionNFTListPrice(collection_name,token_id, 0)
+    await collectionsService.updateCollectionNFTSalePrice(collection_name, token_id, Number(formatCurrency(order.price, currencyName)))
+    await collectionsService.updateCollectionNFTChainID(collection_name, token_id, Number(chainId))
+  }
+
+  const onBuyDone = () => {
     getLastSaleOrder()
     getListOrders()
   }
@@ -498,11 +537,13 @@ const useTrading = ({
     await tx.wait()
 
     const receipt = await tx.wait()
-    if(receipt!=null){
+    if(receipt != null){
+      const currencyName = getCurrencyNameAddress(bidOrder.currencyAddress) as ContractName
+
       await updateOrderStatus(bidOrder, 'EXECUTED')
-      await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
-      await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(bidOrder?.price)/10**decimal as number)
-      await collectionsService.updateCollectionNFTChainID(collection_name,token_id,Number(chainId))
+      await collectionsService.updateCollectionNFTListPrice(collection_name, token_id, 0)
+      await collectionsService.updateCollectionNFTSalePrice(collection_name, token_id, Number(formatCurrency(bidOrder?.price, currencyName)))
+      await collectionsService.updateCollectionNFTChainID(collection_name, token_id, Number(chainId))
 
 
       dispatch(openSnackBar({ message: 'Accepted a Bid', status: 'success' }))
@@ -515,8 +556,10 @@ const useTrading = ({
   return {
     openBidDlg,
     openSellDlg,
+    openBuyDlg,
     setOpenSellDlg,
     setOpenBidDlg,
+    setOpenBuyDlg,
     getListOrders,
     getBidOrders,
     getLastSaleOrder,
@@ -524,7 +567,10 @@ const useTrading = ({
     onListingApprove,
     onListingConfirm,
     onListingDone,
-    onBuy,
+    onBuyApprove,
+    onBuyConfirm,
+    onBuyComplete,
+    onBuyDone,
     onBid,
     onAccept
   }

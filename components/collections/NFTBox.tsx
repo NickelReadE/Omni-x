@@ -21,6 +21,7 @@ import useOrderStatics from '../../hooks/useOrderStatics'
 import ConfirmSell from './ConfirmSell'
 import {selectCollectionInfo} from '../../redux/reducers/collectionsReducer'
 import {useSelector} from 'react-redux'
+import ConfirmBuy from './ConfirmBuy'
 
 const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
@@ -68,10 +69,17 @@ const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
   const {
     openBidDlg,
     openSellDlg,
+    openBuyDlg,
     setOpenBidDlg,
     setOpenSellDlg,
-    onListing,
-    onBuy,
+    setOpenBuyDlg,
+    onListingApprove,
+    onListingConfirm,
+    onListingDone,
+    onBuyApprove,
+    onBuyConfirm,
+    onBuyComplete,
+    onBuyDone,
     onBid
   } = useTrading({
     provider,
@@ -171,7 +179,7 @@ const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
           {isShowBtn && !isOwner && isListed && !isAuction && (
             <div
               className="ml-2 mr-2 py-[1px] px-4 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]"
-              onClick={() => onBuy(order)}>
+              onClick={() => setOpenBuyDlg(true)}>
               {'Buy now'}
             </div>
           )}
@@ -186,13 +194,28 @@ const NFTBox = ({nft, col_url}: IPropsNFTItem) => {
       </div>
 
       <ConfirmSell
-        onSubmit={onListing}
         handleSellDlgClose={() => {
           setOpenSellDlg(false)
         }}
         openSellDlg={openSellDlg}
         nftImage={nft.image}
         nftTitle={nft.name}
+        onListingApprove={onListingApprove}
+        onListingConfirm={onListingConfirm}
+        onListingDone={onListingDone}
+      />
+      <ConfirmBuy
+        handleBuyDlgClose={() => {
+          setOpenBuyDlg(false)
+        }}
+        openBuyDlg={openBuyDlg}
+        nftImage={nft.image}
+        nftTitle={nft.name}
+        onBuyApprove={onBuyApprove}
+        onBuyConfirm={onBuyConfirm}
+        onBuyComplete={onBuyComplete}
+        onBuyDone={onBuyDone}
+        order={order}
       />
       <ConfirmBid
         onSubmit={(bidData: any) => onBid(bidData, order)}

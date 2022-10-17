@@ -20,6 +20,7 @@ import useOrderStatics from '../../../hooks/useOrderStatics'
 import useOwnership from '../../../hooks/useOwnership'
 import { findCollection } from '../../../utils/constants'
 import { useMemo } from 'react'
+import ConfirmBuy from '../../../components/collections/ConfirmBuy'
 
 const truncate = (str: string) => {
   return str.length > 12 ? str.substring(0, 9) + '...' : str
@@ -85,15 +86,20 @@ const Item: NextPage = () => {
   const {
     openBidDlg,
     openSellDlg,
+    openBuyDlg,
     setOpenBidDlg,
     setOpenSellDlg,
+    setOpenBuyDlg,
     getListOrders,
     getBidOrders,
     getLastSaleOrder,
     onListingApprove,
     onListingConfirm,
     onListingDone,
-    onBuy,
+    onBuyApprove,
+    onBuyConfirm,
+    onBuyComplete,
+    onBuyDone,
     onBid,
     onAccept
   } = useTrading({
@@ -238,7 +244,7 @@ const Item: NextPage = () => {
                     <div className="mb-3">
                       <div className="">
                         { isListed && !isAuction && owner?.toLowerCase() != address?.toLowerCase() &&
-                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]" onClick={()=>onBuy(order)}>buy</button>
+                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]" onClick={() => {setOpenBuyDlg(true)}}>buy</button>
                         }
                         { owner?.toLowerCase() == address?.toLowerCase() &&
                           <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={() => {setOpenSellDlg(true)}}>sell</button>
@@ -297,7 +303,26 @@ const Item: NextPage = () => {
             nftImage={nftInfo.nft.image}
             nftTitle={nftInfo.nft.name}
           />
-          <ConfirmBid onSubmit={(bidData: any) => onBid(bidData, order)} handleBidDlgClose={() => {setOpenBidDlg(false)}} openBidDlg={openBidDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} />
+          <ConfirmBuy
+            handleBuyDlgClose={() => {
+              setOpenBuyDlg(false)
+            }}
+            openBuyDlg={openBuyDlg}
+            nftImage={nftInfo.nft.image}
+            nftTitle={nftInfo.nft.name}
+            onBuyApprove={onBuyApprove}
+            onBuyConfirm={onBuyConfirm}
+            onBuyComplete={onBuyComplete}
+            onBuyDone={onBuyDone}
+            order={order}
+          />
+          <ConfirmBid
+            onSubmit={(bidData: any) => onBid(bidData, order)}
+            handleBidDlgClose={() => {setOpenBidDlg(false)}}
+            openBidDlg={openBidDlg}
+            nftImage={nftInfo.nft.image}
+            nftTitle={nftInfo.nft.name}
+          />
         </div>
       }
     </>

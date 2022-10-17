@@ -76,48 +76,42 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
     else if (listingStep === ListingStep.StepDone || listingStep === ListingStep.StepFail) {
       setStep(ListingStep.StepListing)
       if (onListingDone) onListingDone()
+      handleSellDlgClose()
     }
   }
 
-  useEffect(() => {
+  const doLogic = async () => {
     const isAuction = sellType != SaleType.FIXED
 
     if (listingStep === ListingStep.StepApprove && onListingApprove) {
-      const task = onListingApprove(isAuction)
+      const tx = await onListingApprove(isAuction)
       
       setProcessing(true)
 
-      task.then(tx => {
-        if (tx) {
-          setApproveTx(tx.hash)
-          return tx.wait()
-        }
-        return tx
-      }).then((tx) => {
-        if (tx !== undefined) {
-          setStep(ListingStep.StepConfirm)
-        }
-      }).catch(() => {
-        setStep(ListingStep.StepFail)
-        setProcessing(false)
-      })
+      if (tx !== undefined) {
+        setApproveTx(tx.hash)
+        await tx.wait()
+      }
     }
     else if (listingStep === ListingStep.StepConfirm && onListingConfirm) {
-      const task = onListingConfirm({
+      const tx = await onListingConfirm({
         currencyName: currency.text,
         price,
         period: period.period,
         isAuction
       })
 
-      task.then((tx) => {
-        if (tx !== undefined) {
-          setStep(ListingStep.StepDone)
-        }
-      }).catch(() => 
-        setStep(ListingStep.StepFail)
-      ).finally(() => setProcessing(false))
+      if (tx !== undefined) {
+        setStep(ListingStep.StepDone)
+      }
     }
+  }
+
+  useEffect(() => {
+    doLogic().finally(() => {
+      setProcessing(false)
+      setStep(ListingStep.StepFail)
+    })
   }, [listingStep, currency, period, setStep])
 
   return (

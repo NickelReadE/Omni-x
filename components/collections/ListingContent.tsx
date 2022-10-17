@@ -3,8 +3,8 @@ import { ListingStep, SaleType } from '../../types/enum'
 import ListingSection from './ListingSection'
 import ListingFeeSection from './ListingFeeSection'
 import ApproveSection from './ApproveSection'
-import ConfirmListingSection from './ConfirmListingSection'
 import CongratsSection from './CongratsSection'
+import CompleteSection from './CompleteSection'
 
 interface IListingContentProps {
   sellType: SaleType,
@@ -57,11 +57,15 @@ const ListingContent: React.FC<IListingContentProps> = ({
               active={listingStep == ListingStep.StepApprove}
               completed={listingStep > ListingStep.StepApprove}
               txHash={approveTx}
+              sectionNo={1}
             />
-            <ConfirmListingSection 
+            <CompleteSection 
               processing={processing}
               active={listingStep == ListingStep.StepConfirm}
               completed={listingStep > ListingStep.StepConfirm}
+              sectionNo={2}
+              title="Complete Listing"
+              description="Please confirm this second transaction in your wallet to complete the listing."
             />
 
             {listingStep === ListingStep.StepDone && (
@@ -81,12 +85,21 @@ const ListingContent: React.FC<IListingContentProps> = ({
 
       <div className="grid grid-cols-4 mt-20 flex items-end">
         <div className="col-span-1">
-          <button
-            className='bg-[#B00000] rounded text-[#fff] w-[95px] h-[35px]'
-            onClick={onListing}
-            disabled={processing}>
-            {listingStep === ListingStep.StepDone || listingStep === ListingStep.StepFail ? 'close' : 'list'}
-          </button>
+          {(listingStep === ListingStep.StepDone || listingStep === ListingStep.StepFail) ? (
+            <button
+              className='bg-[#B444F9] rounded text-[#fff] w-[95px] h-[35px]'
+              onClick={onListing}
+              disabled={processing}>
+              close
+            </button>
+          ) : (
+            <button
+              className='bg-[#B00000] rounded text-[#fff] w-[95px] h-[35px]'
+              onClick={onListing}
+              disabled={processing}>
+              list
+            </button>
+          )}
         </div>
 
         {listingStep === ListingStep.StepListing && (
