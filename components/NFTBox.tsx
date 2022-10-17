@@ -1,19 +1,19 @@
 import React, { useMemo } from 'react'
 import { useState } from 'react'
-import { IPropsNFTItem } from '../interface/interface'
+import { IListingData, IPropsNFTItem } from '../interface/interface'
 import LazyLoad from 'react-lazyload'
 import {useDraggable} from '@dnd-kit/core'
 import ConfirmSell from './collections/ConfirmSell'
 import useWallet from '../hooks/useWallet'
 import { selectCollections } from '../redux/reducers/collectionsReducer'
 import { useSelector } from 'react-redux'
-import { formatCurrency, getChainIconById,getChainIdFromName, getChainNameFromId, getCurrencyNameAddress, numberShortify } from '../utils/constants'
+import { getChainIconById,getChainIdFromName, getChainNameFromId, numberShortify } from '../utils/constants'
 import Router from 'next/router'
 import useOrderStatics from '../hooks/useOrderStatics'
 import useTrading from '../hooks/useTrading'
 import { getCurrencyIconByAddress } from '../utils/constants'
 
-const NFTBox = ({nft, index}: IPropsNFTItem) => {
+const NFTBox = ({nft, index, onRefresh}: IPropsNFTItem) => {
   const {
     provider,
     address,
@@ -52,7 +52,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   }, [nft])
 
   const collection_address_map = useMemo(() => {
-    if (chainId && nft?.token_address) {
+    if (chainId && nft && nft.token_address) {
       return {
         [getChainIdFromName(nft.chain)]: nft.token_address
       }
@@ -63,11 +63,8 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   const {
     order,
     orderChainId,
-    isListed,
     highestBid,
     highestBidCoin,
-    lastSale,
-    lastSaleCoin
   } = useOrderStatics({ nft, collection_address_map })
   const order_collection_address = order?.collectionAddress
   const order_collection_chain = orderChainId && getChainNameFromId(orderChainId)
@@ -96,12 +93,17 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     token_id: nft?.token_id,
     selectedNFTItem: nft
   })
+
   const doubleClickToSetDetailLink = () => {
     const {pathname} = Router
     if(pathname == '/' ){
       Router.push(`/collections/${nft_collection.col_url}/${nft.token_id}`)
     }
   }
+
+  const isListed = useMemo(() => {
+    return nft && nft.price > 0
+  }, [nft])
 
   const nftChainId = useMemo(() => {
     return getChainIdFromName(nft?.chain)
@@ -114,9 +116,24 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     return getChainIconById('1')
   }, [nftChainId])
 
-  const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
-  const formattedPrice = formatCurrency(order?.price || 0, getCurrencyNameAddress(order?.currencyAddress))
+  const lastSale = useMemo(() => {
+    return nft.last_sale
+  }, [nft])
+
+  const lastSaleCoinIcon = useMemo(() => {
+    if (nft && nft.last_sale_currency) {
+      return getCurrencyIconByAddress(nft.last_sale_currency)
+    }
+  }, [nft])
+
+  const currencyIcon = getCurrencyIconByAddress(nft?.currency)
+  const formattedPrice = nft?.price || 0
   const isWhitelisted = !!nft_collection
+
+  const onListingAndRefresh = async (listingData: IListingData) => {
+    await onListing(listingData)
+    onRefresh()
+  }
 
   return (
     <div className='border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]'onMouseEnter={() => SetIsShowBtn(true)} onMouseLeave={() => SetIsShowBtn(false)}>
@@ -156,7 +173,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
         <div className="flex items-center ml-3">
           {lastSale != 0 && <>
             <span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span>
-            <img src={lastSaleCoin} className="w-[18px] h-[18px]" alt="" />&nbsp;
+            <img src={lastSaleCoinIcon} className="w-[18px] h-[18px]" alt="" />&nbsp;
             <span className="text-[#6C757D] text-[14px]font-bold">{numberShortify(lastSale)}</span>
           </>}
           {!lastSale && highestBid != 0 && <>
@@ -173,7 +190,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
             </div>}
         </div>
       </div>
-      <ConfirmSell handleSellDlgClose={() => {setOpenSellDlg(false)}} openSellDlg={openSellDlg} nftImage={image} nftTitle={nft.name} onSubmit={onListing} />
+      <ConfirmSell handleSellDlgClose={() => {setOpenSellDlg(false)}} openSellDlg={openSellDlg} nftImage={image} nftTitle={nft.name} onSubmit={onListingAndRefresh} />
     </div>
   )
 }

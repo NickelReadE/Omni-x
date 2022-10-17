@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { useState, useEffect, Fragment, useMemo } from 'react'
 import LazyLoad from 'react-lazyload'
 import type { NextPage } from 'next'
 import Link from 'next/link'
@@ -15,11 +15,9 @@ import useTrading from '../../../hooks/useTrading'
 import { getChainIcon, getChainNameFromId, getCurrencyIconByAddress, getProfileLink, numberShortify } from '../../../utils/constants'
 import PngCheck from '../../../public/images/check.png'
 import PngSub from '../../../public/images/subButton.png'
-import PngEther from '../../../public/images/collections/ethereum.png'
 import useOrderStatics from '../../../hooks/useOrderStatics'
 import useOwnership from '../../../hooks/useOwnership'
 import { findCollection } from '../../../utils/constants'
-import { useMemo } from 'react'
 
 const truncate = (str: string) => {
   return str.length > 12 ? str.substring(0, 9) + '...' : str
@@ -79,7 +77,6 @@ const Item: NextPage = () => {
   const order_collection_address = order?.collectionAddress
   const order_collection_chain = orderChainId && getChainNameFromId(orderChainId)
 
-  console.log(signer)
   // trading hook
   const {
     openBidDlg,

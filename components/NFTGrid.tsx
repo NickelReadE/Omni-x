@@ -18,6 +18,7 @@ import {
 import {chainInfos} from '../utils/constants'
 import {SUPPORTED_CHAIN_IDS} from '../constants/addresses'
 import {ChainIds} from '../types/enum'
+import { getUserNFTs } from '../redux/reducers/userReducer'
 
 const NFTGrid = ({nfts}: IPropsImage) => {
   const [chain, setChain] = useState(-1)
@@ -98,7 +99,9 @@ const NFTGrid = ({nfts}: IPropsImage) => {
   }, [nfts])
 
   const onRefresh = () => {
-    console.log('refresh')
+    if (address) {
+      dispatch(getUserNFTs(address) as any)
+    }
   }
 
   return (
@@ -126,17 +129,6 @@ const NFTGrid = ({nfts}: IPropsImage) => {
               </div>
             })
           }
-          {/*{
-            chainList.map((item, index) => {
-              return <div
-                key={index}
-                className={`grid justify-items-center content-center p-3 font-medium cursor-pointer m-[1px] min-w-[80px] ${chain == item.chain ? 'bg-[#C8D6E8]' : ''} `}
-                onClick={() =>{setChain(!item.disabled ? item.chain : chain)}}
-              >
-                <img alt={'listing'} src={item.img_url} className="w-[21px] h-[22px] " />
-              </div>
-            })
-          }*/}
           <div className="flex p-3 font-medium cursor-pointer text-[#6C757D] absolute right-0">
             <img alt={'listing'} src="/images/listing.png" className="w-[21px] h-[22px]"/>
             <span>active listing</span>

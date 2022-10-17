@@ -55,7 +55,6 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     isAuction,
     highestBid,
     highestBidCoin,
-    lastSale,
   } = useOrderStatics({nft, collection_address_map})
 
   const order_collection_address = order?.collectionAddress
@@ -87,8 +86,8 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   })
 
   const chainIcon = useMemo(() => {
-    return getChainIconById(chain ? chain : '5')
-  }, [chain])
+    return getChainIconById(nft && nft.chain_id ? nft.chain_id.toString() : '5')
+  }, [nft])
   const currencyIcon = getCurrencyIconByAddress(nft.currency)
 
   const isListed = useMemo(() => {
@@ -102,15 +101,19 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     return false
   }, [nft, address]) // owner?.toLowerCase() == address?.toLowerCase()
 
+  const lastSale = useMemo(() => {
+    return nft.last_sale
+  }, [nft])
+
   const lastSaleCoinIcon = useMemo(() => {
-    if (nft && nft.currency) {
-      return getCurrencyIconByAddress(nft.currency)
+    if (nft && nft.last_sale_currency) {
+      return getCurrencyIconByAddress(nft.last_sale_currency)
     }
   }, [nft])
 
   const onListingAndRefresh = async (e: IListingData) => {
     await onListing(e)
-    await onRefresh()
+    onRefresh()
   }
 
   return (
