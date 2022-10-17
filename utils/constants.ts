@@ -43,6 +43,13 @@ export const CURRENCIES_LIST = [
   {value: 2, text: 'USDT', decimals: 6, icon: 'payment/usdt.png'},
 ]
 
+export const PERIOD_LIST = [
+  { value: 0, text: '1 Day', period: 1, },
+  { value: 1, text: '1 Week', period: 7, },
+  { value: 2, text: '1 Month', period: 30, },
+  { value: 3, text: '1 Year', period: 365, },
+]
+
 export type ContractName =
   'Omnix' |
   'Omnix1155' |

@@ -1,0 +1,24 @@
+.spin-loader {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+}
+.spin-loader:after {
+  content: " ";
+  display: block;
+  width: 13px;
+  height: 13px;
+  margin: 0px;
+  border-radius: 50%;
+  border: 3px solid #B444F9;
+  border-color: #B444F9 transparent transparent transparent;
+  animation: spin-loader 1.2s linear infinite;
+}
+@keyframes spin-loader {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

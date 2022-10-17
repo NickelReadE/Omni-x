@@ -35,7 +35,9 @@ export type TradingFunction = {
   getBidOrders: () => void,
   getLastSaleOrder: () => void,
   updateOrderStatus: (order: IOrder, status: OrderStatus) => Promise<void>,
-  onListing: (listingData: IListingData) => Promise<void>,
+  onListingApprove: (isAuction: boolean) => Promise<any>,
+  onListingConfirm: (listingData: IListingData) => Promise<any>,
+  onListingDone: () => void,
   onBuy: (order?: IOrder) => Promise<void>,
   onBid: (bidData: IBidData, order?: IOrder) => Promise<void>,
   onAccept: (bidOrder: IOrder) => Promise<void>,
@@ -56,7 +58,7 @@ const approveNft = async (contract: any, owner?: string, operator?: string, toke
   const approvedOperator = await contract.getApproved(tokenId)
   if (approvedOperator == operator) return null
 
-  return (await contract.approve(operator, tokenId)).wait()
+  return await contract.approve(operator, tokenId)
 }
 
 const useTrading = ({
@@ -170,10 +172,26 @@ const useTrading = ({
     )
   }
 
-  const onListing = async (listingData: IListingData) => {
+  const onListingApprove = async (isAuction: boolean) => {
     if (owner_collection_chain_id != chainId) {
       dispatch(openSnackBar({ message: `Please switch network to ${owner_collection_chain}`, status: 'warning' }))
-      return
+      return undefined
+    }
+
+    if (!isAuction) {
+      const transferSelector = getTransferSelectorNftInstance(chainId, signer)
+      const transferManagerAddr = await transferSelector.checkTransferManagerForToken(collection_address)
+      const nftContract = getERC721Instance(collection_address, chainId, signer)
+      const tx = await approveNft(nftContract, address, transferManagerAddr, token_id)
+      return tx
+    }
+    return null
+  }
+
+  const onListingConfirm = async (listingData: IListingData) => {
+    if (owner_collection_chain_id != chainId) {
+      dispatch(openSnackBar({ message: `Please switch network to ${owner_collection_chain}`, status: 'warning' }))
+      return undefined
     }
 
     const amount = ethers.utils.parseUnits('1', 0)
@@ -183,7 +201,7 @@ const useTrading = ({
     const price = parseCurrency(listingData.price.toString(), listingData.currencyName) // ethers.utils.parseEther(listingData.price.toString())
     const startTime = Date.now()
 
-    await postMakerOrder(
+    const task1 = postMakerOrder(
       provider as any,
       true,
       collection_address,
@@ -207,16 +225,12 @@ const useTrading = ({
       true
     )
 
-    await collectionsService.updateCollectionNFTListPrice(collection_name, token_id, listingData.price)
+    const task2 = collectionsService.updateCollectionNFTListPrice(collection_name, token_id, listingData.price)
 
-    if (!listingData.isAuction) {
-      const transferSelector = getTransferSelectorNftInstance(chainId, signer)
-      const transferManagerAddr = await transferSelector.checkTransferManagerForToken(collection_address)
-      const nftContract = getERC721Instance(collection_address, chainId, signer)
-      await approveNft(nftContract, address, transferManagerAddr, token_id)
-    }
+    return Promise.all([task1, task2])
+  }
 
-    dispatch(openSnackBar({ message: '  Success', status: 'success' }))
+  const onListingDone = () => {
     getListOrders()
     setOpenSellDlg(false)
   }
@@ -507,7 +521,9 @@ const useTrading = ({
     getBidOrders,
     getLastSaleOrder,
     updateOrderStatus,
-    onListing,
+    onListingApprove,
+    onListingConfirm,
+    onListingDone,
     onBuy,
     onBid,
     onAccept

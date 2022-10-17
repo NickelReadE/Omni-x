@@ -90,7 +90,9 @@ const Item: NextPage = () => {
     getListOrders,
     getBidOrders,
     getLastSaleOrder,
-    onListing,
+    onListingApprove,
+    onListingConfirm,
+    onListingDone,
     onBuy,
     onBid,
     onAccept
@@ -286,7 +288,15 @@ const Item: NextPage = () => {
               </div>
             </div>
           </div>
-          <ConfirmSell onSubmit={onListing} handleSellDlgClose={() => {setOpenSellDlg(false)}} openSellDlg={openSellDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} />
+          <ConfirmSell
+            onListingApprove={onListingApprove}
+            onListingConfirm={onListingConfirm}
+            onListingDone={onListingDone}
+            handleSellDlgClose={() => {setOpenSellDlg(false)}}
+            openSellDlg={openSellDlg}
+            nftImage={nftInfo.nft.image}
+            nftTitle={nftInfo.nft.name}
+          />
           <ConfirmBid onSubmit={(bidData: any) => onBid(bidData, order)} handleBidDlgClose={() => {setOpenBidDlg(false)}} openBidDlg={openBidDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} />
         </div>
       }

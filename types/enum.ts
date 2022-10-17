@@ -17,3 +17,11 @@ export enum SaleType {
     FIXED = 1,
     AUCTION = 2,
 }
+
+export enum ListingStep {
+    StepListing = 1,
+    StepApprove = 2,
+    StepConfirm = 3,
+    StepDone = 4,
+    StepFail = 5,
+}
