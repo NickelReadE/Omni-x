@@ -58,6 +58,11 @@ const ListingContent: React.FC<IListingContentProps> = ({
               completed={listingStep > ListingStep.StepApprove}
               txHash={approveTx}
               sectionNo={1}
+              title="Approve Collection"
+              descriptions={[
+                "Please confirm the transaction in your wallet.",
+                "This confirmation allows you to sell or buy both this NFT and any future NFT from this collection."
+              ]}
             />
             <CompleteSection 
               processing={processing}

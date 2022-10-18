@@ -50,6 +50,10 @@ const BuyContent: React.FC<IBuyContentProps> = ({
               completed={buyStep > BuyStep.StepApprove}
               txHash={approveTx}
               sectionNo={1}
+              title="Approve Token"
+              descriptions={[
+                "Please confirm the transaction in your wallet to process the trade."
+              ]}
             />
             <ConfirmSection 
               processing={processing}
