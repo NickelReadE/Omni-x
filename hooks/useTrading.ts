@@ -63,7 +63,7 @@ const approveNft = async (contract: any, owner?: string, operator?: string, toke
   const approvedOperator = await contract.getApproved(tokenId)
   if (approvedOperator == operator) return null
 
-  return await contract.approve(operator, tokenId)
+  return await contract.setApprovalForAll(operator, true)
 }
 
 const useTrading = ({
