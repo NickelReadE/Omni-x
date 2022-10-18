@@ -60,8 +60,8 @@ const ListingContent: React.FC<IListingContentProps> = ({
               sectionNo={1}
               title="Approve Collection"
               descriptions={[
-                "Please confirm the transaction in your wallet.",
-                "This confirmation allows you to sell or buy both this NFT and any future NFT from this collection."
+                'Please confirm the transaction in your wallet.',
+                'This confirmation allows you to sell or buy both this NFT and any future NFT from this collection.'
               ]}
             />
             <CompleteSection 

@@ -52,7 +52,7 @@ const BuyContent: React.FC<IBuyContentProps> = ({
               sectionNo={1}
               title="Approve Token"
               descriptions={[
-                "Please confirm the transaction in your wallet to process the trade."
+                'Please confirm the transaction in your wallet to process the trade.'
               ]}
             />
             <ConfirmSection 
