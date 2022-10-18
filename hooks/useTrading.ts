@@ -228,6 +228,12 @@ const useTrading = ({
     }
     if (!chainId || !chainName) return
 
+    const isONFTCore = false // await validateONFT(selectedNFTItem)
+    const orderChainId = getChainIdFromName(order.chain)
+    const blockNumber = await provider.getBlockNumber()
+    const targetProvier = getProvider(orderChainId)
+    const targetBlockNumber = await targetProvier.getBlockNumber()
+
     const lzChainId = getLayerzeroChainId(chainId)
     const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
     const newCurrencyName = validateCurrencyName(currencyName, chainId)
@@ -289,11 +295,7 @@ const useTrading = ({
 
     const tx = await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
 
-    const isONFTCore = false // await validateONFT(selectedNFTItem)
-    const orderChainId = getChainIdFromName(order.chain)
-    const blockNumber = await provider.getBlockNumber()
-    const targetProvier = getProvider(orderChainId)
-    const targetBlockNumber = await targetProvier.getBlockNumber()
+    
     let targetCollectionAddress = ''
     if (isONFTCore) {
       const onftCoreInstance = getONFTCore721Instance(order.collectionAddress, orderChainId, null)
@@ -330,7 +332,7 @@ const useTrading = ({
     await updateOrderStatus(order, 'EXECUTED')
 
     // await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
-    await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(order?.price)/10**decimal as number)
+    // await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(order?.price)/10**decimal as number)
     await collectionsService.updateCollectionNFTChainID(collection_name,token_id,Number(chainId))
 
     dispatch(openSnackBar({ message: 'Bought an NFT', status: 'success' }))
@@ -410,6 +412,11 @@ const useTrading = ({
       return
     }
     if (!chainId || !chainName) return
+    const isONFTCore = false // await validateONFT(selectedNFTItem)
+    const orderChainId = getChainIdFromName(bidOrder.chain)
+    const blockNumber = await provider.getBlockNumber()
+    const targetProvier = getProvider(orderChainId)
+    const targetBlockNumber = await targetProvier.getBlockNumber()
 
     const lzChainId = getLayerzeroChainId(chainId)
     const omnixExchange = getOmnixExchangeInstance(chainId, signer)
@@ -447,11 +454,11 @@ const useTrading = ({
 
     const tx = await omnixExchange.connect(signer as any).matchBidWithTakerAsk(takerAsk, makerBid, { value: lzFee })
 
-    const isONFTCore = false // await validateONFT(selectedNFTItem)
-    const orderChainId = getChainIdFromName(bidOrder.chain)
-    const blockNumber = await provider.getBlockNumber()
-    const targetProvier = getProvider(orderChainId)
-    const targetBlockNumber = await targetProvier.getBlockNumber()
+    // const isONFTCore = false // await validateONFT(selectedNFTItem)
+    // const orderChainId = getChainIdFromName(bidOrder.chain)
+    // const blockNumber = await provider.getBlockNumber()
+    // const targetProvier = getProvider(orderChainId)
+    // const targetBlockNumber = await targetProvier.getBlockNumber()
     let targetCollectionAddress = ''
 
     if (isONFTCore) {
@@ -491,7 +498,7 @@ const useTrading = ({
     if(receipt!=null){
       await updateOrderStatus(bidOrder, 'EXECUTED')
       // await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
-      await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(bidOrder?.price)/10**decimal as number)
+      // await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(bidOrder?.price)/10**decimal as number)
       await collectionsService.updateCollectionNFTChainID(collection_name,token_id,Number(chainId))
 
 
