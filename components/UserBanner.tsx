@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useMemo, useState} from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import useWallet from '../hooks/useWallet'
 import {useMoralis} from 'react-moralis'
 import classNames from '../helpers/classNames'
@@ -105,16 +104,16 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
             </div>
             
             <div className="flex ml-[]">
-              <Link href={(user && user.twitter) ? user.twitter : '#'} target="_blank">
+              <a href={(user && user.twitter) ? user.twitter : '#'} target="_blank" rel="noreferrer">
                 <div className="mr-6">
                   <Image src={Twitter} alt="twitter"/>
                 </div>
-              </Link>
-              <Link href={(user && user.website) ? user.website : '#'} target="_blank">
+              </a>
+              <a href={(user && user.website) ? user.website : '#'} target="_blank" rel="noreferrer">
                 <div className="mr-6">
                   <Image src={Web} alt="website"/>
                 </div>
-              </Link>
+              </a>
             </div>
           </div>
         </div>
