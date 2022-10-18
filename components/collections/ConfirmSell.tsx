@@ -74,9 +74,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
       setStep(ListingStep.StepConfirm)
     }
     else if (listingStep === ListingStep.StepDone || listingStep === ListingStep.StepFail) {
-      setStep(ListingStep.StepListing)
-      handleSellDlgClose()
-      if (onListingDone) onListingDone()
+      onClose()
     }
   }
 
@@ -111,6 +109,12 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
     }
   }
 
+  const onClose = () => {
+    if (onListingDone) onListingDone()
+    handleSellDlgClose()
+    setStep(ListingStep.StepListing)
+  }
+
   useEffect(() => {
     if (listingStep === ListingStep.StepListing) return
 
@@ -122,7 +126,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
   }, [listingStep, currency, period, setStep])
 
   return (
-    <Dialog open={openSellDlg} onClose={handleSellDlgClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
+    <Dialog open={openSellDlg} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
       <DialogTitle id="form-dialog-title" className={classes.rootTitle}>
         <div className="columns-2 mt-5">
           <div className="text-[#1E1C21] text-[28px] font-semibold">list item for sale</div>

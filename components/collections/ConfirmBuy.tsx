@@ -66,9 +66,7 @@ const ConfirmBuy: React.FC<IConfirmBuyProps> = ({
       setStep(BuyStep.StepConfirm)
     }
     else if (buyStep === BuyStep.StepDone || buyStep === BuyStep.StepFail) {
-      setStep(BuyStep.StepBuy)
-      if (onBuyDone) onBuyDone()
-      handleBuyDlgClose()
+      onClose()
     }
   }
 
@@ -105,6 +103,12 @@ const ConfirmBuy: React.FC<IConfirmBuyProps> = ({
     }
   }
 
+  const onClose = () => {
+    if (onBuyDone) onBuyDone()
+    handleBuyDlgClose()
+    setStep(BuyStep.StepBuy)
+  }
+
   useEffect(() => {
     if (buyStep === BuyStep.StepBuy) return
 
@@ -119,7 +123,7 @@ const ConfirmBuy: React.FC<IConfirmBuyProps> = ({
   const newCurrencyName = validateCurrencyName(currencyName, chainId)
   const formattedPrice = formatCurrency(order?.price || 0, getCurrencyNameAddress(order?.currencyAddress))
   return (
-    <Dialog open={openBuyDlg} onClose={handleBuyDlgClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
+    <Dialog open={openBuyDlg} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
       <DialogTitle id="form-dialog-title" className={classes.rootTitle}>
         <div className="columns-2 mt-5">
           <div className="text-[#1E1C21] text-[28px] font-semibold">purchase confirmation</div>
