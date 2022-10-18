@@ -17,7 +17,6 @@ import PngCheck from '../../../public/images/check.png'
 import PngSub from '../../../public/images/subButton.png'
 import useOrderStatics from '../../../hooks/useOrderStatics'
 import useOwnership from '../../../hooks/useOwnership'
-import { findCollection } from '../../../utils/constants'
 
 const truncate = (str: string) => {
   return str.length > 12 ? str.substring(0, 9) + '...' : str
@@ -40,23 +39,26 @@ const Item: NextPage = () => {
   const token_id = router.query.item as string
   const collection_address_map = nftInfo?.collection?.address
 
-  const collectionInfo = useMemo(() => {
-    if (nftInfo && nftInfo.collection && nftInfo.nft && token_id) {
-      return findCollection(nftInfo.collection.address,nftInfo.nft,token_id)
+  const collection_address = useMemo(() => {
+    if (nftInfo && nftInfo.nft && nftInfo.nft.collection_address) {
+      return nftInfo.nft.collection_address
     }
-    return undefined
-  }, [nftInfo,token_id])
-  const collection_address = collectionInfo?.[0]
-  const chain_id = collectionInfo?.[1]
+  }, [nftInfo])
+  const chain_id = useMemo(() => {
+    if (nftInfo && nftInfo.nft && nftInfo.nft.chain_id) {
+      return nftInfo.nft.chain_id
+    }
+  }, [nftInfo])
+  const currentNFT = useMemo(() => {
+    return nftInfo?.nft
+  }, [nftInfo])
+
   // ownership hook
   const {
     owner,
     ownerType,
-    ownerChainId,
-    collectionAddress: ownedCollectionAddress
   } = useOwnership({
-    collection_address_map,
-    token_id
+    owner_address: currentNFT?.owner
   })
 
   // statistics hook
@@ -98,10 +100,10 @@ const Item: NextPage = () => {
     collection_address,
     order_collection_address,
     order_collection_chain,
-    owner,
-    owner_collection_address: ownedCollectionAddress,
-    owner_collection_chain: ownerChainId && getChainNameFromId(ownerChainId),
-    owner_collection_chain_id: ownerChainId,
+    owner: currentNFT?.owner,
+    owner_collection_address: collection_address,
+    owner_collection_chain: chain_id && getChainNameFromId(chain_id),
+    owner_collection_chain_id: chain_id,
     token_id,
     selectedNFTItem: nftInfo?.nft
   })
@@ -121,10 +123,6 @@ const Item: NextPage = () => {
       getLastSaleOrder()
     }
   }, [nftInfo, owner])
-
-  const currentNFT = useMemo(() => {
-    return nftInfo?.nft
-  }, [nftInfo])
 
   // profile link
   const profileLink = chain_id && ownerType && currentNFT?.owner && getProfileLink(Number(chain_id), ownerType, currentNFT?.owner)
@@ -175,7 +173,7 @@ const Item: NextPage = () => {
 
                     </div>
                     <div className="flex justify-between items-center mt-6">
-                      {order && (
+                      {currentNFT && currentNFT.price > 0 && (
                         <>
                           <h1 className="text-[#1E1C21] text-[60px] font-normal">{numberShortify(formattedPrice)}</h1>
                           <div className="mr-5">
