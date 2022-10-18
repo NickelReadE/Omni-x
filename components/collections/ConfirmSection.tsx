@@ -19,7 +19,7 @@ const ConfirmSection: React.FC<IConfirmSectionProps> = ({
 }) => {
   return (
     <div className="section-container mt-[16px]">
-      <SectionHeader sectionNo={sectionNo} sectionTitle="Complete Listing" active={active} processing={processing} completed={completed}/>
+      <SectionHeader sectionNo={sectionNo} sectionTitle="Confirm Purchase" active={active} processing={processing} completed={completed}/>
 
       {active && (
         <div className="section-content">

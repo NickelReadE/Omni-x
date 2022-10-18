@@ -114,7 +114,8 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
   useEffect(() => {
     if (listingStep === ListingStep.StepListing) return
 
-    doLogic().catch(() => {
+    doLogic().catch((e) => {
+      console.log('error', e)
       setProcessing(false)
       setStep(ListingStep.StepFail)
     })
