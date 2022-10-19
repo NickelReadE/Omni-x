@@ -163,13 +163,20 @@ const Item: NextPage = () => {
                   <div className="">
                     <div className="flex justify-start items-center">
                       <h1 className="text-[#1E1C21] text-[18px] font-bold">owner:</h1>
-                      {currentNFT?.owner && (
+                      {currentNFT && currentNFT.owner && (
+                        <h1 className="text-[#B444F9] text-[20px] font-normal underline ml-4 break-all lg:ml-1">
+                          <Link href={`/user/${currentNFT.owner}`}>
+                            {truncate(currentNFT.owner)}
+                          </Link>
+                        </h1>
+                      )}
+                      {/* {currentNFT?.owner && (
                         <h1 className="text-[#B444F9] text-[20px] font-normal underline ml-4 break-all lg:ml-1">
                           <Link href={profileLink || '#'}>
                             <a target='_blank'>{truncate(currentNFT?.owner)}</a>
                           </Link>
                         </h1>
-                      )}
+                      )} */}
 
                     </div>
                     <div className="flex justify-between items-center mt-6">

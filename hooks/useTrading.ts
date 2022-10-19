@@ -8,7 +8,7 @@ import { openSnackBar } from '../redux/reducers/snackBarReducer'
 import { collectionsService } from '../services/collections'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../types'
 import { SaleType } from '../types/enum'
-import { ContractName, CREATOR_FEE, getAddressByName, getChainIdFromName, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from '../utils/constants'
+import { ContractName, CREATOR_FEE, getAddressByName, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from '../utils/constants'
 import {
   decodeFromBytes,
   getCurrencyInstance,
@@ -295,7 +295,6 @@ const useTrading = ({
 
     const tx = await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
 
-    
     let targetCollectionAddress = ''
     if (isONFTCore) {
       const onftCoreInstance = getONFTCore721Instance(order.collectionAddress, orderChainId, null)
@@ -331,8 +330,6 @@ const useTrading = ({
     await tx.wait()
     await updateOrderStatus(order, 'EXECUTED')
 
-    // await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
-    // await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(order?.price)/10**decimal as number)
     await collectionsService.updateCollectionNFTChainID(collection_name,token_id,Number(chainId))
 
     dispatch(openSnackBar({ message: 'Bought an NFT', status: 'success' }))
