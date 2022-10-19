@@ -10,7 +10,7 @@ import { Menu } from '@headlessui/react'
 import { getSearchText } from '../redux/reducers/headerReducer'
 import { updateRefreshBalance } from '../redux/reducers/userReducer'
 import { getOmniInstance, getUSDCInstance } from '../utils/contracts'
-import { ContractName, getAddressByName, parseCurrency, STABLECOIN_DECIMAL } from '../utils/constants'
+import { ContractName, getAddressByName, STABLECOIN_DECIMAL } from '../utils/constants'
 import { ethers } from 'ethers'
 
 type HeaderProps = {
