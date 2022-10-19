@@ -44,6 +44,21 @@ export const CURRENCIES_LIST = [
   {value: 2, text: 'USDT', decimals: 6, icon: 'payment/usdt.png'},
 ]
 
+export const STABLECOIN_DECIMAL: any = {
+  [ChainIDS.BINANCE]: {
+    [USDT[ChainIDS.BINANCE]]: 18,
+  },
+  [ChainIDS.AVALANCHE]: {
+    [USDC[ChainIDS.AVALANCHE]]: 6,
+  },
+  [ChainIDS.POLYGON]: {
+    [USDC[ChainIDS.POLYGON]]: 6,
+  },
+  [ChainIDS.FANTOM]: {
+    [USDC[ChainIDS.FANTOM]]: 6,
+  },
+}
+
 export type ContractName =
   'Omnix' |
   'Omnix1155' |
