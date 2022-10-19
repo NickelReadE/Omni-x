@@ -95,7 +95,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   }, [nft])
 
   const isOwner = useMemo(() => {
-    if (nft && nft.owner) {
+    if (nft && nft.owner && address) {
       return nft.owner.toLowerCase() === address?.toLowerCase()
     }
     return false

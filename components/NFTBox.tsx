@@ -129,6 +129,12 @@ const NFTBox = ({ nft, index, onRefresh }: IPropsNFTItem) => {
   const currencyIcon = getCurrencyIconByAddress(nft?.currency)
   const formattedPrice = nft?.price || 0
   const isWhitelisted = !!nft_collection
+  const isOwner = useMemo(() => {
+    if (nft && nft.owner && address) {
+      return nft.owner.toLowerCase() == address.toLowerCase()
+    }
+    return false
+  }, [nft, address])
 
   const onListingAndRefresh = async (listingData: IListingData) => {
     await onListing(listingData)
@@ -184,8 +190,11 @@ const NFTBox = ({ nft, index, onRefresh }: IPropsNFTItem) => {
         </div>
         <div className="flex items-center ml-3">
           <div>&nbsp;</div>
-          {isShowBtn && isWhitelisted &&
-            <div className="ml-2 mr-3 py-[1px] px-4 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-bold cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
+          {isShowBtn && isWhitelisted && isOwner &&
+            <div
+              className="ml-2 mr-3 py-[1px] px-4 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-bold cursor-pointer hover:bg-[#B00000]"
+              onClick={() => setOpenSellDlg(true)}
+            >
               {'Sell'}
             </div>}
         </div>
