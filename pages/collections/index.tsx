@@ -5,29 +5,17 @@ import type {NextPage} from 'next'
 import {
   getCollections,
   selectCollections,
-  updateCollectionsForCard,
-  selectCollectionsForCard,
   clearCollectionNFTs,
 } from '../../redux/reducers/collectionsReducer'
 import {getOrders} from '../../redux/reducers/ordersReducer'
 import Slider from '../../components/Slider'
 import CollectionCard from '../../components/CollectionCard'
 import {IGetOrderRequest} from '../../interface/interface'
-import useWallet from '../../hooks/useWallet'
-import {getChainNameFromId} from '../../utils/constants'
 
 const Collections: NextPage = () => {
-  const {chainId} = useWallet()
   const [omniSlides, setOmniSlides] = useState<Array<React.ReactNode>>([])
   const dispatch = useDispatch()
   const collections = useSelector(selectCollections)
-  const collectionsForCard = useSelector(selectCollectionsForCard)
-
-  useEffect(() => {
-    if (chainId) {
-      dispatch(updateCollectionsForCard(chainId.toString(), getChainNameFromId(chainId)) as any)
-    }
-  }, [chainId])
 
   useEffect(() => {
     dispatch(getCollections() as any)
@@ -44,7 +32,7 @@ const Collections: NextPage = () => {
       })
     }
     setOmniSlides(slides)
-  }, [collections, collectionsForCard])
+  }, [collections])
 
   useEffect(() => {
     const request: IGetOrderRequest = {
