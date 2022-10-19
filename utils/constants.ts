@@ -513,7 +513,7 @@ export const validateCurrencyName = (currencyName: ContractName, chainId: number
 }
 
 export const getProfileLink = (chain_id: number, ownerType: string, owner: string) => {
-  if (ownerType == 'address') {
+  if (ownerType === 'address' || ownerType === 'username') {
     const explorer_link = getBlockExplorer(chain_id)
     return (explorer_link + '/address/' + owner)
   }

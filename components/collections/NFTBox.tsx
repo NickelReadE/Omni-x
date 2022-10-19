@@ -37,6 +37,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     }
     return undefined
   }, [nft, token_id, collectionInfo])
+  const order = nft.order_data
   const col_address = collection?.[0] as string
   const chain = collection?.[1] as string
   //update this logic in the constants
@@ -50,7 +51,6 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   }, [chain, col_address])
 
   const {
-    order,
     orderChainId,
     isAuction,
     highestBid,

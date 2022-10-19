@@ -46,6 +46,7 @@ export interface NFTItem {
   collection_address: string,
   currency: string,
   uri: string,
+  order_data: any,
 }
 
 export interface FeedItem {

@@ -27,6 +27,7 @@ import Explorer from '../../../public/images/exp.png'
 import Loading from '../../../public/images/loading_f.gif'
 import {
   clearCollectionNFTs,
+  getCollectionInfo,
   getCollectionNFTs,
   getRoyalty,
   selectCollectionNFTs,
@@ -168,6 +169,7 @@ const Collection: NextPage = () => {
 
   useEffect(() => {
     if (col_url) {
+      dispatch(getCollectionInfo(col_url) as any)
       setPage(0)
     }
   }, [col_url])
