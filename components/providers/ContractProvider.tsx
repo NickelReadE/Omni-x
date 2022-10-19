@@ -336,7 +336,6 @@ export const ContractProvider = ({
         await listenBridgeEvents(txInfo, historyIndex)
       }
     } else if (txInfo.type === 'buy' || txInfo.type === 'accept') {
-      console.log('-tx-', txInfo, historyIndex)
       if (txInfo.isONFTCore) {
         await listenTradingONFTCoreEvents(txInfo, historyIndex)
       } else {

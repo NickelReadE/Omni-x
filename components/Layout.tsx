@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Header from './Header'
 import { useRouter } from 'next/router'
@@ -59,31 +59,11 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
   }, [address])
 
   useEffect(() => {
-    if ( menu === 'home' && user.banners ) {
-      const new_slides:Array<React.ReactNode> = []
-      new_slides.push(<img src={process.env.API_URL + (user.banners[0]?user.banners[0]:'default_banner.png')} alt="banner - 1" className={'banner-slider'} />)
-      new_slides.push(<img src={process.env.API_URL + (user.banners[1]?user.banners[1]:'default_banner.png')} alt="banner - 2" className={'banner-slider'} />)
-      new_slides.push(<img src={process.env.API_URL + (user.banners[2]?user.banners[2]:'default_banner.png')} alt="banner - 3" className={'banner-slider'} />)
-      setCurrentSlides(new_slides)
-    }
-  }, [menu, user.banners])
-
-  useEffect(() => {
     if ( menu === 'collections' ) {
       const new_slides:Array<React.ReactNode> = []
       new_slides.push(<Link href={'/collections/kanpai_pandas'}><a><img src='https://i.seadn.io/gae/DCeuchHOQhwg6mEumI2BhKViz81s0CZYXUXd3tK5lL76cWwDBrNM46NDd3z_5lRrsaPGqub1AMKOi9jqvhxvuQJLc1KVXPFFtvVN6g?auto=format&w=1920' alt="banner - 4" className={'banner-slider'} /></a></Link>)
       new_slides.push(<Link href={'/collections/gregs_eth'}><a><img src='https://i.seadn.io/gcs/files/a80f86bc5cc3ab9984161ca01aa04b6c.png?auto=format&w=1920' alt="banner - 5" className={'banner-slider'} /></a></Link>)
-      // new_slides.push(<Link href={'/collections/kanpai_pandas'}><a><img src='https://i.seadn.io/gae/DCeuchHOQhwg6mEumI2BhKViz81s0CZYXUXd3tK5lL76cWwDBrNM46NDd3z_5lRrsaPGqub1AMKOi9jqvhxvuQJLc1KVXPFFtvVN6g?auto=format&w=1920' alt="banner - 4" className={'banner-slider'} /></a></Link>)
-
       setCurrentSlides(new_slides)
-    } else if ( menu === 'home' ) {
-      const new_slides:Array<React.ReactNode> = []
-      if ( user.banners ) {
-        new_slides.push(<img src={process.env.API_URL + (user.banners[0]?user.banners[0]:'default_banner.png')} alt="banner - 1" className={'banner-slider'} />)
-        new_slides.push(<img src={process.env.API_URL + (user.banners[1]?user.banners[1]:'default_banner.png')} alt="banner - 2" className={'banner-slider'} />)
-        new_slides.push(<img src={process.env.API_URL + (user.banners[2]?user.banners[2]:'default_banner.png')} alt="banner - 3" className={'banner-slider'} />)
-        setCurrentSlides(new_slides)
-      }
     }
   }, [menu, user.banners])
 

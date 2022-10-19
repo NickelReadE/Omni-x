@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { useState, useEffect, Fragment, useMemo } from 'react'
 import LazyLoad from 'react-lazyload'
 import type { NextPage } from 'next'
 import Link from 'next/link'
@@ -12,14 +12,11 @@ import ConfirmBid from '../../../components/collections/ConfirmBid'
 import { getNFTInfo, selectNFTInfo } from '../../../redux/reducers/collectionsReducer'
 import useWallet from '../../../hooks/useWallet'
 import useTrading from '../../../hooks/useTrading'
-import { formatCurrency, getChainIcon, getChainNameFromId, getCurrencyIconByAddress, getCurrencyNameAddress, getProfileLink, numberShortify } from '../../../utils/constants'
+import { getChainIcon, getChainNameFromId, getCurrencyIconByAddress, getProfileLink, numberShortify } from '../../../utils/constants'
 import PngCheck from '../../../public/images/check.png'
 import PngSub from '../../../public/images/subButton.png'
-import PngEther from '../../../public/images/collections/ethereum.png'
 import useOrderStatics from '../../../hooks/useOrderStatics'
 import useOwnership from '../../../hooks/useOwnership'
-import { findCollection } from '../../../utils/constants'
-import { useMemo } from 'react'
 
 const truncate = (str: string) => {
   return str.length > 12 ? str.substring(0, 9) + '...' : str
@@ -42,23 +39,26 @@ const Item: NextPage = () => {
   const token_id = router.query.item as string
   const collection_address_map = nftInfo?.collection?.address
 
-  const collectionInfo = useMemo(() => {
-    if (nftInfo && nftInfo.collection && nftInfo.nft && token_id) {
-      return findCollection(nftInfo.collection.address,nftInfo.nft,token_id)
+  const collection_address = useMemo(() => {
+    if (nftInfo && nftInfo.nft && nftInfo.nft.collection_address) {
+      return nftInfo.nft.collection_address
     }
-    return undefined
-  }, [nftInfo,token_id])
-  const collection_address = collectionInfo?.[0]
-  const chain_id = collectionInfo?.[1]
+  }, [nftInfo])
+  const chain_id = useMemo(() => {
+    if (nftInfo && nftInfo.nft && nftInfo.nft.chain_id) {
+      return nftInfo.nft.chain_id
+    }
+  }, [nftInfo])
+  const currentNFT = useMemo(() => {
+    return nftInfo?.nft
+  }, [nftInfo])
+
   // ownership hook
   const {
     owner,
     ownerType,
-    ownerChainId,
-    collectionAddress: ownedCollectionAddress
   } = useOwnership({
-    collection_address_map,
-    token_id
+    owner_address: currentNFT?.owner
   })
 
   // statistics hook
@@ -70,8 +70,6 @@ const Item: NextPage = () => {
     sortedBids,
     highestBid,
     highestBidCoin,
-    lastSale,
-    lastSaleCoin
   } = useOrderStatics({
     nft: nftInfo?.nft,
     collection_address_map,
@@ -102,10 +100,10 @@ const Item: NextPage = () => {
     collection_address,
     order_collection_address,
     order_collection_chain,
-    owner,
-    owner_collection_address: ownedCollectionAddress,
-    owner_collection_chain: ownerChainId && getChainNameFromId(ownerChainId),
-    owner_collection_chain_id: ownerChainId,
+    owner: currentNFT?.owner,
+    owner_collection_address: collection_address,
+    owner_collection_chain: chain_id && getChainNameFromId(chain_id),
+    owner_collection_chain_id: chain_id,
     token_id,
     selectedNFTItem: nftInfo?.nft
   })
@@ -127,9 +125,17 @@ const Item: NextPage = () => {
   }, [nftInfo, owner])
 
   // profile link
-  const profileLink = chain_id && ownerType && owner && getProfileLink(Number(chain_id), ownerType, owner)
-  const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
-  const formattedPrice = formatCurrency(order?.price || 0, getCurrencyNameAddress(order?.currencyAddress))
+  const profileLink = chain_id && ownerType && currentNFT?.owner && getProfileLink(Number(chain_id), ownerType, currentNFT?.owner)
+  const currencyIcon = getCurrencyIconByAddress(currentNFT?.currency)
+  const formattedPrice = currentNFT?.price
+
+  const lastSale = currentNFT?.last_sale
+  const lastSaleCoin = useMemo(() => {
+    if (currentNFT && currentNFT.last_sale_currency) {
+      return getCurrencyIconByAddress(currentNFT.last_sale_currency)
+    }
+    return null
+  }, [currentNFT])
 
   return (
     <>
@@ -157,17 +163,17 @@ const Item: NextPage = () => {
                   <div className="">
                     <div className="flex justify-start items-center">
                       <h1 className="text-[#1E1C21] text-[18px] font-bold">owner:</h1>
-                      {owner && ownerType=='address' && (
+                      {currentNFT?.owner && (
                         <h1 className="text-[#B444F9] text-[20px] font-normal underline ml-4 break-all lg:ml-1">
                           <Link href={profileLink || '#'}>
-                            <a target='_blank'>{truncate(owner)}</a>
+                            <a target='_blank'>{truncate(currentNFT?.owner)}</a>
                           </Link>
                         </h1>
                       )}
 
                     </div>
                     <div className="flex justify-between items-center mt-6">
-                      {order && (
+                      {currentNFT && currentNFT.price > 0 && (
                         <>
                           <h1 className="text-[#1E1C21] text-[60px] font-normal">{numberShortify(formattedPrice)}</h1>
                           <div className="mr-5">
@@ -183,9 +189,14 @@ const Item: NextPage = () => {
                       )}
                     </div>
                     <div className="mb-3">
-                      <span className='font-normal font-[16px]'>{formattedPrice && '$'}{numberShortify(formattedPrice)}</span>
+                      <span className='font-normal font-[16px]'>{formattedPrice > 0 && '$'}{numberShortify(formattedPrice)}</span>
                       <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-bold">Highest Bid: <span className="font-bold">{numberShortify(highestBid)}</span></h1>{highestBidCoin&&<Image src={highestBidCoin} width={15} height={16} alt="chain  logo" />}</div>
-                      <div className="flex justify-start items-center"><h1 className="mr-3 font-bold">Last Sale: <span className="font-bold">{lastSale != 0 && numberShortify(lastSale)}</span></h1>{lastSaleCoin&&<Image src={lastSaleCoin} width={15} height={16} alt="chain logo" />}</div>
+                      <div className="flex justify-start items-center">
+                        <h1 className="mr-3 font-bold">
+                          Last Sale: <span className="font-bold">{lastSale != 0 && numberShortify(lastSale)}</span>
+                        </h1>
+                        {lastSaleCoin&&<Image src={lastSaleCoin} width={15} height={16} alt="chain logo" />}
+                      </div>
                     </div>
                   </div>
                   <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
@@ -267,16 +278,16 @@ const Item: NextPage = () => {
                   currentTab == 'items' &&
                   <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 gap-4">
                     {
-                      Object.entries(nftInfo.nft.attributes).map((item, idx) => {
+                      Object.entries(currentNFT.attributes).map((item, idx) => {
                         const attrs = nftInfo.collection.attrs
-                        const attr = attrs[item[0]]
-                        const trait = attr[(item[1] as string).toLowerCase()]
+                        const attr = attrs[item[0]].values
+                        const trait = attr[(item[1] as string)]
                         return <div className="px-5 py-2 bg-[#b444f926] border-2 border-[#B444F9] rounded-[8px]" key={idx}>
                           <p className="text-[#B444F9] text-[12px] font-bold">{item[0]}</p>
                           <div className="flex justify-start items-center mt-2">
-                            <p className="text-[#1E1C21] text-[18px] font-bold">{item[1]}<span className="ml-3 font-normal">[{trait ? trait : 0}%]</span></p>
+                            <p className="text-[#1E1C21] text-[18px] font-bold">{item[1]}<span className="ml-3 font-normal">[{trait ? trait[1] : 0}%]</span></p>
                             <p className="ml-5 mr-3 text-[#1E1C21] text-[18px] ml-auto">{order && order.price && ethers.utils.formatEther(order.price)}</p>
-                            <Image src={PngEther} alt="" />
+                            {/*<Image src={PngEther} alt="" />*/}
                           </div>
                         </div>
                       })

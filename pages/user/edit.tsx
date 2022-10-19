@@ -15,8 +15,8 @@ const UserEdit: NextPage = () => {
   const updateProfileFormRef = useRef<HTMLFormElement>(null)
   const [avatar, setAvatar] = useState(process.env.API_URL + 'uploads\\default_avatar.png')
   const [banner_1, setBanner_1] = useState(process.env.API_URL + 'uploads\\default_banner.png')
-  const [banner_2, setBanner_2] = useState(process.env.API_URL + 'uploads\\default_banner.png')
-  const [banner_3, setBanner_3] = useState(process.env.API_URL + 'uploads\\default_banner.png')
+  // const [banner_2, setBanner_2] = useState(process.env.API_URL + 'uploads\\default_banner.png')
+  // const [banner_3, setBanner_3] = useState(process.env.API_URL + 'uploads\\default_banner.png')
   const [username, setUserName] = useState('')
   const [bio, setBio] = useState('')
   const [twitter, setTwitter] = useState('')
@@ -42,12 +42,12 @@ const UserEdit: NextPage = () => {
       if ( user.banners[0] ) {
         setBanner_1(process.env.API_URL + user.banners[0])
       }
-      if ( user.banners[1] ) {
+      /*if ( user.banners[1] ) {
         setBanner_2(process.env.API_URL + user.banners[1])
       }
       if ( user.banners[2] ) {
         setBanner_3(process.env.API_URL + user.banners[2])
-      }
+      }*/
       setUserName(user.username)
       setBio(user.bio)
       setTwitter(user.twitter)
@@ -66,28 +66,28 @@ const UserEdit: NextPage = () => {
       setBanner_1(e.target.files[0])
     }
   }
-  const onChangeBanner_2 = (e: any) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setBanner_2(e.target.files[0])
-    }
-  }
-  const onChangeBanner_3 = (e: any) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setBanner_3(e.target.files[0])
-    }
-  }
+  // const onChangeBanner_2 = (e: any) => {
+  //   if (e.target.files && e.target.files.length > 0) {
+  //     setBanner_2(e.target.files[0])
+  //   }
+  // }
+  // const onChangeBanner_3 = (e: any) => {
+  //   if (e.target.files && e.target.files.length > 0) {
+  //     setBanner_3(e.target.files[0])
+  //   }
+  // }
   const onClickAvatar = () => {
     document.getElementById('image_avatar')?.click()
   }
   const onClickBanner_1 = () => {
     document.getElementById('image_banner_1')?.click()
   }
-  const onClickBanner_2 = () => {
-    document.getElementById('image_banner_2')?.click()
-  }
-  const onClickBanner_3 = () => {
-    document.getElementById('image_banner_3')?.click()
-  }
+  // const onClickBanner_2 = () => {
+  //   document.getElementById('image_banner_2')?.click()
+  // }
+  // const onClickBanner_3 = () => {
+  //   document.getElementById('image_banner_3')?.click()
+  // }
 
   const updateProfile = async (e: React.SyntheticEvent) => {
     e.preventDefault()
@@ -117,7 +117,7 @@ const UserEdit: NextPage = () => {
             className="hidden"
             name="banner_1"
           />
-          <input
+          {/*<input
             id="image_banner_2"
             accept="image/*"
             type="file"
@@ -132,7 +132,7 @@ const UserEdit: NextPage = () => {
             onChange={onChangeBanner_3}
             className="hidden"
             name="banner_3"
-          />
+          />*/}
           <div className="border-gray-300 bg-[#E9ECEF] border-2 p-5 px-10">
             <div className="grid grid-cols-3 gap-4 w-full">
               <div>
@@ -159,7 +159,7 @@ const UserEdit: NextPage = () => {
                   1
                 </div>
               </div>
-              <div>
+              {/*<div>
                 <div className="border-[#B444F9] mb-5 relative cursor-pointer" onClick={onClickBanner_2}>
                   <div className="absolute -right-2 -top-2 z-10 ">
                     <Image src={Close} alt="close" width={15} height={15} />
@@ -206,7 +206,7 @@ const UserEdit: NextPage = () => {
                 <div className="rounded-full mx-auto bg-[#B444F9] text-white center w-[47px] h-[47px] text-2xl text-center p-2">
                   3
                 </div>
-              </div>
+              </div>*/}
             </div>
           </div>
           <div className="flex mt-5 w-full">

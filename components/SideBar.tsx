@@ -7,6 +7,7 @@ import {useDndMonitor, useDroppable} from '@dnd-kit/core'
 import LazyLoad from 'react-lazyload'
 import {Dialog} from '@material-ui/core'
 import {makeStyles} from '@material-ui/core/styles'
+import { useNetwork, useSwitchNetwork } from 'wagmi'
 import useWallet from '../hooks/useWallet'
 import {getUserNFTs, selectRefreshBalance, selectUser, selectUserNFTs} from '../redux/reducers/userReducer'
 import {NFTItem} from '../interface/interface'
@@ -58,13 +59,13 @@ const SideBar: React.FC = () => {
     address,
     chainId,
     disconnect,
-    connect: connectWallet,
-    switchNetwork
   } = useWallet()
   const classes = useStyles()
   const { estimateGasFee, estimateGasFeeONFTCore, unwrapInfo, selectedUnwrapInfo, validateOwNFT, validateONFT } = useBridge()
   const { addTxToHistories } = useProgress()
   const { listenONFTEvents } = useContract()
+  const { chain } = useNetwork()
+  const { switchNetwork } = useSwitchNetwork()
 
   const dispatch = useDispatch()
   const ref = useRef(null)
@@ -216,16 +217,6 @@ const SideBar: React.FC = () => {
     setIsFirstDrag(!isFirstDrag)
   }
 
-  const onClickNetwork = async (chainId: number) => {
-    await connectWallet()
-    try{
-      await switchNetwork(chainId)
-      window.location.reload()
-    }catch(error){
-      console.log('error:', error)
-    }
-  }
-
   const handleTargetChainChange = (networkIndex: number) => {
     setTargetChain(networkIndex)
   }
@@ -237,7 +228,7 @@ const SideBar: React.FC = () => {
     if (!signer) return
     if (!chainId) return
     if (chainId !== selectedNFTItem.chain_id) {
-      return await switchNetwork(selectedNFTItem.chain_id)
+      return switchNetwork?.(selectedNFTItem.chain_id)
     }
     if (chainId === targetChain) return
 
@@ -508,35 +499,37 @@ const SideBar: React.FC = () => {
 
   useEffect(()=>{
     const getBalance = async() => {
-      try {
-        {
-          const omniContract = getCurrencyInstance(getAddressByName('OMNI', chainId), chainId, signer)
-          const balance = await omniContract?.balanceOf(address)
-          setOmniBalance(Number(formatCurrency(balance, 'OMNI')))
-        }
-
-        {
-          const usdContract = getCurrencyInstance(getAddressByName('USDC', chainId), chainId, signer)
-          const balance = await usdContract?.balanceOf(address)
-          setUsdcBalance(Number(formatCurrency(balance, 'USDC')))
-        }
-
-        {
-          const usdContract = getCurrencyInstance(getAddressByName('USDT', chainId), chainId, signer)
-          const balance = await usdContract?.balanceOf(address)
-          setUsdtBalance(Number(formatCurrency(balance, 'USDT')))
-        }
-
-        {
-          //Native Token
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const balance = await provider?.getBalance(address!)
-          if(balance){
-            setNativeBalance(Number(ethers.utils.formatEther(balance || '0')))
+      if (chainId && address) {
+        try {
+          {
+            const omniContract = getCurrencyInstance(getAddressByName('OMNI', chainId), chainId, signer)
+            const balance = await omniContract?.balanceOf(address)
+            setOmniBalance(Number(formatCurrency(balance, 'OMNI')))
           }
+
+          {
+            const usdContract = getCurrencyInstance(getAddressByName('USDC', chainId), chainId, signer)
+            const balance = await usdContract?.balanceOf(address)
+            setUsdcBalance(Number(formatCurrency(balance, 'USDC')))
+          }
+
+          {
+            const usdContract = getCurrencyInstance(getAddressByName('USDT', chainId), chainId, signer)
+            const balance = await usdContract?.balanceOf(address)
+            setUsdtBalance(Number(formatCurrency(balance, 'USDT')))
+          }
+
+          {
+            //Native Token
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const balance = await provider?.getBalance(address!)
+            if (balance) {
+              setNativeBalance(Number(ethers.utils.formatEther(balance || '0')))
+            }
+          }
+        } catch (error) {
+          console.log(error)
         }
-      } catch (error) {
-        console.log(error)
       }
     }
     if(signer!=undefined && address!=undefined && chainId!==undefined){
@@ -544,10 +537,8 @@ const SideBar: React.FC = () => {
     }
   },[signer, address, chainId, refreshBalance])
 
-  const setLogout = async() => {
-    console.log('clicked disconnect')
-    await disconnect()
-    window.location.reload()
+  const setLogout = () => {
+    disconnect()
   }
 
   return (
@@ -627,9 +618,6 @@ const SideBar: React.FC = () => {
             { expandedMenu == 1 &&
               <ul className='flex  flex-col w-full   pt-4 pb-0 text-g-600' ref={menu_profile}>
                 <li className="w-full">
-                  <button className="w-full flex justify-start py-[13px] pl-[100px] hover:bg-l-50">My Dashboard</button>
-                </li>
-                <li className="w-full">
                   <button className="w-full flex justify-start py-[13px] pl-[100px] hover:bg-l-50" onClick={()=>setOpenModal(true)}>Account Settings</button>
                 </li>
                 <li className="w-full">
@@ -654,7 +642,11 @@ const SideBar: React.FC = () => {
                   SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
                     return (
                       <li key={index} className="w-full">
-                        <button className="w-full hover:bg-l-50 pl-[70px] py-[7px]" disabled={!!chainInfos[networkId].comingSoon} onClick={() => onClickNetwork(networkId)}>
+                        <button
+                          className="w-full hover:bg-l-50 pl-[70px] py-[7px]"
+                          disabled={chainInfos[networkId].comingSoon || networkId === chain?.id}
+                          onClick={() => switchNetwork?.(networkId)}
+                        >
                           <div className="flex flex-row w-[130px]">
                             <div className="flex items-center w-[36px] h-[36px]">
                               <img alt={'networkIcon'} src={chainInfos[networkId].logo || chainInfos[ChainIds.ETHEREUM].logo} width={24} height={28} />
