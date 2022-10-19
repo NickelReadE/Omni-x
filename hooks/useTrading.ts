@@ -229,7 +229,7 @@ const useTrading = ({
     if (!chainId || !chainName) return
 
     const isONFTCore = false // await validateONFT(selectedNFTItem)
-    const orderChainId = getChainIdFromName(order.chain)
+    const orderChainId = order.chain_id
     const blockNumber = await provider.getBlockNumber()
     const targetProvier = getProvider(orderChainId)
     const targetBlockNumber = await targetProvier.getBlockNumber()
@@ -413,7 +413,7 @@ const useTrading = ({
     }
     if (!chainId || !chainName) return
     const isONFTCore = false // await validateONFT(selectedNFTItem)
-    const orderChainId = getChainIdFromName(bidOrder.chain)
+    const orderChainId = bidOrder.chain_id
     const blockNumber = await provider.getBlockNumber()
     const targetProvier = getProvider(orderChainId)
     const targetBlockNumber = await targetProvier.getBlockNumber()

@@ -115,7 +115,7 @@ export const clearCollectionNFTs = () => (dispatch: Dispatch<any>) => {
   dispatch(clearCollections())
 }
 
-export const getCollectionNFTs = (col_url: string, page: number, display_per_page: number, sort: string, searchObj: Object) => async (dispatch: Dispatch<any>) => {
+export const getCollectionNFTs = (col_url: string, page: number, display_per_page: number, sort: string, searchObj: any) => async (dispatch: Dispatch<any>) => {
   dispatch(startGetNFTs())
   try {
     const nfts = await collectionsService.getCollectionNFTs(col_url, page, display_per_page, sort, searchObj)
@@ -125,7 +125,7 @@ export const getCollectionNFTs = (col_url: string, page: number, display_per_pag
   }
 }
 
-export const getCollectionAllNFTs = (col_url: string, sort: string, searchObj: Object) => async (dispatch: Dispatch<any>) => {
+export const getCollectionAllNFTs = (col_url: string, sort: string, searchObj: any) => async (dispatch: Dispatch<any>) => {
   dispatch(startGetNFTs())
   try {
     const nfts = await collectionsService.getCollectionAllNFTs(col_url, sort, searchObj)

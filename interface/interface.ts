@@ -24,7 +24,7 @@ export interface IPropsNFTItem {
 
 export interface NFTItem {
   name: string,
-  attributes: Object,
+  attributes: unknown,
   image: string,
   custom_id: number,
   token: string,

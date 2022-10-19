@@ -1,32 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {Fragment, useEffect, useState} from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import type {NextPage} from 'next'
-import {Listbox, Switch, Transition} from '@headlessui/react'
-
-import Discord from '../../../public/images/discord.png'
-import Twitter from '../../../public/images/twitter.png'
-import Web from '../../../public/images/web.png'
-import Explorer from '../../../public/images/exp.png'
-import Loading from '../../../public/images/loading_f.gif'
-import {
-  clearCollectionNFTs,
-  getCollectionInfo,
-  getCollectionNFTs,
-  getRoyalty,
-  selectCollectionInfo,
-  selectCollectionNFTs,
-  selectGetNFTs,
-  selectRoyalty
-} from '../../../redux/reducers/collectionsReducer'
-import {useDispatch, useSelector} from 'react-redux'
-import {useRouter} from 'next/router'
-import NFTBox from '../../../components/collections/NFTBox'
-import InfiniteScroll from 'react-infinite-scroll-component'
-
+import type { NextPage } from 'next'
+import { Listbox, Switch, Transition } from '@headlessui/react'
 import LazyLoad from 'react-lazyload'
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
+import { useRouter } from 'next/router'
+import { useDispatch, useSelector } from 'react-redux'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import Accordion from '@material-ui/core/Accordion'
 import AccordionDetails from '@material-ui/core/AccordionDetails'
 import AccordionSummary from '@material-ui/core/AccordionSummary'
@@ -38,17 +20,32 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import InputBase from '@material-ui/core/InputBase'
 import SearchIcon from '@material-ui/icons/Search'
 import Chip from '@material-ui/core/Chip'
+import Discord from '../../../public/images/discord.png'
+import Twitter from '../../../public/images/twitter.png'
+import Web from '../../../public/images/web.png'
+import Explorer from '../../../public/images/exp.png'
+import Loading from '../../../public/images/loading_f.gif'
+import {
+  clearCollectionNFTs,
+  getCollectionNFTs,
+  getRoyalty,
+  selectCollectionNFTs,
+  selectGetNFTs,
+  selectRoyalty
+} from '../../../redux/reducers/collectionsReducer'
+import NFTBox from '../../../components/collections/NFTBox'
 import classNames from '../../../helpers/classNames'
 import editStyle from '../../../styles/collection.module.scss'
-import {getLastSaleOrders, getOrders} from '../../../redux/reducers/ordersReducer'
-import {IGetOrderRequest} from '../../../interface/interface'
-import {getBlockExplorer} from '../../../utils/constants'
+import { getOrders } from '../../../redux/reducers/ordersReducer'
+import { IGetOrderRequest } from '../../../interface/interface'
+import { getBlockExplorer } from '../../../utils/constants'
 import useWallet from '../../../hooks/useWallet'
+import useCollection from '../../../hooks/useCollection'
 
 const sort_fields = [
-  {id: 1, name: 'price: high to low', value: '-price', unavailable: false},
-  {id: 2, name: 'price: low to high', value: 'price', unavailable: false},
-  {id: 3, name: 'Highest last sale', value: '-last_sale', unavailable: false},
+  { id: 1, name: 'price: high to low', value: '-price', unavailable: false },
+  { id: 2, name: 'price: low to high', value: 'price', unavailable: false },
+  { id: 3, name: 'Highest last sale', value: '-last_sale', unavailable: false },
 ]
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -138,20 +135,7 @@ const Collection: NextPage = () => {
   const [selected, setSelected] = useState(sort_fields[0])
   const [enabled, setEnabled] = useState(false)
   const [hasMoreNFTs, setHasMoreNFTs] = useState(true)
-
-  const router = useRouter()
-
-  const col_url = router.query.collection as string
-  const display_per_page = 1000
   const [page, setPage] = useState(0)
-
-  const dispatch = useDispatch()
-  const classes = useStyles()
-  const nfts = useSelector(selectCollectionNFTs)
-  const collectionInfo = useSelector(selectCollectionInfo)
-  const royalty = useSelector(selectRoyalty)
-  const finishedGetting = useSelector(selectGetNFTs)
-
   const [imageError, setImageError] = useState(false)
   const [searchObj, setSearchObj] = useState<any>({})
   const [filterObj, setFilterObj] = useState<any>({})
@@ -160,23 +144,30 @@ const Collection: NextPage = () => {
   const [explorerUrl, setExplorerUrl] = useState('')
   const [bInit, setInit] = useState(false)
 
-  const {
-    signer,
-    chainId
-  } = useWallet()
+  const router = useRouter()
+  const col_url = router.query.collection as string
+  const display_per_page = 1000
+
+  const dispatch = useDispatch()
+  const classes = useStyles()
+  const { collectionInfo, refresh } = useCollection(col_url)
+  const nfts = useSelector(selectCollectionNFTs)
+  // const collectionInfo = useSelector(selectCollectionInfo)
+  const royalty = useSelector(selectRoyalty)
+  const finishedGetting = useSelector(selectGetNFTs)
+  const { signer, chainId } = useWallet()
 
   useEffect(() => {
     if (collectionInfo && collectionInfo.address && chainId) {
       const baseBlockExplorer = getBlockExplorer(chainId)
       if (baseBlockExplorer) {
-        setExplorerUrl(baseBlockExplorer + '/address/' + collectionInfo.address[chainId])
+        setExplorerUrl(baseBlockExplorer + '/address/' + collectionInfo.address[chainId.toString()])
       }
     }
   }, [collectionInfo])
 
   useEffect(() => {
     if (col_url) {
-      dispatch(getCollectionInfo(col_url) as any)
       setPage(0)
     }
   }, [col_url])
@@ -197,20 +188,8 @@ const Collection: NextPage = () => {
         sort: 'PRICE_ASC'
       }
       dispatch(getOrders(bidRequest) as any)
-      const executedRequest: IGetOrderRequest = {
-        status: ['EXECUTED'],
-        sort: 'UPDATE_OLDEST'
-      }
-      dispatch(getLastSaleOrders(executedRequest) as any)
     }
   }, [nfts])
-
-  const onChangeSort = (item: any) => {
-    setSelected(item)
-    dispatch(clearCollectionNFTs() as any)
-    dispatch(getCollectionNFTs(col_url, 0, display_per_page, item.value, searchObj) as any)
-    setPage(0)
-  }
 
   useEffect(() => {
     if ((collectionInfo && nfts.length >= collectionInfo.count) || finishedGetting) {
@@ -218,27 +197,43 @@ const Collection: NextPage = () => {
     }
   }, [nfts, selectGetNFTs])
 
-  const initAction = async () => {
-    await dispatch(clearCollectionNFTs() as any)
-    await setInit(true)
-    await setHasMoreNFTs(true)
+  useEffect(() => {
+    (async () => {
+      if (collectionInfo) {
+        await dispatch(clearCollectionNFTs() as any)
+        setInit(true)
+        setHasMoreNFTs(true)
+        dispatch(getCollectionNFTs(col_url, 0, display_per_page, selected.value, searchObj) as any)
+        setPage(0)
+      }
+    })()
+  }, [searchObj, collectionInfo, selected])
+
+  useEffect(() => {
+    if (isActiveBuyNow && nfts.length > 0) {
+      const temp = []
+      for (let i = 0; i < nfts.length; i++) {
+        if (nfts[i].price > 0) {
+          temp.push(nfts[i])
+        }
+      }
+      setListNFTs(temp)
+    }
+  }, [isActiveBuyNow, nfts])
+
+  useEffect(() => {
+    dispatch(getRoyalty('ERC721', '0x4aA142f1Db95B50dA7ca22267Da557050f9A7Ec9', 5, signer) as any)
+  }, [])
+
+  const onChangeSort = (item: any) => {
+    setSelected(item)
   }
 
   const onRefresh = async () => {
     dispatch(clearCollectionNFTs() as any)
     dispatch(getCollectionNFTs(col_url, 0, display_per_page, selected.value, searchObj) as any)
-    dispatch(getCollectionInfo(col_url) as any)
+    refresh()
   }
-
-  useEffect(() => {
-    (async () => {
-      await initAction()
-    })()
-    if (collectionInfo) {
-      dispatch(getCollectionNFTs(col_url, 0, display_per_page, selected.value, searchObj) as any)
-      setPage(0)
-    }
-  }, [searchObj, collectionInfo])
 
   const fetchMoreData = () => {
     if (!bInit)
@@ -266,9 +261,9 @@ const Collection: NextPage = () => {
         obj.splice(index, 1)
       }
     }
-    const newObj = {[attrKey]: obj}
+    const newObj = { [attrKey]: obj }
     setSearchObj((prevState: any) => {
-      return {...prevState, ...newObj}
+      return { ...prevState, ...newObj }
     })
     let existFilter = false
     Object.keys(searchObj).map((aKey) => {
@@ -282,9 +277,9 @@ const Collection: NextPage = () => {
   }
 
   const searchFilter = (searchValue: string, attrKey: string) => {
-    const newObj = {[attrKey]: searchValue}
+    const newObj = { [attrKey]: searchValue }
     setFilterObj((prevState: any) => {
-      return {...prevState, ...newObj}
+      return { ...prevState, ...newObj }
     })
   }
 
@@ -294,9 +289,9 @@ const Collection: NextPage = () => {
     if (index > -1) {
       obj.splice(index, 1)
     }
-    const newObj = {[attrKey]: obj}
+    const newObj = { [attrKey]: obj }
     setSearchObj((prevState: any) => {
-      return {...prevState, ...newObj}
+      return { ...prevState, ...newObj }
     })
   }
 
@@ -310,40 +305,23 @@ const Collection: NextPage = () => {
     return temp
   }
 
-
-  useEffect(() => {
-    if (isActiveBuyNow && collectionInfo && nfts.length > 0) {
-      const temp = []
-      for (let i = 0; i < nfts.length; i++) {
-        if (nfts[i].price > 0) {
-          temp.push(nfts[i])
-        }
-      }
-      setListNFTs(temp)
-    }
-  }, [isActiveBuyNow, collectionInfo, nfts])
-
-  useEffect(() => {
-    dispatch(getRoyalty('ERC721', '0x4aA142f1Db95B50dA7ca22267Da557050f9A7Ec9', 5, signer) as any)
-  }, [])
-
   return (
     <>
       <div className={classNames('w-full', 'mt-20', 'pr-[70px]', 'pt-[30px]', 'relative', editStyle.collection)}>
         <div className="w-[100%] h-[100%] mt-20">
           <img
             alt={'bannerImage'} className={classNames(editStyle.bannerImg)}
-            src={collectionInfo && collectionInfo.banner_image ? collectionInfo.banner_image : ''}/>
-          <div className={classNames(editStyle.bannerOpacity)}/>
+            src={collectionInfo && collectionInfo.banner_image ? collectionInfo.banner_image : ''} />
+          <div className={classNames(editStyle.bannerOpacity)} />
         </div>
         <div className="flex space-x-8 items-end ml-[70px]">
-          <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="logo"/>}>
+          <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="logo" />}>
             <img
               className="w-[200px] h-[200px]"
               src={imageError ? '/images/omnix_logo_black_1.png' : (collectionInfo && collectionInfo.profile_image ? collectionInfo.profile_image : '/images/omnix_logo_black_1.png')}
               alt="logo" onError={() => {
                 setImageError(true)
-              }} data-src={collectionInfo && collectionInfo.profile_image ? collectionInfo.profile_image : ''}/>
+              }} data-src={collectionInfo && collectionInfo.profile_image ? collectionInfo.profile_image : ''} />
           </LazyLoad>
           <div className="flex relative  text-lg font-bold text-center items-center">
             <div className={'select-none inline-block p-4 text-xxl font-extrabold '}>
@@ -355,39 +333,39 @@ const Collection: NextPage = () => {
             {collectionInfo && collectionInfo.discord ?
               <Link href={collectionInfo.discord}>
                 <a target="_blank" className="p-2 flex items-center">
-                  <Image src={Discord} width={25} height={21} alt="discord"/>
+                  <Image src={Discord} width={25} height={21} alt="discord" />
                 </a>
               </Link>
               :
               <a target="_blank" className="p-2 flex items-center">
-                <Image src={Discord} width={25} height={21} alt="discord"/>
+                <Image src={Discord} width={25} height={21} alt="discord" />
               </a>
             }
             {collectionInfo && collectionInfo.twitter ?
               <Link href={collectionInfo.twitter}>
                 <a target="_blank" className="p-2 flex items-center">
-                  <Image src={Twitter} alt="twitter"/>
+                  <Image src={Twitter} alt="twitter" />
                 </a>
               </Link>
               :
               <a target="_blank" className="p-2 flex items-center">
-                <Image src={Twitter} alt="twitter"/>
+                <Image src={Twitter} alt="twitter" />
               </a>
             }
             {collectionInfo && collectionInfo.website ?
               <Link href={collectionInfo.website}>
                 <a target="_blank" className="p-2 flex items-center">
-                  <Image src={Web} alt="website"/>
+                  <Image src={Web} alt="website" />
                 </a>
               </Link>
               :
               <a target="_blank" className="p-2 flex items-center">
-                <Image src={Web} alt="website"/>
+                <Image src={Web} alt="website" />
               </a>
             }
             <Link href={explorerUrl}>
               <a target="_blank" className="p-2 flex items-center">
-                <Image src={Explorer} alt="website"/>
+                <Image src={Explorer} alt="website" />
               </a>
             </Link>
 
@@ -395,7 +373,7 @@ const Collection: NextPage = () => {
         </div>
         <div className="w-full  mt-[-100px] border-b-2 border-[#E9ECEF]">
           <div className="flex">
-            <div className="w-[320px] min-w-[320px]"/>
+            <div className="w-[320px] min-w-[320px]" />
           </div>
           <div className="flex">
             <div className="w-[320px] min-w-[320px]">
@@ -516,24 +494,24 @@ const Collection: NextPage = () => {
                   </Switch>
                 </div>
               </li>
-              <hr/>
+              <hr />
               {collectionInfo && collectionInfo.attrs && Object.keys(collectionInfo.attrs).map((key, idx) => {
                 const attrs = collectionInfo.attrs
                 return <li className="w-full" key={idx}>
                   <Accordion className={classes.accordion}>
                     <AccordionSummary
-                      expandIcon={<ExpandMoreIcon/>}
+                      expandIcon={<ExpandMoreIcon />}
                       aria-controls="panel1a-content"
                       id="panel1a-header"
                     >
                       <Typography className={classNames(classes.heading, 'font-RetniSans')}
-                        style={{fontFamily: 'RetniSans'}}>{key}</Typography>
+                        style={{ fontFamily: 'RetniSans' }}>{key}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                       <div>
                         <div className={classes.search}>
                           <div className={classes.searchIcon}>
-                            <SearchIcon/>
+                            <SearchIcon />
                           </div>
                           <InputBase
                             placeholder="Search…"
@@ -541,13 +519,13 @@ const Collection: NextPage = () => {
                               root: classes.inputRoot,
                               input: classes.inputInput,
                             }}
-                            inputProps={{'aria-label': 'search'}}
+                            inputProps={{ 'aria-label': 'search' }}
                             onChange={(e) => {
                               searchFilter(e.target.value, key)
                             }}
                           />
                         </div>
-                        <FormGroup classes={{root: classes.frmGroup}}>
+                        <FormGroup classes={{ root: classes.frmGroup }}>
                           {
                             attrs[key].values && Object.keys(attrs[key].values).map((valueKey, valueIndex) => {
                               if (valueKey == 'none') {
@@ -558,14 +536,14 @@ const Collection: NextPage = () => {
                               }
                               return <FormControlLabel
                                 key={valueIndex}
-                                classes={{label: classes.frmLabel, root: classes.frmLabel}}
+                                classes={{ label: classes.frmLabel, root: classes.frmLabel }}
                                 control={<Checkbox
                                   checked={Array.isArray(searchObj[key]) && searchObj[key].indexOf(attrs[key].values[valueKey][3], 0) > -1}
                                   onChange={(e) => {
                                     searchAttrsCheck(e.target.checked, key, attrs[key].values[valueKey][3])
                                   }}
                                   color="default"
-                                  inputProps={{'aria-label': 'checkbox with default color'}}/>
+                                  inputProps={{ 'aria-label': 'checkbox with default color' }} />
                                 }
                                 label={
                                   <div className="flex items-center justify-between">
@@ -583,7 +561,7 @@ const Collection: NextPage = () => {
                       </div>
                     </AccordionDetails>
                   </Accordion>
-                  <hr/>
+                  <hr />
                 </li>
               })}
               {/* <li className="w-full">
@@ -657,19 +635,16 @@ const Collection: NextPage = () => {
                         {sort_fields.map((sort_item, sortIdx) => (
                           <Listbox.Option
                             key={sortIdx}
-                            className={({active}) =>
-                              `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
+                            className={({ active }) =>
+                              `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
                               }`
                             }
                             value={sort_item}
                           >
-                            {({selected}) => (
+                            {({ selected }) => (
                               <>
                                 <span
-                                  className={`block truncate ${
-                                    selected ? 'font-medium' : 'font-normal'
-                                  }`}
+                                  className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
                                 >
                                   {sort_item.name}
                                 </span>
@@ -697,7 +672,7 @@ const Collection: NextPage = () => {
                       onClick={() => handleFilterBtn(attrKey, item)}
                       onDelete={() => handleFilterBtn(attrKey, item)}
                       key={index}
-                      classes={{root: classes.chipRoot}}
+                      classes={{ root: classes.chipRoot }}
                     />
                   })
                 })
@@ -713,7 +688,7 @@ const Collection: NextPage = () => {
                   loader={
                     <div className="flex justify-center items-center">
                       <div className="flex justify-center items-center w-[90%] h-[100px]">
-                        {!isActiveBuyNow && <Image src={Loading} alt="Loading..." width="80px" height="80px"/>}
+                        {!isActiveBuyNow && <Image src={Loading} alt="Loading..." width="80px" height="80px" />}
                       </div>
                     </div>
                   }

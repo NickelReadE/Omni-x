@@ -7,6 +7,7 @@ import {
   selectCollections,
   updateCollectionsForCard,
   selectCollectionsForCard,
+  clearCollectionNFTs,
 } from '../../redux/reducers/collectionsReducer'
 import {getOrders} from '../../redux/reducers/ordersReducer'
 import Slider from '../../components/Slider'
@@ -30,6 +31,7 @@ const Collections: NextPage = () => {
 
   useEffect(() => {
     dispatch(getCollections() as any)
+    dispatch(clearCollectionNFTs() as any)
   }, [])
 
   useEffect(() => {
