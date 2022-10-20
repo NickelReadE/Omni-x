@@ -56,7 +56,6 @@ const ConfirmBuy: React.FC<IConfirmBuyProps> = ({
   const [tradingTx, setTradingTx] = useState('')
   const { chainId } = useWallet()
 
-
   const onBuy = () => {
     if (buyStep === BuyStep.StepBuy) {
       setStep(BuyStep.StepApprove)
@@ -120,7 +119,7 @@ const ConfirmBuy: React.FC<IConfirmBuyProps> = ({
   }, [buyStep, order, setStep])
 
   const currencyName = getCurrencyNameAddress(order?.currencyAddress) as ContractName
-  const newCurrencyName = validateCurrencyName(currencyName, chainId)
+  const newCurrencyName = validateCurrencyName(currencyName, chainId || 0)
   const formattedPrice = formatCurrency(order?.price || 0, getCurrencyNameAddress(order?.currencyAddress))
   return (
     <Dialog open={openBuyDlg} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
