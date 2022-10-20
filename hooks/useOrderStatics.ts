@@ -99,7 +99,7 @@ const useOrderStatics = ({
   const lastSale = Number(formatCurrency(nft?.lastSale || 0, lastSaleCurrencyName))
 
   const isListed = !!order
-  const isAuction = order?.params?.[1] == SaleType.AUCTION
+  const isAuction = false
   return {
     order,
     orderChainId: order && Number(Object.keys(collection_address_map)[collection_addresses.map(address => address.toLowerCase()).indexOf(order.collectionAddress.toLowerCase())]),

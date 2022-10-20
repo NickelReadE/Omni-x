@@ -41,7 +41,7 @@ const SUPPORTED_CHAIN_IDS = [5, 56, 137, 43114, 250, 10, 42161, 5, 97, 43113, 80
 export const CURRENCIES_LIST = [
   {value: 0, text: 'OMNI', decimals: 18, icon: 'payment/omni.png'},
   {value: 1, text: 'USDC', decimals: 6, icon: 'payment/usdc.png'},
-  {value: 2, text: 'USDT', decimals: 6, icon: 'payment/usdt.png'},
+  {value: 2, text: 'USDT', decimals: 18, icon: 'payment/usdt.png'},
 ]
 
 export const PERIOD_LIST = [
@@ -619,4 +619,14 @@ export const supportChains = () => {
     return null
   })
   return allChains.filter((chain) => chain !== null) as Chain[]
+}
+
+export const getConversionRate = (currencyFrom: ContractName, currencyTo: ContractName) => {
+  // if decimals is positive, price1 = price2 * 10 ** decimals
+  // if decimals is negative, price1 = price2 / 10 ** (decimals - 100)
+  
+  const decimals = DECIMAL_MAP[currencyFrom] - DECIMAL_MAP[currencyTo]
+
+  if (decimals < 0) return 100 - decimals
+  return decimals
 }
