@@ -1,31 +1,32 @@
 import React, { useMemo } from 'react'
 import { useState } from 'react'
-import { IPropsNFTItem } from '../interface/interface'
+import { IListingData, IPropsNFTItem } from '../interface/interface'
 import LazyLoad from 'react-lazyload'
-import {useDraggable} from '@dnd-kit/core'
+import { useDraggable } from '@dnd-kit/core'
 import ConfirmSell from './collections/ConfirmSell'
 import useWallet from '../hooks/useWallet'
 import { selectCollections } from '../redux/reducers/collectionsReducer'
 import { useSelector } from 'react-redux'
 import { formatCurrency, getChainIconById,getChainIdFromName, getChainNameFromId, getCurrencyNameAddress, numberLocalize } from '../utils/constants'
-import Router from 'next/router'
+import Router, { useRouter } from 'next/router'
 import useOrderStatics from '../hooks/useOrderStatics'
 import useTrading from '../hooks/useTrading'
 import { getCurrencyIconByAddress } from '../utils/constants'
 
-const NFTBox = ({nft, index}: IPropsNFTItem) => {
+const NFTBox = ({ nft, index, onRefresh }: IPropsNFTItem) => {
   const {
     provider,
     address,
     signer,
     chainId
   } = useWallet()
+  const router = useRouter()
 
   const [imageError, setImageError] = useState(false)
   const [isShowBtn, SetIsShowBtn] = useState(false)
   const collections = useSelector(selectCollections)
 
-  const {attributes, listeners, setNodeRef, transform} = useDraggable({
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: `draggable-${index}`,
     data: {
       type: 'NFT',
@@ -42,7 +43,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       try {
         // IPFS Gateway: A server that will return IPFS files from a "normal" URL.
         const image_uri = JSON.parse(metadata).image
-        if(image_uri)
+        if (image_uri)
           return image_uri.replace('ipfs://', 'https://ipfs.io/ipfs/')
       } catch (err) {
         console.log('NFTBox err? ', err)
@@ -51,8 +52,12 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     return '/images/omnix_logo_black_1.png'
   }, [nft])
 
+  const isUserPage = useMemo(() => {
+    return router.pathname !== '/user/[address]'
+  }, [router.pathname])
+
   const collection_address_map = useMemo(() => {
-    if (chainId && nft?.token_address) {
+    if (chainId && nft && nft.token_address) {
       return {
         [getChainIdFromName(nft.chain)]: nft.token_address
       }
@@ -63,11 +68,8 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
   const {
     order,
     orderChainId,
-    isListed,
     highestBid,
     highestBidCoin,
-    lastSale,
-    lastSaleCoin
   } = useOrderStatics({ nft, collection_address_map })
   const order_collection_address = order?.collectionAddress
   const order_collection_chain = orderChainId && getChainNameFromId(orderChainId)
@@ -88,7 +90,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     address,
     collection_name: nft_collection?.col_url,
     collection_address: nft.token_address,
-    collection_chain: getChainNameFromId(chainId),
+    collection_chain: chainId ? getChainNameFromId(chainId) : '',
     order_collection_address,
     order_collection_chain,
     owner: address,
@@ -98,12 +100,17 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     token_id: nft?.token_id,
     selectedNFTItem: nft
   })
+
   const doubleClickToSetDetailLink = () => {
-    const {pathname} = Router
-    if(pathname == '/' ){
+    const { pathname } = Router
+    if (pathname == '/') {
       Router.push(`/collections/${nft_collection.col_url}/${nft.token_id}`)
     }
   }
+
+  const isListed = useMemo(() => {
+    return nft && nft.price > 0
+  }, [nft])
 
   const nftChainId = useMemo(() => {
     return getChainIdFromName(nft?.chain)
@@ -116,15 +123,53 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
     return getChainIconById('1')
   }, [nftChainId])
 
-  const currencyIcon = getCurrencyIconByAddress(order?.currencyAddress)
-  const formattedPrice = formatCurrency(order?.price || 0, getCurrencyNameAddress(order?.currencyAddress))
+  const lastSale = useMemo(() => {
+    return nft.last_sale
+  }, [nft])
+
+  const lastSaleCoinIcon = useMemo(() => {
+    if (nft && nft.last_sale_currency) {
+      return getCurrencyIconByAddress(nft.last_sale_currency)
+    }
+  }, [nft])
+
+  const currencyIcon = getCurrencyIconByAddress(nft?.currency)
+  const formattedPrice = nft?.price || 0
   const isWhitelisted = !!nft_collection
+  const isOwner = useMemo(() => {
+    if (nft && nft.owner && address) {
+      return nft.owner.toLowerCase() == address.toLowerCase()
+    }
+    return false
+  }, [nft, address])
+
+  const onListingDoneAndRefresh = async () => {
+    await onListingDone()
+    onRefresh()
+  }
 
   return (
-    <div className='border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]'onMouseEnter={() => SetIsShowBtn(true)} onMouseLeave={() => SetIsShowBtn(false)}>
-      <div className="nft-image-container group relative flex justify-center text-center overflow-hidden rounded-md" ref={setNodeRef} style={style} {...listeners} {...attributes}>
+    <div
+      className='border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]'
+      onMouseEnter={() => SetIsShowBtn(true)}
+      onMouseLeave={() => SetIsShowBtn(false)}
+    >
+      <div
+        className="nft-image-container group relative flex justify-center text-center overflow-hidden rounded-md"
+        ref={isUserPage ? setNodeRef : null}
+        style={style}
+        {...(isUserPage ? listeners : {})}
+        {...(isUserPage ? attributes : {})}
+      >
         <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
-          <img className='nft-image rounded-md object-cover ease-in-out duration-500 group-hover:scale-110' src={imageError?'/images/omnix_logo_black_1.png':image} alt="nft-image" onError={()=>{setImageError(true)}} data-src={image} onDoubleClick={() => doubleClickToSetDetailLink()}/>
+          <img
+            className='nft-image rounded-md object-cover ease-in-out duration-500 group-hover:scale-110'
+            src={imageError ? '/images/omnix_logo_black_1.png' : image}
+            alt="nft-image"
+            onError={() => { setImageError(true) }}
+            data-src={image}
+            onDoubleClick={() => doubleClickToSetDetailLink()}
+          />
         </LazyLoad>
         {/* <div className="absolute top-[8px] right-[9px] p-[12px]" style={{background: 'radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.2) 0%, rgba(254, 254, 255, 0) 100%)'}}>
           <div className="bg-[url('/images/ellipse.png')] hover:bg-[url('/images/ellipse_hover.png')] bg-cover w-[21px] h-[21px]"></div>
@@ -156,9 +201,9 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
       </div> */}
       <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
         <div className="flex items-center ml-3">
-          {lastSale != 0 && <>
+          {lastSale > 0 && <>
             <span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span>
-            <img src={lastSaleCoin} className="w-[18px] h-[18px]" alt="" />&nbsp;
+            <img src={lastSaleCoinIcon} className="w-[18px] h-[18px]" alt="" />&nbsp;
             <span className="text-[#6C757D] text-[14px]font-bold">{numberLocalize(Number(lastSale))}</span>
           </>}
           {!lastSale && highestBid != 0 && <>
@@ -169,8 +214,11 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
         </div>
         <div className="flex items-center ml-3">
           <div>&nbsp;</div>
-          {isShowBtn && isWhitelisted &&
-            <div className="ml-2 mr-3 py-[1px] px-4 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-bold cursor-pointer hover:bg-[#B00000]" onClick={() => setOpenSellDlg(true)}>
+          {isShowBtn && isWhitelisted && isOwner &&
+            <div
+              className="ml-2 mr-3 py-[1px] px-4 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-bold cursor-pointer hover:bg-[#B00000]"
+              onClick={() => setOpenSellDlg(true)}
+            >
               {'Sell'}
             </div>}
         </div>
@@ -182,7 +230,7 @@ const NFTBox = ({nft, index}: IPropsNFTItem) => {
         nftTitle={nft.name}
         onListingApprove={onListingApprove}
         onListingConfirm={onListingConfirm}
-        onListingDone={onListingDone}
+        onListingDone={onListingDoneAndRefresh}
       />
     </div>
   )

@@ -45,7 +45,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
   }
 
   const onOmniFaucet = async () => {
-    if (!signer) return
+    if (!signer || !chainId) return
 
     // faucet omni
     {
@@ -65,7 +65,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
         currencyName = 'USDT'
         currencyAddr = getAddressByName(currencyName, chainId)
       }
-      
+
       const usdc = getUSDCInstance(currencyAddr, chainId, signer)
       if (usdc) {
         const tx = await usdc.mint(await signer.getAddress(), parseCurrency('1000', currencyName), { gasLimit: '300000' })

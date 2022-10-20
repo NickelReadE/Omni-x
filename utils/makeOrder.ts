@@ -38,7 +38,7 @@ interface PostMakerOrderOptionalParams {
 }
 
 const prepareMakerOrder = async(
-  signer: ethers.providers.JsonRpcSigner | undefined,
+  signer: ethers.providers.JsonRpcSigner | ethers.Signer | undefined,
   signerAddress: string,
   isOrderAsk: boolean,
   collectionAddress: string,
@@ -52,6 +52,7 @@ const prepareMakerOrder = async(
   optionalParams: PostMakerOrderOptionalParams = {},
   chain: string,
   chain_id: number,
+  col_url: string,
 ) => {
   const now = Date.now()
   const { tokenId, params, startTime, endTime } = optionalParams
@@ -83,13 +84,14 @@ const prepareMakerOrder = async(
   return {
     ...makerOrder,
     signature: signatureHash,
+    col_url: col_url,
     chain,
     chain_id,
   }
 }
 
 export const postMakerOrder = async(
-  library: providers.Web3Provider,
+  signer: ethers.Signer,
   isOrderAsk: boolean,
   collectionAddress: string,
   strategyAddress: string,
@@ -101,10 +103,10 @@ export const postMakerOrder = async(
   optionalParams: PostMakerOrderOptionalParams = {},
   chain: string,
   chain_id: number,
-  needSign: boolean
+  needSign: boolean,
+  col_url: string,
 ) => {
 
-  const signer = library.getSigner()
   const signerAddress = await signer.getAddress()
   const nonce = await userService.getUserNonce(signerAddress)
 
@@ -123,6 +125,7 @@ export const postMakerOrder = async(
     optionalParams,
     chain,
     chain_id,
+    col_url,
   )
 
   return await orderService.createOrder(data)
@@ -147,6 +150,7 @@ export const updateMakerOrder = async (
   optionalParams: PostMakerOrderOptionalParams = {},
   chain: string,
   chain_id: number,
+  col_url: string,
 ) => {
   const signer = library.getSigner()
   const signerAddress = await signer.getAddress()
@@ -165,7 +169,8 @@ export const updateMakerOrder = async (
     currency,
     optionalParams,
     chain,
-    chain_id
+    chain_id,
+    col_url,
   )
 
   const order = await orderService.createOrder(data)
@@ -209,7 +214,7 @@ export const encodeMakerOrder = (order: MakerOrder, paramsTypes: SolidityType[])
  * @param paramsTypes contains an array of solidity types mapping the params array types
  * @returns String signature
  */
-const signMakerOrder = async (signer: providers.JsonRpcSigner, order: MakerOrder, paramsTypes: SolidityType[]): Promise<string> => {
+const signMakerOrder = async (signer: providers.JsonRpcSigner | ethers.Signer, order: MakerOrder, paramsTypes: SolidityType[]): Promise<string> => {
   const encodedOrder = encodeMakerOrder(order, paramsTypes)
   const typedData = {
     domain: {},

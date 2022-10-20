@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useMemo} from 'react'
 import { makeStyles, createStyles } from '@material-ui/core/styles'
 import Dialog from '@material-ui/core/Dialog'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -43,7 +43,12 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
   const [currency, setCurrency] = useState(CURRENCIES_LIST[0])
   const [period, setPeriod] = useState(PERIOD_LIST[2])
   const { chainId } = useWallet()
-  const validCurrencies = getValidCurrencies(chainId)
+  const validCurrencies = useMemo(() => {
+    if (chainId) {
+      return getValidCurrencies(chainId)
+    }
+    return []
+  }, [chainId])
 
   const onChangePrice = (e: any) => {
     setPrice(e.target.value)

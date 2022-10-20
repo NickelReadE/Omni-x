@@ -8,7 +8,7 @@ import { openSnackBar } from '../redux/reducers/snackBarReducer'
 import { collectionsService } from '../services/collections'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../types'
 import { SaleType } from '../types/enum'
-import { ContractName, CREATOR_FEE, formatCurrency, getAddressByName, getChainIdFromName, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from '../utils/constants'
+import { ContractName, CREATOR_FEE, getAddressByName, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from '../utils/constants'
 import {
   decodeFromBytes,
   getCurrencyInstance,
@@ -68,7 +68,7 @@ const approveNft = async (contract: any, owner?: string, operator?: string, toke
 
 const useTrading = ({
   provider,
-  signer,
+  signer: signerParam,
   address,
   collection_name,
   collection_address,
@@ -79,7 +79,7 @@ const useTrading = ({
   token_id,
   selectedNFTItem
 }: any): TradingFunction => {
-  const { chainId, chainName } = useWallet()
+  const { chainId, chainName, signer } = useWallet()
   const [openSellDlg, setOpenSellDlg] = useState(false)
   const [openBidDlg, setOpenBidDlg] = useState(false)
   const [openBuyDlg, setOpenBuyDlg] = useState(false)
@@ -177,7 +177,7 @@ const useTrading = ({
   }
 
   const onListingApprove = async (isAuction: boolean) => {
-    if (owner_collection_chain_id != chainId) {
+    if (owner_collection_chain_id != chainId || !chainId) {
       dispatch(openSnackBar({ message: `Please switch network to ${owner_collection_chain}`, status: 'warning' }))
       return undefined
     }
@@ -197,6 +197,7 @@ const useTrading = ({
       dispatch(openSnackBar({ message: `Please switch network to ${owner_collection_chain}`, status: 'warning' }))
       return
     }
+    if (!chainId || !chainName) return
 
     const amount = ethers.utils.parseUnits('1', 0)
     const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
@@ -206,7 +207,7 @@ const useTrading = ({
     const startTime = Date.now()
 
     await postMakerOrder(
-      provider as any,
+      signer as any,
       true,
       collection_address,
       getAddressByName('Strategy', chainId),
@@ -226,7 +227,8 @@ const useTrading = ({
       },
       chainName,
       chainId,
-      true
+      true,
+      collection_name,
     )
 
     await collectionsService.updateCollectionNFTListPrice(collection_name, token_id, listingData.price)
@@ -239,6 +241,11 @@ const useTrading = ({
   const onBuyApprove = async (order?: IOrder) => {
     if (!order) {
       dispatch(openSnackBar({ message: 'Not listed', status: 'warning' }))
+      return
+    }
+
+    if (!chainId) {
+      dispatch(openSnackBar({ message: 'Please connect to your wallet', status: 'warning' }))
       return
     }
 
@@ -277,6 +284,13 @@ const useTrading = ({
       dispatch(openSnackBar({ message: 'Not listed', status: 'warning' }))
       return
     }
+    if (!chainId || !chainName) return
+
+    const isONFTCore = false // await validateONFT(selectedNFTItem)
+    const orderChainId = order.chain_id
+    const blockNumber = await provider.getBlockNumber()
+    const targetProvier = getProvider(orderChainId)
+    const targetBlockNumber = await targetProvier.getBlockNumber()
 
     const lzChainId = getLayerzeroChainId(chainId)
     const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
@@ -328,11 +342,7 @@ const useTrading = ({
 
     const tx = await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
 
-    const isONFTCore = false // await validateONFT(selectedNFTItem)
-    const orderChainId = getChainIdFromName(order.chain)
-    const blockNumber = await provider.getBlockNumber()
-    const targetProvier = getProvider(orderChainId)
-    const targetBlockNumber = await targetProvier.getBlockNumber()
+    
     let targetCollectionAddress = ''
     if (isONFTCore) {
       const onftCoreInstance = getONFTCore721Instance(order.collectionAddress, orderChainId, null)
@@ -378,8 +388,8 @@ const useTrading = ({
 
     const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
 
-    await collectionsService.updateCollectionNFTListPrice(collection_name,token_id, 0)
-    await collectionsService.updateCollectionNFTSalePrice(collection_name, token_id, Number(formatCurrency(order.price, currencyName)))
+    // await collectionsService.updateCollectionNFTListPrice(collection_name,token_id, 0)
+    // await collectionsService.updateCollectionNFTSalePrice(collection_name, token_id, Number(formatCurrency(order.price, currencyName)))
     await collectionsService.updateCollectionNFTChainID(collection_name, token_id, Number(chainId))
   }
 
@@ -393,6 +403,7 @@ const useTrading = ({
       dispatch(openSnackBar({ message: '  Please list first to place a bid', status: 'warning' }))
       return
     }
+    if (!chainId || !chainName) return
 
     const lzChainId = getLayerzeroChainId(chainId)
 
@@ -412,7 +423,7 @@ const useTrading = ({
         return
       }
       await postMakerOrder(
-        provider as any,
+        signer as any,
         false,
         order?.collectionAddress,
         order?.strategy,
@@ -432,7 +443,8 @@ const useTrading = ({
         },
         getChainNameFromId(chainId),
         chainId, // TODO: check chainId usage
-        true
+        true,
+        collection_name
       )
 
       const approveTxs = []
@@ -457,6 +469,12 @@ const useTrading = ({
       dispatch(openSnackBar({ message: `Please switch network to ${owner_collection_chain}`, status: 'warning' }))
       return
     }
+    if (!chainId || !chainName) return
+    const isONFTCore = false // await validateONFT(selectedNFTItem)
+    const orderChainId = bidOrder.chain_id
+    const blockNumber = await provider.getBlockNumber()
+    const targetProvier = getProvider(orderChainId)
+    const targetBlockNumber = await targetProvier.getBlockNumber()
 
     const lzChainId = getLayerzeroChainId(chainId)
     const omnixExchange = getOmnixExchangeInstance(chainId, signer)
@@ -494,11 +512,11 @@ const useTrading = ({
 
     const tx = await omnixExchange.connect(signer as any).matchBidWithTakerAsk(takerAsk, makerBid, { value: lzFee })
 
-    const isONFTCore = false // await validateONFT(selectedNFTItem)
-    const orderChainId = getChainIdFromName(bidOrder.chain)
-    const blockNumber = await provider.getBlockNumber()
-    const targetProvier = getProvider(orderChainId)
-    const targetBlockNumber = await targetProvier.getBlockNumber()
+    // const isONFTCore = false // await validateONFT(selectedNFTItem)
+    // const orderChainId = getChainIdFromName(bidOrder.chain)
+    // const blockNumber = await provider.getBlockNumber()
+    // const targetProvier = getProvider(orderChainId)
+    // const targetBlockNumber = await targetProvier.getBlockNumber()
     let targetCollectionAddress = ''
 
     if (isONFTCore) {
@@ -539,8 +557,8 @@ const useTrading = ({
       const currencyName = getCurrencyNameAddress(bidOrder.currencyAddress) as ContractName
 
       await updateOrderStatus(bidOrder, 'EXECUTED')
-      await collectionsService.updateCollectionNFTListPrice(collection_name, token_id, 0)
-      await collectionsService.updateCollectionNFTSalePrice(collection_name, token_id, Number(formatCurrency(bidOrder?.price, currencyName)))
+      // await collectionsService.updateCollectionNFTListPrice(collection_name, token_id, 0)
+      // await collectionsService.updateCollectionNFTSalePrice(collection_name, token_id, Number(formatCurrency(bidOrder?.price, currencyName)))
       await collectionsService.updateCollectionNFTChainID(collection_name, token_id, Number(chainId))
 
 

@@ -53,10 +53,11 @@ const useOrderStatics = ({
   ), [collection_address_map])
 
   const collection_addresses_sale = useMemo(() => (
-    collectionInfo.address
+    collectionInfo && collectionInfo.address
       ? Object.values(collectionInfo.address) as string[]
       : []
-  ), [collectionInfo.address])
+  ), [collectionInfo])
+
   // order
   const order = useMemo(() => {
     if (orders?.length > 0 && nft) {
@@ -95,7 +96,7 @@ const useOrderStatics = ({
   }, [lastSaleOrders, nft, collection_addresses_sale, isDetailPage])
   const lastSaleCoin = lastSaleOrder?.currencyAddress && getCurrencyIconByAddress(lastSaleOrder?.currencyAddress)
   const lastSaleCurrencyName = getCurrencyNameAddress(lastSaleOrder?.currencyAddress)
-  const lastSale = Number(formatCurrency(lastSaleOrder?.price || 0, lastSaleCurrencyName))
+  const lastSale = Number(formatCurrency(nft?.lastSale || 0, lastSaleCurrencyName))
 
   const isListed = !!order
   const isAuction = order?.params?.[1] == SaleType.AUCTION

@@ -18,12 +18,13 @@ export interface IPropsNFTItem {
   col_url?: string,
   chain?: string,
   col_address?:string,
-  index: number
+  index: number,
+  onRefresh: () => void
 }
 
 export interface NFTItem {
   name: string,
-  attributes: Object,
+  attributes: unknown,
   image: string,
   custom_id: number,
   token: string,
@@ -33,6 +34,7 @@ export interface NFTItem {
   name1: string,
   price: number,
   last_sale:number,
+  last_sale_currency:string,
   chain_id:number,
   metadata: string,
   token_uri: string,
@@ -40,7 +42,11 @@ export interface NFTItem {
   contract_type: string,
   chain: string,
   token_address: string,
+  owner: string,
+  collection_address: string,
+  currency: string,
   uri: string,
+  order_data: any,
 }
 
 export interface FeedItem {

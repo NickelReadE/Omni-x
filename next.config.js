@@ -4,10 +4,18 @@ module.exports = {
     API_URL: 'https://bucket-26n19n.s3.amazonaws.com/',
     MORALIS_SERVER_URL: process.env.NEXT_MORALIS_SERVER_URL,
     MORALIS_APP_ID: process.env.NEXT_MORALIS_APP_ID,
-    MORALIS_SECRET: process.env.NEXT_MORALIS_SECRET
+    MORALIS_SECRET: process.env.NEXT_MORALIS_SECRET,
+    INFURA_API_KEY: process.env.NEXT_INFURA_API_KEY
   },
   images: {
     domains: ['localhost', 'bucket-26n19n.s3.amazonaws.com']
+  },
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
+    ignoreBuildErrors: !process.env.NEXT_DEVELOPMENT,
   },
   rewrites: () => {
     return [

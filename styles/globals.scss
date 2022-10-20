@@ -17,105 +17,116 @@
 // 	font-style: normal;
 // }
 @font-face {
-    font-family: 'RetniSans';
-    src: url(/fonts/RetniSans-Regular.ttf);
-    font-weight: 400;
-    font-style: normal;
+  font-family: 'RetniSans';
+  src: url(/fonts/RetniSans-Regular.ttf);
+  font-weight: 400;
+  font-style: normal;
 }
+
 .bg-sidebar-hover {
-    background-color: rgba(180, 68, 249, 0.15);
+  background-color: rgba(180, 68, 249, 0.15);
 }
+
 button.sidebar {
-    padding-left: 100px;
+  padding-left: 100px;
 }
+
 .sidebar.active {
-    background-color: #B444F9 !important;
-    color: #FEFEFF !important;
+  background-color: #B444F9 !important;
+  color: #FEFEFF !important;
 }
 
 .img-network {
-    width: 36px;
-    height: 36px;
+  width: 36px;
+  height: 36px;
 }
 
 .img-ethereum {
-    background-image: url(/svgs/ethereum.svg);
+  background-image: url(/svgs/ethereum.svg);
 }
 
 .sidebar-icon {
-    height: 51px;
-    width: 100%;
-    display: flex;
+  height: 51px;
+  width: 100%;
+  display: flex;
 }
 
 .bg-wallet-output {
-    background-image: url(/sidebar/wallet_output.jpg);
-    background-size: contain;
-    background-repeat: no-repeat;
+  background-image: url(/sidebar/wallet_output.jpg);
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
-.fade-left{
-    background: linear-gradient(to right, #F6F8FC, #F6F8FC00);
-    border-radius: 14px;
-    z-index:2;
-    width: 15%;
-    height:100%;
-    left:40px;
-}
-.fade-right{
-    background: linear-gradient(to left, #F6F8FC, #F6F8FC00);
-    border-radius: 14px;
-    z-index:2;
-    width: 15%;
-    height:100%;
-    right:40px;
-}
-.slide{
-    background: #F6F8FC;
-    border-radius: 14px;
-    z-index:2;
-    width: 100%;
+.fade-left {
+  background: linear-gradient(to right, #F6F8FC, #F6F8FC00);
+  border-radius: 14px;
+  z-index: 2;
+  width: 15%;
+  height: 100%;
+  left: 40px;
 }
 
-.fw-60{
-    width:60%;
+.fade-right {
+  background: linear-gradient(to left, #F6F8FC, #F6F8FC00);
+  border-radius: 14px;
+  z-index: 2;
+  width: 15%;
+  height: 100%;
+  right: 40px;
+}
+
+.slide {
+  background: #F6F8FC;
+  border-radius: 14px;
+  z-index: 2;
+  width: 100%;
+}
+
+.fw-60 {
+  width: 60%;
 }
 
 .user-input {
-    height: 50px;
-    width: 50%;
-    background-color: #F6F8FC;
-    border: 2px solid #E9ECEF;
-    &:focus{
-        outline: none;
-        border: 2px solid #dbdbdb;
-    }
+  height: 50px;
+  width: 50%;
+  background-color: #F6F8FC;
+  border: 2px solid #E9ECEF;
+
+  &:focus {
+    outline: none;
+    border: 2px solid #dbdbdb;
+  }
 }
+
 .user-textarea {
-    height: 75px;
-    width: 100%;
-    background-color: #F6F8FC;
-    border: 2px solid #E9ECEF;
-    &:focus{
-        outline: none;
-        border: 2px solid #dbdbdb;
-    }
+  height: 75px;
+  width: 100%;
+  background-color: #F6F8FC;
+  border: 2px solid #E9ECEF;
+
+  &:focus {
+    outline: none;
+    border: 2px solid #dbdbdb;
+  }
 }
 
-.border-image img{
+.border-image {
+  max-width: 500px;
+  img {
     border-radius: 10px;
-    border:2px #B444F9 solid !important;
+    border: 2px #B444F9 solid !important;
+  }
 }
 
-.web3modal-modal-lightbox{
-    z-index:100 !important;
+.web3modal-modal-lightbox {
+  z-index: 100 !important;
 }
 
 [type='checkbox']:focus {
-    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
-    --tw-ring-offset-width: 0px;
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+  --tw-ring-offset-width: 0px;
 }
 
 .nft-image-container {
@@ -139,20 +150,21 @@ button.sidebar {
     object-fit: contain; /* Equivalent of the background-size: cover; of a background-image */
     object-position: center;
   }
+
   .nft-image {
     border-radius: 6px;
 
     &:hover {
-        background: radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.25) 0%, rgba(254, 254, 255, 0.1) 100%);
-        backdrop-filter: blur(2px);
+      background: radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.25) 0%, rgba(254, 254, 255, 0.1) 100%);
+      backdrop-filter: blur(2px);
     }
   }
 }
 
 .collection-nft-image-item {
-    background: radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.25) 0%, rgba(254, 254, 255, 0.1) 100%);
-    backdrop-filter: blur(2px);
-    border-radius: 6px;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.25) 0%, rgba(254, 254, 255, 0.1) 100%);
+  backdrop-filter: blur(2px);
+  border-radius: 6px;
 }
 
 .banner-slider {

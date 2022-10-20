@@ -118,8 +118,8 @@
     "title": "Ethereum Testnet Görli",
     "chain": "ETH",
     "rpc": [
-      "https://goerli.infura.io/v3/${INFURA_API_KEY}",
-      "wss://goerli.infura.io/v3/${INFURA_API_KEY}",
+      "https://goerli.infura.io/v3/8ea1e062cbbd465d86720348b58181c0",
+      "wss://goerli.infura.io/v3/8ea1e062cbbd465d86720348b58181c0",
       "https://rpc.goerli.mudit.blog/"
     ],
     "faucets": [
