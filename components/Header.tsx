@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { ethers } from 'ethers'
 import Link from 'next/link'
 import classNames from '../helpers/classNames'
