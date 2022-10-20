@@ -176,7 +176,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
                               return (
                                 <div className='my-2 font-bold truncate' key={index}>
                                   <Link href={`/user/${item.address}`}>
-                                    {item.address}
+                                    {item.username}
                                   </Link>
                                 </div>
                               )
