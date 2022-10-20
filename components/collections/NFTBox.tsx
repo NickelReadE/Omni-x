@@ -1,15 +1,13 @@
 import React, {useMemo} from 'react'
 import {useState} from 'react'
 import Link from 'next/link'
-import {IListingData, IPropsNFTItem} from '../../interface/interface'
+import {IPropsNFTItem} from '../../interface/interface'
 import LazyLoad from 'react-lazyload'
 import {
   getCurrencyIconByAddress,
   getChainIconById,
   getChainNameFromId,
   findCollection,
-  getCurrencyNameAddress,
-  formatCurrency,
   numberLocalize
 } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'
