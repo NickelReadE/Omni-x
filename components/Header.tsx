@@ -103,10 +103,6 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
     }
   }
 
-  useEffect(() => {
-    console.log(query)
-  }, [query])
-
   return (
     <>
       <nav className={
@@ -126,15 +122,17 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
         <div className='flex flex-wrap items-start'>
           <div className='absolute'>
             <div className='flex'>
-              <button className='flex items-center'>
-                <img
-                  src={'/images/logo.svg'}
-                  className='mr-3 bg-contain'
-                  alt="logo"
-                  width='50px'
-                  height='50px'
-                />
-              </button>
+              <Link href='/'>
+                <button className='flex items-center'>
+                  <img
+                    src={'/images/logo.svg'}
+                    className='mr-3 bg-contain'
+                    alt="logo"
+                    width='50px'
+                    height='50px'
+                  />
+                </button>
+              </Link>
               <div className={'h-[90px] flex items-center'}>
                 <div className={'relative'}>
                   {
