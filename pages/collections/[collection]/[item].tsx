@@ -12,11 +12,12 @@ import ConfirmBid from '../../../components/collections/ConfirmBid'
 import { getNFTInfo, selectNFTInfo } from '../../../redux/reducers/collectionsReducer'
 import useWallet from '../../../hooks/useWallet'
 import useTrading from '../../../hooks/useTrading'
-import { getChainIcon, getChainNameFromId, getCurrencyIconByAddress, numberShortify } from '../../../utils/constants'
+import { getChainIcon, getChainNameFromId, getCurrencyIconByAddress, numberLocalize } from '../../../utils/constants'
 import PngCheck from '../../../public/images/check.png'
 import PngSub from '../../../public/images/subButton.png'
 import useOrderStatics from '../../../hooks/useOrderStatics'
 import useOwnership from '../../../hooks/useOwnership'
+import ConfirmBuy from '../../../components/collections/ConfirmBuy'
 
 const truncate = (str: string) => {
   return str.length > 12 ? str.substring(0, 9) + '...' : str
@@ -83,13 +84,20 @@ const Item: NextPage = () => {
   const {
     openBidDlg,
     openSellDlg,
+    openBuyDlg,
     setOpenBidDlg,
     setOpenSellDlg,
+    setOpenBuyDlg,
     getListOrders,
     getBidOrders,
     getLastSaleOrder,
-    onListing,
-    onBuy,
+    onListingApprove,
+    onListingConfirm,
+    onListingDone,
+    onBuyApprove,
+    onBuyConfirm,
+    onBuyComplete,
+    onBuyDone,
     onBid,
     onAccept
   } = useTrading({
@@ -181,7 +189,7 @@ const Item: NextPage = () => {
                     <div className="flex justify-between items-center mt-6">
                       {currentNFT && currentNFT.price > 0 && (
                         <>
-                          <h1 className="text-[#1E1C21] text-[60px] font-normal">{numberShortify(formattedPrice)}</h1>
+                          <h1 className="text-[#1E1C21] text-[60px] font-normal">{numberLocalize(Number(formattedPrice))}</h1>
                           <div className="mr-5">
                             {currencyIcon &&
                               <img
@@ -195,14 +203,9 @@ const Item: NextPage = () => {
                       )}
                     </div>
                     <div className="mb-3">
-                      <span className='font-normal font-[16px]'>{formattedPrice > 0 && '$'}{numberShortify(formattedPrice)}</span>
-                      <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-bold">Highest Bid: <span className="font-bold">{numberShortify(highestBid)}</span></h1>{highestBidCoin&&<Image src={highestBidCoin} width={15} height={16} alt="chain  logo" />}</div>
-                      <div className="flex justify-start items-center">
-                        <h1 className="mr-3 font-bold">
-                          Last Sale: <span className="font-bold">{lastSale != 0 && numberShortify(lastSale)}</span>
-                        </h1>
-                        {lastSaleCoin&&<Image src={lastSaleCoin} width={15} height={16} alt="chain logo" />}
-                      </div>
+                      <span className='font-normal font-[16px]'>{formattedPrice && '$'}{numberLocalize(Number(formattedPrice))}</span>
+                      <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-bold">Highest Bid: <span className="font-bold">{numberLocalize(Number(highestBid))}</span></h1>{highestBidCoin&&<Image src={highestBidCoin} width={15} height={16} alt="chain  logo" />}</div>
+                      <div className="flex justify-start items-center"><h1 className="mr-3 font-bold">Last Sale: <span className="font-bold">{lastSale != 0 && numberLocalize(Number(lastSale))}</span></h1>{lastSaleCoin&&<Image src={lastSaleCoin} width={15} height={16} alt="chain logo" />}</div>
                     </div>
                   </div>
                   <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
@@ -253,7 +256,7 @@ const Item: NextPage = () => {
                     <div className="mb-3">
                       <div className="">
                         { isListed && !isAuction && owner?.toLowerCase() != address?.toLowerCase() &&
-                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]" onClick={()=>onBuy(order)}>buy</button>
+                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]" onClick={() => {setOpenBuyDlg(true)}}>buy</button>
                         }
                         { owner?.toLowerCase() == address?.toLowerCase() &&
                           <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={() => {setOpenSellDlg(true)}}>sell</button>
@@ -303,8 +306,35 @@ const Item: NextPage = () => {
               </div>
             </div>
           </div>
-          <ConfirmSell onSubmit={onListing} handleSellDlgClose={() => {setOpenSellDlg(false)}} openSellDlg={openSellDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} />
-          <ConfirmBid onSubmit={(bidData: any) => onBid(bidData, order)} handleBidDlgClose={() => {setOpenBidDlg(false)}} openBidDlg={openBidDlg} nftImage={nftInfo.nft.image} nftTitle={nftInfo.nft.name} />
+          <ConfirmSell
+            onListingApprove={onListingApprove}
+            onListingConfirm={onListingConfirm}
+            onListingDone={onListingDone}
+            handleSellDlgClose={() => {setOpenSellDlg(false)}}
+            openSellDlg={openSellDlg}
+            nftImage={nftInfo.nft.image}
+            nftTitle={nftInfo.nft.name}
+          />
+          <ConfirmBuy
+            handleBuyDlgClose={() => {
+              setOpenBuyDlg(false)
+            }}
+            openBuyDlg={openBuyDlg}
+            nftImage={nftInfo.nft.image}
+            nftTitle={nftInfo.nft.name}
+            onBuyApprove={onBuyApprove}
+            onBuyConfirm={onBuyConfirm}
+            onBuyComplete={onBuyComplete}
+            onBuyDone={onBuyDone}
+            order={order}
+          />
+          <ConfirmBid
+            onSubmit={(bidData: any) => onBid(bidData, order)}
+            handleBidDlgClose={() => {setOpenBidDlg(false)}}
+            openBidDlg={openBidDlg}
+            nftImage={nftInfo.nft.image}
+            nftTitle={nftInfo.nft.name}
+          />
         </div>
       }
     </>

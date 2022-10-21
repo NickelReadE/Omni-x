@@ -6,7 +6,7 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import CustomSelect from './CustomSelect'
 import Select from 'react-select'
 import { IBidData } from '../../interface/interface'
-import { CURRENCIES_LIST, getValidCurrencies } from '../../utils/constants'
+import { CURRENCIES_LIST, getValidCurrencies, PERIOD_LIST } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'
 
 const useStyles = makeStyles(() =>
@@ -21,13 +21,6 @@ const useStyles = makeStyles(() =>
     }
   }),
 )
-
-const period_list = [
-  { value: 0, text: '1 Day', period: 1, },
-  { value: 1, text: '1 Week', period: 7, },
-  { value: 2, text: '1 Month', period: 30, },
-  { value: 3, text: '1 Year', period: 365, },
-]
 
 interface IConfirmBidProps {
   handleBidDlgClose: () => void,
@@ -48,7 +41,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
   const [price_in_usd, setPriceInUSD] = useState('')
   const [price, setPrice] = useState(0)
   const [currency, setCurrency] = useState(CURRENCIES_LIST[0])
-  const [period, setPeriod] = useState(period_list[2])
+  const [period, setPeriod] = useState(PERIOD_LIST[2])
   const { chainId } = useWallet()
   const validCurrencies = useMemo(() => {
     if (chainId) {
@@ -106,7 +99,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
                     width: '170px'
                   })
                 }}
-                options={period_list}
+                options={PERIOD_LIST}
                 isSearchable={ false }
                 getOptionLabel={(e:any) => e?.text}
                 getOptionValue={(e:any) => e?.value}

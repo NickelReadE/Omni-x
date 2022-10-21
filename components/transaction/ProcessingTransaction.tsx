@@ -11,6 +11,7 @@ type ProcessingTransactionProps = {
 const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Element => {
   const [hovered, setHovered] = useState(false)
   const [targetHovered, setTargetHovered] = useState(false)
+  const [lastHovered, setLastHovered] = useState(false)
 
   const onViewExplorer = () => {
     if (txInfo && txInfo.txHash && txInfo.senderChainId && hovered) {
@@ -30,17 +31,30 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
     }
   }
 
-  const onHover = (type: 'sender' | 'target') => {
+  const onViewExplorerOnLast = () => {
+    if (txInfo && txInfo.lastTxHash && txInfo.targetChainId && lastHovered) {
+      const explorer = getBlockExplorer(txInfo.targetChainId)
+      if (explorer) {
+        window.open(`${explorer}/tx/${txInfo.lastTxHash}`, '_blank')
+      }
+    }
+  }
+
+  const onHover = (type: 'sender' | 'target' | 'last') => {
     if (type === 'sender') {
       setHovered(true)
+    } else if (type === 'last') {
+      setLastHovered(true)
     } else {
       setTargetHovered(true)
     }
   }
 
-  const onLeave = (type: 'sender' | 'target') => {
+  const onLeave = (type: 'sender' | 'target' | 'last') => {
     if (type === 'sender') {
       setHovered(false)
+    } else if (type === 'last') {
+      setLastHovered(false)
     } else {
       setTargetHovered(false)
     }
@@ -91,7 +105,8 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
               <Image
                 width={18}
                 height={18}
-                onMouseEnter={() => onHover('target')} onMouseLeave={() => onLeave('target')}
+                onMouseEnter={() => onHover('target')}
+                onMouseLeave={() => onLeave('target')}
                 src={(targetHovered && txInfo.destTxHash) ? getChainIcons(txInfo.targetChainId).explorer : getChainIcons(txInfo.targetChainId).icon}
                 style={{ cursor: (txInfo && txInfo.destTxHash) ? 'pointer' : 'auto', opacity: (txInfo && txInfo.destTxHash) ? 1 : 0.4 }}
                 onClick={onViewExplorerOnDest}
@@ -108,6 +123,19 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
                 height={18}
                 onClick={onViewExplorer}
               />
+              {txInfo.lastTxAvailable && (<>
+                <Image src={arrowRight} alt="arrowRight" />
+                <Image
+                  width={18}
+                  height={18}
+                  onMouseEnter={() => onHover('last')}
+                  onMouseLeave={() => onLeave('last')}
+                  src={(lastHovered && txInfo.lastTxHash) ? getChainIcons(txInfo.targetChainId).explorer : getChainIcons(txInfo.targetChainId).icon}
+                  style={{ cursor: (txInfo && txInfo.lastTxHash) ? 'pointer' : 'auto', opacity: (txInfo && txInfo.lastTxHash) ? 1 : 0.4 }}
+                  onClick={onViewExplorerOnLast}
+                  alt="chain icon"
+                />
+              </>)}
               <span className="text-md text-gray-500 w-[120px] truncate">{txInfo?.itemName}</span>
             </div>
         }

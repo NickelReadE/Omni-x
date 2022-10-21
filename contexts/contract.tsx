@@ -4,6 +4,7 @@ import {NFTItem} from '../interface/interface'
 export type PendingTxType = {
   txHash?: string,
   destTxHash?: string | undefined,
+  lastTxHash?: string | undefined,
   type: 'bridge' | 'buy' | 'accept' | 'approve',
   senderChainId: number,
   senderAddress?: string,
@@ -14,7 +15,8 @@ export type PendingTxType = {
   contractType: 'ERC721' | 'ERC1155',
   targetBlockNumber: number,
   senderBlockNumber?: number,
-  itemName: string | undefined
+  itemName: string | undefined,
+  lastTxAvailable?: boolean
 }
 
 export type ContractContextType = {

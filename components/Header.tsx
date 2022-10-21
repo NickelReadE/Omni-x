@@ -61,7 +61,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
       const tx = await omni.mint({ gasLimit: '300000' })
       await tx.wait()
 
-      dispatch(openSnackBar({ message: 'You received an 10000 $OMNI', status: 'success' }))
+      dispatch(openSnackBar({ message: 'Received 10,000 OMNI', status: 'success' }))
     } catch (e) {
       console.error('While fauceting OMNI token', e)
     }
@@ -80,8 +80,8 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
         const decimal = STABLECOIN_DECIMAL[chainId][currencyAddr] || 6
         const tx = await usdc.mint(await signer.getAddress(), ethers.utils.parseUnits('1000', decimal), { gasLimit: '300000' })
         await tx.wait()
-
-        dispatch(openSnackBar({ message: `You received an 1000 $${currencyName}`, status: 'success' }))
+  
+        dispatch(openSnackBar({ message: `Received 1,000 $${currencyName}`, status: 'success' }))
       }
       else {
         dispatch(openSnackBar({ message: `Not support $${currencyName} on this chain`, status: 'warning' }))

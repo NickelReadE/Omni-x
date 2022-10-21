@@ -1,13 +1,13 @@
 import React, {useMemo} from 'react'
 import {useState} from 'react'
 import Link from 'next/link'
-import {IListingData, IPropsNFTItem} from '../../interface/interface'
+import {IPropsNFTItem} from '../../interface/interface'
 import LazyLoad from 'react-lazyload'
 import {
   getCurrencyIconByAddress,
   getChainIconById,
   getChainNameFromId,
-  numberShortify
+  numberLocalize
 } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'
 import ConfirmBid from './ConfirmBid'
@@ -16,6 +16,7 @@ import classNames from '../../helpers/classNames'
 import useTrading from '../../hooks/useTrading'
 import useOrderStatics from '../../hooks/useOrderStatics'
 import ConfirmSell from './ConfirmSell'
+import ConfirmBuy from './ConfirmBuy'
 
 const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
@@ -52,10 +53,17 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   const {
     openBidDlg,
     openSellDlg,
+    openBuyDlg,
     setOpenBidDlg,
     setOpenSellDlg,
-    onListing,
-    onBuy,
+    setOpenBuyDlg,
+    onListingApprove,
+    onListingConfirm,
+    onListingDone,
+    onBuyApprove,
+    onBuyConfirm,
+    onBuyComplete,
+    onBuyDone,
     onBid
   } = useTrading({
     provider,
@@ -100,8 +108,8 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     }
   }, [nft])
 
-  const onListingAndRefresh = async (e: IListingData) => {
-    await onListing(e)
+  const onListingDoneAndRefresh = async () => {
+    await onListingDone()
     onRefresh()
   }
 
@@ -140,7 +148,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
               {isListed && <>
                 <img src={currencyIcon || '/svgs/ethereum.svg'} className="w-[18px] h-[18px]" alt="icon"/>
                 <span
-                  className="text-[#000000] text-[18px] font-extrabold ml-2">{numberShortify(nft.price)}</span>
+                  className="text-[#000000] text-[18px] font-extrabold ml-2">{numberLocalize(Number(nft?.price || 0))}</span>
               </>}
             </div>
           </div>
@@ -154,13 +162,13 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                 <span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span>
                 <img alt={'saleIcon'} src={lastSaleCoinIcon} className="w-[18px] h-[18px]"/>&nbsp;
                 <span
-                  className="text-[#6C757D] text-[14px]font-bold">{numberShortify(lastSale)}</span>
+                  className="text-[#6C757D] text-[14px]font-bold">{numberLocalize(Number(lastSale))}</span>
               </>}
               {!lastSale && highestBid != 0 && <>
                 <span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span>
                 <img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;
                 <span
-                  className="text-[#6C757D] text-[14px] font-bold">{numberShortify(highestBid)}</span>
+                  className="text-[#6C757D] text-[14px] font-bold">{numberLocalize(Number(highestBid))}</span>
               </>}
             </div>
           </a>
@@ -179,7 +187,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           {isShowBtn && !isOwner && isListed && !isAuction && (
             <div
               className="ml-2 mr-2 py-[1px] px-4 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]"
-              onClick={() => onBuy(order)}>
+              onClick={() => setOpenBuyDlg(true)}>
               {'Buy now'}
             </div>
           )}
@@ -194,13 +202,28 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
       </div>
 
       <ConfirmSell
-        onSubmit={(e) => onListingAndRefresh(e)}
         handleSellDlgClose={() => {
           setOpenSellDlg(false)
         }}
         openSellDlg={openSellDlg}
         nftImage={nft.image}
         nftTitle={nft.name}
+        onListingApprove={onListingApprove}
+        onListingConfirm={onListingConfirm}
+        onListingDone={onListingDoneAndRefresh}
+      />
+      <ConfirmBuy
+        handleBuyDlgClose={() => {
+          setOpenBuyDlg(false)
+        }}
+        openBuyDlg={openBuyDlg}
+        nftImage={nft.image}
+        nftTitle={nft.name}
+        onBuyApprove={onBuyApprove}
+        onBuyConfirm={onBuyConfirm}
+        onBuyComplete={onBuyComplete}
+        onBuyDone={onBuyDone}
+        order={order}
       />
       <ConfirmBid
         onSubmit={(bidData: any) => onBid(bidData, order)}

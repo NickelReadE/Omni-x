@@ -46,7 +46,11 @@ export const ProgressProvider = ({
   }, [address, provider])
 
   useEffect(() => {
-    setPending(histories.filter((history) => !history.txHash || !history.destTxHash).length > 0)
+    setPending(histories.filter(
+      (history) => history.lastTxAvailable
+        ? (!history.txHash || !history.destTxHash || !history.lastTxHash)
+        : (!history.txHash || !history.destTxHash)
+    ).length > 0)
   }, [histories])
 
   return (

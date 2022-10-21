@@ -2,13 +2,12 @@ import { addDays } from 'date-fns'
 import { BigNumber, BigNumberish, ethers } from 'ethers'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { IBidData, IGetOrderRequest, IListingData, IOrder, OrderStatus } from '../interface/interface'
+import { IBidData, IGetOrderRequest, IListingData, IOrder, NFTItem, OrderStatus } from '../interface/interface'
 import { getLastSaleOrders, getOrders } from '../redux/reducers/ordersReducer'
 import { openSnackBar } from '../redux/reducers/snackBarReducer'
 import { collectionsService } from '../services/collections'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../types'
-import { SaleType } from '../types/enum'
-import { ContractName, CREATOR_FEE, getAddressByName, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from '../utils/constants'
+import { ContractName, CREATOR_FEE, getAddressByName, getConversionRate, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from '../utils/constants'
 import {
   decodeFromBytes,
   getCurrencyInstance,
@@ -29,14 +28,21 @@ import useWallet from './useWallet'
 export type TradingFunction = {
   openSellDlg: boolean,
   openBidDlg: boolean,
+  openBuyDlg: boolean,
   setOpenSellDlg: Dispatch<SetStateAction<boolean>>,
   setOpenBidDlg: Dispatch<SetStateAction<boolean>>,
+  setOpenBuyDlg: Dispatch<SetStateAction<boolean>>,
   getListOrders: () => void,
   getBidOrders: () => void,
   getLastSaleOrder: () => void,
   updateOrderStatus: (order: IOrder, status: OrderStatus) => Promise<void>,
-  onListing: (listingData: IListingData) => Promise<void>,
-  onBuy: (order?: IOrder) => Promise<void>,
+  onListingApprove: (isAuction: boolean) => Promise<any>,
+  onListingConfirm: (listingData: IListingData) => Promise<any>,
+  onListingDone: () => void,
+  onBuyApprove: (order?: IOrder) => Promise<any>,
+  onBuyConfirm: (order?: IOrder) => Promise<any>,
+  onBuyComplete: (order?: IOrder) => Promise<void>,
+  onBuyDone: () => void,
   onBid: (bidData: IBidData, order?: IOrder) => Promise<void>,
   onAccept: (bidOrder: IOrder) => Promise<void>,
 }
@@ -56,7 +62,31 @@ const approveNft = async (contract: any, owner?: string, operator?: string, toke
   const approvedOperator = await contract.getApproved(tokenId)
   if (approvedOperator == operator) return null
 
-  return (await contract.approve(operator, tokenId)).wait()
+  return await contract.setApprovalForAll(operator, true)
+}
+
+const validateONFT = async (token_address: string, contract_type: string, chain_id: number) => {
+  // at this moment, we don't enable ONFT trading
+  return false
+  // try {
+  //   if (contract_type === 'ERC721') {
+  //     const ERC721Instance = getERC721Instance(token_address, chain_id, null)
+  //     const isERC721 = await ERC721Instance.supportsInterface(ERC721_INTERFACE_ID)
+  //     const isONFTERC721 = await ERC721Instance.supportsInterface(ONFT_CORE_INTERFACE_ID)
+
+  //     console.log('--isONFTERC721--', isERC721, isONFTERC721)
+  //     return !!(isERC721 && isONFTERC721)
+  //   } else if (contract_type === 'ERC1155') {
+  //     const ERC1155Instance = getERC1155Instance(token_address, chain_id, null)
+  //     const isERC1155 = await ERC1155Instance.supportsInterface(ERC1155_INTERFACE_ID)
+  //     const isONFTERC1155 = await ERC1155Instance.supportsInterface(ONFT1155_CORE_INTERFACE_ID)
+  //     return !!(isERC1155 && isONFTERC1155)
+  //   }
+  //   return false
+  // } catch (e) {
+  //   console.error(e)
+  //   return false
+  // }
 }
 
 const useTrading = ({
@@ -75,12 +105,12 @@ const useTrading = ({
   const { chainId, chainName, signer } = useWallet()
   const [openSellDlg, setOpenSellDlg] = useState(false)
   const [openBidDlg, setOpenBidDlg] = useState(false)
+  const [openBuyDlg, setOpenBuyDlg] = useState(false)
 
   const dispatch = useDispatch()
   const { addTxToHistories } = useProgress()
   const { listenONFTEvents } = useContract()
 
-  let decimal = 0
   collection_name = useMemo(() => {
     if (collection_name) {
       return collection_name = collection_name.replace(' ','_').toLowerCase()
@@ -116,7 +146,6 @@ const useTrading = ({
     const currencyContract = getCurrencyInstance(currency, chainId, signer)
     const balance = await currencyContract?.balanceOf(address)
 
-    decimal = await currencyContract?.decimals()
     if (balance.lt(BigNumber.from(price))) {
       dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))
       setOpenBidDlg(false)
@@ -170,12 +199,28 @@ const useTrading = ({
     )
   }
 
-  const onListing = async (listingData: IListingData) => {
-    if (owner_collection_chain_id != chainId) {
-      dispatch(openSnackBar({ message: `Please switch network to ${owner_collection_chain}`, status: 'warning' }))
-      return
+  const onListingApprove = async (isAuction: boolean) => {
+    if (owner_collection_chain_id != chainId || !chainId) {
+      throw new Error('Please switch network to ${owner_collection_chain}')
     }
-    if (!chainId || !chainName) return
+
+    if (!isAuction) {
+      const transferSelector = getTransferSelectorNftInstance(chainId, signer)
+      const transferManagerAddr = await transferSelector.checkTransferManagerForToken(collection_address)
+      const nftContract = getERC721Instance(collection_address, chainId, signer)
+      const tx = await approveNft(nftContract, address, transferManagerAddr, token_id)
+      return tx
+    }
+    return null
+  }
+
+  const onListingConfirm = async (listingData: IListingData) => {
+    if (owner_collection_chain_id != chainId) {
+      throw new Error(`Please switch network to ${owner_collection_chain}`)
+    }
+    if (!chainId || !chainName) {
+      throw new Error('Please connect to your wallet')
+    }
 
     const amount = ethers.utils.parseUnits('1', 0)
     const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
@@ -199,8 +244,8 @@ const useTrading = ({
         startTime,
         endTime: addDays(startTime, listingData.period).getTime(),
         params: {
-          values: [lzChainId, listingData.isAuction ? SaleType.AUCTION : SaleType.FIXED],
-          types: ['uint16', 'uint16'],
+          values: [lzChainId],
+          types: ['uint16'],
         },
       },
       chainName,
@@ -209,26 +254,55 @@ const useTrading = ({
       collection_name,
     )
 
-    if (!listingData.isAuction) {
-      const transferSelector = getTransferSelectorNftInstance(chainId, signer)
-      const transferManagerAddr = await transferSelector.checkTransferManagerForToken(collection_address)
-      const nftContract = getERC721Instance(collection_address, chainId, signer)
-      await approveNft(nftContract, address, transferManagerAddr, token_id)
-    }
-
-    dispatch(openSnackBar({ message: 'Success', status: 'success' }))
-    getListOrders()
-    setOpenSellDlg(false)
+    await collectionsService.updateCollectionNFTListPrice(collection_name, token_id, listingData.price)
   }
 
-  const onBuy = async (order?: IOrder) => {
-    if (!order) {
-      dispatch(openSnackBar({ message: 'Not listed', status: 'warning' }))
-      return
-    }
-    if (!chainId || !chainName) return
+  const onListingDone = () => {
+    getListOrders()
+  }
 
-    const isONFTCore = false // await validateONFT(selectedNFTItem)
+  const onBuyApprove = async (order?: IOrder) => {
+    if (!order) {
+      throw new Error('Not listed')
+    }
+
+    if (!chainId) {
+      throw new Error('Please connect to your wallet')
+    }
+
+    const approveTxs = []
+
+    const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
+    const newCurrencyName = validateCurrencyName(currencyName, chainId)
+    const currencyAddress = getAddressByName(newCurrencyName, chainId)
+    
+    if (!(await checkValid(currencyAddress, order?.price, chainId))) {
+      throw new Error('order validation failed')
+    }
+
+    const omni = getCurrencyInstance(currencyAddress, chainId, signer)
+
+    if (!omni) {
+      throw new Error('Could not find the currency')
+    }
+
+    const buy_price = order?.price
+    approveTxs.push(await approve(omni, address, getAddressByName('FundManager', chainId), buy_price))
+
+    if (isUsdcOrUsdt(order?.currencyAddress)) {
+      approveTxs.push(await approve(omni, address, getAddressByName('StargatePoolManager', chainId), buy_price))
+    }
+
+    return approveTxs.filter(Boolean)
+  }
+
+  const onBuyConfirm = async (order?: IOrder) => {
+    if (!order) {    
+      throw new Error('Not listed')
+    }
+    if (!chainId || !chainName) throw new Error('Not connected to the wallet')
+
+    const isONFTCore = await validateONFT(order?.collectionAddress, selectedNFTItem.contract_type || 'ERC721', order.chain_id)
     const orderChainId = order.chain_id
     const blockNumber = await provider.getBlockNumber()
     const targetProvier = getProvider(orderChainId)
@@ -240,13 +314,13 @@ const useTrading = ({
     const currencyAddress = getAddressByName(newCurrencyName, chainId)
 
     if (!(await checkValid(currencyAddress, order?.price, chainId))) {
-      return
+      throw new Error('order validation failed')
     }
     const omni = getCurrencyInstance(currencyAddress, chainId, signer)
     if (!omni) {
-      dispatch(openSnackBar({ message: 'Could not find the currency', status: 'warning' }))
-      return
+      throw new Error('Could not find the currency')
     }
+
     const omnixExchange = getOmnixExchangeInstance(chainId, signer)
     const makerAsk : MakerOrderWithSignature = {
       isOrderAsk: order.isOrderAsk,
@@ -261,40 +335,46 @@ const useTrading = ({
       startTime: order?.startTime,
       endTime: order?.endTime,
       minPercentageToAsk: order?.minPercentageToAsk,
-      params: ethers.utils.defaultAbiCoder.encode(['uint16','uint16'], order?.params),
+      params: ethers.utils.defaultAbiCoder.encode(['uint16'], order?.params),
       signature: order?.signature
     }
+
     const takerBid : TakerOrderWithEncodedParams = {
       isOrderAsk: false,
       taker: address || '0x',
       price: order?.price || '0',
       tokenId: order?.tokenId || '0',
       minPercentageToAsk: order?.minPercentageToAsk || '0',
-      params: ethers.utils.defaultAbiCoder.encode(['uint16'], [lzChainId])
+      params: ethers.utils.defaultAbiCoder.encode([
+        'uint16',
+        'address',
+        'address',
+        'address',
+        'uint256',
+      ], [
+        lzChainId,
+        currencyAddress,
+        collection_address,
+        getAddressByName('Strategy', chainId),
+        getConversionRate(currencyName, newCurrencyName)
+      ])
     }
 
-    const approveTxs = []
-
-    approveTxs.push(await approve(omni, address, omnixExchange.address, takerBid.price))
-    approveTxs.push(await approve(omni, address, getAddressByName('FundManager', chainId), takerBid.price))
-
-    if (isUsdcOrUsdt(order?.currencyAddress)) {
-      approveTxs.push(await approve(omni, address, getAddressByName('StargatePoolManager', chainId), takerBid.price))
-    }
-
-    await Promise.all(approveTxs.filter(Boolean).map(tx => tx.wait()))
-
-    const lzFee = await omnixExchange.connect(signer as any).getLzFeesForAskWithTakerBid(takerBid, makerAsk)
-
-    // console.log('---lzFee---', ethers.utils.formatEther(lzFee), makerAsk)
+    const [omnixFee, currencyFee, nftFee] = await omnixExchange.connect(signer as any).getLzFeesForTrading(takerBid, makerAsk)
+    const lzFee = omnixFee.add(currencyFee).add(nftFee)
+    console.log('---lzFee---', 
+      ethers.utils.formatEther(omnixFee),
+      ethers.utils.formatEther(currencyFee),
+      ethers.utils.formatEther(nftFee),
+      ethers.utils.formatEther(lzFee)
+    )
     const balance = await provider?.getBalance(address!)
     if (balance.lt(lzFee)) {
-      dispatch(openSnackBar({ message: `Not enough balance ${ethers.utils.formatEther(lzFee)}`, status: 'warning' }))
-      return
+      throw new Error(`Not enough balance ${ethers.utils.formatEther(lzFee)}`)
     }
 
     const tx = await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
-
+    
     let targetCollectionAddress = ''
     if (isONFTCore) {
       const onftCoreInstance = getONFTCore721Instance(order.collectionAddress, orderChainId, null)
@@ -322,26 +402,32 @@ const useTrading = ({
       contractType: selectedNFTItem.contract_type || 'ERC721',
       nftItem: selectedNFTItem,
       targetBlockNumber: blockNumber,
-      itemName: selectedNFTItem.name
+      itemName: selectedNFTItem.name,
+      lastTxAvailable: orderChainId !== chainId && isONFTCore
     }
     const historyIndex = addTxToHistories(pendingTx)
     await listenONFTEvents(pendingTx, historyIndex)
 
-    await tx.wait()
+    return tx
+  }
+
+  const onBuyComplete = async (order?: IOrder) => {
+    if (!order) {
+      dispatch(openSnackBar({ message: 'Not listed', status: 'warning' }))
+      return
+    }
+
     await updateOrderStatus(order, 'EXECUTED')
 
-    await collectionsService.updateCollectionNFTChainID(collection_name,token_id,Number(chainId))
+    await collectionsService.updateCollectionNFTChainID(collection_name, token_id, Number(chainId))
+  }
 
-    dispatch(openSnackBar({ message: 'Bought an NFT', status: 'success' }))
+  const onBuyDone = () => {
     getLastSaleOrder()
     getListOrders()
   }
 
   const onBid = async (bidData: IBidData, order?: IOrder) => {
-    if (!order) {
-      dispatch(openSnackBar({ message: '  Please list first to place a bid', status: 'warning' }))
-      return
-    }
     if (!chainId || !chainName) return
 
     const lzChainId = getLayerzeroChainId(chainId)
@@ -364,30 +450,27 @@ const useTrading = ({
       await postMakerOrder(
         signer as any,
         false,
-        order?.collectionAddress,
-        order?.strategy,
-        order?.amount,
+        collection_address,
+        getAddressByName('Strategy', chainId),
+        1,
         price,
         protocalFees,
         creatorFees,
         currency,
         {
           tokenId: token_id,
-          startTime: order.startTime,
-          endTime: order.endTime,
           params: {
             values: [lzChainId],
             types: ['uint16'],
           },
         },
         getChainNameFromId(chainId),
-        chainId, // TODO: check chainId usage
+        chainId,
         true,
         collection_name
       )
 
       const approveTxs = []
-      approveTxs.push(await approve(omni, address, getAddressByName('OmnixExchange', chainId), price))
       approveTxs.push(await approve(omni, address, getAddressByName('FundManager', chainId), price))
       if (isUsdcOrUsdt(currency)) {
         approveTxs.push(await approve(omni, address, getAddressByName('StargatePoolManager', chainId), price))
@@ -409,7 +492,7 @@ const useTrading = ({
       return
     }
     if (!chainId || !chainName) return
-    const isONFTCore = false // await validateONFT(selectedNFTItem)
+    const isONFTCore = await validateONFT(bidOrder.collectionAddress, selectedNFTItem.contract_type || 'ERC721', bidOrder.chain_id)
     const orderChainId = bidOrder.chain_id
     const blockNumber = await provider.getBlockNumber()
     const targetProvier = getProvider(orderChainId)
@@ -433,13 +516,29 @@ const useTrading = ({
       params: ethers.utils.defaultAbiCoder.encode(['uint16'], bidOrder.params),
       signature: bidOrder.signature
     }
+
+    const currencyName = getCurrencyNameAddress(bidOrder.currencyAddress) as ContractName
+    const newCurrencyName = validateCurrencyName(currencyName, chainId)
+    const currencyAddress = getAddressByName(newCurrencyName, chainId)
+
     const takerAsk : TakerOrderWithEncodedParams = {
       isOrderAsk: true,
       taker: address || '0x',
       price: bidOrder.price || '0',
       tokenId: bidOrder.tokenId || '0',
       minPercentageToAsk: bidOrder.minPercentageToAsk || '0',
-      params: ethers.utils.defaultAbiCoder.encode(['uint16'], [lzChainId])
+      params: ethers.utils.defaultAbiCoder.encode(['uint16',
+        'address',
+        'address',
+        'address',
+        'uint256'
+      ], [
+        lzChainId,
+        currencyAddress,
+        collection_address,
+        getAddressByName('Strategy', chainId),
+        getConversionRate(currencyName, newCurrencyName)
+      ])
     }
 
     const transferSelector = getTransferSelectorNftInstance(chainId, signer)
@@ -447,15 +546,11 @@ const useTrading = ({
     const nftContract = getERC721Instance(collection_address, chainId, signer)
     await approveNft(nftContract, address, transferManagerAddr, token_id)
 
-    const lzFee = await omnixExchange.connect(signer as any).getLzFeesForBidWithTakerAsk(takerAsk, makerBid)
+    const [omnixFee, currencyFee, nftFee] = await omnixExchange.connect(signer as any).getLzFeesForTrading(takerAsk, makerBid)
+    const lzFee = omnixFee.add(currencyFee).add(nftFee)
 
     const tx = await omnixExchange.connect(signer as any).matchBidWithTakerAsk(takerAsk, makerBid, { value: lzFee })
 
-    // const isONFTCore = false // await validateONFT(selectedNFTItem)
-    // const orderChainId = getChainIdFromName(bidOrder.chain)
-    // const blockNumber = await provider.getBlockNumber()
-    // const targetProvier = getProvider(orderChainId)
-    // const targetBlockNumber = await targetProvier.getBlockNumber()
     let targetCollectionAddress = ''
 
     if (isONFTCore) {
@@ -484,7 +579,8 @@ const useTrading = ({
       isONFTCore,
       contractType: selectedNFTItem.contract_type || 'ERC721',
       nftItem: selectedNFTItem,
-      itemName: selectedNFTItem.name
+      itemName: selectedNFTItem.name,
+      lastTxAvailable: false
     }
 
     const historyIndex = addTxToHistories(pendingTx)
@@ -492,12 +588,11 @@ const useTrading = ({
     await tx.wait()
 
     const receipt = await tx.wait()
-    if(receipt!=null){
-      await updateOrderStatus(bidOrder, 'EXECUTED')
-      // await collectionsService.updateCollectionNFTListPrice(collection_name,token_id,0)
-      // await collectionsService.updateCollectionNFTSalePrice(collection_name,token_id,Number(bidOrder?.price)/10**decimal as number)
-      await collectionsService.updateCollectionNFTChainID(collection_name,token_id,Number(chainId))
+    if(receipt != null){
+      // const currencyName = getCurrencyNameAddress(bidOrder.currencyAddress) as ContractName
 
+      await updateOrderStatus(bidOrder, 'EXECUTED')
+      await collectionsService.updateCollectionNFTChainID(collection_name, token_id, Number(chainId))
 
       dispatch(openSnackBar({ message: 'Accepted a Bid', status: 'success' }))
       getLastSaleOrder()
@@ -509,14 +604,21 @@ const useTrading = ({
   return {
     openBidDlg,
     openSellDlg,
+    openBuyDlg,
     setOpenSellDlg,
     setOpenBidDlg,
+    setOpenBuyDlg,
     getListOrders,
     getBidOrders,
     getLastSaleOrder,
     updateOrderStatus,
-    onListing,
-    onBuy,
+    onListingApprove,
+    onListingConfirm,
+    onListingDone,
+    onBuyApprove,
+    onBuyConfirm,
+    onBuyComplete,
+    onBuyDone,
     onBid,
     onAccept
   }

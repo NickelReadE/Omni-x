@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react'
 import { useState } from 'react'
-import { IListingData, IPropsNFTItem } from '../interface/interface'
+import { IPropsNFTItem } from '../interface/interface'
 import LazyLoad from 'react-lazyload'
 import { useDraggable } from '@dnd-kit/core'
 import ConfirmSell from './collections/ConfirmSell'
 import useWallet from '../hooks/useWallet'
 import { selectCollections } from '../redux/reducers/collectionsReducer'
 import { useSelector } from 'react-redux'
-import { getChainIconById, getChainIdFromName, getChainNameFromId, numberShortify } from '../utils/constants'
+import { getChainIconById,getChainIdFromName, getChainNameFromId, numberLocalize } from '../utils/constants'
 import Router, { useRouter } from 'next/router'
 import useOrderStatics from '../hooks/useOrderStatics'
 import useTrading from '../hooks/useTrading'
@@ -81,7 +81,9 @@ const NFTBox = ({ nft, index, onRefresh }: IPropsNFTItem) => {
   const {
     openSellDlg,
     setOpenSellDlg,
-    onListing
+    onListingApprove,
+    onListingConfirm,
+    onListingDone
   } = useTrading({
     provider,
     signer,
@@ -141,8 +143,8 @@ const NFTBox = ({ nft, index, onRefresh }: IPropsNFTItem) => {
     return false
   }, [nft, address])
 
-  const onListingAndRefresh = async (listingData: IListingData) => {
-    await onListing(listingData)
+  const onListingDoneAndRefresh = async () => {
+    await onListingDone()
     onRefresh()
   }
 
@@ -186,8 +188,8 @@ const NFTBox = ({ nft, index, onRefresh }: IPropsNFTItem) => {
       <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
         <div className="flex items-center ml-3">
           {isListed && <>
-            <img src={currencyIcon || '/svgs/ethereum.svg'} className="w-[18px] h-[18px]" alt='icon' />
-            <span className="text-[#000000] text-[18px] font-extrabold ml-2">{numberShortify(formattedPrice)}</span>
+            <img src={currencyIcon || '/svgs/ethereum.svg'} className="w-[18px] h-[18px]" alt='icon'/>
+            <span className="text-[#000000] text-[18px] font-extrabold ml-2">{numberLocalize(Number(formattedPrice))}</span>
           </>}
         </div>
       </div>
@@ -202,12 +204,12 @@ const NFTBox = ({ nft, index, onRefresh }: IPropsNFTItem) => {
           {lastSale > 0 && <>
             <span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span>
             <img src={lastSaleCoinIcon} className="w-[18px] h-[18px]" alt="" />&nbsp;
-            <span className="text-[#6C757D] text-[14px]font-bold">{numberShortify(lastSale)}</span>
+            <span className="text-[#6C757D] text-[14px]font-bold">{numberLocalize(Number(lastSale))}</span>
           </>}
           {!lastSale && highestBid != 0 && <>
             <span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span>
-            <img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo" />&nbsp;
-            <span className="text-[#6C757D] text-[14px] font-bold">{numberShortify(highestBid)}</span>
+            <img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;
+            <span className="text-[#6C757D] text-[14px] font-bold">{numberLocalize(Number(highestBid))}</span>
           </>}
         </div>
         <div className="flex items-center ml-3">
@@ -221,7 +223,15 @@ const NFTBox = ({ nft, index, onRefresh }: IPropsNFTItem) => {
             </div>}
         </div>
       </div>
-      <ConfirmSell handleSellDlgClose={() => { setOpenSellDlg(false) }} openSellDlg={openSellDlg} nftImage={image} nftTitle={nft.name} onSubmit={onListingAndRefresh} />
+      <ConfirmSell
+        handleSellDlgClose={() => {setOpenSellDlg(false)}}
+        openSellDlg={openSellDlg}
+        nftImage={image}
+        nftTitle={nft.name}
+        onListingApprove={onListingApprove}
+        onListingConfirm={onListingConfirm}
+        onListingDone={onListingDoneAndRefresh}
+      />
     </div>
   )
 }
