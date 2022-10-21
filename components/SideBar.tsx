@@ -1,19 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
-import {BigNumber, ethers} from 'ethers'
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { BigNumber, ethers } from 'ethers'
 import Image from 'next/image'
-import {useDndMonitor, useDroppable} from '@dnd-kit/core'
+import { useDndMonitor, useDroppable } from '@dnd-kit/core'
 import LazyLoad from 'react-lazyload'
-import {Dialog} from '@material-ui/core'
-import {makeStyles} from '@material-ui/core/styles'
-import { useNetwork, useSwitchNetwork } from 'wagmi'
+import { Dialog } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import { useNetwork, useSwitchNetwork, useBalance } from 'wagmi'
 import useWallet from '../hooks/useWallet'
-import {getUserNFTs, selectRefreshBalance, selectUser, selectUserNFTs} from '../redux/reducers/userReducer'
-import {NFTItem} from '../interface/interface'
+import { getUserNFTs, selectUser, selectUserNFTs } from '../redux/reducers/userReducer'
+import { NFTItem } from '../interface/interface'
 import {
   decodeFromBytes,
-  getCurrencyInstance,
   getERC1155Instance,
   getERC721Instance,
   getLayerZeroEndpointInstance,
@@ -24,12 +23,10 @@ import {
 } from '../utils/contracts'
 import {
   chainInfos,
-  formatCurrency,
-  getAddressByName,
   getChainInfo,
   getLayerzeroChainId,
   getProvider,
-  numberLocalize
+  numberLocalize,
 } from '../utils/constants'
 import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
@@ -37,9 +34,10 @@ import UserEdit from './user/UserEdit'
 import useBridge from '../hooks/useBridge'
 import useProgress from '../hooks/useProgress'
 import useContract from '../hooks/useContract'
-import {PendingTxType} from '../contexts/contract'
-import {ChainIds} from '../types/enum'
-import {SUPPORTED_CHAIN_IDS} from '../constants/addresses'
+import { PendingTxType } from '../contexts/contract'
+import { ChainIds } from '../types/enum'
+import { SUPPORTED_CHAIN_IDS } from '../constants/addresses'
+import useData from '../hooks/useData'
 
 interface RefObject {
   offsetHeight: number
@@ -52,6 +50,7 @@ const useStyles = makeStyles({
     maxWidth: '100%',
   },
 })
+
 const SideBar: React.FC = () => {
   const {
     provider,
@@ -60,12 +59,16 @@ const SideBar: React.FC = () => {
     chainId,
     disconnect,
   } = useWallet()
+  const { data: nativeBalance } = useBalance({
+    addressOrName: address
+  })
   const classes = useStyles()
   const { estimateGasFee, estimateGasFeeONFTCore, unwrapInfo, selectedUnwrapInfo, validateOwNFT, validateONFT } = useBridge()
   const { addTxToHistories } = useProgress()
   const { listenONFTEvents } = useContract()
   const { chain } = useNetwork()
   const { switchNetwork } = useSwitchNetwork()
+  const { balances } = useData()
 
   const dispatch = useDispatch()
   const ref = useRef(null)
@@ -86,13 +89,8 @@ const SideBar: React.FC = () => {
   const [offsetMenu, setOffsetMenu] = useState(0)
   const [avatarError, setAvatarError] = useState(false)
 
-  const [omniBalance, setOmniBalance] = useState(0)
-  const [usdcBalance, setUsdcBalance] = useState(0)
-  const [usdtBalance, setUsdtBalance] = useState(0)
-
   const nfts = useSelector(selectUserNFTs)
   const user = useSelector(selectUser)
-  const refreshBalance = useSelector(selectRefreshBalance)
 
   const [selectedNFTItem, setSelectedNFTItem] = useState<NFTItem>()
   const [isONFTCore, setIsONFTCore] = useState(false)
@@ -105,9 +103,8 @@ const SideBar: React.FC = () => {
   const [isONFT, setIsONFT] = useState(false)
   const [unwrap, setUnwrap] = useState(false)
   const [bOpenModal, setOpenModal] = React.useState(false)
-  const [nativeBalance, setNativeBalance] = useState(0)
 
-  const {setNodeRef} = useDroppable({
+  const { setNodeRef } = useDroppable({
     id: 'droppable',
     data: {
       accepts: ['NFT'],
@@ -158,34 +155,34 @@ const SideBar: React.FC = () => {
   })
 
   useLayoutEffect(() => {
-    if ( menu_profile.current && expandedMenu == 1 ) {
+    if (menu_profile.current && expandedMenu == 1) {
       const current: RefObject = menu_profile.current
       setOffsetMenu(current.offsetHeight)
     }
-    if ( menu_ethereum.current && expandedMenu == 2 ) {
+    if (menu_ethereum.current && expandedMenu == 2) {
       const current: RefObject = menu_ethereum.current
       setOffsetMenu(current.offsetHeight)
     }
-    if ( menu_wallets.current && expandedMenu == 3 ) {
+    if (menu_wallets.current && expandedMenu == 3) {
       const current: RefObject = menu_wallets.current
       setOffsetMenu(current.offsetHeight)
     }
-    if ( menu_watchlist.current && expandedMenu == 4 ) {
+    if (menu_watchlist.current && expandedMenu == 4) {
       const current: RefObject = menu_watchlist.current
       setOffsetMenu(current.offsetHeight)
     }
-    if ( menu_bridge.current && expandedMenu == 5 ) {
+    if (menu_bridge.current && expandedMenu == 5) {
       const current: RefObject = menu_bridge.current
       setOffsetMenu(current.offsetHeight)
     }
-    if ( menu_cart.current && expandedMenu == 6 ) {
+    if (menu_cart.current && expandedMenu == 6) {
       const current: RefObject = menu_cart.current
       setOffsetMenu(current.offsetHeight)
     }
   }, [expandedMenu])
 
   const hideSidebar = () => {
-    if ( !onMenu ) {
+    if (!onMenu) {
       setExpandedMenu(0)
       setOffsetMenu(0)
       setShowSidebar(false)
@@ -497,53 +494,13 @@ const SideBar: React.FC = () => {
     setConfirmTransfer(status)
   }
 
-  useEffect(()=>{
-    const getBalance = async() => {
-      if (chainId && address) {
-        try {
-          {
-            const omniContract = getCurrencyInstance(getAddressByName('OMNI', chainId), chainId, signer)
-            const balance = await omniContract?.balanceOf(address)
-            setOmniBalance(Number(formatCurrency(balance, 'OMNI')))
-          }
-
-          {
-            const usdContract = getCurrencyInstance(getAddressByName('USDC', chainId), chainId, signer)
-            const balance = await usdContract?.balanceOf(address)
-            setUsdcBalance(Number(formatCurrency(balance, 'USDC')))
-          }
-
-          {
-            const usdContract = getCurrencyInstance(getAddressByName('USDT', chainId), chainId, signer)
-            const balance = await usdContract?.balanceOf(address)
-            setUsdtBalance(Number(formatCurrency(balance, 'USDT')))
-          }
-
-          {
-            //Native Token
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const balance = await provider?.getBalance(address!)
-            if (balance) {
-              setNativeBalance(Number(ethers.utils.formatEther(balance || '0')))
-            }
-          }
-        } catch (error) {
-          console.log(error)
-        }
-      }
-    }
-    if(signer!=undefined && address!=undefined && chainId!==undefined){
-      getBalance()
-    }
-  },[signer, address, chainId, refreshBalance])
-
   const setLogout = () => {
     disconnect()
   }
 
   return (
     <>
-      { !onMenu &&
+      {!onMenu &&
         <div
           className='right-0 right-0 w-[70px] py-6 bg-[#F6F8FC] fixed h-full z-[98]'
           onMouseEnter={() => setShowSidebar(true)}
@@ -554,9 +511,9 @@ const SideBar: React.FC = () => {
               <div className="sidebar-icon">
                 <div className="m-auto">
                   <Image
-                    src={avatarError || user.avatar === undefined || user.avatar === DEFAULT_AVATAR?'/images/default_avatar.png':(process.env.API_URL + user.avatar)}
+                    src={avatarError || user.avatar === undefined || user.avatar === DEFAULT_AVATAR ? '/images/default_avatar.png' : (process.env.API_URL + user.avatar)}
                     alt="avatar"
-                    onError={()=>{user.avatar&&setAvatarError(true)}}
+                    onError={() => { user.avatar && setAvatarError(true) }}
                     width={45}
                     height={45}
                   />
@@ -598,16 +555,14 @@ const SideBar: React.FC = () => {
       }
       <div
         ref={ref}
-        className={`right-0 right-0 w-[450px] bg-w-600/[.8] backdrop-blur-sm pl-5 pr-2 py-6 fixed h-full z-[97] opacity-0.95 ease-in-out duration-300 ${
-          showSidebar || onMenu ? 'translate-x-0' : 'translate-x-full'
-        }`}
+        className={`right-0 right-0 w-[450px] bg-w-600/[.8] backdrop-blur-sm pl-5 pr-2 py-6 fixed h-full z-[97] opacity-0.95 ease-in-out duration-300 ${showSidebar || onMenu ? 'translate-x-0' : 'translate-x-full'}`}
         onMouseEnter={() => setOnMenu(true)}
         onMouseLeave={() => onLeaveMenu()}
       >
         <ul className='flex flex-col space-y-8 mr-[70px]'>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px] py-[12px] pr-[70px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==1?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px] py-[12px] pr-[70px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu == 1 ? 'active' : ''}`}
               onClick={() => toggleMenu(1)}
             >
               My Profile
@@ -615,20 +570,20 @@ const SideBar: React.FC = () => {
                 <i className={`${expandedMenu == 1 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
               </span>
             </button>
-            { expandedMenu == 1 &&
+            {expandedMenu == 1 &&
               <ul className='flex  flex-col w-full   pt-4 pb-0 text-g-600' ref={menu_profile}>
                 <li className="w-full">
-                  <button className="w-full flex justify-start py-[13px] pl-[100px] hover:bg-l-50" onClick={()=>setOpenModal(true)}>Account Settings</button>
+                  <button className="w-full flex justify-start py-[13px] pl-[100px] hover:bg-l-50" onClick={() => setOpenModal(true)}>Account Settings</button>
                 </li>
                 <li className="w-full">
-                  <button className="w-full flex justify-start py-[13px] pl-[100px] hover:bg-l-50" onClick={()=>setLogout()}>Logout</button>
+                  <button className="w-full flex justify-start py-[13px] pl-[100px] hover:bg-l-50" onClick={() => setLogout()}>Logout</button>
                 </li>
               </ul>
             }
           </li>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px] py-[12px] pr-[70px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==2?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px] py-[12px] pr-[70px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu == 2 ? 'active' : ''}`}
               onClick={() => toggleMenu(2)}
             >
               Network
@@ -636,7 +591,7 @@ const SideBar: React.FC = () => {
                 <i className={`${expandedMenu == 2 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
               </span>
             </button>
-            { expandedMenu == 2 &&
+            {expandedMenu == 2 &&
               <ul className='flex flex-col w-full   pt-4 pb-0 text-g-600' ref={menu_ethereum}>
                 {
                   SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
@@ -663,7 +618,7 @@ const SideBar: React.FC = () => {
           </li>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px] py-[12px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==3?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px] py-[12px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu == 3 ? 'active' : ''}`}
               onClick={() => toggleMenu(3)}
             >
               Wallet
@@ -671,12 +626,14 @@ const SideBar: React.FC = () => {
                 <i className={`${expandedMenu == 3 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
               </span>
             </button>
-            { expandedMenu == 3 &&
+            {expandedMenu == 3 &&
               <div className='flex flex-col w-full space-y-4 p-6 pt-8 pb-0' ref={menu_wallets}>
-                <span className="font-semibold w-auto text-[16px]">OMNI balance: {numberLocalize(omniBalance)}</span>
-                <span className="font-semibold w-auto text-[16px]">USDC balance: {numberLocalize(usdcBalance)}</span>
-                <span className="font-semibold w-auto text-[16px]">USDT balance: {numberLocalize(usdtBalance)}</span>
-                <span className="font-semibold w-auto text-[16px]">{getChainInfo(chainId)?.nativeCurrency.symbol} balance: {numberLocalize(nativeBalance)}</span>
+                <span className="font-semibold w-auto text-[16px]">OMNI balance: {numberLocalize(balances.omni)}</span>
+                <span className="font-semibold w-auto text-[16px]">USDC balance: {numberLocalize(balances.usdc)}</span>
+                <span className="font-semibold w-auto text-[16px]">USDT balance: {numberLocalize(balances.usdt)}</span>
+                <span className="font-semibold w-auto text-[16px]">
+                  {getChainInfo(chainId)?.nativeCurrency.symbol} balance: {numberLocalize(parseFloat(nativeBalance?.formatted || '0'))}
+                </span>
                 <span className="w-auto text-[16px]">Staking: coming soon</span>
                 {/* <div className="w-full flex flex-row font-semibold text-[14px]">
                   <div className="bg-g-200 w-[88px] px-[11px] py-[9px]">
@@ -756,7 +713,7 @@ const SideBar: React.FC = () => {
           </li>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px]  py-[12px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==4?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px]  py-[12px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu == 4 ? 'active' : ''}`}
               onClick={() => toggleMenu(4)}
             >
               Watchlist
@@ -764,7 +721,7 @@ const SideBar: React.FC = () => {
                 <i className={`${expandedMenu == 4 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
               </span>
             </button>
-            { expandedMenu == 4 &&
+            {expandedMenu == 4 &&
               <div className='flex flex-col w-full space-y-4 p-6 pt-8 pb-0' ref={menu_watchlist}>
                 <div className="p-[51px] flex flex-col items-center border border-dashed border-g-300">
                   {/* <span className="text-[14px] text-g-300">Drag & Drop</span>
@@ -777,7 +734,7 @@ const SideBar: React.FC = () => {
           </li>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full p-6  pr-[70px]  py-[12px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==5?'active':''}`}
+              className={`w-full text-left rounded-full p-6  pr-[70px]  py-[12px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu == 5 ? 'active' : ''}`}
               onClick={() => fixMenu(5)}
             >
               Send/Bridge
@@ -785,9 +742,9 @@ const SideBar: React.FC = () => {
                 <i className={`${expandedMenu == 5 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
               </span>
             </button>
-            { expandedMenu == 5 &&
+            {expandedMenu == 5 &&
               <div className='flex flex-col w-full space-y-4 p-6 pt-8 pb-0' ref={menu_bridge}>
-                <div ref={setNodeRef} className="px-[113px] py-[43px] flex flex-col items-center border border-dashed border-g-300 bg-g-200" style={dragOver ? {opacity: 0.4} : {opacity: 1}}>
+                <div ref={setNodeRef} className="px-[113px] py-[43px] flex flex-col items-center border border-dashed border-g-300 bg-g-200" style={dragOver ? { opacity: 0.4 } : { opacity: 1 }}>
                   {
                     dragOver
                       ?
@@ -800,9 +757,9 @@ const SideBar: React.FC = () => {
                   }
                   {
                     selectedNFTItem &&
-                      <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
-                        <img src={imageError?'/images/omnix_logo_black_1.png':image} alt="nft-image" onError={()=>{setImageError(true)}} data-src={image} />
-                      </LazyLoad>
+                    <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
+                      <img src={imageError ? '/images/omnix_logo_black_1.png' : image} alt="nft-image" onError={() => { setImageError(true) }} data-src={image} />
+                    </LazyLoad>
                   }
                 </div>
                 <span className="font-g-300">Select destination chain:</span>
@@ -860,16 +817,16 @@ const SideBar: React.FC = () => {
               <div className="sidebar-icon">
                 <div className="m-auto">
                   <Image
-                    src={avatarError || user.avatar === undefined || user.avatar === DEFAULT_AVATAR?'/images/default_avatar.png':(process.env.API_URL + user.avatar)}
+                    src={avatarError || user.avatar === undefined || user.avatar === DEFAULT_AVATAR ? '/images/default_avatar.png' : (process.env.API_URL + user.avatar)}
                     alt="avatar"
-                    onError={()=>{user.avatar&&setAvatarError(true)}}
+                    onError={() => { user.avatar && setAvatarError(true) }}
                     width={45}
                     height={45}
                   />
                 </div>
               </div>
-              { expandedMenu == 1 &&
-                <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{height: offsetMenu + 'px'}}>
+              {expandedMenu == 1 &&
+                <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{ height: offsetMenu + 'px' }}>
                 </ul>
               }
             </div>
@@ -881,8 +838,8 @@ const SideBar: React.FC = () => {
                   })
                 }
               </div>
-              { expandedMenu == 2 &&
-                <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{height: offsetMenu + 'px'}}>
+              {expandedMenu == 2 &&
+                <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{ height: offsetMenu + 'px' }}>
                 </ul>
               }
             </div>
@@ -890,8 +847,8 @@ const SideBar: React.FC = () => {
               <div className="sidebar-icon">
                 <img alt={'networkIcon'} src="/sidebar/wallets.svg" className="m-auto" />
               </div>
-              { expandedMenu == 3 &&
-                <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{height: offsetMenu + 'px'}}>
+              {expandedMenu == 3 &&
+                <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{ height: offsetMenu + 'px' }}>
                 </ul>
               }
             </div>
@@ -899,8 +856,8 @@ const SideBar: React.FC = () => {
               <div className="sidebar-icon">
                 <img alt={'networkIcon'} src="/sidebar/watchlist.svg" className="m-auto" />
               </div>
-              { expandedMenu == 4 &&
-                <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{height: offsetMenu + 'px'}}>
+              {expandedMenu == 4 &&
+                <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{ height: offsetMenu + 'px' }}>
                 </ul>
               }
             </div>
@@ -908,8 +865,8 @@ const SideBar: React.FC = () => {
               <div className="sidebar-icon">
                 <img alt={'networkIcon'} src="/sidebar/bridge.svg" className="m-auto" />
               </div>
-              { expandedMenu == 5 &&
-                <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{height: offsetMenu + 'px'}}>
+              {expandedMenu == 5 &&
+                <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{ height: offsetMenu + 'px' }}>
                 </ul>
               }
             </div>
@@ -948,7 +905,7 @@ const SideBar: React.FC = () => {
         </Dialog>
       </div>
       <Dialog open={bOpenModal} onClose={() => setOpenModal(false)} aria-labelledby='simple-dialog-title' maxWidth={'xl'} classes={{ paper: classes.paper }}>
-        <UserEdit updateModal={()=>setOpenModal(false)} />
+        <UserEdit updateModal={() => setOpenModal(false)} />
       </Dialog>
     </>
   )

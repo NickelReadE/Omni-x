@@ -7,13 +7,11 @@ import { getLastSaleOrders, getOrders } from '../redux/reducers/ordersReducer'
 import { openSnackBar } from '../redux/reducers/snackBarReducer'
 import { collectionsService } from '../services/collections'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../types'
-import { SaleType } from '../types/enum'
-import { ContractName, CREATOR_FEE, ERC1155_INTERFACE_ID, ERC721_INTERFACE_ID, getAddressByName, getConversionRate, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, ONFT1155_CORE_INTERFACE_ID, ONFT_CORE_INTERFACE_ID, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from '../utils/constants'
+import { ContractName, CREATOR_FEE, getAddressByName, getConversionRate, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from '../utils/constants'
 import {
   decodeFromBytes,
   getCurrencyInstance,
   getCurrencyManagerInstance,
-  getERC1155Instance,
   getERC721Instance,
   getOmnixExchangeInstance,
   getONFTCore721Instance,
@@ -421,9 +419,6 @@ const useTrading = ({
 
     await updateOrderStatus(order, 'EXECUTED')
 
-    // const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
-    // await collectionsService.updateCollectionNFTListPrice(collection_name,token_id, 0)
-    // await collectionsService.updateCollectionNFTSalePrice(collection_name, token_id, Number(formatCurrency(order.price, currencyName)))
     await collectionsService.updateCollectionNFTChainID(collection_name, token_id, Number(chainId))
   }
 
@@ -597,10 +592,7 @@ const useTrading = ({
       // const currencyName = getCurrencyNameAddress(bidOrder.currencyAddress) as ContractName
 
       await updateOrderStatus(bidOrder, 'EXECUTED')
-      // await collectionsService.updateCollectionNFTListPrice(collection_name, token_id, 0)
-      // await collectionsService.updateCollectionNFTSalePrice(collection_name, token_id, Number(formatCurrency(bidOrder?.price, currencyName)))
       await collectionsService.updateCollectionNFTChainID(collection_name, token_id, Number(chainId))
-
 
       dispatch(openSnackBar({ message: 'Accepted a Bid', status: 'success' }))
       getLastSaleOrder()

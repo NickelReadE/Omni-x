@@ -2,7 +2,6 @@
 import React, {useEffect, useMemo, useState} from 'react'
 import Image from 'next/image'
 import useWallet from '../hooks/useWallet'
-import {useMoralis} from 'react-moralis'
 import classNames from '../helpers/classNames'
 import Twitter from '../public/images/twitter.png'
 import Web from '../public/images/web.png'
@@ -18,7 +17,6 @@ type UserBannerProps = {
 }
 
 const UserBanner = ({user}: UserBannerProps): JSX.Element => {
-  const {isInitialized, Moralis} = useMoralis()
   const {address} = useWallet()
   const [avatarError, setAvatarError] = useState(false)
   const [isStgStacker, setIsStgStacker] = useState(false)
@@ -31,12 +29,12 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
   }
 
   useEffect(() => {
-    if (isInitialized && address) {
+    if (address) {
       chainsFroSTG.map((chain) => {
         fetchToken(chain)
       })
     }
-  }, [isInitialized, Moralis, address])
+  }, [address])
 
   useEffect(() => {
     if (balances > 0) {

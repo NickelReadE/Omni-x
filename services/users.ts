@@ -10,6 +10,11 @@ const getUserByAddress = async (address: string) => {
   return res.data.data
 }
 
+const searchByKeyword = async (keyword: string) => {
+  const res = await API.get(`users/search/${keyword}`)
+  return res.data.data
+}
+
 const getUserNFTs = async (address: string) => {
   const res = await API.get(`users/nfts/${address}`)
   return res.data.data
@@ -24,6 +29,7 @@ const getUserNonce = async (address: string) => {
 export const userService = {
   updateProfile,
   getUserByAddress,
+  searchByKeyword,
   getUserNFTs,
   getUserNonce
 }

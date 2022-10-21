@@ -3,19 +3,20 @@ import { NFTItem } from '../interface/interface'
 import { userService } from '../services/users'
 
 export type ProfileData = {
-    address: string,
-    username: string,
-    bio?: string,
-    twitter?: string,
-    website?: string,
-    avatar?: string,
-    banners?: string[],
-    isGregHolder: boolean,
+  address: string,
+  username: string,
+  bio?: string,
+  twitter?: string,
+  website?: string,
+  avatar: string,
+  banners?: string[],
+  isGregHolder: boolean,
 }
 
 export type UserInformation = {
-    profile: ProfileData | undefined,
-    nfts: Array<NFTItem>
+  profile: ProfileData | undefined,
+  nfts: Array<NFTItem>,
+  refreshNfts: () => Promise<void>
 }
 
 const getUserInformation = async (user_address: string): Promise<ProfileData | undefined> => {
@@ -31,7 +32,7 @@ const getUserInformation = async (user_address: string): Promise<ProfileData | u
       banners: user_info.banners,
       isGregHolder: user_info.isGregHolder,
     }
-  } 
+  }
   return undefined
 }
 
@@ -46,21 +47,30 @@ const getUserNFTs = async (address: string): Promise<Array<NFTItem>> => {
 }
 
 const useProfile = (
-  user_address: string,
+  user_address: string | undefined,
 ): UserInformation => {
   const [profile, setProfile] = useState<ProfileData | undefined>()
   const [nfts, setNfts] = useState<Array<NFTItem>>([])
-    
+
   useEffect(() => {
     (async () => {
-      setProfile(await getUserInformation(user_address))
-      setNfts(await getUserNFTs(user_address))
+      if (user_address) {
+        setProfile(await getUserInformation(user_address))
+        setNfts(await getUserNFTs(user_address))
+      }
     })()
   }, [user_address])
 
+  const refreshNfts = async () => {
+    if (user_address) {
+      setNfts(await getUserNFTs(user_address))
+    }
+  }
+
   return {
-    profile: profile,
-    nfts: nfts
+    profile,
+    nfts,
+    refreshNfts,
   }
 }
 
