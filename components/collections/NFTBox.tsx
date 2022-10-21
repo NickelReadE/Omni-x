@@ -7,7 +7,6 @@ import {
   getCurrencyIconByAddress,
   getChainIconById,
   getChainNameFromId,
-  findCollection,
   numberShortify
 } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'
@@ -17,8 +16,6 @@ import classNames from '../../helpers/classNames'
 import useTrading from '../../hooks/useTrading'
 import useOrderStatics from '../../hooks/useOrderStatics'
 import ConfirmSell from './ConfirmSell'
-import {selectCollectionInfo} from '../../redux/reducers/collectionsReducer'
-import {useSelector} from 'react-redux'
 
 const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
@@ -29,8 +26,6 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     address
   } = useWallet()
 
-  const collectionInfo = useSelector(selectCollectionInfo)
-  const token_id = nft.token_id
   const order = nft.order_data
   const col_address = nft.collection_address
   const chain = nft.chain_id
