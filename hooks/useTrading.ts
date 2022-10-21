@@ -487,7 +487,7 @@ const useTrading = ({
   }
 
   const onAccept = async (bidOrder: IOrder) => {
-    if (owner_collection_chain != chainName) {
+    if (owner_collection_chain_id != chainId) {
       dispatch(openSnackBar({ message: `Please switch network to ${owner_collection_chain}`, status: 'warning' }))
       return
     }
@@ -544,10 +544,21 @@ const useTrading = ({
     const transferSelector = getTransferSelectorNftInstance(chainId, signer)
     const transferManagerAddr = await transferSelector.checkTransferManagerForToken(collection_address)
     const nftContract = getERC721Instance(collection_address, chainId, signer)
-    await approveNft(nftContract, address, transferManagerAddr, token_id)
+    const txApprove = await approveNft(nftContract, address, transferManagerAddr, token_id)
+    if (txApprove) {
+      await txApprove.wait()
+    }
 
     const [omnixFee, currencyFee, nftFee] = await omnixExchange.connect(signer as any).getLzFeesForTrading(takerAsk, makerBid)
     const lzFee = omnixFee.add(currencyFee).add(nftFee)
+
+    
+    console.log('---lzFee---', 
+      ethers.utils.formatEther(omnixFee),
+      ethers.utils.formatEther(currencyFee),
+      ethers.utils.formatEther(nftFee),
+      ethers.utils.formatEther(lzFee)
+    )
 
     const tx = await omnixExchange.connect(signer as any).matchBidWithTakerAsk(takerAsk, makerBid, { value: lzFee })
 
