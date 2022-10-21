@@ -62,7 +62,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     signer,
     address,
     collection_name: col_url,
-    collection_address: order_collection_address,
+    collection_address: nft.collection_address,
     collection_chain: getChainNameFromId(chain ? Number(chain) : 4),
     order_collection_address,
     order_collection_chain,
