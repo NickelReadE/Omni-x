@@ -201,8 +201,7 @@ const useTrading = ({
 
   const onListingApprove = async (isAuction: boolean) => {
     if (owner_collection_chain_id != chainId || !chainId) {
-      dispatch(openSnackBar({ message: `Please switch network to ${owner_collection_chain}`, status: 'warning' }))
-      return undefined
+      throw new Error('Please switch network to ${owner_collection_chain}')
     }
 
     if (!isAuction) {
@@ -217,10 +216,11 @@ const useTrading = ({
 
   const onListingConfirm = async (listingData: IListingData) => {
     if (owner_collection_chain_id != chainId) {
-      dispatch(openSnackBar({ message: `Please switch network to ${owner_collection_chain}`, status: 'warning' }))
-      return
+      throw new Error(`Please switch network to ${owner_collection_chain}`)
     }
-    if (!chainId || !chainName) return
+    if (!chainId || !chainName) {
+      throw new Error('Please connect to your wallet')
+    }
 
     const amount = ethers.utils.parseUnits('1', 0)
     const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
@@ -263,13 +263,11 @@ const useTrading = ({
 
   const onBuyApprove = async (order?: IOrder) => {
     if (!order) {
-      dispatch(openSnackBar({ message: 'Not listed', status: 'warning' }))
-      return
+      throw new Error('Not listed')
     }
 
     if (!chainId) {
-      dispatch(openSnackBar({ message: 'Please connect to your wallet', status: 'warning' }))
-      return
+      throw new Error('Please connect to your wallet')
     }
 
     const approveTxs = []
@@ -279,17 +277,14 @@ const useTrading = ({
     const currencyAddress = getAddressByName(newCurrencyName, chainId)
     
     if (!(await checkValid(currencyAddress, order?.price, chainId))) {
-      return
+      throw new Error('order validation failed')
     }
 
     const omni = getCurrencyInstance(currencyAddress, chainId, signer)
 
     if (!omni) {
-      dispatch(openSnackBar({ message: 'Could not find the currency', status: 'warning' }))
-      return
+      throw new Error('Could not find the currency')
     }
-    
-    const omnixExchangeAddr = getAddressByName('OmnixExchange', chainId)
 
     const buy_price = order?.price
     approveTxs.push(await approve(omni, address, getAddressByName('FundManager', chainId), buy_price))
@@ -424,8 +419,7 @@ const useTrading = ({
 
     await updateOrderStatus(order, 'EXECUTED')
 
-    const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
-
+    // const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
     // await collectionsService.updateCollectionNFTListPrice(collection_name,token_id, 0)
     // await collectionsService.updateCollectionNFTSalePrice(collection_name, token_id, Number(formatCurrency(order.price, currencyName)))
     await collectionsService.updateCollectionNFTChainID(collection_name, token_id, Number(chainId))

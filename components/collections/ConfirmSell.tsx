@@ -86,9 +86,6 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
       
       setProcessing(true)
 
-      if (tx === undefined) {
-        throw new Error('tx is not approved')
-      }
       if (tx) {
         setApproveTx(tx.hash)
         await tx.wait()
