@@ -123,7 +123,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
                 height={18}
                 onClick={onViewExplorer}
               />
-              {txInfo.isONFTCore && (<>
+              {txInfo.lastTxAvailable && (<>
                 <Image src={arrowRight} alt="arrowRight" />
                 <Image
                   width={18}

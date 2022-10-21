@@ -68,25 +68,27 @@ const approveNft = async (contract: any, owner?: string, operator?: string, toke
 }
 
 const validateONFT = async (token_address: string, contract_type: string, chain_id: number) => {
-  try {
-    if (contract_type === 'ERC721') {
-      const ERC721Instance = getERC721Instance(token_address, chain_id, null)
-      const isERC721 = await ERC721Instance.supportsInterface(ERC721_INTERFACE_ID)
-      const isONFTERC721 = await ERC721Instance.supportsInterface(ONFT_CORE_INTERFACE_ID)
+  // at this moment, we don't enable ONFT trading
+  return false
+  // try {
+  //   if (contract_type === 'ERC721') {
+  //     const ERC721Instance = getERC721Instance(token_address, chain_id, null)
+  //     const isERC721 = await ERC721Instance.supportsInterface(ERC721_INTERFACE_ID)
+  //     const isONFTERC721 = await ERC721Instance.supportsInterface(ONFT_CORE_INTERFACE_ID)
 
-      console.log('--isONFTERC721--', isERC721, isONFTERC721)
-      return !!(isERC721 && isONFTERC721)
-    } else if (contract_type === 'ERC1155') {
-      const ERC1155Instance = getERC1155Instance(token_address, chain_id, null)
-      const isERC1155 = await ERC1155Instance.supportsInterface(ERC1155_INTERFACE_ID)
-      const isONFTERC1155 = await ERC1155Instance.supportsInterface(ONFT1155_CORE_INTERFACE_ID)
-      return !!(isERC1155 && isONFTERC1155)
-    }
-    return false
-  } catch (e) {
-    console.error(e)
-    return false
-  }
+  //     console.log('--isONFTERC721--', isERC721, isONFTERC721)
+  //     return !!(isERC721 && isONFTERC721)
+  //   } else if (contract_type === 'ERC1155') {
+  //     const ERC1155Instance = getERC1155Instance(token_address, chain_id, null)
+  //     const isERC1155 = await ERC1155Instance.supportsInterface(ERC1155_INTERFACE_ID)
+  //     const isONFTERC1155 = await ERC1155Instance.supportsInterface(ONFT1155_CORE_INTERFACE_ID)
+  //     return !!(isERC1155 && isONFTERC1155)
+  //   }
+  //   return false
+  // } catch (e) {
+  //   console.error(e)
+  //   return false
+  // }
 }
 
 const useTrading = ({
@@ -356,7 +358,7 @@ const useTrading = ({
         currencyAddress,
         collection_address,
         getAddressByName('Strategy', chainId),
-        getConversionRate(newCurrencyName, currencyName)
+        getConversionRate(currencyName, newCurrencyName)
       ])
     }
 
@@ -403,7 +405,7 @@ const useTrading = ({
       nftItem: selectedNFTItem,
       targetBlockNumber: blockNumber,
       itemName: selectedNFTItem.name,
-      lastTxAvailable: true
+      lastTxAvailable: orderChainId !== chainId && isONFTCore
     }
     const historyIndex = addTxToHistories(pendingTx)
     await listenONFTEvents(pendingTx, historyIndex)
@@ -540,7 +542,7 @@ const useTrading = ({
         currencyAddress,
         collection_address,
         getAddressByName('Strategy', chainId),
-        getConversionRate(newCurrencyName, currencyName)
+        getConversionRate(currencyName, newCurrencyName)
       ])
     }
 

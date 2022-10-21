@@ -509,14 +509,14 @@ export const isUsdcOrUsdt = (address?: string) => {
 }
 
 export const validateCurrencyName = (currencyName: ContractName, chainId: number) => {
-  if (chainId === ChainIds.bsc) {
+  if (chainId === ChainIDS.BINANCE) {
     if (currencyName === 'USDC')
       return 'USDT'
   } else {
     if (currencyName === 'USDT')
       return 'USDC'
   }
-  return 'OMNI'
+  return currencyName
 }
 
 export const getProfileLink = (chain_id: number, ownerType: string, owner: string) => {

@@ -334,7 +334,7 @@ export const ContractProvider = ({
         await listenBridgeEvents(txInfo, historyIndex)
       }
     } else if (txInfo.type === 'buy' || txInfo.type === 'accept') {
-      if (txInfo.isONFTCore) {
+      if (txInfo.isONFTCore && txInfo.senderChainId != txInfo.targetChainId) {
         if (txInfo.lastTxAvailable) {
           await listenTradingEvents(txInfo, historyIndex, txInfo.isONFTCore)
         }
