@@ -24,7 +24,7 @@ export type CollectionType = {
 
 export type CollectionTypeFunc = {
     collectionInfo: CollectionType | undefined,
-    refresh: () => void
+    refreshCollection: () => void
 }
 
 const getCollectionInfo = async (col_url: string) => {
@@ -51,7 +51,7 @@ const getCollectionInfo = async (col_url: string) => {
 const useCollection = (col_url: string): CollectionTypeFunc => {
   const [collectionInfo, setCollectionInfo] = useState<CollectionType | undefined>()
 
-  const refresh = () => {
+  const refreshCollection = () => {
     getCollectionInfo(col_url).then(data => {
       setCollectionInfo(data)
     })
@@ -65,7 +65,7 @@ const useCollection = (col_url: string): CollectionTypeFunc => {
 
   return {
     collectionInfo,
-    refresh
+    refreshCollection
   }
 }
 

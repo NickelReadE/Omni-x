@@ -26,12 +26,7 @@ import Web from '../../../public/images/web.png'
 import Explorer from '../../../public/images/exp.png'
 import Loading from '../../../public/images/loading_f.gif'
 import {
-  clearCollectionNFTs,
-  getCollectionInfo,
-  getCollectionNFTs,
   getRoyalty,
-  selectCollectionNFTs,
-  selectGetNFTs,
   selectRoyalty
 } from '../../../redux/reducers/collectionsReducer'
 import NFTBox from '../../../components/collections/NFTBox'
@@ -42,6 +37,8 @@ import { IGetOrderRequest } from '../../../interface/interface'
 import { getBlockExplorer } from '../../../utils/constants'
 import useWallet from '../../../hooks/useWallet'
 import useCollection from '../../../hooks/useCollection'
+import useCollectionNfts from '../../../hooks/useCollectionNfts'
+import useData from '../../../hooks/useData'
 
 const sort_fields = [
   { id: 1, name: 'price: high to low', value: '-price', unavailable: false },
@@ -129,21 +126,17 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const Collection: NextPage = () => {
-  //const { isInitialized, Moralis } = useMoralis()
   const [currentTab, setCurrentTab] = useState<string>('items')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [expandedMenu, setExpandedMenu] = useState(0)
   const [selected, setSelected] = useState(sort_fields[0])
   const [enabled, setEnabled] = useState(false)
-  const [hasMoreNFTs, setHasMoreNFTs] = useState(true)
-  const [page, setPage] = useState(0)
   const [imageError, setImageError] = useState(false)
   const [searchObj, setSearchObj] = useState<any>({})
   const [filterObj, setFilterObj] = useState<any>({})
   const [isActiveBuyNow, setIsActiveBuyNow] = useState<boolean>(false)
   const [listNFTs, setListNFTs] = useState<any>([])
   const [explorerUrl, setExplorerUrl] = useState('')
-  const [bInit, setInit] = useState(false)
 
   const router = useRouter()
   const col_url = router.query.collection as string
@@ -151,12 +144,11 @@ const Collection: NextPage = () => {
 
   const dispatch = useDispatch()
   const classes = useStyles()
-  const { collectionInfo, refresh } = useCollection(col_url)
-  const nfts = useSelector(selectCollectionNFTs)
-  // const collectionInfo = useSelector(selectCollectionInfo)
+  const { collectionInfo, refreshCollection } = useCollection(col_url)
   const royalty = useSelector(selectRoyalty)
-  const finishedGetting = useSelector(selectGetNFTs)
   const { signer, chainId } = useWallet()
+  const { refreshUserNfts } = useData()
+  const { nfts, refreshNfts } = useCollectionNfts(col_url, display_per_page, selected.value, searchObj, collectionInfo)
 
   useEffect(() => {
     if (collectionInfo && collectionInfo.address && chainId) {
@@ -166,13 +158,6 @@ const Collection: NextPage = () => {
       }
     }
   }, [collectionInfo])
-
-  useEffect(() => {
-    if (col_url) {
-      dispatch(getCollectionInfo(col_url) as any)
-      setPage(0)
-    }
-  }, [col_url])
 
   useEffect(() => {
     if (nfts.length > 0) {
@@ -192,24 +177,6 @@ const Collection: NextPage = () => {
       dispatch(getOrders(bidRequest) as any)
     }
   }, [nfts])
-
-  useEffect(() => {
-    if ((collectionInfo && nfts.length >= collectionInfo.count) || finishedGetting) {
-      setHasMoreNFTs(false)
-    }
-  }, [nfts, selectGetNFTs])
-
-  useEffect(() => {
-    (async () => {
-      if (collectionInfo) {
-        await dispatch(clearCollectionNFTs() as any)
-        setInit(true)
-        setHasMoreNFTs(true)
-        dispatch(getCollectionNFTs(col_url, 0, display_per_page, selected.value, searchObj) as any)
-        setPage(0)
-      }
-    })()
-  }, [searchObj, collectionInfo, selected])
 
   useEffect(() => {
     if (isActiveBuyNow && nfts.length > 0) {
@@ -232,24 +199,9 @@ const Collection: NextPage = () => {
   }
 
   const onRefresh = async () => {
-    dispatch(clearCollectionNFTs() as any)
-    dispatch(getCollectionNFTs(col_url, 0, display_per_page, selected.value, searchObj) as any)
-    refresh()
-  }
-
-  const fetchMoreData = () => {
-    if (!bInit)
-      return
-    if (collectionInfo && nfts.length >= collectionInfo.count) {
-      setHasMoreNFTs(false)
-      return
-    }
-    setTimeout(() => {
-      if (col_url) {
-        dispatch(getCollectionNFTs(col_url, page + 1, display_per_page, selected.value, searchObj) as any)
-        setPage(page + 1)
-      }
-    }, 500)
+    await refreshNfts()
+    refreshCollection()
+    refreshUserNfts()
   }
 
   const searchAttrsCheck = (bChecked: boolean, attrKey: string, valueKey: string) => {
@@ -323,7 +275,9 @@ const Collection: NextPage = () => {
               src={imageError ? '/images/omnix_logo_black_1.png' : (collectionInfo && collectionInfo.profile_image ? collectionInfo.profile_image : '/images/omnix_logo_black_1.png')}
               alt="logo" onError={() => {
                 setImageError(true)
-              }} data-src={collectionInfo && collectionInfo.profile_image ? collectionInfo.profile_image : ''} />
+              }}
+              data-src={collectionInfo && collectionInfo.profile_image ? collectionInfo.profile_image : ''}
+            />
           </LazyLoad>
           <div className="flex relative  text-lg font-bold text-center items-center">
             <div className={'select-none inline-block p-4 text-xxl font-extrabold '}>
@@ -682,31 +636,39 @@ const Collection: NextPage = () => {
             </div>
             <div className="mt-10 mb-5">
               {
-                Array.isArray(nfts) &&
-                <InfiniteScroll
-                  dataLength={nfts.length}
-                  next={fetchMoreData}
-                  hasMore={hasMoreNFTs}
-                  loader={
-                    <div className="flex justify-center items-center">
-                      <div className="flex justify-center items-center w-[90%] h-[100px]">
-                        {!isActiveBuyNow && <Image src={Loading} alt="Loading..." width="80px" height="80px" />}
-                      </div>
-                    </div>
-                  }
-                  endMessage={
-                    <div></div>
-                  }
-                >
-                  <div className="grid 2xl:grid-cols-5 gap-4 xl:grid-cols-3 md:grid-cols-2 p-1">
-                    {!isActiveBuyNow && nfts.map((item, index) => {
-                      return (
-                        <NFTBox nft={item} index={index} key={index} col_url={col_url} onRefresh={onRefresh} />
-                      )
-                    })}
-                    {isActiveBuyNow && listNFTs && buyComponent()}
+                nfts.length === 0 && 
+                <div className="flex justify-center items-center">
+                  <div className="flex justify-center items-center w-[90%] h-[100px]">
+                    <Image src={Loading} alt="Loading..." width="80px" height="80px" />
                   </div>
-                </InfiniteScroll>
+                </div>
+              }
+              {
+                // <InfiniteScroll
+                //   dataLength={nfts.length}
+                //   next={fetchMoreData}
+                //   hasMore={hasMoreNFTs}
+                //   loader={
+                //     <div className="flex justify-center items-center">
+                //       <div className="flex justify-center items-center w-[90%] h-[100px]">
+                //         {!isActiveBuyNow && <Image src={Loading} alt="Loading..." width="80px" height="80px" />}
+                //       </div>
+                //     </div>
+                //   }
+                //   endMessage={
+                //     <div></div>
+                //   }
+                // >
+                nfts.length > 0 &&
+                <div className="grid 2xl:grid-cols-5 gap-4 xl:grid-cols-3 md:grid-cols-2 p-1">
+                  {!isActiveBuyNow && nfts.map((item, index) => {
+                    return (
+                      <NFTBox nft={item} index={index} key={index} col_url={col_url} onRefresh={onRefresh} />
+                    )
+                  })}
+                  {isActiveBuyNow && listNFTs && buyComponent()}
+                </div>
+                // </InfiniteScroll>
               }
             </div>
           </div>

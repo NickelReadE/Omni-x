@@ -2,11 +2,10 @@ import React from 'react'
 import NFTGrid from './NFTGrid'
 import WatchList from './WatchList'
 import Stats from './Stats'
-import { useSelector} from 'react-redux'
-import { selectUserNFTs} from '../redux/reducers/userReducer'
 import { makeStyles } from '@material-ui/core/styles'
 import Dialog from '@material-ui/core/Dialog'
 import UserEdit from './user/UserEdit'
+import useData from '../hooks/useData'
 
 type TabProps = {
   blur: boolean,
@@ -20,12 +19,11 @@ const useStyles = makeStyles({
   },
 })
 
-const Tabs = ({blur}: TabProps) => {
+const Tabs = ({ blur }: TabProps) => {
   const [currentTab, setCurrentTable] = React.useState<string>('NFTs')
   const [bOpenModal, setOpenModal] = React.useState(false)
   const classes = useStyles()
-
-  const nfts = useSelector(selectUserNFTs)
+  const { userNfts: nfts } = useData()
 
   const updateModal = ():void => {
     setOpenModal(false)

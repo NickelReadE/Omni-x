@@ -2,6 +2,7 @@ import React from 'react'
 import {DndContext} from '@dnd-kit/core'
 import {WalletProvider} from './WalletProvider'
 import {BridgeProvider} from './providers/BridgeProvider'
+import {DataProvider} from './providers/DataProvider'
 import {ProgressProvider} from './providers/ProgressProvider'
 import {ContractProvider} from './providers/ContractProvider'
 import { MoralisProvider } from 'react-moralis'
@@ -71,13 +72,15 @@ function App({children}: AppProps) {
           >
             <WalletProvider>
               <BridgeProvider>
-                <ProgressProvider>
-                  <ContractProvider>
-                    <DndContext>
-                      <Layout>{children}</Layout>
-                    </DndContext>
-                  </ContractProvider>
-                </ProgressProvider>
+                <DataProvider>
+                  <ProgressProvider>
+                    <ContractProvider>
+                      <DndContext>
+                        <Layout>{children}</Layout>
+                      </DndContext>
+                    </ContractProvider>
+                  </ProgressProvider>
+                </DataProvider>
               </BridgeProvider>
             </WalletProvider>
           </RainbowKitProvider>

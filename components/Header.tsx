@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { ethers } from 'ethers'
 import Link from 'next/link'
 import classNames from '../helpers/classNames'
 import useProgress from '../hooks/useProgress'
-import useWallet from '../hooks/useWallet'
-import { useDispatch } from 'react-redux'
-import { openSnackBar } from '../redux/reducers/snackBarReducer'
 import ProcessingTransaction from './transaction/ProcessingTransaction'
 import { Menu } from '@headlessui/react'
-import { updateRefreshBalance } from '../redux/reducers/userReducer'
-import { getOmniInstance, getUSDCInstance } from '../utils/contracts'
-import { ContractName, getAddressByName, STABLECOIN_DECIMAL } from '../utils/constants'
 import useSearch from '../hooks/useSearch'
 import useComponentVisible from '../hooks/useComponentVisible'
+import { openSnackBar } from '../redux/reducers/snackBarReducer'
+import { ContractName, getAddressByName, STABLECOIN_DECIMAL } from '../utils/constants'
+import { getOmniInstance, getUSDCInstance } from '../utils/contracts'
+import useWallet from '../hooks/useWallet'
+import { useDispatch } from 'react-redux'
+import useData from '../hooks/useData'
+import { ethers } from 'ethers'
 
 type HeaderProps = {
   menu: string
@@ -29,11 +29,12 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
     isHover: false
   })
   const [query, setQuery] = useState('')
-
+  const dispatch = useDispatch()
+  
   const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(true)
   const { pending, histories, clearHistories } = useProgress()
-  const dispatch = useDispatch()
-  const { signer, chainId } = useWallet()
+  const { chainId, signer } = useWallet()
+  const { refreshBalance } = useData()
   const { collections, profiles } = useSearch(query)
 
   const handleMouseOver = (hoverMenu: string) => {
@@ -89,7 +90,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
       console.error('While fauceting USDC/USDT token', e)
     }
 
-    dispatch(updateRefreshBalance())
+    refreshBalance()
   }
 
   const onClear = () => {

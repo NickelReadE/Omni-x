@@ -9,11 +9,10 @@ import { Dialog } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { useNetwork, useSwitchNetwork, useBalance } from 'wagmi'
 import useWallet from '../hooks/useWallet'
-import { getUserNFTs, selectRefreshBalance, selectUser, selectUserNFTs } from '../redux/reducers/userReducer'
+import { getUserNFTs, selectUser, selectUserNFTs } from '../redux/reducers/userReducer'
 import { NFTItem } from '../interface/interface'
 import {
   decodeFromBytes,
-  getCurrencyInstance,
   getERC1155Instance,
   getERC721Instance,
   getLayerZeroEndpointInstance,
@@ -24,12 +23,10 @@ import {
 } from '../utils/contracts'
 import {
   chainInfos,
-  getAddressByName,
   getChainInfo,
   getLayerzeroChainId,
   getProvider,
   numberLocalize,
-  STABLECOIN_DECIMAL,
 } from '../utils/constants'
 import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
@@ -40,6 +37,7 @@ import useContract from '../hooks/useContract'
 import { PendingTxType } from '../contexts/contract'
 import { ChainIds } from '../types/enum'
 import { SUPPORTED_CHAIN_IDS } from '../constants/addresses'
+import useData from '../hooks/useData'
 
 interface RefObject {
   offsetHeight: number
@@ -64,16 +62,13 @@ const SideBar: React.FC = () => {
   const { data: nativeBalance } = useBalance({
     addressOrName: address
   })
-  const { data: omniBalance } = useBalance({
-    token: getAddressByName('OMNI', (chainId || ChainIds.ETHEREUM)),
-    addressOrName: address
-  })
   const classes = useStyles()
   const { estimateGasFee, estimateGasFeeONFTCore, unwrapInfo, selectedUnwrapInfo, validateOwNFT, validateONFT } = useBridge()
   const { addTxToHistories } = useProgress()
   const { listenONFTEvents } = useContract()
   const { chain } = useNetwork()
   const { switchNetwork } = useSwitchNetwork()
+  const { balances } = useData()
 
   const dispatch = useDispatch()
   const ref = useRef(null)
@@ -94,12 +89,8 @@ const SideBar: React.FC = () => {
   const [offsetMenu, setOffsetMenu] = useState(0)
   const [avatarError, setAvatarError] = useState(false)
 
-  const [usdcBalance, setUsdcBalance] = useState(0)
-  const [usdtBalance, setUsdtBalance] = useState(0)
-
   const nfts = useSelector(selectUserNFTs)
   const user = useSelector(selectUser)
-  const refreshBalance = useSelector(selectRefreshBalance)
 
   const [selectedNFTItem, setSelectedNFTItem] = useState<NFTItem>()
   const [isONFTCore, setIsONFTCore] = useState(false)
@@ -503,40 +494,6 @@ const SideBar: React.FC = () => {
     setConfirmTransfer(status)
   }
 
-  useEffect(() => {
-    (async () => {
-      if (chainId && address && signer) {
-        try {
-          {
-            const usdcAddress = getAddressByName('USDC', chainId)
-            const usdContract = getCurrencyInstance(usdcAddress, chainId, signer)
-            const balance = await usdContract?.balanceOf(address)
-            if (balance) {
-              const decimal = STABLECOIN_DECIMAL[chainId][usdcAddress] || 6
-              setUsdcBalance(Number(ethers.utils.formatUnits(balance, decimal)))
-            }
-          }
-        } catch (error) {
-          console.error('Error while fetching USDC balance', error)
-        }
-
-        try {
-          {
-            const usdtAddress = getAddressByName('USDT', chainId)
-            const usdContract = getCurrencyInstance(usdtAddress, chainId, signer)
-            const balance = await usdContract?.balanceOf(address)
-            if (balance) {
-              const decimal = STABLECOIN_DECIMAL[chainId][usdtAddress] || 6
-              setUsdtBalance(Number(ethers.utils.formatUnits(balance, decimal)))
-            }
-          }
-        } catch (error) {
-          console.error('Error while fetching USDT balance', error)
-        }
-      }
-    })()
-  }, [signer, address, chainId, refreshBalance])
-
   const setLogout = () => {
     disconnect()
   }
@@ -671,9 +628,9 @@ const SideBar: React.FC = () => {
             </button>
             {expandedMenu == 3 &&
               <div className='flex flex-col w-full space-y-4 p-6 pt-8 pb-0' ref={menu_wallets}>
-                <span className="font-semibold w-auto text-[16px]">OMNI balance: {numberLocalize(parseFloat(omniBalance?.formatted || '0'))}</span>
-                <span className="font-semibold w-auto text-[16px]">USDC balance: {numberLocalize(usdcBalance)}</span>
-                <span className="font-semibold w-auto text-[16px]">USDT balance: {numberLocalize(usdtBalance)}</span>
+                <span className="font-semibold w-auto text-[16px]">OMNI balance: {numberLocalize(balances.omni)}</span>
+                <span className="font-semibold w-auto text-[16px]">USDC balance: {numberLocalize(balances.usdc)}</span>
+                <span className="font-semibold w-auto text-[16px]">USDT balance: {numberLocalize(balances.usdt)}</span>
                 <span className="font-semibold w-auto text-[16px]">
                   {getChainInfo(chainId)?.nativeCurrency.symbol} balance: {numberLocalize(parseFloat(nativeBalance?.formatted || '0'))}
                 </span>
