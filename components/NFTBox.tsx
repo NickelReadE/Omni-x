@@ -163,7 +163,7 @@ const NFTBox = ({ nft, index, onRefresh }: IPropsNFTItem) => {
       >
         <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
           <img
-            className='nft-image rounded-md object-cover ease-in-out duration-500 group-hover:scale-110'
+            className='nft-image rounded-md object-cover duration-300' 
             src={imageError ? '/images/omnix_logo_black_1.png' : image}
             alt="nft-image"
             onError={() => { setImageError(true) }}
