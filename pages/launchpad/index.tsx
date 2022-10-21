@@ -1,52 +1,13 @@
 import type {NextPage} from 'next'
-import React, {useEffect, useState} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
-import NftForLaunch from '../../components/NftForLaunch'
+import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import {
-  getCollections,
-  selectCollections,
-  getCollectionsForComingAndLive,
-  selectCollectionsForComing,
-  selectCollectionsForLive
-} from '../../redux/reducers/collectionsReducer'
+import NftForLaunch from '../../components/NftForLaunch'
+import useLaunchPad, { LaunchPadType } from '../../hooks/useLaunchPad'
 import Loading from '../../public/images/loading_f.gif'
 
 const Launchpad: NextPage = () => {
-  const [sampleCollection, setSampleCollection] = useState<any>({})
-  const collections = useSelector(selectCollections)
-  const comingFromReduce = useSelector(selectCollectionsForComing)
-  const liveFromReduce = useSelector(selectCollectionsForLive)
-  const localComing = localStorage.getItem('NftComing')
-  const localLive = localStorage.getItem('NftLive')
-  let collectionsForComing = []
-  let collectionsForLive = []
-  if (localComing) {
-    collectionsForComing = JSON.parse(localComing)
-  } else {
-    collectionsForComing = comingFromReduce
-  }
-  if (localLive) {
-    collectionsForLive = JSON.parse(localLive)
-  } else {
-    collectionsForLive = liveFromReduce
-  }
-
-  const dispatch = useDispatch()
-  useEffect(() => {
-    dispatch(getCollections() as any)
-  }, [dispatch])
-
-  useEffect(() => {
-    if (collections?.length > 0) {
-      dispatch(getCollectionsForComingAndLive() as any)
-      const samples = collections.filter((collection: { col_url: string }) => collection.col_url === 'kanpai_pandas')
-      if (samples?.length > 0) {
-        setSampleCollection(samples[0])
-      }
-    }
-  }, [collections, dispatch])
+  const { collectionsForLive, collectionsForComing, sampleCollection } = useLaunchPad()
 
   return (
     <div className="mt-[75px] w-full px-[130px] pt-[50px]">
@@ -92,47 +53,54 @@ const Launchpad: NextPage = () => {
           featured collection
         </div>
       </div>
-      <div className="flex  justify-between mt-[30px]">
-
-        <Link href={`/launchpad/${sampleCollection.col_url ? sampleCollection.col_url : ''}`}>
-          <img className="w-[600px] hover: cursor-pointer"
-            src={sampleCollection.profile_image ? sampleCollection.profile_image : '/images/nft.png'}
-            alt="NFT"></img>
-        </Link>
-
-        <div className="flex flex-col">
-          <p className="text-xxl2">
-            {sampleCollection.name ? sampleCollection.name : 'Collection Name'}
-          </p>
-          <p className="w-[830px] text-xg1 text-[#A0B3CC]">
-            {sampleCollection.description ? sampleCollection.description : 'Description'}
-          </p>
-          <Link href={`/collections/${sampleCollection.col_url ? sampleCollection.col_url : ''}`}>
-            <button className="mt-[25px] px-2 py-1 w-[170px]  bg-[#B444F9] text-white rounded-lg">
-              view collection
-            </button>
-          </Link>
-        </div>
-      </div>
+      {
+        !sampleCollection &&
+          <Image src={Loading} alt="Loading..." width="80px" height="80px"/>
+      }
+      {
+        sampleCollection && 
+          <div className="flex  justify-between mt-[30px]">
+            <Link href={`/launchpad/${sampleCollection.col_url}`}>
+              <img
+                className="w-[600px] hover: cursor-pointer"
+                src={sampleCollection.profile_image}
+                alt="NFT">
+              </img>
+            </Link>
+            <div className="flex flex-col">
+              <p className="text-xxl2">
+                {sampleCollection.name}
+              </p>
+              <p className="w-[830px] text-xg1 text-[#A0B3CC]">
+                {sampleCollection.description}
+              </p>
+              <Link href={`/collections/${sampleCollection.col_url}`}>
+                <button className="mt-[25px] px-2 py-1 w-[170px]  bg-[#B444F9] text-white rounded-lg">
+                  view collection
+                </button>
+              </Link>
+            </div>
+          </div>
+      }
       <div className="mt-[80px]">
         {
-          (collectionsForLive?.length <= 0 || collectionsForComing?.length <= 0) &&
+          (collectionsForLive?.length <= 0 && collectionsForComing?.length <= 0) &&
           <Image src={Loading} alt="Loading..." width="80px" height="80px"/>
-
         }
+
         {
-          collectionsForLive?.length > 0 &&
+          collectionsForLive.length > 0 &&
           <div className="">
             <p className="font-bold text-xl2 mb-[24px]">
               Live Launches
             </p>
             <div className="flex flex-wrap space-x-12">
               {
-                collectionsForLive.map((collection: { mint_status: string, totalCnt: string, col_url: string, name: string, profile_image: string, price: string }, index: any) => {
+                collectionsForLive.map((collection: LaunchPadType, index: any) => {
                   return <NftForLaunch
                     key={index}
                     typeNFT={collection.mint_status}
-                    items={collection.totalCnt}
+                    items={collection.itemsCnt}
                     col_url={collection.col_url}
                     name={collection.name}
                     img={collection.profile_image}
@@ -145,18 +113,18 @@ const Launchpad: NextPage = () => {
         }
 
         {
-          collectionsForComing?.length > 0 &&
+          collectionsForComing.length > 0 &&
           <div className="">
             <p className="font-bold text-xl2 mb-[24px]">
               Upcoming
             </p>
             <div className="flex flex-wrap space-x-12">
               {
-                collectionsForComing.map((collection: { mint_status: string, totalCnt: string, col_url: string, name: string, profile_image: string, price: string }, index: any) => {
+                collectionsForComing.map((collection: LaunchPadType, index: any) => {
                   return <NftForLaunch
                     key={index}
                     typeNFT={collection.mint_status}
-                    items={collection.totalCnt}
+                    items={collection.itemsCnt}
                     col_url={collection.col_url}
                     name={collection.name}
                     img={collection.profile_image}

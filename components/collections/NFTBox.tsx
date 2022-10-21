@@ -7,7 +7,6 @@ import {
   getCurrencyIconByAddress,
   getChainIconById,
   getChainNameFromId,
-  findCollection,
   numberShortify
 } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'
@@ -17,8 +16,6 @@ import classNames from '../../helpers/classNames'
 import useTrading from '../../hooks/useTrading'
 import useOrderStatics from '../../hooks/useOrderStatics'
 import ConfirmSell from './ConfirmSell'
-import {selectCollectionInfo} from '../../redux/reducers/collectionsReducer'
-import {useSelector} from 'react-redux'
 
 const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
@@ -29,16 +26,9 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     address
   } = useWallet()
 
-  const collectionInfo = useSelector(selectCollectionInfo)
-  const token_id = nft.token_id
-  const collection = useMemo(() => {
-    if (token_id && collectionInfo && collectionInfo.address) {
-      return findCollection(collectionInfo.address, nft, token_id)
-    }
-    return undefined
-  }, [nft, token_id, collectionInfo])
-  const col_address = collection?.[0] as string
-  const chain = collection?.[1] as string
+  const order = nft.order_data
+  const col_address = nft.collection_address
+  const chain = nft.chain_id
   //update this logic in the constants
   const collection_address_map = useMemo(() => {
     if (chain && col_address) {
@@ -50,7 +40,6 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   }, [chain, col_address])
 
   const {
-    order,
     orderChainId,
     isAuction,
     highestBid,
@@ -73,7 +62,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     signer,
     address,
     collection_name: col_url,
-    collection_address: col_address,
+    collection_address: nft.collection_address,
     collection_chain: getChainNameFromId(chain ? Number(chain) : 4),
     order_collection_address,
     order_collection_chain,
@@ -95,7 +84,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   }, [nft])
 
   const isOwner = useMemo(() => {
-    if (nft && nft.owner) {
+    if (nft && nft.owner && address) {
       return nft.owner.toLowerCase() === address?.toLowerCase()
     }
     return false

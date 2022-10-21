@@ -57,6 +57,7 @@ const useOrderStatics = ({
       ? Object.values(collectionInfo.address) as string[]
       : []
   ), [collectionInfo])
+
   // order
   const order = useMemo(() => {
     if (orders?.length > 0 && nft) {
