@@ -407,7 +407,8 @@ const useTrading = ({
       contractType: selectedNFTItem.contract_type || 'ERC721',
       nftItem: selectedNFTItem,
       targetBlockNumber: blockNumber,
-      itemName: selectedNFTItem.name
+      itemName: selectedNFTItem.name,
+      lastTxAvailable: true
     }
     const historyIndex = addTxToHistories(pendingTx)
     await listenONFTEvents(pendingTx, historyIndex)
@@ -587,7 +588,8 @@ const useTrading = ({
       isONFTCore,
       contractType: selectedNFTItem.contract_type || 'ERC721',
       nftItem: selectedNFTItem,
-      itemName: selectedNFTItem.name
+      itemName: selectedNFTItem.name,
+      lastTxAvailable: false
     }
 
     const historyIndex = addTxToHistories(pendingTx)

@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux'
 import { getUserNFTs } from '../../redux/reducers/userReducer'
 import useWallet from '../../hooks/useWallet'
 import useProgress from '../../hooks/useProgress'
+import { ethers } from 'ethers'
 
 type ContractProviderProps = {
   children?: ReactNode
@@ -173,6 +174,13 @@ export const ContractProvider = ({
   }
 
   const listenTradingONFTCoreEvents = async (txInfo: PendingTxType, historyIndex: number) => {
+    const txObj = (ev: any) => (txInfo.lastTxAvailable ? {
+      lastTxHash: ev.transactionHash
+    } : {
+      txHash: txInfo.txHash || ev.transactionHash,
+      destTxHash: txInfo.destTxHash || ev.transactionHash
+    })
+
     if (address && chainId && (!txInfo.destTxHash || !txInfo.txHash)) {
       if (txInfo.contractType === 'ERC721') {
         const targetCoreInstance = getONFTCore721Instance(txInfo.targetAddress, txInfo.targetChainId, null)
@@ -192,10 +200,7 @@ export const ContractProvider = ({
             if (eventExist.length > 0) {
               updateHistory(historyIndex, {
                 ...txInfo,
-                ...{
-                  txHash: txInfo.txHash || eventExist[0].transactionHash,
-                  destTxHash: txInfo.destTxHash || eventExist[0].transactionHash
-                }
+                ...txObj(eventExist[0])
               })
             }
             setTimeout(() => {
@@ -204,10 +209,8 @@ export const ContractProvider = ({
           })
         } else {
           updateHistory(historyIndex, {
-            ...txInfo, ...{
-              txHash: txInfo.txHash || eventExist[0].transactionHash,
-              destTxHash: txInfo.destTxHash || eventExist[0].transactionHash
-            }
+            ...txInfo,
+            ...txObj(eventExist[0])
           })
         }
       } else if (txInfo.contractType === 'ERC1155') {
@@ -229,10 +232,7 @@ export const ContractProvider = ({
             if (eventExist.length > 0) {
               updateHistory(historyIndex,{
                 ...txInfo,
-                ...{
-                  txHash: txInfo.txHash || eventExist[0].transactionHash,
-                  destTxHash: txInfo.destTxHash || eventExist[0].transactionHash
-                }
+                ...txObj(eventExist[0])
               })
             }
             setTimeout(() => {
@@ -241,38 +241,48 @@ export const ContractProvider = ({
           })
         } else {
           updateHistory(historyIndex, {
-            ...txInfo, ...{
-              txHash: txInfo.txHash || eventExist[0].transactionHash,
-              destTxHash: txInfo.destTxHash || eventExist[0].transactionHash
-            }
+            ...txInfo,
+            ...txObj(eventExist[0])
           })
         }
       }
     }
   }
-  const listenTradingEvents = async (txInfo: PendingTxType, historyIndex: number) => {
+  const listenTradingEvents = async (txInfo: PendingTxType, historyIndex: number, isONFTCore: boolean) => {
     if (address && txInfo.senderAddress && (!txInfo.destTxHash || !txInfo.txHash)) {
+      const isTradingEvent721 = (ev: any) => {
+        if (isONFTCore) {
+          return ev.args?.to.toLowerCase() === ethers.constants.AddressZero
+            && parseInt(ev.args?.tokenId) === parseInt(txInfo.nftItem.token_id)
+        }
+        return ev.args?.to.toLowerCase() === address.toLowerCase()
+              && parseInt(ev.args?.tokenId) === parseInt(txInfo.nftItem.token_id)
+      }
+
+      const isTradingEvent1155 = (ev: any) => {
+        if (isONFTCore) {
+          return ev.args?.to.toLowerCase() === ethers.constants.AddressZero
+            && parseInt(ev.args?.tokenId) === parseInt(txInfo.nftItem.token_id)
+            && ev.args?.amount === txInfo.nftItem.amount
+        }
+        return ev.args?.to.toLowerCase() === address.toLowerCase()
+          && parseInt(ev.args?.tokenId) === parseInt(txInfo.nftItem.token_id)
+          && ev.args?.amount === txInfo.nftItem.amount
+      }
+
       if (txInfo.contractType === 'ERC721') {
         const sellerNftInstance = getERC721Instance(txInfo.senderAddress, txInfo.senderChainId, null)
         const events = await sellerNftInstance.queryFilter(sellerNftInstance.filters.Transfer(), txInfo.senderBlockNumber)
-        const eventExist = events.filter((ev) => {
-          return ev.args?.to.toLowerCase() === address.toLowerCase()
-            && parseInt(ev.args?.tokenId) === parseInt(txInfo.nftItem.token_id)
-        })
+        const eventExist = events.filter((ev) => isTradingEvent721(ev))
         if (eventExist.length === 0) {
           sellerNftInstance.on('Transfer', async () => {
             const events = await sellerNftInstance.queryFilter(sellerNftInstance.filters.Transfer(), txInfo.senderBlockNumber)
-            const eventExist = events.filter((ev) => {
-              return ev.args?.to.toLowerCase() === address.toLowerCase()
-                && parseInt(ev.args?.tokenId) === parseInt(txInfo.nftItem.token_id)
-            })
+            const eventExist = events.filter((ev) => isTradingEvent721(ev))
             if (eventExist.length > 0) {
+              txInfo.txHash = txInfo.txHash || eventExist[0].transactionHash
+              txInfo.destTxHash = txInfo.destTxHash || eventExist[0].transactionHash
               updateHistory(historyIndex, {
-                ...txInfo,
-                ...{
-                  txHash: txInfo.txHash || eventExist[0].transactionHash,
-                  destTxHash: txInfo.destTxHash || eventExist[0].transactionHash
-                }
+                ...txInfo
               })
             }
             setTimeout(() => {
@@ -280,36 +290,25 @@ export const ContractProvider = ({
             }, UPDATE_TIMESTAMP)
           })
         } else {
+          txInfo.txHash = txInfo.txHash || eventExist[0].transactionHash
+          txInfo.destTxHash = txInfo.destTxHash || eventExist[0].transactionHash
           updateHistory(historyIndex, {
-            ...txInfo, ...{
-              txHash: txInfo.txHash || eventExist[0].transactionHash,
-              destTxHash: txInfo.destTxHash || eventExist[0].transactionHash
-            }
+            ...txInfo
           })
         }
       } else if (txInfo.contractType === 'ERC1155') {
         const sellerNftInstance = getERC1155Instance(txInfo.senderAddress, txInfo.senderChainId, null)
         const events = await sellerNftInstance.queryFilter(sellerNftInstance.filters.TransferSingle(), txInfo.senderBlockNumber)
-        const eventExist = events.filter((ev) => {
-          return ev.args?.to.toLowerCase() === address?.toLowerCase()
-            && parseInt(ev.args?.tokenId) === parseInt(txInfo.nftItem.token_id)
-            && parseInt(ev.args?.amount) === parseInt(txInfo.nftItem.amount)
-        })
+        const eventExist = events.filter((ev) => isTradingEvent1155(ev))
         if (eventExist.length === 0) {
           sellerNftInstance.on('TransferSingle', async () => {
             const events = await sellerNftInstance.queryFilter(sellerNftInstance.filters.TransferSingle(), txInfo.senderBlockNumber)
-            const eventExist = events.filter((ev) => {
-              return ev.args?.to.toLowerCase() === address?.toLowerCase()
-                && ev.args?.tokenId === txInfo.nftItem.token_id
-                && ev.args?.amount === txInfo.nftItem.amount
-            })
+            const eventExist = events.filter((ev) => isTradingEvent1155(ev))
             if (eventExist.length > 0) {
+              txInfo.txHash = txInfo.txHash || eventExist[0].transactionHash
+              txInfo.destTxHash = txInfo.destTxHash || eventExist[0].transactionHash
               updateHistory(historyIndex,{
-                ...txInfo,
-                ...{
-                  txHash: txInfo.txHash || eventExist[0].transactionHash,
-                  destTxHash: txInfo.destTxHash || eventExist[0].transactionHash
-                }
+                ...txInfo
               })
             }
             setTimeout(() => {
@@ -317,11 +316,10 @@ export const ContractProvider = ({
             }, UPDATE_TIMESTAMP)
           })
         } else {
+          txInfo.txHash = txInfo.txHash || eventExist[0].transactionHash
+          txInfo.destTxHash = txInfo.destTxHash || eventExist[0].transactionHash
           updateHistory(historyIndex, {
-            ...txInfo, ...{
-              txHash: txInfo.txHash || eventExist[0].transactionHash,
-              destTxHash: txInfo.destTxHash || eventExist[0].transactionHash
-            }
+            ...txInfo,
           })
         }
       }
@@ -337,9 +335,12 @@ export const ContractProvider = ({
       }
     } else if (txInfo.type === 'buy' || txInfo.type === 'accept') {
       if (txInfo.isONFTCore) {
+        if (txInfo.lastTxAvailable) {
+          await listenTradingEvents(txInfo, historyIndex, txInfo.isONFTCore)
+        }
         await listenTradingONFTCoreEvents(txInfo, historyIndex)
       } else {
-        await listenTradingEvents(txInfo, historyIndex)
+        await listenTradingEvents(txInfo, historyIndex, txInfo.isONFTCore)
       }
     }
   }
