@@ -147,6 +147,7 @@ button.sidebar {
     height: 100%; /* This if for the object-fit */
     object-fit: contain; /* Equivalent of the background-size: cover; of a background-image */
     object-position: center;
+    transition: transform .5s ease;
   }
 
   .nft-image {
@@ -155,6 +156,7 @@ button.sidebar {
     &:hover {
       background: radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.25) 0%, rgba(254, 254, 255, 0.1) 100%);
       backdrop-filter: blur(2px);
+      transform: scale(1.3);
     }
   }
 }
