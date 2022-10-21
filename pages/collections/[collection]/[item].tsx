@@ -12,7 +12,7 @@ import ConfirmBid from '../../../components/collections/ConfirmBid'
 import { getNFTInfo, selectNFTInfo } from '../../../redux/reducers/collectionsReducer'
 import useWallet from '../../../hooks/useWallet'
 import useTrading from '../../../hooks/useTrading'
-import { getChainIcon, getChainNameFromId, getCurrencyIconByAddress, getProfileLink, numberShortify } from '../../../utils/constants'
+import { getChainIcon, getChainNameFromId, getCurrencyIconByAddress, numberShortify } from '../../../utils/constants'
 import PngCheck from '../../../public/images/check.png'
 import PngSub from '../../../public/images/subButton.png'
 import useOrderStatics from '../../../hooks/useOrderStatics'
@@ -56,7 +56,7 @@ const Item: NextPage = () => {
   // ownership hook
   const {
     owner,
-    ownerType,
+    // profileLink, 
   } = useOwnership({
     owner_address: currentNFT?.owner
   })
@@ -125,7 +125,6 @@ const Item: NextPage = () => {
   }, [nftInfo, owner])
 
   // profile link
-  const profileLink = chain_id && ownerType && currentNFT?.owner && getProfileLink(Number(chain_id), ownerType, currentNFT?.owner)
   const currencyIcon = getCurrencyIconByAddress(currentNFT?.currency)
   const formattedPrice = currentNFT?.price
 
@@ -163,13 +162,20 @@ const Item: NextPage = () => {
                   <div className="">
                     <div className="flex justify-start items-center">
                       <h1 className="text-[#1E1C21] text-[18px] font-bold">owner:</h1>
-                      {currentNFT?.owner && (
+                      {currentNFT && currentNFT.owner && (
+                        <h1 className="text-[#B444F9] text-[20px] font-normal underline ml-4 break-all lg:ml-1">
+                          <Link href={`/user/${currentNFT.owner}`}>
+                            {truncate(currentNFT.owner)}
+                          </Link>
+                        </h1>
+                      )}
+                      {/* {currentNFT?.owner && (
                         <h1 className="text-[#B444F9] text-[20px] font-normal underline ml-4 break-all lg:ml-1">
                           <Link href={profileLink || '#'}>
                             <a target='_blank'>{truncate(currentNFT?.owner)}</a>
                           </Link>
                         </h1>
-                      )}
+                      )} */}
 
                     </div>
                     <div className="flex justify-between items-center mt-6">

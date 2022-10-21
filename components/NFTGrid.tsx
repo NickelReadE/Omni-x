@@ -18,7 +18,7 @@ import {
 import {chainInfos} from '../utils/constants'
 import {SUPPORTED_CHAIN_IDS} from '../constants/addresses'
 import {ChainIds} from '../types/enum'
-import { getUserNFTs } from '../redux/reducers/userReducer'
+import useData from '../hooks/useData'
 
 const NFTGrid = ({nfts}: IPropsImage) => {
   const [chain, setChain] = useState(-1)
@@ -31,6 +31,7 @@ const NFTGrid = ({nfts}: IPropsImage) => {
     address
   } = useWallet()
   const dispatch = useDispatch()
+  const { refreshUserNfts } = useData()
   const searchText = useSelector(selectSearchText)
   const col_url = searchText.split('#')[0]
   const token_id = searchText.split('#')[1]
@@ -98,9 +99,7 @@ const NFTGrid = ({nfts}: IPropsImage) => {
   }, [nfts])
 
   const onRefresh = () => {
-    if (address) {
-      dispatch(getUserNFTs(address) as any)
-    }
+    refreshUserNfts()
   }
 
   return (

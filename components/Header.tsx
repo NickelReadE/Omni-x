@@ -1,16 +1,18 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import classNames from '../helpers/classNames'
 import useProgress from '../hooks/useProgress'
-import useWallet from '../hooks/useWallet'
-import { useDispatch } from 'react-redux'
-import { openSnackBar } from '../redux/reducers/snackBarReducer'
 import ProcessingTransaction from './transaction/ProcessingTransaction'
 import { Menu } from '@headlessui/react'
-import { getSearchText } from '../redux/reducers/headerReducer'
-import { updateRefreshBalance } from '../redux/reducers/userReducer'
+import useSearch from '../hooks/useSearch'
+import useComponentVisible from '../hooks/useComponentVisible'
+import { openSnackBar } from '../redux/reducers/snackBarReducer'
+import { ContractName, getAddressByName, STABLECOIN_DECIMAL } from '../utils/constants'
 import { getOmniInstance, getUSDCInstance } from '../utils/contracts'
-import { ContractName, getAddressByName, parseCurrency } from '../utils/constants'
+import useWallet from '../hooks/useWallet'
+import { useDispatch } from 'react-redux'
+import useData from '../hooks/useData'
+import { ethers } from 'ethers'
 
 type HeaderProps = {
   menu: string
@@ -26,9 +28,14 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
     hoverMenu: menu,
     isHover: false
   })
-  const { pending, histories, clearHistories } = useProgress()
+  const [query, setQuery] = useState('')
   const dispatch = useDispatch()
-  const { signer, chainId } = useWallet()
+  
+  const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(true)
+  const { pending, histories, clearHistories } = useProgress()
+  const { chainId, signer } = useWallet()
+  const { refreshBalance } = useData()
+  const { collections, profiles } = useSearch(query)
 
   const handleMouseOver = (hoverMenu: string) => {
     setHovering({
@@ -48,17 +55,19 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
     if (!signer || !chainId) return
 
     // faucet omni
-    {
+    try {
       const omni = getOmniInstance(chainId, signer)
 
       const tx = await omni.mint({ gasLimit: '300000' })
       await tx.wait()
 
       dispatch(openSnackBar({ message: 'You received an 10000 $OMNI', status: 'success' }))
+    } catch (e) {
+      console.error('While fauceting OMNI token', e)
     }
 
     // faucet usdc/usdt
-    {
+    try {
       let currencyName: ContractName = 'USDC'
       let currencyAddr = getAddressByName(currencyName, chainId)
       if (!currencyAddr) {
@@ -68,7 +77,8 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
 
       const usdc = getUSDCInstance(currencyAddr, chainId, signer)
       if (usdc) {
-        const tx = await usdc.mint(await signer.getAddress(), parseCurrency('1000', currencyName), { gasLimit: '300000' })
+        const decimal = STABLECOIN_DECIMAL[chainId][currencyAddr] || 6
+        const tx = await usdc.mint(await signer.getAddress(), ethers.utils.parseUnits('1000', decimal), { gasLimit: '300000' })
         await tx.wait()
 
         dispatch(openSnackBar({ message: `You received an 1000 $${currencyName}`, status: 'success' }))
@@ -76,18 +86,31 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
       else {
         dispatch(openSnackBar({ message: `Not support $${currencyName} on this chain`, status: 'warning' }))
       }
+    } catch (e) {
+      console.error('While fauceting USDC/USDT token', e)
     }
 
-    dispatch(updateRefreshBalance())
+    refreshBalance()
   }
 
   const onClear = () => {
     clearHistories()
   }
 
-  const handleChangeInput = (text: string) => {
-    dispatch(getSearchText(text) as any)
+  const debounce = (func: any, wait: any) => {
+    let timerId: any
+    return (...args: any) => {
+      if (timerId) clearTimeout(timerId)
+      timerId = setTimeout(() => {
+        func(...args)
+      }, wait)
+    }
   }
+
+  useEffect(() => {
+    setIsComponentVisible(!!query)
+  }, [query, setIsComponentVisible])
+
   return (
     <>
       <nav className={
@@ -107,16 +130,76 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
         <div className='flex flex-wrap items-start'>
           <div className='absolute'>
             <div className='flex'>
-              <button className='flex items-center mt-[20px]'>
-                <img
-                  src={'/images/logo.svg'}
-                  className='mr-3 bg-contain'
-                  alt="logo"
-                  width='50px'
-                  height='50px'
-                />
-              </button>
-              <input autoFocus type="text" placeholder='Search' className="flex items-center bg-[#F6F8FC] bg-[url('../public/images/search.png')] bg-contain bg-no-repeat	 w-[248px] h-[40px] mt-[25px] border-0 focus:outline-0 focus:shadow-none focus:ring-offset-0 focus:ring-0 px-[50px]" onChange={e => handleChangeInput(e.target.value)}/>
+              <Link href='/'>
+                <button className='flex items-center'>
+                  <img
+                    src={'/images/logo.svg'}
+                    className='mr-3 bg-contain'
+                    alt="logo"
+                    width='50px'
+                    height='50px'
+                  />
+                </button>
+              </Link>
+              <div ref={ref} className={'h-[90px] flex items-center'}>
+                <div className={'relative'}>
+                  {
+                    <div className={(query !== '' && isComponentVisible) ? 'absolute w-[250px] bg-white' : 'w-[250px]'} style={(query !== '' && isComponentVisible) ? { borderRadius: '20px', border: '1.5px solid #000000', top: -20 } : {}}>
+                      <div className={'h-[40px] bg-[#F6F8FC] px-[18px] flex items-center justify-between'} style={(query !== '' && isComponentVisible) ? { borderTopLeftRadius: '20px', borderTopRightRadius: '20px' } : { borderRadius: '20px', border: '1.5px solid #000000' }}>
+                        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="search" className="w-4" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                          <path fill="currentColor" d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"></path>
+                        </svg>
+                        <input
+                          autoFocus
+                          type="text"
+                          placeholder='Search'
+                          className="flex items-center bg-transparent w-[248px] h-[40px] border-0 focus:outline-0 focus:shadow-none focus:ring-offset-0 focus:ring-0"
+                          onChange={debounce((e: any) => {
+                            setQuery(e.target.value)
+                          }, 500)}
+                        />
+                      </div>
+                      {
+                        query !== '' && isComponentVisible && 
+                        <div className='p-3'>
+                          <div className="text-[#A0B3CC]" style={{fontSize: 15, lineHeight: '19px'}}>Collections</div>
+                          {
+                            collections.map((item, index) => {
+                              return (
+                                <div className='my-2 font-bold' key={index}>
+                                  <Link href={`/collections/${item.col_url}`}>
+                                    {item.name}
+                                  </Link>
+                                </div>
+                              )
+                            })
+                          }
+                          {
+                            collections.length === 0 &&
+                            <div className='my-2 font-bold'>No results found</div>
+                          }
+                          <div className="text-[#A0B3CC] mt-4" style={{ fontSize: 15, lineHeight: '19px' }}>Profiles</div>
+                          {
+                            profiles.map((item, index) => {
+                              return (
+                                <div className='my-2 font-bold truncate' key={index}>
+                                  <Link href={`/user/${item.address}`}>
+                                    {item.username}
+                                  </Link>
+                                </div>
+                              )
+                            })
+                          }
+                          {
+                            profiles.length === 0 &&
+                              <div className='my-2 font-bold'>No results found</div>
+                          }
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
             </div>
           </div>
           {/* <div className='min-w-[200px]'></div> */}

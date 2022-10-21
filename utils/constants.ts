@@ -44,6 +44,21 @@ export const CURRENCIES_LIST = [
   {value: 2, text: 'USDT', decimals: 6, icon: 'payment/usdt.png'},
 ]
 
+export const STABLECOIN_DECIMAL: any = {
+  [ChainIDS.BINANCE]: {
+    [USDT[ChainIDS.BINANCE]]: 18,
+  },
+  [ChainIDS.AVALANCHE]: {
+    [USDC[ChainIDS.AVALANCHE]]: 6,
+  },
+  [ChainIDS.POLYGON]: {
+    [USDC[ChainIDS.POLYGON]]: 6,
+  },
+  [ChainIDS.FANTOM]: {
+    [USDC[ChainIDS.FANTOM]]: 6,
+  },
+}
+
 export type ContractName =
   'Omnix' |
   'Omnix1155' |
@@ -512,12 +527,9 @@ export const validateCurrencyName = (currencyName: ContractName, chainId: number
   return 'OMNI'
 }
 
-export const getProfileLink = (chain_id: number, ownerType: string, owner: string) => {
-  if (ownerType === 'address' || ownerType === 'username') {
-    const explorer_link = getBlockExplorer(chain_id)
-    return (explorer_link + '/address/' + owner)
-  }
-  return ''
+export const getProfileLink = (chain_id: number, owner: string) => {
+  const explorer_link = getBlockExplorer(chain_id)
+  return (explorer_link + '/address/' + owner)
 }
 
 export const getChainIcon = (chain: string) => {
