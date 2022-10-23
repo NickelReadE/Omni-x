@@ -294,8 +294,13 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
               </div>
           }
 
-          <div className='absolute right-[100px] top-[20px]'>
-            <button className='bg-gradient-to-br from-[#F3F9FF] to-[#DBE1E9] border-2 border-[#A0B3CC] rounded-lg text-black text-lg p-[10px]' onClick={() => onOmniFaucet()}>Get Test OMNI</button>
+          <div className='absolute right-[100px] top-[25px]'>
+            <button
+              className='bg-transparent h-[40px] w-[126px] border-black border-[1.5px] rounded-full rounded-lg text-black font-[16px]'
+              onClick={() => onOmniFaucet()}
+            >
+              Get Test OMNI
+            </button>
           </div>
         </div>
       </nav>
