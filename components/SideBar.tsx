@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { BigNumber, ethers } from 'ethers'
 import Image from 'next/image'
 import { useDndMonitor, useDroppable } from '@dnd-kit/core'
@@ -9,7 +9,6 @@ import { Dialog } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { useNetwork, useSwitchNetwork, useBalance } from 'wagmi'
 import useWallet from '../hooks/useWallet'
-import { getUserNFTs, selectUserNFTs } from '../redux/reducers/userReducer'
 import { NFTItem } from '../interface/interface'
 import {
   decodeFromBytes,
@@ -27,6 +26,7 @@ import {
   getLayerzeroChainId,
   getProvider,
   numberLocalize,
+  SUPPORTED_CHAIN_IDS,
 } from '../utils/constants'
 import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
@@ -36,7 +36,6 @@ import useProgress from '../hooks/useProgress'
 import useContract from '../hooks/useContract'
 import { PendingTxType } from '../contexts/contract'
 import { ChainIds } from '../types/enum'
-import { SUPPORTED_CHAIN_IDS } from '../constants/addresses'
 import useData from '../hooks/useData'
 
 interface RefObject {
@@ -68,9 +67,8 @@ const SideBar: React.FC = () => {
   const { listenONFTEvents } = useContract()
   const { chain } = useNetwork()
   const { switchNetwork } = useSwitchNetwork()
-  const { balances, profile } = useData()
+  const { balances, profile, userNfts: nfts, refreshUserNfts } = useData()
   const dispatch = useDispatch()
-  const nfts = useSelector(selectUserNFTs)
 
   const ref = useRef(null)
   const menu_profile = useRef<HTMLUListElement>(null)
@@ -123,7 +121,7 @@ const SideBar: React.FC = () => {
     onDragEnd(event) {
       const { active: { id } } = event
       if (id.toString().length > 0 && (event.over !== null || isFirstDrag)) {
-        const index = id.toString().split('-')[1]
+        const index = Number(id.toString().split('-')[1])
         setSelectedNFTItem(nfts[index])
         validateOwNFT(nfts[index]).then((res) => {
           setIsONFT(res)
@@ -430,9 +428,7 @@ const SideBar: React.FC = () => {
         }
 
         setTimeout(() => {
-          if (address) {
-            dispatch(getUserNFTs(address) as any)
-          }
+          refreshUserNfts()
         }, 30000)
       } catch (e: any) {
         console.log(e)
@@ -467,9 +463,7 @@ const SideBar: React.FC = () => {
           await tx.wait()
         }
         setTimeout(() => {
-          if (address) {
-            dispatch(getUserNFTs(address) as any)
-          }
+          refreshUserNfts()
         }, 30000)
       } catch (e: any) {
         console.log(e)

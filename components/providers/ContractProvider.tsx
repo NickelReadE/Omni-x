@@ -2,11 +2,10 @@
 import {ReactNode, useEffect} from 'react'
 import { PendingTxType, ContractContext } from '../../contexts/contract'
 import { getERC1155Instance, getERC721Instance, getOmnixBridge1155Instance, getOmnixBridgeInstance, getONFTCore1155Instance, getONFTCore721Instance } from '../../utils/contracts'
-import { useDispatch } from 'react-redux'
-import { getUserNFTs } from '../../redux/reducers/userReducer'
 import useWallet from '../../hooks/useWallet'
 import useProgress from '../../hooks/useProgress'
 import { ethers } from 'ethers'
+import useData from '../../hooks/useData'
 
 type ContractProviderProps = {
   children?: ReactNode
@@ -15,9 +14,9 @@ type ContractProviderProps = {
 export const ContractProvider = ({
   children,
 }: ContractProviderProps): JSX.Element => {
-  const dispatch = useDispatch()
   const { address, provider, chainId } = useWallet()
   const { updateHistory } = useProgress()
+  const { refreshUserNfts } = useData()
   const UPDATE_TIMESTAMP = 10000
 
   const listenBridgeONFTCoreEvents = async (txInfo: PendingTxType, historyIndex: number) => {
@@ -46,7 +45,7 @@ export const ContractProvider = ({
               })
             }
             setTimeout(() => {
-              dispatch(getUserNFTs(address) as any)
+              refreshUserNfts()
             }, UPDATE_TIMESTAMP)
           })
         } else {
@@ -81,7 +80,7 @@ export const ContractProvider = ({
               })
             }
             setTimeout(() => {
-              dispatch(getUserNFTs(address) as any)
+              refreshUserNfts()
             }, UPDATE_TIMESTAMP)
           })
         } else {
@@ -121,7 +120,7 @@ export const ContractProvider = ({
               })
             }
             setTimeout(() => {
-              dispatch(getUserNFTs(address) as any)
+              refreshUserNfts()
             }, UPDATE_TIMESTAMP)
           })
         } else {
@@ -158,7 +157,7 @@ export const ContractProvider = ({
             }
             if (address) {
               setTimeout(() => {
-                dispatch(getUserNFTs(address) as any)
+                refreshUserNfts()
               }, UPDATE_TIMESTAMP)
             }
           })
@@ -204,7 +203,7 @@ export const ContractProvider = ({
               })
             }
             setTimeout(() => {
-              dispatch(getUserNFTs(address) as any)
+              refreshUserNfts()
             }, UPDATE_TIMESTAMP)
           })
         } else {
@@ -236,7 +235,7 @@ export const ContractProvider = ({
               })
             }
             setTimeout(() => {
-              dispatch(getUserNFTs(address) as any)
+              refreshUserNfts()
             }, UPDATE_TIMESTAMP)
           })
         } else {
@@ -286,7 +285,7 @@ export const ContractProvider = ({
               })
             }
             setTimeout(() => {
-              dispatch(getUserNFTs(address) as any)
+              refreshUserNfts()
             }, UPDATE_TIMESTAMP)
           })
         } else {
@@ -312,7 +311,7 @@ export const ContractProvider = ({
               })
             }
             setTimeout(() => {
-              dispatch(getUserNFTs(address) as any)
+              refreshUserNfts()
             }, UPDATE_TIMESTAMP)
           })
         } else {

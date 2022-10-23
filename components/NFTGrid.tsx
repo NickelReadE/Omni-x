@@ -15,8 +15,7 @@ import {
   selectCollectionAllNFTs,
   selectCollectionInfo
 } from '../redux/reducers/collectionsReducer'
-import {chainInfos} from '../utils/constants'
-import {SUPPORTED_CHAIN_IDS} from '../constants/addresses'
+import {chainInfos, SUPPORTED_CHAIN_IDS} from '../utils/constants'
 import {ChainIds} from '../types/enum'
 import useData from '../hooks/useData'
 

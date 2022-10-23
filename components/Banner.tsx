@@ -7,12 +7,11 @@ import classNames from '../helpers/classNames'
 import Twitter from '../public/images/twitter.png'
 import Web from '../public/images/web.png'
 import Carousel from './carousel'
-import { chainsFroSTG, veSTGContractAddress } from '../constants/addresses'
-import { getChainIdFromName } from '../utils/constants'
 import { getVeSTGInstance } from '../utils/contracts'
 import Hgreg from '../public/images/gregs/logo.png'
 import Stg from '../public/images/stg/stg.png'
 import useData from '../hooks/useData'
+import { chainsFroSTG, veSTGContractAddress } from '../utils/constants/addresses'
 
 type BannerProps = {
   slides: Array<React.ReactNode>
@@ -27,8 +26,8 @@ const Banner = ({ slides, blur, menu }: BannerProps): JSX.Element => {
   const [isStgStacker, setIsStgStacker] = useState(false)
   const [balances, setBalanceSTG] = useState(0)
 
-  const fetchToken = async (chain: string) => {
-    const veSTGInstance = getVeSTGInstance(veSTGContractAddress[chain], getChainIdFromName(chain), null)
+  const fetchToken = async (chain: number) => {
+    const veSTGInstance = getVeSTGInstance(veSTGContractAddress[chain], chain, null)
     setBalanceSTG(await veSTGInstance.balanceOf(address))
   }
 

@@ -15,7 +15,7 @@ import mintstyles from '../../../styles/mint.module.scss'
 import classNames from '../../../helpers/classNames'
 import useWallet from '../../../hooks/useWallet'
 import {ChainIds} from '../../../types/enum'
-import {SUPPORTED_CHAIN_IDS} from '../../../constants/addresses'
+import {SUPPORTED_CHAIN_IDS} from '../../../utils/constants'
 import {chainInfos} from '../../../utils/constants'
 
 const Mint: NextPage = () => {
