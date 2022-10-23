@@ -9,6 +9,7 @@ export type DataContextType = {
     userNfts: Array<NFTItem>,
     refreshBalance: () => void,
     refreshUserNfts: () => void,
+    onFaucet: () => void,
 }
 
 export const DataContext = createContext<DataContextType>({
@@ -21,4 +22,5 @@ export const DataContext = createContext<DataContextType>({
   userNfts: [],
   refreshUserNfts: () => undefined,
   refreshBalance: () => undefined,
+  onFaucet: () => undefined,
 })

@@ -12,7 +12,7 @@ export const DataProvider = ({
   children,
 }: DataProviderProps): JSX.Element => {
   const { address } = useWallet()
-  const { balances, updateRefresh: refreshBalance } = useBalances()
+  const { balances, updateRefresh: refreshBalance, faucet: onFaucet } = useBalances()
   const { profile, nfts: userNfts, refreshNfts: refreshUserNfts } = useProfile(address)
 
   return (
@@ -20,6 +20,7 @@ export const DataProvider = ({
       value={{
         balances,
         refreshBalance,
+        onFaucet,
         profile,
         userNfts,
         refreshUserNfts

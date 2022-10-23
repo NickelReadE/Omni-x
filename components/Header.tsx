@@ -6,13 +6,7 @@ import ProcessingTransaction from './transaction/ProcessingTransaction'
 import { Menu } from '@headlessui/react'
 import useSearch from '../hooks/useSearch'
 import useComponentVisible from '../hooks/useComponentVisible'
-import { openSnackBar } from '../redux/reducers/snackBarReducer'
-import { ContractName, getAddressByName, STABLECOIN_DECIMAL } from '../utils/constants'
-import { getOmniInstance, getUSDCInstance } from '../utils/contracts'
-import useWallet from '../hooks/useWallet'
-import { useDispatch } from 'react-redux'
 import useData from '../hooks/useData'
-import { ethers } from 'ethers'
 
 type HeaderProps = {
   menu: string
@@ -29,12 +23,10 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
     isHover: false
   })
   const [query, setQuery] = useState('')
-  const dispatch = useDispatch()
   
   const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(true)
   const { pending, histories, clearHistories } = useProgress()
-  const { chainId, signer } = useWallet()
-  const { refreshBalance } = useData()
+  const { onFaucet } = useData()
   const { collections, profiles } = useSearch(query)
 
   const handleMouseOver = (hoverMenu: string) => {
@@ -49,48 +41,6 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
       hoverMenu: '',
       isHover: false
     })
-  }
-
-  const onOmniFaucet = async () => {
-    if (!signer || !chainId) return
-
-    // faucet omni
-    try {
-      const omni = getOmniInstance(chainId, signer)
-
-      const tx = await omni.mint({ gasLimit: '300000' })
-      await tx.wait()
-
-      dispatch(openSnackBar({ message: 'Received 10,000 OMNI', status: 'success' }))
-    } catch (e) {
-      console.error('While fauceting OMNI token', e)
-    }
-
-    // faucet usdc/usdt
-    try {
-      let currencyName: ContractName = 'USDC'
-      let currencyAddr = getAddressByName(currencyName, chainId)
-      if (!currencyAddr) {
-        currencyName = 'USDT'
-        currencyAddr = getAddressByName(currencyName, chainId)
-      }
-
-      const usdc = getUSDCInstance(currencyAddr, chainId, signer)
-      if (usdc) {
-        const decimal = STABLECOIN_DECIMAL[chainId][currencyAddr] || 6
-        const tx = await usdc.mint(await signer.getAddress(), ethers.utils.parseUnits('1000', decimal), { gasLimit: '300000' })
-        await tx.wait()
-  
-        dispatch(openSnackBar({ message: `Received 1,000 $${currencyName}`, status: 'success' }))
-      }
-      else {
-        dispatch(openSnackBar({ message: `Not support $${currencyName} on this chain`, status: 'warning' }))
-      }
-    } catch (e) {
-      console.error('While fauceting USDC/USDT token', e)
-    }
-
-    refreshBalance()
   }
 
   const onClear = () => {
@@ -316,7 +266,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
           <div className='absolute right-[100px] top-[25px]'>
             <button
               className='bg-transparent h-[40px] w-[126px] border-black border-[1.5px] rounded-full rounded-lg text-black font-[16px]'
-              onClick={() => onOmniFaucet()}
+              onClick={onFaucet}
             >
               Get Test OMNI
             </button>
