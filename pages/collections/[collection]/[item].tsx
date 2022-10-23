@@ -12,7 +12,7 @@ import ConfirmBid from '../../../components/collections/ConfirmBid'
 import { getNFTInfo, selectNFTInfo } from '../../../redux/reducers/collectionsReducer'
 import useWallet from '../../../hooks/useWallet'
 import useTrading from '../../../hooks/useTrading'
-import { getChainIcon, getChainNameFromId, getCurrencyIconByAddress, numberLocalize } from '../../../utils/constants'
+import { getChainIconById, getChainNameFromId, getCurrencyIconByAddress, numberLocalize } from '../../../utils/constants'
 import PngCheck from '../../../public/images/check.png'
 import PngSub from '../../../public/images/subButton.png'
 import useOrderStatics from '../../../hooks/useOrderStatics'
@@ -221,7 +221,7 @@ const Item: NextPage = () => {
                               <div className='break-all mt-3 text-[16px] font-bold'>{truncate(item.signer)}</div>
                               <div className="text-center mt-3">
                                 <img
-                                  src={getChainIcon(item.chain)}
+                                  src={getChainIconById(item.chain_id.toString())}
                                   className='mr-[8px] w-[21px]'
                                   alt="icon"
                                 />
