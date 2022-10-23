@@ -13,17 +13,19 @@ export const DataProvider = ({
 }: DataProviderProps): JSX.Element => {
   const { address } = useWallet()
   const { balances, updateRefresh: refreshBalance, faucet: onFaucet } = useBalances()
-  const { profile, nfts: userNfts, refreshNfts: refreshUserNfts } = useProfile(address)
+  const { profile, refreshProfile, updateProfileData, nfts: userNfts, refreshNfts: refreshUserNfts } = useProfile(address)
 
   return (
     <DataContext.Provider
       value={{
         balances,
-        refreshBalance,
-        onFaucet,
         profile,
         userNfts,
-        refreshUserNfts
+        onFaucet,
+        refreshBalance,
+        refreshUserNfts,
+        refreshProfile,
+        updateProfileData,
       }}
     >
       {children}

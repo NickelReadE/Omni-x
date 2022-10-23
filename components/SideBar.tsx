@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { BigNumber, ethers } from 'ethers'
 import Image from 'next/image'
@@ -9,7 +9,7 @@ import { Dialog } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { useNetwork, useSwitchNetwork, useBalance } from 'wagmi'
 import useWallet from '../hooks/useWallet'
-import { getUserNFTs, selectUser, selectUserNFTs } from '../redux/reducers/userReducer'
+import { getUserNFTs, selectUserNFTs } from '../redux/reducers/userReducer'
 import { NFTItem } from '../interface/interface'
 import {
   decodeFromBytes,
@@ -68,30 +68,26 @@ const SideBar: React.FC = () => {
   const { listenONFTEvents } = useContract()
   const { chain } = useNetwork()
   const { switchNetwork } = useSwitchNetwork()
-  const { balances } = useData()
-
+  const { balances, profile } = useData()
   const dispatch = useDispatch()
-  const ref = useRef(null)
-  const [showSidebar, setShowSidebar] = useState(false)
-  const [onMenu, setOnMenu] = useState(false)
-  const [expandedMenu, setExpandedMenu] = useState(0)
-  const [fixed, setFixed] = useState(false)
-  const [confirmTransfer, setConfirmTransfer] = useState(false)
-  const [isFirstDrag, setIsFirstDrag] = useState(true)
-  const DEFAULT_AVATAR = 'uploads\\default_avatar.png'
+  const nfts = useSelector(selectUserNFTs)
 
+  const ref = useRef(null)
   const menu_profile = useRef<HTMLUListElement>(null)
   const menu_ethereum = useRef<HTMLUListElement>(null)
   const menu_wallets = useRef<HTMLDivElement>(null)
   const menu_watchlist = useRef<HTMLDivElement>(null)
   const menu_bridge = useRef<HTMLDivElement>(null)
   const menu_cart = useRef<HTMLDivElement>(null)
+  
+  const [showSidebar, setShowSidebar] = useState(false)
+  const [onMenu, setOnMenu] = useState(false)
+  const [expandedMenu, setExpandedMenu] = useState(0)
+  const [fixed, setFixed] = useState(false)
+  const [confirmTransfer, setConfirmTransfer] = useState(false)
+  const [isFirstDrag, setIsFirstDrag] = useState(true)
   const [offsetMenu, setOffsetMenu] = useState(0)
   const [avatarError, setAvatarError] = useState(false)
-
-  const nfts = useSelector(selectUserNFTs)
-  const user = useSelector(selectUser)
-
   const [selectedNFTItem, setSelectedNFTItem] = useState<NFTItem>()
   const [isONFTCore, setIsONFTCore] = useState(false)
   const [image, setImage] = useState('/images/omnix_logo_black_1.png')
@@ -102,8 +98,8 @@ const SideBar: React.FC = () => {
   const [estimatedFee, setEstimatedFee] = useState<BigNumber>(BigNumber.from('0'))
   const [isONFT, setIsONFT] = useState(false)
   const [unwrap, setUnwrap] = useState(false)
-  const [bOpenModal, setOpenModal] = React.useState(false)
-
+  const [bOpenModal, setOpenModal] = useState(false)
+  
   const { setNodeRef } = useDroppable({
     id: 'droppable',
     data: {
@@ -221,7 +217,7 @@ const SideBar: React.FC = () => {
   const handleTransfer = async () => {
     if (!selectedNFTItem) return
     if (!targetChain) return
-    if (!user) return
+    if (!profile) return
     if (!signer) return
     if (!chainId) return
     if (chainId !== selectedNFTItem.chain_id) {
@@ -498,6 +494,13 @@ const SideBar: React.FC = () => {
     disconnect()
   }
 
+  const avatarImage = useMemo(() => {
+    if (!avatarError && profile && profile.avatar) {
+      return process.env.API_URL + profile.avatar
+    }
+    return '/images/default_avatar.png'
+  }, [profile])
+
   return (
     <>
       {!onMenu &&
@@ -511,9 +514,9 @@ const SideBar: React.FC = () => {
               <div className="sidebar-icon">
                 <div className="m-auto">
                   <Image
-                    src={avatarError || user.avatar === undefined || user.avatar === DEFAULT_AVATAR ? '/images/default_avatar.png' : (process.env.API_URL + user.avatar)}
+                    src={avatarImage}
                     alt="avatar"
-                    onError={() => { user.avatar && setAvatarError(true) }}
+                    onError={() => { profile && profile.avatar && setAvatarError(true) }}
                     width={45}
                     height={45}
                   />
@@ -817,9 +820,9 @@ const SideBar: React.FC = () => {
               <div className="sidebar-icon">
                 <div className="m-auto">
                   <Image
-                    src={avatarError || user.avatar === undefined || user.avatar === DEFAULT_AVATAR ? '/images/default_avatar.png' : (process.env.API_URL + user.avatar)}
+                    src={avatarImage}
                     alt="avatar"
-                    onError={() => { user.avatar && setAvatarError(true) }}
+                    onError={() => { profile && profile.avatar && setAvatarError(true) }}
                     width={45}
                     height={45}
                   />

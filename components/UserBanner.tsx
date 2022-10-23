@@ -43,10 +43,10 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
   }, [balances])
 
   const bannerImage = useMemo(() => {
-    if (user && user.banners && user.banners.length > 0) {
-      return process.env.API_URL + user.banners[0]
+    if (user && user.banner) {
+      return process.env.API_URL + user.banner
     }
-    return process.env.API_URL + 'default_banner.png'
+    return 'images/default_banner.png'
   }, [user])
 
   return (

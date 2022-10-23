@@ -48,10 +48,17 @@ const Banner = ({ slides, blur, menu }: BannerProps): JSX.Element => {
   }, [balances])
 
   const bannerImage = useMemo(() => {
-    if (profile && profile.banners && profile.banners.length) {
-      return process.env.API_URL + profile.banners[0]
+    if (profile && profile.banner) {
+      return process.env.API_URL + profile.banner
     }
-    return process.env.API_URL + 'default_banner.png'
+    return '/images/default_banner.png'
+  }, [profile])
+
+  const avatarImage = useMemo(() => {
+    if (!avatarError && profile && profile.avatar) {
+      return process.env.API_URL + profile.avatar
+    }
+    return '/images/default_avatar.png'
   }, [profile])
 
   return (
@@ -86,7 +93,7 @@ const Banner = ({ slides, blur, menu }: BannerProps): JSX.Element => {
             <div className="flex justify-between justify-center fw-60 mt-5 relative">
               <div className="bottom-[0rem] left-[4rem]  absolute">
                 <Image
-                  src={avatarError || profile?.avatar === undefined || profile.avatar === DEFAULT_AVATAR ? '/images/default_avatar.png' : (process.env.API_URL + profile.avatar)}
+                  src={avatarImage}
                   alt="avatar"
                   onError={() => {
                     profile?.avatar && setAvatarError(true)

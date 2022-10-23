@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Header from './Header'
 import { useRouter } from 'next/router'
-import { useDispatch, useSelector } from 'react-redux'
-import { getUser, selectUpdatingUser, selectUser } from '../redux/reducers/userReducer'
 import SideBar from './SideBar'
 import useWallet  from '../hooks/useWallet'
 import SnackbarComponent from './SnackBar'
@@ -22,21 +20,9 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
   } = useWallet()
 
   const [ menu, setMenu ] = useState('home')
-  const updatingUser = useSelector(selectUpdatingUser)
-
   const [isBlur, setIsBlur] = useState<boolean>(false)
   const [currentSlides, setCurrentSlides] = useState<any>([])
-  const user = useSelector(selectUser)
-
   const [collectionMenu, setCollectionMenu] = useState<boolean>(false)
-
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    if ( address != undefined && !updatingUser ) {
-      dispatch(getUser(address) as any)
-    }
-  }, [address, updatingUser, dispatch])
 
   useEffect(() => {
     setCollectionMenu(false)
@@ -65,7 +51,7 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
       new_slides.push(<Link href={'/collections/gregs_eth'}><a><img src='https://i.seadn.io/gcs/files/a80f86bc5cc3ab9984161ca01aa04b6c.png?auto=format&w=1920' alt="banner - 5" className={'banner-slider'} /></a></Link>)
       setCurrentSlides(new_slides)
     }
-  }, [menu, user.banners])
+  }, [menu])
 
   return (
     <>
