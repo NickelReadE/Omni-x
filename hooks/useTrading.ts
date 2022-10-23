@@ -253,8 +253,6 @@ const useTrading = ({
       true,
       collection_name,
     )
-
-    await collectionsService.updateCollectionNFTListPrice(collection_name, token_id, listingData.price)
   }
 
   const onListingDone = () => {

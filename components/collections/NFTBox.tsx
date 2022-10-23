@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react'
 import {useState} from 'react'
 import Link from 'next/link'
-import {IPropsNFTItem} from '../../interface/interface'
+import {IOrder, IPropsNFTItem} from '../../interface/interface'
 import LazyLoad from 'react-lazyload'
 import {
   getCurrencyIconByAddress,
@@ -108,9 +108,16 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     }
   }, [nft])
 
-  const onListingDoneAndRefresh = async () => {
-    await onListingDone()
+  const onListingDoneAndRefresh = () => {
+    onListingDone()
     onRefresh()
+  }
+
+  const onBuyConfirmAndRefresh = async (e: IOrder | undefined) => {
+    if (e) {
+      await onBuyConfirm(e)
+      onRefresh()
+    }
   }
 
   return (
@@ -220,7 +227,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
         nftImage={nft.image}
         nftTitle={nft.name}
         onBuyApprove={onBuyApprove}
-        onBuyConfirm={onBuyConfirm}
+        onBuyConfirm={onBuyConfirmAndRefresh}
         onBuyComplete={onBuyComplete}
         onBuyDone={onBuyDone}
         order={order}
