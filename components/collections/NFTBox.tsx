@@ -198,7 +198,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
               {'Buy now'}
             </div>
           )}
-          {isShowBtn && !isOwner && isListed && isAuction && (
+          {isShowBtn && !isOwner && !isListed && (
             <div
               className="ml-2 mr-2 py-[1px] px-4 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]"
               onClick={() => setOpenBidDlg(true)}>
