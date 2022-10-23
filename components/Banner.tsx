@@ -26,7 +26,6 @@ const Banner = ({ slides, blur, menu }: BannerProps): JSX.Element => {
   const [avatarError, setAvatarError] = useState(false)
   const [isStgStacker, setIsStgStacker] = useState(false)
   const [balances, setBalanceSTG] = useState(0)
-  const DEFAULT_AVATAR = 'uploads\\default_avatar.png'
 
   const fetchToken = async (chain: string) => {
     const veSTGInstance = getVeSTGInstance(veSTGContractAddress[chain], getChainIdFromName(chain), null)
