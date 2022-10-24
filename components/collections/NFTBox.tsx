@@ -43,8 +43,6 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   const {
     orderChainId,
     isAuction,
-    highestBid,
-    highestBidCoin,
   } = useOrderStatics({nft, collection_address_map})
 
   const order_collection_address = order?.collectionAddress
@@ -108,6 +106,34 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     }
   }, [nft])
 
+  const highestBid = useMemo(() => {
+    if (nft && nft.bidDatas && nft.bidDatas.length > 0) {
+      const bids = JSON.parse(JSON.stringify(nft.bidDatas))
+      return bids.sort((a: any, b: any) => {
+        if (a.price && b.price) {
+          if (a.price === b.price) return 0
+          return a.price > b.price ? -1 : 1
+        }
+        return 0
+      })[0].price
+    }
+    return 0
+  }, [nft])
+
+  const highestBidCoin = useMemo(() => {
+    if (nft && nft.bidDatas && nft.bidDatas.length > 0) {
+      const bids = JSON.parse(JSON.stringify(nft.bidDatas))
+      const highestBidCurrency = bids.sort((a: any, b: any) => {
+        if (a.price && b.price) {
+          if (a.price === b.price) return 0
+          return a.price > b.price ? -1 : 1
+        }
+        return 0
+      })[0].currency
+      return getCurrencyIconByAddress(highestBidCurrency)
+    }
+  }, [nft])
+
   const onListingDoneAndRefresh = () => {
     onListingDone()
     onRefresh()
@@ -123,7 +149,9 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   return (
     <div
       className={classNames('w-full border-[2px] border-[#F6F8FC] rounded-[8px] cursor-pointer hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F6F8FC]', editStyle.nftContainer)}
-      onMouseEnter={() => SetIsShowBtn(true)} onMouseLeave={() => SetIsShowBtn(false)}>
+      onMouseEnter={() => SetIsShowBtn(true)}
+      onMouseLeave={() => SetIsShowBtn(false)}
+    >
       <Link href={`/collections/${col_url}/${nft.token_id}`}>
         <a>
           <div className="group relative flex justify-center text-center overflow-hidden rounded-md">
@@ -133,7 +161,9 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                 src={imageError || nft.image == null ? '/images/omnix_logo_black_1.png' : nft.image} alt="nft-image"
                 onError={() => {
                   setImageError(true)
-                }} data-src={nft.image}/>
+                }}
+                data-src={nft.image}
+              />
             </LazyLoad>
             {/* <div className={classNames('absolute top-[8px] right-[9px] p-[12px]', editStyle.ellipseBtn)}>
               <div className="bg-[url('/images/ellipse.png')] hover:bg-[url('/images/ellipse_hover.png')] bg-cover w-[21px] h-[21px]"></div>
@@ -161,7 +191,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           </div>
         </a>
       </Link>
-      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle  font-['RetniSans']">
+      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
         <Link href={`/collections/${col_url}/${nft.token_id}`}>
           <a>
             <div className="flex items-center ml-3">

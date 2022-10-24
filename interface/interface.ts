@@ -47,6 +47,7 @@ export interface NFTItem {
   currency: string,
   uri: string,
   order_data: any,
+  bidDatas: any[],
 }
 
 export interface FeedItem {

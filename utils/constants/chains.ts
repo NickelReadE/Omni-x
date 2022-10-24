@@ -85,7 +85,7 @@ export const SUPPORTED_CHAIN_IDS = [
   CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET],
   CHAIN_IDS[CHAIN_TYPE.APTOS],
 ]
-  
+
 export const getChainIcons = (chainId: number) => {
   if (SUPPORTED_CHAIN_IDS.includes(chainId)) {
     return {
