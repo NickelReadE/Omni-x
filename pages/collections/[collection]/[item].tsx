@@ -75,6 +75,7 @@ const Item: NextPage = () => {
     if (sortedBids.length > 0) {
       return sortedBids[0].price
     }
+    return 0
   }, [sortedBids])
   const highestBidCoin = useMemo(() => {
     if (sortedBids.length > 0 && sortedBids[0].currency) {
@@ -186,7 +187,7 @@ const Item: NextPage = () => {
                     <div className="flex justify-start items-center">
                       <h1 className="text-[#1E1C21] text-[18px] font-bold">owner:</h1>
                       {currentNFT && currentNFT.owner && (
-                        <h1 className="text-[#B444F9] text-[20px] font-normal underline ml-4 break-all lg:ml-1">
+                        <h1 className="flex justify-start items-center text-[#B444F9] text-[20px] font-normal underline ml-4 break-all lg:ml-1">
                           <Link href={`/user/${currentNFT.owner}`}>
                             {truncate(currentNFT.owner)}
                           </Link>
@@ -218,7 +219,9 @@ const Item: NextPage = () => {
                       )}
                     </div>
                     <div className="mb-3">
-                      <span className='font-normal font-[16px]'>{formattedPrice && '$'}{numberLocalize(Number(formattedPrice))}</span>
+                      <span className='font-normal font-[16px]'>
+                        {formattedPrice && formattedPrice > 0 ? '$' : ''}{numberLocalize(Number(formattedPrice))}
+                      </span>
                       <div className="flex justify-start items-center mt-5">
                         <h1 className="mr-3 font-bold">
                           Highest Bid: <span className="font-bold">{numberLocalize(Number(highestBid))}</span>
@@ -243,7 +246,7 @@ const Item: NextPage = () => {
                         sortedBids.map((item: any, index: number) => {
                           return (
                             <Fragment key={index}>
-                              <div className='break-all mt-3 text-[16px] font-bold'>{truncate(item.signer)}</div>
+                              <div className='flex justify-start items-center break-all mt-3 text-[16px] font-bold'>{truncate(item.signer)}</div>
                               <div className="flex justify-start items-center text-center mt-3">
                                 <img
                                   src={getChainIconById(item.chain_id.toString())}
@@ -280,18 +283,36 @@ const Item: NextPage = () => {
                   <div className="">
                     <div className="mb-3">
                       <div className="">
-                        { isListed && !isAuction && owner?.toLowerCase() != address?.toLowerCase() &&
-                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]" onClick={() => {setOpenBuyDlg(true)}}>buy</button>
+                        {
+                          isListed && !isAuction && owner?.toLowerCase() != address?.toLowerCase() &&
+                            <button 
+                              className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]"
+                              onClick={() => {setOpenBuyDlg(true)}}
+                            >
+                              buy
+                            </button>
                         }
-                        { owner?.toLowerCase() == address?.toLowerCase() &&
-                          <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]" onClick={() => {setOpenSellDlg(true)}}>sell</button>
+                        {
+                          owner?.toLowerCase() == address?.toLowerCase() &&
+                            <button 
+                              className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]"
+                              onClick={() => {setOpenSellDlg(true)}}
+                            >
+                              sell
+                            </button>
                         }
                       </div>
                     </div>
                   </div>
                   <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
-                    { owner && address && owner.toLowerCase() != address.toLowerCase() &&
-                      <button className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]" onClick={() => {setOpenBidDlg(true)}}>bid</button>
+                    {
+                      owner && address && owner.toLowerCase() != address.toLowerCase() &&
+                        <button
+                          className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]"
+                          onClick={() => { setOpenBidDlg(true) }}
+                        >
+                          bid
+                        </button>
                     }
                   </div>
                 </div>

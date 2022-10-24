@@ -314,7 +314,7 @@ export const numberShortify = (price: string | number | undefined) => {
 }
 
 export const numberLocalize = (price: number) => {
-  if (!price) return '0'
+  if (price && price < 0) return '0'
   return price.toLocaleString()
 }
 
