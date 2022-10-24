@@ -42,3 +42,12 @@ export enum BidStep {
     StepDone = 4,
     StepFail = 5,
 }
+
+export enum AcceptStep {
+    StepAccept = 1,
+    StepApprove = 2,
+    StepConfirm = 3,
+    StepComplete = 4,
+    StepDone = 4,
+    StepFail = 5,
+}

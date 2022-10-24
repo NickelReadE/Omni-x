@@ -1,5 +1,5 @@
 import React from 'react'
-import { BuyStep } from '../../types/enum'
+import { AcceptStep } from '../../types/enum'
 import ListingFeeSection from './ListingFeeSection'
 import ApproveSection from './ApproveSection'
 import CongratsSection from './CongratsSection'
@@ -7,8 +7,8 @@ import BuySection from './BuySection'
 import ConfirmSection from './ConfirmSection'
 import CompleteSection from './CompleteSection'
 
-interface IBuyContentProps {
-  buyStep: BuyStep,
+interface IAcceptContentProps {
+  acceptStep: AcceptStep,
   processing: boolean,
   approveTx?: string,
   tradingTx?: string,
@@ -16,11 +16,11 @@ interface IBuyContentProps {
   currency: string,
   nftImage: string,
   nftTitle: string,
-  onBuy?: () => void
+  onAccept?: () => void
 }
 
-const BuyContent: React.FC<IBuyContentProps> = ({
-  buyStep,
+const AcceptContent: React.FC<IAcceptContentProps> = ({
+  acceptStep,
   processing,
   approveTx,
   tradingTx,
@@ -28,12 +28,12 @@ const BuyContent: React.FC<IBuyContentProps> = ({
   currency,
   nftImage,
   nftTitle,
-  onBuy
+  onAccept
 }) => {
   return (
     <>
       <div className='flex justify-between'>
-        {buyStep === BuyStep.StepBuy ? (
+        {acceptStep === AcceptStep.StepAccept ? (
           <div>
             <BuySection
               price={price}
@@ -46,39 +46,40 @@ const BuyContent: React.FC<IBuyContentProps> = ({
           <div>
             <ApproveSection 
               processing={processing}
-              active={buyStep == BuyStep.StepApprove}
-              completed={buyStep > BuyStep.StepApprove}
+              active={acceptStep == AcceptStep.StepApprove}
+              completed={acceptStep > AcceptStep.StepApprove}
               txHash={approveTx}
               sectionNo={1}
-              title="Approve Token"
+              title="Approve Collection"
               descriptions={[
-                'Please confirm the transaction in your wallet to process the trade.'
+                'Please confirm the transaction in your wallet.',
+                'This confirmation allows you to sell or buy both this NFT and any future NFT from this collection.'
               ]}
             />
             <ConfirmSection 
               processing={processing}
-              active={buyStep == BuyStep.StepConfirm}
-              completed={buyStep > BuyStep.StepConfirm}
+              active={acceptStep == AcceptStep.StepConfirm}
+              completed={acceptStep > AcceptStep.StepConfirm}
               txHash={tradingTx}
               sectionNo={2}
-              title={'Complete Purchase'}
-              description={'Please confirm this second transaction in your wallet to complete the purchase.'}
+              title={'Complete Sell'}
+              description={'Please confirm this second transaction in your wallet to complete the sell.'}
             />
             <CompleteSection 
               processing={processing}
-              active={buyStep == BuyStep.StepComplete}
-              completed={buyStep > BuyStep.StepComplete}
+              active={acceptStep == AcceptStep.StepComplete}
+              completed={acceptStep > AcceptStep.StepComplete}
               txHash={tradingTx}
               sectionNo={3}
               title="Finalize"
-              description="Please wait for a while to finalize the purchase."
+              description="Please wait for a while to finalize the sell."
             />
 
-            {buyStep === BuyStep.StepDone && (
-              <CongratsSection failed={false} succeedMessage={'you successfully bought this NFT'}/>
+            {acceptStep === AcceptStep.StepDone && (
+              <CongratsSection failed={false} succeedMessage={'you successfully sold this NFT'}/>
             )}
-            {buyStep === BuyStep.StepFail && (
-              <CongratsSection failed={true} failedMessage={'you were failed to purchase this NFT'}/>
+            {acceptStep === AcceptStep.StepFail && (
+              <CongratsSection failed={true} failedMessage={'you were failed to sell this NFT'}/>
             )}
           </div>
         )}
@@ -91,19 +92,19 @@ const BuyContent: React.FC<IBuyContentProps> = ({
 
       <div className="grid grid-cols-4 mt-20 flex items-end">
         <div className="col-span-1">
-          {(buyStep === BuyStep.StepDone || buyStep === BuyStep.StepFail) ? (
+          {(acceptStep === AcceptStep.StepDone || acceptStep === AcceptStep.StepFail) ? (
             <button
               className='bg-[#B444F9] rounded text-[#fff] w-[95px] h-[35px]'
-              onClick={onBuy}
+              onClick={onAccept}
               disabled={processing}>
               close
             </button>
           ) : (
             <button
               className='bg-[#38B000] rounded text-[#fff] w-[95px] h-[35px]'
-              onClick={onBuy}
+              onClick={onAccept}
               disabled={processing}>
-              buy
+              accept
             </button>
           )}
         </div>
@@ -112,4 +113,4 @@ const BuyContent: React.FC<IBuyContentProps> = ({
   )
 }
 
-export default BuyContent
+export default AcceptContent

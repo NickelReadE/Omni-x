@@ -17,6 +17,7 @@ import PngCheck from '../../../public/images/check.png'
 import PngSub from '../../../public/images/subButton.png'
 import useOrderStatics from '../../../hooks/useOrderStatics'
 import ConfirmBuy from '../../../components/collections/ConfirmBuy'
+import ConfirmAccept from '../../../components/collections/ConfirmAccept'
 
 const truncate = (str: string) => {
   return str.length > 12 ? str.substring(0, 9) + '...' : str
@@ -79,9 +80,13 @@ const Item: NextPage = () => {
     openBidDlg,
     openSellDlg,
     openBuyDlg,
+    openAcceptDlg,
+    selectedBid,
     setOpenBidDlg,
     setOpenSellDlg,
     setOpenBuyDlg,
+    setOpenAcceptDlg,
+    setSelectedBid,
     getListOrders,
     getBidOrders,
     getLastSaleOrder,
@@ -95,7 +100,10 @@ const Item: NextPage = () => {
     onBidApprove,
     onBidConfirm,
     onBidDone,
-    onAccept
+    onAcceptApprove,
+    onAcceptConfirm,
+    onAcceptComplete,
+    onAcceptDone,
   } = useTrading({
     provider,
     signer,
@@ -231,7 +239,10 @@ const Item: NextPage = () => {
                               <div className='text-right mt-3'>
                                 {owner?.toLowerCase() == address?.toLowerCase() &&
                                   <button className='bg-[#ADB5BD] hover:bg-[#38B000] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5'
-                                    onClick={() => onAccept(item)}>
+                                    onClick={() => {
+                                      setSelectedBid(item)
+                                      setOpenAcceptDlg(true)
+                                    }}>
                                     accept
                                   </button>
                                 }
@@ -328,6 +339,17 @@ const Item: NextPage = () => {
             openBidDlg={openBidDlg}
             nftImage={nftInfo.nft.image}
             nftTitle={nftInfo.nft.name}
+          />
+          <ConfirmAccept
+            onAcceptApprove={onAcceptApprove}
+            onAcceptConfirm={onAcceptConfirm}
+            onAcceptComplete={onAcceptComplete}
+            onAcceptDone={onAcceptDone}
+            handleAcceptDlgClose={() => {setOpenAcceptDlg(false)}}
+            openAcceptDlg={openAcceptDlg}
+            nftImage={nftInfo.nft.image}
+            nftTitle={nftInfo.nft.name}
+            bidOrder={selectedBid}
           />
         </div>
       }

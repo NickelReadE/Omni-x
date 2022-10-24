@@ -29,9 +29,13 @@ export type TradingFunction = {
   openSellDlg: boolean,
   openBidDlg: boolean,
   openBuyDlg: boolean,
+  openAcceptDlg: boolean,
+  selectedBid: IOrder | undefined,
   setOpenSellDlg: Dispatch<SetStateAction<boolean>>,
   setOpenBidDlg: Dispatch<SetStateAction<boolean>>,
   setOpenBuyDlg: Dispatch<SetStateAction<boolean>>,
+  setOpenAcceptDlg: Dispatch<SetStateAction<boolean>>,
+  setSelectedBid: Dispatch<SetStateAction<IOrder|undefined>>,
   getListOrders: () => void,
   getBidOrders: () => void,
   getLastSaleOrder: () => void,
@@ -46,7 +50,10 @@ export type TradingFunction = {
   onBidApprove: (bidData: IBidData) => Promise<any>,
   onBidConfirm: (bidData: IBidData) => Promise<void>,
   onBidDone: () => void,
-  onAccept: (bidOrder: IOrder) => Promise<void>,
+  onAcceptApprove: () => Promise<any>,
+  onAcceptConfirm: (bidOrder: IOrder) => Promise<any>,
+  onAcceptComplete: (bidOrder: IOrder) => Promise<void>,
+  onAcceptDone: () => void
 }
 
 const approve = async (contract: any, owner?: string, spender?: string, amount?: BigNumberish) => {
@@ -109,6 +116,8 @@ const useTrading = ({
   const [openSellDlg, setOpenSellDlg] = useState(false)
   const [openBidDlg, setOpenBidDlg] = useState(false)
   const [openBuyDlg, setOpenBuyDlg] = useState(false)
+  const [openAcceptDlg, setOpenAcceptDlg] = useState(false)
+  const [selectedBid, setSelectedBid] = useState<IOrder|undefined>(undefined)
 
   const dispatch = useDispatch()
   const { addTxToHistories } = useProgress()
@@ -480,12 +489,30 @@ const useTrading = ({
     getBidOrders()
   }
 
-  const onAccept = async (bidOrder: IOrder) => {
+  const onAcceptApprove = async () => {
     if (owner_collection_chain_id != chainId) {
-      dispatch(openSnackBar({ message: `Please switch network to ${owner_collection_chain}`, status: 'warning' }))
-      return
+      throw new Error(`Please switch network to ${owner_collection_chain}`)
     }
-    if (!chainId || !chainName) return
+    if (!chainId || !chainName) {
+      throw new Error('Please connect to your wallet')
+    }
+
+    const transferSelector = getTransferSelectorNftInstance(chainId, signer)
+    const transferManagerAddr = await transferSelector.checkTransferManagerForToken(collection_address)
+    const nftContract = getERC721Instance(collection_address, chainId, signer)
+    const txApprove = await approveNft(nftContract, address, transferManagerAddr, token_id)
+
+    return txApprove
+  }
+
+  const onAcceptConfirm = async (bidOrder: IOrder) => {
+    if (owner_collection_chain_id != chainId) {
+      throw new Error(`Please switch network to ${owner_collection_chain}`)
+    }
+    if (!chainId || !chainName) {
+      throw new Error('Please connect to your wallet')
+    }
+
     const isONFTCore = await validateONFT(bidOrder.collectionAddress, selectedNFTItem.contract_type || 'ERC721', bidOrder.chain_id)
     const orderChainId = bidOrder.chain_id
     const blockNumber = await provider.getBlockNumber()
@@ -535,14 +562,6 @@ const useTrading = ({
       ])
     }
 
-    const transferSelector = getTransferSelectorNftInstance(chainId, signer)
-    const transferManagerAddr = await transferSelector.checkTransferManagerForToken(collection_address)
-    const nftContract = getERC721Instance(collection_address, chainId, signer)
-    const txApprove = await approveNft(nftContract, address, transferManagerAddr, token_id)
-    if (txApprove) {
-      await txApprove.wait()
-    }
-
     const [omnixFee, currencyFee, nftFee] = await omnixExchange.connect(signer as any).getLzFeesForTrading(takerAsk, makerBid)
     const lzFee = omnixFee.add(currencyFee).add(nftFee)
     
@@ -582,29 +601,31 @@ const useTrading = ({
 
     const historyIndex = addTxToHistories(pendingTx)
     await listenONFTEvents(pendingTx, historyIndex)
-    await tx.wait()
+    return tx
+  }
 
-    const receipt = await tx.wait()
-    if(receipt != null){
-      // const currencyName = getCurrencyNameAddress(bidOrder.currencyAddress) as ContractName
+  const onAcceptComplete = async (bidOrder: IOrder) => {
+    await updateOrderStatus(bidOrder, 'EXECUTED')
+    await collectionsService.updateCollectionNFTChainID(collection_name, token_id, Number(chainId))
+  }
 
-      await updateOrderStatus(bidOrder, 'EXECUTED')
-      await collectionsService.updateCollectionNFTChainID(collection_name, token_id, Number(chainId))
-
-      dispatch(openSnackBar({ message: 'Accepted a Bid', status: 'success' }))
-      getLastSaleOrder()
-      getListOrders()
-      getBidOrders()
-    }
+  const onAcceptDone = () => {
+    getLastSaleOrder()
+    getListOrders()
+    getBidOrders()
   }
 
   return {
     openBidDlg,
     openSellDlg,
     openBuyDlg,
+    openAcceptDlg,
+    selectedBid,
     setOpenSellDlg,
     setOpenBidDlg,
     setOpenBuyDlg,
+    setOpenAcceptDlg,
+    setSelectedBid,
     getListOrders,
     getBidOrders,
     getLastSaleOrder,
@@ -619,7 +640,10 @@ const useTrading = ({
     onBidApprove,
     onBidConfirm,
     onBidDone,
-    onAccept
+    onAcceptApprove,
+    onAcceptConfirm,
+    onAcceptComplete,
+    onAcceptDone,
   }
 }
 
