@@ -45,7 +45,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
     if (user && user.banner) {
       return process.env.API_URL + user.banner
     }
-    return 'images/default_banner.png'
+    return '/images/default_banner.png'
   }, [user])
 
   return (
