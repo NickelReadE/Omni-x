@@ -76,16 +76,16 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
 
   const doLogic = async () => {
     if (bidStep === BidStep.StepApprove && onBidApprove) {
-      const tx = await onBidApprove({
+      const txs = await onBidApprove({
         currencyName: currency.text,
         price
       })
       
       setProcessing(true)
 
-      if (tx) {
-        setApproveTx(tx.hash)
-        await tx.wait()
+      if (txs.length > 0) {
+        setApproveTx(txs[0].hash)
+        await Promise.all(txs.map((tx: any) => tx.wait()))
       }
 
       setStep(BidStep.StepConfirm)
@@ -118,7 +118,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
   }, [bidStep, currency, period, setStep])
 
   return (
-    <Dialog open={openBidDlg} onClose={handleBidDlgClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
+    <Dialog open={openBidDlg} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
       <DialogTitle id="form-dialog-title" className={classes.root}>
         <div className="columns-2 mt-5">
           <div className="text-[#1E1C21] text-[28px] font-semibold">place bid</div>

@@ -72,10 +72,10 @@ const BidContent: React.FC<IBidContentProps> = ({
             />
 
             {bidStep === BidStep.StepDone && (
-              <CongratsSection failed={false}/>
+              <CongratsSection failed={false} succeedMessage={'you successfully bid on this NFT'}/>
             )}
             {bidStep === BidStep.StepFail && (
-              <CongratsSection failed={true}/>
+              <CongratsSection failed={true} failedMessage={'you were failed to place a bid'}/>
             )}
           </div>
         )}
@@ -100,7 +100,7 @@ const BidContent: React.FC<IBidContentProps> = ({
               className='bg-[#B00000] rounded text-[#fff] w-[95px] h-[35px]'
               onClick={onBid}
               disabled={processing}>
-              list
+              bid
             </button>
           )}
         </div>

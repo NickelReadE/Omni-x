@@ -93,7 +93,7 @@ const validateONFT = async (token_address: string, contract_type: string, chain_
 
 const useTrading = ({
   provider,
-  signer: signerParam,
+  signer,
   address,
   collection_name,
   collection_address,
@@ -104,7 +104,7 @@ const useTrading = ({
   token_id,
   selectedNFTItem
 }: any): TradingFunction => {
-  const { chainId, chainName, signer } = useWallet()
+  const { chainId, chainName } = useWallet()
   const [openSellDlg, setOpenSellDlg] = useState(false)
   const [openBidDlg, setOpenBidDlg] = useState(false)
   const [openBuyDlg, setOpenBuyDlg] = useState(false)
@@ -542,7 +542,6 @@ const useTrading = ({
 
     const [omnixFee, currencyFee, nftFee] = await omnixExchange.connect(signer as any).getLzFeesForTrading(takerAsk, makerBid)
     const lzFee = omnixFee.add(currencyFee).add(nftFee)
-
     
     console.log('---lzFee---', 
       ethers.utils.formatEther(omnixFee),
@@ -552,14 +551,6 @@ const useTrading = ({
     )
 
     const tx = await omnixExchange.connect(signer as any).matchBidWithTakerAsk(takerAsk, makerBid, { value: lzFee })
-
-    let targetCollectionAddress = ''
-
-    if (isONFTCore) {
-      const onftCoreInstance = getONFTCore721Instance(bidOrder.collectionAddress, chainId, null)
-      const remoteAddresses = await onftCoreInstance.getTrustedRemote(getLayerzeroChainId(orderChainId))
-      targetCollectionAddress = decodeFromBytes(remoteAddresses)
-    }
 
     // PendingTxType
     // txHash: tx hash of seller
@@ -573,10 +564,10 @@ const useTrading = ({
       type: 'accept',
       txHash: tx.hash,
       senderChainId: chainId,
-      senderAddress: bidOrder.collectionAddress,
+      senderAddress: currencyAddress,
       senderBlockNumber: blockNumber,
       targetChainId: orderChainId,
-      targetAddress: targetCollectionAddress,
+      targetAddress: bidOrder.currencyAddress,
       targetBlockNumber: targetBlockNumber,
       isONFTCore,
       contractType: selectedNFTItem.contract_type || 'ERC721',
