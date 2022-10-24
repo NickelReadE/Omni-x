@@ -16,7 +16,6 @@ import { getChainIconById, getChainNameFromId, getCurrencyIconByAddress, numberL
 import PngCheck from '../../../public/images/check.png'
 import PngSub from '../../../public/images/subButton.png'
 import useOrderStatics from '../../../hooks/useOrderStatics'
-import useOwnership from '../../../hooks/useOwnership'
 import ConfirmBuy from '../../../components/collections/ConfirmBuy'
 
 const truncate = (str: string) => {
@@ -55,12 +54,7 @@ const Item: NextPage = () => {
   }, [nftInfo])
 
   // ownership hook
-  const {
-    owner,
-    // profileLink, 
-  } = useOwnership({
-    owner_address: currentNFT?.owner
-  })
+  const owner = currentNFT?.owner
 
   // statistics hook
   const {

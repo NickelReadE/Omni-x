@@ -7,6 +7,7 @@ import { getUserNFTs } from '../../redux/reducers/userReducer'
 import useWallet from '../../hooks/useWallet'
 import useProgress from '../../hooks/useProgress'
 import { ethers } from 'ethers'
+import { getNFTInfo } from '../../redux/reducers/collectionsReducer'
 
 type ContractProviderProps = {
   children?: ReactNode
@@ -205,6 +206,9 @@ export const ContractProvider = ({
             }
             setTimeout(() => {
               dispatch(getUserNFTs(address) as any)
+              if (txInfo.colUrl) {
+                dispatch(getNFTInfo(txInfo.colUrl, txInfo.nftItem.token_id) as any)
+              }
             }, UPDATE_TIMESTAMP)
           })
         } else {
@@ -237,6 +241,9 @@ export const ContractProvider = ({
             }
             setTimeout(() => {
               dispatch(getUserNFTs(address) as any)
+              if (txInfo.colUrl) {
+                dispatch(getNFTInfo(txInfo.colUrl, txInfo.nftItem.token_id) as any)
+              }
             }, UPDATE_TIMESTAMP)
           })
         } else {

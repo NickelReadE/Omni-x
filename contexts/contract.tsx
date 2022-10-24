@@ -16,7 +16,8 @@ export type PendingTxType = {
   targetBlockNumber: number,
   senderBlockNumber?: number,
   itemName: string | undefined,
-  lastTxAvailable?: boolean
+  lastTxAvailable?: boolean,
+  colUrl?: string
 }
 
 export type ContractContextType = {

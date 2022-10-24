@@ -102,7 +102,8 @@ const useTrading = ({
   owner_collection_chain,
   owner_collection_chain_id,
   token_id,
-  selectedNFTItem
+  selectedNFTItem,
+  onRefresh
 }: any): TradingFunction => {
   const { chainId, chainName } = useWallet()
   const [openSellDlg, setOpenSellDlg] = useState(false)
@@ -247,6 +248,7 @@ const useTrading = ({
 
   const onListingDone = () => {
     getListOrders()
+    if (onRefresh) onRefresh()
   }
 
   const onBuyApprove = async (order?: IOrder) => {
@@ -388,7 +390,8 @@ const useTrading = ({
       nftItem: selectedNFTItem,
       targetBlockNumber: blockNumber,
       itemName: selectedNFTItem.name,
-      lastTxAvailable: orderChainId !== chainId && isONFTCore
+      lastTxAvailable: orderChainId !== chainId && isONFTCore,
+      colUrl: collection_name
     }
     const historyIndex = addTxToHistories(pendingTx)
     await listenONFTEvents(pendingTx, historyIndex)
@@ -573,7 +576,8 @@ const useTrading = ({
       contractType: selectedNFTItem.contract_type || 'ERC721',
       nftItem: selectedNFTItem,
       itemName: selectedNFTItem.name,
-      lastTxAvailable: false
+      lastTxAvailable: false,
+      colUrl: collection_name
     }
 
     const historyIndex = addTxToHistories(pendingTx)

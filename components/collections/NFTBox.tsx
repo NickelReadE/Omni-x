@@ -64,7 +64,9 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     onBuyConfirm,
     onBuyComplete,
     onBuyDone,
-    onBid
+    onBidApprove,
+    onBidConfirm,
+    onBidDone
   } = useTrading({
     provider,
     signer,
@@ -79,7 +81,8 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     owner_collection_chain: nft.chain, // ownerChainId && getChainNameFromId(ownerChainId),
     owner_collection_chain_id: nft.chain_id,
     token_id: nft?.token_id,
-    selectedNFTItem: nft
+    selectedNFTItem: nft,
+    onRefresh
   })
 
   const chainIcon = useMemo(() => {
@@ -107,11 +110,6 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
       return getCurrencyIconByAddress(nft.last_sale_currency)
     }
   }, [nft])
-
-  const onListingDoneAndRefresh = async () => {
-    await onListingDone()
-    onRefresh()
-  }
 
   return (
     <div
@@ -210,7 +208,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
         nftTitle={nft.name}
         onListingApprove={onListingApprove}
         onListingConfirm={onListingConfirm}
-        onListingDone={onListingDoneAndRefresh}
+        onListingDone={onListingDone}
       />
       <ConfirmBuy
         handleBuyDlgClose={() => {
@@ -226,7 +224,9 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
         order={order}
       />
       <ConfirmBid
-        onSubmit={(bidData: any) => onBid(bidData, order)}
+        onBidApprove={onBidApprove}
+        onBidConfirm={onBidConfirm}
+        onBidDone={onBidDone}
         handleBidDlgClose={() => {
           setOpenBidDlg(false)
         }}
