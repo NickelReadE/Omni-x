@@ -73,10 +73,10 @@ const BuyContent: React.FC<IBuyContentProps> = ({
             />
 
             {buyStep === BuyStep.StepDone && (
-              <CongratsSection failed={false}/>
+              <CongratsSection failed={false} succeedMessage={'you successfully bought this NFT'}/>
             )}
             {buyStep === BuyStep.StepFail && (
-              <CongratsSection failed={true}/>
+              <CongratsSection failed={true} failedMessage={'you were failed to purchase this NFT'}/>
             )}
           </div>
         )}
