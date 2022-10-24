@@ -73,17 +73,13 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
     if (!bidOrder) throw new Error('Invalid bid')
 
     if (acceptStep === AcceptStep.StepApprove && onAcceptApprove) {
-      const txs = await onAcceptApprove()
-
-      if (!txs) {
-        setStep(AcceptStep.StepFail)
-      }
+      const tx = await onAcceptApprove()
 
       setProcessing(true)
 
-      if (txs.length > 0) {
-        setApproveTx(txs[0].hash)
-        await Promise.all(txs.map((tx: any) => tx.wait()))
+      if (tx) {
+        setApproveTx(tx.hash)
+        await tx.wait()
       }
 
       setStep(AcceptStep.StepConfirm)
