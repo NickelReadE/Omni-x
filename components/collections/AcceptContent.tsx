@@ -62,8 +62,8 @@ const AcceptContent: React.FC<IAcceptContentProps> = ({
               completed={acceptStep > AcceptStep.StepConfirm}
               txHash={tradingTx}
               sectionNo={2}
-              title={'Complete Sell'}
-              description={'Please confirm this second transaction in your wallet to complete the sell.'}
+              title={'Complete Sale'}
+              description={'Please confirm this second transaction in your wallet to complete the sale.'}
             />
             <CompleteSection 
               processing={processing}
@@ -72,7 +72,7 @@ const AcceptContent: React.FC<IAcceptContentProps> = ({
               txHash={tradingTx}
               sectionNo={3}
               title="Finalize"
-              description="Please wait for a while to finalize the sell."
+              description="Please wait for a while to finalize the sale."
             />
 
             {acceptStep === AcceptStep.StepDone && (

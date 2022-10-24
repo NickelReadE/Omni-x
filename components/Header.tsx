@@ -84,7 +84,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
         dispatch(openSnackBar({ message: `Received 1,000 $${currencyName}`, status: 'success' }))
       }
       else {
-        dispatch(openSnackBar({ message: `Not support $${currencyName} on this chain`, status: 'warning' }))
+        dispatch(openSnackBar({ message: `USDC/USDT are not supported on this chain yet`, status: 'warning' }))
       }
     } catch (e) {
       console.error('While fauceting USDC/USDT token', e)
