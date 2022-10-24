@@ -75,14 +75,14 @@ const ListingContent: React.FC<IListingContentProps> = ({
             />
 
             {listingStep === ListingStep.StepDone && (
-              <CongratsSection failed={false}/>
+              <CongratsSection failed={false} succeedMessage={'your NFT was successfully listed'}/>
             )}
             {listingStep === ListingStep.StepFail && (
-              <CongratsSection failed={true}/>
+              <CongratsSection failed={true} failedMessage={'you were failed to list this NFT'}/>
             )}
           </div>
         )}
-        
+
         <div>
           <img alt={'nftImage'} className='rounded-[8px] max-w-[250px]' src={nftImage} />
           <p className='mt-2 text-center text-[#6C757D] font-medium'>{nftTitle}</p>
