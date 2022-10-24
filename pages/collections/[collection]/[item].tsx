@@ -98,7 +98,9 @@ const Item: NextPage = () => {
     onBuyConfirm,
     onBuyComplete,
     onBuyDone,
-    onBid,
+    onBidApprove,
+    onBidConfirm,
+    onBidDone,
     onAccept
   } = useTrading({
     provider,
@@ -329,7 +331,9 @@ const Item: NextPage = () => {
             order={order}
           />
           <ConfirmBid
-            onSubmit={(bidData: any) => onBid(bidData, order)}
+            onBidApprove={onBidApprove}
+            onBidConfirm={onBidConfirm}
+            onBidDone={onBidDone}
             handleBidDlgClose={() => {setOpenBidDlg(false)}}
             openBidDlg={openBidDlg}
             nftImage={nftInfo.nft.image}

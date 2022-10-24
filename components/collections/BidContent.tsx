@@ -1,14 +1,13 @@
 import React from 'react'
-import { ListingStep, SaleType } from '../../types/enum'
+import { BidStep } from '../../types/enum'
 import ListingSection from './ListingSection'
 import ListingFeeSection from './ListingFeeSection'
 import ApproveSection from './ApproveSection'
 import CongratsSection from './CongratsSection'
 import CompleteSection from './CompleteSection'
 
-interface IListingContentProps {
-  sellType: SaleType,
-  listingStep: ListingStep,
+interface IBidContentProps {
+  bidStep: BidStep,
   processing: boolean,
   approveTx?: string,
   price: number,
@@ -19,12 +18,11 @@ interface IListingContentProps {
   onChangePeriod: (e: any) => void,
   nftImage: string,
   nftTitle: string,
-  onListing?: () => void
+  onBid?: () => void
 }
 
-const ListingContent: React.FC<IListingContentProps> = ({
-  sellType,
-  listingStep,
+const BidContent: React.FC<IBidContentProps> = ({
+  bidStep,
   processing,
   approveTx,
   price,
@@ -35,15 +33,14 @@ const ListingContent: React.FC<IListingContentProps> = ({
   onChangePeriod,
   nftImage,
   nftTitle,
-  onListing
+  onBid
 }) => {
   return (
     <>
       <div className='flex justify-between'>
-        {listingStep === ListingStep.StepListing ? (
+        {bidStep === BidStep.StepBid ? (
           <ListingSection
-            sellType={sellType}
-            priceLabel={'Sale Price'}
+            priceLabel={'Bid Price'}
             price={price}
             onChangePrice={onChangePrice}
             currency={currency}
@@ -55,11 +52,11 @@ const ListingContent: React.FC<IListingContentProps> = ({
           <div>
             <ApproveSection 
               processing={processing}
-              active={listingStep == ListingStep.StepApprove}
-              completed={listingStep > ListingStep.StepApprove}
+              active={bidStep == BidStep.StepApprove}
+              completed={bidStep > BidStep.StepApprove}
               txHash={approveTx}
               sectionNo={1}
-              title="Approve Collection"
+              title="Approve Token"
               descriptions={[
                 'Please confirm the transaction in your wallet.',
                 'This confirmation allows you to sell or buy both this NFT and any future NFT from this collection.'
@@ -67,17 +64,17 @@ const ListingContent: React.FC<IListingContentProps> = ({
             />
             <CompleteSection 
               processing={processing}
-              active={listingStep == ListingStep.StepConfirm}
-              completed={listingStep > ListingStep.StepConfirm}
+              active={bidStep == BidStep.StepConfirm}
+              completed={bidStep > BidStep.StepConfirm}
               sectionNo={2}
-              title="Complete Listing"
-              description="Please confirm this second transaction in your wallet to complete the listing."
+              title="Complete Bid"
+              description="Please confirm this signature in your wallet to sign off on your bid."
             />
 
-            {listingStep === ListingStep.StepDone && (
+            {bidStep === BidStep.StepDone && (
               <CongratsSection failed={false}/>
             )}
-            {listingStep === ListingStep.StepFail && (
+            {bidStep === BidStep.StepFail && (
               <CongratsSection failed={true}/>
             )}
           </div>
@@ -91,24 +88,24 @@ const ListingContent: React.FC<IListingContentProps> = ({
 
       <div className="grid grid-cols-4 mt-20 flex items-end">
         <div className="col-span-1">
-          {(listingStep === ListingStep.StepDone || listingStep === ListingStep.StepFail) ? (
+          {(bidStep === BidStep.StepDone || bidStep === BidStep.StepFail) ? (
             <button
               className='bg-[#B444F9] rounded text-[#fff] w-[95px] h-[35px]'
-              onClick={onListing}
+              onClick={onBid}
               disabled={processing}>
               close
             </button>
           ) : (
             <button
               className='bg-[#B00000] rounded text-[#fff] w-[95px] h-[35px]'
-              onClick={onListing}
+              onClick={onBid}
               disabled={processing}>
               list
             </button>
           )}
         </div>
 
-        {listingStep === ListingStep.StepListing && (
+        {bidStep === BidStep.StepBid && (
           <ListingFeeSection/>
         )}
       </div>
@@ -116,4 +113,4 @@ const ListingContent: React.FC<IListingContentProps> = ({
   )
 }
 
-export default ListingContent
+export default BidContent

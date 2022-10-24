@@ -43,7 +43,9 @@ export type TradingFunction = {
   onBuyConfirm: (order?: IOrder) => Promise<any>,
   onBuyComplete: (order?: IOrder) => Promise<void>,
   onBuyDone: () => void,
-  onBid: (bidData: IBidData, order?: IOrder) => Promise<void>,
+  onBidApprove: (bidData: IBidData) => Promise<any>,
+  onBidConfirm: (bidData: IBidData) => Promise<void>,
+  onBidDone: () => void,
   onAccept: (bidOrder: IOrder) => Promise<void>,
 }
 
@@ -119,38 +121,24 @@ const useTrading = ({
 
   const checkValid = async (currency: string, price: string, chainId: number) => {
     if (currency===''){
-      dispatch(openSnackBar({ message: 'Current Currency is not supported in this network', status: 'error' }))
-      setOpenBidDlg(false)
-      return
+      throw new Error('Current Currency is not supported in this network')
     }
 
     const currencyMangerContract = getCurrencyManagerInstance(chainId, signer)
     if (currencyMangerContract===null){
-      dispatch(openSnackBar({ message: 'This network doesn\'t support currencies', status: 'error' }))
-      setOpenBidDlg(false)
-      return false
+      throw new Error('This network doesn\'t support currencies')
     }
 
     if (!await currencyMangerContract.isCurrencyWhitelisted(currency)) {
-      dispatch(openSnackBar({ message: `Currency(${currency}) is not whitelisted in this network`, status: 'error' }))
-      setOpenBidDlg(false)
-      return false
+      throw new Error(`Currency(${currency}) is not whitelisted in this network`)
     }
 
     if (Number(price) === 0) {
-      dispatch(openSnackBar({ message: 'Please enter a number greater than 0', status: 'error' }))
-      setOpenBidDlg(false)
-      return false
+      throw new Error(`Please input the correct price`)
     }
 
     const currencyContract = getCurrencyInstance(currency, chainId, signer)
     const balance = await currencyContract?.balanceOf(address)
-
-    if (balance.lt(BigNumber.from(price))) {
-      dispatch(openSnackBar({ message: 'There is not enough balance', status: 'error' }))
-      setOpenBidDlg(false)
-      return false
-    }
 
     return true
   }
@@ -276,9 +264,7 @@ const useTrading = ({
     const newCurrencyName = validateCurrencyName(currencyName, chainId)
     const currencyAddress = getAddressByName(newCurrencyName, chainId)
     
-    if (!(await checkValid(currencyAddress, order?.price, chainId))) {
-      throw new Error('order validation failed')
-    }
+    await checkValid(currencyAddress, order?.price, chainId)
 
     const omni = getCurrencyInstance(currencyAddress, chainId, signer)
 
@@ -313,9 +299,8 @@ const useTrading = ({
     const newCurrencyName = validateCurrencyName(currencyName, chainId)
     const currencyAddress = getAddressByName(newCurrencyName, chainId)
 
-    if (!(await checkValid(currencyAddress, order?.price, chainId))) {
-      throw new Error('order validation failed')
-    }
+    await checkValid(currencyAddress, order?.price, chainId)
+
     const omni = getCurrencyInstance(currencyAddress, chainId, signer)
     if (!omni) {
       throw new Error('Could not find the currency')
@@ -427,8 +412,33 @@ const useTrading = ({
     getListOrders()
   }
 
-  const onBid = async (bidData: IBidData, order?: IOrder) => {
-    if (!chainId || !chainName) return
+  const onBidApprove = async (bidData: IBidData) => {
+    if (!chainId || !chainName) {
+      throw new Error('Please connect to your wallet')
+    }
+
+    const currency = getAddressByName(bidData.currencyName as ContractName, chainId)
+    const price = ethers.utils.parseEther(bidData.price.toString())
+
+    if (!await checkValid(currency, price.toString(), chainId)) {
+      return
+    }
+
+    const omni = getCurrencyInstance(currency, chainId, signer)
+
+    const approveTxs = []
+    approveTxs.push(await approve(omni, address, getAddressByName('FundManager', chainId), price))
+    if (isUsdcOrUsdt(currency)) {
+      approveTxs.push(await approve(omni, address, getAddressByName('StargatePoolManager', chainId), price))
+    }
+
+    return approveTxs.filter(Boolean)
+  }
+
+  const onBidConfirm = async (bidData: IBidData) => {
+    if (!chainId || !chainName) {
+      throw new Error('Please connect to your wallet')
+    }
 
     const lzChainId = getLayerzeroChainId(chainId)
 
@@ -437,53 +447,34 @@ const useTrading = ({
     const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
     const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
 
-    if (!await checkValid(currency, price.toString(), chainId)) {
-      return
-    }
+    await checkValid(currency, price.toString(), chainId)
 
-    try {
-      const omni = getCurrencyInstance(currency, chainId, signer)
-      if (!omni) {
-        dispatch(openSnackBar({ message: 'Could not find the currency', status: 'warning' }))
-        return
-      }
-      await postMakerOrder(
-        signer as any,
-        false,
-        collection_address,
-        getAddressByName('Strategy', chainId),
-        1,
-        price,
-        protocalFees,
-        creatorFees,
-        currency,
-        {
-          tokenId: token_id,
-          params: {
-            values: [lzChainId],
-            types: ['uint16'],
-          },
+    await postMakerOrder(
+      signer as any,
+      false,
+      collection_address,
+      getAddressByName('Strategy', chainId),
+      1,
+      price,
+      protocalFees,
+      creatorFees,
+      currency,
+      {
+        tokenId: token_id,
+        params: {
+          values: [lzChainId],
+          types: ['uint16'],
         },
-        getChainNameFromId(chainId),
-        chainId,
-        true,
-        collection_name
-      )
+      },
+      getChainNameFromId(chainId),
+      chainId,
+      true,
+      collection_name
+    )
+  }
 
-      const approveTxs = []
-      approveTxs.push(await approve(omni, address, getAddressByName('FundManager', chainId), price))
-      if (isUsdcOrUsdt(currency)) {
-        approveTxs.push(await approve(omni, address, getAddressByName('StargatePoolManager', chainId), price))
-      }
-      await Promise.all(approveTxs.filter(Boolean).map(tx => tx.wait()))
-
-      setOpenBidDlg(false)
-      getBidOrders()
-      dispatch(openSnackBar({ message: 'Place a bid Success', status: 'success' }))
-    } catch (err: any) {
-      console.error(err)
-      dispatch(openSnackBar({ message: err.message, status: 'error' }))
-    }
+  const onBidDone = () => {
+    getBidOrders()
   }
 
   const onAccept = async (bidOrder: IOrder) => {
@@ -630,7 +621,9 @@ const useTrading = ({
     onBuyConfirm,
     onBuyComplete,
     onBuyDone,
-    onBid,
+    onBidApprove,
+    onBidConfirm,
+    onBidDone,
     onAccept
   }
 }
