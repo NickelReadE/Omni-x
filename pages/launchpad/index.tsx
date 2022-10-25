@@ -23,28 +23,28 @@ const Launchpad: NextPage = () => {
           <p className="text-xg text-[#A0B3CC]">
             Interested in launching your own collection?
           </p>
-          <div className="flex space-x-2 justify-center space-x-16 mt-[40px]">
-
-            <Link href="https://omni-x.gitbook.io/omni-x-nft-marketplace/marketplace-features/launchpad">
-              <a target="_blank">
-                <button className="px-2 py-1 text-[#B444F9] border-2 border-[#B444F9] bg-transparent rounded-lg">
-                  learn more
-                </button>
-              </a>
-            </Link>
+          <div className='flex items-center justify-center'>
             <div
               className="transition-all duration-300 ease-in-out hover:scale-105 hover:drop-shadow-[0_10px_10px_rgba(180,68,249,0.7)] active:scale-100 active:drop-shadow-[0_5px_5px_rgba(180,68,249,0.8)]">
               <Link
                 href={'https://docs.google.com/forms/d/e/1FAIpQLSf6VCJyF1uf9SZ9BJwbGuP7bMla7JzOXMg6ctXN6SlSgNgFlw/viewform?usp=pp_url'}>
                 <a target="_blank">
                   <button
-                    className="px-2 py-1 text-white border-2 border-[#B444F9] bg-[#B444F9] rounded-lg transition-all duration-300 ease-in-out hover:scale-105 hover:drop-shadow-[0_10px_10px_rgba(180,68,249,0.7)] active:scale-100 active:drop-shadow-[0_5px_5px_rgba(180,68,249,0.8)]">
-                    apply to launchpad
+                    className="w-[304px] h-[64px] text-[32px] px-2 py-1 text-white border-2 border-[#B444F9] bg-[#B444F9] rounded-lg transition-all duration-300 ease-in-out hover:scale-105 hover:drop-shadow-[0_10px_10px_rgba(180,68,249,0.7)] active:scale-100 active:drop-shadow-[0_5px_5px_rgba(180,68,249,0.8)]">
+                  apply to launchpad
                   </button>
                 </a>
               </Link>
             </div>
-
+          </div>
+          <div className="flex flex-column space-x-2 justify-center space-x-16 mt-[40px]">
+            <Link href="https://omni-x.gitbook.io/omni-x-nft-marketplace/marketplace-features/launchpad">
+              <a target="_blank">
+                <button className="py-1 text-[#B444F9] border-b-2 border-b-[#B444F9] bg-transparent">
+                  learn more
+                </button>
+              </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -158,8 +158,9 @@ const Launchpad: NextPage = () => {
           <Link
             href={'https://docs.google.com/forms/d/e/1FAIpQLSf6VCJyF1uf9SZ9BJwbGuP7bMla7JzOXMg6ctXN6SlSgNgFlw/viewform?usp=pp_url'}>
             <a target="_blank">
-              <button className="px-2 py-1 text-white border-2 border-[#B444F9] bg-[#B444F9] rounded-lg">
-                apply to launchpad
+              <button
+                className="w-[304px] h-[64px] text-[32px] px-2 py-1 text-white border-2 border-[#B444F9] bg-[#B444F9] rounded-lg transition-all duration-300 ease-in-out hover:scale-105 hover:drop-shadow-[0_10px_10px_rgba(180,68,249,0.7)] active:scale-100 active:drop-shadow-[0_5px_5px_rgba(180,68,249,0.8)]">
+                  apply to launchpad
               </button>
             </a>
           </Link>

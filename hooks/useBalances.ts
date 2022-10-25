@@ -1,7 +1,9 @@
 import { ethers } from 'ethers'
 import { useEffect,useState } from 'react'
-import { getAddressByName, STABLECOIN_DECIMAL } from '../utils/constants'
-import { getCurrencyInstance } from '../utils/contracts'
+import { useDispatch } from 'react-redux'
+import { openSnackBar } from '../redux/reducers/snackBarReducer'
+import { ContractName, getAddressByName, STABLECOIN_DECIMAL } from '../utils/constants'
+import { getCurrencyInstance, getOmniInstance, getUSDCInstance } from '../utils/contracts'
 import useWallet from './useWallet'
 
 export type BalancesInformation = {
@@ -13,10 +15,12 @@ export type BalancesInformation = {
 type BalancesType = {
   balances: BalancesInformation,
   updateRefresh: () => void,
+  faucet: () => Promise<void>,
 }
 
 const useBalances = (): BalancesType => {
   const { chainId, address, signer } = useWallet()
+  const dispatch = useDispatch()
 
   const [refresh, setRefresh] = useState<boolean>(false)
   const [balances, setBalances] = useState<BalancesInformation>({
@@ -33,12 +37,6 @@ const useBalances = (): BalancesType => {
           usdc: 0,
           usdt: 0,
         }
-
-        setBalances({
-          omni: newBalances.omni,
-          usdc: newBalances.usdc,
-          usdt: newBalances.usdt,
-        })
 
         try {
           const omniContract = getCurrencyInstance(getAddressByName('OMNI', chainId), chainId, signer)
@@ -85,6 +83,48 @@ const useBalances = (): BalancesType => {
     })()
   }, [signer, address, chainId, refresh])
 
+  const faucet = async () => {
+    if (!signer || !chainId) return
+
+    // faucet omni
+    try {
+      const omni = getOmniInstance(chainId, signer)
+
+      const tx = await omni.mint({ gasLimit: '300000' })
+      await tx.wait()
+
+      dispatch(openSnackBar({ message: 'Received 10,000 OMNI', status: 'success' }))
+    } catch (e) {
+      console.error('While fauceting OMNI token', e)
+    }
+
+    // faucet usdc/usdt
+    try {
+      let currencyName: ContractName = 'USDC'
+      let currencyAddr = getAddressByName(currencyName, chainId)
+      if (!currencyAddr) {
+        currencyName = 'USDT'
+        currencyAddr = getAddressByName(currencyName, chainId)
+      }
+
+      const usdc = getUSDCInstance(currencyAddr, chainId, signer)
+      if (usdc) {
+        const decimal = STABLECOIN_DECIMAL[chainId][currencyAddr] || 6
+        const tx = await usdc.mint(await signer.getAddress(), ethers.utils.parseUnits('1000', decimal), { gasLimit: '300000' })
+        await tx.wait()
+  
+        dispatch(openSnackBar({ message: `Received 1,000 $${currencyName}`, status: 'success' }))
+      }
+      else {
+        dispatch(openSnackBar({ message: `Not support $${currencyName} on this chain`, status: 'warning' }))
+      }
+    } catch (e) {
+      console.error('While fauceting USDC/USDT token', e)
+    }
+
+    updateRefresh()
+  }
+
   const updateRefresh = () => {
     setRefresh(!refresh)
   }
@@ -92,6 +132,7 @@ const useBalances = (): BalancesType => {
   return {
     balances,
     updateRefresh,
+    faucet,
   }
 }
 

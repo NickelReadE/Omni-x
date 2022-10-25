@@ -2,7 +2,7 @@ import { addDays } from 'date-fns'
 import { BigNumber, BigNumberish, ethers } from 'ethers'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { IBidData, IGetOrderRequest, IListingData, IOrder, NFTItem, OrderStatus } from '../interface/interface'
+import { IBidData, IGetOrderRequest, IListingData, IOrder, OrderStatus } from '../interface/interface'
 import { getLastSaleOrders, getOrders } from '../redux/reducers/ordersReducer'
 import { openSnackBar } from '../redux/reducers/snackBarReducer'
 import { collectionsService } from '../services/collections'
@@ -144,11 +144,11 @@ const useTrading = ({
     }
 
     if (Number(price) === 0) {
-      throw new Error(`Please input the correct price`)
+      throw new Error('Please input the correct price')
     }
 
-    const currencyContract = getCurrencyInstance(currency, chainId, signer)
-    const balance = await currencyContract?.balanceOf(address)
+    // const currencyContract = getCurrencyInstance(currency, chainId, signer)
+    // const balance = await currencyContract?.balanceOf(address)
 
     return true
   }
@@ -251,12 +251,9 @@ const useTrading = ({
       true,
       collection_name,
     )
-
-    await collectionsService.updateCollectionNFTListPrice(collection_name, token_id, listingData.price)
   }
 
   const onListingDone = () => {
-    getListOrders()
     if (onRefresh) onRefresh()
   }
 
@@ -274,7 +271,7 @@ const useTrading = ({
     const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
     const newCurrencyName = validateCurrencyName(currencyName, chainId)
     const currencyAddress = getAddressByName(newCurrencyName, chainId)
-    
+
     await checkValid(currencyAddress, order?.price, chainId)
 
     const omni = getCurrencyInstance(currencyAddress, chainId, signer)
@@ -294,7 +291,7 @@ const useTrading = ({
   }
 
   const onBuyConfirm = async (order?: IOrder) => {
-    if (!order) {    
+    if (!order) {
       throw new Error('Not listed')
     }
     if (!chainId || !chainName) throw new Error('Not connected to the wallet')
@@ -358,7 +355,7 @@ const useTrading = ({
 
     const [omnixFee, currencyFee, nftFee] = await omnixExchange.connect(signer as any).getLzFeesForTrading(takerBid, makerAsk)
     const lzFee = omnixFee.add(currencyFee).add(nftFee)
-    console.log('---lzFee---', 
+    console.log('---lzFee---',
       ethers.utils.formatEther(omnixFee),
       ethers.utils.formatEther(currencyFee),
       ethers.utils.formatEther(nftFee),
@@ -370,7 +367,7 @@ const useTrading = ({
     }
 
     const tx = await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
-    
+
     let targetCollectionAddress = ''
     if (isONFTCore) {
       const onftCoreInstance = getONFTCore721Instance(order.collectionAddress, orderChainId, null)
@@ -564,8 +561,8 @@ const useTrading = ({
 
     const [omnixFee, currencyFee, nftFee] = await omnixExchange.connect(signer as any).getLzFeesForTrading(takerAsk, makerBid)
     const lzFee = omnixFee.add(currencyFee).add(nftFee)
-    
-    console.log('---lzFee---', 
+
+    console.log('---lzFee---',
       ethers.utils.formatEther(omnixFee),
       ethers.utils.formatEther(currencyFee),
       ethers.utils.formatEther(nftFee),

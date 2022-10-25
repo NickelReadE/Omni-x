@@ -1,6 +1,6 @@
 import API from './api'
 
-const getCollectionNFTs = async (col_url: string, page: number, display_per_page: number, sort: string, searchObj: unknown) => {
+const getCollectionNFTs = async (col_url: string, page: number, display_per_page: number, sort: string, searchObj: any) => {
   const option = {
     col_url,
     page,
@@ -12,37 +12,27 @@ const getCollectionNFTs = async (col_url: string, page: number, display_per_page
   return res.data
 }
 
-const updateCollectionNFTListPrice =async (col_url:string,token_id:number,price:number) => {
+const updateCollectionNFTSalePrice = async (col_url: string, token_id: number, price: number) => {
   const option = {
     col_url,
     token_id,
     price
   }
-  const res = await API.post('collections/nfts/updateListPrice',option)
+  const res = await API.post('collections/nfts/updateSalePrice', option)
   return res.data
 }
 
-const updateCollectionNFTSalePrice =async (col_url:string,token_id:number,price:number) => {
-  const option = {
-    col_url,
-    token_id,
-    price
-  }
-  const res = await API.post('collections/nfts/updateSalePrice',option)
-  return res.data
-}
-
-const updateCollectionNFTChainID =async (col_url:string,token_id:number,chain_id:number) => {
+const updateCollectionNFTChainID = async (col_url: string, token_id: number, chain_id: number) => {
   const option = {
     col_url,
     token_id,
     chain_id
   }
-  const res = await API.post('collections/nfts/updateChainID',option)
+  const res = await API.post('collections/nfts/updateChainID', option)
   return res.data
 }
 
-const getCollectionAllNFTs = async (col_url: string,sort: string, searchObj: unknown) => {
+const getCollectionAllNFTs = async (col_url: string, sort: string, searchObj: any) => {
   const option = {
     col_url,
     sort,
@@ -86,7 +76,6 @@ export const collectionsService = {
   getCollections,
   getNFTOwner,
   getCollectionAllNFTs,
-  updateCollectionNFTListPrice,
   updateCollectionNFTSalePrice,
   updateCollectionNFTChainID,
 }

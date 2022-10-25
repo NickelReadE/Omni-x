@@ -1,26 +1,17 @@
 import {createSlice} from '@reduxjs/toolkit'
 import {Dispatch} from 'react'
-import {IGetOrderRequest} from '../../interface/interface'
 import {collectionsService} from '../../services/collections'
-import {getOrders} from './ordersReducer'
 import {getERC721Instance, getERC1155Instance, getRoyaltyFeeMangerInstance} from '../../utils/contracts'
-import {RoyaltyFeeManagerAddress} from '../../constants/addresses'
-import {convertETHtoUSDT, convertUSDTtoETH} from '../../utils/convertRate'
-import {ethers} from 'ethers'
+import {RoyaltyFeeManagerAddress} from '../../utils/constants/addresses'
 import axios from 'axios'
 import {Alchemy} from 'alchemy-sdk'
 import {
   isSupportedOnAlchemy,
   isSupportedOnMoralis,
-  supportedChainsOnMoralis,
-  supportedChainsOnAlchemy,
   getAPIkeyForAlchemy,
   getChainNameFromId,
-  getChainIdFromName,
-  currencies_list,
   getNetworForAlchemy
 } from '../../utils/constants'
-import {getPriceforUSD} from '../../services/datafeed'
 
 interface CollectionState {
   nfts: any[],

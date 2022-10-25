@@ -33,7 +33,7 @@ const useOwnership = ({
     profileLink: '',
   })
   useEffect(() => {
-    if (chainId) {
+    if (chainId && owner_address) {
       getUserInformation(owner_address, chainId).then(data => {
         setOwnership(data)
       })

@@ -1,7 +1,7 @@
-import { providers } from "ethers";
-import { SupportedChainId, MakerOrder, SolidityType } from "../types";
-import { etherSignTypedData } from "./etherSignTypedData";
-import { generateMakerOrderTypedData } from "./generateMakerOrderTypedData";
+import { providers } from 'ethers'
+import { SupportedChainId, MakerOrder, SolidityType } from '../types'
+import { etherSignTypedData } from './etherSignTypedData'
+import { generateMakerOrderTypedData } from './generateMakerOrderTypedData'
 
 /**
  * Create a signature for a maker order
@@ -18,8 +18,8 @@ export const signMakerOrder = async (
   order: MakerOrder,
   paramsTypes: SolidityType[]
 ): Promise<string> => {
-  const signerAddress = await signer.getAddress();
-  const { domain, type, value } = generateMakerOrderTypedData(signerAddress, chainId, order, verifyingContractAddress);
-  const signatureHash = await etherSignTypedData(signer.provider, signerAddress, domain, type, value);
-  return signatureHash;
-};
+  const signerAddress = await signer.getAddress()
+  const { domain, type, value } = generateMakerOrderTypedData(signerAddress, chainId, order, verifyingContractAddress)
+  const signatureHash = await etherSignTypedData(signer.provider, signerAddress, domain, type, value)
+  return signatureHash
+}

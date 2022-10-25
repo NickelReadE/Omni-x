@@ -14,6 +14,8 @@ export type CollectionType = {
     discord: string,
     twitter: string,
     website: string,
+    symbol: string,
+    col_url: string,
     floorPrice: {
         eth: number,
         usd: number,
@@ -29,23 +31,7 @@ export type CollectionTypeFunc = {
 
 const getCollectionInfo = async (col_url: string) => {
   const { data: collection_info } = await collectionsService.getCollectionInfo(col_url)
-  return {
-    ...collection_info,
-    address: collection_info.address,
-    itemsCnt: collection_info.itemsCnt,
-    ownerCnt: collection_info.ownerCnt,
-    orderCnt: collection_info.orderCnt,
-    totalVolume: collection_info.totalVolume,
-    count: collection_info.count,
-    banner_image: collection_info.banner_image,
-    profile_image: collection_info.profile_image,
-    name: collection_info.name,
-    discord: collection_info.discord,
-    twitter: collection_info.twitter,
-    website: collection_info.website,
-    floorPrice: collection_info.floorPrice,
-    attrs: collection_info.attrs,
-  }
+  return collection_info as CollectionType
 }
 
 const useCollection = (col_url: string): CollectionTypeFunc => {

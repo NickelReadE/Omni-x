@@ -5,12 +5,11 @@ import useWallet from '../hooks/useWallet'
 import classNames from '../helpers/classNames'
 import Twitter from '../public/images/twitter.png'
 import Web from '../public/images/web.png'
-import {chainsFroSTG, veSTGContractAddress} from '../constants/addresses'
-import {getChainIdFromName} from '../utils/constants'
 import {getVeSTGInstance} from '../utils/contracts'
 import Hgreg from '../public/images/gregs/logo.png'
 import Stg from '../public/images/stg/stg.png'
 import { ProfileData } from '../hooks/useProfile'
+import { chainsFroSTG, veSTGContractAddress } from '../utils/constants/addresses'
 
 type UserBannerProps = {
     user: ProfileData,
@@ -23,8 +22,8 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
   const [balances, setBalanceSTG] = useState(0)
   const DEFAULT_AVATAR = 'uploads\\default_avatar.png'
 
-  const fetchToken = async (chain: string) => {
-    const veSTGInstance = getVeSTGInstance(veSTGContractAddress[chain], getChainIdFromName(chain), null)
+  const fetchToken = async (chain: number) => {
+    const veSTGInstance = getVeSTGInstance(veSTGContractAddress[chain], chain, null)
     setBalanceSTG(await veSTGInstance.balanceOf(address))
   }
 
@@ -43,10 +42,10 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
   }, [balances])
 
   const bannerImage = useMemo(() => {
-    if (user && user.banners && user.banners.length > 0) {
-      return process.env.API_URL + user.banners[0]
+    if (user && user.banner) {
+      return process.env.API_URL + user.banner
     }
-    return process.env.API_URL + 'default_banner.png'
+    return '/images/default_banner.png'
   }, [user])
 
   return (

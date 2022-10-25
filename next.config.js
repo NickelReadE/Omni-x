@@ -1,7 +1,6 @@
 module.exports = {
   env: {
-    // API_BASE_URL: process.env.NEXT_DEVELOPMENT ? 'http://localhost:5000/api/v1/' : 'https://api-dev.omni-x.io/api/v1/',
-    API_BASE_URL: 'https://api-dev.omni-x.io/api/v1/',
+    API_BASE_URL: process.env.NEXT_DEVELOPMENT ? 'http://localhost:5000/api/v1/' : 'https://api-dev.omni-x.io/api/v1/',
     API_URL: 'https://bucket-26n19n.s3.amazonaws.com/',
     MORALIS_SERVER_URL: process.env.NEXT_MORALIS_SERVER_URL,
     MORALIS_APP_ID: process.env.NEXT_MORALIS_APP_ID,

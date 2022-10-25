@@ -1,18 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect, useRef, useState, useCallback} from 'react'
+import { FC, useEffect, useRef, useState, useCallback, SyntheticEvent } from 'react'
 import Cropper from 'react-easy-crop'
-import {Listbox} from '@headlessui/react'
+import { Listbox } from '@headlessui/react'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Dialog from '@material-ui/core/Dialog'
 import Slider from '@material-ui/core/Slider'
-import {getCroppedImg} from './CanvasUtils'
+import { getCroppedImg } from './CanvasUtils'
 import Image from 'next/image'
 import Twitter from '../../public/images/twitter.png'
 import Web from '../../public/images/web.png'
 import Photo from '../../public/images/photo.png'
 import useWallet from '../../hooks/useWallet'
-import {useDispatch, useSelector} from 'react-redux'
-import {updateUser, getUser, selectUser, selectHeroSkin, updateHeroSkin} from '../../redux/reducers/userReducer'
+import { useSelector } from 'react-redux'
+import { selectHeroSkin } from '../../redux/reducers/userReducer'
 import classNames from '../../helpers/classNames'
 import editStyle from '../../styles/useredit.module.scss'
 import UserSVG from '../../public/svgs/user.svg'
@@ -22,21 +22,23 @@ import EthIMG from '../../public/images/payment/eth.png'
 import OmniIMG from '../../public/images/payment/omni.png'
 import UsdcIMG from '../../public/images/payment/usdc.png'
 import UsdtIMG from '../../public/images/payment/usdt.png'
-import {skinNames} from '../../constants/gregSkin'
+import { skinNames } from '../../constants/gregSkin'
+import useData from '../../hooks/useData'
 
 interface IUserEditProps {
   updateModal: (arg: string) => void
 }
 
-const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
+const S3_BUCKET_URL = process.env.API_URL || ''
+
+const UserEdit: FC<IUserEditProps> = ({ updateModal }) => {
   const updateProfileFormRef = useRef<HTMLFormElement>(null)
 
-  const DEFAULT_BANNER = 'uploads/default_banner.png'
-  const DEFAULT_AVATAR = 'uploads/default_avatar.png'
+  const DEFAULT_BANNER = '/images/default_banner.png'
 
-  const [avatar, setAvatar] = useState(process.env.API_URL + 'uploads/default_avatar.png')
+  const [avatar, setAvatar] = useState('/images/default_avatar.png')
   const [gregName, setGregName] = useState(useSelector(selectHeroSkin))
-  const [banner_1, setBanner_1] = useState(process.env.API_URL + DEFAULT_BANNER)
+  const [banner, setBanner] = useState('/images/default_banner.png')
   const [bannerSelected, setBannerSelect] = useState(0)
   const [username, setUserName] = useState('')
   const [bio, setBio] = useState('')
@@ -45,36 +47,30 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
   const [selectedTab, setSelectedTab] = useState(0)
 
   const [cropDlgOpen, setCropDlgOpen] = useState(false)
-  const [imageSrc, setImageSrc] = React.useState<string>('')
-  const [crop, setCrop] = useState({x: 0, y: 0})
+  const [imageSrc, setImageSrc] = useState<string>('')
+  const [crop, setCrop] = useState({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(1)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
   const [coinNFTID, handleNFTCoin] = useState('0')
   const [coinTokenID, handleTokenCoin] = useState('0')
 
-  const isGregHolder = false //useSelector(selectIsGregHolder)
-
-  const dispatch = useDispatch()
-  const user = useSelector(selectUser)
-
   const context = useWallet()
+  const { profile, updateProfileData } = useData()
 
   useEffect(() => {
-    if (context.address != undefined) {
-      dispatch(getUser(context.address) as any)
+    if (profile) {
+      if (profile.avatar) {
+        setAvatar(S3_BUCKET_URL + profile.avatar)
+      }
+      if (profile.banner) {
+        setBanner(S3_BUCKET_URL + profile.banner)
+      }
+      setUserName(profile.username)
+      setBio(profile.bio)
+      setTwitter(profile.twitter)
+      setWebsite(profile.website)
     }
-  }, [context.address])
-
-  useEffect(() => {
-    if (user.address != undefined) {
-      setAvatar(user.avatar === undefined || user.avatar === DEFAULT_AVATAR ? '/images/default_avatar.png' : (process.env.API_URL + user.avatar))
-      setBanner_1(user.banners[0] === undefined || user.banners[0] === DEFAULT_BANNER ? '/images/default_banner.png' : (process.env.API_URL + user.banners[0]))
-      setUserName(user.username)
-      setBio(user.bio)
-      setTwitter(user.twitter)
-      setWebsite(user.website)
-    }
-  }, [user.address])
+  }, [profile])
 
   // This function will be triggered when the file field change
   const onChangeAvatar = (e: any) => {
@@ -82,7 +78,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
       setAvatar(e.target.files[0])
     }
   }
-  const onChangeBanner_1 = async (e: any) => {
+  const onChangeBanner = async (e: any) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0]
       const imageDataUrl = await readFile(file)
@@ -96,11 +92,11 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
   const onClickAvatar = () => {
     document.getElementById('image_avatar')?.click()
   }
-  const onClickBanner_1 = () => {
-    document.getElementById('image_banner_1')?.click()
+  const onClickBanner = () => {
+    document.getElementById('image_banner')?.click()
   }
 
-  const updateProfile = async (e: React.SyntheticEvent) => {
+  const updateProfile = async (e: SyntheticEvent) => {
     e.preventDefault()
     e.stopPropagation()
 
@@ -111,12 +107,10 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
       formData.append('address', address)
       formData.append('greg', gregName)
 
-      if (banner_1 != process.env.API_URL + DEFAULT_BANNER && banner_1 != '/images/default_banner.png') {
-        formData.append('banner_1', (await getFileFromUrl(banner_1, 'banner1.png')) as any)
+      if (banner !== DEFAULT_BANNER && (profile && banner !== (S3_BUCKET_URL + profile.banner))) {
+        formData.append('banner', (await getFileFromUrl(banner, 'banner.png')) as any)
       }
-      dispatch(updateHeroSkin(gregName) as any)
-      dispatch(updateUser(formData) as any)
-      // router.push('/')
+      updateProfileData(formData)
       updateModal('Micheal')
     }
   }
@@ -157,7 +151,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
       )
       switch (bannerSelected) {
       case 1:
-        setBanner_1(croppedImage as string)
+        setBanner(croppedImage as string)
         break
       }
       setCropDlgOpen(false)
@@ -173,19 +167,19 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
           <ul className="mt-[1rem]">
             <li className={selectedTab == 0 ? classNames(editStyle.current) : ''}>
               <button onClick={() => setSelectedTab(0)} className="flex justify-start">
-                <div><UserSVG className="inline"/></div>
+                <div><UserSVG className="inline" /></div>
                 <span className="ml-4">profile</span>
               </button>
             </li>
             <li className={selectedTab == 1 ? classNames(editStyle.current) : ''}>
               <button onClick={() => setSelectedTab(1)} className="flex justify-start">
-                <div><AlertSVG className="inline"/></div>
+                <div><AlertSVG className="inline" /></div>
                 <span className="ml-4">alert</span>
               </button>
             </li>
             <li className={selectedTab == 2 ? classNames(editStyle.current) : ''}>
               <button onClick={() => setSelectedTab(2)} className="flex justify-start">
-                <div><PaymentSVG className="inline"/></div>
+                <div><PaymentSVG className="inline" /></div>
                 <span className="ml-4">payment</span>
               </button>
             </li>
@@ -203,7 +197,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                 onCropChange={setCrop}
                 onCropComplete={onCropComplete}
                 onZoomChange={setZoom}
-                cropSize={{width: 800, height: 354}}
+                cropSize={{ width: 800, height: 354 }}
               />
             </div>
             <div className="grid grid-cols-4 gap-4 mt-[2rem]">
@@ -227,7 +221,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
             </div>
           </div>
         </Dialog>
-        <div className="basis-5/6 pl-4  mt-[1rem]" style={{position: 'relative'}}>
+        <div className="basis-5/6 pl-4  mt-[1rem]" style={{ position: 'relative' }}>
           {
             selectedTab == 0 &&
             <form
@@ -235,24 +229,24 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
               onSubmit={updateProfile}
             >
               <input
-                id="image_banner_1"
+                id="image_banner"
                 accept="image/*"
                 type="file"
-                onChange={onChangeBanner_1}
+                onChange={onChangeBanner}
                 className="hidden"
               />
               <div className="border-gray-300 bg-[#E9ECEF] border-2 p-5 px-10">
                 <div className={'h-[200px]'}>
-                  <div className="mb-5 relative cursor-pointer h-full" onClick={onClickBanner_1}>
+                  <div className="mb-5 relative cursor-pointer h-full" onClick={onClickBanner}>
                     <div
                       className="absolute z-10 top-[50%] mt-[-20px] left-[50%] ml-[-20px] bg-[#E9ECEF99] rounded-full w-[40px] h-[40px] p-2"
                     >
-                      <Image src={Photo} alt="photo"/>
+                      <Image src={Photo} alt="photo" />
                     </div>
                     <div className="flex justify-center items-center">
                       <div className="border-[#B444F9] h-full">
                         <Image
-                          src={(typeof banner_1 == 'string') ? banner_1 : URL.createObjectURL(banner_1)}
+                          src={(typeof banner == 'string') ? banner : URL.createObjectURL(banner)}
                           alt="first image1"
                           layout="fill"
                           objectFit={'contain'}
@@ -271,7 +265,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                     <div
                       className="absolute z-10 top-[50%] mt-[-20px] left-[50%] ml-[-20px] bg-[#E9ECEF99] rounded-full w-[40px] h-[40px] p-2"
                     >
-                      <Image src={Photo} alt="photo"/>
+                      <Image src={Photo} alt="photo" />
                     </div>
                     <Image
                       src={(typeof avatar == 'string') ? avatar : URL.createObjectURL(avatar)}
@@ -314,7 +308,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                         />
                       </div>
                     </div>
-                    {isGregHolder &&
+                    {profile && profile.isGregHolder &&
                       <div>
                         <div
                           className="relative cursor-pointer"
@@ -342,18 +336,16 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                               {skinNames.map((sort_item, index) => (
                                 <Listbox.Option
                                   key={index}
-                                  className={({active}) =>
-                                    `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                      active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
+                                  className={({ active }) =>
+                                    `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
                                     }`
                                   }
                                   value={sort_item}
                                 >
-                                  {({selected}) => (
+                                  {({ selected }) => (
                                     <>
                                       <span
-                                        className={`block truncate ${
-                                          selected ? 'font-medium' : 'font-normal'
+                                        className={`block truncate ${selected ? 'font-medium' : 'font-normal'
                                         }`}
                                       >
                                         {sort_item}
@@ -378,7 +370,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
 
                   <div className="w-full mb-3 mt-3 flex items-center">
                     <div className="text-[#6C757D] mr-2">
-                      <Image src={Twitter} alt="twitter"/>
+                      <Image src={Twitter} alt="twitter" />
                     </div>
                     <input
                       type="text"
@@ -391,7 +383,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                   </div>
                   <div className="w-full mb-5 flex items-center">
                     <div className="text-[#6C757D] mr-2">
-                      <Image src={Web} alt="web"/>
+                      <Image src={Web} alt="web" />
                     </div>
                     <input
                       type="text"
@@ -425,7 +417,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                   <div className="flex items-center">
                     <input
                       className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]"
-                      disabled={true} type="checkbox"/>
+                      disabled={true} type="checkbox" />
                   </div>
                   <div className="inline-block align-middle ml-4">
                     <p className="text-[#ADB5BD] text-lg leading-6 font-medium">Item Sold</p>
@@ -436,7 +428,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                   <div className="flex items-center">
                     <input
                       className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]"
-                      disabled={true} type="checkbox"/>
+                      disabled={true} type="checkbox" />
                   </div>
                   <div className="inline-block align-middle ml-4">
                     <p className="text-[#ADB5BD] text-lg leading-6 font-medium">Bids</p>
@@ -447,7 +439,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                   <div className="flex items-center">
                     <input
                       className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]"
-                      disabled={true} type="checkbox"/>
+                      disabled={true} type="checkbox" />
                   </div>
                   <div className="inline-block align-middle ml-4">
                     <p className="text-[#ADB5BD] text-lg leading-6 font-medium">Outbid</p>
@@ -458,7 +450,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                   <div className="flex items-center">
                     <input
                       className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]"
-                      disabled={true} type="checkbox"/>
+                      disabled={true} type="checkbox" />
                   </div>
                   <div className="inline-block align-middle ml-4">
                     <p className="text-[#ADB5BD] text-lg leading-6 font-medium">Succesful Purchase</p>
@@ -472,7 +464,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                     <p className="text-[#ADB5BD] text-base leading-5">no alerts unless bid exceeds this value:</p>
 
                     <span className={classNames('basis-1/6', editStyle.etherspan)}>
-                      <input className="w-32 my-4" type="text" placeholder="0.005" disabled={true}/>
+                      <input className="w-32 my-4" type="text" placeholder="0.005" disabled={true} />
                     </span>
                   </div>
                 </div>
@@ -498,7 +490,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                 <div className="flex flex-row">
                   <div className="flex items-center">
                     <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]"
-                      disabled={true} type="checkbox"/>
+                      disabled={true} type="checkbox" />
                   </div>
                   <div className="inline-block align-middle ml-4">
                     <p className="text-[#ADB5BD] text-lg leading-6 font-medium">Accept Credit Card Payments</p>
@@ -508,7 +500,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                 <div className="flex flex-row my-4">
                   <div className="flex items-center">
                     <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]"
-                      disabled={true} type="checkbox"/>
+                      disabled={true} type="checkbox" />
                   </div>
                   <div className="inline-block align-middle ml-4">
                     <p className="text-[#ADB5BD] text-lg leading-6 font-medium">Set Default Token for Payments</p>
@@ -519,10 +511,10 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                   <div className="w-[22px]"></div>
                   <div className={editStyle.tokenOption}>
                     <div className={editStyle.chainIcon}>
-                      {coinTokenID === '0' && <Image src={OmniIMG} alt="Omni logo"/>}
-                      {coinTokenID === '1' && <Image src={UsdcIMG} alt="Usdc logo"/>}
-                      {coinTokenID === '2' && <Image src={UsdtIMG} alt="Usdt logo"/>}
-                      {coinTokenID === '3' && <Image src={EthIMG} alt="Eth logo"/>}
+                      {coinTokenID === '0' && <Image src={OmniIMG} alt="Omni logo" />}
+                      {coinTokenID === '1' && <Image src={UsdcIMG} alt="Usdc logo" />}
+                      {coinTokenID === '2' && <Image src={UsdtIMG} alt="Usdt logo" />}
+                      {coinTokenID === '3' && <Image src={EthIMG} alt="Eth logo" />}
                     </div>
                     <select disabled={true} onChange={(e) => {
                       handleTokenCoin(e.target.value)
@@ -538,7 +530,7 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                 <div className="flex flex-row my-4">
                   <div className="flex items-center">
                     <input className="bg-[#FEFEFF] text-[#B444F9] w-[22px] h-[23px] rounded border-2 border-[#ADB5BD]"
-                      disabled={true} type="checkbox"/>
+                      disabled={true} type="checkbox" />
                   </div>
                   <div className="inline-block align-middle ml-4">
                     <p className="text-[#ADB5BD] text-lg leading-6 font-medium">List Prices by Default in:</p>
@@ -549,10 +541,10 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
                   <div className="w-[22px]"></div>
                   <div className={editStyle.tokenOption}>
                     <div className={editStyle.chainIcon}>
-                      {coinNFTID === '0' && <Image src={OmniIMG} alt="Omni logo"/>}
-                      {coinNFTID === '1' && <Image src={UsdcIMG} alt="Usdc logo"/>}
-                      {coinNFTID === '2' && <Image src={UsdtIMG} alt="Usdt logo"/>}
-                      {coinNFTID === '3' && <Image src={EthIMG} alt="Eth logo"/>}
+                      {coinNFTID === '0' && <Image src={OmniIMG} alt="Omni logo" />}
+                      {coinNFTID === '1' && <Image src={UsdcIMG} alt="Usdc logo" />}
+                      {coinNFTID === '2' && <Image src={UsdtIMG} alt="Usdt logo" />}
+                      {coinNFTID === '3' && <Image src={EthIMG} alt="Eth logo" />}
                     </div>
                     <select disabled={true} onChange={(e) => {
                       handleNFTCoin(e.target.value)
@@ -579,16 +571,16 @@ const UserEdit: React.FC<IUserEditProps> = ({updateModal}) => {
           }
         </div>
       </div>
-      <img alt={'alienIcon'} src={'/images/gregs/Alien_1a.png'} className=" w-[0px] hidden"/>
-      <img alt={'alienIcon'} src={'/images/gregs/Alien_1b.png'} className=" w-[0px] hidden"/>
-      <img alt={'alienIcon'} src={'/images/gregs/Alien_2a.png'} className=" w-[0px] hidden"/>
-      <img alt={'alienIcon'} src={'/images/gregs/Alien_2b.png'} className=" w-[0px] hidden"/>
-      <img alt={'alienIcon'} src={'/images/gregs/Alien_3a.png'} className=" w-[0px] hidden"/>
-      <img alt={'alienIcon'} src={'/images/gregs/Alien_3b.png'} className=" w-[0px] hidden"/>
-      <img alt={'alienIcon'} src={'/images/gregs/Alien_4a.png'} className=" w-[0px] hidden"/>
-      <img alt={'alienIcon'} src={'/images/gregs/Alien_4b.png'} className=" w-[0px] hidden"/>
-      <img alt={'alienIcon'} src={'/images/gregs/Alien_5a.png'} className=" w-[0px] hidden"/>
-      <img alt={'alienIcon'} src={'/images/gregs/Alien_5b.png'} className=" w-[0px] hidden"/>
+      <img alt={'alienIcon'} src={'/images/gregs/Alien_1a.png'} className=" w-[0px] hidden" />
+      <img alt={'alienIcon'} src={'/images/gregs/Alien_1b.png'} className=" w-[0px] hidden" />
+      <img alt={'alienIcon'} src={'/images/gregs/Alien_2a.png'} className=" w-[0px] hidden" />
+      <img alt={'alienIcon'} src={'/images/gregs/Alien_2b.png'} className=" w-[0px] hidden" />
+      <img alt={'alienIcon'} src={'/images/gregs/Alien_3a.png'} className=" w-[0px] hidden" />
+      <img alt={'alienIcon'} src={'/images/gregs/Alien_3b.png'} className=" w-[0px] hidden" />
+      <img alt={'alienIcon'} src={'/images/gregs/Alien_4a.png'} className=" w-[0px] hidden" />
+      <img alt={'alienIcon'} src={'/images/gregs/Alien_4b.png'} className=" w-[0px] hidden" />
+      <img alt={'alienIcon'} src={'/images/gregs/Alien_5a.png'} className=" w-[0px] hidden" />
+      <img alt={'alienIcon'} src={'/images/gregs/Alien_5b.png'} className=" w-[0px] hidden" />
 
     </>
   )

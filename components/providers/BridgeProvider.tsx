@@ -18,8 +18,7 @@ import {
   ONFT_CORE_INTERFACE_ID
 } from '../../utils/constants'
 import {NFTItem} from '../../interface/interface'
-import {useDispatch, useSelector} from 'react-redux'
-import {getUserNFTs, selectUserNFTs} from '../../redux/reducers/userReducer'
+import useData from '../../hooks/useData'
 
 type BridgeProviderProps = {
   children?: React.ReactNode
@@ -34,19 +33,11 @@ export const BridgeProvider = ({
     address,
     chainId
   } = useWallet()
+  const { userNfts: nfts } = useData()
 
   const [estimating, setEstimating] = useState(false)
   const [unwrapInfo, setUnwrapInfo] = useState<UnwrapInfo | undefined>()
   const [selectedUnwrapInfo, setSelectedUnwrapInfo] = useState<UnwrapInfo | undefined>()
-
-  const dispatch = useDispatch()
-  const nfts = useSelector(selectUserNFTs)
-
-  useEffect(() => {
-    if (address) {
-      dispatch(getUserNFTs(address) as any)
-    }
-  }, [address, dispatch])
 
   const estimateGasFee = async (selectedNFTItem: NFTItem, senderChainId: number, targetChainId: number) => {
     setEstimating(true)

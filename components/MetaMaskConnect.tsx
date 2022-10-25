@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import SwitchButton from './SwitchButton'
-import {supportChainIDs} from '../utils/constants'
+import { CHAIN_IDS, supportChainIDs } from '../utils/constants'
 import useWallet from '../hooks/useWallet'
+import { CHAIN_TYPE } from '../types/enum'
 
 const MetaMaskConnect = (): JSX.Element => {
   const { chainId, address, provider } = useWallet()
@@ -35,7 +36,7 @@ const MetaMaskConnect = (): JSX.Element => {
       return (
         <div>
           <div>Current network is not supported <br></br> Please switch network into Goerli</div>
-          <div className="flex justify-center mt-12"><SwitchButton chainID={5}/></div>
+          <div className="flex justify-center mt-12"><SwitchButton chainID={CHAIN_IDS[CHAIN_TYPE.ARBITRUM]} /></div>
         </div>
       )
     }

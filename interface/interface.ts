@@ -24,7 +24,7 @@ export interface IPropsNFTItem {
 
 export interface NFTItem {
   name: string,
-  attributes: unknown,
+  attributes: any,
   image: string,
   custom_id: number,
   token: string,
@@ -46,7 +46,9 @@ export interface NFTItem {
   collection_address: string,
   currency: string,
   uri: string,
+  symbol: string,
   order_data: any,
+  bidDatas: any[],
 }
 
 export interface FeedItem {
