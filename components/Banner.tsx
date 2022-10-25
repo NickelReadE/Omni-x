@@ -6,7 +6,6 @@ import useWallet from '../hooks/useWallet'
 import classNames from '../helpers/classNames'
 import Twitter from '../public/images/twitter.png'
 import Web from '../public/images/web.png'
-import Carousel from './carousel'
 import { getVeSTGInstance } from '../utils/contracts'
 import Hgreg from '../public/images/gregs/logo.png'
 import Stg from '../public/images/stg/stg.png'
@@ -14,12 +13,10 @@ import useData from '../hooks/useData'
 import { chainsFroSTG, veSTGContractAddress } from '../utils/constants/addresses'
 
 type BannerProps = {
-  slides: Array<React.ReactNode>
   blur: boolean
-  menu: string
 }
 
-const Banner = ({ slides, blur, menu }: BannerProps): JSX.Element => {
+const Banner = ({ blur }: BannerProps): JSX.Element => {
   const { address } = useWallet()
   const { profile } = useData()
   const [avatarError, setAvatarError] = useState(false)
@@ -64,29 +61,20 @@ const Banner = ({ slides, blur, menu }: BannerProps): JSX.Element => {
       <div
         className={classNames(
           'w-full',
-          'mt-[134px]',
-          menu === 'home' ? 'h-[500px]' : 'h-[300px]',
-          blur && menu === 'home' ? 'blur-sm' : ''
+          'mt-[134px] h-[500px]',
+          blur ? 'blur-sm' : '',
         )}
       >
         <div>
-          {
-            menu === 'home' && (
-              <div className={'flex justify-center h-[540px]'}>
-                <img
-                  src={bannerImage}
-                  className="banner-slider"
-                  alt={'banner'}
-                />
-              </div>
-            )
-          }
-          {
-            menu === 'collections' &&
-            <Carousel slides={slides} />
-          }
+          <div className={'flex justify-center h-[540px]'}>
+            <img
+              src={bannerImage}
+              className="banner-slider"
+              alt={'banner'}
+            />
+          </div>
         </div>
-        {menu === 'home' && (
+        {
           <div className="flex justify-center w-full ">
             <div className="flex justify-between justify-center fw-60 mt-5 relative">
               <div className="bottom-[0rem] left-[4rem]  absolute">
@@ -137,7 +125,7 @@ const Banner = ({ slides, blur, menu }: BannerProps): JSX.Element => {
               </div>
             </div>
           </div>
-        )}
+        }
       </div>
     </>
   )
