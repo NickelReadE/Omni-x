@@ -57,16 +57,16 @@ export default function SearchBar() {
                     return (
                       <div className='my-2 h-[50px] font-bold' key={index}>
                         <Link href={`/collections/${item.col_url}`}>
-                          <div className={'flex items-center'}>
+                          <div className={'flex items-center cursor-pointer'}>
                             <div className={'mr-2'}>
                               <img src={item.profile_image} alt={'collection profile image'} width={50} height={50} className={'rounded-sm'}/>
                             </div>
                             <div className={'flex flex-col'}>
-                              <span className={'font-[16px]'}>{item.name}</span>
+                              <span className={'text-[16px]'}>{item.name}</span>
                               <div className={'flex items-center'}>
-                                <span className={'font-[14px] text-[#A0B3CC]'}>floor ${getMinValue([item.floorPrice.omni, item.floorPrice.usd])}</span>
-                                <span className={'font-[14px] text-[#A0B3CC] mx-2'}> | </span>
-                                <span className={'font-[14px] text-[#A0B3CC]'}>items {item.itemsCnt}</span>
+                                <span className={'text-[14px] text-[#A0B3CC]'}>floor ${getMinValue([item.floorPrice.omni, item.floorPrice.usd])}</span>
+                                <span className={'text-[14px] text-[#A0B3CC] mx-2'}> | </span>
+                                <span className={'text-[14px] text-[#A0B3CC]'}>items {item.itemsCnt}</span>
                               </div>
                             </div>
                           </div>
@@ -85,7 +85,7 @@ export default function SearchBar() {
                     return (
                       <div className='my-2 h-[50px] font-bold truncate' key={index}>
                         <Link href={`/user/${item.address}`}>
-                          <div className={'flex items-center'}>
+                          <div className={'flex items-center cursor-pointer'}>
                             <div className={'mr-2 w-[50px] h-[50px]'}>
                               <img
                                 src={item.avatar ? (S3_BUCKET_URL + item.avatar) : '/images/omnix_logo_black_1.png'}
@@ -96,8 +96,8 @@ export default function SearchBar() {
                               />
                             </div>
                             <div className={'flex flex-col'}>
-                              <div className={'font-[16px]'}>{item.username}</div>
-                              <div className={'font-[14px] text-[#A0B3CC] truncate'}>{truncateAddress(item.address)}</div>
+                              <div className={'text-[16px]'}>{item.username}</div>
+                              <div className={'text-[14px] text-[#A0B3CC] truncate'}>{truncateAddress(item.address)}</div>
                             </div>
                           </div>
                         </Link>
