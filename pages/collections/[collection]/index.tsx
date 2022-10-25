@@ -243,8 +243,10 @@ const Collection: NextPage = () => {
       <div className={classNames('w-full', 'mt-20', 'pr-[70px]', 'pt-[30px]', 'relative', editStyle.collection)}>
         <div className="w-[100%] h-[100%] mt-20">
           <img
-            alt={'bannerImage'} className={classNames(editStyle.bannerImg)}
-            src={collectionInfo && collectionInfo.banner_image ? collectionInfo.banner_image : ''} />
+            alt={''}
+            className={classNames(editStyle.bannerImg)}
+            src={collectionInfo && collectionInfo.banner_image ? collectionInfo.banner_image : ''}
+          />
           <div className={classNames(editStyle.bannerOpacity)} />
         </div>
         <div className="flex space-x-8 items-end ml-[70px]">
@@ -258,8 +260,8 @@ const Collection: NextPage = () => {
               data-src={collectionInfo && collectionInfo.profile_image ? collectionInfo.profile_image : ''}
             />
           </LazyLoad>
-          <div className="flex relative  text-lg font-bold text-center items-center">
-            <div className={'select-none inline-block p-4 text-xxl font-extrabold '}>
+          <div className="flex relative text-lg font-bold text-center items-center pb-6 h-[64px]">
+            <div className={'select-none inline-block px-4 text-xxl font-extrabold'}>
               {collectionInfo ? collectionInfo.name : ''}
             </div>
             <div className="w-[30px] h-[30px] bg-[#B444F9] rounded-[30px] flex items-center justify-center">
@@ -303,7 +305,6 @@ const Collection: NextPage = () => {
                 <Image src={Explorer} alt="website" />
               </a>
             </Link>
-
           </div>
         </div>
         <div className="w-full  mt-[-100px] border-b-2 border-[#E9ECEF]">
