@@ -45,3 +45,7 @@ export const rpcGasProvider:IRpcDatafeed = {
   'optimism':'https://rpc.ankr.com/optimism',
   'polygon':'https://rpc.ankr.com/polygon'
 }
+
+export const truncateAddress = (address: string) => {
+  return address.slice(0, 6) + '...' + address.slice(-4)
+}
