@@ -62,7 +62,11 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
   const order_collection_chain = orderChainId && getChainNameFromId(orderChainId)
 
   const nft_collection = useMemo(() => {
-    return collections.find((c: any) => nft.symbol == c.symbol)
+    return collections.find((collection) => {
+      if (collection.address && collection.address[nft.chain_id] && nft.collection_address) {
+        return collection.address[nft.chain_id].toLowerCase() === nft.collection_address.toLowerCase()
+      }
+    })
   }, [collections, nft])
 
   const {
@@ -199,8 +203,8 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
   }, [isHomePage, isUserPage, nft])
 
   const doubleClickToSetDetailLink = () => {
-    if (isHomePage) {
-      Router.push(`/collections/${col_url}/${nft.token_id}`)
+    if (isHomePage && nft_collection?.col_url) {
+      Router.push(`/collections/${nft_collection?.col_url}/${nft.token_id}`)
     }
   }
 
@@ -259,6 +263,25 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
     )
   }
 
+  const renderSaleFooter = () => {
+    return (
+      <div className="flex items-center ml-3">
+        {lastSale > 0 && <>
+          <span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span>
+          <img alt={'saleIcon'} src={lastSaleCoinIcon} className="w-[18px] h-[18px]"/>&nbsp;
+          <span
+            className="text-[#6C757D] text-[14px]font-bold">{numberLocalize(Number(lastSale))}</span>
+        </>}
+        {!lastSale && highestBid != 0 && <>
+          <span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span>
+          <img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;
+          <span
+            className="text-[#6C757D] text-[14px] font-bold">{numberLocalize(Number(highestBid))}</span>
+        </>}
+      </div>
+    )
+  }
+
   return (
     <div
       className='border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]'
@@ -277,29 +300,20 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
         </Link>
       }
       <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
-        <Link href={`/collections/${col_url}/${nft.token_id}`}>
-          <a>
-            <div className="flex items-center ml-3">
-              {lastSale > 0 && <>
-                <span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span>
-                <img alt={'saleIcon'} src={lastSaleCoinIcon} className="w-[18px] h-[18px]"/>&nbsp;
-                <span
-                  className="text-[#6C757D] text-[14px]font-bold">{numberLocalize(Number(lastSale))}</span>
-              </>}
-              {!lastSale && highestBid != 0 && <>
-                <span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span>
-                <img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;
-                <span
-                  className="text-[#6C757D] text-[14px] font-bold">{numberLocalize(Number(highestBid))}</span>
-              </>}
-            </div>
-          </a>
-        </Link>
+        {(isHomePage || isUserPage) && renderSaleFooter()}
+        {
+          isCollectionPage &&
+          <Link href={`/collections/${col_url}/${nft.token_id}`}>
+            <a>
+              {renderSaleFooter()}
+            </a>
+          </Link>
+        }
         <div className="flex items-center ml-3">
           <div>&nbsp;</div>
           {isShowBtn && isOwner && isWhitelisted && (
             <div
-              className="ml-2 mr-2 py-[1px] px-4 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#B00000]"
+              className="ml-2 mr-2 py-[1px] px-4 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] cursor-pointer font-blod hover:bg-[#B00000]"
               onClick={() => {
                 setOpenSellDlg(true)
               }}>
@@ -308,14 +322,14 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
           )}
           {isShowBtn && !isOwner && isListed && !isAuction && isWhitelisted && (
             <div
-              className="ml-2 mr-2 py-[1px] px-4 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]"
+              className="ml-2 mr-2 py-[1px] px-4 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] cursor-pointer font-blod hover:bg-[#38B000]"
               onClick={() => setOpenBuyDlg(true)}>
               {'Buy now'}
             </div>
           )}
           {isShowBtn && !isOwner && !isListed && isWhitelisted && (
             <div
-              className="ml-2 mr-2 py-[1px] px-4 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] font-blod  hover:bg-[#38B000]"
+              className="ml-2 mr-2 py-[1px] px-4 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] cursor-pointer font-blod hover:bg-[#38B000]"
               onClick={() => setOpenBidDlg(true)}>
               {'Bid'}
             </div>
