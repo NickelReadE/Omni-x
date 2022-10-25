@@ -98,7 +98,8 @@ const NFTBox = ({ nft, index, onRefresh }: IPropsNFTItem) => {
     owner_collection_chain: nft.chain,
     owner_collection_chain_id: nft.chain_id,
     token_id: nft?.token_id,
-    selectedNFTItem: nft
+    selectedNFTItem: nft,
+    onRefresh
   })
 
   const doubleClickToSetDetailLink = () => {
@@ -142,11 +143,6 @@ const NFTBox = ({ nft, index, onRefresh }: IPropsNFTItem) => {
     }
     return false
   }, [nft, address])
-
-  const onListingDoneAndRefresh = async () => {
-    await onListingDone()
-    onRefresh()
-  }
 
   return (
     <div
@@ -230,7 +226,7 @@ const NFTBox = ({ nft, index, onRefresh }: IPropsNFTItem) => {
         nftTitle={nft.name}
         onListingApprove={onListingApprove}
         onListingConfirm={onListingConfirm}
-        onListingDone={onListingDoneAndRefresh}
+        onListingDone={onListingDone}
       />
     </div>
   )

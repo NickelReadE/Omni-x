@@ -23,7 +23,7 @@ const ApproveSection: React.FC<IApproveSectionProps> = ({
 }) => {
   return (
     <div className="section-container">
-      <SectionHeader sectionNo={sectionNo} sectionTitle={title} active={active} processing={processing} completed={completed}/>
+      <SectionHeader sectionNo={sectionNo} title={title} active={active} processing={processing} completed={completed}/>
 
       {active && (
         <div className="section-content">

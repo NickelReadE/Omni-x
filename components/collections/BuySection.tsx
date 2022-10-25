@@ -13,7 +13,7 @@ const BuySection: React.FC<IBuySectionProps> = ({
   currency
 }) => {
   const { chainId } = useWallet()
-  const validCurrencies = getValidCurrencies(chainId)
+  const validCurrencies = getValidCurrencies(chainId || 0)
   const selectedCurrency = validCurrencies.find(v => v.text == currency) || validCurrencies[0]
   
   return (

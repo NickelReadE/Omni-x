@@ -23,7 +23,7 @@ const CompleteSection: React.FC<ICompleteSectionProps> = ({
 }) => {
   return (
     <div className="section-container mt-[16px]">
-      <SectionHeader sectionNo={sectionNo} sectionTitle={title} active={active} processing={processing} completed={completed}/>
+      <SectionHeader sectionNo={sectionNo} title={title} active={active} processing={processing} completed={completed}/>
 
       {active && (
         <div className="section-content">

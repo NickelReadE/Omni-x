@@ -6,7 +6,8 @@ import { getValidCurrencies, PERIOD_LIST } from '../../utils/constants'
 import { SaleType } from '../../types/enum'
 
 interface IListingSectionProps {
-  sellType: SaleType,
+  sellType?: SaleType,
+  priceLabel: string,
   price: number,
   onChangePrice: (e: any) => void,
   currency: any,
@@ -16,6 +17,7 @@ interface IListingSectionProps {
 }
 
 const ListingSection: React.FC<IListingSectionProps> = ({
+  priceLabel,
   price,
   onChangePrice,
   currency,
@@ -24,11 +26,11 @@ const ListingSection: React.FC<IListingSectionProps> = ({
   onChangePeriod,
 }) => {
   const { chainId } = useWallet()
-  const validCurrencies = getValidCurrencies(chainId)
+  const validCurrencies = getValidCurrencies(chainId || 0)
 
   return (
     <div>
-      <p className="text-[#6C757D] text-[18px] font-semibold">Sale Price</p>
+      <p className="text-[#6C757D] text-[18px] font-semibold">{priceLabel}</p>
       <div className="flex justify-start items-center mt-5">
         <CustomSelect optionData={validCurrencies} value={currency} onChange={onChangeCurrency} />
         <input type="text" value={price} className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg" onChange={onChangePrice}/>

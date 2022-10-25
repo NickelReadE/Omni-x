@@ -7,7 +7,9 @@ interface IConfirmSectionProps {
   active: boolean,
   completed: boolean,
   txHash?: string,
-  sectionNo: number
+  sectionNo: number,
+  title: string,
+  description: string
 }
 
 const ConfirmSection: React.FC<IConfirmSectionProps> = ({
@@ -15,16 +17,18 @@ const ConfirmSection: React.FC<IConfirmSectionProps> = ({
   active,
   completed,
   txHash,
-  sectionNo
+  sectionNo,
+  title,
+  description
 }) => {
   return (
     <div className="section-container mt-[16px]">
-      <SectionHeader sectionNo={sectionNo} sectionTitle="Confirm Purchase" active={active} processing={processing} completed={completed}/>
+      <SectionHeader sectionNo={sectionNo} title={title} active={active} processing={processing} completed={completed}/>
 
       {active && (
         <div className="section-content">
           <p className="section-description">
-            Please confirm this second transaction in your wallet to confirm the purchase.
+            {description}
           </p>
 
           <TransactionStatusSection processing={processing} txHash={txHash} isTx={true}/>

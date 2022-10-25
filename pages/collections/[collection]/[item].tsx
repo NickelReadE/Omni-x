@@ -12,12 +12,12 @@ import ConfirmBid from '../../../components/collections/ConfirmBid'
 import { getNFTInfo, selectNFTInfo } from '../../../redux/reducers/collectionsReducer'
 import useWallet from '../../../hooks/useWallet'
 import useTrading from '../../../hooks/useTrading'
-import { getChainIcon, getChainNameFromId, getCurrencyIconByAddress, numberLocalize } from '../../../utils/constants'
+import { getChainIconById, getChainNameFromId, getCurrencyIconByAddress, numberLocalize } from '../../../utils/constants'
 import PngCheck from '../../../public/images/check.png'
 import PngSub from '../../../public/images/subButton.png'
 import useOrderStatics from '../../../hooks/useOrderStatics'
-import useOwnership from '../../../hooks/useOwnership'
 import ConfirmBuy from '../../../components/collections/ConfirmBuy'
+import ConfirmAccept from '../../../components/collections/ConfirmAccept'
 
 const truncate = (str: string) => {
   return str.length > 12 ? str.substring(0, 9) + '...' : str
@@ -55,12 +55,7 @@ const Item: NextPage = () => {
   }, [nftInfo])
 
   // ownership hook
-  const {
-    owner,
-    // profileLink, 
-  } = useOwnership({
-    owner_address: currentNFT?.owner
-  })
+  const owner = currentNFT?.owner
 
   // statistics hook
   const {
@@ -85,9 +80,13 @@ const Item: NextPage = () => {
     openBidDlg,
     openSellDlg,
     openBuyDlg,
+    openAcceptDlg,
+    selectedBid,
     setOpenBidDlg,
     setOpenSellDlg,
     setOpenBuyDlg,
+    setOpenAcceptDlg,
+    setSelectedBid,
     getListOrders,
     getBidOrders,
     getLastSaleOrder,
@@ -98,8 +97,13 @@ const Item: NextPage = () => {
     onBuyConfirm,
     onBuyComplete,
     onBuyDone,
-    onBid,
-    onAccept
+    onBidApprove,
+    onBidConfirm,
+    onBidDone,
+    onAcceptApprove,
+    onAcceptConfirm,
+    onAcceptComplete,
+    onAcceptDone,
   } = useTrading({
     provider,
     signer,
@@ -177,14 +181,6 @@ const Item: NextPage = () => {
                           </Link>
                         </h1>
                       )}
-                      {/* {currentNFT?.owner && (
-                        <h1 className="text-[#B444F9] text-[20px] font-normal underline ml-4 break-all lg:ml-1">
-                          <Link href={profileLink || '#'}>
-                            <a target='_blank'>{truncate(currentNFT?.owner)}</a>
-                          </Link>
-                        </h1>
-                      )} */}
-
                     </div>
                     <div className="flex justify-between items-center mt-6">
                       {currentNFT && currentNFT.price > 0 && (
@@ -203,13 +199,17 @@ const Item: NextPage = () => {
                       )}
                     </div>
                     <div className="mb-3">
-                      <span className='font-normal font-[16px]'>{formattedPrice && '$'}{numberLocalize(Number(formattedPrice))}</span>
+                      {formattedPrice > 0 && (
+                        <span className='font-normal font-[16px]'>
+                          ${numberLocalize(Number(formattedPrice))}
+                        </span>
+                      )}
                       <div className="flex justify-start items-center mt-5"><h1 className="mr-3 font-bold">Highest Bid: <span className="font-bold">{numberLocalize(Number(highestBid))}</span></h1>{highestBidCoin&&<Image src={highestBidCoin} width={15} height={16} alt="chain  logo" />}</div>
                       <div className="flex justify-start items-center"><h1 className="mr-3 font-bold">Last Sale: <span className="font-bold">{lastSale != 0 && numberLocalize(Number(lastSale))}</span></h1>{lastSaleCoin&&<Image src={lastSaleCoin} width={15} height={16} alt="chain logo" />}</div>
                     </div>
                   </div>
                   <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
-                    <div className="overflow-x-hidden overflow-y-auto grid 2xl:grid-cols-[30%_25%_25%_20%] lg:grid-cols-[30%_18%_32%_20%] xl:grid-cols-[30%_18%_32%_20%] min-h-[210px] max-h-[210px]">
+                    <div className="overflow-x-hidden overflow-y-auto grid 2xl:grid-cols-[30%_25%_25%_20%] lg:grid-cols-[30%_18%_32%_20%] xl:grid-cols-[30%_18%_32%_20%]">
                       <div className="font-bold text-[18px] text-[#000000]">account</div>
                       <div className="font-bold text-[18px] text-[#000000]">chain</div>
                       <div className="font-bold text-[18px] text-[#000000]">bid</div>
@@ -221,13 +221,13 @@ const Item: NextPage = () => {
                               <div className='break-all mt-3 text-[16px] font-bold'>{truncate(item.signer)}</div>
                               <div className="text-center mt-3">
                                 <img
-                                  src={getChainIcon(item.chain)}
+                                  src={getChainIconById(item.chain_id?.toString())}
                                   className='mr-[8px] w-[21px]'
                                   alt="icon"
                                 />
                               </div>
                               <div className='flex justify-start mt-3'>
-                                <div className="mr-5">
+                                <div className="mr-5 mt-[4px]">
                                   <img
                                     src={getCurrencyIconByAddress(item.currencyAddress)}
                                     className='mr-[8px] w-[21px]'
@@ -239,7 +239,10 @@ const Item: NextPage = () => {
                               <div className='text-right mt-3'>
                                 {owner?.toLowerCase() == address?.toLowerCase() &&
                                   <button className='bg-[#ADB5BD] hover:bg-[#38B000] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5'
-                                    onClick={() => onAccept(item)}>
+                                    onClick={() => {
+                                      setSelectedBid(item)
+                                      setOpenAcceptDlg(true)
+                                    }}>
                                     accept
                                   </button>
                                 }
@@ -329,11 +332,24 @@ const Item: NextPage = () => {
             order={order}
           />
           <ConfirmBid
-            onSubmit={(bidData: any) => onBid(bidData, order)}
+            onBidApprove={onBidApprove}
+            onBidConfirm={onBidConfirm}
+            onBidDone={onBidDone}
             handleBidDlgClose={() => {setOpenBidDlg(false)}}
             openBidDlg={openBidDlg}
             nftImage={nftInfo.nft.image}
             nftTitle={nftInfo.nft.name}
+          />
+          <ConfirmAccept
+            onAcceptApprove={onAcceptApprove}
+            onAcceptConfirm={onAcceptConfirm}
+            onAcceptComplete={onAcceptComplete}
+            onAcceptDone={onAcceptDone}
+            handleAcceptDlgClose={() => {setOpenAcceptDlg(false)}}
+            openAcceptDlg={openAcceptDlg}
+            nftImage={nftInfo.nft.image}
+            nftTitle={nftInfo.nft.name}
+            bidOrder={selectedBid}
           />
         </div>
       }
