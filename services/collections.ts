@@ -1,6 +1,6 @@
 import API from './api'
 
-const getCollectionNFTs = async (col_url: string, page: number, display_per_page: number, sort: string, searchObj: unknown) => {
+const getCollectionNFTs = async (col_url: string, page: number, display_per_page: number, sort: string, searchObj: any) => {
   const option = {
     col_url,
     page,
@@ -32,7 +32,7 @@ const updateCollectionNFTChainID = async (col_url: string, token_id: number, cha
   return res.data
 }
 
-const getCollectionAllNFTs = async (col_url: string, sort: string, searchObj: unknown) => {
+const getCollectionAllNFTs = async (col_url: string, sort: string, searchObj: any) => {
   const option = {
     col_url,
     sort,

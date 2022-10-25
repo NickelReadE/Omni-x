@@ -83,7 +83,9 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
     onBuyConfirm,
     onBuyComplete,
     onBuyDone,
-    onBid
+    onBidApprove,
+    onBidConfirm,
+    onBidDone
   } = useTrading({
     provider,
     signer,
@@ -98,7 +100,8 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
     owner_collection_chain: nft.chain, // ownerChainId && getChainNameFromId(ownerChainId),
     owner_collection_chain_id: nft.chain_id,
     token_id: nft?.token_id,
-    selectedNFTItem: nft
+    selectedNFTItem: nft,
+    onRefresh
   })
 
   const chainIcon = useMemo(() => {
@@ -164,7 +167,7 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
   }, [router.pathname])
 
   const isCollectionPage = useMemo(() => {
-    return router.pathname === '/collections/[collection]'  
+    return router.pathname === '/collections/[collection]'
   }, [router.pathname])
 
   const isWhitelisted = useMemo(() => {
@@ -232,7 +235,7 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
         >
           <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
             <img
-              className='nft-image rounded-md object-cover duration-300' 
+              className='nft-image rounded-md object-cover duration-300'
               src={imageError ? '/images/omnix_logo_black_1.png' : image}
               alt="nft-image"
               onError={() => { setImageError(true) }}
@@ -292,7 +295,7 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
         (isHomePage || isUserPage) && renderImageContainer()
       }
       {
-        isCollectionPage && 
+        isCollectionPage &&
         <Link href={`/collections/${col_url}/${nft.token_id}`}>
           <a>
             {renderImageContainer()}
@@ -362,7 +365,9 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
         order={order}
       />
       <ConfirmBid
-        onSubmit={(bidData: any) => onBid(bidData, order)}
+        onBidApprove={onBidApprove}
+        onBidConfirm={onBidConfirm}
+        onBidDone={onBidDone}
         handleBidDlgClose={() => {
           setOpenBidDlg(false)
         }}

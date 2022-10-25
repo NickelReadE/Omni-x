@@ -10,7 +10,7 @@ export type CollectionTypeFunc = {
   fetchMoreData: () => void
 }
 
-const getCollectionNfts = async (col_url: string, page: number, display_per_page: number, sort: string, searchObj: unknown) => {
+const getCollectionNfts = async (col_url: string, page: number, display_per_page: number, sort: string, searchObj: any) => {
   const {data: nfts} = await collectionsService.getCollectionNFTs(col_url, page, display_per_page, sort, searchObj)
   return nfts as NFTItem[]
 }
@@ -19,14 +19,14 @@ const useCollectionNfts = (
   col_url: string,
   display_per_page: number,
   sort: string,
-  searchObj: unknown,
+  searchObj: any,
   collectionInfo: CollectionType | undefined
 ): CollectionTypeFunc => {
   const [nfts, setNfts] = useState<NFTItem[]>([])
   const [init, setInit] = useState<boolean>(false)
   const [hasMoreNFTs, setHasMoreNFTs] = useState<boolean>(true)
   const [page, setPage] = useState(0)
-  
+
   useEffect(() => {
     (async () => {
       if (collectionInfo) {
@@ -39,7 +39,7 @@ const useCollectionNfts = (
       }
     })()
   }, [col_url, page, display_per_page, sort, searchObj, collectionInfo])
-  
+
   useEffect(() => {
     if ((collectionInfo && nfts.length >= collectionInfo.itemsCnt)/* || finishedGetting */) {
       setHasMoreNFTs(false)
@@ -63,7 +63,7 @@ const useCollectionNfts = (
     setPage(0)
     // setNfts(responseNfts)
   }
-  
+
   const fetchMoreData = () => {
     if (!init)
       return
@@ -78,7 +78,7 @@ const useCollectionNfts = (
       }
     }, 500)
   }
-  
+
   return {
     nfts,
     hasMoreNFTs,

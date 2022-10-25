@@ -6,7 +6,7 @@ import PngCheck from '../../public/images/check.png'
 
 interface ISectionHeaderProps {
   sectionNo: number,
-  sectionTitle: string,
+  title: string,
   processing: boolean,
   active: boolean,
   completed: boolean
@@ -14,7 +14,7 @@ interface ISectionHeaderProps {
 
 const SectionHeader: React.FC<ISectionHeaderProps> = ({
   sectionNo,
-  sectionTitle,
+  title,
   processing,
   active,
   completed
@@ -22,7 +22,7 @@ const SectionHeader: React.FC<ISectionHeaderProps> = ({
   return (
     <div className={classNames('section-header', active ? 'active' : '')}>
       <p className="section-no">{sectionNo}</p>
-      <p className="section-title">{sectionTitle}</p>
+      <p className="section-title">{title}</p>
       {completed && (
         <Image src={PngCheck} alt="completed" width={18} height={18}/>
       )}

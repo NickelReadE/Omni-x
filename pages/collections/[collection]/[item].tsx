@@ -16,6 +16,7 @@ import PngSub from '../../../public/images/subButton.png'
 import useOrderStatics from '../../../hooks/useOrderStatics'
 import useOwnership from '../../../hooks/useOwnership'
 import ConfirmBuy from '../../../components/collections/ConfirmBuy'
+import ConfirmAccept from '../../../components/collections/ConfirmAccept'
 import useCollectionNft from '../../../hooks/useCollectionNft'
 
 const truncate = (str: string) => {
@@ -92,7 +93,7 @@ const Item: NextPage = () => {
   // ownership hook
   const {
     owner,
-    // profileLink, 
+    // profileLink,
   } = useOwnership({
     owner_address: currentNFT?.owner
   })
@@ -116,9 +117,13 @@ const Item: NextPage = () => {
     openBidDlg,
     openSellDlg,
     openBuyDlg,
+    selectedBid,
+    openAcceptDlg,
     setOpenBidDlg,
     setOpenSellDlg,
     setOpenBuyDlg,
+    setOpenAcceptDlg,
+    setSelectedBid,
     onListingApprove,
     onListingConfirm,
     onListingDone,
@@ -126,8 +131,13 @@ const Item: NextPage = () => {
     onBuyConfirm,
     onBuyComplete,
     onBuyDone,
-    onBid,
-    onAccept
+    onBidApprove,
+    onBidConfirm,
+    onBidDone,
+    onAcceptApprove,
+    onAcceptConfirm,
+    onAcceptComplete,
+    onAcceptDone,
   } = useTrading({
     provider,
     signer,
@@ -149,8 +159,8 @@ const Item: NextPage = () => {
   const formattedPrice = currentNFT?.price
   const lastSale = currentNFT?.last_sale
 
-  const onBidAndRefresh = async (bidData: any, order: any) => {
-    await onBid(bidData, order)
+  const onBidDoneAndRefresh = () => {
+    onBidDone()
     refreshNft()
   }
 
@@ -267,7 +277,10 @@ const Item: NextPage = () => {
                               <div className='text-right mt-3'>
                                 {owner?.toLowerCase() == address?.toLowerCase() &&
                                   <button className='bg-[#ADB5BD] hover:bg-[#38B000] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5'
-                                    onClick={() => onAccept(item)}>
+                                    onClick={() => {
+                                      setSelectedBid(item)
+                                      setOpenAcceptDlg(true)
+                                    }}>
                                     accept
                                   </button>
                                 }
@@ -285,7 +298,7 @@ const Item: NextPage = () => {
                       <div className="">
                         {
                           isListed && !isAuction && owner?.toLowerCase() != address?.toLowerCase() &&
-                            <button 
+                            <button
                               className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]"
                               onClick={() => {setOpenBuyDlg(true)}}
                             >
@@ -294,7 +307,7 @@ const Item: NextPage = () => {
                         }
                         {
                           owner?.toLowerCase() == address?.toLowerCase() &&
-                            <button 
+                            <button
                               className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]"
                               onClick={() => {setOpenSellDlg(true)}}
                             >
@@ -333,7 +346,7 @@ const Item: NextPage = () => {
                   currentTab == 'items' &&
                   <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 gap-4">
                     {
-                      currentNFT && currentNFT.attributes && Object.entries(currentNFT.attributes).map((item, idx) => {
+                      currentNFT && currentNFT.attributes && Object.entries(currentNFT.attributes).map((item: any, idx: number) => {
                         const attrs = collection.attrs
                         const attr = attrs[item[0]].values
                         const trait = attr[(item[1] as string)]
@@ -375,11 +388,24 @@ const Item: NextPage = () => {
             order={order}
           />
           <ConfirmBid
-            onSubmit={(bidData: any) => onBidAndRefresh(bidData, order)}
+            onBidApprove={onBidApprove}
+            onBidConfirm={onBidConfirm}
+            onBidDone={onBidDoneAndRefresh}
             handleBidDlgClose={() => {setOpenBidDlg(false)}}
             openBidDlg={openBidDlg}
             nftImage={currentNFT.image}
             nftTitle={currentNFT.name}
+          />
+          <ConfirmAccept
+            onAcceptApprove={onAcceptApprove}
+            onAcceptConfirm={onAcceptConfirm}
+            onAcceptComplete={onAcceptComplete}
+            onAcceptDone={onAcceptDone}
+            handleAcceptDlgClose={() => {setOpenAcceptDlg(false)}}
+            openAcceptDlg={openAcceptDlg}
+            nftImage={currentNFT.image}
+            nftTitle={currentNFT.name}
+            bidOrder={selectedBid}
           />
         </div>
       }

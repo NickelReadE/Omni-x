@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {ReactNode, useEffect} from 'react'
 import { PendingTxType, ContractContext } from '../../contexts/contract'
-import { getERC1155Instance, getERC721Instance, getOmnixBridge1155Instance, getOmnixBridgeInstance, getONFTCore1155Instance, getONFTCore721Instance } from '../../utils/contracts'
+import { getERC1155Instance, getERC721Instance, getCurrencyInstance, getOmnixBridge1155Instance, getOmnixBridgeInstance, getONFTCore1155Instance, getONFTCore721Instance } from '../../utils/contracts'
 import useWallet from '../../hooks/useWallet'
 import useProgress from '../../hooks/useProgress'
 import { ethers } from 'ethers'
@@ -247,7 +247,7 @@ export const ContractProvider = ({
       }
     }
   }
-  const listenTradingEvents = async (txInfo: PendingTxType, historyIndex: number, isONFTCore: boolean) => {
+  const listenTradingNFTEvents = async (txInfo: PendingTxType, historyIndex: number, isONFTCore: boolean) => {
     if (address && txInfo.senderAddress && (!txInfo.destTxHash || !txInfo.txHash)) {
       const isTradingEvent721 = (ev: any) => {
         if (isONFTCore) {
@@ -324,6 +324,44 @@ export const ContractProvider = ({
       }
     }
   }
+  const listenTradingFundEvents = async (txInfo: PendingTxType, historyIndex: number, isSameChain: boolean) => {
+    if (address && txInfo.targetAddress && (!txInfo.destTxHash || !txInfo.txHash)) {
+      const isTradingEvent20 = (ev: any) => {
+        if (isSameChain) {
+          return ev.args?.to.toLowerCase() === address?.toLowerCase()
+        }
+        return ev.args?.to.toLowerCase() === ethers.constants.AddressZero
+      }
+
+      const bidderCurrencyInstance = getCurrencyInstance(txInfo.targetAddress, txInfo.targetChainId, null)
+      if (bidderCurrencyInstance) {
+        const events = await bidderCurrencyInstance.queryFilter(bidderCurrencyInstance.filters.Transfer(), txInfo.targetBlockNumber)
+        const eventExist = events.filter((ev) => isTradingEvent20(ev))
+        if (eventExist.length === 0) {
+          bidderCurrencyInstance.on('Transfer', async () => {
+            const events = await bidderCurrencyInstance.queryFilter(bidderCurrencyInstance.filters.Transfer(), txInfo.targetBlockNumber)
+            const eventExist = events.filter((ev) => isTradingEvent20(ev))
+            if (eventExist.length > 0) {
+              txInfo.txHash = txInfo.txHash || eventExist[0].transactionHash
+              txInfo.destTxHash = txInfo.destTxHash || eventExist[0].transactionHash
+              updateHistory(historyIndex, {
+                ...txInfo
+              })
+            }
+            setTimeout(() => {
+              refreshUserNfts()
+            }, UPDATE_TIMESTAMP)
+          })
+        } else {
+          txInfo.txHash = txInfo.txHash || eventExist[0].transactionHash
+          txInfo.destTxHash = txInfo.destTxHash || eventExist[0].transactionHash
+          updateHistory(historyIndex, {
+            ...txInfo
+          })
+        }
+      }
+    }
+  }
 
   const listenONFTEvents = async (txInfo: PendingTxType, historyIndex: number) => {
     if (txInfo.type === 'bridge') {
@@ -332,15 +370,17 @@ export const ContractProvider = ({
       } else {
         await listenBridgeEvents(txInfo, historyIndex)
       }
-    } else if (txInfo.type === 'buy' || txInfo.type === 'accept') {
+    } else if (txInfo.type === 'buy') {
       if (txInfo.isONFTCore && txInfo.senderChainId != txInfo.targetChainId) {
         if (txInfo.lastTxAvailable) {
-          await listenTradingEvents(txInfo, historyIndex, txInfo.isONFTCore)
+          await listenTradingNFTEvents(txInfo, historyIndex, txInfo.isONFTCore)
         }
         await listenTradingONFTCoreEvents(txInfo, historyIndex)
       } else {
-        await listenTradingEvents(txInfo, historyIndex, txInfo.isONFTCore)
+        await listenTradingNFTEvents(txInfo, historyIndex, txInfo.isONFTCore)
       }
+    } else if (txInfo.type === 'accept') {
+      await listenTradingFundEvents(txInfo, historyIndex, txInfo.senderChainId == txInfo.targetChainId)
     }
   }
 
