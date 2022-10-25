@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {useState, useEffect, ReactNode, useCallback} from 'react'
+import {useState, useEffect, ReactNode, useCallback, useMemo} from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
 import type {NextPage} from 'next'
 import CollectionCard from '../../components/CollectionCard'
@@ -10,7 +10,6 @@ import Link from 'next/link'
 
 const Collections: NextPage = () => {
   const [omniSlides, setOmniSlides] = useState<Array<ReactNode>>([])
-  const [currentSlides, setCurrentSlides] = useState<any>([])
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([])
   // const [prevBtnEnabled, setPrevBtnEnabled] = useState(false)
   // const [nextBtnEnabled, setNextBtnEnabled] = useState(false)
@@ -31,13 +30,6 @@ const Collections: NextPage = () => {
     setOmniSlides(slides)
   }, [collections])
 
-  useEffect(() => {
-    const new_slides:Array<ReactNode> = []
-    new_slides.push(<Link href={'/collections/kanpai_pandas'}><a><img src='https://i.seadn.io/gae/DCeuchHOQhwg6mEumI2BhKViz81s0CZYXUXd3tK5lL76cWwDBrNM46NDd3z_5lRrsaPGqub1AMKOi9jqvhxvuQJLc1KVXPFFtvVN6g?auto=format&w=1920' alt="banner - 4" className={'banner-slider'} /></a></Link>)
-    new_slides.push(<Link href={'/collections/gregs_eth'}><a><img src='https://i.seadn.io/gcs/files/a80f86bc5cc3ab9984161ca01aa04b6c.png?auto=format&w=1920' alt="banner - 5" className={'banner-slider'} /></a></Link>)
-    setCurrentSlides(new_slides)
-  }, [])
-
   const onSelect = useCallback(() => {
     if (!embla) return
     setSelectedIndex(embla.selectedScrollSnap())
@@ -46,11 +38,14 @@ const Collections: NextPage = () => {
   }, [embla, setSelectedIndex])
 
   useEffect(() => {
-    if (!embla) return
-    onSelect()
-    setScrollSnaps(embla.scrollSnapList())
-    embla.on('select', onSelect)
-  }, [embla, setScrollSnaps, onSelect])
+    if (collections.length > 0) {
+      if (!embla) return
+      onSelect()
+      embla.on('select', onSelect)
+      embla.reInit()
+      setScrollSnaps(embla.scrollSnapList())
+    }
+  }, [embla, setScrollSnaps, onSelect, collections])
 
   const scrollTo = useCallback((index) => embla && embla.scrollTo(index), [
     embla
@@ -64,9 +59,21 @@ const Collections: NextPage = () => {
             <div className="embla__viewport" ref={viewportRef}>
               <div className="embla__container">
                 {
-                  currentSlides.map((item: any, index: number) => {
+                  collections.map((item, index: number) => {
                     return (
-                      <div key={index} className="embla__slide">{item}</div>
+                      <div className="embla__slide" key={index}>
+                        <div className="embla__slide__inner">
+                          <Link href={`/collections/${item.col_url}`}>
+                            <a>
+                              <img
+                                src={item.banner_image}
+                                alt="banner - 4"
+                                className={'banner-slider'}
+                              />
+                            </a>
+                          </Link>
+                        </div>
+                      </div>
                     )
                   })
                 }
