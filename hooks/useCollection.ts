@@ -14,6 +14,7 @@ export type CollectionType = {
     discord: string,
     twitter: string,
     website: string,
+    symbol: string,
     floorPrice: {
         eth: number,
         usd: number,

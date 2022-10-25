@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import { DataContext } from '../../contexts/data'
 import useBalances from '../../hooks/useBalances'
+import useCollections from '../../hooks/useCollections'
 import useProfile from '../../hooks/useProfile'
 import useWallet from '../../hooks/useWallet'
 
@@ -14,6 +15,7 @@ export const DataProvider = ({
   const { address } = useWallet()
   const { balances, updateRefresh: refreshBalance, faucet: onFaucet } = useBalances()
   const { profile, refreshProfile, updateProfileData, nfts: userNfts, refreshNfts: refreshUserNfts } = useProfile(address)
+  const { collections, refreshCollections } = useCollections()
 
   return (
     <DataContext.Provider
@@ -21,10 +23,12 @@ export const DataProvider = ({
         balances,
         profile,
         userNfts,
+        collections,
         onFaucet,
         refreshBalance,
         refreshUserNfts,
         refreshProfile,
+        refreshCollections,
         updateProfileData,
       }}
     >

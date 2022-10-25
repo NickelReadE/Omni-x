@@ -46,6 +46,7 @@ export interface NFTItem {
   collection_address: string,
   currency: string,
   uri: string,
+  symbol: string,
   order_data: any,
   bidDatas: any[],
 }

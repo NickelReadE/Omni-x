@@ -1,76 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect} from 'react'
-import NFTBox from './NFTBox'
-import NFTbox from './collections/NFTBox'
+import NFTBox from './collections/NFTBox'
 import {IPropsImage} from '../interface/interface'
-import {getOrders, getLastSaleOrders} from '../redux/reducers/ordersReducer'
-import {IGetOrderRequest} from '../interface/interface'
-import useWallet from '../hooks/useWallet'
-import {useDispatch, useSelector} from 'react-redux'
+import {useDispatch} from 'react-redux'
 import {getCollections} from '../redux/reducers/collectionsReducer'
-import {selectSearchText} from '../redux/reducers/headerReducer'
-import {
-  getCollectionInfo,
-  getCollectionAllNFTs,
-  selectCollectionAllNFTs,
-  selectCollectionInfo
-} from '../redux/reducers/collectionsReducer'
 import {chainInfos, SUPPORTED_CHAIN_IDS} from '../utils/constants'
 import {ChainIds} from '../types/enum'
 import useData from '../hooks/useData'
 
 const NFTGrid = ({nfts}: IPropsImage) => {
   const [chain, setChain] = useState(-1)
-  const [isSearch, setSearch] = useState(false)
-  const [nft, setNFT] = useState(null)
-  const [colURL, setColURL] = useState('')
-  const [tokenID, setTokenID] = useState(0)
 
-  const {
-    address
-  } = useWallet()
   const dispatch = useDispatch()
   const { refreshUserNfts } = useData()
-  const searchText = useSelector(selectSearchText)
-  const col_url = searchText.split('#')[0]
-  const token_id = searchText.split('#')[1]
-
-  const allNFTs = useSelector(selectCollectionAllNFTs)
-  const collectionInfo = useSelector(selectCollectionInfo)
-
-  useEffect(() => {
-    if (searchText == '') {
-      setSearch(false)
-    } else {
-      if (col_url != '' && Number(token_id) > 0) {
-        setSearch(true)
-        setColURL(col_url)
-        setTokenID(Number(token_id))
-        if (colURL != col_url) {
-          dispatch(getCollectionAllNFTs(col_url, '', '') as any)
-        }
-        dispatch(getCollectionInfo(col_url) as any)
-      } else {
-        setSearch(false)
-      }
-    }
-
-  }, [searchText])
-
-  useEffect(() => {
-    if (allNFTs && tokenID > 0) {
-      setNFT(allNFTs[tokenID - 1])
-    }
-  }, [allNFTs, tokenID])
 
   useEffect(() => {
     dispatch(getCollections() as any)
   }, [])
 
-
   useEffect(() => {
     if (nfts.length > 0) {
-      const request: IGetOrderRequest = {
+      /* const request: IGetOrderRequest = {
         isOrderAsk: true,
         signer: address,
         startTime: Math.floor(Date.now() / 1000).toString(),
@@ -93,7 +43,7 @@ const NFTGrid = ({nfts}: IPropsImage) => {
         status: ['EXECUTED'],
         sort: 'UPDATE_OLDEST'
       }
-      dispatch(getLastSaleOrders(excutedRequest) as any)
+      dispatch(getLastSaleOrders(excutedRequest) as any) */
     }
   }, [nfts])
 
@@ -133,30 +83,29 @@ const NFTGrid = ({nfts}: IPropsImage) => {
           </div>
         </div>
         <div className="grid grid-cols-4 gap-6 2xl:grid-cols-5 2xl:gap-10 mt-4">
-          {!isSearch && nfts.map((item, index) => {
+          {nfts.map((item, index) => {
             if (chain == -1) {
               return (
-                <NFTBox nft={item} index={index} key={index} onRefresh={onRefresh} />
+                <NFTBox 
+                  nft={item}
+                  index={index}
+                  key={index}
+                  onRefresh={onRefresh} 
+                />
               )
             } else {
               if (chain == item.chain_id) {
                 return (
-                  <NFTBox nft={item} index={index} key={index} onRefresh={onRefresh} />
+                  <NFTBox 
+                    nft={item}
+                    index={index}
+                    key={index}
+                    onRefresh={onRefresh} 
+                  />
                 )
               }
             }
           })}
-          {
-            isSearch && nft != null &&
-            <NFTbox
-              nft={nft}
-              index={1}
-              col_url={col_url}
-              col_address={collectionInfo.address}
-              chain={collectionInfo ? collectionInfo.chain : 'goerli'}
-              onRefresh={onRefresh}
-            />
-          }
         </div>
       </div>
     </>
