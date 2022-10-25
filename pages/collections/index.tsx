@@ -37,14 +37,15 @@ const Collections: NextPage = () => {
     if (!embla) return
     onSelect()
     embla.on('select', onSelect)
-  }, [embla, setScrollSnaps, onSelect])
-
-  useEffect(() => {
-    if (!embla) return
     embla.reInit()
     setScrollSnaps(embla.scrollSnapList())
-  }, [embla, collections])
-
+    if (collections.length > 0) {
+      setTimeout(() => {
+        embla.reInit()
+        setScrollSnaps(embla.scrollSnapList())
+      }, 1000)
+    }
+  }, [embla, setScrollSnaps, onSelect, collections])
 
   const scrollTo = useCallback((index) => embla && embla.scrollTo(index), [
     embla
