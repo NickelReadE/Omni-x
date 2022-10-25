@@ -12,8 +12,8 @@ const Collections: NextPage = () => {
   const [omniSlides, setOmniSlides] = useState<Array<ReactNode>>([])
   const [currentSlides, setCurrentSlides] = useState<any>([])
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([])
-  const [prevBtnEnabled, setPrevBtnEnabled] = useState(false)
-  const [nextBtnEnabled, setNextBtnEnabled] = useState(false)
+  // const [prevBtnEnabled, setPrevBtnEnabled] = useState(false)
+  // const [nextBtnEnabled, setNextBtnEnabled] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(0)
 
   const [viewportRef, embla] = useEmblaCarousel()
@@ -41,8 +41,8 @@ const Collections: NextPage = () => {
   const onSelect = useCallback(() => {
     if (!embla) return
     setSelectedIndex(embla.selectedScrollSnap())
-    setPrevBtnEnabled(embla.canScrollPrev())
-    setNextBtnEnabled(embla.canScrollNext())
+    // setPrevBtnEnabled(embla.canScrollPrev())
+    // setNextBtnEnabled(embla.canScrollNext())
   }, [embla, setSelectedIndex])
 
   useEffect(() => {
