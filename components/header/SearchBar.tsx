@@ -25,6 +25,10 @@ export default function SearchBar() {
     }
   }
 
+  const getMinValue = (values: number[]) => {
+    return values.filter(item => item > 0).reduce((a, b) => Math.min(a, b))
+  }
+
   return (
     <div ref={ref} className={'h-[90px] flex items-center'}>
       <div className={'relative'}>
@@ -60,7 +64,7 @@ export default function SearchBar() {
                             <div className={'flex flex-col'}>
                               <span className={'font-[16px]'}>{item.name}</span>
                               <div className={'flex items-center'}>
-                                <span className={'font-[14px] text-[#A0B3CC]'}>floor ${item.floorPrice.omni}</span>
+                                <span className={'font-[14px] text-[#A0B3CC]'}>floor ${getMinValue([item.floorPrice.omni, item.floorPrice.usd])}</span>
                                 <span className={'font-[14px] text-[#A0B3CC] mx-2'}> | </span>
                                 <span className={'font-[14px] text-[#A0B3CC]'}>items {item.itemsCnt}</span>
                               </div>
