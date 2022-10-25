@@ -160,25 +160,6 @@ const Collection: NextPage = () => {
   }, [collectionInfo])
 
   useEffect(() => {
-    if (nfts.length > 0) {
-      const request: IGetOrderRequest = {
-        isOrderAsk: true,
-        startTime: Math.floor(Date.now() / 1000).toString(),
-        endTime: Math.floor(Date.now() / 1000).toString(),
-        status: ['VALID'],
-        sort: 'NEWEST'
-      }
-      dispatch(getOrders(request) as any)
-      const bidRequest: IGetOrderRequest = {
-        isOrderAsk: false,
-        status: ['VALID'],
-        sort: 'PRICE_ASC'
-      }
-      dispatch(getOrders(bidRequest) as any)
-    }
-  }, [nfts])
-
-  useEffect(() => {
     if (isActiveBuyNow && nfts.length > 0) {
       const temp = []
       for (let i = 0; i < nfts.length; i++) {
@@ -505,8 +486,8 @@ const Collection: NextPage = () => {
                                   <div className="flex items-center justify-between">
                                     <span className="font-bold text-[#4d5358]">{attrs[key].values[valueKey][3]}</span>
                                     <div className="text-right">
-                                      <p className="font-bold text-[#697077]">{attrs[key].values[valueKey][4]}</p>
-                                      <p className="text-[11px] text-[#697077]">({attrs[key].values[valueKey][1]}%)</p>
+                                      {/*<p className="font-bold text-[#697077]">{attrs[key].values[valueKey][4]}</p>*/}
+                                      {/*<p className="text-[11px] text-[#697077]">({attrs[key].values[valueKey][1]}%)</p>*/}
                                     </div>
                                   </div>
                                 }
@@ -636,7 +617,7 @@ const Collection: NextPage = () => {
             </div>
             <div className="mt-10 mb-5">
               {
-                nfts.length === 0 && 
+                nfts.length === 0 &&
                 <div className="flex justify-center items-center">
                   <div className="flex justify-center items-center w-[90%] h-[100px]">
                     <Image src={Loading} alt="Loading..." width="80px" height="80px" />

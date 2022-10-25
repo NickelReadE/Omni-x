@@ -90,7 +90,7 @@ const useProfile = (
       await userService.updateProfile(user)
       refreshProfile()
     } catch (e) {
-      console.error(e)
+      console.error(`While updating user profile: ${e}`)
       dispatch(openSnackBar({ message: 'Failed to update profile', status: 'error' }))
     } finally {
       setIsUpdating(false)

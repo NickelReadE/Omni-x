@@ -2,7 +2,7 @@ import { addDays } from 'date-fns'
 import { BigNumber, BigNumberish, ethers } from 'ethers'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { IBidData, IGetOrderRequest, IListingData, IOrder, NFTItem, OrderStatus } from '../interface/interface'
+import { IBidData, IGetOrderRequest, IListingData, IOrder, OrderStatus } from '../interface/interface'
 import { getLastSaleOrders, getOrders } from '../redux/reducers/ordersReducer'
 import { openSnackBar } from '../redux/reducers/snackBarReducer'
 import { collectionsService } from '../services/collections'
@@ -147,8 +147,8 @@ const useTrading = ({
       throw new Error('Please input the correct price')
     }
 
-    const currencyContract = getCurrencyInstance(currency, chainId, signer)
-    const balance = await currencyContract?.balanceOf(address)
+    // const currencyContract = getCurrencyInstance(currency, chainId, signer)
+    // const balance = await currencyContract?.balanceOf(address)
 
     return true
   }
@@ -254,7 +254,6 @@ const useTrading = ({
   }
 
   const onListingDone = () => {
-    getListOrders()
     if (onRefresh) onRefresh()
   }
 

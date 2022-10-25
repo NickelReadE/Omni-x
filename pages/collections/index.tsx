@@ -1,29 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useState, Fragment, useEffect} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
+import {useState, useEffect, ReactNode} from 'react'
 import type {NextPage} from 'next'
-import {
-  getCollections,
-  selectCollections,
-  clearCollectionNFTs,
-} from '../../redux/reducers/collectionsReducer'
-import {getOrders} from '../../redux/reducers/ordersReducer'
 import Slider from '../../components/Slider'
 import CollectionCard from '../../components/CollectionCard'
-import {IGetOrderRequest} from '../../interface/interface'
+import useData from '../../hooks/useData'
 
 const Collections: NextPage = () => {
-  const [omniSlides, setOmniSlides] = useState<Array<React.ReactNode>>([])
-  const dispatch = useDispatch()
-  const collections = useSelector(selectCollections)
+  const [omniSlides, setOmniSlides] = useState<Array<ReactNode>>([])
+  const { collections } = useData()
 
   useEffect(() => {
-    dispatch(getCollections() as any)
-    dispatch(clearCollectionNFTs() as any)
-  }, [])
-
-  useEffect(() => {
-    const slides: Array<React.ReactNode> = []
+    const slides: Array<ReactNode> = []
     if (collections.length > 0) {
       collections.map((item: any) => {
         slides.push(
@@ -33,15 +20,6 @@ const Collections: NextPage = () => {
     }
     setOmniSlides(slides)
   }, [collections])
-
-  useEffect(() => {
-    const request: IGetOrderRequest = {
-      isOrderAsk: true,
-      status: ['VALID'],
-      sort: 'PRICE_ASC'
-    }
-    dispatch(getOrders(request) as any)
-  }, [])
 
   return (
     <>
