@@ -14,7 +14,7 @@ export const DataProvider = ({
 }: DataProviderProps): JSX.Element => {
   const { address } = useWallet()
   const { balances, updateRefresh: refreshBalance, faucet: onFaucet } = useBalances()
-  const { profile, refreshProfile, updateProfileData, nfts: userNfts, refreshNfts: refreshUserNfts } = useProfile(address)
+  const { profile, isLoading: isLoadingNfts, nfts: userNfts, refreshNfts: refreshUserNfts, refreshProfile, updateProfileData } = useProfile(address)
   const { collections, refreshCollections } = useCollections()
 
   return (
@@ -24,6 +24,7 @@ export const DataProvider = ({
         profile,
         userNfts,
         collections,
+        isLoadingNfts,
         onFaucet,
         refreshBalance,
         refreshUserNfts,

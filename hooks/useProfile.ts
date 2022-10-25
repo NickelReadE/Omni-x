@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { NFTItem } from '../interface/interface'
-import { openSnackBar } from '../redux/reducers/snackBarReducer'
-import { userService } from '../services/users'
+import {useEffect, useState} from 'react'
+import {useDispatch} from 'react-redux'
+import {NFTItem} from '../interface/interface'
+import {openSnackBar} from '../redux/reducers/snackBarReducer'
+import {userService} from '../services/users'
 
 export type ProfileData = {
   address: string,
@@ -19,8 +19,9 @@ export type UserInformation = {
   profile: ProfileData | undefined,
   nfts: Array<NFTItem>,
   isUpdating: boolean,
-  refreshNfts: () => Promise<void>,
-  refreshProfile: () => Promise<void>,
+  isLoading: boolean,
+  refreshNfts: () => void,
+  refreshProfile: () => void,
   updateProfileData: (user: FormData) => Promise<void>,
 }
 
@@ -43,10 +44,9 @@ const getUserInformation = async (user_address: string): Promise<ProfileData | u
 
 const getUserNFTs = async (address: string): Promise<Array<NFTItem>> => {
   try {
-    const nfts = await userService.getUserNFTs(address)
-    return nfts
+    return await userService.getUserNFTs(address)
   } catch (err: any) {
-    console.error(err)
+    console.error(`While fetching user nfts: ${err}`)
     return []
   }
 }
@@ -56,19 +56,32 @@ const useProfile = (
 ): UserInformation => {
   const [profile, setProfile] = useState<ProfileData | undefined>()
   const [nfts, setNfts] = useState<Array<NFTItem>>([])
+  const [loading, setLoading] = useState<boolean>(false)
   const [refresh, setRefresh] = useState<boolean>(false)
+  const [nftRefresh, setNftRefresh] = useState<boolean>(false)
   const [isUpdating, setIsUpdating] = useState<boolean>(false)
-  
+
   const dispatch = useDispatch()
 
   useEffect(() => {
     (async () => {
       if (user_address) {
         setProfile(await getUserInformation(user_address))
-        setNfts(await getUserNFTs(user_address))
       }
     })()
   }, [user_address, refresh])
+
+  useEffect(() => {
+    (async () => {
+      if (user_address) {
+        setLoading(true)
+        const nfts = await getUserNFTs(user_address)
+        setNfts(nfts)
+        setLoading(false)
+      }
+    })()
+  }, [user_address, nftRefresh])
+
 
   const updateProfileData = async (user: FormData) => {
     setIsUpdating(true)
@@ -85,13 +98,11 @@ const useProfile = (
     dispatch(openSnackBar({ message: 'Successfully updated', status: 'success' }))
   }
 
-  const refreshNfts = async () => {
-    if (user_address) {
-      setNfts(await getUserNFTs(user_address))
-    }
+  const refreshNfts = () => {
+    setNftRefresh(!nftRefresh)
   }
 
-  const refreshProfile = async () => {
+  const refreshProfile = () => {
     setRefresh(!refresh)
   }
 
@@ -99,6 +110,7 @@ const useProfile = (
     profile,
     nfts,
     isUpdating,
+    isLoading: loading,
     refreshNfts,
     refreshProfile,
     updateProfileData

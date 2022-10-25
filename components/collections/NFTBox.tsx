@@ -14,7 +14,6 @@ import {
 import useWallet from '../../hooks/useWallet'
 import ConfirmBid from './ConfirmBid'
 import useTrading from '../../hooks/useTrading'
-import useOrderStatics from '../../hooks/useOrderStatics'
 import ConfirmSell from './ConfirmSell'
 import ConfirmBuy from './ConfirmBuy'
 import useData from '../../hooks/useData'
@@ -41,23 +40,9 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
   } : undefined
 
   const order = nft.order_data
-  const col_address = nft.collection_address
   const chain = nft.chain_id
-  //update this logic in the constants
-  const collection_address_map = useMemo(() => {
-    if (chain && col_address) {
-      return {
-        [chain]: col_address.toLowerCase()
-      }
-    }
-    return []
-  }, [chain, col_address])
 
-  const {
-    orderChainId,
-    isAuction,
-  } = useOrderStatics({nft, collection_address_map})
-
+  const orderChainId = order?.chain_id
   const order_collection_address = order?.collectionAddress
   const order_collection_chain = orderChainId && getChainNameFromId(orderChainId)
 
@@ -90,7 +75,7 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
     provider,
     signer,
     address,
-    collection_name: col_url,
+    collection_name: nft_collection?.col_url,
     collection_address: nft.collection_address,
     collection_chain: getChainNameFromId(chain ? Number(chain) : 4),
     order_collection_address,
@@ -323,7 +308,7 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
               {'Sell'}
             </div>
           )}
-          {isShowBtn && !isOwner && isListed && !isAuction && isWhitelisted && (
+          {isShowBtn && !isOwner && isListed && isWhitelisted && (
             <div
               className="ml-2 mr-2 py-[1px] px-4 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] cursor-pointer font-blod hover:bg-[#38B000]"
               onClick={() => setOpenBuyDlg(true)}>
