@@ -3,11 +3,19 @@ import { userService } from '../services/users'
 
 type CollectionResult = {
     name: string,
+    profile_image: string,
     description: string,
+    floorPrice: {
+      eth: number,
+      usd: number,
+      omni: number
+    },
+    itemsCnt: number,
     col_url: string,
 }
 
 type ProfileResult = {
+    avatar: string,
     address: string,
     username: string,
 }
@@ -38,7 +46,7 @@ const useSearch = (
     collections: [],
     profiles: []
   })
-    
+
   useEffect(() => {
     (async () => {
       if (keyword) {

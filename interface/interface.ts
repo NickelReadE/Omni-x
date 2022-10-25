@@ -6,7 +6,8 @@ export interface IPropsSlider {
 }
 
 export interface IPropsImage {
-  nfts: Array<NFTItem>
+  nfts: Array<NFTItem>,
+  isLoading: boolean,
 }
 
 export interface IPropsFeed {

@@ -7,10 +7,10 @@ import {ChainIds} from '../types/enum'
 import useData from '../hooks/useData'
 import Loading from './Loading'
 
-const NFTGrid = ({nfts}: IPropsImage) => {
+const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
   const [chain, setChain] = useState(-1)
 
-  const { refreshUserNfts, isLoadingNfts } = useData()
+  const { refreshUserNfts } = useData()
 
   const onRefresh = () => {
     refreshUserNfts()
@@ -48,13 +48,13 @@ const NFTGrid = ({nfts}: IPropsImage) => {
           </div>
         </div>
         {
-          isLoadingNfts &&
+          isLoading &&
           <div className='flex justify-center py-10'>
             <Loading />
           </div>
         }
         {
-          !isLoadingNfts &&
+          !isLoading &&
           <div className="grid grid-cols-4 gap-6 2xl:grid-cols-5 2xl:gap-10 mt-4">
             {nfts.map((item, index) => {
               if (chain == -1) {

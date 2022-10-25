@@ -8,14 +8,14 @@ import NFTGrid from '../../components/NFTGrid'
 const User: NextPage = () => {
   const router = useRouter()
   const userAddress = router.query.address as string
-  const {profile, nfts} = useProfile(userAddress)
+  const {profile, nfts, isLoading} = useProfile(userAddress)
 
   const [currentTab, setCurrentTab] = useState<string>('NFTs')
-  
+
   return (
     <div>
       {
-        profile && 
+        profile &&
         <>
           <UserBanner user={profile} />
           <div className="flex justify-center">
@@ -32,7 +32,7 @@ const User: NextPage = () => {
                   <li className={'select-none inline-block p-4  w-36 cursor-pointer  z-0  text-[#ADB5BD]'}>feed</li>
                   <li className={'select-none inline-block p-4  w-36 cursor-pointer  z-0  text-[#ADB5BD]'}>stats</li>
                 </ul>
-                {currentTab === 'NFTs' && <NFTGrid nfts={nfts}/>}
+                {currentTab === 'NFTs' && <NFTGrid nfts={nfts} isLoading={isLoading} />}
                 {currentTab === 'watchlist' && <div/>}
                 {/* {currentTab === 'feed' && <Feed feed={feed} />} */}
                 {currentTab === 'feed' && <div/>}
