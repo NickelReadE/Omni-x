@@ -54,7 +54,7 @@ const Collections: NextPage = () => {
 
   const scrollTo = useCallback((index) => embla && embla.scrollTo(index), [
     embla
-  ]);
+  ])
 
   return (
     <>
