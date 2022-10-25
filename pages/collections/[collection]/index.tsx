@@ -32,8 +32,6 @@ import {
 import NFTBox from '../../../components/collections/NFTBox'
 import classNames from '../../../helpers/classNames'
 import editStyle from '../../../styles/collection.module.scss'
-import { getOrders } from '../../../redux/reducers/ordersReducer'
-import { IGetOrderRequest } from '../../../interface/interface'
 import { getBlockExplorer } from '../../../utils/constants'
 import useWallet from '../../../hooks/useWallet'
 import useCollection from '../../../hooks/useCollection'
