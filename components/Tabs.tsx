@@ -26,7 +26,7 @@ const Tabs = ({ blur }: TabProps) => {
   const [bOpenModal, setOpenModal] = useState(false)
   const classes = useStyles()
   const { address } = useWallet()
-  const { userNfts: nfts } = useData()
+  const { userNfts: nfts, isLoadingNfts } = useData()
 
   const updateModal = ():void => {
     setOpenModal(false)
@@ -50,7 +50,7 @@ const Tabs = ({ blur }: TabProps) => {
               <li className={'select-none inline-block p-4  w-36 cursor-pointer  z-0  text-[#ADB5BD]'}>stats</li>
               <li className={'absolute right-0 select-none inline-block p-4  w-36 cursor-pointer   text-[#6C757D]'} onClick={() => setOpenModal(true) }>settings</li>
             </ul>
-            {currentTab === 'NFTs' && <NFTGrid nfts={nfts}/>}
+            {currentTab === 'NFTs' && <NFTGrid nfts={nfts} isLoading={isLoadingNfts} />}
             {currentTab === 'watchlist' && <WatchList/>}
             {/* {currentTab === 'feed' && <Feed feed={feed} />} */}
             {currentTab === 'feed' && <div/>}
