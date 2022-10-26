@@ -280,8 +280,6 @@ const Item: NextPage = () => {
                           <p className="text-[#B444F9] text-[12px] font-bold">{item[0]}</p>
                           <div className="flex justify-start items-center mt-2">
                             <p className="text-[#1E1C21] text-[18px] font-bold">{item[1]}<span className="ml-3 font-normal">[{trait ? trait[1] : 0}%]</span></p>
-                            <p className="ml-5 mr-3 text-[#1E1C21] text-[18px] ml-auto">{order && order.price && ethers.utils.formatEther(order.price)}</p>
-                            {/*<Image src={PngEther} alt="" />*/}
                           </div>
                         </div>
                       })
