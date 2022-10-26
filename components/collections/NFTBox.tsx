@@ -8,7 +8,6 @@ import {IOrder, IPropsNFTItem} from '../../interface/interface'
 import {
   getCurrencyIconByAddress,
   getChainIconById,
-  getChainNameFromId,
   numberLocalize
 } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'
@@ -39,13 +38,6 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
     zIndex: 99
   } : undefined
 
-  const order = nft.order_data
-  const chain = nft.chain_id
-
-  const orderChainId = order?.chain_id
-  const order_collection_address = order?.collectionAddress
-  const order_collection_chain = orderChainId && getChainNameFromId(orderChainId)
-
   const nft_collection = useMemo(() => {
     return collections.find((collection) => {
       if (collection.address && collection.address[nft.chain_id] && nft.collection_address) {
@@ -53,6 +45,14 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
       }
     })
   }, [collections, nft])
+
+  const collection_address_map = useMemo(() => {
+    if (nft_collection) {
+      return nft_collection.address
+    }
+  }, [nft_collection])
+
+  const order = nft.order_data
 
   const {
     openBidDlg,
@@ -76,13 +76,7 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
     signer,
     address,
     collection_name: nft_collection?.col_url,
-    collection_address: nft.collection_address,
-    collection_chain: getChainNameFromId(chain ? Number(chain) : 4),
-    order_collection_address,
-    order_collection_chain,
-    owner: nft?.owner, // owner,
-    owner_collection_address: nft.collection_address, // ownedCollectionAddress,
-    owner_collection_chain: nft.chain, // ownerChainId && getChainNameFromId(ownerChainId),
+    collection_address_map,
     owner_collection_chain_id: nft.chain_id,
     token_id: nft?.token_id,
     selectedNFTItem: nft,

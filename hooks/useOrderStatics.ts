@@ -1,114 +1,58 @@
-import {BigNumber} from 'ethers'
 import {useMemo} from 'react'
-import {useSelector} from 'react-redux'
 import {IOrder} from '../interface/interface'
-import {selectBidOrders, selectLastSaleOrders, selectOrders} from '../redux/reducers/ordersReducer'
-import {selectCollectionInfo} from '../redux/reducers/collectionsReducer'
-import {SaleType} from '../types/enum'
-import {formatCurrency, getCurrencyIconByAddress, getCurrencyNameAddress} from '../utils/constants'
+import {getCurrencyIconByAddress} from '../utils/constants'
 
 export type OrderStatics = {
-  order?: IOrder,
-  orderChainId?: number,
+  order: IOrder,
   isListed: boolean,
-  isAuction: boolean,
-  sortedBids?: IOrder[],
+  sortedBids: IOrder[],
   highestBid?: number,
   highestBidCoin?:  string,
   lastSale?: number,
   lastSaleCoin?:  string,
 }
 
-const findOrder = (orders: IOrder[], token_id: number, collection_addresses: string[], isDetailPage: boolean) => {
-  if (isDetailPage) {
-    if (collection_addresses.map(address => address.toLowerCase()).indexOf(orders[0].collectionAddress.toLowerCase()) != -1
-      && token_id === Number(orders[0].tokenId)) {
-      return orders[0]
-    }
-  } else {
-    return [...orders].sort((a, b) => {
-      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-    }).find(order => ( // TODO: find last order by timestamp
-      collection_addresses.map(address => address.toLowerCase()).indexOf(order.collectionAddress.toLowerCase()) != -1
-      && token_id === Number(order.tokenId)
-    ))
-  }
-  return undefined
-}
-
 const useOrderStatics = ({
-  nft,
-  collection_address_map,
-  isDetailPage
+  nft
 }: any): OrderStatics => {
-  const orders = useSelector(selectOrders)
-  const bidOrders = useSelector(selectBidOrders) as IOrder[]
-  const lastSaleOrders = useSelector(selectLastSaleOrders)
-  const collectionInfo = useSelector(selectCollectionInfo)
-
-  const collection_addresses = useMemo(() => (
-    collection_address_map
-      ? Object.values(collection_address_map) as string[]
-      : []
-  ), [collection_address_map])
-
-  const collection_addresses_sale = useMemo(() => (
-    collectionInfo && collectionInfo.address
-      ? Object.values(collectionInfo.address) as string[]
-      : []
-  ), [collectionInfo])
-
-  // order
-  const order = useMemo(() => {
-    if (orders?.length > 0 && nft) {
-      return findOrder(orders, Number(nft.token_id), collection_addresses, isDetailPage)
-    }
-    return undefined
-  }, [orders, nft, collection_addresses, isDetailPage])
-
-  // highest bid
   const sortedBids = useMemo(() => {
-    if (bidOrders?.length > 0 && nft) {
-      return [...bidOrders]
-        .filter(o => (collection_addresses.indexOf(o.collectionAddress) != -1
-          && Number(nft.token_id) === Number(o.tokenId)))
-        .sort((o1, o2) => {
-          const p1 = BigNumber.from(o1.price)
-          const p2 = BigNumber.from(o2.price)
-          if (p1.eq(p2)) return 0
-          return p2.sub(p1).isNegative() ? -1 : 1
-        })
+    if (nft && nft.bidDatas) {
+      const bids = JSON.parse(JSON.stringify(nft.bidDatas))
+      return bids.sort((a: any, b: any) => {
+        if (a.price && b.price) {
+          if (a.price === b.price) return 0
+          return a.price > b.price ? -1 : 1
+        }
+        return 0
+      })
     }
-    return undefined
-  }, [bidOrders, collection_addresses, nft])
-
-  const highestBidOrder = (sortedBids && sortedBids.length > 0) ? sortedBids[0] : undefined
-  const highestBidCoin = highestBidOrder?.currencyAddress && getCurrencyIconByAddress(highestBidOrder?.currencyAddress)
-  const highestBidCurrencyName = getCurrencyNameAddress(highestBidOrder?.currencyAddress)
-  const highestBid = Number(formatCurrency(highestBidOrder?.price || 0, highestBidCurrencyName))
-
-  // last sale
-  const lastSaleOrder = useMemo(() => {
-    if (lastSaleOrders?.length > 0  && nft) {
-      return findOrder(lastSaleOrders, Number(nft.token_id), collection_addresses_sale, isDetailPage)
+    return []
+  }, [nft])
+  const highestBid = useMemo(() => {
+    if (sortedBids.length > 0) {
+      return sortedBids[0].price
     }
-    return undefined
-  }, [lastSaleOrders, nft, collection_addresses_sale, isDetailPage])
-  const lastSaleCoin = lastSaleOrder?.currencyAddress && getCurrencyIconByAddress(lastSaleOrder?.currencyAddress)
-  const lastSaleCurrencyName = getCurrencyNameAddress(lastSaleOrder?.currencyAddress)
-  const lastSale = Number(formatCurrency(nft?.lastSale || 0, lastSaleCurrencyName))
+    return 0
+  }, [sortedBids])
+  const highestBidCoin = useMemo(() => {
+    if (sortedBids.length > 0 && sortedBids[0].currency) {
+      return getCurrencyIconByAddress(sortedBids[0].currency)
+    }
+  }, [sortedBids])
+  const lastSaleCoin = useMemo(() => {
+    if (nft && nft.last_sale_currency) {
+      return getCurrencyIconByAddress(nft.last_sale_currency)
+    }
+  }, [nft])
 
-  const isListed = !!order
-  const isAuction = false
+  const isListed = !!nft?.order_id
   return {
-    order,
-    orderChainId: order && Number(Object.keys(collection_address_map)[collection_addresses.map(address => address.toLowerCase()).indexOf(order.collectionAddress.toLowerCase())]),
+    order: nft?.order_data,
     isListed,
-    isAuction,
     sortedBids,
     highestBid,
     highestBidCoin,
-    lastSale,
+    lastSale: nft?.last_sale,
     lastSaleCoin
   }
 }

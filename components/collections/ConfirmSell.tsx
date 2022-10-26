@@ -67,8 +67,8 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
 
   const onListing = () => {
     if (listingStep === ListingStep.StepListing) {
-      setStep(ListingStep.StepApprove)
       setProcessing(true)
+      setStep(ListingStep.StepCheckNetwork)
     }
     else if (listingStep === ListingStep.StepApprove) {
       setStep(ListingStep.StepConfirm)
@@ -81,10 +81,12 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
   const doLogic = async () => {
     const isAuction = sellType != SaleType.FIXED
 
-    if (listingStep === ListingStep.StepApprove && onListingApprove) {
+    if (listingStep === ListingStep.StepCheckNetwork && onListingApprove) {
+      await onListingApprove(isAuction)
+      setStep(ListingStep.StepApprove)
+    }
+    else if (listingStep === ListingStep.StepApprove && onListingApprove) {
       const tx = await onListingApprove(isAuction)
-      
-      setProcessing(true)
 
       if (tx) {
         setApproveTx(tx.hash)
@@ -115,10 +117,16 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
   useEffect(() => {
     if (listingStep === ListingStep.StepListing) return
 
-    doLogic().catch((e) => {
+    doLogic().catch((e: Error) => {
       console.log('error', e)
-      setProcessing(false)
-      setStep(ListingStep.StepFail)
+      if (e.message !== 'Network changed') {
+        setProcessing(false)
+        setStep(ListingStep.StepFail)
+      }
+      else {
+        setProcessing(false)
+        setStep(ListingStep.StepListing)
+      }
     })
   }, [listingStep, currency, period, setStep])
 

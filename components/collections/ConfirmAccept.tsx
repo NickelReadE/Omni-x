@@ -58,8 +58,8 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
 
   const onAccept = () => {
     if (acceptStep === AcceptStep.StepAccept) {
-      setStep(AcceptStep.StepApprove)
       setProcessing(true)
+      setStep(AcceptStep.StepCheckNetwork)
     }
     else if (acceptStep === AcceptStep.StepApprove) {
       setStep(AcceptStep.StepConfirm)
@@ -72,10 +72,12 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
   const doLogic = async () => {
     if (!bidOrder) throw new Error('Invalid bid')
 
-    if (acceptStep === AcceptStep.StepApprove && onAcceptApprove) {
+    if (acceptStep === AcceptStep.StepCheckNetwork && onAcceptApprove) {
+      await onAcceptApprove()
+      setStep(AcceptStep.StepApprove)
+    }
+    else if (acceptStep === AcceptStep.StepApprove && onAcceptApprove) {
       const tx = await onAcceptApprove()
-
-      setProcessing(true)
 
       if (tx) {
         setApproveTx(tx.hash)
@@ -83,7 +85,8 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
       }
 
       setStep(AcceptStep.StepConfirm)
-    } else if (acceptStep === AcceptStep.StepConfirm && onAcceptConfirm) {
+    }
+    else if (acceptStep === AcceptStep.StepConfirm && onAcceptConfirm) {
       const tx = await onAcceptConfirm(bidOrder)
       
       if (tx) {
@@ -92,7 +95,8 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
 
         setStep(AcceptStep.StepComplete)
       }
-    } else if (acceptStep === AcceptStep.StepComplete && onAcceptComplete) {
+    }
+    else if (acceptStep === AcceptStep.StepComplete && onAcceptComplete) {
       await onAcceptComplete(bidOrder)
 
       setStep(AcceptStep.StepDone)
@@ -109,16 +113,22 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
   useEffect(() => {
     if (acceptStep === AcceptStep.StepAccept) return
 
-    doLogic().catch((e) => {
+    doLogic().catch((e: Error) => {
       console.log('error', e)
-      setProcessing(false)
-      setStep(AcceptStep.StepFail)
+      if (e.message !== 'Network changed') {
+        setProcessing(false)
+        setStep(AcceptStep.StepFail)
+      }
+      else {
+        setProcessing(false)
+        setStep(AcceptStep.StepAccept)
+      }
     })
   }, [acceptStep, bidOrder, setStep])
 
   const currencyName = getCurrencyNameAddress(bidOrder?.currencyAddress) as ContractName
   const newCurrencyName = validateCurrencyName(currencyName, chainId || 0)
-  const formattedPrice = formatCurrency(bidOrder?.price || 0, getCurrencyNameAddress(bidOrder?.currencyAddress))
+  const formattedPrice = bidOrder?.price || 0
 
   return (
     <Dialog open={openAcceptDlg} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>

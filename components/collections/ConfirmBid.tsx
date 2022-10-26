@@ -13,11 +13,14 @@ const useStyles = makeStyles(() =>
   createStyles({
     root: {
       margin: 0,
+      padding: '24px 40px'
+    },
+    rootContent: {
+      padding: '16px 40px 32px 40px'
     },
     dlgWidth: {
       maxWidth: '800px',
-      width: '800px',
-      height: '530px'
+      width: '800px'
     }
   }),
 )
@@ -124,7 +127,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
           <div className="text-[#1E1C21] text-[28px] font-semibold">place bid</div>
         </div>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent className={classes.rootContent}>
         <BidContent
           price={price}
           onChangePrice={onChangePrice}
