@@ -66,8 +66,8 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
 
   const onBid = () => {
     if (bidStep === BidStep.StepBid) {
-      setStep(BidStep.StepApprove)
       setProcessing(true)
+      setStep(BidStep.StepApprove)
     }
     else if (bidStep === BidStep.StepApprove) {
       setStep(BidStep.StepConfirm)

@@ -58,8 +58,8 @@ const ConfirmBuy: React.FC<IConfirmBuyProps> = ({
 
   const onBuy = () => {
     if (buyStep === BuyStep.StepBuy) {
-      setStep(BuyStep.StepApprove)
       setProcessing(true)
+      setStep(BuyStep.StepApprove)
     }
     else if (buyStep === BuyStep.StepApprove) {
       setStep(BuyStep.StepConfirm)
