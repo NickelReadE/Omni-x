@@ -211,13 +211,13 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
   const renderSaleFooter = () => {
     return (
       <div className="flex items-center ml-3">
-        {lastSale && lastSale > 0 && <>
+        {(!!lastSale && lastSale > 0) && <>
           <span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span>
           <img alt={'saleIcon'} src={lastSaleCoin} className="w-[18px] h-[18px]"/>&nbsp;
           <span
             className="text-[#6C757D] text-[14px]font-bold">{numberLocalize(Number(lastSale))}</span>
         </>}
-        {!lastSale && highestBid != 0 && <>
+        {(!lastSale && !!highestBid && highestBid > 0) && <>
           <span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span>
           <img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;
           <span
