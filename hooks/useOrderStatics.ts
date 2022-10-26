@@ -54,7 +54,7 @@ const useOrderStatics = ({
     }
   }, [nft])
 
-  const isListed = !!nft?.order_id
+  const isListed = nft?.price > 0
   return {
     order: nft?.order_data,
     isListed,

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import LazyLoad from 'react-lazyload'
 import Router, { useRouter } from 'next/router'
 import { useDraggable } from '@dnd-kit/core'
-import {IOrder, IPropsNFTItem} from '../../interface/interface'
+import { IPropsNFTItem } from '../../interface/interface'
 import {
   getCurrencyIconByAddress,
   getChainIconById,
@@ -153,18 +153,6 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
     }
   }
 
-  const onListingDoneAndRefresh = () => {
-    onListingDone()
-    onRefresh()
-  }
-
-  const onBuyConfirmAndRefresh = async (e: IOrder | undefined) => {
-    if (e) {
-      await onBuyConfirm(e)
-      onRefresh()
-    }
-  }
-
   const renderImageContainer = () => {
     return (
       <>
@@ -291,7 +279,7 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
         nftTitle={nftName}
         onListingApprove={onListingApprove}
         onListingConfirm={onListingConfirm}
-        onListingDone={onListingDoneAndRefresh}
+        onListingDone={onListingDone}
       />
       <ConfirmBuy
         handleBuyDlgClose={() => {
@@ -301,7 +289,7 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
         nftImage={image}
         nftTitle={nftName}
         onBuyApprove={onBuyApprove}
-        onBuyConfirm={onBuyConfirmAndRefresh}
+        onBuyConfirm={onBuyConfirm}
         onBuyComplete={onBuyComplete}
         onBuyDone={onBuyDone}
         order={order}
