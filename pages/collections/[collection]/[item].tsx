@@ -17,12 +17,7 @@ import useOrderStatics from '../../../hooks/useOrderStatics'
 import ConfirmBuy from '../../../components/collections/ConfirmBuy'
 import ConfirmAccept from '../../../components/collections/ConfirmAccept'
 import useCollectionNft from '../../../hooks/useCollectionNft'
-
-const truncate = (str: string) => {
-  if (str) {
-    return str.length > 12 ? str.substring(0, 9) + '...' : str
-  }
-}
+import {truncateAddress} from '../../../utils/utils'
 
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
@@ -138,7 +133,7 @@ const Item: NextPage = () => {
                       {currentNFT && currentNFT.owner && (
                         <h1 className="flex justify-start items-center text-[#B444F9] text-[20px] font-normal underline ml-4 break-all lg:ml-1">
                           <Link href={`/user/${currentNFT.owner}`}>
-                            {truncate(currentNFT.owner)}
+                            {truncateAddress(currentNFT.owner)}
                           </Link>
                         </h1>
                       )}
@@ -187,7 +182,7 @@ const Item: NextPage = () => {
                         sortedBids?.map((item: any, index: number) => {
                           return (
                             <Fragment key={index}>
-                              <div className='flex justify-start items-center break-all mt-3 text-[16px] font-bold'>{truncate(item.signer)}</div>
+                              <div className='flex justify-start items-center break-all mt-3 text-[16px] font-bold'>{truncateAddress(item.signer)}</div>
                               <div className="flex justify-start items-center text-center mt-3">
                                 <img
                                   src={getChainIconById(item.chain_id.toString())}
