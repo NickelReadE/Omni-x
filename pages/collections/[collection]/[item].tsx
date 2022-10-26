@@ -159,7 +159,7 @@ const Item: NextPage = () => {
                       </span>
                       <div className="flex justify-start items-center mt-5">
                         <h1 className="mr-3 font-bold">
-                          Highest Bid: <span className="font-bold">{numberLocalize(Number(highestBid))}</span>
+                          Highest Bid: <span className="font-bold">{highestBid != 0 && numberLocalize(Number(highestBid))}</span>
                         </h1>
                         {highestBidCoin && <Image src={highestBidCoin} width={15} height={16} alt="chain  logo" />}
                       </div>
