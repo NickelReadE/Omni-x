@@ -47,7 +47,7 @@ export type TradingFunction = {
   setOpenAcceptDlg: Dispatch<SetStateAction<boolean>>,
   setSelectedBid: Dispatch<SetStateAction<IOrder|undefined>>,
   updateOrderStatus: (order: IOrder, status: OrderStatus) => Promise<void>,
-  onListingApprove: (isAuction: boolean) => Promise<any>,
+  onListingApprove: (isAuction: boolean, checkNetwork: boolean) => Promise<any>,
   onListingConfirm: (listingData: IListingData) => Promise<any>,
   onListingDone: () => void,
   onBuyApprove: (order?: IOrder) => Promise<any>,
@@ -57,7 +57,7 @@ export type TradingFunction = {
   onBidApprove: (bidData: IBidData) => Promise<any>,
   onBidConfirm: (bidData: IBidData) => Promise<void>,
   onBidDone: () => void,
-  onAcceptApprove: () => Promise<any>,
+  onAcceptApprove: (checkNetwork: boolean) => Promise<any>,
   onAcceptConfirm: (bidOrder: IOrder) => Promise<any>,
   onAcceptComplete: (bidOrder: IOrder) => Promise<void>,
   onAcceptDone: () => void
@@ -161,7 +161,7 @@ const useTrading = ({
     )
   }
 
-  const onListingApprove = async (isAuction: boolean) => {
+  const onListingApprove = async (isAuction: boolean, checkNetwork: boolean) => {
     if (!owner_collection_chain_id) throw new Error('Invalid NFT chain')
     if (!chainId || !chainName) throw new Error('Please connect to your wallet')
     if (!collection_address) throw new Error('Invalid collection')
@@ -173,6 +173,10 @@ const useTrading = ({
       else {
         throw new Error(`Please switch network to ${getChainNameFromId(owner_collection_chain_id)}`)
       }
+    }
+
+    if (checkNetwork) {
+      return
     }
 
     if (!isAuction) {
@@ -320,7 +324,7 @@ const useTrading = ({
       ])
     }
 
-    const [omnixFee, currencyFee, nftFee] = await omnixExchange.connect(signer as any).getLzFeesForTrading(takerBid, makerAsk)
+    const [omnixFee, currencyFee, nftFee] = await omnixExchange.getLzFeesForTrading(takerBid, makerAsk)
     const lzFee = omnixFee.add(currencyFee).add(nftFee)
 
     console.log('---lzFee---',
@@ -449,7 +453,7 @@ const useTrading = ({
     if (onRefresh) onRefresh()
   }
 
-  const onAcceptApprove = async () => {
+  const onAcceptApprove = async (checkNetwork: boolean) => {
     if (!owner_collection_chain_id) throw new Error('Invalid NFT chain')
     if (!chainId || !chainName) throw new Error('Please connect to your wallet')
     if (!collection_address) throw new Error('Invalid collection')
@@ -461,6 +465,10 @@ const useTrading = ({
       else {
         throw new Error(`Please switch network to ${getChainNameFromId(owner_collection_chain_id)}`)
       }
+    }
+
+    if (checkNetwork) {
+      return
     }
 
     const transferSelector = getTransferSelectorNftInstance(chainId, signer)
@@ -515,7 +523,8 @@ const useTrading = ({
       price: bidOrder.price || '0',
       tokenId: bidOrder.tokenId || '0',
       minPercentageToAsk: bidOrder.minPercentageToAsk || '0',
-      params: ethers.utils.defaultAbiCoder.encode(['uint16',
+      params: ethers.utils.defaultAbiCoder.encode([
+        'uint16',
         'address',
         'address',
         'address',
@@ -529,7 +538,7 @@ const useTrading = ({
       ])
     }
 
-    const [omnixFee, currencyFee, nftFee] = await omnixExchange.connect(signer as any).getLzFeesForTrading(takerAsk, makerBid)
+    const [omnixFee, currencyFee, nftFee] = await omnixExchange.getLzFeesForTrading(takerAsk, makerBid)
     const lzFee = omnixFee.add(currencyFee).add(nftFee)
 
     console.log('---lzFee---',

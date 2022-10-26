@@ -15,10 +15,19 @@ export type OrderStatics = {
 const useOrderStatics = ({
   nft
 }: any): OrderStatics => {
+  const combinedBids = useMemo(() => {
+    if (nft && nft.bidDatas && nft.bidOrderData) {
+      return nft.bidDatas.map((data: any, index: number) => ({
+        ...data,
+        order_data: nft.bidOrderData[index]
+      }))
+    }
+    return []
+  }, [nft])
+
   const sortedBids = useMemo(() => {
-    if (nft && nft.bidDatas) {
-      const bids = JSON.parse(JSON.stringify(nft.bidDatas))
-      return bids.sort((a: any, b: any) => {
+    if (combinedBids) {
+      return combinedBids.sort((a: any, b: any) => {
         if (a.price && b.price) {
           if (a.price === b.price) return 0
           return a.price > b.price ? -1 : 1
@@ -27,7 +36,7 @@ const useOrderStatics = ({
       })
     }
     return []
-  }, [nft])
+  }, [combinedBids])
   const highestBid = useMemo(() => {
     if (sortedBids.length > 0) {
       return sortedBids[0].price

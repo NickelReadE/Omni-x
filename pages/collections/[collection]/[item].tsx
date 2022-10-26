@@ -204,7 +204,7 @@ const Item: NextPage = () => {
                                 {currentNFT?.owner?.toLowerCase() == address?.toLowerCase() &&
                                   <button className='bg-[#ADB5BD] hover:bg-[#38B000] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5'
                                     onClick={() => {
-                                      setSelectedBid(item)
+                                      setSelectedBid(item.order_data)
                                       setOpenAcceptDlg(true)
                                     }}>
                                     accept

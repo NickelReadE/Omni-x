@@ -16,6 +16,7 @@ import useTrading from '../../hooks/useTrading'
 import ConfirmSell from './ConfirmSell'
 import ConfirmBuy from './ConfirmBuy'
 import useData from '../../hooks/useData'
+import useOrderStatics from '../../hooks/useOrderStatics'
 
 const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
@@ -27,6 +28,7 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
   } = useWallet()
   const router = useRouter()
   const { collections } = useData()
+
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: `draggable-${index}`,
     data: {
@@ -54,6 +56,14 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
 
   const order = nft.order_data
 
+  const {
+    isListed,
+    highestBid,
+    highestBidCoin,
+    lastSale,
+    lastSaleCoin
+  } = useOrderStatics({nft})
+  
   const {
     openBidDlg,
     openSellDlg,
@@ -88,54 +98,7 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
   }, [nft])
   const currencyIcon = getCurrencyIconByAddress(nft.currency)
 
-  const isListed = useMemo(() => {
-    return nft.price > 0
-  }, [nft])
-
-  const isOwner = useMemo(() => {
-    if (nft && nft.owner && address) {
-      return nft.owner.toLowerCase() === address?.toLowerCase()
-    }
-    return false
-  }, [nft, address]) // owner?.toLowerCase() == address?.toLowerCase()
-
-  const lastSale = useMemo(() => {
-    return nft.last_sale
-  }, [nft])
-
-  const lastSaleCoinIcon = useMemo(() => {
-    if (nft && nft.last_sale_currency) {
-      return getCurrencyIconByAddress(nft.last_sale_currency)
-    }
-  }, [nft])
-
-  const highestBid = useMemo(() => {
-    if (nft && nft.bidDatas && nft.bidDatas.length > 0) {
-      const bids = JSON.parse(JSON.stringify(nft.bidDatas))
-      return bids.sort((a: any, b: any) => {
-        if (a.price && b.price) {
-          if (a.price === b.price) return 0
-          return a.price > b.price ? -1 : 1
-        }
-        return 0
-      })[0].price
-    }
-    return 0
-  }, [nft])
-
-  const highestBidCoin = useMemo(() => {
-    if (nft && nft.bidDatas && nft.bidDatas.length > 0) {
-      const bids = JSON.parse(JSON.stringify(nft.bidDatas))
-      const highestBidCurrency = bids.sort((a: any, b: any) => {
-        if (a.price && b.price) {
-          if (a.price === b.price) return 0
-          return a.price > b.price ? -1 : 1
-        }
-        return 0
-      })[0].currency
-      return getCurrencyIconByAddress(highestBidCurrency)
-    }
-  }, [nft])
+  const isOwner = nft?.owner?.toLowerCase() === address?.toLowerCase()
 
   const isUserPage = useMemo(() => {
     return router.pathname === '/user/[address]'
@@ -248,9 +211,9 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
   const renderSaleFooter = () => {
     return (
       <div className="flex items-center ml-3">
-        {lastSale > 0 && <>
+        {lastSale && lastSale > 0 && <>
           <span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span>
-          <img alt={'saleIcon'} src={lastSaleCoinIcon} className="w-[18px] h-[18px]"/>&nbsp;
+          <img alt={'saleIcon'} src={lastSaleCoin} className="w-[18px] h-[18px]"/>&nbsp;
           <span
             className="text-[#6C757D] text-[14px]font-bold">{numberLocalize(Number(lastSale))}</span>
         </>}

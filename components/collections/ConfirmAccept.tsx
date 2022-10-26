@@ -5,7 +5,7 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import { IOrder } from '../../interface/interface'
-import { ContractName, getCurrencyNameAddress, validateCurrencyName } from '../../utils/constants'
+import { ContractName, formatCurrency, getCurrencyNameAddress, validateCurrencyName } from '../../utils/constants'
 import { AcceptStep } from '../../types/enum'
 import useWallet from '../../hooks/useWallet'
 import AcceptContent from './AcceptContent'
@@ -32,7 +32,7 @@ interface IConfirmAcceptProps {
   nftImage: string,
   nftTitle: string,
   bidOrder?: IOrder,
-  onAcceptApprove?: () => Promise<any>,
+  onAcceptApprove?: (checkNetwork: boolean) => Promise<any>,
   onAcceptConfirm?: (bidOrder: IOrder) => Promise<any>,
   onAcceptComplete?: (bidOrder: IOrder) => void
   onAcceptDone?: () => void
@@ -73,11 +73,11 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
     if (!bidOrder) throw new Error('Invalid bid')
 
     if (acceptStep === AcceptStep.StepCheckNetwork && onAcceptApprove) {
-      await onAcceptApprove()
+      await onAcceptApprove(true)
       setStep(AcceptStep.StepApprove)
     }
     else if (acceptStep === AcceptStep.StepApprove && onAcceptApprove) {
-      const tx = await onAcceptApprove()
+      const tx = await onAcceptApprove(false)
 
       if (tx) {
         setApproveTx(tx.hash)
@@ -128,8 +128,7 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
 
   const currencyName = getCurrencyNameAddress(bidOrder?.currencyAddress) as ContractName
   const newCurrencyName = validateCurrencyName(currencyName, chainId || 0)
-  const formattedPrice = bidOrder?.price || 0
-
+  const formattedPrice = formatCurrency(bidOrder?.price || 0, getCurrencyNameAddress(bidOrder?.currencyAddress))
   return (
     <Dialog open={openAcceptDlg} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
       <DialogTitle id="form-dialog-title" className={classes.rootTitle}>

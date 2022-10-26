@@ -30,7 +30,7 @@ interface IConfirmSellProps {
   openSellDlg: boolean,
   nftImage: string,
   nftTitle: string,
-  onListingApprove?: (isAuction: boolean) => Promise<any>,
+  onListingApprove?: (isAuction: boolean, checkNetwork: boolean) => Promise<any>,
   onListingConfirm?: (listingData: IListingData) => Promise<any>,
   onListingDone?: () => void
 }
@@ -82,11 +82,11 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
     const isAuction = sellType != SaleType.FIXED
 
     if (listingStep === ListingStep.StepCheckNetwork && onListingApprove) {
-      await onListingApprove(isAuction)
+      await onListingApprove(isAuction, true)
       setStep(ListingStep.StepApprove)
     }
     else if (listingStep === ListingStep.StepApprove && onListingApprove) {
-      const tx = await onListingApprove(isAuction)
+      const tx = await onListingApprove(isAuction, false)
 
       if (tx) {
         setApproveTx(tx.hash)
