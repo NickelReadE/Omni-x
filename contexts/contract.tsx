@@ -12,7 +12,7 @@ export type PendingTxType = {
   targetAddress: string,
   isONFTCore: boolean,
   nftItem: NFTItem,
-  contractType: 'ERC721' | 'ERC1155',
+  contractType: string, // 'ERC721' | 'ERC1155',
   targetBlockNumber: number,
   senderBlockNumber?: number,
   itemName: string | undefined,

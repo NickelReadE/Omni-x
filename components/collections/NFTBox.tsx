@@ -4,11 +4,10 @@ import Link from 'next/link'
 import LazyLoad from 'react-lazyload'
 import Router, { useRouter } from 'next/router'
 import { useDraggable } from '@dnd-kit/core'
-import {IOrder, IPropsNFTItem} from '../../interface/interface'
+import { IPropsNFTItem } from '../../interface/interface'
 import {
   getCurrencyIconByAddress,
   getChainIconById,
-  getChainNameFromId,
   numberLocalize
 } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'
@@ -17,6 +16,7 @@ import useTrading from '../../hooks/useTrading'
 import ConfirmSell from './ConfirmSell'
 import ConfirmBuy from './ConfirmBuy'
 import useData from '../../hooks/useData'
+import useOrderStatics from '../../hooks/useOrderStatics'
 
 const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
@@ -28,6 +28,7 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
   } = useWallet()
   const router = useRouter()
   const { collections } = useData()
+
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: `draggable-${index}`,
     data: {
@@ -39,13 +40,6 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
     zIndex: 99
   } : undefined
 
-  const order = nft.order_data
-  const chain = nft.chain_id
-
-  const orderChainId = order?.chain_id
-  const order_collection_address = order?.collectionAddress
-  const order_collection_chain = orderChainId && getChainNameFromId(orderChainId)
-
   const nft_collection = useMemo(() => {
     return collections.find((collection) => {
       if (collection.address && collection.address[nft.chain_id] && nft.collection_address) {
@@ -54,6 +48,22 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
     })
   }, [collections, nft])
 
+  const collection_address_map = useMemo(() => {
+    if (nft_collection) {
+      return nft_collection.address
+    }
+  }, [nft_collection])
+
+  const order = nft.order_data
+
+  const {
+    isListed,
+    highestBid,
+    highestBidCoin,
+    lastSale,
+    lastSaleCoin
+  } = useOrderStatics({nft})
+  
   const {
     openBidDlg,
     openSellDlg,
@@ -76,13 +86,7 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
     signer,
     address,
     collection_name: nft_collection?.col_url,
-    collection_address: nft.collection_address,
-    collection_chain: getChainNameFromId(chain ? Number(chain) : 4),
-    order_collection_address,
-    order_collection_chain,
-    owner: nft?.owner, // owner,
-    owner_collection_address: nft.collection_address, // ownedCollectionAddress,
-    owner_collection_chain: nft.chain, // ownerChainId && getChainNameFromId(ownerChainId),
+    collection_address_map,
     owner_collection_chain_id: nft.chain_id,
     token_id: nft?.token_id,
     selectedNFTItem: nft,
@@ -94,54 +98,7 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
   }, [nft])
   const currencyIcon = getCurrencyIconByAddress(nft.currency)
 
-  const isListed = useMemo(() => {
-    return nft.price > 0
-  }, [nft])
-
-  const isOwner = useMemo(() => {
-    if (nft && nft.owner && address) {
-      return nft.owner.toLowerCase() === address?.toLowerCase()
-    }
-    return false
-  }, [nft, address]) // owner?.toLowerCase() == address?.toLowerCase()
-
-  const lastSale = useMemo(() => {
-    return nft.last_sale
-  }, [nft])
-
-  const lastSaleCoinIcon = useMemo(() => {
-    if (nft && nft.last_sale_currency) {
-      return getCurrencyIconByAddress(nft.last_sale_currency)
-    }
-  }, [nft])
-
-  const highestBid = useMemo(() => {
-    if (nft && nft.bidDatas && nft.bidDatas.length > 0) {
-      const bids = JSON.parse(JSON.stringify(nft.bidDatas))
-      return bids.sort((a: any, b: any) => {
-        if (a.price && b.price) {
-          if (a.price === b.price) return 0
-          return a.price > b.price ? -1 : 1
-        }
-        return 0
-      })[0].price
-    }
-    return 0
-  }, [nft])
-
-  const highestBidCoin = useMemo(() => {
-    if (nft && nft.bidDatas && nft.bidDatas.length > 0) {
-      const bids = JSON.parse(JSON.stringify(nft.bidDatas))
-      const highestBidCurrency = bids.sort((a: any, b: any) => {
-        if (a.price && b.price) {
-          if (a.price === b.price) return 0
-          return a.price > b.price ? -1 : 1
-        }
-        return 0
-      })[0].currency
-      return getCurrencyIconByAddress(highestBidCurrency)
-    }
-  }, [nft])
+  const isOwner = nft?.owner?.toLowerCase() === address?.toLowerCase()
 
   const isUserPage = useMemo(() => {
     return router.pathname === '/user/[address]'
@@ -196,18 +153,6 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
     }
   }
 
-  const onListingDoneAndRefresh = () => {
-    onListingDone()
-    onRefresh()
-  }
-
-  const onBuyConfirmAndRefresh = async (e: IOrder | undefined) => {
-    if (e) {
-      await onBuyConfirm(e)
-      onRefresh()
-    }
-  }
-
   const renderImageContainer = () => {
     return (
       <>
@@ -254,13 +199,13 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
   const renderSaleFooter = () => {
     return (
       <div className="flex items-center ml-3">
-        {lastSale > 0 && <>
+        {(!!lastSale && lastSale > 0) && <>
           <span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span>
-          <img alt={'saleIcon'} src={lastSaleCoinIcon} className="w-[18px] h-[18px]"/>&nbsp;
+          <img alt={'saleIcon'} src={lastSaleCoin} className="w-[18px] h-[18px]"/>&nbsp;
           <span
             className="text-[#6C757D] text-[14px]font-bold">{numberLocalize(Number(lastSale))}</span>
         </>}
-        {!lastSale && highestBid != 0 && <>
+        {(!lastSale && !!highestBid && highestBid > 0) && <>
           <span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span>
           <img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;
           <span
@@ -334,7 +279,7 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
         nftTitle={nftName}
         onListingApprove={onListingApprove}
         onListingConfirm={onListingConfirm}
-        onListingDone={onListingDoneAndRefresh}
+        onListingDone={onListingDone}
       />
       <ConfirmBuy
         handleBuyDlgClose={() => {
@@ -344,7 +289,7 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
         nftImage={image}
         nftTitle={nftName}
         onBuyApprove={onBuyApprove}
-        onBuyConfirm={onBuyConfirmAndRefresh}
+        onBuyConfirm={onBuyConfirm}
         onBuyComplete={onBuyComplete}
         onBuyDone={onBuyDone}
         order={order}

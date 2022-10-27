@@ -40,7 +40,7 @@ const ListingContent: React.FC<IListingContentProps> = ({
   return (
     <>
       <div className='flex justify-between'>
-        {listingStep === ListingStep.StepListing ? (
+        {(listingStep === ListingStep.StepListing || listingStep === ListingStep.StepCheckNetwork) ? (
           <ListingSection
             sellType={sellType}
             priceLabel={'Sale Price'}
@@ -108,7 +108,7 @@ const ListingContent: React.FC<IListingContentProps> = ({
           )}
         </div>
 
-        {listingStep === ListingStep.StepListing && (
+        {(listingStep === ListingStep.StepListing || listingStep === ListingStep.StepCheckNetwork) && (
           <ListingFeeSection/>
         )}
       </div>

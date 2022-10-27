@@ -50,6 +50,7 @@ export interface NFTItem {
   symbol: string,
   order_data: any,
   bidDatas: any[],
+  bidOrderData: any[],
 }
 
 export interface FeedItem {

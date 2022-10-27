@@ -49,3 +49,11 @@ export const rpcGasProvider:IRpcDatafeed = {
 export const truncateAddress = (address: string) => {
   return address.slice(0, 6) + '...' + address.slice(-4)
 }
+
+export const serializeMakeOrder = (order: any) => {
+  console.log(`["${order.isOrderAsk.toString()}","${order.signer}","${order.collection}","${order.price.toString()}","${order.tokenId.toString()}","${order.amount.toString()}","${order.strategy}","${order.currency}","${order.nonce.toString()}","${order.startTime.toString()}","${order.endTime.toString()}","${order.minPercentageToAsk.toString()}","${order.params.toString()}","${order.signature.toString()}"]`)
+}
+
+export const serializeTakeOrder = (order: any) => {
+  console.log(`["${order.isOrderAsk.toString()}","${order.taker}","${order.price.toString()}","${order.tokenId.toString()}","${order.minPercentageToAsk.toString()}","${order.params.toString()}"]`)
+}

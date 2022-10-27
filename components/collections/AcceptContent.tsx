@@ -33,7 +33,7 @@ const AcceptContent: React.FC<IAcceptContentProps> = ({
   return (
     <>
       <div className='flex justify-between'>
-        {acceptStep === AcceptStep.StepAccept ? (
+        {(acceptStep === AcceptStep.StepAccept || acceptStep === AcceptStep.StepCheckNetwork) ? (
           <div>
             <BuySection
               price={price}
