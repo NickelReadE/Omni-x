@@ -23,6 +23,9 @@ export const crypto_list:ICryptoObj = {
     'bnb':'0x0567F2323251f0Aab15c8dFb1967E4e8A7D42aeE',
     'ftm':'0xe2A47e87C0f4134c8D06A41975F6860468b2F925',
     'matic':'0x7CA57b0cA6367191c94C8914d7Df09A57655905f'
+  },
+  'optimism': {
+    'op': '0x0D276FC14719f9292D5C1eA2198673d1f4269246'
   }
 }
 
