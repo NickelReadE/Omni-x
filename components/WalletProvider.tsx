@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useCallback, useEffect, useMemo, useState} from 'react'
+import React, {useCallback, useMemo} from 'react'
 import {ethers, Signer} from 'ethers'
 import {supportChains} from '../utils/constants'
 import { WalletContext } from '../contexts/wallet'
@@ -17,17 +17,8 @@ export const WalletProvider = ({
   children,
 }: WalletProviderProps): JSX.Element => {
   const { address: addressWagmi } = useAccount()
-  const { data: signerWagmi } = useSigner({
-    onSuccess: (data) => {
-      if (data) {
-        setSigner(data)
-      }
-    }
-  })
+  const { data: signerWagmi } = useSigner()
   const { chain } = useNetwork()
-
-  // const [provider, setProvider] = useState<ethers.providers.Web3Provider>()
-  const [signer, setSigner] = useState<Signer>()
 
   const supportedChains = supportChains()
   const { connect: connectWithInjector } = useConnect({
@@ -60,11 +51,11 @@ export const WalletProvider = ({
     return providverWagmi as ethers.providers.JsonRpcProvider
   }, [providverWagmi])
 
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    setSigner(signerWagmi)
-  }, [signerWagmi])
+  // useEffect(() => {
+  //   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //   // @ts-ignore
+  //   setSigner(signerWagmi)
+  // }, [signerWagmi])
 
   const resolveName = useCallback(
     async (name: string) => {
@@ -110,7 +101,7 @@ export const WalletProvider = ({
     <WalletContext.Provider
       value={{
         provider,
-        signer,
+        signer: signerWagmi as Signer,
         address,
         chainId,
         chainName,
