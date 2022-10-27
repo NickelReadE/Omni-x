@@ -42,6 +42,7 @@ export const getPriceFeeddata = async (): Promise<PriceData> => {
     'bnb': await getPriceforUSD('bsc', 'bnb'),
     'avax': await getPriceforUSD('bsc', 'avax'),
     'ftm': await getPriceforUSD('bsc', 'ftm'),
-    'matic': await getPriceforUSD('bsc', 'matic')
+    'matic': await getPriceforUSD('bsc', 'matic'),
+    'op': await getPriceforUSD('optimism', 'op'),
   }
 }
