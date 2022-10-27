@@ -8,6 +8,7 @@ import { IListingData } from '../../interface/interface'
 import { CURRENCIES_LIST, PERIOD_LIST } from '../../utils/constants'
 import { ListingStep, SaleType } from '../../types/enum'
 import ListingContent from './ListingContent'
+import { useSwitchedNetwork } from '../../hooks/useSwitchedNetwork'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -52,6 +53,12 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
   const [listingStep, setStep] = useState<ListingStep>(ListingStep.StepListing)
   const [processing, setProcessing] = useState(false)
   const [approveTx, setApproveTx] = useState('')
+
+  useSwitchedNetwork(() => {
+    if (listingStep === ListingStep.StepCheckNetwork) {
+      setStep(ListingStep.StepApprove)
+    }
+  })
 
   const onChangePrice = (e: any) => {
     setPrice(e.target.value)
@@ -120,12 +127,17 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
     doLogic().catch((e: Error) => {
       console.log('error', e)
       if (e.message !== 'Network changed') {
-        setProcessing(false)
-        setStep(ListingStep.StepFail)
+        if (listingStep === ListingStep.StepCheckNetwork) {
+          setProcessing(false)
+          setStep(ListingStep.StepListing)
+        }
+        else {
+          setProcessing(false)
+          setStep(ListingStep.StepFail)
+        }
       }
       else {
-        setProcessing(false)
-        setStep(ListingStep.StepListing)
+        // will be hooked by useSwitchedNetwork
       }
     })
   }, [listingStep, currency, period, setStep])

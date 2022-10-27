@@ -9,6 +9,7 @@ import { ContractName, formatCurrency, getCurrencyNameAddress, validateCurrencyN
 import { AcceptStep } from '../../types/enum'
 import useWallet from '../../hooks/useWallet'
 import AcceptContent from './AcceptContent'
+import { useSwitchedNetwork } from '../../hooks/useSwitchedNetwork'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -55,6 +56,12 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
   const [approveTx, setApproveTx] = useState('')
   const [tradingTx, setTradingTx] = useState('')
   const { chainId } = useWallet()
+
+  useSwitchedNetwork(() => {
+    if (acceptStep === AcceptStep.StepCheckNetwork) {
+      setStep(AcceptStep.StepApprove)
+    }
+  })
 
   const onAccept = () => {
     if (acceptStep === AcceptStep.StepAccept) {
@@ -116,12 +123,17 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
     doLogic().catch((e: Error) => {
       console.log('error', e)
       if (e.message !== 'Network changed') {
-        setProcessing(false)
-        setStep(AcceptStep.StepFail)
+        if (acceptStep === AcceptStep.StepCheckNetwork) {
+          setProcessing(false)
+          setStep(AcceptStep.StepAccept)
+        }
+        else {
+          setProcessing(false)
+          setStep(AcceptStep.StepFail)
+        }
       }
       else {
-        setProcessing(false)
-        setStep(AcceptStep.StepAccept)
+        // will be hooked by useSwitchedNetwork
       }
     })
   }, [acceptStep, bidOrder, setStep])

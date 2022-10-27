@@ -21,7 +21,7 @@ import useProgress from './useProgress'
 import { PendingTxType } from '../contexts/contract'
 import useContract from './useContract'
 import useWallet from './useWallet'
-import { useSwitchNetwork } from 'wagmi'
+import { useSwitchedNetwork } from './useSwitchedNetwork'
 
 export type TradingInput = {
   provider?: any,
@@ -125,7 +125,7 @@ const useTrading = ({
 
   const { addTxToHistories } = useProgress()
   const { listenONFTEvents } = useContract()
-  const { switchNetworkAsync } = useSwitchNetwork()
+  const { switchNetworkAsync } = useSwitchedNetwork()
 
   const collection_address = useMemo(() => {
     if (collection_address_map && chainId) return collection_address_map[chainId]
