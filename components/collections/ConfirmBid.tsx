@@ -105,7 +105,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
   }
 
   const onClose = () => {
-    if (onBidDone) onBidDone()
+    if (bidStep === BidStep.StepDone && onBidDone) onBidDone()
     handleBidDlgClose()
     setStep(BidStep.StepBid)
   }

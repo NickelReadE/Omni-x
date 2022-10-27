@@ -103,7 +103,7 @@ const ConfirmBuy: React.FC<IConfirmBuyProps> = ({
   }
 
   const onClose = () => {
-    if (onBuyDone) onBuyDone()
+    if (buyStep === BuyStep.StepDone && onBuyDone) onBuyDone()
     handleBuyDlgClose()
     setStep(BuyStep.StepBuy)
   }

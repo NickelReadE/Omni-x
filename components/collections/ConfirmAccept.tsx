@@ -105,7 +105,7 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
   }
 
   const onClose = () => {
-    if (onAcceptDone) onAcceptDone()
+    if (acceptStep === AcceptStep.StepDone && onAcceptDone) onAcceptDone()
     handleAcceptDlgClose()
     setStep(AcceptStep.StepAccept)
   }

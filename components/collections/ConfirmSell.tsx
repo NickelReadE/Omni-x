@@ -109,7 +109,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
   }
 
   const onClose = () => {
-    if (onListingDone) onListingDone()
+    if (listingStep === ListingStep.StepDone && onListingDone) onListingDone()
     handleSellDlgClose()
     setStep(ListingStep.StepListing)
   }

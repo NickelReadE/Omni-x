@@ -80,7 +80,17 @@ const useProfile = (
         setLoading(false)
       }
     })()
-  }, [user_address, nftRefresh])
+  }, [user_address])
+
+  useEffect(() => {
+    (async () => {
+      if (user_address && nftRefresh) {
+        const nfts = await getUserNFTs(user_address)
+        setNfts(nfts)
+        setNftRefresh(false)
+      }
+    })()
+  }, [nftRefresh])
 
 
   const updateProfileData = async (user: FormData) => {
@@ -99,7 +109,7 @@ const useProfile = (
   }
 
   const refreshNfts = () => {
-    setNftRefresh(!nftRefresh)
+    setNftRefresh(true)
   }
 
   const refreshProfile = () => {
