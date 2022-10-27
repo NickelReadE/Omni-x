@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {Fragment, useEffect, useState} from 'react'
-import { Menu } from '@headlessui/react'
+import {useEffect, useState} from 'react'
 import NFTBox from './collections/NFTBox'
 import {IPropsImage, NFTItem} from '../interface/interface'
 import {chainInfos, SUPPORTED_CHAIN_IDS} from '../utils/constants'
 import {ChainIds} from '../types/enum'
 import useData from '../hooks/useData'
 import Loading from './Loading'
+import Dropdown from './dropdown'
 
 const sortMenu = [
   { text: 'A - Z ascending', value: 'name' },
@@ -69,56 +69,33 @@ const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
   return (
     <>
       <div className="w-full mb-5">
-        <div className="flex relative justify-start bg-[#F8F9FA] pl-2 pr-2 w-fit" style={{'width': '100%'}}>
-          <div
-            className={`grid justify-items-center content-center p-3 font-medium cursor-pointer m-[1px] min-w-[80px] ${chain === -1 ? 'bg-[#C8D6E8]' : ''} `}
-            onClick={() => {
-              setChain(-1)
-            }}
-          >
-            <img alt={'listing'} src="/svgs/all_chain.svg" className="w-[21px] h-[22px] "/>
-          </div>
-          {
-            SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
-              return <div
-                key={index}
-                className={`grid justify-items-center content-center p-3 font-medium cursor-pointer m-[1px] min-w-[80px] ${chain === networkId ? 'bg-[#C8D6E8]' : ''} `}
+        <div className="flex relative justify-start bg-[#F8F9FA] pl-2 w-fit" style={{'width': '100%'}}>
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center">
+              <div
+                className={`grid justify-items-center content-center p-3 font-medium cursor-pointer m-[1px] min-w-[80px] ${chain === -1 ? 'bg-[#C8D6E8]' : ''} `}
                 onClick={() => {
-                  setChain(networkId)
+                  setChain(-1)
                 }}
               >
-                <img alt={'listing'} src={chainInfos[networkId].logo} className="w-[21px] h-[22px] "/>
+                <img alt={'listing'} src="/svgs/all_chain.svg" className="w-[21px] h-[22px] "/>
               </div>
-            })
-          }
-          <Menu>
-            {({ open }) => (
-              <>
-                <Menu.Button className={'absolute right-0'}>
-                  <div className={`${open && 'bg-white rounded-md'} flex justify-around p-3 font-medium cursor-pointer text-[#6C757D] w-[230px]`}>
-                    <img alt={'listing'} src="/images/listing.png" className="w-[21px] h-[22px]"/>
-                    <span>active listing</span>
-                    <img alt={'listing'} src="/images/downArrow.png" className="w-[10px] h-[7px] ml-5 mt-auto mb-auto"/>
+              {
+                SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
+                  return <div
+                    key={index}
+                    className={`grid justify-items-center content-center p-3 font-medium cursor-pointer m-[1px] min-w-[80px] ${chain === networkId ? 'bg-[#C8D6E8]' : ''} `}
+                    onClick={() => {
+                      setChain(networkId)
+                    }}
+                  >
+                    <img alt={'listing'} src={chainInfos[networkId].logo} className="w-[21px] h-[22px] "/>
                   </div>
-                </Menu.Button>
-                <Menu.Items className={'absolute right-0 z-10 top-[48px]'}>
-                  {
-                    sortMenu.map((item, index) => {
-                      return (
-                        <Menu.Item key={index} as={Fragment}>
-                          {({ active }) => (
-                            <div className={`${active && 'bg-gray-50'} cursor-pointer text-[#6C757D] flex items-center rounded-md h-[44px] w-[230px] bg-white pl-[60px]`} onClick={() => onChangeSort(item.value)}>
-                              {item.text}
-                            </div>
-                          )}
-                        </Menu.Item>
-                      )
-                    })
-                  }
-                </Menu.Items>
-              </>
-            )}
-          </Menu>
+                })
+              }
+            </div>
+            <Dropdown menus={sortMenu} onChange={onChangeSort} />
+          </div>
         </div>
         {
           isLoading &&

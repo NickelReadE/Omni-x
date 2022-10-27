@@ -3,7 +3,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import type { NextPage } from 'next'
-import { Listbox, Switch, Transition } from '@headlessui/react'
+import { Switch } from '@headlessui/react'
 import LazyLoad from 'react-lazyload'
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
@@ -37,11 +37,12 @@ import useWallet from '../../../hooks/useWallet'
 import useCollection from '../../../hooks/useCollection'
 import useCollectionNfts from '../../../hooks/useCollectionNfts'
 import useData from '../../../hooks/useData'
+import Dropdown from '../../../components/dropdown'
 
 const sort_fields = [
-  { id: 1, name: 'price: high to low', value: '-price', unavailable: false },
-  { id: 2, name: 'price: low to high', value: 'price', unavailable: false },
-  { id: 3, name: 'Highest last sale', value: '-last_sale', unavailable: false },
+  { text: 'price: high to low', value: '-price' },
+  { text: 'price: low to high', value: 'price' },
+  { text: 'Highest last sale', value: '-last_sale' },
 ]
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -127,7 +128,7 @@ const Collection: NextPage = () => {
   const [currentTab, setCurrentTab] = useState<string>('items')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [expandedMenu, setExpandedMenu] = useState(0)
-  const [selected, setSelected] = useState(sort_fields[0])
+  const [selected, setSelected] = useState(sort_fields[0].value)
   const [enabled, setEnabled] = useState(false)
   const [imageError, setImageError] = useState(false)
   const [searchObj, setSearchObj] = useState<any>({})
@@ -146,7 +147,7 @@ const Collection: NextPage = () => {
   const royalty = useSelector(selectRoyalty)
   const { signer, chainId } = useWallet()
   const { refreshUserNfts } = useData()
-  const { nfts, refreshNfts } = useCollectionNfts(col_url, display_per_page, selected.value, searchObj, collectionInfo)
+  const { nfts, refreshNfts } = useCollectionNfts(col_url, display_per_page, selected, searchObj, collectionInfo)
 
   useEffect(() => {
     if (collectionInfo && collectionInfo.address && chainId) {
@@ -173,8 +174,8 @@ const Collection: NextPage = () => {
     dispatch(getRoyalty('ERC721', '0x4aA142f1Db95B50dA7ca22267Da557050f9A7Ec9', 5, signer) as any)
   }, [])
 
-  const onChangeSort = (item: any) => {
-    setSelected(item)
+  const onChangeSort = (value: string) => {
+    setSelected(value)
   }
 
   const onRefresh = async () => {
@@ -542,7 +543,7 @@ const Collection: NextPage = () => {
               </li> */}
             </ul>
           </div>
-          <div className="px-12 py-6 border-l-2 border-[#E9ECEF] w-full">
+          <div className="relative px-12 py-6 border-l-2 border-[#E9ECEF] w-full">
             <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 p-1 gap-4">
               <div className="2xl:col-start-4 xl:col-start-3 lg:col-start-2 md:col-start-1">
                 <button
@@ -551,52 +552,7 @@ const Collection: NextPage = () => {
                 </button>
               </div>
               <div className="min-w-[180px] z-10 2xl:col-start-5 xl:col-start-4 lg:col-start-3 md:col-start-2">
-                <Listbox value={selected} onChange={onChangeSort}>
-                  <div className="relative">
-                    <Listbox.Button
-                      className="relative w-full cursor-default rounded-lg bg-[#E9ECEF] py-2 pl-3 pr-10 text-lg text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 xl:text-[18px] lg:text-[14px]">
-                      <span className="block truncate">{selected.name}</span>
-                      <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                        <i className="fa fa-chevron-down"></i>
-                      </span>
-                    </Listbox.Button>
-                    <Transition
-                      as={Fragment}
-                      leave="transition ease-in duration-100"
-                      leaveFrom="opacity-100"
-                      leaveTo="opacity-0"
-                    >
-                      <Listbox.Options
-                        className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-[#E9ECEF] py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                        {sort_fields.map((sort_item, sortIdx) => (
-                          <Listbox.Option
-                            key={sortIdx}
-                            className={({ active }) =>
-                              `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
-                              }`
-                            }
-                            value={sort_item}
-                          >
-                            {({ selected }) => (
-                              <>
-                                <span
-                                  className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
-                                >
-                                  {sort_item.name}
-                                </span>
-                                {selected ? (
-                                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                                    <i className="fa fa-chevron-down w-5"></i>
-                                  </span>
-                                ) : null}
-                              </>
-                            )}
-                          </Listbox.Option>
-                        ))}
-                      </Listbox.Options>
-                    </Transition>
-                  </div>
-                </Listbox>
+                <Dropdown menus={sort_fields} onChange={onChangeSort} />
               </div>
             </div>
             <div className="mt-5">
