@@ -125,9 +125,6 @@ const SideBar: React.FC = () => {
         const tokenId = id.toString().split('-')[1]
         const collectionAddress = id.toString().split('-')[2]
         const selectedItem = nfts.find((item) => item.token_id == tokenId && item.collection_address === collectionAddress)
-        console.log(tokenId)
-        console.log(collectionAddress)
-        console.log(nfts)
         if (selectedItem) {
           setSelectedNFTItem(selectedItem)
           validateOwNFT(selectedItem).then((res) => {
