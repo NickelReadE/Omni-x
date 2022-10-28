@@ -79,7 +79,7 @@ const AcceptContent: React.FC<IAcceptContentProps> = ({
               <CongratsSection failed={false} succeedMessage={'you successfully sold this NFT'}/>
             )}
             {acceptStep === AcceptStep.StepFail && (
-              <CongratsSection failed={true} failedMessage={'you were failed to sell this NFT'}/>
+              <CongratsSection failed={true} failedMessage={'you failed to sell this NFT'}/>
             )}
           </div>
         )}

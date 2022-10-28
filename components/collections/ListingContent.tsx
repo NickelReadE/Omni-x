@@ -78,7 +78,7 @@ const ListingContent: React.FC<IListingContentProps> = ({
               <CongratsSection failed={false} succeedMessage={'your NFT was successfully listed'}/>
             )}
             {listingStep === ListingStep.StepFail && (
-              <CongratsSection failed={true} failedMessage={'you were failed to list this NFT'}/>
+              <CongratsSection failed={true} failedMessage={'you failed to list this NFT'}/>
             )}
           </div>
         )}
