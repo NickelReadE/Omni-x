@@ -21,7 +21,7 @@ import useProgress from './useProgress'
 import { PendingTxType } from '../contexts/contract'
 import useContract from './useContract'
 import useWallet from './useWallet'
-import { useSwitchNetwork } from 'wagmi'
+import { useSwitchedNetwork } from './useSwitchedNetwork'
 import { useDispatch } from 'react-redux'
 import { openSnackBar } from '../redux/reducers/snackBarReducer'
 
@@ -127,7 +127,7 @@ const useTrading = ({
 
   const { addTxToHistories } = useProgress()
   const { listenONFTEvents } = useContract()
-  const { switchNetworkAsync } = useSwitchNetwork()
+  const { switchNetworkAsync } = useSwitchedNetwork()
   const dispatch = useDispatch()
 
   const collection_address = useMemo(() => {
