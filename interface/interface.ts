@@ -19,7 +19,6 @@ export interface IPropsNFTItem {
   col_url?: string,
   chain?: string,
   col_address?:string,
-  index: number,
   onRefresh: () => void
 }
 

@@ -122,21 +122,28 @@ const SideBar: React.FC = () => {
     onDragEnd(event) {
       const { active: { id } } = event
       if (id.toString().length > 0 && (event.over !== null || isFirstDrag)) {
-        const index = Number(id.toString().split('-')[1])
-        setSelectedNFTItem(nfts[index])
-        validateOwNFT(nfts[index]).then((res) => {
-          setIsONFT(res)
-        })
-        const metadata = nfts[index].metadata
-        setImageError(false)
-        if (metadata) {
-          try {
-            // IPFS Gateway: A server that will return IPFS files from a "normal" URL.
-            const image_uri = JSON.parse(metadata).image
-            setImage(image_uri.replace('ipfs://', 'https://ipfs.io/ipfs/'))
-          } catch (err) {
-            console.log(err)
-            setImage('/images/omnix_logo_black_1.png')
+        const tokenId = id.toString().split('-')[1]
+        const collectionAddress = id.toString().split('-')[2]
+        const selectedItem = nfts.find((item) => item.token_id == tokenId && item.collection_address === collectionAddress)
+        console.log(tokenId)
+        console.log(collectionAddress)
+        console.log(nfts)
+        if (selectedItem) {
+          setSelectedNFTItem(selectedItem)
+          validateOwNFT(selectedItem).then((res) => {
+            setIsONFT(res)
+          })
+          const metadata = selectedItem.metadata
+          setImageError(false)
+          if (metadata) {
+            try {
+              // IPFS Gateway: A server that will return IPFS files from a "normal" URL.
+              const image_uri = JSON.parse(metadata).image
+              setImage(image_uri.replace('ipfs://', 'https://ipfs.io/ipfs/'))
+            } catch (err) {
+              console.log(err)
+              setImage('/images/omnix_logo_black_1.png')
+            }
           }
         }
       }

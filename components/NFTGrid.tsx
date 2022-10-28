@@ -119,7 +119,6 @@ const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
                 return (
                   <NFTBox
                     nft={item}
-                    index={index}
                     key={index}
                     onRefresh={onRefresh}
                   />
@@ -129,7 +128,6 @@ const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
                   return (
                     <NFTBox
                       nft={item}
-                      index={index}
                       key={index}
                       onRefresh={onRefresh}
                     />
