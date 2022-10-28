@@ -58,7 +58,7 @@ const PriceFeed = () => {
         {
           icon: '/svgs/optimism.svg',
           gasFee: gasPrices['optimism'],
-          price: 0
+          price: assetPrices['op']
         },
       ]
     }

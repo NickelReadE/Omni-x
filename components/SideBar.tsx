@@ -37,6 +37,7 @@ import useContract from '../hooks/useContract'
 import { PendingTxType } from '../contexts/contract'
 import { ChainIds } from '../types/enum'
 import useData from '../hooks/useData'
+import {openSnackBar} from '../redux/reducers/snackBarReducer'
 
 interface RefObject {
   offsetHeight: number
@@ -77,7 +78,7 @@ const SideBar: React.FC = () => {
   const menu_watchlist = useRef<HTMLDivElement>(null)
   const menu_bridge = useRef<HTMLDivElement>(null)
   const menu_cart = useRef<HTMLDivElement>(null)
-  
+
   const [showSidebar, setShowSidebar] = useState(false)
   const [onMenu, setOnMenu] = useState(false)
   const [expandedMenu, setExpandedMenu] = useState(0)
@@ -97,7 +98,7 @@ const SideBar: React.FC = () => {
   const [isONFT, setIsONFT] = useState(false)
   const [unwrap, setUnwrap] = useState(false)
   const [bOpenModal, setOpenModal] = useState(false)
-  
+
   const { setNodeRef } = useDroppable({
     id: 'droppable',
     data: {
@@ -231,6 +232,9 @@ const SideBar: React.FC = () => {
         gasFee = await estimateGasFeeONFTCore(selectedNFTItem, chainId, targetChain)
       } else {
         gasFee = await estimateGasFee(selectedNFTItem, chainId, targetChain)
+      }
+      if (nativeBalance?.value.lt(gasFee)) {
+        return dispatch(openSnackBar( { message: 'Insufficient balance', status: 'warning' }))
       }
       setEstimatedFee(gasFee)
       setConfirmTransfer(true)

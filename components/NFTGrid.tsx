@@ -9,8 +9,8 @@ import Loading from './Loading'
 import Dropdown from './dropdown'
 
 const sortMenu = [
-  { text: 'A - Z ascending', value: 'name' },
-  { text: 'A - Z descending', value: '-name' },
+  { text: 'A - Z', value: 'name' },
+  { text: 'Z - A', value: '-name' },
   { text: 'last sold', value: 'lastSale' },
   { text: 'price ascending', value: 'price' },
   { text: 'price descending', value: '-price' },
@@ -23,7 +23,15 @@ const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
   const { refreshUserNfts } = useData()
 
   useEffect(() => {
-    setSortedItems(nfts)
+    const namedNftItems = [...nfts].map((item) => {
+      return {
+        ...item,
+        newName: JSON.parse(item.metadata || '{}')?.name
+      }
+    })
+    const hasNameItems = [...namedNftItems].filter((item) => item.newName)
+    const hasNoNameItems = [...namedNftItems].filter((item) => !item.newName)
+    setSortedItems(hasNameItems.sort((a, b) => a.newName.localeCompare(b.newName)).concat(hasNoNameItems))
   }, [nfts])
 
   const onRefresh = () => {

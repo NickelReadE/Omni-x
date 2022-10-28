@@ -22,6 +22,8 @@ import { PendingTxType } from '../contexts/contract'
 import useContract from './useContract'
 import useWallet from './useWallet'
 import { useSwitchedNetwork } from './useSwitchedNetwork'
+import { useDispatch } from 'react-redux'
+import { openSnackBar } from '../redux/reducers/snackBarReducer'
 
 export type TradingInput = {
   provider?: any,
@@ -126,6 +128,7 @@ const useTrading = ({
   const { addTxToHistories } = useProgress()
   const { listenONFTEvents } = useContract()
   const { switchNetworkAsync } = useSwitchedNetwork()
+  const dispatch = useDispatch()
 
   const collection_address = useMemo(() => {
     if (collection_address_map && chainId) return collection_address_map[chainId]
@@ -252,6 +255,15 @@ const useTrading = ({
       throw new Error('Could not find the currency')
     }
 
+    {
+      const balance = await omni.balanceOf(address)
+      if (balance.lt(order.price)) {
+        const errMessage = 'Not enough balance'
+        dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
+        throw new Error(errMessage)
+      }
+    }
+
     const buy_price = order?.price
     approveTxs.push(await approve(omni, address, getAddressByName('FundManager', chainId), buy_price))
 
@@ -333,9 +345,23 @@ const useTrading = ({
       ethers.utils.formatEther(nftFee),
       ethers.utils.formatEther(lzFee)
     )
-    const balance = await provider?.getBalance(address!)
-    if (balance.lt(lzFee)) {
-      throw new Error(`Not enough balance ${ethers.utils.formatEther(lzFee)}`)
+
+    {
+      const balance = await provider?.getBalance(address!)
+      if (balance.lt(lzFee)) {
+        const errMessage = `Not enough native balance ${ethers.utils.formatEther(lzFee)}`
+        dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
+        throw new Error(errMessage)
+      }
+    }
+    
+    {
+      const balance = await omni.balanceOf(address)
+      if (balance.lt(takerBid.price)) {
+        const errMessage = 'Not enough balance'
+        dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
+        throw new Error(errMessage)
+      }
     }
 
     const tx = await omnixExchange.connect(signer as any).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
@@ -402,6 +428,19 @@ const useTrading = ({
     }
 
     const omni = getCurrencyInstance(currency, chainId, signer)
+
+    if (!omni) {
+      throw new Error('Could not find the currency')
+    }
+
+    {
+      const balance = await omni.balanceOf(address)
+      if (balance.lt(price)) {
+        const errMessage = 'Not enough balance'
+        dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
+        throw new Error(errMessage)
+      }
+    }
 
     const approveTxs = []
     approveTxs.push(await approve(omni, address, getAddressByName('FundManager', chainId), price))
@@ -547,6 +586,15 @@ const useTrading = ({
       ethers.utils.formatEther(nftFee),
       ethers.utils.formatEther(lzFee)
     )
+
+    {
+      const balance = await provider?.getBalance(address!)
+      if (balance.lt(lzFee)) {
+        const errMessage = `Not enough native balance ${ethers.utils.formatEther(lzFee)}`
+        dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
+        throw new Error(errMessage)
+      }
+    }
 
     const tx = await omnixExchange.connect(signer as any).matchBidWithTakerAsk(takerAsk, makerBid, { value: lzFee })
 
