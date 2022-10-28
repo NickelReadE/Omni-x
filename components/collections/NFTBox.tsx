@@ -18,7 +18,7 @@ import ConfirmBuy from './ConfirmBuy'
 import useData from '../../hooks/useData'
 import useOrderStatics from '../../hooks/useOrderStatics'
 
-const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
+const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
   const [isShowBtn, SetIsShowBtn] = useState(false)
   const {
@@ -30,7 +30,7 @@ const NFTBox = ({nft, col_url, index, onRefresh}: IPropsNFTItem) => {
   const { collections } = useData()
 
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: `draggable-${index}`,
+    id: `draggable-${nft.token_id}-${nft.collection_address}`,
     data: {
       type: 'NFT',
     }

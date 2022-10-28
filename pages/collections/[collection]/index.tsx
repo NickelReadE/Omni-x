@@ -233,7 +233,7 @@ const Collection: NextPage = () => {
     const temp = []
     for (let i = 0; i < listNFTs.length; i++) {
       temp.push(
-        <NFTBox nft={listNFTs[i]} index={i} key={i} col_url={col_url} onRefresh={onRefresh} />
+        <NFTBox nft={listNFTs[i]} key={i} col_url={col_url} onRefresh={onRefresh} />
       )
     }
     return temp
@@ -599,7 +599,7 @@ const Collection: NextPage = () => {
                 <div className="grid 2xl:grid-cols-5 gap-4 xl:grid-cols-3 md:grid-cols-2 p-1">
                   {!isActiveBuyNow && nfts.map((item, index) => {
                     return (
-                      <NFTBox nft={item} index={index} key={index} col_url={col_url} onRefresh={onRefresh} />
+                      <NFTBox nft={item} key={index} col_url={col_url} onRefresh={onRefresh} />
                     )
                   })}
                   {isActiveBuyNow && listNFTs && buyComponent()}
