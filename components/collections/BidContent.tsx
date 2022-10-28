@@ -75,7 +75,7 @@ const BidContent: React.FC<IBidContentProps> = ({
               <CongratsSection failed={false} succeedMessage={'you successfully bid on this NFT'}/>
             )}
             {bidStep === BidStep.StepFail && (
-              <CongratsSection failed={true} failedMessage={'you were failed to place a bid'}/>
+              <CongratsSection failed={true} failedMessage={'you failed to place a bid'}/>
             )}
           </div>
         )}
