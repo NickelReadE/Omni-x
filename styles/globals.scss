@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import './loader.scss';
+
 // @font-face {
 // 	font-family: 'Roboto Mono';
 // 	src: url(/fonts/RobotoMono-Medium.woff2) format('woff2'), url(/fonts/RobotoMono-Medium.woff) format('woff');
@@ -15,105 +17,116 @@
 // 	font-style: normal;
 // }
 @font-face {
-    font-family: 'RetniSans';
-    src: url(/fonts/RetniSans-Regular.ttf);
-    font-weight: 400;
-    font-style: normal;
+  font-family: 'RetniSans';
+  src: url(/fonts/RetniSans-Regular.ttf);
+  font-weight: 400;
+  font-style: normal;
 }
+
 .bg-sidebar-hover {
-    background-color: rgba(180, 68, 249, 0.15);
+  background-color: rgba(180, 68, 249, 0.15);
 }
+
 button.sidebar {
-    padding-left: 100px;
+  padding-left: 100px;
 }
+
 .sidebar.active {
-    background-color: #B444F9 !important;
-    color: #FEFEFF !important;
+  background-color: #B444F9 !important;
+  color: #FEFEFF !important;
 }
 
 .img-network {
-    width: 36px;
-    height: 36px;
+  width: 36px;
+  height: 36px;
 }
 
 .img-ethereum {
-    background-image: url(/svgs/ethereum.svg);
+  background-image: url(/svgs/ethereum.svg);
 }
 
 .sidebar-icon {
-    height: 51px;
-    width: 100%;
-    display: flex;
+  height: 51px;
+  width: 100%;
+  display: flex;
 }
 
 .bg-wallet-output {
-    background-image: url(/sidebar/wallet_output.jpg);
-    background-size: contain;
-    background-repeat: no-repeat;
+  background-image: url(/sidebar/wallet_output.jpg);
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
-.fade-left{
-    background: linear-gradient(to right, #F6F8FC, #F6F8FC00);
-    border-radius: 14px;
-    z-index:2;
-    width: 15%;
-    height:100%;
-    left:40px;
-}
-.fade-right{
-    background: linear-gradient(to left, #F6F8FC, #F6F8FC00);
-    border-radius: 14px;
-    z-index:2;
-    width: 15%;
-    height:100%;
-    right:40px;
-}
-.slide{
-    background: #F6F8FC;
-    border-radius: 14px;
-    z-index:2;
-    width: 100%;
+.fade-left {
+  background: linear-gradient(to right, #F6F8FC, #F6F8FC00);
+  border-radius: 14px;
+  z-index: 2;
+  width: 15%;
+  height: 100%;
+  left: 40px;
 }
 
-.fw-60{
-    width:60%;
+.fade-right {
+  background: linear-gradient(to left, #F6F8FC, #F6F8FC00);
+  border-radius: 14px;
+  z-index: 2;
+  width: 15%;
+  height: 100%;
+  right: 40px;
+}
+
+.slide {
+  background: #F6F8FC;
+  border-radius: 14px;
+  z-index: 2;
+  width: 100%;
+}
+
+.fw-60 {
+  width: 60%;
 }
 
 .user-input {
-    height: 50px;
-    width: 50%;
-    background-color: #F6F8FC;
-    border: 2px solid #E9ECEF;
-    &:focus{
-        outline: none;
-        border: 2px solid #dbdbdb;
-    }
+  height: 50px;
+  width: 50%;
+  background-color: #F6F8FC;
+  border: 2px solid #E9ECEF;
+
+  &:focus {
+    outline: none;
+    border: 2px solid #dbdbdb;
+  }
 }
+
 .user-textarea {
-    height: 75px;
-    width: 100%;
-    background-color: #F6F8FC;
-    border: 2px solid #E9ECEF;
-    &:focus{
-        outline: none;
-        border: 2px solid #dbdbdb;
-    }
+  height: 75px;
+  width: 100%;
+  background-color: #F6F8FC;
+  border: 2px solid #E9ECEF;
+
+  &:focus {
+    outline: none;
+    border: 2px solid #dbdbdb;
+  }
 }
 
-.border-image img{
+.border-image {
+  max-width: 500px;
+  img {
     border-radius: 10px;
-    border:2px #B444F9 solid !important;
+    border: 2px #B444F9 solid !important;
+  }
 }
 
-.web3modal-modal-lightbox{
-    z-index:100 !important;
+.web3modal-modal-lightbox {
+  z-index: 100 !important;
 }
 
 [type='checkbox']:focus {
-    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
-    --tw-ring-offset-width: 0px;
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+  --tw-ring-offset-width: 0px;
 }
 
 .nft-image-container {
@@ -136,23 +149,204 @@ button.sidebar {
     height: 100%; /* This if for the object-fit */
     object-fit: contain; /* Equivalent of the background-size: cover; of a background-image */
     object-position: center;
+    transition: transform .5s ease;
   }
+
   .nft-image {
     border-radius: 6px;
 
     &:hover {
-        background: radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.25) 0%, rgba(254, 254, 255, 0.1) 100%);
-        backdrop-filter: blur(2px);
+      background: radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.25) 0%, rgba(254, 254, 255, 0.1) 100%);
+      backdrop-filter: blur(2px);
+      transform: scale(1.3);
     }
   }
 }
 
 .collection-nft-image-item {
-    background: radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.25) 0%, rgba(254, 254, 255, 0.1) 100%);
-    backdrop-filter: blur(2px);
-    border-radius: 6px;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.25) 0%, rgba(254, 254, 255, 0.1) 100%);
+  backdrop-filter: blur(2px);
+  border-radius: 6px;
 }
 
 .banner-slider {
     border-radius: 10px;
+}
+
+.section-header {
+    font-weight: 700;
+    font-size: 18px;
+    color: #6C757D;
+    display: flex;
+    align-items: center;
+    text-align: center;
+
+    .section-no {
+        background: #6C757D;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        color: #ffffff;
+        line-height: 18px;
+        font-size: 14px;
+    }
+
+    .section-title {
+        padding-left: 8px;
+        padding-right: 8px;
+        line-height: 23px;
+    }
+
+    &.active {
+        color: #B444F9;
+
+        .section-no {
+            background: #B444F9;
+        }
+    }
+}
+
+.section-content {
+    margin-top: 16px;
+    margin-bottom: 16px;
+    margin-left: 26px;
+    max-width: 450px;
+
+    p.section-description:not(:first-child) {
+        padding-top: 8px;
+    }
+
+    .section-description {
+        font-weight: 400;
+        font-size: 14px;
+        color: #A0B3CC;
+        line-height: 18px;
+    }
+}
+
+.tx-status-section {
+    color: #A0B3CC;
+    line-height: 16px;
+    font-size: 12px;
+    margin-top: 16px;
+
+    .tx-status-row {
+        display: flex;
+        align-items: center;
+    }
+
+    p.tx-status-row:not(:first-child) {
+        padding-top: 5px;
+    }
+
+    .tx-status-name {
+        font-weight: 600;
+    }
+
+    .tx-status-value {
+        margin-left: 12px;
+        font-weight: 300;
+    }
+
+    .tx-hash-ellipsis {
+        white-space: nowrap;
+        width: 160px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: #B444F9;
+        text-decoration: underline;
+    }
+}
+
+.congrats-section {
+    margin-top: 72px;
+    color: #B444F9;
+
+    &.failed {
+        color: #A0B3CC;
+    }
+
+    .congrats-title {
+        font-weight: 700;
+        font-size: 22px;
+        line-height: 28px;
+    }
+
+    .congrats-description {
+        margin-top: 16px;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 20px;
+    }
+}
+
+.embla {
+  position: relative;
+  padding: 20px;
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.embla__viewport {
+  overflow: hidden;
+  width: 100%;
+}
+
+.embla__viewport.is-draggable {
+  cursor: move;
+  cursor: grab;
+}
+
+.embla__viewport.is-dragging {
+  cursor: grabbing;
+}
+
+.embla__container {
+  display: flex;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -khtml-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.embla__slide {
+  position: relative;
+  flex: 0 0 100%;
+  max-width: 100%;
+  margin-left: 10px;
+}
+
+.embla__dots {
+  display: flex;
+  list-style: none;
+  justify-content: center;
+  padding-top: 10px;
+}
+
+.embla__dot {
+  background-color: transparent;
+  cursor: pointer;
+  position: relative;
+  padding: 0;
+  outline: 0;
+  border: 0;
+  width: 30px;
+  height: 30px;
+  margin-right: 7.5px;
+  margin-left: 7.5px;
+  display: flex;
+  align-items: center;
+}
+
+.embla__dot:after {
+  background-color: #efefef;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  content: "";
+}
+
+.embla__dot.is-selected:after {
+  background-color: black;
+  opacity: 1;
 }

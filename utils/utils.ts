@@ -1,7 +1,3 @@
-interface IChain {
-   [key: string]: string
-}
-
 interface ICrypto{
 	[key: string]: string
 }
@@ -11,19 +7,6 @@ interface ICryptoObj{
 
 interface IRpcDatafeed{
   [key: string]: string
-}
-export const chain_list:IChain = {
-  'eth': 'eth',
-  'bsc': 'bsc',
-  'matic': 'matic',
-  'avalanche': 'avalanche',
-  'fantom': 'fantom',
-  'optimism': 'optimism',
-  'arbitrum': 'arbitrum',
-  'bsc testnet': 'bsc',
-  'rinkeby': 'eth',
-  'mumbai': 'matic',
-  'avalanche testnet': 'avalanche'
 }
 
 export const crypto_list:ICryptoObj = {
@@ -40,6 +23,9 @@ export const crypto_list:ICryptoObj = {
     'bnb':'0x0567F2323251f0Aab15c8dFb1967E4e8A7D42aeE',
     'ftm':'0xe2A47e87C0f4134c8D06A41975F6860468b2F925',
     'matic':'0x7CA57b0cA6367191c94C8914d7Df09A57655905f'
+  },
+  'optimism': {
+    'op': '0x0D276FC14719f9292D5C1eA2198673d1f4269246'
   }
 }
 
@@ -61,5 +47,16 @@ export const rpcGasProvider:IRpcDatafeed = {
   'fantom':'https://rpc.ankr.com/fantom',
   'optimism':'https://rpc.ankr.com/optimism',
   'polygon':'https://rpc.ankr.com/polygon'
+}
 
+export const truncateAddress = (address: string) => {
+  return address.slice(0, 6) + '...' + address.slice(-4)
+}
+
+export const serializeMakeOrder = (order: any) => {
+  console.log(`["${order.isOrderAsk.toString()}","${order.signer}","${order.collection}","${order.price.toString()}","${order.tokenId.toString()}","${order.amount.toString()}","${order.strategy}","${order.currency}","${order.nonce.toString()}","${order.startTime.toString()}","${order.endTime.toString()}","${order.minPercentageToAsk.toString()}","${order.params.toString()}","${order.signature.toString()}"]`)
+}
+
+export const serializeTakeOrder = (order: any) => {
+  console.log(`["${order.isOrderAsk.toString()}","${order.taker}","${order.price.toString()}","${order.tokenId.toString()}","${order.minPercentageToAsk.toString()}","${order.params.toString()}"]`)
 }

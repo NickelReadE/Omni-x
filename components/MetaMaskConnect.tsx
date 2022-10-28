@@ -1,44 +1,53 @@
-import React from 'react'
-import Fail from '../public/images/fail.png'
-import Image from 'next/image'
-import ConnectButton from './ConnectButton'
-import SwitchButton from './SwitchButton'
-import { WalletContextType } from '../contexts/wallet'
-import { supportChainIDs } from '../utils/constants'
+import { useEffect, useMemo, useState } from 'react'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
+import {useSwitchNetwork} from 'wagmi'
+import { CHAIN_IDS, supportChainIDs } from '../utils/constants'
+import useWallet from '../hooks/useWallet'
+import { CHAIN_TYPE } from '../types/enum'
 
-type ConnectButtonProps = {
-  onConnect: () => Promise<void>
+const MetaMaskConnect = (): JSX.Element => {
+  const { chainId, address, provider } = useWallet()
+  const [show, setShow] = useState<boolean>(true)
+  const { openConnectModal } = useConnectModal()
+  const {isLoading, pendingChainId, switchNetwork} = useSwitchNetwork()
 
-  context:WalletContextType
-}
-const MetaMaskConnect = ({onConnect, context}:ConnectButtonProps): JSX.Element => {
-  const [show, setShow] = React.useState<boolean>(true)
-  const [chainId, setChainID] = React.useState<number>(4)
+  const isSupportChain = useMemo(() => {
+    if (chainId) {
+      return supportChainIDs.includes(chainId)
+    }
+    return false
+  }, [chainId])
 
-  React.useEffect(()=>{
-    if(context.address && context.provider && context.provider._network && context.provider._network.chainId) {
-      if(Number(context.provider._network.chainId)>0){
-        setChainID(context.provider._network.chainId as number)
-        if(supportChainIDs.includes(context.provider._network.chainId as number)){
-          setShow(false)
-        }
+  useEffect(() => {
+    if (address && provider && chainId) {
+      if (isSupportChain) {
+        setShow(false)
       }
     } else setShow(true)
-  },[context])
+  }, [address, chainId, isSupportChain, provider])
+
+  useEffect(() => {
+    if (!address && openConnectModal) {
+      openConnectModal()
+    }
+  }, [address, openConnectModal])
 
   const signSection = () => {
-    if(!context.address){
-      return(
-        <div>
-          <div>Please sign-in by connecting your wallet</div>
-          <div className='flex justify-center mt-20'><ConnectButton onConnect={onConnect} /></div>
-        </div>
-      )
-    } else if(!supportChainIDs.includes(chainId)&&context.address){
-      return(
+    if (!isSupportChain && address) {
+      return (
         <div>
           <div>Current network is not supported <br></br> Please switch network into Goerli</div>
-          <div className='flex justify-center mt-20'><SwitchButton  chainID={5} /></div>
+          <div className="flex justify-center mt-12">
+            <button
+              onClick={() => switchNetwork?.(CHAIN_IDS[CHAIN_TYPE.GOERLI])}
+              className="rounded-[10px] border border-l-30 bg-[#B444F9] text-white p-2 hover:text-white hover:bg-l-400 hover:border-l-400 hover:fill-white focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-n-100 focus-visible:outline-none active:bg-l-500 active:border-l-500 active:text-l-100 active:ring-0"
+            >
+              <div className="flex items-center justify-center font-semibold px-4 py-1 font-[32px]">
+                {!isLoading && 'Switch network'}
+                {isLoading && pendingChainId === CHAIN_IDS[CHAIN_TYPE.GOERLI] && 'Switching...'}
+              </div>
+            </button>
+          </div>
         </div>
       )
     }
@@ -46,9 +55,9 @@ const MetaMaskConnect = ({onConnect, context}:ConnectButtonProps): JSX.Element =
 
   return (
     <>
-      {show && <div className="flex justify-center items-center w-screen h-screen bg-[#ffffff90] fixed z-[1]">
-        <div className="flex flex-col justify-center border-4 border-[#1E1C21] p-20 rounded-[10px] bg-[#ffffff] text-[32px] font-bold">
-          <div className='flex justify-center mb-10'><Image src={Fail} alt="fail" /></div>
+      {show && address && <div className="flex justify-center items-center w-screen h-screen bg-[#ffffff90] fixed z-[1]">
+        <div
+          className="flex flex-col justify-center border-4 border-[#1E1C21] p-20 rounded-[10px] bg-[#ffffff] text-[32px] font-bold">
           {signSection()}
         </div>
       </div>}

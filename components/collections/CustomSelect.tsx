@@ -28,7 +28,7 @@ const CustomSelectValue = (props: any) => (
 interface ICustomSelectProps {
   optionData: any[],
   value: object,
-  onChange: any,
+  onChange?: any,
 }
 
 const CustomSelect: React.FC<ICustomSelectProps> = ({
@@ -55,6 +55,7 @@ const CustomSelect: React.FC<ICustomSelectProps> = ({
       isSearchable={ false }
       onChange={onChange}
       components={{ Option: IconOption, SingleValue: CustomSelectValue }}
+      isDisabled={!onChange}
     />
   )
 }

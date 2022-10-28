@@ -1,17 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
-import {BigNumber, ethers} from 'ethers'
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { BigNumber, ethers } from 'ethers'
 import Image from 'next/image'
-import {useDndMonitor, useDroppable} from '@dnd-kit/core'
+import { useDndMonitor, useDroppable } from '@dnd-kit/core'
 import LazyLoad from 'react-lazyload'
-import {Dialog} from '@material-ui/core'
-import {makeStyles} from '@material-ui/core/styles'
+import { Dialog } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import { useNetwork, useSwitchNetwork, useBalance } from 'wagmi'
 import useWallet from '../hooks/useWallet'
-import {getUserNFTs, selectRefreshBalance, selectUser, selectUserNFTs} from '../redux/reducers/userReducer'
-import {NFTItem} from '../interface/interface'
+import { NFTItem } from '../interface/interface'
 import {
-  getCurrencyInstance,
+  decodeFromBytes,
   getERC1155Instance,
   getERC721Instance,
   getLayerZeroEndpointInstance,
@@ -20,16 +20,24 @@ import {
   getONFTCore1155Instance,
   getONFTCore721Instance,
 } from '../utils/contracts'
-import regExpFormat from '../helpers/regExpFormat'
-import {formatCurrency, getAddressByName, getChainIdFromName, getChainInfo, getLayerzeroChainId, getProvider} from '../utils/constants'
+import {
+  chainInfos,
+  getChainInfo,
+  getLayerzeroChainId,
+  getProvider,
+  numberLocalize,
+  SUPPORTED_CHAIN_IDS,
+} from '../utils/constants'
 import ConfirmTransfer from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
 import UserEdit from './user/UserEdit'
 import useBridge from '../hooks/useBridge'
 import useProgress from '../hooks/useProgress'
 import useContract from '../hooks/useContract'
-import {PendingTxType} from '../contexts/contract'
-import {ChainIds} from '../types/enum'
+import { PendingTxType } from '../contexts/contract'
+import { ChainIds } from '../types/enum'
+import useData from '../hooks/useData'
+import {openSnackBar} from '../redux/reducers/snackBarReducer'
 
 interface RefObject {
   offsetHeight: number
@@ -42,48 +50,43 @@ const useStyles = makeStyles({
     maxWidth: '100%',
   },
 })
+
 const SideBar: React.FC = () => {
   const {
     provider,
     signer,
     address,
+    chainId,
     disconnect,
-    connect: connectWallet,
-    switchNetwork
   } = useWallet()
+  const { data: nativeBalance } = useBalance({
+    addressOrName: address
+  })
   const classes = useStyles()
   const { estimateGasFee, estimateGasFeeONFTCore, unwrapInfo, selectedUnwrapInfo, validateOwNFT, validateONFT } = useBridge()
   const { addTxToHistories } = useProgress()
   const { listenONFTEvents } = useContract()
-
+  const { chain } = useNetwork()
+  const { switchNetwork } = useSwitchNetwork()
+  const { balances, profile, userNfts: nfts, refreshUserNfts } = useData()
   const dispatch = useDispatch()
-  const ref = useRef(null)
-  const [showSidebar, setShowSidebar] = useState(false)
-  const [onMenu, setOnMenu] = useState(false)
-  const [expandedMenu, setExpandedMenu] = useState(0)
-  const [fixed, setFixed] = useState(false)
-  const [confirmTransfer, setConfirmTransfer] = useState(false)
-  const [chainId, setChainID] = useState(ChainIds.ETHEREUM)
-  const [isFirstDrag, setIsFirstDrag] = useState(true)
-  const DEFAULT_AVATAR = 'uploads\\default_avatar.png'
 
+  const ref = useRef(null)
   const menu_profile = useRef<HTMLUListElement>(null)
   const menu_ethereum = useRef<HTMLUListElement>(null)
   const menu_wallets = useRef<HTMLDivElement>(null)
   const menu_watchlist = useRef<HTMLDivElement>(null)
   const menu_bridge = useRef<HTMLDivElement>(null)
   const menu_cart = useRef<HTMLDivElement>(null)
+
+  const [showSidebar, setShowSidebar] = useState(false)
+  const [onMenu, setOnMenu] = useState(false)
+  const [expandedMenu, setExpandedMenu] = useState(0)
+  const [fixed, setFixed] = useState(false)
+  const [confirmTransfer, setConfirmTransfer] = useState(false)
+  const [isFirstDrag, setIsFirstDrag] = useState(true)
   const [offsetMenu, setOffsetMenu] = useState(0)
   const [avatarError, setAvatarError] = useState(false)
-
-  const [omniBalance, setOmniBalance] = useState(0)
-  const [usdcBalance, setUsdcBalance] = useState(0)
-  const [usdtBalance, setUsdtBalance] = useState(0)
-
-  const nfts = useSelector(selectUserNFTs)
-  const user = useSelector(selectUser)
-  const refreshBalance = useSelector(selectRefreshBalance)
-
   const [selectedNFTItem, setSelectedNFTItem] = useState<NFTItem>()
   const [isONFTCore, setIsONFTCore] = useState(false)
   const [image, setImage] = useState('/images/omnix_logo_black_1.png')
@@ -94,10 +97,9 @@ const SideBar: React.FC = () => {
   const [estimatedFee, setEstimatedFee] = useState<BigNumber>(BigNumber.from('0'))
   const [isONFT, setIsONFT] = useState(false)
   const [unwrap, setUnwrap] = useState(false)
-  const [bOpenModal, setOpenModal] = React.useState(false)
-  const [nativeBalance, setNativeBalance] = useState('')
+  const [bOpenModal, setOpenModal] = useState(false)
 
-  const {setNodeRef} = useDroppable({
+  const { setNodeRef } = useDroppable({
     id: 'droppable',
     data: {
       accepts: ['NFT'],
@@ -120,22 +122,25 @@ const SideBar: React.FC = () => {
     onDragEnd(event) {
       const { active: { id } } = event
       if (id.toString().length > 0 && (event.over !== null || isFirstDrag)) {
-        const index = id.toString().split('-')[1]
-        setSelectedNFTItem(nfts[index])
-        validateOwNFT(nfts[index]).then((res) => {
-          setIsONFT(res)
-        })
-        const metadata = nfts[index].metadata
-        setImageError(false)
-        // setChain(chain_list[nfts[index].chain])
-        if (metadata) {
-          try {
-            // IPFS Gateway: A server that will return IPFS files from a "normal" URL.
-            const image_uri = JSON.parse(metadata).image
-            setImage(image_uri.replace('ipfs://', 'https://ipfs.io/ipfs/'))
-          } catch (err) {
-            console.log(err)
-            setImage('/images/omnix_logo_black_1.png')
+        const tokenId = id.toString().split('-')[1]
+        const collectionAddress = id.toString().split('-')[2]
+        const selectedItem = nfts.find((item) => item.token_id == tokenId && item.collection_address === collectionAddress)
+        if (selectedItem) {
+          setSelectedNFTItem(selectedItem)
+          validateOwNFT(selectedItem).then((res) => {
+            setIsONFT(res)
+          })
+          const metadata = selectedItem.metadata
+          setImageError(false)
+          if (metadata) {
+            try {
+              // IPFS Gateway: A server that will return IPFS files from a "normal" URL.
+              const image_uri = JSON.parse(metadata).image
+              setImage(image_uri.replace('ipfs://', 'https://ipfs.io/ipfs/'))
+            } catch (err) {
+              console.log(err)
+              setImage('/images/omnix_logo_black_1.png')
+            }
           }
         }
       }
@@ -149,34 +154,34 @@ const SideBar: React.FC = () => {
   })
 
   useLayoutEffect(() => {
-    if ( menu_profile.current && expandedMenu == 1 ) {
+    if (menu_profile.current && expandedMenu == 1) {
       const current: RefObject = menu_profile.current
       setOffsetMenu(current.offsetHeight)
     }
-    if ( menu_ethereum.current && expandedMenu == 2 ) {
+    if (menu_ethereum.current && expandedMenu == 2) {
       const current: RefObject = menu_ethereum.current
       setOffsetMenu(current.offsetHeight)
     }
-    if ( menu_wallets.current && expandedMenu == 3 ) {
+    if (menu_wallets.current && expandedMenu == 3) {
       const current: RefObject = menu_wallets.current
       setOffsetMenu(current.offsetHeight)
     }
-    if ( menu_watchlist.current && expandedMenu == 4 ) {
+    if (menu_watchlist.current && expandedMenu == 4) {
       const current: RefObject = menu_watchlist.current
       setOffsetMenu(current.offsetHeight)
     }
-    if ( menu_bridge.current && expandedMenu == 5 ) {
+    if (menu_bridge.current && expandedMenu == 5) {
       const current: RefObject = menu_bridge.current
       setOffsetMenu(current.offsetHeight)
     }
-    if ( menu_cart.current && expandedMenu == 6 ) {
+    if (menu_cart.current && expandedMenu == 6) {
       const current: RefObject = menu_cart.current
       setOffsetMenu(current.offsetHeight)
     }
   }, [expandedMenu])
 
   const hideSidebar = () => {
-    if ( !onMenu ) {
+    if (!onMenu) {
       setExpandedMenu(0)
       setOffsetMenu(0)
       setShowSidebar(false)
@@ -208,16 +213,6 @@ const SideBar: React.FC = () => {
     setIsFirstDrag(!isFirstDrag)
   }
 
-  const onClickNetwork = async (chainId: number) => {
-    await connectWallet()
-    try{
-      await switchNetwork(chainId)
-      window.location.reload()
-    }catch(error){
-      console.log('error:', error)
-    }
-  }
-
   const handleTargetChainChange = (networkIndex: number) => {
     setTargetChain(networkIndex)
   }
@@ -225,12 +220,11 @@ const SideBar: React.FC = () => {
   const handleTransfer = async () => {
     if (!selectedNFTItem) return
     if (!targetChain) return
-    if (!user) return
+    if (!profile) return
     if (!signer) return
     if (!chainId) return
-    const senderChainId = getChainIdFromName(selectedNFTItem.chain)
-    if (chainId !== senderChainId) {
-      return await switchNetwork(senderChainId)
+    if (chainId !== selectedNFTItem.chain_id) {
+      return switchNetwork?.(selectedNFTItem.chain_id)
     }
     if (chainId === targetChain) return
 
@@ -243,6 +237,9 @@ const SideBar: React.FC = () => {
       } else {
         gasFee = await estimateGasFee(selectedNFTItem, chainId, targetChain)
       }
+      if (nativeBalance?.value.lt(gasFee)) {
+        return dispatch(openSnackBar( { message: 'Insufficient balance', status: 'warning' }))
+      }
       setEstimatedFee(gasFee)
       setConfirmTransfer(true)
     } catch (e) {
@@ -253,19 +250,20 @@ const SideBar: React.FC = () => {
   const onTransfer = async () => {
     if (!selectedNFTItem) return
     if (!signer) return
-    if (!provider?._network?.chainId) return
-    if (provider?._network?.chainId === targetChain) return
+    if (!chainId) return
+    if (chainId === targetChain) return
     if (!address) return
 
-    const lzEndpointInstance = getLayerZeroEndpointInstance(provider?._network?.chainId, provider)
+    const lzEndpointInstance = getLayerZeroEndpointInstance(chainId, provider)
     const lzTargetChainId = getLayerzeroChainId(targetChain)
     const _signerAddress = address
 
     const targetProvider = getProvider(targetChain)
     if (isONFTCore) {
       if (selectedNFTItem.contract_type === 'ERC721') {
-        const onftCoreInstance = getONFTCore721Instance(selectedNFTItem.token_address, provider?._network?.chainId, signer)
-        const targetONFTCoreAddress = await onftCoreInstance.getTrustedRemote(lzTargetChainId)
+        const onftCoreInstance = getONFTCore721Instance(selectedNFTItem.token_address, chainId, signer)
+        const remoteAddresses = await onftCoreInstance.getTrustedRemote(lzTargetChainId)
+        const targetONFTCoreAddress = decodeFromBytes(remoteAddresses)
         const tx = await onftCoreInstance.sendFrom(
           address,
           lzTargetChainId,
@@ -280,7 +278,7 @@ const SideBar: React.FC = () => {
         const pendingTx: PendingTxType = {
           txHash: tx.hash,
           type: 'bridge',
-          senderChainId: provider?._network?.chainId,
+          senderChainId: chainId,
           targetChainId: targetChain,
           targetAddress: targetONFTCoreAddress,
           isONFTCore: true,
@@ -294,8 +292,9 @@ const SideBar: React.FC = () => {
         onLeave()
         await tx.wait()
       } else if (selectedNFTItem.contract_type === 'ERC1155') {
-        const onft1155CoreInstance = getONFTCore1155Instance(selectedNFTItem.token_address, provider?._network?.chainId, signer)
-        const targetONFT1155CoreAddress = await onft1155CoreInstance.getTrustedRemote(lzTargetChainId)
+        const onft1155CoreInstance = getONFTCore1155Instance(selectedNFTItem.token_address, chainId, signer)
+        const remoteAddresses = await onft1155CoreInstance.getTrustedRemote(lzTargetChainId)
+        const targetONFT1155CoreAddress = decodeFromBytes(remoteAddresses)
         const blockNumber = await targetProvider.getBlockNumber()
         const tx = await onft1155CoreInstance.sendFrom(
           _signerAddress,
@@ -312,7 +311,7 @@ const SideBar: React.FC = () => {
         const pendingTx: PendingTxType = {
           txHash: tx.hash,
           type: 'bridge',
-          senderChainId: provider?._network?.chainId,
+          senderChainId: chainId,
           targetChainId: targetChain,
           targetAddress: targetONFT1155CoreAddress,
           targetBlockNumber: blockNumber,
@@ -327,7 +326,7 @@ const SideBar: React.FC = () => {
       }
     } else {
       if (selectedNFTItem.contract_type === 'ERC721') {
-        const contractInstance = getOmnixBridgeInstance(provider?._network?.chainId, signer)
+        const contractInstance = getOmnixBridgeInstance(chainId, signer)
         const erc721Instance = getERC721Instance(selectedNFTItem.token_address, 0, signer)
         const noSignerOmniXInstance = getOmnixBridgeInstance(targetChain, null)
         const dstAddress = await noSignerOmniXInstance.persistentAddresses(selectedNFTItem.token_address)
@@ -348,7 +347,7 @@ const SideBar: React.FC = () => {
         const pendingTx: PendingTxType = {
           txHash: tx.hash,
           type: 'bridge',
-          senderChainId: provider?._network?.chainId,
+          senderChainId: chainId,
           targetChainId: targetChain,
           targetAddress: '',
           isONFTCore: false,
@@ -363,7 +362,7 @@ const SideBar: React.FC = () => {
         await tx.wait()
         setSelectedNFTItem(undefined)
       } else if (selectedNFTItem.contract_type === 'ERC1155') {
-        const contractInstance = getOmnixBridge1155Instance(provider?._network?.chainId, signer)
+        const contractInstance = getOmnixBridge1155Instance(chainId, signer)
         const noSignerOmniX1155Instance = getOmnixBridge1155Instance(targetChain, null)
         const erc1155Instance = getERC1155Instance(selectedNFTItem.token_address, 0, signer)
         const dstAddress = await noSignerOmniX1155Instance.persistentAddresses(selectedNFTItem.token_address)
@@ -392,7 +391,7 @@ const SideBar: React.FC = () => {
         const pendingTx: PendingTxType = {
           txHash: tx.hash,
           type: 'bridge',
-          senderChainId: provider?._network?.chainId,
+          senderChainId: chainId,
           targetChainId: targetChain,
           targetAddress: '',
           isONFTCore: false,
@@ -412,7 +411,7 @@ const SideBar: React.FC = () => {
   }
 
   const handleUnwrap = useCallback(async () => {
-    if (provider?._network?.chainId && unwrapInfo) {
+    if (chainId && unwrapInfo) {
       try {
         if (unwrapInfo.type === 'ERC721') {
           const contractInstance = getOmnixBridgeInstance(unwrapInfo.chainId, signer)
@@ -437,9 +436,7 @@ const SideBar: React.FC = () => {
         }
 
         setTimeout(() => {
-          if (address) {
-            dispatch(getUserNFTs(address) as any)
-          }
+          refreshUserNfts()
         }, 30000)
       } catch (e: any) {
         console.log(e)
@@ -447,10 +444,10 @@ const SideBar: React.FC = () => {
         setUnwrap(false)
       }
     }
-  }, [provider?._network?.chainId, unwrapInfo, signer, address, dispatch])
+  }, [chainId, unwrapInfo, signer, address, dispatch])
 
   const onUnwrap = async () => {
-    if (provider?._network?.chainId && selectedUnwrapInfo) {
+    if (chainId && selectedUnwrapInfo) {
       try {
         if (selectedUnwrapInfo.type === 'ERC721') {
           const contractInstance = getOmnixBridgeInstance(selectedUnwrapInfo.chainId, signer)
@@ -474,9 +471,7 @@ const SideBar: React.FC = () => {
           await tx.wait()
         }
         setTimeout(() => {
-          if (address) {
-            dispatch(getUserNFTs(address) as any)
-          }
+          refreshUserNfts()
         }, 30000)
       } catch (e: any) {
         console.log(e)
@@ -493,73 +488,24 @@ const SideBar: React.FC = () => {
     })()
   }, [handleUnwrap, unwrapInfo])
 
-  useEffect(()=>{
-    if(window.ethereum){
-      setChainID(parseInt(window.ethereum.networkVersion))
-      window.ethereum.on('chainChanged', function (networkId:string) {
-        setChainID(parseInt(networkId))
-      })
-    }
-  }, [])
-
-  useEffect(()=>{
-    const chain_id = provider?._network?.chainId
-    if(Number(chain_id)>0){
-      setChainID(Number(chain_id))
-    }
-  },[provider?._network?.chainId])
-
   const updateModal = (status: boolean) => {
     setConfirmTransfer(status)
   }
 
-  useEffect(()=>{
-    const getBalance = async() => {
-      try {
-        {
-          const omniContract = getCurrencyInstance(getAddressByName('OMNI', chainId), chainId, signer)
-          const balance = await omniContract?.balanceOf(address)
-          setOmniBalance(Number(formatCurrency(balance, 'OMNI')))
-        }
-
-        {
-          const usdContract = getCurrencyInstance(getAddressByName('USDC', chainId), chainId, signer)
-          const balance = await usdContract?.balanceOf(address)
-          setUsdcBalance(Number(formatCurrency(balance, 'USDC')))
-        }
-
-        {
-          const usdContract = getCurrencyInstance(getAddressByName('USDT', chainId), chainId, signer)
-          const balance = await usdContract?.balanceOf(address)
-          setUsdtBalance(Number(formatCurrency(balance, 'USDT')))
-        }
-
-        {
-          //Native Token
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const balance = await provider?.getBalance(address!)
-          if(balance){
-            setNativeBalance(Number(ethers.utils.formatEther(balance || '0')).toFixed(4))
-          }
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    if(signer!=undefined && address!=undefined && chainId!==undefined){
-      getBalance()
-    }
-  },[signer, address, chainId, refreshBalance])
-
-  const setLogout = async() => {
-    console.log('clicked disconnect')
-    await disconnect()
-    window.location.reload()
+  const setLogout = () => {
+    disconnect()
   }
+
+  const avatarImage = useMemo(() => {
+    if (!avatarError && profile && profile.avatar) {
+      return process.env.API_URL + profile.avatar
+    }
+    return '/images/default_avatar.png'
+  }, [profile])
 
   return (
     <>
-      { !onMenu &&
+      {!onMenu &&
         <div
           className='right-0 right-0 w-[70px] py-6 bg-[#F6F8FC] fixed h-full z-[98]'
           onMouseEnter={() => setShowSidebar(true)}
@@ -570,9 +516,9 @@ const SideBar: React.FC = () => {
               <div className="sidebar-icon">
                 <div className="m-auto">
                   <Image
-                    src={avatarError || user.avatar === undefined || user.avatar === DEFAULT_AVATAR?'/images/default_avatar.png':(process.env.API_URL + user.avatar)}
+                    src={avatarImage}
                     alt="avatar"
-                    onError={()=>{user.avatar&&setAvatarError(true)}}
+                    onError={() => { profile && profile.avatar && setAvatarError(true) }}
                     width={45}
                     height={45}
                   />
@@ -582,25 +528,9 @@ const SideBar: React.FC = () => {
             <div className="w-full 0">
               <div className="sidebar-icon">
                 {
-                  chainId === ChainIds.ETHEREUM && <img alt={'networkIcon'} src="/sidebar/ethereum.png" className="m-auto h-[45px]" />
-                }
-                {
-                  chainId === ChainIds.BINANCE && <img alt={'networkIcon'} src="/sidebar/binance.png" className="m-auto h-[45px]" />
-                }
-                {
-                  chainId === ChainIds.AVALANCHE && <img alt={'networkIcon'} src="/sidebar/avax.png" className="m-auto h-[45px]" />
-                }
-                {
-                  chainId === ChainIds.POLYGON && <img alt={'networkIcon'} src="/sidebar/polygon.png" className="m-auto h-[45px]" />
-                }
-                {
-                  chainId === ChainIds.ARBITRUM && <img alt={'networkIcon'} src="/sidebar/arbitrum.png" className="m-auto h-[45px]" />
-                }
-                {
-                  chainId === ChainIds.OPTIMISM && <img alt={'networkIcon'} src="/sidebar/optimism.png" className="m-auto h-[45px]" />
-                }
-                {
-                  chainId === ChainIds.FANTOM && <img alt={'networkIcon'} src="/sidebar/fantom.png" className="m-auto h-[45px]" />
+                  SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
+                    return chainId === networkId && <img key={index} alt={'networkIcon'} src={chainInfos[networkId].logo || chainInfos[ChainIds.ETHEREUM].logo} className="m-auto h-[45px]" />
+                  })
                 }
               </div>
             </div>
@@ -619,27 +549,25 @@ const SideBar: React.FC = () => {
                 <img alt={'networkIcon'} src="/sidebar/bridge.svg" className="m-auto" />
               </div>
             </div>
-            <div className="w-full 0">
+            {/*<div className="w-full 0">
               <div className="sidebar-icon">
                 <img alt={'networkIcon'} src="/sidebar/cart.svg" className="m-auto" />
               </div>
-            </div>
+            </div>*/}
           </div>
 
         </div>
       }
       <div
         ref={ref}
-        className={`right-0 right-0 w-[450px] bg-w-600/[.8] backdrop-blur-sm pl-5 pr-2 py-6 fixed h-full z-[97] opacity-0.95 ease-in-out duration-300 ${
-          showSidebar || onMenu ? 'translate-x-0' : 'translate-x-full'
-        }`}
+        className={`right-0 right-0 w-[450px] bg-w-600/[.8] backdrop-blur-sm pl-5 pr-2 py-6 fixed h-full z-[97] opacity-0.95 ease-in-out duration-300 ${showSidebar || onMenu ? 'translate-x-0' : 'translate-x-full'}`}
         onMouseEnter={() => setOnMenu(true)}
         onMouseLeave={() => onLeaveMenu()}
       >
         <ul className='flex flex-col space-y-8 mr-[70px]'>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px] py-[12px] pr-[70px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==1?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px] py-[12px] pr-[70px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu == 1 ? 'active' : ''}`}
               onClick={() => toggleMenu(1)}
             >
               My Profile
@@ -647,23 +575,20 @@ const SideBar: React.FC = () => {
                 <i className={`${expandedMenu == 1 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
               </span>
             </button>
-            { expandedMenu == 1 &&
+            {expandedMenu == 1 &&
               <ul className='flex  flex-col w-full   pt-4 pb-0 text-g-600' ref={menu_profile}>
                 <li className="w-full">
-                  <button className="w-full flex justify-start py-[13px] pl-[100px] hover:bg-l-50">My Dashboard</button>
+                  <button className="w-full flex justify-start py-[13px] pl-[100px] hover:bg-l-50" onClick={() => setOpenModal(true)}>Account Settings</button>
                 </li>
                 <li className="w-full">
-                  <button className="w-full flex justify-start py-[13px] pl-[100px] hover:bg-l-50" onClick={()=>setOpenModal(true)}>Account Settings</button>
-                </li>
-                <li className="w-full">
-                  <button className="w-full flex justify-start py-[13px] pl-[100px] hover:bg-l-50" onClick={()=>setLogout()}>Logout</button>
+                  <button className="w-full flex justify-start py-[13px] pl-[100px] hover:bg-l-50" onClick={() => setLogout()}>Logout</button>
                 </li>
               </ul>
             }
           </li>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px] py-[12px] pr-[70px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==2?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px] py-[12px] pr-[70px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu == 2 ? 'active' : ''}`}
               onClick={() => toggleMenu(2)}
             >
               Network
@@ -671,84 +596,34 @@ const SideBar: React.FC = () => {
                 <i className={`${expandedMenu == 2 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
               </span>
             </button>
-            { expandedMenu == 2 &&
+            {expandedMenu == 2 &&
               <ul className='flex flex-col w-full   pt-4 pb-0 text-g-600' ref={menu_ethereum}>
-                <li className="w-full">
-                  <button className="w-full hover:bg-l-50 pl-[70px] py-[7px] " onClick={() => onClickNetwork(ChainIds.ETHEREUM)}>
-                    <div className="flex flex-row w-[130px]">
-                      <div className="flex items-center w-[36px] h-[36px]">
-                        <img alt={'networkIcon'} src="/svgs/ethereum.svg" width={24} height={28} />
-                      </div>
-                      <span className="flex items-center ml-4 " >Ethereum</span>
-                    </div>
-                  </button>
-                </li>
-                <li className="w-full">
-                  <button className="w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(ChainIds.BINANCE)}>
-                    <div className="flex flex-row w-[130px]">
-                      <div className="flex items-center w-[36px] h-[36px] m-auto">
-                        <img alt={'networkIcon'} src="/svgs/binance.svg" width={24} height={28} />
-                      </div>
-                      <span className="flex items-center ml-4 w-[80px]">BNB Chain</span>
-                    </div>
-                  </button>
-                </li>
-                <li className="w-full">
-                  <button className="w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(ChainIds.AVALANCHE)}>
-                    <div className="flex flex-row w-[130px]">
-                      <div className="flex items-center w-[36px] h-[36px] m-auto">
-                        <img alt={'networkIcon'} src="/svgs/avax.svg" width={24} height={28} />
-                      </div>
-                      <span className="flex items-center ml-4 w-[80px]">Avalanche</span>
-                    </div>
-                  </button>
-                </li>
-                <li className="w-full">
-                  <button className="flex items-center w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(ChainIds.POLYGON)}>
-                    <div className="flex flex-row w-[130px]">
-                      <div className="flex items-center w-[36px] h-[36px] m-auto">
-                        <img alt={'networkIcon'} src="/svgs/polygon.svg" width={24} height={28} />
-                      </div>
-                      <span className="ml-4 w-[80px] flex items-center">Polygon</span>
-                    </div>
-                  </button>
-                </li>
-                <li className="w-full">
-                  <button className="w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(ChainIds.ARBITRUM)}>
-                    <div className="flex flex-row w-[130px]">
-                      <div className="flex items-center w-[36px] h-[36px] ">
-                        <img alt={'networkIcon'} src="/svgs/arbitrum.svg" width={24} height={28} />
-                      </div>
-                      <span className=" flex items-center ml-4 ">Arbitrum</span>
-                    </div>
-                  </button>
-                </li>
-                <li className="w-full">
-                  <button className="w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(ChainIds.OPTIMISM)}>
-                    <div className="flex flex-row w-[130px]">
-                      <div className=" flex items-center w-[36px] h-[36px] m-auto">
-                        <img alt={'networkIcon'} src="/svgs/optimism.svg" width={24} height={28} />
-                      </div>
-                      <span className="flex items-center ml-4 w-[80px]">Optimism</span>
-                    </div>
-                  </button>
-                </li>
-                <li className="w-full">
-                  <button className="w-full hover:bg-l-50 pl-[70px] py-[7px]" onClick={() => onClickNetwork(ChainIds.FANTOM)}>
-                    <div className="flex flex-row w-[130px]">
-                      <div className="flex items-center w-[36px] h-[36px] m-auto">
-                        <img alt={'networkIcon'} src="/svgs/fantom.svg" width={24} height={28} />
-                      </div>
-                      <span className="flex items-center ml-4 w-[80px]">Fantom</span>
-                    </div>
-                  </button>
-                </li>
+                {
+                  SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
+                    return (
+                      <li key={index} className="w-full">
+                        <button
+                          className="w-full hover:bg-l-50 pl-[70px] py-[7px]"
+                          disabled={chainInfos[networkId].comingSoon || networkId === chain?.id}
+                          onClick={() => switchNetwork?.(networkId)}
+                        >
+                          <div className="flex flex-row w-[130px]">
+                            <div className="flex items-center w-[36px] h-[36px]">
+                              <img alt={'networkIcon'} src={chainInfos[networkId].logo || chainInfos[ChainIds.ETHEREUM].logo} width={24} height={28} />
+                            </div>
+                            <span className="flex items-center ml-4">{chainInfos[networkId].officialName || chainInfos[ChainIds.ETHEREUM].officialName}</span>
+                          </div>
+                        </button>
+                      </li>
+                    )
+                  })
+                }
               </ul>
             }
           </li>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px] py-[12px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==3?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px] py-[12px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu == 3 ? 'active' : ''}`}
               onClick={() => toggleMenu(3)}
             >
               Wallet
@@ -756,12 +631,14 @@ const SideBar: React.FC = () => {
                 <i className={`${expandedMenu == 3 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
               </span>
             </button>
-            { expandedMenu == 3 &&
+            {expandedMenu == 3 &&
               <div className='flex flex-col w-full space-y-4 p-6 pt-8 pb-0' ref={menu_wallets}>
-                <span className="font-semibold w-auto text-[16px]">OMNI balance: {regExpFormat(omniBalance)}</span>
-                <span className="font-semibold w-auto text-[16px]">USDC balance: {regExpFormat(usdcBalance)}</span>
-                <span className="font-semibold w-auto text-[16px]">USDT balance: {regExpFormat(usdtBalance)}</span>
-                <span className="font-semibold w-auto text-[16px]">{getChainInfo(chainId)?.nativeCurrency.symbol} balance: {nativeBalance}</span>
+                <span className="font-semibold w-auto text-[16px]">OMNI balance: {numberLocalize(balances.omni)}</span>
+                <span className="font-semibold w-auto text-[16px]">USDC balance: {numberLocalize(balances.usdc)}</span>
+                <span className="font-semibold w-auto text-[16px]">USDT balance: {numberLocalize(balances.usdt)}</span>
+                <span className="font-semibold w-auto text-[16px]">
+                  {getChainInfo(chainId)?.nativeCurrency.symbol} balance: {numberLocalize(parseFloat(nativeBalance?.formatted || '0'))}
+                </span>
                 <span className="w-auto text-[16px]">Staking: coming soon</span>
                 {/* <div className="w-full flex flex-row font-semibold text-[14px]">
                   <div className="bg-g-200 w-[88px] px-[11px] py-[9px]">
@@ -841,7 +718,7 @@ const SideBar: React.FC = () => {
           </li>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px]  py-[12px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==4?'active':''}`}
+              className={`w-full text-left rounded-full px-[24px]  py-[12px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu == 4 ? 'active' : ''}`}
               onClick={() => toggleMenu(4)}
             >
               Watchlist
@@ -849,7 +726,7 @@ const SideBar: React.FC = () => {
                 <i className={`${expandedMenu == 4 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
               </span>
             </button>
-            { expandedMenu == 4 &&
+            {expandedMenu == 4 &&
               <div className='flex flex-col w-full space-y-4 p-6 pt-8 pb-0' ref={menu_watchlist}>
                 <div className="p-[51px] flex flex-col items-center border border-dashed border-g-300">
                   {/* <span className="text-[14px] text-g-300">Drag & Drop</span>
@@ -862,7 +739,7 @@ const SideBar: React.FC = () => {
           </li>
           <li className="w-full">
             <button
-              className={`w-full text-left rounded-full p-6  pr-[70px]  py-[12px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==5?'active':''}`}
+              className={`w-full text-left rounded-full p-6  pr-[70px]  py-[12px] text-xg text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu == 5 ? 'active' : ''}`}
               onClick={() => fixMenu(5)}
             >
               Send/Bridge
@@ -870,9 +747,9 @@ const SideBar: React.FC = () => {
                 <i className={`${expandedMenu == 5 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
               </span>
             </button>
-            { expandedMenu == 5 &&
+            {expandedMenu == 5 &&
               <div className='flex flex-col w-full space-y-4 p-6 pt-8 pb-0' ref={menu_bridge}>
-                <div ref={setNodeRef} className="px-[113px] py-[43px] flex flex-col items-center border border-dashed border-g-300 bg-g-200" style={dragOver ? {opacity: 0.4} : {opacity: 1}}>
+                <div ref={setNodeRef} className="px-[113px] py-[43px] flex flex-col items-center border border-dashed border-g-300 bg-g-200" style={dragOver ? { opacity: 0.4 } : { opacity: 1 }}>
                   {
                     dragOver
                       ?
@@ -885,34 +762,22 @@ const SideBar: React.FC = () => {
                   }
                   {
                     selectedNFTItem &&
-                      <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
-                        <img src={imageError?'/images/omnix_logo_black_1.png':image} alt="nft-image" onError={()=>{setImageError(true)}} data-src={image} />
-                      </LazyLoad>
+                    <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
+                      <img src={imageError ? '/images/omnix_logo_black_1.png' : image} alt="nft-image" onError={() => { setImageError(true) }} data-src={image} />
+                    </LazyLoad>
                   }
                 </div>
                 <span className="font-g-300">Select destination chain:</span>
                 <div className="flex flex-row w-full space-x-[15px]">
-                  <button onClick={() => handleTargetChainChange(ChainIds.ETHEREUM)} className={targetChain === ChainIds.ETHEREUM ? 'border border-g-300' : ''}>
-                    <img alt={'networkIcon'} src="/svgs/ethereum.svg" width={24} height={28} />
-                  </button>
-                  <button onClick={() => handleTargetChainChange(ChainIds.BINANCE)} className={targetChain === ChainIds.BINANCE ? 'border border-g-300' : ''}>
-                    <img alt={'networkIcon'} src="/svgs/binance.svg" width={29} height={30} />
-                  </button>
-                  <button onClick={() => handleTargetChainChange(ChainIds.AVALANCHE)} className={targetChain === ChainIds.AVALANCHE ? 'border border-g-300' : ''}>
-                    <img alt={'networkIcon'} src="/svgs/avax.svg" width={23} height={35} />
-                  </button>
-                  <button onClick={() => handleTargetChainChange(ChainIds.POLYGON)} className={targetChain === ChainIds.POLYGON ? 'border border-g-300' : ''}>
-                    <img alt={'networkIcon'} src="/svgs/polygon.svg" width={34} height={30} />
-                  </button>
-                  <button onClick={() => handleTargetChainChange(ChainIds.ARBITRUM)} className={targetChain === ChainIds.ARBITRUM ? 'border border-g-300' : ''}>
-                    <img alt={'networkIcon'} src="/svgs/arbitrum.svg" width={35} height={30} />
-                  </button>
-                  <button onClick={() => handleTargetChainChange(ChainIds.OPTIMISM)} className={targetChain === ChainIds.OPTIMISM ? 'border border-g-300' : ''}>
-                    <img alt={'networkIcon'} src="/svgs/optimism.svg" width={25} height={25} />
-                  </button>
-                  <button onClick={() => handleTargetChainChange(ChainIds.FANTOM)} className={targetChain === ChainIds.FANTOM ? 'border border-g-300' : ''}>
-                    <img alt={'networkIcon'} src="/svgs/fantom.svg" width={25} height={25} />
-                  </button>
+                  {
+                    SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
+                      return (
+                        <button key={index} disabled={!!chainInfos[networkId].comingSoon} onClick={() => handleTargetChainChange(networkId)} className={targetChain === networkId ? 'border border-g-300' : ''}>
+                          <img alt={'networkIcon'} src={chainInfos[networkId].logo || chainInfos[ChainIds.ETHEREUM].logo} width={24} height={28} />
+                        </button>
+                      )
+                    })
+                  }
                 </div>
                 {
                   isONFT
@@ -928,7 +793,7 @@ const SideBar: React.FC = () => {
               </div>
             }
           </li>
-          <li className="w-full">
+          {/*<li className="w-full">
             <button
               className={`w-full text-left rounded-full px-[24px] py-[12px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==6?'active':''}`}
               onClick={() => toggleMenu(6)}
@@ -948,56 +813,38 @@ const SideBar: React.FC = () => {
                 </button>
               </div>
             }
-          </li>
+          </li>*/}
         </ul>
 
-        <div
-          className='top-0 right-0 w-[70px] py-6 bg-white fixed h-full z-[99]'
-        >
+        <div className='top-0 right-0 w-[70px] py-6 bg-white fixed h-full z-[99]'>
           <div className="flex flex-col items-center space-y-8">
             <div className="w-full 0">
               <div className="sidebar-icon">
                 <div className="m-auto">
                   <Image
-                    src={avatarError || user.avatar === undefined || user.avatar === DEFAULT_AVATAR?'/images/default_avatar.png':(process.env.API_URL + user.avatar)}
+                    src={avatarImage}
                     alt="avatar"
-                    onError={()=>{user.avatar&&setAvatarError(true)}}
+                    onError={() => { profile && profile.avatar && setAvatarError(true) }}
                     width={45}
                     height={45}
                   />
                 </div>
               </div>
-              { expandedMenu == 1 &&
-                <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{height: offsetMenu + 'px'}}>
+              {expandedMenu == 1 &&
+                <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{ height: offsetMenu + 'px' }}>
                 </ul>
               }
             </div>
             <div className="w-full 0">
               <div className="sidebar-icon">
                 {
-                  chainId === ChainIds.ETHEREUM && <img alt={'networkIcon'} src="/sidebar/ethereum.png" className="m-auto h-[45px]" />
-                }
-                {
-                  chainId === ChainIds.ARBITRUM && <img alt={'networkIcon'} src="/sidebar/arbitrum.png" className="m-auto h-[45px]" />
-                }
-                {
-                  chainId === ChainIds.AVALANCHE && <img alt={'networkIcon'} src="/sidebar/avax.png" className="m-auto h-[45px]" />
-                }
-                {
-                  chainId === ChainIds.BINANCE && <img alt={'networkIcon'} src="/sidebar/binance.png" className="m-auto h-[45px]" />
-                }
-                {
-                  chainId === ChainIds.FANTOM && <img alt={'networkIcon'} src="/sidebar/fantom.png" className="m-auto h-[45px]" />
-                }
-                {
-                  chainId === ChainIds.OPTIMISM && <img alt={'networkIcon'} src="/sidebar/optimism.png" className="m-auto h-[45px]" />
-                }
-                {
-                  chainId === ChainIds.POLYGON && <img alt={'networkIcon'} src="/sidebar/polygon.png" className="m-auto h-[45px]" />
+                  SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
+                    return chainId === networkId && <img key={index} alt={'networkIcon'} src={chainInfos[networkId].logo || chainInfos[ChainIds.ETHEREUM].logo} className="m-auto h-[45px]" />
+                  })
                 }
               </div>
-              { expandedMenu == 2 &&
-                <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{height: offsetMenu + 'px'}}>
+              {expandedMenu == 2 &&
+                <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{ height: offsetMenu + 'px' }}>
                 </ul>
               }
             </div>
@@ -1005,8 +852,8 @@ const SideBar: React.FC = () => {
               <div className="sidebar-icon">
                 <img alt={'networkIcon'} src="/sidebar/wallets.svg" className="m-auto" />
               </div>
-              { expandedMenu == 3 &&
-                <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{height: offsetMenu + 'px'}}>
+              {expandedMenu == 3 &&
+                <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{ height: offsetMenu + 'px' }}>
                 </ul>
               }
             </div>
@@ -1014,8 +861,8 @@ const SideBar: React.FC = () => {
               <div className="sidebar-icon">
                 <img alt={'networkIcon'} src="/sidebar/watchlist.svg" className="m-auto" />
               </div>
-              { expandedMenu == 4 &&
-                <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{height: offsetMenu + 'px'}}>
+              {expandedMenu == 4 &&
+                <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{ height: offsetMenu + 'px' }}>
                 </ul>
               }
             </div>
@@ -1023,12 +870,12 @@ const SideBar: React.FC = () => {
               <div className="sidebar-icon">
                 <img alt={'networkIcon'} src="/sidebar/bridge.svg" className="m-auto" />
               </div>
-              { expandedMenu == 5 &&
-                <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{height: offsetMenu + 'px'}}>
+              {expandedMenu == 5 &&
+                <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{ height: offsetMenu + 'px' }}>
                 </ul>
               }
             </div>
-            <div className="w-full 0">
+            {/*<div className="w-full 0">
               <div className="sidebar-icon">
                 <img alt={'networkIcon'} src="/sidebar/cart.svg" className="m-auto" />
               </div>
@@ -1036,13 +883,10 @@ const SideBar: React.FC = () => {
                 <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{height: offsetMenu + 'px'}}>
                 </ul>
               }
-            </div>
+            </div>*/}
           </div>
-
         </div>
-
       </div>
-
 
       <div className="w-full md:w-auto">
         <Dialog open={confirmTransfer} onClose={() => setConfirmTransfer(false)}>
@@ -1066,7 +910,7 @@ const SideBar: React.FC = () => {
         </Dialog>
       </div>
       <Dialog open={bOpenModal} onClose={() => setOpenModal(false)} aria-labelledby='simple-dialog-title' maxWidth={'xl'} classes={{ paper: classes.paper }}>
-        <UserEdit updateModal={()=>setOpenModal(false)} />
+        <UserEdit updateModal={() => setOpenModal(false)} />
       </Dialog>
     </>
   )

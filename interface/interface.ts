@@ -6,7 +6,8 @@ export interface IPropsSlider {
 }
 
 export interface IPropsImage {
-  nfts: Array<NFTItem>
+  nfts: Array<NFTItem>,
+  isLoading: boolean,
 }
 
 export interface IPropsFeed {
@@ -18,12 +19,12 @@ export interface IPropsNFTItem {
   col_url?: string,
   chain?: string,
   col_address?:string,
-  index: number
+  onRefresh: () => void
 }
 
 export interface NFTItem {
   name: string,
-  attributes: Object,
+  attributes: any,
   image: string,
   custom_id: number,
   token: string,
@@ -33,6 +34,7 @@ export interface NFTItem {
   name1: string,
   price: number,
   last_sale:number,
+  last_sale_currency:string,
   chain_id:number,
   metadata: string,
   token_uri: string,
@@ -40,7 +42,14 @@ export interface NFTItem {
   contract_type: string,
   chain: string,
   token_address: string,
+  owner: string,
+  collection_address: string,
+  currency: string,
   uri: string,
+  symbol: string,
+  order_data: any,
+  bidDatas: any[],
+  bidOrderData: any[],
 }
 
 export interface FeedItem {
@@ -65,6 +74,7 @@ export const ItemTypes = {
 export interface IGetOrderRequest {
   isOrderAsk?: boolean,
   chain?: string,
+  chain_id?: number,
   collection?: string,
   tokenId?: string,
   signer?: string,
@@ -81,6 +91,7 @@ export interface IGetOrderRequest {
 
 export interface IOrder {
   chain: string,
+  chain_id: number,
   collectionAddress: string,
   tokenId: string,
   isOrderAsk: boolean,
@@ -99,7 +110,8 @@ export interface IOrder {
   r: string,
   s: string,
   hash: string,
-  status: OrderStatus
+  status: OrderStatus,
+  updatedAt: string,
 }
 
 export type OrderStatus = 'EXECUTED' | 'EXPIRED'

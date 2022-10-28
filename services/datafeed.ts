@@ -1,28 +1,29 @@
-import { ethers } from "ethers"
+import {ethers} from 'ethers'
 import {crypto_list, rpcDatafeedProvider, rpcGasProvider} from '../utils/utils'
 import Aggregator from '../constants/abis/AggregatvorV3.json'
 
 interface PriceData {
-  [key:string]: string
+  [key: string]: string
 }
-export const getPriceforUSD = async( chain:string, crypto:string) => {
+
+export const getPriceforUSD = async (chain: string, crypto: string) => {
   const provider = new ethers.providers.JsonRpcProvider(rpcDatafeedProvider[chain])
   const priceFeed = new ethers.Contract(crypto_list[chain][crypto], Aggregator, provider)
-  let result:any = 0
+  let result: any = 0
   await priceFeed.latestRoundData()
-    .then((roundData:any) => {
-      result = (parseFloat((roundData.answer))/100000000.0)     
+    .then((roundData: any) => {
+      result = (parseFloat((roundData.answer)) / 100000000.0)
     })
-   return result.toFixed(3)
-  
+  return result.toFixed(3)
+
 }
-const getGasOnChain = async(chain:string) => {
+const getGasOnChain = async (chain: string) => {
   const provider = new ethers.providers.JsonRpcProvider(rpcGasProvider[chain])
-  const gasPrice = ethers.utils.formatUnits(await provider.getGasPrice(), "gwei")
+  const gasPrice = ethers.utils.formatUnits(await provider.getGasPrice(), 'gwei')
   return parseFloat(gasPrice).toFixed(3)
 }
 
-export const getGasOnChains = async() => {
+export const getGasOnChains = async () => {
   return {
     'eth': await getGasOnChain('eth'),
     'bsc': await getGasOnChain('bsc'),
@@ -30,18 +31,18 @@ export const getGasOnChains = async() => {
     'avalanche': await getGasOnChain('avalanche'),
     'fantom': await getGasOnChain('fantom'),
     'optimism': await getGasOnChain('optimism'),
-    'polygon': await getGasOnChain('polygon')   
-  }}
-
-
-export const getPriceFeeddata = async()=>{
-  let result:PriceData = {
-    'eth':  await getPriceforUSD('eth','eth'),
-    'bnb':  await getPriceforUSD('bsc','bnb'),
-    'avax': await getPriceforUSD('bsc','avax'),
-    'ftm':  await getPriceforUSD('bsc','ftm'),
-    'matic':  await getPriceforUSD('bsc','matic')
+    'polygon': await getGasOnChain('polygon')
   }
-  return result
 }
 
+
+export const getPriceFeeddata = async (): Promise<PriceData> => {
+  return {
+    'eth': await getPriceforUSD('eth', 'eth'),
+    'bnb': await getPriceforUSD('bsc', 'bnb'),
+    'avax': await getPriceforUSD('bsc', 'avax'),
+    'ftm': await getPriceforUSD('bsc', 'ftm'),
+    'matic': await getPriceforUSD('bsc', 'matic'),
+    'op': await getPriceforUSD('optimism', 'op'),
+  }
+}

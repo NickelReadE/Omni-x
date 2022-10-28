@@ -1,8 +1,8 @@
 import React, {useState} from 'react'
-import {NFTItem} from '../../interface/interface'
 import LazyLoad from 'react-lazyload'
-import {chainInfos} from '../../utils/constants'
 import {BigNumber, ethers} from 'ethers'
+import {NFTItem} from '../../interface/interface'
+import {chainInfos} from '../../utils/constants'
 
 interface IConfirmTransferProps {
   updateModal: (status: boolean) => void,

@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {ReactNode, useEffect} from 'react'
 import { PendingTxType, ContractContext } from '../../contexts/contract'
-import { getERC1155Instance, getERC721Instance, getOmnixBridge1155Instance, getOmnixBridgeInstance, getONFTCore1155Instance, getONFTCore721Instance } from '../../utils/contracts'
-import { useDispatch } from 'react-redux'
-import { getUserNFTs } from '../../redux/reducers/userReducer'
+import { getERC1155Instance, getERC721Instance, getCurrencyInstance, getOmnixBridge1155Instance, getOmnixBridgeInstance, getONFTCore1155Instance, getONFTCore721Instance } from '../../utils/contracts'
 import useWallet from '../../hooks/useWallet'
 import useProgress from '../../hooks/useProgress'
+import { ethers } from 'ethers'
+import useData from '../../hooks/useData'
 
 type ContractProviderProps = {
   children?: ReactNode
@@ -14,12 +14,13 @@ type ContractProviderProps = {
 export const ContractProvider = ({
   children,
 }: ContractProviderProps): JSX.Element => {
-  const dispatch = useDispatch()
-  const { address, provider } = useWallet()
+  const { address, provider, chainId } = useWallet()
   const { updateHistory } = useProgress()
+  const { refreshUserNfts } = useData()
+  const UPDATE_TIMESTAMP = 10000
 
   const listenBridgeONFTCoreEvents = async (txInfo: PendingTxType, historyIndex: number) => {
-    if (address && provider?._network?.chainId) {
+    if (address && chainId && !txInfo.destTxHash) {
       if (txInfo.contractType === 'ERC721') {
         const targetCoreInstance = getONFTCore721Instance(txInfo.targetAddress, txInfo.targetChainId, null)
         const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber)
@@ -44,8 +45,8 @@ export const ContractProvider = ({
               })
             }
             setTimeout(() => {
-              dispatch(getUserNFTs(address) as any)
-            }, 30000)
+              refreshUserNfts()
+            }, UPDATE_TIMESTAMP)
           })
         } else {
           updateHistory(historyIndex, {
@@ -79,8 +80,8 @@ export const ContractProvider = ({
               })
             }
             setTimeout(() => {
-              dispatch(getUserNFTs(address) as any)
-            }, 30000)
+              refreshUserNfts()
+            }, UPDATE_TIMESTAMP)
           })
         } else {
           updateHistory(historyIndex, {
@@ -94,7 +95,7 @@ export const ContractProvider = ({
   }
 
   const listenBridgeEvents = async (txInfo: PendingTxType, historyIndex: number) => {
-    if (address && provider?._network?.chainId) {
+    if (address && chainId && !txInfo.destTxHash) {
       if (txInfo.contractType === 'ERC721') {
         const noSignerOmniXInstance = getOmnixBridgeInstance(txInfo.targetChainId, null)
         const events = await noSignerOmniXInstance.queryFilter(noSignerOmniXInstance.filters.LzReceive(), txInfo.targetBlockNumber)
@@ -119,8 +120,8 @@ export const ContractProvider = ({
               })
             }
             setTimeout(() => {
-              dispatch(getUserNFTs(address) as any)
-            }, 30000)
+              refreshUserNfts()
+            }, UPDATE_TIMESTAMP)
           })
         } else {
           updateHistory(historyIndex,{
@@ -156,8 +157,8 @@ export const ContractProvider = ({
             }
             if (address) {
               setTimeout(() => {
-                dispatch(getUserNFTs(address) as any)
-              }, 30000)
+                refreshUserNfts()
+              }, UPDATE_TIMESTAMP)
             }
           })
         } else {
@@ -172,7 +173,14 @@ export const ContractProvider = ({
   }
 
   const listenTradingONFTCoreEvents = async (txInfo: PendingTxType, historyIndex: number) => {
-    if (address && provider?._network?.chainId) {
+    const txObj = (ev: any) => (txInfo.lastTxAvailable ? {
+      lastTxHash: ev.transactionHash
+    } : {
+      txHash: txInfo.txHash || ev.transactionHash,
+      destTxHash: txInfo.destTxHash || ev.transactionHash
+    })
+
+    if (address && chainId && (!txInfo.destTxHash || !txInfo.txHash)) {
       if (txInfo.contractType === 'ERC721') {
         const targetCoreInstance = getONFTCore721Instance(txInfo.targetAddress, txInfo.targetChainId, null)
         const events = await targetCoreInstance.queryFilter(targetCoreInstance.filters.ReceiveFromChain(), txInfo.targetBlockNumber)
@@ -191,22 +199,17 @@ export const ContractProvider = ({
             if (eventExist.length > 0) {
               updateHistory(historyIndex, {
                 ...txInfo,
-                ...{
-                  txHash: txInfo.txHash || eventExist[0].transactionHash,
-                  destTxHash: txInfo.destTxHash || eventExist[0].transactionHash
-                }
+                ...txObj(eventExist[0])
               })
             }
             setTimeout(() => {
-              dispatch(getUserNFTs(address) as any)
-            }, 30000)
+              refreshUserNfts()
+            }, UPDATE_TIMESTAMP)
           })
         } else {
           updateHistory(historyIndex, {
-            ...txInfo, ...{
-              txHash: txInfo.txHash || eventExist[0].transactionHash,
-              destTxHash: txInfo.destTxHash || eventExist[0].transactionHash
-            }
+            ...txInfo,
+            ...txObj(eventExist[0])
           })
         }
       } else if (txInfo.contractType === 'ERC1155') {
@@ -228,99 +231,132 @@ export const ContractProvider = ({
             if (eventExist.length > 0) {
               updateHistory(historyIndex,{
                 ...txInfo,
-                ...{
-                  txHash: txInfo.txHash || eventExist[0].transactionHash,
-                  destTxHash: txInfo.destTxHash || eventExist[0].transactionHash
-                }
+                ...txObj(eventExist[0])
               })
             }
             setTimeout(() => {
-              dispatch(getUserNFTs(address) as any)
-            }, 30000)
+              refreshUserNfts()
+            }, UPDATE_TIMESTAMP)
           })
         } else {
           updateHistory(historyIndex, {
-            ...txInfo, ...{
-              txHash: txInfo.txHash || eventExist[0].transactionHash,
-              destTxHash: txInfo.destTxHash || eventExist[0].transactionHash
-            }
+            ...txInfo,
+            ...txObj(eventExist[0])
           })
         }
       }
     }
   }
-  const listenTradingEvents = async (txInfo: PendingTxType, historyIndex: number) => {
-    if (address && txInfo.senderAddress) {
+  const listenTradingNFTEvents = async (txInfo: PendingTxType, historyIndex: number, isONFTCore: boolean) => {
+    if (address && txInfo.senderAddress && (!txInfo.destTxHash || !txInfo.txHash)) {
+      const isTradingEvent721 = (ev: any) => {
+        if (isONFTCore) {
+          return ev.args?.to.toLowerCase() === ethers.constants.AddressZero
+            && parseInt(ev.args?.tokenId) === parseInt(txInfo.nftItem.token_id)
+        }
+        return ev.args?.to.toLowerCase() === address.toLowerCase()
+              && parseInt(ev.args?.tokenId) === parseInt(txInfo.nftItem.token_id)
+      }
+
+      const isTradingEvent1155 = (ev: any) => {
+        if (isONFTCore) {
+          return ev.args?.to.toLowerCase() === ethers.constants.AddressZero
+            && parseInt(ev.args?.tokenId) === parseInt(txInfo.nftItem.token_id)
+            && ev.args?.amount === txInfo.nftItem.amount
+        }
+        return ev.args?.to.toLowerCase() === address.toLowerCase()
+          && parseInt(ev.args?.tokenId) === parseInt(txInfo.nftItem.token_id)
+          && ev.args?.amount === txInfo.nftItem.amount
+      }
+
       if (txInfo.contractType === 'ERC721') {
         const sellerNftInstance = getERC721Instance(txInfo.senderAddress, txInfo.senderChainId, null)
         const events = await sellerNftInstance.queryFilter(sellerNftInstance.filters.Transfer(), txInfo.senderBlockNumber)
-        const eventExist = events.filter((ev) => {
-          return ev.args?.to.toLowerCase() === address.toLowerCase()
-            && parseInt(ev.args?.tokenId) === parseInt(txInfo.nftItem.token_id)
-        })
+        const eventExist = events.filter((ev) => isTradingEvent721(ev))
         if (eventExist.length === 0) {
           sellerNftInstance.on('Transfer', async () => {
             const events = await sellerNftInstance.queryFilter(sellerNftInstance.filters.Transfer(), txInfo.senderBlockNumber)
-            const eventExist = events.filter((ev) => {
-              return ev.args?.to.toLowerCase() === address.toLowerCase()
-                && parseInt(ev.args?.tokenId) === parseInt(txInfo.nftItem.token_id)
-            })
+            const eventExist = events.filter((ev) => isTradingEvent721(ev))
             if (eventExist.length > 0) {
+              txInfo.txHash = txInfo.txHash || eventExist[0].transactionHash
+              txInfo.destTxHash = txInfo.destTxHash || eventExist[0].transactionHash
               updateHistory(historyIndex, {
-                ...txInfo,
-                ...{
-                  txHash: txInfo.txHash || eventExist[0].transactionHash,
-                  destTxHash: txInfo.destTxHash || eventExist[0].transactionHash
-                }
+                ...txInfo
               })
             }
             setTimeout(() => {
-              dispatch(getUserNFTs(address) as any)
-            }, 30000)
+              refreshUserNfts()
+            }, UPDATE_TIMESTAMP)
           })
         } else {
+          txInfo.txHash = txInfo.txHash || eventExist[0].transactionHash
+          txInfo.destTxHash = txInfo.destTxHash || eventExist[0].transactionHash
           updateHistory(historyIndex, {
-            ...txInfo, ...{
-              txHash: txInfo.txHash || eventExist[0].transactionHash,
-              destTxHash: txInfo.destTxHash || eventExist[0].transactionHash
-            }
+            ...txInfo
           })
         }
       } else if (txInfo.contractType === 'ERC1155') {
         const sellerNftInstance = getERC1155Instance(txInfo.senderAddress, txInfo.senderChainId, null)
         const events = await sellerNftInstance.queryFilter(sellerNftInstance.filters.TransferSingle(), txInfo.senderBlockNumber)
-        const eventExist = events.filter((ev) => {
-          return ev.args?.to.toLowerCase() === address?.toLowerCase()
-            && parseInt(ev.args?.tokenId) === parseInt(txInfo.nftItem.token_id)
-            && parseInt(ev.args?.amount) === parseInt(txInfo.nftItem.amount)
-        })
+        const eventExist = events.filter((ev) => isTradingEvent1155(ev))
         if (eventExist.length === 0) {
           sellerNftInstance.on('TransferSingle', async () => {
             const events = await sellerNftInstance.queryFilter(sellerNftInstance.filters.TransferSingle(), txInfo.senderBlockNumber)
-            const eventExist = events.filter((ev) => {
-              return ev.args?.to.toLowerCase() === address?.toLowerCase()
-                && ev.args?.tokenId === txInfo.nftItem.token_id
-                && ev.args?.amount === txInfo.nftItem.amount
-            })
+            const eventExist = events.filter((ev) => isTradingEvent1155(ev))
             if (eventExist.length > 0) {
+              txInfo.txHash = txInfo.txHash || eventExist[0].transactionHash
+              txInfo.destTxHash = txInfo.destTxHash || eventExist[0].transactionHash
               updateHistory(historyIndex,{
-                ...txInfo,
-                ...{
-                  txHash: txInfo.txHash || eventExist[0].transactionHash,
-                  destTxHash: txInfo.destTxHash || eventExist[0].transactionHash
-                }
+                ...txInfo
               })
             }
             setTimeout(() => {
-              dispatch(getUserNFTs(address) as any)
-            }, 30000)
+              refreshUserNfts()
+            }, UPDATE_TIMESTAMP)
           })
         } else {
+          txInfo.txHash = txInfo.txHash || eventExist[0].transactionHash
+          txInfo.destTxHash = txInfo.destTxHash || eventExist[0].transactionHash
           updateHistory(historyIndex, {
-            ...txInfo, ...{
-              txHash: txInfo.txHash || eventExist[0].transactionHash,
-              destTxHash: txInfo.destTxHash || eventExist[0].transactionHash
+            ...txInfo,
+          })
+        }
+      }
+    }
+  }
+  const listenTradingFundEvents = async (txInfo: PendingTxType, historyIndex: number, isSameChain: boolean) => {
+    if (address && txInfo.targetAddress && (!txInfo.destTxHash || !txInfo.txHash)) {
+      const isTradingEvent20 = (ev: any) => {
+        if (isSameChain) {
+          return ev.args?.to.toLowerCase() === address?.toLowerCase()
+        }
+        return ev.args?.to.toLowerCase() === ethers.constants.AddressZero
+      }
+
+      const bidderCurrencyInstance = getCurrencyInstance(txInfo.targetAddress, txInfo.targetChainId, null)
+      if (bidderCurrencyInstance) {
+        const events = await bidderCurrencyInstance.queryFilter(bidderCurrencyInstance.filters.Transfer(), txInfo.targetBlockNumber)
+        const eventExist = events.filter((ev) => isTradingEvent20(ev))
+        if (eventExist.length === 0) {
+          bidderCurrencyInstance.on('Transfer', async () => {
+            const events = await bidderCurrencyInstance.queryFilter(bidderCurrencyInstance.filters.Transfer(), txInfo.targetBlockNumber)
+            const eventExist = events.filter((ev) => isTradingEvent20(ev))
+            if (eventExist.length > 0) {
+              txInfo.txHash = txInfo.txHash || eventExist[0].transactionHash
+              txInfo.destTxHash = txInfo.destTxHash || eventExist[0].transactionHash
+              updateHistory(historyIndex, {
+                ...txInfo
+              })
             }
+            setTimeout(() => {
+              refreshUserNfts()
+            }, UPDATE_TIMESTAMP)
+          })
+        } else {
+          txInfo.txHash = txInfo.txHash || eventExist[0].transactionHash
+          txInfo.destTxHash = txInfo.destTxHash || eventExist[0].transactionHash
+          updateHistory(historyIndex, {
+            ...txInfo
           })
         }
       }
@@ -330,24 +366,27 @@ export const ContractProvider = ({
   const listenONFTEvents = async (txInfo: PendingTxType, historyIndex: number) => {
     if (txInfo.type === 'bridge') {
       if (txInfo.isONFTCore) {
-        listenBridgeONFTCoreEvents(txInfo, historyIndex)
+        await listenBridgeONFTCoreEvents(txInfo, historyIndex)
       } else {
-        listenBridgeEvents(txInfo, historyIndex)
+        await listenBridgeEvents(txInfo, historyIndex)
       }
-    }
-    else if (txInfo.type === 'buy' || txInfo.type === 'accept') {
-      console.log('-tx-', txInfo, historyIndex)
-      if (txInfo.isONFTCore) {
-        listenTradingONFTCoreEvents(txInfo, historyIndex)
+    } else if (txInfo.type === 'buy') {
+      if (txInfo.isONFTCore && txInfo.senderChainId != txInfo.targetChainId) {
+        if (txInfo.lastTxAvailable) {
+          await listenTradingNFTEvents(txInfo, historyIndex, txInfo.isONFTCore)
+        }
+        await listenTradingONFTCoreEvents(txInfo, historyIndex)
       } else {
-        listenTradingEvents(txInfo, historyIndex)
+        await listenTradingNFTEvents(txInfo, historyIndex, txInfo.isONFTCore)
       }
+    } else if (txInfo.type === 'accept') {
+      await listenTradingFundEvents(txInfo, historyIndex, txInfo.senderChainId == txInfo.targetChainId)
     }
   }
 
   useEffect(() => {
     (async () => {
-      if (address && provider?._network?.chainId) {
+      if (address && chainId) {
         const allHistories = localStorage.getItem('txHistories')
         const txInfos = allHistories ? JSON.parse(allHistories) : []
         await Promise.all(

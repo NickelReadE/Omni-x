@@ -1,7 +1,7 @@
 export type SolidityType = 'bool' | 'address' | 'uint16' | 'uint256' | 'bytes' | 'bytes32' | 'bytes32[]';
 
-export { SupportedChainId } from './enum';
-export type { ChainInfo, Addresses } from './constants';
+export { SupportedChainId } from './enum'
+export type { ChainInfo, Addresses } from './constants'
 export type {
   MakerOrder,
   MakerOrderWithEncodedParams,
@@ -9,4 +9,4 @@ export type {
   MakerOrderWithVRS,
   TakerOrder,
   TakerOrderWithEncodedParams,
-} from './orders';
+} from './orders'

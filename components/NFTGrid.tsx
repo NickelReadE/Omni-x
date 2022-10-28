@@ -1,136 +1,142 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from 'react'
-import NFTBox from './NFTBox'
-import NFTbox from './collections/NFTBox'
-import { IPropsImage } from '../interface/interface'
-import { getOrders,getLastSaleOrders } from '../redux/reducers/ordersReducer'
-import { IGetOrderRequest } from '../interface/interface'
-import useWallet from '../hooks/useWallet'
-import { useDispatch, useSelector } from 'react-redux'
-import { getCollections } from '../redux/reducers/collectionsReducer'
-import { selectSearchText } from '../redux/reducers/headerReducer'
-import { getCollectionInfo,getCollectionAllNFTs, selectCollectionAllNFTs,selectCollectionInfo } from '../redux/reducers/collectionsReducer'
-import { chainList } from '../utils/constants'
+import {useEffect, useState} from 'react'
+import NFTBox from './collections/NFTBox'
+import {IPropsImage, NFTItem} from '../interface/interface'
+import {chainInfos, SUPPORTED_CHAIN_IDS} from '../utils/constants'
+import {ChainIds} from '../types/enum'
+import useData from '../hooks/useData'
+import Loading from './Loading'
+import Dropdown from './dropdown'
 
-const NFTGrid = ({ nfts }: IPropsImage) => {
-  const [chain, setChain] = useState('all')
-  const [isSearch, setSearch] = useState(false)
-  const [nft, setNFT] = useState(null)
-  const [colURL, setColURL] = useState('')
-  const [tokenID, setTokenID] = useState(0)
+const sortMenu = [
+  { text: 'A - Z', value: 'name' },
+  { text: 'Z - A', value: '-name' },
+  { text: 'last sold', value: 'lastSale' },
+  { text: 'price ascending', value: 'price' },
+  { text: 'price descending', value: '-price' },
+]
 
-  const {
-    address
-  } = useWallet()
-  const dispatch = useDispatch()
-  const searchText = useSelector(selectSearchText)
-  const col_url = searchText.split('#')[0]
-  const token_id = searchText.split('#')[1]
+const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
+  const [chain, setChain] = useState(-1)
+  const [sortedItems, setSortedItems] = useState<Array<NFTItem>>(nfts)
 
-  const allNFTs = useSelector(selectCollectionAllNFTs)
-  const collectionInfo = useSelector(selectCollectionInfo)
+  const { refreshUserNfts } = useData()
 
-  useEffect(()=>{
-    if(searchText==''){
-      setSearch(false)
-    }else{
-      if(col_url!=''&&Number(token_id)>0){
-        setSearch(true)
-        setColURL(col_url)
-        setTokenID(Number(token_id))
-        if(colURL!=col_url){
-          dispatch(getCollectionAllNFTs(col_url,'','') as any)
+  useEffect(() => {
+    const namedNftItems = [...nfts].map((item) => {
+      return {
+        ...item,
+        newName: JSON.parse(item.metadata || '{}')?.name
+      }
+    })
+    const hasNameItems = [...namedNftItems].filter((item) => item.newName)
+    const hasNoNameItems = [...namedNftItems].filter((item) => !item.newName)
+    setSortedItems(hasNameItems.sort((a, b) => a.newName.localeCompare(b.newName)).concat(hasNoNameItems))
+  }, [nfts])
+
+  const onRefresh = () => {
+    refreshUserNfts()
+  }
+
+  const onChangeSort = (value: string) => {
+    if (value === 'name') {
+      const namedNftItems = [...nfts].map((item) => {
+        return {
+          ...item,
+          newName: JSON.parse(item.metadata || '{}')?.name
         }
-        dispatch(getCollectionInfo(col_url) as any)
-      } else{
-        setSearch(false)
-      }
+      })
+      const hasNameItems = [...namedNftItems].filter((item) => item.newName)
+      const hasNoNameItems = [...namedNftItems].filter((item) => !item.newName)
+      setSortedItems(hasNameItems.sort((a, b) => a.newName.localeCompare(b.newName)).concat(hasNoNameItems))
+    } else if (value === '-name') {
+      const namedNftItems = [...nfts].map((item) => {
+        return {
+          ...item,
+          newName: JSON.parse(item.metadata || '{}')?.name
+        }
+      })
+      const hasNameItems = [...namedNftItems].filter((item) => item.newName)
+      const hasNoNameItems = [...namedNftItems].filter((item) => !item.newName)
+      setSortedItems(hasNameItems.sort((a, b) => b.newName.localeCompare(a.newName)).concat(hasNoNameItems))
+    } else if (value === 'lastSale') {
+      const hasLastSaleItems = [...nfts].filter((item) => item.last_sale)
+      const hasNoLastSaleItems = [...nfts].filter((item) => !item.last_sale)
+      setSortedItems(hasLastSaleItems.sort((a, b) => b.last_sale - a.last_sale).concat(hasNoLastSaleItems))
+    } else if (value === 'price') {
+      const hasPriceItems = [...nfts].filter((item) => item.price)
+      const hasNoPriceItems = [...nfts].filter((item) => !item.price)
+      setSortedItems(hasPriceItems.sort((a, b) => a.price - b.price).concat(hasNoPriceItems))
+    } else if (value === '-price') {
+      const hasPriceItems = [...nfts].filter((item) => item.price)
+      const hasNoPriceItems = [...nfts].filter((item) => !item.price)
+      setSortedItems(hasPriceItems.sort((a, b) => b.price - a.price).concat(hasNoPriceItems))
     }
-
-  },[searchText])
-
-
-  useEffect(() => {
-    if(allNFTs && tokenID>0){
-      setNFT(allNFTs[tokenID-1])
-    }
-  }, [allNFTs,tokenID])
-
-  useEffect(() => {
-    dispatch(getCollections() as any)
-  }, [])
-
-
-  useEffect(()=> {
-    if(nfts.length>0){
-      const request: IGetOrderRequest = {
-        isOrderAsk: true,
-        signer: address,
-        startTime: Math.floor(Date.now() / 1000).toString(),
-        endTime: Math.floor(Date.now() / 1000).toString(),
-        status: ['VALID'],
-        sort: 'OLDEST'
-      }
-      dispatch(getOrders(request) as any)
-
-      const bidRequest: IGetOrderRequest = {
-        isOrderAsk: false,
-        startTime: Math.floor(Date.now() / 1000).toString(),
-        endTime: Math.floor(Date.now() / 1000).toString(),
-        status: ['VALID'],
-        sort: 'PRICE_ASC'
-      }
-      dispatch(getOrders(bidRequest) as any)
-
-      const excutedRequest: IGetOrderRequest = {
-        status: ['EXECUTED'],
-        sort: 'UPDATE_OLDEST'
-      }
-      dispatch(getLastSaleOrders(excutedRequest) as any)
-    }
-  },[nfts])
-  
-
+  }
 
   return (
     <>
-      <div className="w-full mb-5 ">
-        <div className="flex relative justify-start bg-[#F8F9FA] pl-2 pr-2 w-fit" style={{'width':'100%'}}>
-          {
-            chainList.map((item, index) => {
-              return <div
-                key={index}
-                className={`grid justify-items-center content-center p-3 font-medium cursor-pointer m-[1px] min-w-[80px] ${chain == item.chain ? 'bg-[#C8D6E8]' : ''} `}
-                onClick={() =>{setChain(!item.disabled ? item.chain : chain)}}
+      <div className="w-full mb-5">
+        <div className="flex relative justify-start bg-[#F8F9FA] pl-2 w-fit" style={{'width': '100%'}}>
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center">
+              <div
+                className={`grid justify-items-center content-center p-3 font-medium cursor-pointer m-[1px] min-w-[80px] ${chain === -1 ? 'bg-[#C8D6E8]' : ''} `}
+                onClick={() => {
+                  setChain(-1)
+                }}
               >
-                <img alt={'listing'} src={item.img_url} className="w-[21px] h-[22px] " />
+                <img alt={'listing'} src="/svgs/all_chain.svg" className="w-[21px] h-[22px] "/>
               </div>
-            })
-          }
-          <div className="flex p-3 font-medium cursor-pointer text-[#6C757D] absolute right-0">
-            <img alt={'listing'} src='/images/listing.png' className="w-[21px] h-[22px]"/>
-            <span>active listing</span>
-            <img alt={'listing'} src='/images/downArrow.png' className="w-[10px] h-[7px] ml-5 mt-auto mb-auto"/>
+              {
+                SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
+                  return <div
+                    key={index}
+                    className={`grid justify-items-center content-center p-3 font-medium cursor-pointer m-[1px] min-w-[80px] ${chain === networkId ? 'bg-[#C8D6E8]' : ''} `}
+                    onClick={() => {
+                      setChain(networkId)
+                    }}
+                  >
+                    <img alt={'listing'} src={chainInfos[networkId].logo} className="w-[21px] h-[22px] "/>
+                  </div>
+                })
+              }
+            </div>
+            <Dropdown menus={sortMenu} onChange={onChangeSort} />
           </div>
         </div>
-        <div className="grid grid-cols-4 gap-6 2xl:grid-cols-5 2xl:gap-10 mt-4">
-          {!isSearch&&nfts.map((item, index) => {
-            if(chain == 'all'){
-              return (
-                <NFTBox nft={item} index={index} key={index}/>
-              )
-            } else {
-              if(chain == item.chain) {
+        {
+          isLoading &&
+          <div className='flex justify-center py-10'>
+            <Loading />
+          </div>
+        }
+        {
+          !isLoading &&
+          <div className="grid grid-cols-4 gap-6 2xl:grid-cols-5 2xl:gap-10 mt-4">
+            {sortedItems.map((item, index) => {
+              if (chain == -1) {
                 return (
-                  <NFTBox nft={item} index={index} key={index} />
+                  <NFTBox
+                    nft={item}
+                    key={index}
+                    onRefresh={onRefresh}
+                  />
                 )
+              } else {
+                if (chain == item.chain_id) {
+                  return (
+                    <NFTBox
+                      nft={item}
+                      key={index}
+                      onRefresh={onRefresh}
+                    />
+                  )
+                }
               }
-            }
-          })}
-          {
-            isSearch&&nft!=null&&<NFTbox nft={nft} index={1} col_url={col_url} col_address={collectionInfo.address}  chain={collectionInfo?collectionInfo.chain:'goerli'}/>
-          }
-        </div>
+            })}
+          </div>
+        }
       </div>
     </>
   )

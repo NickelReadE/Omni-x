@@ -2,22 +2,22 @@ import { createSlice } from '@reduxjs/toolkit'
 
 //reducers
 export const snackBarSlice = createSlice({
-    name: 'snackBar',
-    initialState: {
-        opened: false,
-        message: '',
-        status: 'success'
+  name: 'snackBar',
+  initialState: {
+    opened: false,
+    message: '',
+    status: 'success'
+  },
+  reducers: {
+    openSnackBar: (state, action) => {
+      state.opened = true
+      state.message = action.payload.message
+      state.status = action.payload.status
     },
-    reducers: {
-        openSnackBar: (state, action) => {
-            state.opened = true
-            state.message = action.payload.message
-            state.status = action.payload.status
-        },
-        closeSnackBar: (state) => {
-            state.opened = false
-        },
-    }
+    closeSnackBar: (state) => {
+      state.opened = false
+    },
+  }
 })
 
 
