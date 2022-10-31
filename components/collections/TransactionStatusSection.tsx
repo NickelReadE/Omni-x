@@ -1,6 +1,7 @@
 import React from 'react'
 import useWallet from '../../hooks/useWallet'
-import { getBlockExplorer } from '../../utils/constants'
+import { CHAIN_TYPE } from '../../types/enum'
+import { CHAIN_IDS, getBlockExplorer } from '../../utils/constants'
 
 interface ITransactionStatusSectionProps {
   processing: boolean,
@@ -14,7 +15,7 @@ const TransactionStatusSection: React.FC<ITransactionStatusSectionProps> = ({
   isTx
 }) => {
   const { chainId } = useWallet()
-  const explorer = getBlockExplorer(chainId)
+  const explorer = getBlockExplorer(chainId || CHAIN_IDS[CHAIN_TYPE.GOERLI])
   const txHashLink = txHash && `${explorer}/tx/${txHash}`
 
   return (

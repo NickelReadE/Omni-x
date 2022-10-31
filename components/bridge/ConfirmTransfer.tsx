@@ -1,12 +1,25 @@
-import React, {useState} from 'react'
+import React, {useState, useMemo} from 'react'
 import LazyLoad from 'react-lazyload'
+import Image from 'next/image'
 import {BigNumber, ethers} from 'ethers'
 import {NFTItem} from '../../interface/interface'
-import {chainInfos} from '../../utils/constants'
+import PngCheck from '../../public/images/check.png'
+import useWallet from '../../hooks/useWallet'
+import SpinLoader from '../collections/SpinLoader'
+import {chainInfos, CHAIN_IDS, getBlockExplorer} from '../../utils/constants'
+import { CHAIN_TYPE } from '../../types/enum'
+
+export enum ConfirmTransferStatus {
+  APPROVING,
+  TRANSFERRING,
+  DONE,
+}
 
 interface IConfirmTransferProps {
   updateModal: (status: boolean) => void,
   onTransfer: () => void,
+  status: ConfirmTransferStatus | undefined,
+  approveTxHash: string | undefined,
   selectedNFTItem?: NFTItem,
   senderChain: number,
   targetChain: number,
@@ -17,14 +30,21 @@ interface IConfirmTransferProps {
 const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
   updateModal,
   onTransfer,
+  status,
+  approveTxHash,
   selectedNFTItem,
   senderChain,
   targetChain,
   estimatedFee,
   image
 }) => {
+  const { chainId } = useWallet()
 
   const [imageError, setImageError] = useState(false)
+  const explorer = getBlockExplorer(chainId || CHAIN_IDS[CHAIN_TYPE.GOERLI])
+  const approveTxHashLink = useMemo(() => {
+    return approveTxHash && `${explorer}/tx/${approveTxHash}`
+  }, [approveTxHash, explorer])
 
   return (
     <>
@@ -81,44 +101,111 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
                     </>
                 }
               </div>
-              <div className="flex items-center justify-around mt-1">
-                <div className="flex flex-col">
-                  <p>From:</p>
-                  <div className="flex flex-col items-center px-[15px] py-[10px] bg-[#F6F8FC] rounded-md border-2 border-[#E9ECEF] min-w-[95px] min-h-[78px]">
-                    <p>
-                      <img src={chainInfos[senderChain].logo} width={30} height={30} style={{width: 30, height: 30}} alt={'Sender chain'} />
-                    </p>
-                    <p>{chainInfos[senderChain].officialName}</p>
-                  </div>
-                </div>
-                <div className="flex flex-col">
-                  <p>To:</p>
-                  <div className="flex flex-col items-center px-[15px] py-[10px] bg-[#F6F8FC] rounded-md border-2 border-[#E9ECEF] min-w-[95px] min-h-[78px]">
-                    <p>
-                      <img src={chainInfos[targetChain].logo} width={30} height={30} style={{width: 30, height: 30}} alt={'Target chain'} />
-                    </p>
-                    <p>{chainInfos[targetChain].officialName}</p>
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center justify-around my-5">
-                <p>Gas Cost:</p>
-                <p>{estimatedFee!=undefined&&ethers.utils.formatEther(estimatedFee)}&nbsp;{chainInfos[senderChain].currency}</p>
-              </div>
-              {/*<p className="my-4 text-slate-500 text-lg leading-relaxed">
-                Note: if the asset is a non-native omnichain token and transferred to its home chain,
-                you will be prompted with a follow on transaction confirmation to unwrap the asset
-              </p>*/}
+              {
+                status === undefined ? (
+                  <>
+                    <div className="flex items-center justify-around mt-1">
+                      <div className="flex flex-col">
+                        <p>From:</p>
+                        <div className="flex flex-col items-center px-[15px] py-[10px] bg-[#F6F8FC] rounded-md border-2 border-[#E9ECEF] min-w-[95px] min-h-[78px]">
+                          <p>
+                            <img src={chainInfos[senderChain].logo} width={30} height={30} style={{ width: 30, height: 30 }} alt={'Sender chain'} />
+                          </p>
+                          <p>{chainInfos[senderChain].officialName}</p>
+                        </div>
+                      </div>
+                      <div className="flex flex-col">
+                        <p>To:</p>
+                        <div className="flex flex-col items-center px-[15px] py-[10px] bg-[#F6F8FC] rounded-md border-2 border-[#E9ECEF] min-w-[95px] min-h-[78px]">
+                          <p>
+                            <img src={chainInfos[targetChain].logo} width={30} height={30} style={{ width: 30, height: 30 }} alt={'Target chain'} />
+                          </p>
+                          <p>{chainInfos[targetChain].officialName}</p>
+                        </div>
+                      </div>
+                    </div><div className="flex items-center justify-around my-5">
+                      <p>Gas Cost:</p>
+                      <p>{estimatedFee != undefined && ethers.utils.formatEther(estimatedFee)}&nbsp;{chainInfos[senderChain].currency}</p>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className={`section-header ${status === ConfirmTransferStatus.APPROVING ? 'active' : ''}`}>
+                      <p className="section-no">1</p>
+                      <p className="section-title">Approve Collection</p>
+                      {status === ConfirmTransferStatus.TRANSFERRING && (
+                        <Image src={PngCheck} alt="completed" width={18} height={18}/>
+                      )}
+                      {status === ConfirmTransferStatus.APPROVING && (
+                        <SpinLoader />
+                      )}
+                    </div>
+                    <div className="tx-status-section">
+                      {status === ConfirmTransferStatus.APPROVING && (<>
+                        <div className="text-[14px] w-[250px] leading-18">
+                          <p className="">Please confirm the transaction in your wallet to begin transfer.</p>
+                        </div>
+                          
+                        <div className="tx-status-row">
+                          <p className="tx-status-name">transaction status:</p>
+                          <p className="tx-status-value">{status === ConfirmTransferStatus.APPROVING ? 'confirming...' : 'done'}</p>
+                        </div>
+                      
+                        <div className="tx-status-row">
+                          <p className="tx-status-name">transaction record:</p>
+                          <a className="tx-status-value tx-hash-ellipsis" href={approveTxHashLink} target="_blank" rel="noreferrer">{approveTxHash || ''}</a>
+                        </div>
+                      </>)}
+                    </div>
+                      
+                    <div className={`section-header mt-3 ${status === ConfirmTransferStatus.TRANSFERRING ? 'active' : ''}`}>
+                      <p className="section-no">2</p>
+                      <p className="section-title">Complete Transfer</p>
+                      {status === ConfirmTransferStatus.TRANSFERRING && (
+                        <SpinLoader />
+                      )}
+                    </div>
+                    <div className='tx-status-section mb-3'>
+                      {status === ConfirmTransferStatus.TRANSFERRING && (<>
+                        <div className="text-[14px] w-[250px] leading-18">
+                          <p className="">Please confirm the transaction in your wallet to complete the transfer.</p>
+                        </div>
+                      </>)}
+                    </div>
+                      
+                    {status === ConfirmTransferStatus.DONE && 
+                    <div className="mb-3 congrats-section" style={{marginTop: 12}}>
+                      <p className="congrats-title">Congrats!</p>
+                      <p className="congrats-description">your transfer is complete</p>
+                    </div>
+                    }
+                  </>
+                )
+              }
             </div>
             {/*footer*/}
             <div className="flex items-center justify-center p-6 border-t border-solid border-slate-200 rounded-b">
-              <button
-                className="text-left bg-p-400 rounded-md px-6 py-3 text-white hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl ease-linear active transition-all duration-150"
-                type="button"
-                onClick={() => onTransfer()}
-              >
-                Transfer
-              </button>
+              {
+                status === undefined ? (
+                  <button
+                    className="text-left bg-p-400 rounded-md px-6 py-3 text-white hover:bg-p-700 font-semibold hover:shadow-xl ease-linear active transition-all duration-150 disabled:opacity-50"
+                    type="button"
+                    onClick={() => onTransfer()}
+                  >
+                    Transfer
+                  </button>
+                ) : (
+                  <button
+                    className="text-left bg-p-400 rounded-md px-6 py-3 text-white hover:bg-p-700 font-semibold hover:shadow-xl ease-linear active transition-all duration-150 disabled:opacity-50"
+                    type="button"
+                    disabled={status !== ConfirmTransferStatus.DONE}
+                    onClick={() => updateModal(false)}
+                  >
+                    Close
+                  </button>
+                )
+              }
+              
             </div>
           </div>
         </div>
