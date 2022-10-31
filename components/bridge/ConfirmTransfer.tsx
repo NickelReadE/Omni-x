@@ -57,7 +57,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
             {/*header*/}
             <div className="flex items-center justify-between p-5 border-b border-solid border-slate-200 rounded-t">
               <h4 className="text-2xl font-semibold">
-                Transfer Confirmation
+                Send Confirmation
               </h4>
               <button
                 className="p-1 ml-auto bg-transparent border-0 text-black float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
