@@ -89,10 +89,10 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
                 </div>
                 {
                   selectedNFTItem &&
-                    <div className='my-2 flex items-center justify-between w-[250px]'>
+                    <div className='my-2 flex items-center justify-center w-[250px]'>
                       {
                         selectedNFTItem.name !== '' &&
-                          <p className="text-md text-center text-slate-500 leading-relaxed">
+                          <p className="mr-3 text-md text-center text-slate-500 leading-relaxed">
                             {selectedNFTItem.name}
                           </p>
                       }
