@@ -56,11 +56,12 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
           <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
             {/*header*/}
             <div className="flex items-center justify-between p-5 border-b border-solid border-slate-200 rounded-t">
+              <div className='w-[14px]'>&nbsp;</div>
               <h4 className="text-2xl font-semibold">
                 Send Confirmation
               </h4>
               <button
-                className="p-1 ml-auto bg-transparent border-0 text-black float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                className="p-1 bg-transparent border-0 text-black float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                 onClick={() => updateModal(false)}
               >
                 <span className="bg-transparent text-black text-2xl block outline-none focus:outline-none">
@@ -74,7 +75,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
                 You are transferring this NFT:
               </p>
               <div className="flex flex-col items-center justify-center">
-                <div style={{width: 250, height: 250, borderRadius: 20}}>
+                <div className='w-[250px] h-[250px] rounded-sm'>
                   {
                     selectedNFTItem &&
                       <>
@@ -88,17 +89,17 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
                 </div>
                 {
                   selectedNFTItem &&
-                    <>
+                    <div className='my-2 flex items-center justify-between w-[250px]'>
                       {
                         selectedNFTItem.name !== '' &&
-                          <p className="mt-3 mb-1 text-md text-center text-slate-500 leading-relaxed">
+                          <p className="text-md text-center text-slate-500 leading-relaxed">
                             {selectedNFTItem.name}
                           </p>
                       }
-                      <p className="mt-1 mb-3 text-md text-center text-slate-500 leading-relaxed">
+                      <p className="text-md text-center text-slate-500 leading-relaxed">
                         {`#${selectedNFTItem.token_id}`}
                       </p>
-                    </>
+                    </div>
                 }
               </div>
               {
