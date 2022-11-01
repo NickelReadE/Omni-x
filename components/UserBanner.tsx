@@ -20,7 +20,6 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
   const [avatarError, setAvatarError] = useState(false)
   const [isStgStacker, setIsStgStacker] = useState(false)
   const [balances, setBalanceSTG] = useState(0)
-  const DEFAULT_AVATAR = 'uploads\\default_avatar.png'
 
   const fetchToken = async (chain: number) => {
     const veSTGInstance = getVeSTGInstance(veSTGContractAddress[chain], chain, null)

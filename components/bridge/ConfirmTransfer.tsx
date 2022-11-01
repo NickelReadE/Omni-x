@@ -177,7 +177,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
                     {status === ConfirmTransferStatus.DONE && 
                     <div className="mb-3 congrats-section" style={{marginTop: 12}}>
                       <p className="congrats-title">Congrats!</p>
-                      <p className="congrats-description">your transfer is complete</p>
+                      <p className="congrats-description">your NFT is on the way</p>
                     </div>
                     }
                   </>
