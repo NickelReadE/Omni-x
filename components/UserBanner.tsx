@@ -48,6 +48,13 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
     return '/images/default_banner.png'
   }, [user])
 
+  const avatarImage = useMemo(() => {
+    if (!avatarError && user && user.avatar) {
+      return process.env.API_URL + user.avatar
+    }
+    return '/images/default_avatar.png'
+  }, [user])
+
   return (
     <>
       <div
@@ -70,7 +77,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
           <div className="flex justify-between justify-center fw-60 mt-5 relative">
             <div className="bottom-[0rem] left-[4rem]  absolute">
               <Image
-                src={avatarError || user.avatar === undefined || user.avatar === DEFAULT_AVATAR ? '/images/default_avatar.png' : (process.env.API_URL + user.avatar)}
+                src={avatarImage}
                 alt="avatar"
                 onError={() => {
                   user.avatar && setAvatarError(true)
