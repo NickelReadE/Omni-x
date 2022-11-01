@@ -57,7 +57,7 @@ export const CHAIN_NAMES = {
 
 export const RPC_PROVIDERS: { [key: number]: string } = {
   // MAINNET RPC
-  [CHAIN_IDS[CHAIN_TYPE.ETHEREUM]]: 'https://mainnet.infura.io/v3/20504cdcff23477c9ed314d042d85a74',
+  [CHAIN_IDS[CHAIN_TYPE.ETHEREUM]]: 'https://mainnet.infura.io/v3/94915ad2755844d2854ea9f99d5c30c7',
   [CHAIN_IDS[CHAIN_TYPE.BINANCE]]: 'https://bsc-dataseed.binance.org/',
   [CHAIN_IDS[CHAIN_TYPE.POLYGON]]: 'https://polygon-rpc.com',
   [CHAIN_IDS[CHAIN_TYPE.AVALANCHE]]: 'https://api.avax.network/ext/bc/C/rpc',

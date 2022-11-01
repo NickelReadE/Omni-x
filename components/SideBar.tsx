@@ -22,20 +22,21 @@ import {
 } from '../utils/contracts'
 import {
   chainInfos,
+  CHAIN_IDS,
   getChainInfo,
   getLayerzeroChainId,
   getProvider,
   numberLocalize,
   SUPPORTED_CHAIN_IDS,
 } from '../utils/constants'
-import ConfirmTransfer from './bridge/ConfirmTransfer'
+import ConfirmTransfer, { ConfirmTransferStatus } from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
 import UserEdit from './user/UserEdit'
 import useBridge from '../hooks/useBridge'
 import useProgress from '../hooks/useProgress'
 import useContract from '../hooks/useContract'
 import { PendingTxType } from '../contexts/contract'
-import { ChainIds } from '../types/enum'
+import { ChainIds, CHAIN_TYPE } from '../types/enum'
 import useData from '../hooks/useData'
 import {openSnackBar} from '../redux/reducers/snackBarReducer'
 
@@ -94,6 +95,8 @@ const SideBar: React.FC = () => {
   const [dragOver, setDragOver] = useState(false)
   const [dragEnd, setDragEnd] = useState(false)
   const [targetChain, setTargetChain] = useState(ChainIds.ETHEREUM)
+  const [transferStatus, setTransferStatus] = useState<ConfirmTransferStatus | undefined>()
+  const [approveTxHash, setApproveTxHash] = useState<string | undefined>()
   const [estimatedFee, setEstimatedFee] = useState<BigNumber>(BigNumber.from('0'))
   const [isONFT, setIsONFT] = useState(false)
   const [unwrap, setUnwrap] = useState(false)
@@ -244,6 +247,8 @@ const SideBar: React.FC = () => {
       setConfirmTransfer(true)
     } catch (e) {
       console.error(e)
+    } finally {
+      setTransferStatus(undefined)
     }
   }
 
@@ -259,155 +264,172 @@ const SideBar: React.FC = () => {
     const _signerAddress = address
 
     const targetProvider = getProvider(targetChain)
-    if (isONFTCore) {
-      if (selectedNFTItem.contract_type === 'ERC721') {
-        const onftCoreInstance = getONFTCore721Instance(selectedNFTItem.token_address, chainId, signer)
-        const remoteAddresses = await onftCoreInstance.getTrustedRemote(lzTargetChainId)
-        const targetONFTCoreAddress = decodeFromBytes(remoteAddresses)
-        const tx = await onftCoreInstance.sendFrom(
-          address,
-          lzTargetChainId,
-          address,
-          selectedNFTItem.token_id,
-          address,
-          ethers.constants.AddressZero,
-          '0x',
-          { value: estimatedFee }
-        )
-        const blockNumber = await targetProvider.getBlockNumber()
-        const pendingTx: PendingTxType = {
-          txHash: tx.hash,
-          type: 'bridge',
-          senderChainId: chainId,
-          targetChainId: targetChain,
-          targetAddress: targetONFTCoreAddress,
-          isONFTCore: true,
-          contractType: 'ERC721',
-          nftItem: selectedNFTItem,
-          targetBlockNumber: blockNumber,
-          itemName: selectedNFTItem.name
+    try {
+      if (isONFTCore) {
+        if (selectedNFTItem.contract_type === 'ERC721') {
+          const onftCoreInstance = getONFTCore721Instance(selectedNFTItem.token_address, chainId, signer)
+          const remoteAddresses = await onftCoreInstance.getTrustedRemote(lzTargetChainId)
+          const targetONFTCoreAddress = decodeFromBytes(remoteAddresses)
+          setTransferStatus(ConfirmTransferStatus.TRANSFERRING)
+          const tx = await onftCoreInstance.sendFrom(
+            address,
+            lzTargetChainId,
+            address,
+            selectedNFTItem.token_id,
+            address,
+            ethers.constants.AddressZero,
+            '0x',
+            { value: estimatedFee }
+          )
+          const blockNumber = await targetProvider.getBlockNumber()
+          const pendingTx: PendingTxType = {
+            txHash: tx.hash,
+            type: 'bridge',
+            senderChainId: chainId,
+            targetChainId: targetChain,
+            targetAddress: targetONFTCoreAddress,
+            isONFTCore: true,
+            contractType: 'ERC721',
+            nftItem: selectedNFTItem,
+            targetBlockNumber: blockNumber,
+            itemName: selectedNFTItem.name
+          }
+          const historyIndex = addTxToHistories(pendingTx)
+          await listenONFTEvents(pendingTx, historyIndex)
+          onLeave()
+          await tx.wait()
+          setTransferStatus(ConfirmTransferStatus.DONE)
+        } else if (selectedNFTItem.contract_type === 'ERC1155') {
+          const onft1155CoreInstance = getONFTCore1155Instance(selectedNFTItem.token_address, chainId, signer)
+          const remoteAddresses = await onft1155CoreInstance.getTrustedRemote(lzTargetChainId)
+          const targetONFT1155CoreAddress = decodeFromBytes(remoteAddresses)
+          const blockNumber = await targetProvider.getBlockNumber()
+          setTransferStatus(ConfirmTransferStatus.TRANSFERRING)
+          const tx = await onft1155CoreInstance.sendFrom(
+            _signerAddress,
+            lzTargetChainId,
+            _signerAddress,
+            selectedNFTItem.token_id,
+            selectedNFTItem.amount,
+            _signerAddress,
+            ethers.constants.AddressZero,
+            '0x',
+            { value: estimatedFee }
+          )
+          onLeave()
+          const pendingTx: PendingTxType = {
+            txHash: tx.hash,
+            type: 'bridge',
+            senderChainId: chainId,
+            targetChainId: targetChain,
+            targetAddress: targetONFT1155CoreAddress,
+            targetBlockNumber: blockNumber,
+            isONFTCore: true,
+            contractType: 'ERC1155',
+            nftItem: selectedNFTItem,
+            itemName: selectedNFTItem.name
+          }
+          const historyIndex = addTxToHistories(pendingTx)
+          await listenONFTEvents(pendingTx, historyIndex)
+          await tx.wait()
+          setTransferStatus(ConfirmTransferStatus.DONE)
         }
-        const historyIndex = addTxToHistories(pendingTx)
-        await listenONFTEvents(pendingTx, historyIndex)
-        onLeave()
-        await tx.wait()
-      } else if (selectedNFTItem.contract_type === 'ERC1155') {
-        const onft1155CoreInstance = getONFTCore1155Instance(selectedNFTItem.token_address, chainId, signer)
-        const remoteAddresses = await onft1155CoreInstance.getTrustedRemote(lzTargetChainId)
-        const targetONFT1155CoreAddress = decodeFromBytes(remoteAddresses)
-        const blockNumber = await targetProvider.getBlockNumber()
-        const tx = await onft1155CoreInstance.sendFrom(
-          _signerAddress,
-          lzTargetChainId,
-          _signerAddress,
-          selectedNFTItem.token_id,
-          selectedNFTItem.amount,
-          _signerAddress,
-          ethers.constants.AddressZero,
-          '0x',
-          { value: estimatedFee }
-        )
-        onLeave()
-        const pendingTx: PendingTxType = {
-          txHash: tx.hash,
-          type: 'bridge',
-          senderChainId: chainId,
-          targetChainId: targetChain,
-          targetAddress: targetONFT1155CoreAddress,
-          targetBlockNumber: blockNumber,
-          isONFTCore: true,
-          contractType: 'ERC1155',
-          nftItem: selectedNFTItem,
-          itemName: selectedNFTItem.name
+      } else {
+        if (selectedNFTItem.contract_type === 'ERC721') {
+          const contractInstance = getOmnixBridgeInstance(chainId, signer)
+          const erc721Instance = getERC721Instance(selectedNFTItem.token_address, 0, signer)
+          const noSignerOmniXInstance = getOmnixBridgeInstance(targetChain, null)
+          const dstAddress = await noSignerOmniXInstance.persistentAddresses(selectedNFTItem.token_address)
+          const blockNumber = await targetProvider.getBlockNumber()
+
+          let adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 3500000])
+          if (dstAddress !== ethers.constants.AddressZero) {
+            adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 2000000])
+          }
+          const operator = await erc721Instance.getApproved(BigNumber.from(selectedNFTItem.token_id))
+          if (operator !== contractInstance.address) {
+            setTransferStatus(ConfirmTransferStatus.APPROVING)
+            const tx = await erc721Instance.approve(contractInstance.address, BigNumber.from(selectedNFTItem.token_id))
+            setApproveTxHash(tx.hash)
+            await tx.wait()
+          }
+
+          setTransferStatus(ConfirmTransferStatus.TRANSFERRING)
+          const tx = await contractInstance.wrap(lzTargetChainId, selectedNFTItem.token_address, BigNumber.from(selectedNFTItem.token_id), adapterParams, {
+            value: estimatedFee
+          })
+          const pendingTx: PendingTxType = {
+            txHash: tx.hash,
+            type: 'bridge',
+            senderChainId: chainId,
+            targetChainId: targetChain,
+            targetAddress: '',
+            isONFTCore: false,
+            contractType: 'ERC721',
+            nftItem: selectedNFTItem,
+            targetBlockNumber: blockNumber,
+            itemName: selectedNFTItem.name
+          }
+          const historyIndex = addTxToHistories(pendingTx)
+          await listenONFTEvents(pendingTx, historyIndex)
+          onLeave()
+          await tx.wait()
+          setTransferStatus(ConfirmTransferStatus.DONE)
+          setSelectedNFTItem(undefined)
+        } else if (selectedNFTItem.contract_type === 'ERC1155') {
+          const contractInstance = getOmnixBridge1155Instance(chainId, signer)
+          const noSignerOmniX1155Instance = getOmnixBridge1155Instance(targetChain, null)
+          const erc1155Instance = getERC1155Instance(selectedNFTItem.token_address, 0, signer)
+          const dstAddress = await noSignerOmniX1155Instance.persistentAddresses(selectedNFTItem.token_address)
+          const blockNumber = await targetProvider.getBlockNumber()
+
+          let adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 3500000])
+          if (dstAddress !== ethers.constants.AddressZero) {
+            adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 2000000])
+          }
+          const operator = await erc1155Instance.isApprovedForAll(_signerAddress, contractInstance.address)
+          if (!operator) {
+            setTransferStatus(ConfirmTransferStatus.APPROVING)
+            const tx = await erc1155Instance.setApprovalForAll(contractInstance.address, true)
+            setApproveTxHash(tx.hash)
+            await tx.wait()
+          }
+          // Estimate fee from layerzero endpoint
+          const _tokenURI = await erc1155Instance.uri(selectedNFTItem.token_id)
+          const _payload = ethers.utils.defaultAbiCoder.encode(
+            ['address', 'address', 'string', 'uint256', 'uint256'],
+            [selectedNFTItem.token_address, _signerAddress, _tokenURI, selectedNFTItem.token_id, selectedNFTItem.amount]
+          )
+          const estimatedFee = await lzEndpointInstance.estimateFees(lzTargetChainId, contractInstance.address, _payload, false, adapterParams)
+
+          setTransferStatus(ConfirmTransferStatus.TRANSFERRING)
+          const tx = await contractInstance.wrap(lzTargetChainId, selectedNFTItem.token_address, BigNumber.from(selectedNFTItem.token_id), BigNumber.from(selectedNFTItem.amount), adapterParams, {
+            value: estimatedFee.nativeFee
+          })
+          onLeave()
+          const pendingTx: PendingTxType = {
+            txHash: tx.hash,
+            type: 'bridge',
+            senderChainId: chainId,
+            targetChainId: targetChain,
+            targetAddress: '',
+            isONFTCore: false,
+            contractType: 'ERC1155',
+            nftItem: selectedNFTItem,
+            targetBlockNumber: blockNumber,
+            itemName: selectedNFTItem.name
+          }
+          const historyIndex = addTxToHistories(pendingTx)
+          await listenONFTEvents(pendingTx, historyIndex)
+          await tx.wait()
+          setTransferStatus(ConfirmTransferStatus.DONE)
+          setSelectedNFTItem(undefined)
         }
-        const historyIndex = addTxToHistories(pendingTx)
-        await listenONFTEvents(pendingTx, historyIndex)
-        await tx.wait()
       }
-    } else {
-      if (selectedNFTItem.contract_type === 'ERC721') {
-        const contractInstance = getOmnixBridgeInstance(chainId, signer)
-        const erc721Instance = getERC721Instance(selectedNFTItem.token_address, 0, signer)
-        const noSignerOmniXInstance = getOmnixBridgeInstance(targetChain, null)
-        const dstAddress = await noSignerOmniXInstance.persistentAddresses(selectedNFTItem.token_address)
-        const blockNumber = await targetProvider.getBlockNumber()
-
-        let adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 3500000])
-        if (dstAddress !== ethers.constants.AddressZero) {
-          adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 2000000])
-        }
-        const operator = await erc721Instance.getApproved(BigNumber.from(selectedNFTItem.token_id))
-        if (operator !== contractInstance.address) {
-          await (await erc721Instance.approve(contractInstance.address, BigNumber.from(selectedNFTItem.token_id))).wait()
-        }
-
-        const tx = await contractInstance.wrap(lzTargetChainId, selectedNFTItem.token_address, BigNumber.from(selectedNFTItem.token_id), adapterParams, {
-          value: estimatedFee
-        })
-        const pendingTx: PendingTxType = {
-          txHash: tx.hash,
-          type: 'bridge',
-          senderChainId: chainId,
-          targetChainId: targetChain,
-          targetAddress: '',
-          isONFTCore: false,
-          contractType: 'ERC721',
-          nftItem: selectedNFTItem,
-          targetBlockNumber: blockNumber,
-          itemName: selectedNFTItem.name
-        }
-        const historyIndex = addTxToHistories(pendingTx)
-        await listenONFTEvents(pendingTx, historyIndex)
-        onLeave()
-        await tx.wait()
-        setSelectedNFTItem(undefined)
-      } else if (selectedNFTItem.contract_type === 'ERC1155') {
-        const contractInstance = getOmnixBridge1155Instance(chainId, signer)
-        const noSignerOmniX1155Instance = getOmnixBridge1155Instance(targetChain, null)
-        const erc1155Instance = getERC1155Instance(selectedNFTItem.token_address, 0, signer)
-        const dstAddress = await noSignerOmniX1155Instance.persistentAddresses(selectedNFTItem.token_address)
-        const blockNumber = await targetProvider.getBlockNumber()
-
-        let adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 3500000])
-        if (dstAddress !== ethers.constants.AddressZero) {
-          adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 2000000])
-        }
-        const operator = await erc1155Instance.isApprovedForAll(_signerAddress, contractInstance.address)
-        if (!operator) {
-          await (await erc1155Instance.setApprovalForAll(contractInstance.address, true)).wait()
-        }
-        // Estimate fee from layerzero endpoint
-        const _tokenURI = await erc1155Instance.uri(selectedNFTItem.token_id)
-        const _payload = ethers.utils.defaultAbiCoder.encode(
-          ['address', 'address', 'string', 'uint256', 'uint256'],
-          [selectedNFTItem.token_address, _signerAddress, _tokenURI, selectedNFTItem.token_id, selectedNFTItem.amount]
-        )
-        const estimatedFee = await lzEndpointInstance.estimateFees(lzTargetChainId, contractInstance.address, _payload, false, adapterParams)
-
-        const tx = await contractInstance.wrap(lzTargetChainId, selectedNFTItem.token_address, BigNumber.from(selectedNFTItem.token_id), BigNumber.from(selectedNFTItem.amount), adapterParams, {
-          value: estimatedFee.nativeFee
-        })
-        onLeave()
-        const pendingTx: PendingTxType = {
-          txHash: tx.hash,
-          type: 'bridge',
-          senderChainId: chainId,
-          targetChainId: targetChain,
-          targetAddress: '',
-          isONFTCore: false,
-          contractType: 'ERC1155',
-          nftItem: selectedNFTItem,
-          targetBlockNumber: blockNumber,
-          itemName: selectedNFTItem.name
-        }
-        const historyIndex = addTxToHistories(pendingTx)
-        await listenONFTEvents(pendingTx, historyIndex)
-        await tx.wait()
-        setSelectedNFTItem(undefined)
-      }
+    } catch (err) {
+      console.error(err)
+      setTransferStatus(undefined)
     }
-
-    setConfirmTransfer(false)
   }
 
   const handleUnwrap = useCallback(async () => {
@@ -893,9 +915,11 @@ const SideBar: React.FC = () => {
           <ConfirmTransfer
             updateModal={updateModal}
             onTransfer={onTransfer}
+            status={transferStatus}
+            approveTxHash={approveTxHash}
             selectedNFTItem={selectedNFTItem}
             estimatedFee={estimatedFee}
-            senderChain={chainId || 4}
+            senderChain={chainId || CHAIN_IDS[CHAIN_TYPE.GOERLI]}
             targetChain={targetChain}
             image={image}
           />

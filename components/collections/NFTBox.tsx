@@ -243,10 +243,9 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           </Link>
         }
         <div className="flex items-center ml-3">
-          <div>&nbsp;</div>
           {isShowBtn && isOwner && isWhitelisted && (
             <div
-              className="ml-2 mr-2 py-[1px] px-4 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] cursor-pointer font-blod hover:bg-[#B00000]"
+              className="ml-2 mr-2 py-[1px] px-2 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] cursor-pointer font-blod hover:bg-[#B00000]"
               onClick={() => {
                 setOpenSellDlg(true)
               }}>
@@ -255,14 +254,14 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           )}
           {isShowBtn && !isOwner && isListed && isWhitelisted && (
             <div
-              className="ml-2 mr-2 py-[1px] px-4 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] cursor-pointer font-blod hover:bg-[#38B000]"
+              className="ml-2 mr-2 py-[1px] px-2 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] cursor-pointer font-blod hover:bg-[#38B000]"
               onClick={() => setOpenBuyDlg(true)}>
               {'Buy now'}
             </div>
           )}
           {isShowBtn && !isOwner && !isListed && isWhitelisted && (
             <div
-              className="ml-2 mr-2 py-[1px] px-4 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] cursor-pointer font-blod hover:bg-[#38B000]"
+              className="ml-2 mr-2 py-[1px] px-2 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] cursor-pointer font-blod hover:bg-[#38B000]"
               onClick={() => setOpenBidDlg(true)}>
               {'Bid'}
             </div>
