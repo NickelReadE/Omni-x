@@ -7,7 +7,7 @@ import { Switch } from '@headlessui/react'
 import LazyLoad from 'react-lazyload'
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
-// import InfiniteScroll from 'react-infinite-scroll-component'
+import InfiniteScroll from 'react-infinite-scroll-component'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import Accordion from '@material-ui/core/Accordion'
 import AccordionDetails from '@material-ui/core/AccordionDetails'
@@ -139,7 +139,7 @@ const Collection: NextPage = () => {
 
   const router = useRouter()
   const col_url = router.query.collection as string
-  const display_per_page = 1000
+  const display_per_page = 10
 
   const dispatch = useDispatch()
   const classes = useStyles()
@@ -147,7 +147,7 @@ const Collection: NextPage = () => {
   const royalty = useSelector(selectRoyalty)
   const { signer, chainId } = useWallet()
   const { refreshUserNfts } = useData()
-  const { nfts, refreshNfts } = useCollectionNfts(col_url, display_per_page, selected, searchObj, collectionInfo)
+  const { nfts, hasMoreNFTs, fetchMoreData, refreshNfts } = useCollectionNfts(col_url, display_per_page, selected, searchObj, collectionInfo)
 
   useEffect(() => {
     if (collectionInfo && collectionInfo.address && chainId) {
@@ -572,39 +572,30 @@ const Collection: NextPage = () => {
             </div>
             <div className="mt-10 mb-5">
               {
-                nfts.length === 0 &&
-                <div className="flex justify-center items-center">
-                  <div className="flex justify-center items-center w-[90%] h-[100px]">
-                    <Image src={Loading} alt="Loading..." width="80px" height="80px" />
+                <InfiniteScroll
+                  dataLength={nfts.length}
+                  next={fetchMoreData}
+                  hasMore={hasMoreNFTs}
+                  loader={
+                    <div className="flex justify-center items-center">
+                      <div className="flex justify-center items-center w-[90%] h-[100px]">
+                        {!isActiveBuyNow && <Image src={Loading} alt="Loading..." width="80px" height="80px" />}
+                      </div>
+                    </div>
+                  }
+                  endMessage={
+                    <div></div>
+                  }
+                >
+                  <div className="grid 2xl:grid-cols-5 gap-4 xl:grid-cols-3 md:grid-cols-2 p-1">
+                    {!isActiveBuyNow && nfts.map((item, index) => {
+                      return (
+                        <NFTBox nft={item} key={index} col_url={col_url} onRefresh={onRefresh} />
+                      )
+                    })}
+                    {isActiveBuyNow && listNFTs && buyComponent()}
                   </div>
-                </div>
-              }
-              {
-                // <InfiniteScroll
-                //   dataLength={nfts.length}
-                //   next={fetchMoreData}
-                //   hasMore={hasMoreNFTs}
-                //   loader={
-                //     <div className="flex justify-center items-center">
-                //       <div className="flex justify-center items-center w-[90%] h-[100px]">
-                //         {!isActiveBuyNow && <Image src={Loading} alt="Loading..." width="80px" height="80px" />}
-                //       </div>
-                //     </div>
-                //   }
-                //   endMessage={
-                //     <div></div>
-                //   }
-                // >
-                nfts.length > 0 &&
-                <div className="grid 2xl:grid-cols-5 gap-4 xl:grid-cols-3 md:grid-cols-2 p-1">
-                  {!isActiveBuyNow && nfts.map((item, index) => {
-                    return (
-                      <NFTBox nft={item} key={index} col_url={col_url} onRefresh={onRefresh} />
-                    )
-                  })}
-                  {isActiveBuyNow && listNFTs && buyComponent()}
-                </div>
-                // </InfiniteScroll>
+                </InfiniteScroll>
               }
             </div>
           </div>
