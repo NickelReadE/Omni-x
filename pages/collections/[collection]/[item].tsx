@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, Fragment, useMemo } from 'react'
+import { useState, useRef, Fragment, useMemo } from 'react'
 import LazyLoad from 'react-lazyload'
 import type { NextPage } from 'next'
 import Link from 'next/link'
@@ -17,10 +17,13 @@ import ConfirmBuy from '../../../components/collections/ConfirmBuy'
 import ConfirmAccept from '../../../components/collections/ConfirmAccept'
 import useCollectionNft from '../../../hooks/useCollectionNft'
 import {truncateAddress} from '../../../utils/utils'
+import { Popover, Transition } from '@headlessui/react'
 
 const Item: NextPage = () => {
+  const buttonRef = useRef(null)
   const [imageError, setImageError] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('items')
+  const [openState, setOpenState] = useState(false)
 
   const {
     provider,
@@ -97,6 +100,24 @@ const Item: NextPage = () => {
   const currencyIcon = getCurrencyIconByAddress(currentNFT?.currency)
   const formattedPrice = currentNFT?.price
 
+  const toggleMenu = (open: boolean) => {
+    // log the current open state in React (toggle open state)
+    setOpenState(!openState)
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    buttonRef?.current?.click()
+  }
+
+  // Open the menu after a delay of timeoutDuration
+  const onHover = (open: boolean, action: 'onMouseEnter' | 'onMouseLeave') => {
+    if (
+      (!open && !openState && action === 'onMouseEnter') ||
+      (open && openState && action === 'onMouseLeave')
+    ) {
+      toggleMenu(open)
+    }
+  }
+
   return (
     <>
       {currentNFT && collection &&
@@ -136,6 +157,45 @@ const Item: NextPage = () => {
                           </Link>
                         </h1>
                       )}
+                      <span className="relative group">
+                        <span
+                          className={[
+                            'whitespace-nowrap',
+                            'rounded',
+                            'bg-black',
+                            'px-2',
+                            'py-1',
+                            'text-white',
+                            'absolute',
+                            '-top-12',
+                            'left-1/2',
+                            '-translate-x-1/2',
+                            "before:content-['']",
+                            'before:absolute',
+                            'before:-translate-x-1/2',
+                            'before:left-1/2',
+                            'before:top-full',
+                            'before:border-4',
+                            'before:border-transparent',
+                            'before:border-t-black',
+                            'opacity-0',
+                            'group-hover:opacity-100',
+                            'transition',
+                            'pointer-events-none',
+                          ].join(' ')}
+                        >
+                          Send a direct message to owner via Blockscan Chat
+                        </span>
+                        <a href={`https://chat.blockscan.com/index?a=${currentNFT.owner}`} target="_blank" rel="noreferrer">
+                          <div className='w-[24px] h-[24px] ml-2 cursor-pointer'>
+                            <svg viewBox="0 0 32 32" focusable="false" className="chakra-icon css-1sdtgly" aria-hidden="true">
+                              <path d="M24 10H8V12H24V10Z" fill="#000"></path>
+                              <path d="M18 16H8V18H18V16Z" fill="#000"></path>
+                              <path fillRule="evenodd" clipRule="evenodd" d="M17.74 30L21.16 24H26C28.2091 24 30 22.2091 30 20V8C30 5.79086 28.2091 4 26 4H6C3.79086 4 2 5.79086 2 8V20C2 22.2091 3.79086 24 6 24H14V30H17.74ZM16 28V22H6C4.89543 22 4 21.1046 4 20V8C4 6.89543 4.89543 6 6 6H26C27.1046 6 28 6.89543 28 8V20C28 21.1046 27.1046 22 26 22H20L16.5714 28H16Z" fill="#000"></path>
+                            </svg>
+                          </div>
+                        </a>
+                      </span>
                     </div>
                     <div className="flex justify-between items-center mt-6">
                       {currentNFT && currentNFT.price > 0 && (
