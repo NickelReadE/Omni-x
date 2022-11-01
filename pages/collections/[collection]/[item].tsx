@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useRef, Fragment, useMemo } from 'react'
+import { useState, Fragment, useMemo } from 'react'
 import LazyLoad from 'react-lazyload'
 import type { NextPage } from 'next'
 import Link from 'next/link'
@@ -17,13 +17,10 @@ import ConfirmBuy from '../../../components/collections/ConfirmBuy'
 import ConfirmAccept from '../../../components/collections/ConfirmAccept'
 import useCollectionNft from '../../../hooks/useCollectionNft'
 import {truncateAddress} from '../../../utils/utils'
-import { Popover, Transition } from '@headlessui/react'
 
 const Item: NextPage = () => {
-  const buttonRef = useRef(null)
   const [imageError, setImageError] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('items')
-  const [openState, setOpenState] = useState(false)
 
   const {
     provider,
@@ -99,24 +96,6 @@ const Item: NextPage = () => {
 
   const currencyIcon = getCurrencyIconByAddress(currentNFT?.currency)
   const formattedPrice = currentNFT?.price
-
-  const toggleMenu = (open: boolean) => {
-    // log the current open state in React (toggle open state)
-    setOpenState(!openState)
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    buttonRef?.current?.click()
-  }
-
-  // Open the menu after a delay of timeoutDuration
-  const onHover = (open: boolean, action: 'onMouseEnter' | 'onMouseLeave') => {
-    if (
-      (!open && !openState && action === 'onMouseEnter') ||
-      (open && openState && action === 'onMouseLeave')
-    ) {
-      toggleMenu(open)
-    }
-  }
 
   return (
     <>
