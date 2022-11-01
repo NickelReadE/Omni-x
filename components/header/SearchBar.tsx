@@ -50,7 +50,7 @@ export default function SearchBar() {
             </div>
             {
               query !== '' && isComponentVisible &&
-              <div className='p-3'>
+              <div className='p-3 overflow-auto' style={{maxHeight: 'calc(100vh - 150px)'}}>
                 <div className="text-[#A0B3CC]" style={{fontSize: 15, lineHeight: '19px'}}>Collections</div>
                 {
                   collections.map((item, index) => {
