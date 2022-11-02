@@ -208,7 +208,7 @@ const Item: NextPage = () => {
                             >
                               {numberLocalize(Number(formattedPrice))}
                             </span>
-                            <h1 className="overflow-auto text-ellipsis text-[#1E1C21] text-[60px] font-normal">
+                            <h1 className="overflow-hidden text-ellipsis text-[#1E1C21] text-[60px] font-normal">
                               {numberLocalize(Number(formattedPrice))}
                             </h1>
                             <div className="mr-5 w-[30px]">
