@@ -22,7 +22,6 @@ import EthIMG from '../../public/images/payment/eth.png'
 import OmniIMG from '../../public/images/payment/omni.png'
 import UsdcIMG from '../../public/images/payment/usdc.png'
 import UsdtIMG from '../../public/images/payment/usdt.png'
-import { skinNames } from '../../constants/gregSkin'
 import useData from '../../hooks/useData'
 
 interface IUserEditProps {
@@ -308,64 +307,6 @@ const UserEdit: FC<IUserEditProps> = ({ updateModal }) => {
                         />
                       </div>
                     </div>
-                    {profile && profile.isGregHolder &&
-                      <div>
-                        <div
-                          className="relative cursor-pointer"
-                          onClick={onClickAvatar}
-                        >
-                          <img
-                            src={`/images/gregs/Alien_${gregName}.png`}
-                            alt="avatar"
-                            className=" w-[190px]"
-                          />
-                        </div>
-                        <Listbox value={'selected'} onChange={(val) => {
-                          setGregName(val)
-                        }}>
-                          <div className="relative z-50">
-                            <Listbox.Button
-                              className="relative w-full height-[25px] cursor-default rounded-lg bg-[#E9ECEF]  pl-3 pr-10 text-lg text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 xl:text-[18px] lg:text-[14px]">
-                              <span className="block truncate">{gregName}</span>
-                              <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                                <i className="fa fa-chevron-down"></i>
-                              </span>
-                            </Listbox.Button>
-                            <Listbox.Options
-                              className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-[#E9ECEF] py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                              {skinNames.map((sort_item, index) => (
-                                <Listbox.Option
-                                  key={index}
-                                  className={({ active }) =>
-                                    `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
-                                    }`
-                                  }
-                                  value={sort_item}
-                                >
-                                  {({ selected }) => (
-                                    <>
-                                      <span
-                                        className={`block truncate ${selected ? 'font-medium' : 'font-normal'
-                                        }`}
-                                      >
-                                        {sort_item}
-                                      </span>
-                                      {selected ? (
-                                        <span
-                                          className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                                          <i className="fa fa-chevron-down h-5 w-5"></i>
-                                        </span>
-                                      ) : null}
-                                    </>
-                                  )}
-                                </Listbox.Option>
-                              ))}
-                            </Listbox.Options>
-                          </div>
-                        </Listbox>
-                      </div>
-                    }
-
                   </div>
 
                   <div className="w-full mb-3 mt-3 flex items-center">
