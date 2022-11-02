@@ -10933,6 +10933,11 @@
     "infoURL": "https://arbitrum.io/",
     "explorers": [
       {
+        "name": "Arbitrum Görli Explorer",
+        "url": "https://goerli.arbiscan.io",
+        "standard": "EIP3091"
+      },
+      {
         "name": "Arbitrum Görli Rollup Explorer",
         "url": "https://goerli-rollup-explorer.arbitrum.io",
         "standard": "EIP3091"
