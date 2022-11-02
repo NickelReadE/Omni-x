@@ -176,18 +176,50 @@ const Item: NextPage = () => {
                         </a>
                       </span>
                     </div>
-                    <div className="flex justify-between items-center mt-6">
+                    <div className="mt-6">
                       {currentNFT && currentNFT.price > 0 && (
                         <>
-                          <h1 className="text-[#1E1C21] text-[60px] font-normal">{numberLocalize(Number(formattedPrice))}</h1>
-                          <div className="mr-5">
-                            {currencyIcon &&
-                              <img
-                                src={`${currencyIcon}`}
-                                className='mr-[8px] w-[21px]'
-                                alt="icon"
-                              />
-                            }
+                          <div className="relative group flex justify-between items-center max-w-[100%]">
+                            <span
+                              className={[
+                                'whitespace-nowrap',
+                                'rounded',
+                                'bg-black',
+                                'px-2',
+                                'py-1',
+                                'text-white',
+                                'absolute',
+                                '-top-12',
+                                'left-1/2',
+                                '-translate-x-1/2',
+                                "before:content-['']",
+                                'before:absolute',
+                                'before:-translate-x-1/2',
+                                'before:left-1/2',
+                                'before:top-full',
+                                'before:border-4',
+                                'before:border-transparent',
+                                'before:border-t-black',
+                                'opacity-0',
+                                'group-hover:opacity-100',
+                                'transition',
+                                'pointer-events-none',
+                              ].join(' ')}
+                            >
+                              {numberLocalize(Number(formattedPrice))}
+                            </span>
+                            <h1 className="overflow-auto text-ellipsis text-[#1E1C21] text-[60px] font-normal">
+                              {numberLocalize(Number(formattedPrice))}
+                            </h1>
+                            <div className="mr-5 w-[30px]">
+                              {currencyIcon &&
+                                <img
+                                  src={`${currencyIcon}`}
+                                  className='mr-[8px] w-[21px]'
+                                  alt="icon"
+                                />
+                              }
+                            </div>
                           </div>
                         </>
                       )}
