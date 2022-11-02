@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { FC, useEffect, useRef, useState, useCallback, SyntheticEvent } from 'react'
 import Cropper from 'react-easy-crop'
-import { Listbox } from '@headlessui/react'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Dialog from '@material-ui/core/Dialog'
 import Slider from '@material-ui/core/Slider'
@@ -11,8 +10,6 @@ import Twitter from '../../public/images/twitter.png'
 import Web from '../../public/images/web.png'
 import Photo from '../../public/images/photo.png'
 import useWallet from '../../hooks/useWallet'
-import { useSelector } from 'react-redux'
-import { selectHeroSkin } from '../../redux/reducers/userReducer'
 import classNames from '../../helpers/classNames'
 import editStyle from '../../styles/useredit.module.scss'
 import UserSVG from '../../public/svgs/user.svg'
@@ -36,7 +33,6 @@ const UserEdit: FC<IUserEditProps> = ({ updateModal }) => {
   const DEFAULT_BANNER = '/images/default_banner.png'
 
   const [avatar, setAvatar] = useState('/images/default_avatar.png')
-  const [gregName, setGregName] = useState(useSelector(selectHeroSkin))
   const [banner, setBanner] = useState('/images/default_banner.png')
   const [bannerSelected, setBannerSelect] = useState(0)
   const [username, setUserName] = useState('')
@@ -104,7 +100,7 @@ const UserEdit: FC<IUserEditProps> = ({ updateModal }) => {
       const formData = new FormData(updateProfileFormRef.current)
       const address = context.address ? context.address : ''
       formData.append('address', address)
-      formData.append('greg', gregName)
+      // formData.append('greg', 'greg')
 
       if (banner !== DEFAULT_BANNER && (profile && banner !== (S3_BUCKET_URL + profile.banner))) {
         formData.append('banner', (await getFileFromUrl(banner, 'banner.png')) as any)
