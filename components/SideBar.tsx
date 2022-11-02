@@ -563,19 +563,14 @@ const SideBar: React.FC = () => {
             </div>
             <div className="w-full 0">
               <div className="sidebar-icon">
-                <img alt={'networkIcon'} src="/sidebar/watchlist.svg" className="m-auto" />
+                <img alt={'networkIcon'} src="/sidebar/bridge.svg" className="m-auto" />
               </div>
             </div>
             <div className="w-full 0">
               <div className="sidebar-icon">
-                <img alt={'networkIcon'} src="/sidebar/bridge.svg" className="m-auto" />
+                <img alt={'networkIcon'} src="/sidebar/watchlist.svg" className="m-auto" />
               </div>
             </div>
-            {/*<div className="w-full 0">
-              <div className="sidebar-icon">
-                <img alt={'networkIcon'} src="/sidebar/cart.svg" className="m-auto" />
-              </div>
-            </div>*/}
           </div>
 
         </div>
@@ -662,100 +657,6 @@ const SideBar: React.FC = () => {
                   {getChainInfo(chainId)?.nativeCurrency.symbol} balance: {numberLocalize(parseFloat(nativeBalance?.formatted || '0'))}
                 </span>
                 <span className="w-auto text-[16px]">Staking: coming soon</span>
-                {/* <div className="w-full flex flex-row font-semibold text-[14px]">
-                  <div className="bg-g-200 w-[88px] px-[11px] py-[9px]">
-                    APR
-                    <span className="pull-right">50%</span>
-                  </div>
-                  <div className="w-[60px] px-[11px] py-[9px]">
-                    4652
-                  </div>
-                  <div className="px-[11px] py-[9px] text-g-600">
-                    $OMNI staked
-                  </div>
-                </div>
-                <div className="w-full flex flex-row font-semibold text-[14px]">
-                  <div className="bg-g-200 w-[88px] px-[11px] py-[9px]">
-                    Rewards
-                  </div>
-                  <div className="w-[60px] px-[11px] py-[9px]">
-                    52.42
-                  </div>
-                  <div className="px-[11px] py-[9px] text-g-600">
-                    $OMNI
-                  </div>
-                </div>
-                <div className="w-full flex flex-row font-semibold text-[14px]">
-                  <div className="w-[88px] px-[11px] py-[9px]">
-
-                  </div>
-                  <div className="w-[60px] px-[11px] py-[9px]">
-                    43.17
-                  </div>
-                  <div className="px-[11px] py-[9px] text-g-600">
-                    $USDC
-                  </div>
-                </div>
-                <span className="font-semibold w-auto text-[16px]">OMNI-USDC LP:</span>
-                <div className="w-full flex flex-row font-semibold text-[14px]">
-                  <div className="bg-g-200 w-[88px] px-[11px] py-[9px]">
-                    APR
-                    <span className="pull-right">75%</span>
-                  </div>
-                  <div className="w-[60px] px-[11px] py-[9px]">
-                    17.652
-                  </div>
-                  <div className="px-[11px] py-[9px] text-g-600">
-                    LP staked
-                  </div>
-                </div>
-                <div className="w-full flex flex-row font-semibold text-[14px]">
-                  <div className="bg-g-200 w-[88px] px-[11px] py-[9px]">
-                    Rewards
-                  </div>
-                  <div className="w-[60px] px-[11px] py-[9px]">
-                    52.42
-                  </div>
-                  <div className="px-[11px] py-[9px] text-g-600">
-                    $OMNI
-                  </div>
-                </div>
-                <div className="w-full flex flex-row font-semibold text-[14px]">
-                  <div className="w-[88px] px-[11px] py-[9px]">
-
-                  </div>
-                  <div className="w-[60px] px-[11px] py-[9px]">
-                    43.17
-                  </div>
-                  <div className="px-[11px] py-[9px] text-g-600">
-                    $USDC
-                  </div>
-                </div>
-                <div className="flex flex-row">
-                  <span className="text-[14px]">*add/remove positions on profile dashboard</span>
-                  <button className="w-[30px] h-[30px] bg-wallet-output"></button>
-                </div> */}
-              </div>
-            }
-          </li>
-          <li className="w-full">
-            <button
-              className={`w-full text-left rounded-full px-[24px]  py-[12px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu == 4 ? 'active' : ''}`}
-              onClick={() => toggleMenu(4)}
-            >
-              Watchlist
-              <span className="pull-right">
-                <i className={`${expandedMenu == 4 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
-              </span>
-            </button>
-            {expandedMenu == 4 &&
-              <div className='flex flex-col w-full space-y-4 p-6 pt-8 pb-0' ref={menu_watchlist}>
-                <div className="p-[51px] flex flex-col items-center border border-dashed border-g-300">
-                  {/* <span className="text-[14px] text-g-300">Drag & Drop</span>
-                  <span className="text-[14px] text-g-300">an NFT or NFT Collection</span>
-                  <span className="text-[14px] text-g-300">to add your watch list</span> */}
-                  <span className="text-[14px] text-g-300">coming soon</span>
-                </div>
               </div>
             }
           </li>
@@ -815,27 +716,27 @@ const SideBar: React.FC = () => {
               </div>
             }
           </li>
-          {/*<li className="w-full">
+          <li className="w-full">
             <button
-              className={`w-full text-left rounded-full px-[24px] py-[12px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu==6?'active':''}`}
-              onClick={() => toggleMenu(6)}
+              className={`w-full text-left rounded-full px-[24px]  py-[12px] pr-[70px] text-xg  text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-ml sidebar ${expandedMenu == 4 ? 'active' : ''}`}
+              onClick={() => toggleMenu(4)}
             >
-              Cart
+              Watchlist
               <span className="pull-right">
-                <i className={`${expandedMenu == 6 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
+                <i className={`${expandedMenu == 4 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
               </span>
             </button>
-            { expandedMenu == 6 &&
-              <div className='flex flex-col w-full space-y-4 p-6 pt-8 pb-0' ref={menu_cart}>
-                <div className="px-[113px] py-[43px] flex flex-col items-center border border-dashed border-g-300 bg-g-200">
-                  <img alt={'networkIcon'} src="/sidebar/attach.png" />
+            {expandedMenu == 4 &&
+              <div className='flex flex-col w-full space-y-4 p-6 pt-8 pb-0' ref={menu_watchlist}>
+                <div className="p-[51px] flex flex-col items-center border border-dashed border-g-300">
+                  {/* <span className="text-[14px] text-g-300">Drag & Drop</span>
+                  <span className="text-[14px] text-g-300">an NFT or NFT Collection</span>
+                  <span className="text-[14px] text-g-300">to add your watch list</span> */}
+                  <span className="text-[14px] text-g-300">coming soon</span>
                 </div>
-                <button className="bg-gr-100 text-white w-[172px] py-[10px] rounded-full m-auto">
-                  Buy
-                </button>
               </div>
             }
-          </li>*/}
+          </li>
         </ul>
 
         <div className='top-0 right-0 w-[70px] py-6 bg-white fixed h-full z-[99]'>
@@ -881,15 +782,6 @@ const SideBar: React.FC = () => {
             </div>
             <div className="w-full 0">
               <div className="sidebar-icon">
-                <img alt={'networkIcon'} src="/sidebar/watchlist.svg" className="m-auto" />
-              </div>
-              {expandedMenu == 4 &&
-                <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{ height: offsetMenu + 'px' }}>
-                </ul>
-              }
-            </div>
-            <div className="w-full 0">
-              <div className="sidebar-icon">
                 <img alt={'networkIcon'} src="/sidebar/bridge.svg" className="m-auto" />
               </div>
               {expandedMenu == 5 &&
@@ -897,15 +789,15 @@ const SideBar: React.FC = () => {
                 </ul>
               }
             </div>
-            {/*<div className="w-full 0">
+            <div className="w-full 0">
               <div className="sidebar-icon">
-                <img alt={'networkIcon'} src="/sidebar/cart.svg" className="m-auto" />
+                <img alt={'networkIcon'} src="/sidebar/watchlist.svg" className="m-auto" />
               </div>
-              { expandedMenu == 6 &&
-                <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{height: offsetMenu + 'px'}}>
+              {expandedMenu == 4 &&
+                <ul className='flex flex-col w-full space-y-4 p-6 pt-8' style={{ height: offsetMenu + 'px' }}>
                 </ul>
               }
-            </div>*/}
+            </div>
           </div>
         </div>
       </div>
