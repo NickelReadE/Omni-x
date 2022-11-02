@@ -28,6 +28,15 @@ export const STABLECOIN_DECIMAL: any = {
   [ChainIDS.FANTOM]: {
     [USDC[ChainIDS.FANTOM]]: 6,
   },
+  [ChainIDS.ETHEREUM]: {
+    [USDC[ChainIDS.ETHEREUM]]: 6,
+  },
+  [ChainIDS.ARBITRUM]: {
+    [USDC[ChainIDS.ARBITRUM]]: 6,
+  },
+  [ChainIDS.OPTIMISM]: {
+    [USDC[ChainIDS.OPTIMISM]]: 6,
+  },
 }
   
 export const currencies_list: { [key: number]: Array<{ value: number; text: string, icon: string, address: string }> } = {
@@ -170,10 +179,6 @@ export const isUsdcOrUsdt = (address?: string) => {
 }
 
 export const getValidCurrencies = (chainId: number) => {
-  if (chainId === ChainIDS.ETHEREUM || chainId === ChainIDS.ARBITRUM || chainId === ChainIDS.OPTIMISM) {
-    return [CURRENCIES_LIST[0]]
-  }
-  
   if (chainId === ChainIDS.BINANCE) {
     return [CURRENCIES_LIST[0], CURRENCIES_LIST[2]]
   }
