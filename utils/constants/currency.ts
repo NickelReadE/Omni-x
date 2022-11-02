@@ -29,7 +29,7 @@ export const STABLECOIN_DECIMAL: any = {
     [USDC[ChainIDS.FANTOM]]: 6,
   },
   [ChainIDS.ETHEREUM]: {
-    [USDC[ChainIDS.POLYGON]]: 6,
+    [USDC[ChainIDS.ETHEREUM]]: 6,
   },
   [ChainIDS.ARBITRUM]: {
     [USDC[ChainIDS.ARBITRUM]]: 6,
