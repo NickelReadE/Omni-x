@@ -691,11 +691,11 @@ const SideBar: React.FC = () => {
                   }
                 </div>
                 <span className="font-g-300">Select destination chain:</span>
-                <div className="flex flex-row w-full space-x-[15px]">
+                <div className="flex flex-row w-full space-x-[5px]">
                   {
                     SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
                       return (
-                        <button key={index} disabled={!!chainInfos[networkId].comingSoon} onClick={() => handleTargetChainChange(networkId)} className={targetChain === networkId ? 'border border-g-300' : ''}>
+                        <button key={index} disabled={!!chainInfos[networkId].comingSoon} onClick={() => handleTargetChainChange(networkId)} className={`${targetChain === networkId ? 'border border-[#B444F9] bg-[#F3F5F7]' : ''} flex items-center justify-center w-[40px] h-[40px]`}>
                           <img alt={'networkIcon'} src={chainInfos[networkId].logo || chainInfos[ChainIds.ETHEREUM].logo} width={24} height={28} />
                         </button>
                       )
@@ -709,7 +709,7 @@ const SideBar: React.FC = () => {
                       Unwrap
                     </button>
                     :
-                    <button className="bg-g-400 text-white w-[172px] py-[10px] rounded-full m-auto" onClick={handleTransfer}>
+                    <button className="bg-[#B444F9] text-white w-[172px] py-[10px] rounded-full m-auto" onClick={handleTransfer}>
                       Transfer
                     </button>
                 }
