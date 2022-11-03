@@ -152,7 +152,6 @@ export interface contractInfo{
   }
 }
 
-
 export interface IListingData {
   price: number,
   currencyName: string,

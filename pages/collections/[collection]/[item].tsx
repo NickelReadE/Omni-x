@@ -5,28 +5,22 @@ import type { NextPage } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import ConfirmSell from '../../../components/collections/ConfirmSell'
-import ConfirmBid from '../../../components/collections/ConfirmBid'
 import useWallet from '../../../hooks/useWallet'
 import useTrading from '../../../hooks/useTrading'
 import { getChainIconById, getCurrencyIconByAddress, numberLocalize } from '../../../utils/constants'
 import PngCheck from '../../../public/images/check.png'
 import PngSub from '../../../public/images/subButton.png'
 import useOrderStatics from '../../../hooks/useOrderStatics'
-import ConfirmBuy from '../../../components/collections/ConfirmBuy'
-import ConfirmAccept from '../../../components/collections/ConfirmAccept'
 import useCollectionNft from '../../../hooks/useCollectionNft'
 import {truncateAddress} from '../../../utils/utils'
+import { useModal } from '../../../hooks/useModal'
+import { ModalIDs } from '../../../contexts/modal'
 
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
   const [currentTab, setCurrentTab] = useState<string>('items')
 
-  const {
-    provider,
-    address,
-    signer
-  } = useWallet()
+  const { address } = useWallet()
   const router = useRouter()
   const col_url = router.query.collection as string
   const token_id = router.query.item as string
@@ -56,18 +50,10 @@ const Item: NextPage = () => {
     nft: currentNFT
   })
 
+  const { openModal, closeModal } = useModal()
+
   // trading hook
   const {
-    openBidDlg,
-    openSellDlg,
-    openBuyDlg,
-    selectedBid,
-    openAcceptDlg,
-    setOpenBidDlg,
-    setOpenSellDlg,
-    setOpenBuyDlg,
-    setOpenAcceptDlg,
-    setSelectedBid,
     onListingApprove,
     onListingConfirm,
     onListingDone,
@@ -83,13 +69,9 @@ const Item: NextPage = () => {
     onAcceptComplete,
     onAcceptDone,
   } = useTrading({
-    provider,
-    signer,
-    address,
-    collection_name: col_url,
-    collection_address_map,
-    owner_collection_chain_id: currentNFT?.chain_id,
-    token_id,
+    collectionUrl: col_url,
+    collectionAddressMap: collection_address_map,
+    tokenId: token_id,
     selectedNFTItem: currentNFT,
     onRefresh
   })
@@ -242,8 +224,16 @@ const Item: NextPage = () => {
                                 {currentNFT?.owner?.toLowerCase() == address?.toLowerCase() &&
                                   <button className='bg-[#ADB5BD] hover:bg-[#38B000] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5'
                                     onClick={() => {
-                                      setSelectedBid(item.order_data)
-                                      setOpenAcceptDlg(true)
+                                      openModal(ModalIDs.MODAL_ACCEPT, {
+                                        nftImage: currentNFT.image,
+                                        nftTitle: currentNFT.name,
+                                        bidOrder: item.order_data,
+                                        onAcceptApprove,
+                                        onAcceptConfirm,
+                                        onAcceptComplete,
+                                        onAcceptDone,
+                                        handleAcceptDlgClose: closeModal
+                                      })
                                     }}>
                                     accept
                                   </button>
@@ -264,7 +254,18 @@ const Item: NextPage = () => {
                           isListed && currentNFT?.owner?.toLowerCase() != address?.toLowerCase() &&
                             <button
                               className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]"
-                              onClick={() => {setOpenBuyDlg(true)}}
+                              onClick={() => {
+                                openModal(ModalIDs.MODAL_BUY, {
+                                  nftImage: currentNFT.image,
+                                  nftTitle: currentNFT.name,
+                                  order,
+                                  onBuyApprove,
+                                  onBuyConfirm,
+                                  onBuyComplete,
+                                  onBuyDone,
+                                  handleBuyDlgClose: closeModal
+                                })
+                              }}
                             >
                               buy
                             </button>
@@ -273,7 +274,16 @@ const Item: NextPage = () => {
                           currentNFT?.owner?.toLowerCase() == address?.toLowerCase() &&
                             <button
                               className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]"
-                              onClick={() => {setOpenSellDlg(true)}}
+                              onClick={() => {
+                                openModal(ModalIDs.MODAL_LISTING, {
+                                  nftImage: currentNFT.image,
+                                  nftTitle: currentNFT.name,
+                                  onListingApprove,
+                                  onListingConfirm,
+                                  onListingDone,
+                                  handleSellDlgClose: closeModal
+                                })
+                              }}
                             >
                               sell
                             </button>
@@ -286,7 +296,16 @@ const Item: NextPage = () => {
                       currentNFT?.owner && address && currentNFT?.owner.toLowerCase() != address.toLowerCase() &&
                         <button
                           className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]"
-                          onClick={() => { setOpenBidDlg(true) }}
+                          onClick={() => {
+                            openModal(ModalIDs.MODAL_BID, {
+                              nftImage: currentNFT.image,
+                              nftTitle: currentNFT.name,
+                              onBidApprove,
+                              onBidConfirm,
+                              onBidDone,
+                              handleBidDlgClose: closeModal
+                            })
+                          }}
                         >
                           bid
                         </button>
@@ -327,48 +346,6 @@ const Item: NextPage = () => {
               </div>
             </div>
           </div>
-          <ConfirmSell
-            onListingApprove={onListingApprove}
-            onListingConfirm={onListingConfirm}
-            onListingDone={onListingDone}
-            handleSellDlgClose={() => {setOpenSellDlg(false)}}
-            openSellDlg={openSellDlg}
-            nftImage={currentNFT.image}
-            nftTitle={currentNFT.name}
-          />
-          <ConfirmBuy
-            handleBuyDlgClose={() => {
-              setOpenBuyDlg(false)
-            }}
-            openBuyDlg={openBuyDlg}
-            nftImage={currentNFT.image}
-            nftTitle={currentNFT.name}
-            onBuyApprove={onBuyApprove}
-            onBuyConfirm={onBuyConfirm}
-            onBuyComplete={onBuyComplete}
-            onBuyDone={onBuyDone}
-            order={order}
-          />
-          <ConfirmBid
-            onBidApprove={onBidApprove}
-            onBidConfirm={onBidConfirm}
-            onBidDone={onBidDone}
-            handleBidDlgClose={() => {setOpenBidDlg(false)}}
-            openBidDlg={openBidDlg}
-            nftImage={currentNFT.image}
-            nftTitle={currentNFT.name}
-          />
-          <ConfirmAccept
-            onAcceptApprove={onAcceptApprove}
-            onAcceptConfirm={onAcceptConfirm}
-            onAcceptComplete={onAcceptComplete}
-            onAcceptDone={onAcceptDone}
-            handleAcceptDlgClose={() => {setOpenAcceptDlg(false)}}
-            openAcceptDlg={openAcceptDlg}
-            nftImage={currentNFT.image}
-            nftTitle={currentNFT.name}
-            bidOrder={selectedBid}
-          />
         </div>
       }
     </>

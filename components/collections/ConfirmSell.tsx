@@ -26,24 +26,22 @@ const useStyles = makeStyles(() =>
   }),
 )
 
-interface IConfirmSellProps {
-  handleSellDlgClose: () => void,
-  openSellDlg: boolean,
+export interface IConfirmSellProps {
   nftImage: string,
   nftTitle: string,
   onListingApprove?: (isAuction: boolean, checkNetwork: boolean) => Promise<any>,
   onListingConfirm?: (listingData: IListingData) => Promise<any>,
   onListingDone?: () => void
+  handleSellDlgClose: () => void,
 }
 
 const ConfirmSell: React.FC<IConfirmSellProps> = ({
-  handleSellDlgClose,
-  openSellDlg,
   nftImage,
   nftTitle,
   onListingApprove,
   onListingConfirm,
   onListingDone,
+  handleSellDlgClose,
 }) => {
   const classes = useStyles()
   const [sellType, setSellType] = useState<SaleType>(SaleType.FIXED)
@@ -143,7 +141,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
   }, [listingStep, currency, period, setStep])
 
   return (
-    <Dialog open={openSellDlg} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
+    <Dialog open={true} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
       <DialogTitle id="form-dialog-title" className={classes.rootTitle}>
         <div className="columns-2 mt-5">
           <div className="text-[#1E1C21] text-[28px] font-semibold">list item for sale</div>

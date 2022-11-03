@@ -26,9 +26,7 @@ const useStyles = makeStyles(() =>
   }),
 )
 
-interface IConfirmBuyProps {
-  handleBuyDlgClose: () => void,
-  openBuyDlg: boolean,
+export interface IConfirmBuyProps {
   nftImage: string,
   nftTitle: string,
   order?: IOrder,
@@ -36,11 +34,10 @@ interface IConfirmBuyProps {
   onBuyConfirm?: (order?: IOrder) => Promise<any>,
   onBuyComplete?: (order?: IOrder) => void
   onBuyDone?: () => void
+  handleBuyDlgClose: () => void,
 }
 
 const ConfirmBuy: React.FC<IConfirmBuyProps> = ({
-  handleBuyDlgClose,
-  openBuyDlg,
   nftImage,
   nftTitle,
   order,
@@ -48,6 +45,7 @@ const ConfirmBuy: React.FC<IConfirmBuyProps> = ({
   onBuyConfirm,
   onBuyComplete,
   onBuyDone,
+  handleBuyDlgClose,
 }) => {
   const classes = useStyles()
   const [buyStep, setStep] = useState<BuyStep>(BuyStep.StepBuy)
@@ -123,7 +121,7 @@ const ConfirmBuy: React.FC<IConfirmBuyProps> = ({
   const formattedPrice = formatCurrency(order?.price || 0, getCurrencyNameAddress(order?.currencyAddress))
 
   return (
-    <Dialog open={openBuyDlg} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
+    <Dialog open={true} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
       <DialogTitle id="form-dialog-title" className={classes.rootTitle}>
         <div className="columns-2 mt-5">
           <div className="text-[#1E1C21] text-[28px] font-semibold">purchase confirmation</div>

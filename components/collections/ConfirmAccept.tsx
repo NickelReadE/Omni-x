@@ -27,9 +27,7 @@ const useStyles = makeStyles(() =>
   }),
 )
 
-interface IConfirmAcceptProps {
-  handleAcceptDlgClose: () => void,
-  openAcceptDlg: boolean,
+export interface IConfirmAcceptProps {
   nftImage: string,
   nftTitle: string,
   bidOrder?: IOrder,
@@ -37,11 +35,10 @@ interface IConfirmAcceptProps {
   onAcceptConfirm?: (bidOrder: IOrder) => Promise<any>,
   onAcceptComplete?: (bidOrder: IOrder) => void
   onAcceptDone?: () => void
+  handleAcceptDlgClose: () => void,
 }
 
 const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
-  handleAcceptDlgClose,
-  openAcceptDlg,
   nftImage,
   nftTitle,
   bidOrder,
@@ -49,6 +46,7 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
   onAcceptConfirm,
   onAcceptComplete,
   onAcceptDone,
+  handleAcceptDlgClose,
 }) => {
   const classes = useStyles()
   const [acceptStep, setStep] = useState<AcceptStep>(AcceptStep.StepAccept)
@@ -142,7 +140,7 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
   const newCurrencyName = validateCurrencyName(currencyName, chainId || 0)
   const formattedPrice = formatCurrency(bidOrder?.price || 0, getCurrencyNameAddress(bidOrder?.currencyAddress))
   return (
-    <Dialog open={openAcceptDlg} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
+    <Dialog open={true} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
       <DialogTitle id="form-dialog-title" className={classes.rootTitle}>
         <div className="columns-2 mt-5">
           <div className="text-[#1E1C21] text-[28px] font-semibold">accept confirmation</div>

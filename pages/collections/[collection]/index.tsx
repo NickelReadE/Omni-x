@@ -353,27 +353,6 @@ const Collection: NextPage = () => {
                   <span className="mr-[22px] ">Royalty Fee</span>
                   <span>{royalty}%</span>
                 </li>
-                {/*<li
-                  className="inline-block px-[13px] py-[13px] h-fit flex flex-col space-y-4 justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
-                  <div className="flex flex-col">
-                    <div className="flex justify-start">
-                      <span>Volume(Total)</span>
-                    </div>
-                    <div className="flex flex-row">
-                      <span className="mr-[10px] ">0</span>
-                      <img src="/svgs/eth_asset.svg" alt="asset"></img>
-                    </div>
-                  </div>
-                  <div className="flex flex-col">
-                    <div className="flex justify-start">
-                      <span>Volume(7d)</span>
-                    </div>
-                    <div className="flex flex-row">
-                      <span className="mr-[10px] ">0</span>
-                      <img src="/svgs/eth_asset.svg" alt="asset"></img>
-                    </div>
-                  </div>
-                </li>*/}
                 <li
                   className="inline-block px-[13px] py-[13px] h-fit flex justify-items-center  z-30 bg-[#E7EDF5] rounded-lg font-extrabold">
                   <div className="flex flex-col space-y-2">
@@ -501,54 +480,13 @@ const Collection: NextPage = () => {
                   <hr />
                 </li>
               })}
-              {/* <li className="w-full">
-                <button
-                  className={`w-full px-8 py-4 text-left text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`}
-                >
-                  Price
-                  <span className="pull-right">
-                    <i className={`${expandedMenu == 1 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
-                  </span>
-                </button>
-              </li>
-              <li className="w-full">
-                <button
-                  className={`w-full px-8 py-4 text-left text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`}
-                >
-                  Blockchain
-                  <span className="pull-right">
-                    <i className={`${expandedMenu == 1 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
-                  </span>
-                </button>
-              </li>
-              <li className="w-full">
-                <button
-                  className={`w-full px-8 py-4 text-left text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`}
-                >
-                  Rarity
-                  <span className="pull-right">
-                    <i className={`${expandedMenu == 1 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
-                  </span>
-                </button>
-              </li>
-              <li className="w-full">
-                <button
-                  className={`w-full px-8 py-4 text-left text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`}
-                >
-                  Attributes
-                  <span className="pull-right">
-                    <i className={`${expandedMenu == 1 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
-                  </span>
-                </button>
-              </li> */}
             </ul>
           </div>
           <div className="relative px-12 py-6 border-l-2 border-[#E9ECEF] w-full">
             <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 p-1 gap-4">
               <div className="2xl:col-start-4 xl:col-start-3 lg:col-start-2 md:col-start-1">
-                <button
-                  className="rounded-lg bg-[#38B000] text-[#F6F8FC] py-2 xl:text-[18px] lg:text-[14px] w-full">make a
-                  collection bid
+                <button className="rounded-lg bg-[#38B000] text-[#F6F8FC] py-2 xl:text-[18px] lg:text-[14px] w-full">
+                  make a collection bid
                 </button>
               </div>
               <div className="min-w-[180px] z-10 2xl:col-start-5 xl:col-start-4 lg:col-start-3 md:col-start-2">

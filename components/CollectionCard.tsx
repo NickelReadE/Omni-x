@@ -36,7 +36,7 @@ const CollectionCard = (props:any) => {
               <div className='w-[230px] text-[18px] text-white	 text-extrabold text-center items-center bg-[#B444F9] rounded-lg mb-[24px]  py-[7px] hover:cursor-pointer'>view collection</div>
             </Link>
 
-            <div className='w-[230px] text-[18px] text-white	 text-extrabold text-center items-center bg-[#38B000] rounded-lg  py-[7px]'>make a collection bid</div>
+            <button className='w-[230px] text-[18px] text-white text-extrabold text-center items-center bg-[#38B000] rounded-lg  py-[7px]'>make a collection bid</button>
           </div>
 
         </div>

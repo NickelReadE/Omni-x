@@ -25,24 +25,22 @@ const useStyles = makeStyles(() =>
   }),
 )
 
-interface IConfirmBidProps {
-  handleBidDlgClose: () => void,
-  openBidDlg: boolean,
+export interface IConfirmBidProps {
   nftImage: string,
   nftTitle: string,
   onBidApprove?: (bidData: IBidData) => Promise<any>,
   onBidConfirm?: (bidData: IBidData) => Promise<void>,
   onBidDone?: () => void
+  handleBidDlgClose: () => void,
 }
 
 const ConfirmBid: React.FC<IConfirmBidProps> = ({
-  handleBidDlgClose,
-  openBidDlg,
   nftImage,
   nftTitle,
   onBidApprove,
   onBidConfirm,
   onBidDone,
+  handleBidDlgClose,
 }) => {
   const classes = useStyles()
   const [price, setPrice] = useState(0)
@@ -121,7 +119,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
   }, [bidStep, currency, period, setStep])
 
   return (
-    <Dialog open={openBidDlg} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
+    <Dialog open={true} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
       <DialogTitle id="form-dialog-title" className={classes.root}>
         <div className="columns-2 mt-5">
           <div className="text-[#1E1C21] text-[28px] font-semibold">place bid</div>
