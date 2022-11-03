@@ -140,7 +140,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
               <div className={'absolute right-[250px] h-[90px] flex items-center'}>
                 <div className={'relative'}>
                   <Menu>
-                    <Menu.Button className={'w-[250px] h-[40px] bg-[#F6F8FC] px-[18px] flex items-center justify-between'} style={{ borderRadius: '20px', border: '1.5px solid #000000'}}>
+                    <Menu.Button className={'w-[250px] h-[40px] bg-[#F6F8FC] px-[18px] flex items-center justify-between outline-0'} style={{ borderRadius: '20px', border: '1.5px solid #000000'}}>
                       <div className={'flex items-center'}>
                         {pending ? 'processing' : 'last transactions'}
                         {
