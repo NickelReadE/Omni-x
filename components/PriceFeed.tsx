@@ -66,7 +66,7 @@ const PriceFeed = () => {
   }, [assetPrices, gasPrices])
 
   return (
-    <div className="fixed bottom-0 w-full z-[99] pr-[70px] h-[42px] bg-[#F6F8FC]">
+    <div className="fixed bottom-0 w-full z-[99] pr-[70px] h-[42px] bg-[#F6F8FC] dark:bg-[#161616] border-t-[1px] border-[#303030]">
       <div className="flex items-center justify-center h-full w-full px-10 text-center">
         {
           data.map((item, index) => {
@@ -75,7 +75,7 @@ const PriceFeed = () => {
                 <Image alt={'chainIcon'} src={item.icon} width={20} height={20} />
                 {
                   item.price > 0 &&
-                  <span className="text-[13px] text-black font-normal ml-1">
+                  <span className="text-[13px] text-black dark:text-white font-normal ml-1">
                     ${item.price}
                   </span>
                 }

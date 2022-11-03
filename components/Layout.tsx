@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
-import Header from './Header'
 import { useRouter } from 'next/router'
+import Header from './Header'
+import Footer from './layout/Footer'
 import SideBar from './SideBar'
 import SnackbarComponent from './SnackBar'
-import PriceFeed from './PriceFeed'
 
 type LayoutProps = {
   children?: React.ReactNode
@@ -36,11 +36,13 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
         />
       </Head>
       <SnackbarComponent />
-      <main className='w-full flex flex-col pr-[70px]'>
+      <main className='w-full flex flex-col'>
         <SideBar />
-        <Header menu={menu}/>
-        {children}
-        <PriceFeed/>
+        <Header menu={menu} />
+        <div className='pt-[64px] pb-[170px]'>
+          {children}
+        </div>
+        <Footer />
       </main>
     </>
   )

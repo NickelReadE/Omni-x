@@ -1,7 +1,7 @@
 import { BigNumber, BigNumberish, ethers } from 'ethers'
-import OFT from '../../constants/OFT.json'
-import USDC from '../../constants/USDC.json'
-import USDT from '../../constants/USDT.json'
+import OFT from '../../constants/addresses/OFT.json'
+import USDC from '../../constants/addresses/USDC.json'
+import USDT from '../../constants/addresses/USDT.json'
 import {ChainIds as ChainIDS} from '../../types/enum'
 import { ContractName } from './contracts'
 

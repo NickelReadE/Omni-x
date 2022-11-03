@@ -1,143 +1,132 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import classNames from '../helpers/classNames'
 import useProgress from '../hooks/useProgress'
 import ProcessingTransaction from './transaction/ProcessingTransaction'
 import { Menu } from '@headlessui/react'
 import useData from '../hooks/useData'
-import SearchBar from './header/SearchBar'
+import SearchBar from './layout/header/SearchBar'
+import { chainInfos, SUPPORTED_CHAIN_IDS } from '../utils/constants'
+import { ChainIds } from '../types/enum'
+import useWallet from '../hooks/useWallet'
 
 type HeaderProps = {
   menu: string
 }
 
-type HoverType = {
-  hoverMenu: string,
-  isHover: boolean
-}
-
 const Header = ({ menu }: HeaderProps): JSX.Element => {
-  const [hover, setHovering] = useState<HoverType>({
-    hoverMenu: menu,
-    isHover: false
-  })
-
+  const { chainId } = useWallet()
+  const { profile, onFaucet } = useData()
   const { pending, histories, clearHistories } = useProgress()
-  const { onFaucet } = useData()
 
-
-  const handleMouseOver = (hoverMenu: string) => {
-    setHovering({
-      hoverMenu: hoverMenu,
-      isHover: true
-    })
-  }
-
-  const handleMouseOut = () => {
-    setHovering({
-      hoverMenu: '',
-      isHover: false
-    })
-  }
+  const [avatarError, setAvatarError] = useState(false)
 
   const onClear = () => {
     clearHistories()
   }
 
+  const avatarImage = useMemo(() => {
+    if (!avatarError && profile && profile.avatar) {
+      return process.env.API_URL + profile.avatar
+    }
+    return '/images/default_avatar.png'
+  }, [profile, avatarError])
+
   return (
     <>
       <nav className={
         classNames(
+          'dark:bg-[#161616]',
           'bg-[#F6F8FC]',
-          'border-gray-200',
-          'px-2',
-          'sm:px-4',
-          'py-0',
-          'rounded',
-          // 'dark:bg-gray-800',
+          'h-[64px]',
+          'px-4',
+          'sm:px-6',
           'z-50',
           'fixed',
           'w-full',
         )}
       >
-        <div className='flex flex-wrap items-start'>
-          <div className='absolute'>
-            <div className='flex'>
-              <Link href='/'>
-                <button className='flex items-center'>
-                  <img
-                    src={'/images/logo.svg'}
-                    className='mr-3 bg-contain'
-                    alt="logo"
-                    width='50px'
-                    height='50px'
-                  />
-                </button>
-              </Link>
-              <SearchBar />
-            </div>
+        <div className='flex flex-wrap items-center justify-between'>
+          <div className='flex items-center'>
+            <Link href='/'>
+              <button className='flex items-center'>
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M19.9906 28.2101C24.5654 28.2101 28.2741 24.5015 28.2741 19.9266C28.2741 15.3517 24.5654 11.6431 19.9906 11.6431C15.4157 11.6431 11.707 15.3517 11.707 19.9266C11.707 24.5015 15.4157 28.2101 19.9906 28.2101Z" stroke="url(#paint0_linear_1_2065)" strokeWidth="4" strokeMiterlimit="10" strokeLinecap="round"/>
+                  <path d="M7.71402 29.102C5.75203 26.4524 4.69855 23.2399 4.71055 19.943C4.72255 16.6461 5.79938 13.4413 7.78061 10.8061M29.1172 32.2771C26.4687 34.2445 23.2548 35.3024 19.9555 35.2928C16.6562 35.2833 13.4485 34.2067 10.8114 32.224M32.2516 10.8504C34.2231 13.4919 35.2883 16.6998 35.2883 19.9959C35.2883 23.2921 34.2231 26.4999 32.2516 29.1414M10.8706 7.73209C13.5188 5.76105 16.7337 4.7 20.0348 4.70756C23.3359 4.71512 26.546 5.79087 29.185 7.77401" stroke="url(#paint1_linear_1_2065)" strokeWidth="2" strokeMiterlimit="10"/>
+                  <defs>
+                    <linearGradient id="paint0_linear_1_2065" x1="14.8134" y1="11.6431" x2="28.9647" y2="15.0608" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#00F0EC"/>
+                      <stop offset="1" stopColor="#16FFC5"/>
+                    </linearGradient>
+                    <linearGradient id="paint1_linear_1_2065" x1="10.4438" y1="4.70752" x2="36.5637" y2="11.0142" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#00F0EC"/>
+                      <stop offset="1" stopColor="#16FFC5"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <span className='text-[#F5F5F5] font-[450] text-[32px] leading-[38px] ml-3'>
+                  omni x
+                </span>
+              </button>
+            </Link>
+            <SearchBar />
           </div>
 
-          {/* // Menus aligned to center on desktop */}
-          <div className='justify-between h-[90px] items-center w-full md:flex md:w-auto mx-auto md:order-2' id='mobile-menu-3'>
-            <ul className="flex flex-col justify-between md:flex-row md:text-sm md:font-medium h-full">
-              <li className="flex items-center w-[160px]" onMouseOver={() => handleMouseOver('home')} onMouseOut={handleMouseOut}>
-                <Link href='/'>
-                  <a className='relative flex items-center h-full'>
-                    <div className={`w-[100px] h-[40px] flex items-center justify-center ${menu === 'home' ? 'bg-black' : 'bg-transparent'} rounded-full`}>
-                      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M23.8333 13.7222C23.7383 13.7227 23.6441 13.7045 23.5561 13.6686C23.4681 13.6326 23.388 13.5797 23.3206 13.5127L13 3.18496L2.67944 13.5127C2.54128 13.6311 2.36356 13.6929 2.18179 13.6859C2.00003 13.6788 1.82761 13.6035 1.69898 13.4749C1.57036 13.3462 1.49501 13.1738 1.48799 12.992C1.48097 12.8103 1.54279 12.6326 1.66111 12.4944L12.4944 1.66107C12.6298 1.52655 12.8128 1.45105 13.0036 1.45105C13.1944 1.45105 13.3775 1.52655 13.5128 1.66107L24.3461 12.4944C24.4455 12.5958 24.5128 12.7242 24.5396 12.8636C24.5664 13.0031 24.5515 13.1473 24.4968 13.2783C24.4421 13.4093 24.35 13.5213 24.232 13.6002C24.114 13.6792 23.9753 13.7216 23.8333 13.7222Z" fill={menu === 'home' ? '#F6F8FC' : '#000000'}/>
-                        <path d="M13 5.6261L4.33333 14.3217V23.1111C4.33333 23.4942 4.48551 23.8616 4.7564 24.1325C5.02729 24.4034 5.39469 24.5555 5.77778 24.5555H10.8333V17.3333H15.1667V24.5555H20.2222C20.6053 24.5555 20.9727 24.4034 21.2436 24.1325C21.5145 23.8616 21.6667 23.4942 21.6667 23.1111V14.2711L13 5.6261Z" fill={menu === 'home' ? '#F6F8FC' : '#000000'}/>
-                      </svg>
-                    </div>
-                    <div className="absolute bottom-0 left-0 right-0 text-center">
-                      <span className={`text-lg ${hover.isHover && hover.hoverMenu == 'home'?'text-[#000000] font-bold':'text-[#ADB5BD]'} ${hover.isHover && hover.hoverMenu != menu?'':'hidden'} ${menu == 'home' && 'hidden'}`} >HOME</span>
-                    </div>
-                  </a>
-                </Link>
-              </li>
-              <li className="flex items-center w-[160px]" onMouseOver={() => handleMouseOver('collections')} onMouseOut={handleMouseOut}>
-                <Link href='/collections'>
-                  <a className='relative flex items-center h-full'>
-                    <div className={`w-[100px] h-[40px] flex items-center justify-center ${menu === 'collections' ? 'bg-black' : 'bg-transparent'} rounded-full`}>
-                      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M3.24999 9.75H1.08333V21.6667C1.08333 22.8692 2.04749 23.8333 3.24999 23.8333H20.5833V21.6667H3.24999V9.75Z" fill={menu === 'collections' ? '#F6F8FC' : '#000000'}/>
-                        <path d="M19.5 5.41671V3.25004C19.5 2.04754 18.5358 1.08337 17.3333 1.08337H13C11.7975 1.08337 10.8333 2.04754 10.8333 3.25004V5.41671H5.41667V17.3334C5.41667 18.5359 6.38084 19.5 7.58334 19.5H22.75C23.9525 19.5 24.9167 18.5359 24.9167 17.3334V5.41671H19.5ZM13 3.25004H17.3333V5.41671H13V3.25004ZM13 16.25V8.66671L18.9583 12.4584L13 16.25Z" fill={menu === 'collections' ? '#F6F8FC' : '#000000'}/>
-                      </svg>
-                    </div>
-                    <div className="absolute bottom-0 left-0 right-0 text-center">
-                      <span className={`text-lg  ${hover.isHover && hover.hoverMenu == 'collections'?'text-[#000000] font-bold':'text-[#ADB5BD]'} ${hover.isHover && hover.hoverMenu != menu?'':'hidden'} ${menu == 'collections' && 'hidden'}` }>MARKET</span>
-                    </div>
-                  </a>
-                </Link>
-              </li>
-              <li className="flex items-center w-[160px]" onMouseOver={() => handleMouseOver('analytics')} onMouseOut={handleMouseOut}>
-                <Link href='/launchpad'>
-                  <a className='relative flex items-center h-full'>
-                    <div className={`w-[100px] h-[40px] flex items-center justify-center ${menu === 'analytics' ? 'bg-black' : 'bg-transparent'} rounded-full`}>
-                      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g clipPath="url(#clip0_2803_1368)">
-                          <path d="M23.1111 3.61108H2.8889C2.50581 3.61108 2.13841 3.76327 1.86753 4.03415C1.59664 4.30504 1.44446 4.67244 1.44446 5.05553V20.9444C1.44446 21.3275 1.59664 21.6949 1.86753 21.9658C2.13841 22.2367 2.50581 22.3889 2.8889 22.3889H23.1111C23.4942 22.3889 23.8616 22.2367 24.1325 21.9658C24.4034 21.6949 24.5556 21.3275 24.5556 20.9444V5.05553C24.5556 4.67244 24.4034 4.30504 24.1325 4.03415C23.8616 3.76327 23.4942 3.61108 23.1111 3.61108ZM16.2933 18.7344L11.1656 11.0933L6.58668 17.7955L3.33668 14.9066L4.33335 13.7583L6.28335 15.4844L11.1656 8.34886L16.3583 16.0839L21.4139 9.38886L22.6417 10.3133L16.2933 18.7344Z" fill={menu === 'analytics' ? '#F6F8FC' : '#000000'}/>
-                        </g>
-                        <defs>
-                          <clipPath id="clip0_2803_1368">
-                            <rect width="26" height="26" fill="white"/>
-                          </clipPath>
-                        </defs>
-                      </svg>
-                    </div>
-                    <div className="absolute bottom-0 left-0 right-0 text-center">
-                      <span className={`text-lg ${hover.isHover && hover.hoverMenu == 'analytics'?'text-[#000000] font-bold':'text-[#ADB5BD]'} ${hover.isHover && hover.hoverMenu != menu?'':'hidden'} ${menu == 'analytics' && 'hidden'}`} >LAUNCHPAD</span>
-                    </div>
-                  </a>
-                </Link>
-              </li>
-            </ul>
+          <div className='flex items-center ml-auto space-x-8'>
+            <span className='text-[20px] leading-[24px] text-[#969696]'>
+              Launchpad
+            </span>
+            <Link href='/'>
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle opacity="0.1" cx="20" cy="20" r="20" fill="#303030"/>
+                <path d="M20.224 26.802C23.8839 26.802 26.8508 23.8351 26.8508 20.1752C26.8508 16.5153 23.8839 13.5483 20.224 13.5483C16.5641 13.5483 13.5972 16.5153 13.5972 20.1752C13.5972 23.8351 16.5641 26.802 20.224 26.802Z" stroke="#969696" strokeWidth="3" strokeMiterlimit="10" strokeLinecap="round"/>
+                <path d="M10.4029 27.5156C8.83326 25.3959 7.99048 22.8259 8.00008 20.1884C8.00968 17.5509 8.87114 14.987 10.4561 12.8789M27.5254 30.0556C25.4066 31.6296 22.8355 32.4759 20.196 32.4682C17.5566 32.4606 14.9905 31.5994 12.8808 30.0132M30.0329 12.9143C31.6101 15.0275 32.4623 17.5938 32.4623 20.2307C32.4623 22.8676 31.6101 25.4339 30.0329 27.5471M12.9282 10.4197C15.0466 8.84283 17.6186 7.99399 20.2595 8.00003C22.9004 8.00608 25.4684 8.86668 27.5797 10.4532" stroke="#969696" strokeWidth="1.5" strokeMiterlimit="10"/>
+              </svg>
+            </Link>
+            <Link href='/'>
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle opacity="0.1" cx="20" cy="20" r="20" fill="#303030"/>
+                <path d="M22.3145 20.2295L26.552 24.467L30.7895 20.2295" stroke="#969696" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M26.5518 11.4668V24.4668" stroke="#969696" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M13.3145 11.4668V21.4668" stroke="#969696" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <line x1="22.3145" y1="29.4668" x2="31.3145" y2="29.4668" stroke="#969696" strokeWidth="2" strokeLinecap="round"/>
+                <line x1="8.31445" y1="29.4668" x2="17.3145" y2="29.4668" stroke="#969696" strokeWidth="2" strokeLinecap="round"/>
+                <line x1="8.31445" y1="25.4668" x2="17.3145" y2="25.4668" stroke="#969696" strokeWidth="2" strokeLinecap="round"/>
+                <line x1="26.3145" y1="11.4668" x2="13.3145" y2="11.4668" stroke="#969696" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            </Link>
+            <Link href='/'>
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle opacity="0.1" cx="20" cy="20" r="20" fill="#303030"/>
+                <path d="M27 27H14.0845L10.9292 9.7425C10.8922 9.53583 10.7839 9.3485 10.6228 9.21291C10.4617 9.07732 10.258 9.00201 10.047 9H8" stroke="#969696" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M15.5 32C16.8807 32 18 30.8807 18 29.5C18 28.1193 16.8807 27 15.5 27C14.1193 27 13 28.1193 13 29.5C13 30.8807 14.1193 32 15.5 32Z" stroke="#969696" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M27.5 32C28.8807 32 30 30.8807 30 29.5C30 28.1193 28.8807 27 27.5 27C26.1193 27 25 28.1193 25 29.5C25 30.8807 26.1193 32 27.5 32Z" stroke="#969696" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M13.6399 23H27.8446C28.2676 23.0013 28.6774 22.8542 29.0022 22.5847C29.3269 22.3152 29.5458 21.9404 29.6202 21.5262L31 14H12" stroke="#969696" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </Link>
+            <div className='w-[40px] h-[40px]'>
+              {
+                SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
+                  return chainId === networkId && <img key={index} alt={'networkIcon'} src={chainInfos[networkId].logo || chainInfos[ChainIds.ETHEREUM].logo} className="m-auto h-[45px]" />
+                })
+              }
+            </div>
+            <div className='w-[40px] h-[40px]'>
+              <Image
+                src={avatarImage}
+                alt="avatar"
+                onError={() => { profile && profile.avatar && setAvatarError(true) }}
+                width={40}
+                height={40}
+                className='rounded-full'
+              />
+            </div>
           </div>
 
           {
             histories.length > 0 &&
-              <div className={'absolute right-[250px] h-[90px] flex items-center'}>
+              <div className={'absolute right-[250px] h-[64px] flex items-center'}>
                 <div className={'relative'}>
                   <Menu>
                     <Menu.Button className={'w-[250px] h-[40px] bg-[#F6F8FC] px-[18px] flex items-center justify-between outline-0'} style={{ borderRadius: '20px', border: '1.5px solid #000000'}}>
@@ -188,14 +177,14 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
               </div>
           }
 
-          <div className='absolute right-[100px] top-[25px]'>
+          {/* <div className='absolute right-[100px] top-[25px]'>
             <button
               className='bg-transparent h-[40px] w-[126px] border-black border-[1.5px] rounded-full rounded-lg text-black font-[16px]'
               onClick={onFaucet}
             >
               Get Test OMNI
             </button>
-          </div>
+          </div> */}
         </div>
       </nav>
     </>

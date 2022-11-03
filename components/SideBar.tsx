@@ -527,7 +527,7 @@ const SideBar: React.FC = () => {
 
   return (
     <>
-      {!onMenu &&
+      {/* {!onMenu &&
         <div
           className='right-0 right-0 w-[70px] py-6 bg-[#F6F8FC] fixed h-full z-[98]'
           onMouseEnter={() => setShowSidebar(true)}
@@ -572,12 +572,11 @@ const SideBar: React.FC = () => {
               </div>
             </div>
           </div>
-
         </div>
-      }
-      <div
+      } */}
+      {/* <div
         ref={ref}
-        className={`right-0 right-0 w-[450px] bg-w-600/[.8] backdrop-blur-sm pl-5 pr-2 py-6 fixed h-full z-[97] opacity-0.95 ease-in-out duration-300 ${showSidebar || onMenu ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`right-0 w-[450px] bg-w-600/[.8] backdrop-blur-sm pl-5 pr-2 py-6 fixed h-full z-[97] opacity-0.95 ease-in-out duration-300 ${showSidebar || onMenu ? 'translate-x-0' : 'translate-x-full'}`}
         onMouseEnter={() => setOnMenu(true)}
         onMouseLeave={() => onLeaveMenu()}
       >
@@ -729,9 +728,6 @@ const SideBar: React.FC = () => {
             {expandedMenu == 4 &&
               <div className='flex flex-col w-full space-y-4 p-6 pt-8 pb-0' ref={menu_watchlist}>
                 <div className="p-[51px] flex flex-col items-center border border-dashed border-g-300">
-                  {/* <span className="text-[14px] text-g-300">Drag & Drop</span>
-                  <span className="text-[14px] text-g-300">an NFT or NFT Collection</span>
-                  <span className="text-[14px] text-g-300">to add your watch list</span> */}
                   <span className="text-[14px] text-g-300">coming soon</span>
                 </div>
               </div>
@@ -800,7 +796,7 @@ const SideBar: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="w-full md:w-auto">
         <Dialog open={confirmTransfer} onClose={() => setConfirmTransfer(false)}>
