@@ -192,7 +192,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
 
           <div className='absolute right-[100px] top-[25px]'>
             <button
-              className='bg-transparent h-[40px] w-[126px] border-black border-[1.5px] rounded-full rounded-lg text-black font-[16px]'
+              className='bg-transparent h-[40px] w-[126px] border-black border-[1.5px] rounded-full text-black font-[16px]'
               onClick={onFaucet}
             >
               Get Test OMNI
