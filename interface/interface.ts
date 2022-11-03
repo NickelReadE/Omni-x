@@ -1,17 +1,6 @@
-import React from 'react'
-
-export interface IPropsSlider {
-  title?: string
-  cards: Array<React.ReactNode>
-}
-
 export interface IPropsImage {
   nfts: Array<NFTItem>,
   isLoading: boolean,
-}
-
-export interface IPropsFeed {
-  feed: Array<FeedItem>
 }
 
 export interface IPropsNFTItem {
@@ -50,25 +39,6 @@ export interface NFTItem {
   order_data: any,
   bidDatas: any[],
   bidOrderData: any[],
-}
-
-export interface FeedItem {
-  image: React.ReactNode
-  love: number
-  view: number
-  chain: string
-  title: string
-  id: string
-  owner: string
-  postedby: string
-  alert?: {
-    content: string
-    percent: number
-  }
-}
-
-export const ItemTypes = {
-  NFTBox: 'nftbox'
 }
 
 export interface IGetOrderRequest {
@@ -121,15 +91,6 @@ export interface IAcceptOrderRequest {
   status: OrderStatus
 }
 
-export interface ICollectionInfoFromLocal{
-  col_url: string,
-  itemsCnt: string,
-  ownerCnt:string,
-  orderCnt:string,
-  floorPrice:{eth:string, usd:string}
-}
-
-
 export interface ITypeNFT{
   typeNFT:string,
   items:string,
@@ -138,20 +99,6 @@ export interface ITypeNFT{
   img:string,
   price:string
 }
-
-export interface contractInfo{
-  [key: string]: {
-    address: string,
-    imageSVG: string,
-    name: string,
-    price: number,
-    chainId: string,
-    unit: string,
-    color: string,
-    index: number
-  }
-}
-
 
 export interface IListingData {
   price: number,

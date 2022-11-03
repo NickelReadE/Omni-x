@@ -52,7 +52,6 @@ const Tabs = ({ blur }: TabProps) => {
             </ul>
             {currentTab === 'NFTs' && <NFTGrid nfts={nfts} isLoading={isLoadingNfts} />}
             {currentTab === 'watchlist' && <WatchList/>}
-            {/* {currentTab === 'feed' && <Feed feed={feed} />} */}
             {currentTab === 'feed' && <div/>}
             {currentTab === 'stats' && <Stats/>}
           </div>
