@@ -7,6 +7,9 @@ import editStyle from '../styles/nftbox.module.scss'
 import classNames from '../helpers/classNames'
 import Loading from '../public/images/loading_f.gif'
 import { numberShortify } from '../utils/constants'
+import { useModal } from '../hooks/useModal'
+import { useCollectionBid } from '../hooks/useCollectionBid'
+import { ModalIDs } from '../contexts/modal'
 
 const CollectionCard = (props:any) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -14,7 +17,17 @@ const CollectionCard = (props:any) => {
   const [imageError, setImageError] = useState(false)
   ///only in the beta version
 
-  const { transform} = useDraggable({
+  const { openModal, closeModal } = useModal()
+  const {
+    onCollectionBidApprove,
+    onCollectionBidConfirm,
+    onCollectionBidDone
+  } = useCollectionBid({
+    collectionUrl: props.collection.col_url as string,
+    collectionAddressMap: props.collection.address
+  })
+
+  const { transform } = useDraggable({
     id: `draggable-${1}`,
     data: {
       type: 'NFT',
@@ -24,6 +37,7 @@ const CollectionCard = (props:any) => {
     transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
     zIndex: 99
   } : undefined
+
   return (
     <div className={classNames(' border-[2px] border-[#F6F8FC] w-[340px] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F6F8FC]', editStyle.nftContainer)}>
       <div className='relative'  style={style} >
@@ -36,7 +50,21 @@ const CollectionCard = (props:any) => {
               <div className='w-[230px] text-[18px] text-white	 text-extrabold text-center items-center bg-[#B444F9] rounded-lg mb-[24px]  py-[7px] hover:cursor-pointer'>view collection</div>
             </Link>
 
-            <button className='w-[230px] text-[18px] text-white text-extrabold text-center items-center bg-[#38B000] rounded-lg  py-[7px]'>make a collection bid</button>
+            <button
+              className='w-[230px] text-[18px] text-white text-extrabold text-center items-center bg-[#38B000] rounded-lg  py-[7px]'
+              onClick={() => {
+                openModal(ModalIDs.MODAL_BID, {
+                  nftImage: props.collection.profile_image,
+                  nftTitle: props.collection.name,
+                  onBidApprove: onCollectionBidApprove,
+                  onBidConfirm: onCollectionBidConfirm,
+                  onBidDone: onCollectionBidDone,
+                  handleBidDlgClose: closeModal
+                })
+              }}
+            >
+              make a collection bid
+            </button>
           </div>
 
         </div>

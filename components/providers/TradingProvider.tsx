@@ -391,6 +391,7 @@ export const doBidConfirm = async (bid_data: IBidData, common_data: TradingCommo
   const price = ethers.utils.parseEther(bid_data.price.toString())
   const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
   const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
+  const isCollectionOffer = !common_data.tokenId
 
   await checkValid(currency, price.toString(), common_data.chainId, common_data.signer)
 
@@ -398,7 +399,7 @@ export const doBidConfirm = async (bid_data: IBidData, common_data: TradingCommo
     common_data.signer,
     false,
     common_data.collectionAddress,
-    getAddressByName('Strategy', common_data.chainId),
+    getAddressByName(isCollectionOffer ? 'StrategyForCollection' : 'Strategy', common_data.chainId),
     1,
     price,
     protocalFees,
@@ -485,6 +486,7 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
   const newCurrencyName = validateCurrencyName(currencyName, common_data.chainId)
   const currencyAddress = getAddressByName(newCurrencyName, common_data.chainId)
 
+  const isCollectionOffer = !bid_order.tokenId || Number(bid_order.tokenId) === 0
   const takerAsk : TakerOrderWithEncodedParams = {
     isOrderAsk: true,
     taker: common_data.address || '0x',
@@ -501,7 +503,7 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
       lzChainId,
       currencyAddress,
       common_data.collectionAddress,
-      getAddressByName('Strategy', common_data.chainId),
+      getAddressByName(isCollectionOffer ? 'StrategyForCollection' : 'Strategy', common_data.chainId),
       getConversionRate(currencyName, newCurrencyName)
     ])
   }

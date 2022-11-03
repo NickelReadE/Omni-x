@@ -10,7 +10,7 @@ import useWallet from './useWallet'
 export type CollectionBidInput = {
   collectionUrl?: string,  // col_url
   collectionAddressMap?: {[chainId: number]: string},
-  onRefresh: () => void
+  onRefresh?: () => void
 }
 
 type CollectionBidFunction = {

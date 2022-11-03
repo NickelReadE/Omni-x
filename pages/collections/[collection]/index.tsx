@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import type { NextPage } from 'next'
@@ -38,6 +38,9 @@ import useCollection from '../../../hooks/useCollection'
 import useCollectionNfts from '../../../hooks/useCollectionNfts'
 import useData from '../../../hooks/useData'
 import Dropdown from '../../../components/dropdown'
+import { useModal } from '../../../hooks/useModal'
+import { useCollectionBid } from '../../../hooks/useCollectionBid'
+import { ModalIDs } from '../../../contexts/modal'
 
 const sort_fields = [
   { text: 'price: high to low', value: '-price' },
@@ -158,6 +161,12 @@ const Collection: NextPage = () => {
     }
   }, [collectionInfo])
 
+  const collection_address_map = useMemo(() => {
+    if (collectionInfo) {
+      return collectionInfo.address
+    }
+  }, [collectionInfo])
+
   useEffect(() => {
     if (isActiveBuyNow && nfts.length > 0) {
       const temp = []
@@ -183,6 +192,16 @@ const Collection: NextPage = () => {
     refreshCollection()
     refreshUserNfts()
   }
+
+  const { openModal, closeModal } = useModal()
+  const {
+    onCollectionBidApprove,
+    onCollectionBidConfirm,
+    onCollectionBidDone
+  } = useCollectionBid({
+    collectionUrl: col_url,
+    collectionAddressMap: collection_address_map
+  })
 
   const searchAttrsCheck = (bChecked: boolean, attrKey: string, valueKey: string) => {
     const obj = Array.isArray(searchObj[attrKey]) ? searchObj[attrKey] : []
@@ -485,7 +504,19 @@ const Collection: NextPage = () => {
           <div className="relative px-12 py-6 border-l-2 border-[#E9ECEF] w-full">
             <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 p-1 gap-4">
               <div className="2xl:col-start-4 xl:col-start-3 lg:col-start-2 md:col-start-1">
-                <button className="rounded-lg bg-[#38B000] text-[#F6F8FC] py-2 xl:text-[18px] lg:text-[14px] w-full">
+                <button
+                  className="rounded-lg bg-[#38B000] text-[#F6F8FC] py-2 xl:text-[18px] lg:text-[14px] w-full"
+                  onClick={() => {
+                    openModal(ModalIDs.MODAL_BID, {
+                      nftImage: collectionInfo?.profile_image,
+                      nftTitle: collectionInfo?.name,
+                      onBidApprove: onCollectionBidApprove,
+                      onBidConfirm: onCollectionBidConfirm,
+                      onBidDone: onCollectionBidDone,
+                      handleBidDlgClose: closeModal
+                    })
+                  }}
+                >
                   make a collection bid
                 </button>
               </div>
