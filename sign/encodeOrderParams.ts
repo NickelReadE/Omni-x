@@ -1,5 +1,5 @@
-import { BigNumber, BytesLike, utils } from "ethers";
-import { SolidityType } from "../types";
+import { BigNumber, BytesLike, utils } from 'ethers'
+import { SolidityType } from '../types'
 
 /**
  * Given an array of params, return the params types, and the encoded params.
@@ -10,20 +10,20 @@ import { SolidityType } from "../types";
 export const encodeOrderParams = (params: any[]): { paramsTypes: SolidityType[]; encodedParams: BytesLike } => {
   const paramsTypes: SolidityType[] = params.map((param): SolidityType => {
     if (utils.isAddress(param)) {
-      return "address";
+      return 'address'
     }
 
-    if (typeof param === "boolean") {
-      return "bool";
+    if (typeof param === 'boolean') {
+      return 'bool'
     }
 
     try {
-      BigNumber.from(param);
-      return "uint256";
+      BigNumber.from(param)
+      return 'uint256'
     } catch (error) {
-      throw Error("Params have unsupported solidity types");
+      throw Error('Params have unsupported solidity types')
     }
-  });
+  })
 
-  return { paramsTypes, encodedParams: utils.defaultAbiCoder.encode(paramsTypes, params) };
-};
+  return { paramsTypes, encodedParams: utils.defaultAbiCoder.encode(paramsTypes, params) }
+}

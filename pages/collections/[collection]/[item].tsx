@@ -5,6 +5,7 @@ import type { NextPage } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
+import { useDispatch } from 'react-redux'
 import ConfirmSell from '../../../components/collections/ConfirmSell'
 import ConfirmBid from '../../../components/collections/ConfirmBid'
 import useWallet from '../../../hooks/useWallet'
@@ -17,6 +18,7 @@ import ConfirmBuy from '../../../components/collections/ConfirmBuy'
 import ConfirmAccept from '../../../components/collections/ConfirmAccept'
 import useCollectionNft from '../../../hooks/useCollectionNft'
 import {truncateAddress} from '../../../utils/utils'
+import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
 
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
@@ -28,11 +30,12 @@ const Item: NextPage = () => {
     signer
   } = useWallet()
   const router = useRouter()
+  const dispatch = useDispatch()
   const col_url = router.query.collection as string
   const token_id = router.query.item as string
 
   const { nft: currentNFT, collection, refreshNft } = useCollectionNft(col_url, token_id)
-  
+
   const onRefresh = () => {
     refreshNft()
   }
@@ -96,6 +99,14 @@ const Item: NextPage = () => {
 
   const currencyIcon = getCurrencyIconByAddress(currentNFT?.currency)
   const formattedPrice = currentNFT?.price
+  const chainIcon = useMemo(() => {
+    return getChainIconById(currentNFT && currentNFT.chain_id ? currentNFT.chain_id.toString() : '5')
+  }, [currentNFT])
+
+  const onCopyToClipboard = async () => {
+    await navigator.clipboard.writeText(window.location.href)
+    dispatch(openSnackBar({ message: 'copied link to clipboard', status: 'info' }))
+  }
 
   return (
     <>
@@ -121,8 +132,13 @@ const Item: NextPage = () => {
                     <div className='h-[22px]'><Image src={PngCheck} alt="checkpng"/></div>
                   </div>
                   <div className="flex justify-between items-center mt-5">
-                    <h1 className="text-[#1E1C21] text-[24px] font-medium">{currentNFT.token_id}</h1>
-                    <Image src={PngSub} alt=""/>
+                    <div className="flex items-center">
+                      <h1 className="text-[#1E1C21] text-[24px] font-medium">{currentNFT.token_id}</h1>
+                      <img alt='chainIcon' src={chainIcon} className="ml-4 w-[32px] h-[32px]" />
+                    </div>
+                    <button>
+                      <Image src={PngSub} alt="shareButton" onClick={onCopyToClipboard} />
+                    </button>
                   </div>
                 </div>
                 <div className="grid 2xl:grid-cols-3 lg:grid-cols-[200px_1fr_1fr] xl:grid-cols-[230px_1fr_1fr] px-6 pt-3 mt-6 bg-[#F6F8FC] rounded-[2px]">

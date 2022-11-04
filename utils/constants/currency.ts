@@ -14,7 +14,7 @@ export const CURRENCIES_LIST = [
   {value: 1, text: 'USDC', decimals: 6, icon: 'payment/usdc.png'},
   {value: 2, text: 'USDT', decimals: 18, icon: 'payment/usdt.png'},
 ]
-  
+
 export const STABLECOIN_DECIMAL: any = {
   [ChainIDS.BINANCE]: {
     [USDT[ChainIDS.BINANCE]]: 18,
@@ -38,7 +38,7 @@ export const STABLECOIN_DECIMAL: any = {
     [USDC[ChainIDS.OPTIMISM]]: 6,
   },
 }
-  
+
 export const currencies_list: { [key: number]: Array<{ value: number; text: string, icon: string, address: string }> } = {
   1: [
     {value: 0, text: 'OMNI', icon: 'payment/omni.png', address: '0xc375c320cae7b874cb54a46f7158bbfb09bbf879'},
@@ -121,14 +121,14 @@ const DECIMAL_MAP = (CURRENCIES_LIST.reduce((acc, c) => {
   (acc as any)[c.text] = c.decimals
   return acc
 }, {})) as any
-  
+
 const loopCurrencies = (currencies: any, idx: number, address?: string) => {
   if (Object.values(currencies).indexOf(address) != -1) {
     return CURRENCIES_LIST[idx]
   }
   return null
 }
-  
+
 export const getCurrencyIconByAddress = (address?: string) => {
   const currency_addr_list = [oft, usdc, usdt]
   for (let idx = 0; idx < currency_addr_list.length; idx++) {
@@ -137,11 +137,11 @@ export const getCurrencyIconByAddress = (address?: string) => {
       return `/images/${currency.icon}`
     }
   }
-  
+
   return `/images/${CURRENCIES_LIST[0].icon}`
 }
-  
-  
+
+
 export const getCurrencyNameAddress = (address?: string) => {
   const currency_addr_list = [oft, usdc, usdt]
   for (let idx = 0; idx < currency_addr_list.length; idx++) {
@@ -150,7 +150,7 @@ export const getCurrencyNameAddress = (address?: string) => {
       return currency.text
     }
   }
-  
+
   return CURRENCIES_LIST[0].text
 }
 
@@ -158,16 +158,16 @@ export const formatCurrency = (price: BigNumberish, currencyName: string) => {
   if (price) return ethers.utils.formatUnits(price, DECIMAL_MAP[currencyName])
   return '0'
 }
-  
+
 export const parseCurrency = (price: string, currencyName: string) => {
   if (price) return ethers.utils.parseUnits(price, DECIMAL_MAP[currencyName])
   return BigNumber.from(0)
 }
-  
+
 
 export const isUsdcOrUsdt = (address?: string) => {
   const currency_addr_list = [usdc, usdt]
-  
+
   for (let idx = 0; idx < currency_addr_list.length; idx++) {
     const chainIdx = Object.values(currency_addr_list[idx]).indexOf(address)
     if (chainIdx != -1) {
@@ -182,16 +182,16 @@ export const getValidCurrencies = (chainId: number) => {
   if (chainId === ChainIDS.BINANCE) {
     return [CURRENCIES_LIST[0], CURRENCIES_LIST[2]]
   }
-  
+
   return [CURRENCIES_LIST[0], CURRENCIES_LIST[1]]
 }
 
 export const getConversionRate = (currencyFrom: ContractName, currencyTo: ContractName) => {
   // if decimals is positive, price1 = price2 * 10 ** decimals
   // if decimals is negative, price1 = price2 / 10 ** (decimals - 100)
-    
+
   const decimals = DECIMAL_MAP[currencyFrom] - DECIMAL_MAP[currencyTo]
-  
+
   if (decimals < 0) return 100 - decimals
   return decimals
 }

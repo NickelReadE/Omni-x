@@ -34,7 +34,6 @@ const User: NextPage = () => {
                 </ul>
                 {currentTab === 'NFTs' && <NFTGrid nfts={nfts} isLoading={isLoading} />}
                 {currentTab === 'watchlist' && <div/>}
-                {/* {currentTab === 'feed' && <Feed feed={feed} />} */}
                 {currentTab === 'feed' && <div/>}
                 {currentTab === 'stats' && <div/>}
               </div>
