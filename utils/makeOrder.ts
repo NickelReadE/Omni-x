@@ -134,6 +134,19 @@ export const postMakerOrder = async(
 /**
  * Update a maker order
  * @param library Etherjs provider
+ * @param isOrderAsk
+ * @param collectionAddress
+ * @param strategyAddress
+ * @param amount
+ * @param price
+ * @param nonce
+ * @param protocolFees
+ * @param creatorFees
+ * @param currency
+ * @param optionalParams
+ * @param chain
+ * @param chain_id
+ * @param col_url
  * @see prepareMakerOrder for other params
  */
 export const updateMakerOrder = async (
@@ -173,7 +186,7 @@ export const updateMakerOrder = async (
     col_url,
   )
 
-  const order = await orderService.createOrder(data)
+  await orderService.createOrder(data)
 
   return data
 }
@@ -198,18 +211,15 @@ const zeroPad = (value: any, length: number) => {
 }
 
 export const encodeMakerOrder = (order: MakerOrder, paramsTypes: SolidityType[]) : MakerOrderWithEncodedParams => {
-  const encodedOrder = {
+  return {
     ...order,
     params: ethers.utils.defaultAbiCoder.encode(paramsTypes, order.params)
   }
-  return encodedOrder
 }
 
 /**
  * Create a signature for a maker order
  * @param signer user signer
- * @param chainId current chain id
- * @param verifyingContractAddress Looksrare exchange contract address
  * @param order see MakerOrder
  * @param paramsTypes contains an array of solidity types mapping the params array types
  * @returns String signature
@@ -230,6 +240,5 @@ const signMakerOrder = async (signer: providers.JsonRpcSigner | ethers.Signer, o
     zeroPad(messageHash, 32)
   ])
   const digest = ethers.utils.keccak256(pack)
-  const signature = await signer.signMessage(ethers.utils.arrayify(digest))
-  return signature
+  return await signer.signMessage(ethers.utils.arrayify(digest))
 }

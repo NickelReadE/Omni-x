@@ -4,7 +4,7 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { IBidData, IListingData, IOrder, NFTItem, OrderStatus } from '../interface/interface'
 import { collectionsService } from '../services/collections'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../types'
-import { ContractName, CREATOR_FEE, getAddressByName, getConversionRate, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from '../utils/constants'
+import { ContractName, CREATOR_FEE, formatCurrency, getAddressByName, getConversionRate, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from '../utils/constants'
 import {
   decodeFromBytes,
   getCurrencyInstance,
@@ -246,8 +246,10 @@ const useTrading = ({
     const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
     const newCurrencyName = validateCurrencyName(currencyName, chainId)
     const currencyAddress = getAddressByName(newCurrencyName, chainId)
+    const formattedPrice = formatCurrency(order?.price || 0, currencyName)
+    const parsedPrice = parseCurrency(formattedPrice, newCurrencyName)
 
-    await checkValid(currencyAddress, order?.price, chainId)
+    await checkValid(currencyAddress, formattedPrice, chainId)
 
     const omni = getCurrencyInstance(currencyAddress, chainId, signer)
 
@@ -257,14 +259,14 @@ const useTrading = ({
 
     {
       const balance = await omni.balanceOf(address)
-      if (balance.lt(order.price)) {
+      if (balance.lt(parsedPrice)) {
         const errMessage = 'Not enough balance'
         dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
         throw new Error(errMessage)
       }
     }
 
-    const buy_price = order?.price
+    const buy_price = parsedPrice
     approveTxs.push(await approve(omni, address, getAddressByName('FundManager', chainId), buy_price))
 
     if (isUsdcOrUsdt(order?.currencyAddress)) {
@@ -289,8 +291,10 @@ const useTrading = ({
     const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
     const newCurrencyName = validateCurrencyName(currencyName, chainId)
     const currencyAddress = getAddressByName(newCurrencyName, chainId)
+    const formattedPrice = formatCurrency(order?.price || 0, currencyName)
+    const parsedPrice = parseCurrency(formattedPrice, newCurrencyName)
 
-    await checkValid(currencyAddress, order?.price, chainId)
+    await checkValid(currencyAddress, formattedPrice, chainId)
 
     const omni = getCurrencyInstance(currencyAddress, chainId, signer)
     if (!omni) {
@@ -318,7 +322,7 @@ const useTrading = ({
     const takerBid : TakerOrderWithEncodedParams = {
       isOrderAsk: false,
       taker: address || '0x',
-      price: order?.price || '0',
+      price: parsedPrice,
       tokenId: order?.tokenId || '0',
       minPercentageToAsk: order?.minPercentageToAsk || '0',
       params: ethers.utils.defaultAbiCoder.encode([
@@ -343,7 +347,8 @@ const useTrading = ({
       ethers.utils.formatEther(omnixFee),
       ethers.utils.formatEther(currencyFee),
       ethers.utils.formatEther(nftFee),
-      ethers.utils.formatEther(lzFee)
+      ethers.utils.formatEther(lzFee),
+      order?.price
     )
 
     {
@@ -555,11 +560,13 @@ const useTrading = ({
     const currencyName = getCurrencyNameAddress(bidOrder.currencyAddress) as ContractName
     const newCurrencyName = validateCurrencyName(currencyName, chainId)
     const currencyAddress = getAddressByName(newCurrencyName, chainId)
+    const formattedPrice = formatCurrency(bidOrder.price, currencyName)
+    const parsedPrice = parseCurrency(formattedPrice, newCurrencyName)
 
     const takerAsk : TakerOrderWithEncodedParams = {
       isOrderAsk: true,
       taker: address || '0x',
-      price: bidOrder.price || '0',
+      price: parsedPrice,
       tokenId: bidOrder.tokenId || '0',
       minPercentageToAsk: bidOrder.minPercentageToAsk || '0',
       params: ethers.utils.defaultAbiCoder.encode([

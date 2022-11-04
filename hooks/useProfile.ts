@@ -90,7 +90,7 @@ const useProfile = (
         setNftRefresh(false)
       }
     })()
-  }, [nftRefresh])
+  }, [nftRefresh, user_address])
 
 
   const updateProfileData = async (user: FormData) => {
