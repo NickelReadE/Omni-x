@@ -140,7 +140,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
         // will be hooked by useSwitchedNetwork
       }
     })
-  }, [listingStep, currency, period, setStep])
+  }, [listingStep])
 
   return (
     <Dialog open={openSellDlg} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
