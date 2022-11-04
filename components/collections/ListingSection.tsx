@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import React, { useEffect } from 'react'
 import CustomSelect from './CustomSelect'
 import Select from 'react-select'
@@ -28,7 +30,7 @@ const ListingSection: React.FC<IListingSectionProps> = ({
   const { chainId } = useWallet()
   const validCurrencies = getValidCurrencies(chainId || 0)
   useEffect(() => {
-    if (currency && currency.text === 'USDC' || 'USDT') {
+    if (currency && currency.text === 'USDC' || currency.text === 'USDT') {
       const selectedCurrency = validCurrencies.find(v => (v.text === 'USDC' || v.text === 'USDT'))
       if (selectedCurrency) {
         if (currency.text != selectedCurrency.text) {
