@@ -63,7 +63,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     lastSale,
     lastSaleCoin
   } = useOrderStatics({nft})
-  
+
   const {
     openBidDlg,
     openSellDlg,
@@ -147,9 +147,9 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     return '/images/omnix_logo_black_1.png'
   }, [isHomePage, isUserPage, nft])
 
-  const doubleClickToSetDetailLink = () => {
+  const doubleClickToSetDetailLink = async () => {
     if (isHomePage && nft_collection?.col_url) {
-      Router.push(`/collections/${nft_collection?.col_url}/${nft.token_id}`)
+      await Router.push(`/collections/${nft_collection?.col_url}/${nft.token_id}`)
     }
   }
 

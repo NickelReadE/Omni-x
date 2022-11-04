@@ -35,7 +35,7 @@ const Item: NextPage = () => {
   const token_id = router.query.item as string
 
   const { nft: currentNFT, collection, refreshNft } = useCollectionNft(col_url, token_id)
-  
+
   const onRefresh = () => {
     refreshNft()
   }
@@ -103,8 +103,8 @@ const Item: NextPage = () => {
     return getChainIconById(currentNFT && currentNFT.chain_id ? currentNFT.chain_id.toString() : '5')
   }, [currentNFT])
 
-  const onCopyToClipboard = () => {
-    navigator.clipboard.writeText(window.location.href)
+  const onCopyToClipboard = async () => {
+    await navigator.clipboard.writeText(window.location.href)
     dispatch(openSnackBar({ message: 'copied link to clipboard', status: 'info' }))
   }
 
