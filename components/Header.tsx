@@ -157,7 +157,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
                       </div>
                     </Menu.Button>
 
-                    <Menu.Items className={'absolute top-0 w-[250px] bg-white'} style={{ borderRadius: '20px', border: '1.5px solid #000000'}}>
+                    <Menu.Items className={'absolute top-0 w-[250px] bg-white outline-0'} style={{ borderRadius: '20px', border: '1.5px solid #000000'}}>
                       <div className={'h-[38px] bg-[#F6F8FC] px-[18px] flex items-center justify-between'} style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px'}}>
                         <div className={'flex items-center'}>
                           {pending ? 'processing' : 'last transactions'}
@@ -173,15 +173,17 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
                           <img width={10} height={6} src={'/images/arrowUp.png'} alt="nft-image" />
                         </div>
                       </div>
-                      {
-                        histories?.map((item, index) => {
-                          return (
-                            <Menu.Item key={index}>
-                              <ProcessingTransaction txInfo={item} />
-                            </Menu.Item>
-                          )
-                        })
-                      }
+                      <div className='overflow-auto max-h-[280px]'>
+                        {
+                          histories.map((item, index) => {
+                            return (
+                              <Menu.Item key={index}>
+                                <ProcessingTransaction txInfo={item} />
+                              </Menu.Item>
+                            )
+                          })
+                        }
+                      </div>
                     </Menu.Items>
                   </Menu>
                 </div>
@@ -190,7 +192,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
 
           <div className='absolute right-[100px] top-[25px]'>
             <button
-              className='bg-transparent h-[40px] w-[126px] border-black border-[1.5px] rounded-full rounded-lg text-black font-[16px]'
+              className='bg-transparent h-[40px] w-[126px] border-black border-[1.5px] rounded-full text-black font-[16px]'
               onClick={onFaucet}
             >
               Get Test OMNI
