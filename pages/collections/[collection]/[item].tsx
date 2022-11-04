@@ -383,6 +383,7 @@ const Item: NextPage = () => {
             openSellDlg={openSellDlg}
             nftImage={currentNFT.image}
             nftTitle={currentNFT.name}
+            nftChainId={currentNFT.chain_id}
           />
           <ConfirmBuy
             handleBuyDlgClose={() => {

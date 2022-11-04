@@ -276,6 +276,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
         openSellDlg={openSellDlg}
         nftImage={image}
         nftTitle={nftName}
+        nftChainId={nft.chain_id}
         onListingApprove={onListingApprove}
         onListingConfirm={onListingConfirm}
         onListingDone={onListingDone}

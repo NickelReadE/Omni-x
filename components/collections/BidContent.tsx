@@ -5,6 +5,7 @@ import ListingFeeSection from './ListingFeeSection'
 import ApproveSection from './ApproveSection'
 import CongratsSection from './CongratsSection'
 import CompleteSection from './CompleteSection'
+import useWallet from '../../hooks/useWallet'
 
 interface IBidContentProps {
   bidStep: BidStep,
@@ -35,11 +36,13 @@ const BidContent: React.FC<IBidContentProps> = ({
   nftTitle,
   onBid
 }) => {
+  const { chainId } = useWallet()
   return (
     <>
       <div className='flex justify-between'>
         {bidStep === BidStep.StepBid ? (
           <ListingSection
+            nftChainId={chainId || 0}
             priceLabel={'Bid Price'}
             price={price}
             onChangePrice={onChangePrice}

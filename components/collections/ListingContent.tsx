@@ -11,6 +11,7 @@ interface IListingContentProps {
   listingStep: ListingStep,
   processing: boolean,
   approveTx?: string,
+  nftChainId: number,
   price: number,
   onChangePrice: (e: any) => void,
   currency: any,
@@ -27,6 +28,7 @@ const ListingContent: React.FC<IListingContentProps> = ({
   listingStep,
   processing,
   approveTx,
+  nftChainId,
   price,
   onChangePrice,
   currency,
@@ -44,6 +46,7 @@ const ListingContent: React.FC<IListingContentProps> = ({
           <ListingSection
             sellType={sellType}
             priceLabel={'Sale Price'}
+            nftChainId={nftChainId}
             price={price}
             onChangePrice={onChangePrice}
             currency={currency}
