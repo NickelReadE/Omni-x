@@ -39,7 +39,7 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
       <main className='w-full flex flex-col'>
         <SideBar />
         <Header menu={menu} />
-        <div className='pt-[64px] pb-[170px]'>
+        <div className={`pt-[88px] ${menu === 'home' ? 'pb-[170px]' : 'pb-[42px]'} bg-primary`}>
           {children}
         </div>
         <Footer />
