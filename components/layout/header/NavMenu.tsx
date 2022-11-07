@@ -18,7 +18,7 @@ export default function NavMenu() {
   }, [router.pathname])
 
   return (
-    <div className='justify-between h-full items-center w-full md:flex md:w-auto mx-auto'>
+    <div className='h-full w-full flex justify-center flex-1 md:w-auto mx-auto'>
       <ul className="flex flex-col justify-between md:flex-row md:text-sm md:font-medium h-full">
         <li className="flex w-[92px]">
           <Link href='/'>

@@ -1,10 +1,12 @@
 import React from 'react'
 import type { NextPage } from 'next'
 import MetaMaskConnect from '../components/MetaMaskConnect'
-import Tabs from '../components/Tabs'
+// import Tabs from '../components/Tabs'
 import useWallet from '../hooks/useWallet'
 import { supportChainIDs } from '../utils/constants'
 import '@rainbow-me/rainbowkit/styles.css'
+import HomeSlider from '../components/home/slider'
+import HomeCollections from '../components/home/collections'
 
 const Home: NextPage = () => {
   const {chainId, address} = useWallet()
@@ -27,7 +29,9 @@ const Home: NextPage = () => {
       {isBlur &&
         <MetaMaskConnect />
       }
-      <Tabs blur={isBlur} />
+      {/* <Tabs blur={isBlur} /> */}
+      <HomeSlider />
+      <HomeCollections />
     </>
   )
 }

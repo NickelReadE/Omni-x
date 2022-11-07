@@ -7,14 +7,14 @@ import ProcessingTransaction from './transaction/ProcessingTransaction'
 import { Menu } from '@headlessui/react'
 import useData from '../hooks/useData'
 import SearchBar from './layout/header/SearchBar'
-import { chainInfos, SUPPORTED_CHAIN_IDS } from '../utils/constants'
+import { chainInfos } from '../utils/constants'
 import { ChainIds } from '../types/enum'
 import useWallet from '../hooks/useWallet'
 import NavMenu from './layout/header/NavMenu'
 
 const Header = (): JSX.Element => {
   const { chainId } = useWallet()
-  const { profile, onFaucet } = useData()
+  const { profile } = useData()
   const { pending, histories, clearHistories } = useProgress()
 
   const [avatarError, setAvatarError] = useState(false)
@@ -44,8 +44,8 @@ const Header = (): JSX.Element => {
           'w-full',
         )}
       >
-        <div className='flex flex-wrap items-center justify-between'>
-          <div className='flex items-center space-x-[24px]'>
+        <div className='flex items-center'>
+          <div className='flex flex-1 items-center mr-auto space-x-[24px]'>
             <Link href='/'>
               <button className='flex items-center'>
                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -69,7 +69,7 @@ const Header = (): JSX.Element => {
 
           <NavMenu />
 
-          <div className='flex items-center ml-auto space-x-[20px]'>
+          <div className='flex flex-1 items-center justify-end ml-auto space-x-[20px]'>
             <Link href='/'>
               <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle opacity="0.1" cx="16" cy="16" r="16" fill="#F5F5F5"/>

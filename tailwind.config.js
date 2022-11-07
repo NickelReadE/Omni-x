@@ -10,7 +10,8 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        'primary-gradient': 'linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%)'
+        'primary-gradient': 'linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%)',
+        'border-gradient': 'linear-gradient(to right, #161616, #161616), linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%)'
       },
       spacing: {
         84: '21rem',
@@ -73,7 +74,9 @@ module.exports = {
           200: '#c7b902',
         },
         primary: '#161616',
-        secondary: '#969696'
+        'primary-light': '#F5F5F5',
+        secondary: '#969696',
+        gradient: 'linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%)',
       },
       fontFamily: {
         sans: ['Inter', ...fontFamily.sans],
