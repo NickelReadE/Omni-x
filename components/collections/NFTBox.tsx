@@ -232,7 +232,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           </a>
         </Link>
       }
-      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
+      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans'] min-h-[25px]">
         {(isHomePage || isUserPage) && renderSaleFooter()}
         {
           isCollectionPage &&
