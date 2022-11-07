@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import Head from 'next/head'
-import { useRouter } from 'next/router'
 import Header from './Header'
 import Footer from './layout/Footer'
 import SideBar from './SideBar'
@@ -11,21 +10,6 @@ type LayoutProps = {
 }
 
 const Layout: React.FC = ({ children }: LayoutProps) => {
-  const router = useRouter()
-  const [ menu, setMenu ] = useState('home')
-
-  useEffect(() => {
-    if ( router.pathname.includes('/collections')) {
-      setMenu('collections')
-    } else if ( router.pathname === '/launchpad' ) {
-      setMenu('analytics')
-    } else if ( router.pathname === '/' ) {
-      setMenu('home')
-    } else {
-      setMenu('others')
-    }
-  }, [router.pathname])
-
   return (
     <>
       <Head>
@@ -38,8 +22,8 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
       <SnackbarComponent />
       <main className='w-full flex flex-col'>
         <SideBar />
-        <Header menu={menu} />
-        <div className={`pt-[88px] ${menu === 'home' ? 'pb-[170px]' : 'pb-[42px]'} bg-primary`}>
+        <Header />
+        <div className={'pt-[88px] pb-[42px] bg-primary'}>
           {children}
         </div>
         <Footer />

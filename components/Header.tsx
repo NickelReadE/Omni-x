@@ -10,12 +10,9 @@ import SearchBar from './layout/header/SearchBar'
 import { chainInfos, SUPPORTED_CHAIN_IDS } from '../utils/constants'
 import { ChainIds } from '../types/enum'
 import useWallet from '../hooks/useWallet'
+import NavMenu from './layout/header/NavMenu'
 
-type HeaderProps = {
-  menu: string
-}
-
-const Header = ({ menu }: HeaderProps): JSX.Element => {
+const Header = (): JSX.Element => {
   const { chainId } = useWallet()
   const { profile, onFaucet } = useData()
   const { pending, histories, clearHistories } = useProgress()
@@ -48,7 +45,7 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
         )}
       >
         <div className='flex flex-wrap items-center justify-between'>
-          <div className='flex items-center'>
+          <div className='flex items-center space-x-[24px]'>
             <Link href='/'>
               <button className='flex items-center'>
                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -65,60 +62,31 @@ const Header = ({ menu }: HeaderProps): JSX.Element => {
                     </linearGradient>
                   </defs>
                 </svg>
-                <span className='text-[#F5F5F5] font-[450] text-[32px] leading-[38px] ml-3'>
-                  omni x
-                </span>
               </button>
             </Link>
             <SearchBar />
           </div>
 
-          <div className='flex items-center ml-auto space-x-8'>
-            <span className='text-[20px] leading-[24px] text-[#969696]'>
-              Launchpad
-            </span>
+          <NavMenu />
+
+          <div className='flex items-center ml-auto space-x-[20px]'>
             <Link href='/'>
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle opacity="0.1" cx="20" cy="20" r="20" fill="#303030"/>
-                <path d="M20.224 26.802C23.8839 26.802 26.8508 23.8351 26.8508 20.1752C26.8508 16.5153 23.8839 13.5483 20.224 13.5483C16.5641 13.5483 13.5972 16.5153 13.5972 20.1752C13.5972 23.8351 16.5641 26.802 20.224 26.802Z" stroke="#969696" strokeWidth="3" strokeMiterlimit="10" strokeLinecap="round"/>
-                <path d="M10.4029 27.5156C8.83326 25.3959 7.99048 22.8259 8.00008 20.1884C8.00968 17.5509 8.87114 14.987 10.4561 12.8789M27.5254 30.0556C25.4066 31.6296 22.8355 32.4759 20.196 32.4682C17.5566 32.4606 14.9905 31.5994 12.8808 30.0132M30.0329 12.9143C31.6101 15.0275 32.4623 17.5938 32.4623 20.2307C32.4623 22.8676 31.6101 25.4339 30.0329 27.5471M12.9282 10.4197C15.0466 8.84283 17.6186 7.99399 20.2595 8.00003C22.9004 8.00608 25.4684 8.86668 27.5797 10.4532" stroke="#969696" strokeWidth="1.5" strokeMiterlimit="10"/>
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle opacity="0.1" cx="16" cy="16" r="16" fill="#F5F5F5"/>
+                <path d="M8.37412 12.9145C8.37278 11.966 8.5591 11.0267 8.92234 10.1506C9.28558 9.27452 9.81856 8.47894 10.4906 7.8097C11.1626 7.14046 11.9604 6.61079 12.838 6.2512C13.7156 5.8916 14.6557 5.70919 15.6041 5.71447C19.5641 5.74447 22.7341 9.03447 22.7341 13.0045V13.7145C22.7341 17.2945 23.4841 19.3745 24.1441 20.5145C24.2142 20.6359 24.2512 20.7736 24.2513 20.9138C24.2514 21.054 24.2147 21.1917 24.1448 21.3132C24.0749 21.4348 23.9744 21.5358 23.8531 21.6062C23.7319 21.6766 23.5943 21.714 23.4541 21.7145H7.65412C7.51393 21.714 7.37633 21.6766 7.2551 21.6062C7.13388 21.5358 7.03329 21.4348 6.96341 21.3132C6.89353 21.1917 6.85681 21.054 6.85693 20.9138C6.85706 20.7736 6.89402 20.6359 6.96412 20.5145C7.62412 19.3745 8.37412 17.2945 8.37412 13.7145V12.9145Z" stroke="#969696" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12.354 21.7144V22.5144C12.354 23.363 12.6911 24.177 13.2913 24.7771C13.8914 25.3772 14.7053 25.7144 15.554 25.7144C16.4027 25.7144 17.2166 25.3772 17.8167 24.7771C18.4169 24.177 18.754 23.363 18.754 22.5144V21.7144" stroke="#969696" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </Link>
-            <Link href='/'>
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle opacity="0.1" cx="20" cy="20" r="20" fill="#303030"/>
-                <path d="M22.3145 20.2295L26.552 24.467L30.7895 20.2295" stroke="#969696" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M26.5518 11.4668V24.4668" stroke="#969696" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M13.3145 11.4668V21.4668" stroke="#969696" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <line x1="22.3145" y1="29.4668" x2="31.3145" y2="29.4668" stroke="#969696" strokeWidth="2" strokeLinecap="round"/>
-                <line x1="8.31445" y1="29.4668" x2="17.3145" y2="29.4668" stroke="#969696" strokeWidth="2" strokeLinecap="round"/>
-                <line x1="8.31445" y1="25.4668" x2="17.3145" y2="25.4668" stroke="#969696" strokeWidth="2" strokeLinecap="round"/>
-                <line x1="26.3145" y1="11.4668" x2="13.3145" y2="11.4668" stroke="#969696" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-            </Link>
-            <Link href='/'>
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle opacity="0.1" cx="20" cy="20" r="20" fill="#303030"/>
-                <path d="M27 27H14.0845L10.9292 9.7425C10.8922 9.53583 10.7839 9.3485 10.6228 9.21291C10.4617 9.07732 10.258 9.00201 10.047 9H8" stroke="#969696" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M15.5 32C16.8807 32 18 30.8807 18 29.5C18 28.1193 16.8807 27 15.5 27C14.1193 27 13 28.1193 13 29.5C13 30.8807 14.1193 32 15.5 32Z" stroke="#969696" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M27.5 32C28.8807 32 30 30.8807 30 29.5C30 28.1193 28.8807 27 27.5 27C26.1193 27 25 28.1193 25 29.5C25 30.8807 26.1193 32 27.5 32Z" stroke="#969696" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M13.6399 23H27.8446C28.2676 23.0013 28.6774 22.8542 29.0022 22.5847C29.3269 22.3152 29.5458 21.9404 29.6202 21.5262L31 14H12" stroke="#969696" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </Link>
-            <div className='w-[40px] h-[40px]'>
-              {
-                SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
-                  return chainId === networkId && <img key={index} alt={'networkIcon'} src={chainInfos[networkId].logo || chainInfos[ChainIds.ETHEREUM].logo} className="m-auto h-[45px]" />
-                })
-              }
+            <div className='w-[32px] h-[32px]'>
+              <img alt={'networkIcon'} src={chainInfos[chainId || ChainIds.ETHEREUM].logo} className="h-full w-full" />
             </div>
-            <div className='w-[40px] h-[40px]'>
+            <div className='w-[32px] h-[32px]'>
               <Image
                 src={avatarImage}
                 alt="avatar"
                 onError={() => { profile && profile.avatar && setAvatarError(true) }}
-                width={40}
-                height={40}
+                width={32}
+                height={32}
                 className='rounded-full'
               />
             </div>
