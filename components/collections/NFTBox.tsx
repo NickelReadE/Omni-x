@@ -134,7 +134,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           // IPFS Gateway: A server that will return IPFS files from a "normal" URL.
           const image_uri = JSON.parse(metadata).image
           if (image_uri)
-            return image_uri.replace('ipfs://', 'https://ipfs.io/ipfs/')
+            return image_uri.replace('ipfs://', 'https://omni-x.infura-ipfs.io/ipfs/')
         } catch (err) {
           console.log('While fetching NFTBOX image:', err)
         }
@@ -142,6 +142,9 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
       return '/images/omnix_logo_black_1.png'
     }
     if (nft && nft.image) {
+      if (nft.image.startsWith('https://ipfs.io/')) {
+        return nft.image.replace('https://ipfs.io/', 'https://omni-x.infura-ipfs.io/')
+      }
       return nft.image
     }
     return '/images/omnix_logo_black_1.png'
