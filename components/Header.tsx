@@ -130,7 +130,7 @@ const Header = (): JSX.Element => {
                           <img width={10} height={6} src={'/images/arrowUp.png'} alt="nft-image" />
                         </div>
                       </div>
-                      <div className='overflow-auto max-h-[280px]'>
+                      <div className='overflow-y-auto overflow-x-hidden max-h-[280px]'>
                         {
                           histories.map((item, index) => {
                             return (

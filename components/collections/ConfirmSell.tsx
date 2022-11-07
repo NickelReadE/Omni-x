@@ -31,6 +31,7 @@ interface IConfirmSellProps {
   openSellDlg: boolean,
   nftImage: string,
   nftTitle: string,
+  nftChainId: number,
   onListingApprove?: (isAuction: boolean, checkNetwork: boolean) => Promise<any>,
   onListingConfirm?: (listingData: IListingData) => Promise<any>,
   onListingDone?: () => void
@@ -41,6 +42,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
   openSellDlg,
   nftImage,
   nftTitle,
+  nftChainId,
   onListingApprove,
   onListingConfirm,
   onListingDone,
@@ -140,7 +142,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
         // will be hooked by useSwitchedNetwork
       }
     })
-  }, [listingStep, currency, period, setStep])
+  }, [listingStep])
 
   return (
     <Dialog open={openSellDlg} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
@@ -164,6 +166,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
           onListing={onListing}
           nftImage={nftImage}
           nftTitle={nftTitle}
+          nftChainId={nftChainId}
           sellType={sellType}
           listingStep={listingStep}
           processing={processing}

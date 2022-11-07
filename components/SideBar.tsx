@@ -139,7 +139,7 @@ const SideBar: React.FC = () => {
             try {
               // IPFS Gateway: A server that will return IPFS files from a "normal" URL.
               const image_uri = JSON.parse(metadata).image
-              setImage(image_uri.replace('ipfs://', 'https://ipfs.io/ipfs/'))
+              setImage(image_uri.replace('ipfs://', 'https://omni-x.infura-ipfs.io/ipfs/'))
             } catch (err) {
               console.log(err)
               setImage('/images/omnix_logo_black_1.png')

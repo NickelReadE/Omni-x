@@ -108,6 +108,16 @@ const Item: NextPage = () => {
     dispatch(openSnackBar({ message: 'copied link to clipboard', status: 'info' }))
   }
 
+  const nftImage = useMemo(() => {
+    if (currentNFT && currentNFT.image) {
+      if (currentNFT.image.startsWith('https://ipfs.io/')) {
+        return currentNFT.image.replace('https://ipfs.io/', 'https://omni-x.infura-ipfs.io/')
+      }
+      return currentNFT.image
+    }
+    return '/images/omnix_logo_black_1.png'
+  }, [currentNFT])
+
   return (
     <>
       {currentNFT && collection &&
@@ -118,10 +128,10 @@ const Item: NextPage = () => {
                 <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image"/>}>
                   <img
                     className='rounded-[8px]'
-                    src={imageError ? '/images/omnix_logo_black_1.png' : currentNFT.image}
+                    src={imageError ? '/images/omnix_logo_black_1.png' : nftImage}
                     alt="nft-image"
                     onError={() => { setImageError(true) }}
-                    data-src={currentNFT.image}
+                    data-src={nftImage}
                   />
                 </LazyLoad>
               </div>
@@ -381,15 +391,16 @@ const Item: NextPage = () => {
             onListingDone={onListingDone}
             handleSellDlgClose={() => {setOpenSellDlg(false)}}
             openSellDlg={openSellDlg}
-            nftImage={currentNFT.image}
+            nftImage={nftImage}
             nftTitle={currentNFT.name}
+            nftChainId={currentNFT.chain_id}
           />
           <ConfirmBuy
             handleBuyDlgClose={() => {
               setOpenBuyDlg(false)
             }}
             openBuyDlg={openBuyDlg}
-            nftImage={currentNFT.image}
+            nftImage={nftImage}
             nftTitle={currentNFT.name}
             onBuyApprove={onBuyApprove}
             onBuyConfirm={onBuyConfirm}
@@ -403,7 +414,7 @@ const Item: NextPage = () => {
             onBidDone={onBidDone}
             handleBidDlgClose={() => {setOpenBidDlg(false)}}
             openBidDlg={openBidDlg}
-            nftImage={currentNFT.image}
+            nftImage={nftImage}
             nftTitle={currentNFT.name}
           />
           <ConfirmAccept
@@ -413,7 +424,7 @@ const Item: NextPage = () => {
             onAcceptDone={onAcceptDone}
             handleAcceptDlgClose={() => {setOpenAcceptDlg(false)}}
             openAcceptDlg={openAcceptDlg}
-            nftImage={currentNFT.image}
+            nftImage={nftImage}
             nftTitle={currentNFT.name}
             bidOrder={selectedBid}
           />
