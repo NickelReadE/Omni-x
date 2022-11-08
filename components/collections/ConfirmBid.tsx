@@ -137,7 +137,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
       setProcessing(false)
       setStep(BidStep.StepFail)
     })
-  }, [bidStep, currency, period, setStep])
+  }, [bidStep])
 
   return (
     <Dialog open={true} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>

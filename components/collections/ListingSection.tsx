@@ -1,13 +1,15 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import React from 'react'
 import CustomSelect from './CustomSelect'
 import Select from 'react-select'
-import useWallet from '../../hooks/useWallet'
 import { getValidCurrencies, PERIOD_LIST } from '../../utils/constants'
 import { SaleType } from '../../types/enum'
 
 interface IListingSectionProps {
   sellType?: SaleType,
   priceLabel: string,
+  nftChainId: number,
   price: number,
   onChangePrice: (e: any) => void,
   currency: any,
@@ -17,6 +19,7 @@ interface IListingSectionProps {
 }
 
 const ListingSection: React.FC<IListingSectionProps> = ({
+  nftChainId,
   priceLabel,
   price,
   onChangePrice,
@@ -25,8 +28,7 @@ const ListingSection: React.FC<IListingSectionProps> = ({
   period,
   onChangePeriod,
 }) => {
-  const { chainId } = useWallet()
-  const validCurrencies = getValidCurrencies(chainId || 0)
+  const validCurrencies = getValidCurrencies(nftChainId)
 
   return (
     <div>

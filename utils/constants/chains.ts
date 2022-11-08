@@ -66,12 +66,12 @@ export const RPC_PROVIDERS: { [key: number]: string } = {
   [CHAIN_IDS[CHAIN_TYPE.FANTOM]]: 'https://rpcapi.fantom.network',
 
   // TESTNET RPC
-  [CHAIN_IDS[CHAIN_TYPE.GOERLI]]: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+  [CHAIN_IDS[CHAIN_TYPE.GOERLI]]: 'https://eth-goerli.g.alchemy.com/v2/ktVT-atYLgvp1wP-mKCBztHNxysOhuS1',
   [CHAIN_IDS[CHAIN_TYPE.BSC_TESTNET]]: 'https://data-seed-prebsc-1-s1.binance.org:8545',
   [CHAIN_IDS[CHAIN_TYPE.FUJI_TESTNET]]: 'https://api.avax-test.network/ext/bc/C/rpc',
-  [CHAIN_IDS[CHAIN_TYPE.MUMBAI]]: 'https://polygon-mumbai.g.alchemy.com/v2/PBnAhVXSPI5sRtN4YRc4Xadl6bFpkyFv',
-  [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: 'https://goerli-rollup.arbitrum.io/rpc',
-  [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: 'https://goerli.optimism.io',
+  [CHAIN_IDS[CHAIN_TYPE.MUMBAI]]: 'https://polygon-mumbai.g.alchemy.com/v2/02MXkyOyWIK3ZxlnTbMaRMgbsFdvmthv',
+  [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: 'https://arb-goerli.g.alchemy.com/v2/f4BBpxxxWEVDtsmrk2N-B8WAGVZAMLpb',
+  [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: 'https://opt-goerli.g.alchemy.com/v2/o_ikS1EqcWS_gz-vnqtDZuqI41BB7zIO',
   [CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET]]: 'https://rpc.testnet.fantom.network'
 }
 

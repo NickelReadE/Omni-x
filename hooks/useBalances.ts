@@ -110,7 +110,7 @@ const useBalances = (): BalancesType => {
       const usdc = getUSDCInstance(currencyAddr, chainId, signer)
       if (usdc) {
         const decimal = STABLECOIN_DECIMAL[chainId][currencyAddr] || 6
-        const tx = await usdc.mint(await signer.getAddress(), ethers.utils.parseUnits('1000', decimal), { gasLimit: '300000' })
+        const tx = await usdc.mint(await signer.getAddress(), ethers.utils.parseUnits('25000', decimal), { gasLimit: '300000' })
         await tx.wait()
   
         dispatch(openSnackBar({ message: `Received 1,000 $${currencyName}`, status: 'success' }))

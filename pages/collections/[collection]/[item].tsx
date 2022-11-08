@@ -14,6 +14,8 @@ import useCollectionNft from '../../../hooks/useCollectionNft'
 import {truncateAddress} from '../../../utils/utils'
 import { useModal } from '../../../hooks/useModal'
 import { ModalIDs } from '../../../contexts/modal'
+import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
+import { useDispatch } from 'react-redux'
 
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
@@ -21,11 +23,12 @@ const Item: NextPage = () => {
 
   const { address } = useWallet()
   const router = useRouter()
+  const dispatch = useDispatch()
   const col_url = router.query.collection as string
   const token_id = router.query.item as string
 
   const { nft: currentNFT, collection, refreshNft } = useCollectionNft(col_url, token_id)
-  
+
   const onRefresh = () => {
     refreshNft()
   }
@@ -62,6 +65,24 @@ const Item: NextPage = () => {
 
   const currencyIcon = getCurrencyIconByAddress(currentNFT?.currency)
   const formattedPrice = currentNFT?.price
+  const chainIcon = useMemo(() => {
+    return getChainIconById(currentNFT && currentNFT.chain_id ? currentNFT.chain_id.toString() : '5')
+  }, [currentNFT])
+
+  const onCopyToClipboard = async () => {
+    await navigator.clipboard.writeText(window.location.href)
+    dispatch(openSnackBar({ message: 'copied link to clipboard', status: 'info' }))
+  }
+
+  const nftImage = useMemo(() => {
+    if (currentNFT && currentNFT.image) {
+      if (currentNFT.image.startsWith('https://ipfs.io/')) {
+        return currentNFT.image.replace('https://ipfs.io/', 'https://omni-x.infura-ipfs.io/')
+      }
+      return currentNFT.image
+    }
+    return '/images/omnix_logo_black_1.png'
+  }, [currentNFT])
 
   return (
     <>
@@ -73,10 +94,10 @@ const Item: NextPage = () => {
                 <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image"/>}>
                   <img
                     className='rounded-[8px]'
-                    src={imageError ? '/images/omnix_logo_black_1.png' : currentNFT.image}
+                    src={imageError ? '/images/omnix_logo_black_1.png' : nftImage}
                     alt="nft-image"
                     onError={() => { setImageError(true) }}
-                    data-src={currentNFT.image}
+                    data-src={nftImage}
                   />
                 </LazyLoad>
               </div>
@@ -87,8 +108,13 @@ const Item: NextPage = () => {
                     <div className='h-[22px]'><Image src={PngCheck} alt="checkpng"/></div>
                   </div>
                   <div className="flex justify-between items-center mt-5">
-                    <h1 className="text-[#1E1C21] text-[24px] font-medium">{currentNFT.token_id}</h1>
-                    <Image src={PngSub} alt=""/>
+                    <div className="flex items-center">
+                      <h1 className="text-[#1E1C21] text-[24px] font-medium">{currentNFT.token_id}</h1>
+                      <img alt='chainIcon' src={chainIcon} className="ml-4 w-[32px] h-[32px]" />
+                    </div>
+                    <button>
+                      <Image src={PngSub} alt="shareButton" onClick={onCopyToClipboard} />
+                    </button>
                   </div>
                 </div>
                 <div className="grid 2xl:grid-cols-3 lg:grid-cols-[200px_1fr_1fr] xl:grid-cols-[230px_1fr_1fr] px-6 pt-3 mt-6 bg-[#F6F8FC] rounded-[2px]">
@@ -142,18 +168,50 @@ const Item: NextPage = () => {
                         </a>
                       </span>
                     </div>
-                    <div className="flex justify-between items-center mt-6">
+                    <div className="mt-6">
                       {currentNFT && currentNFT.price > 0 && (
                         <>
-                          <h1 className="text-[#1E1C21] text-[60px] font-normal">{numberLocalize(Number(formattedPrice))}</h1>
-                          <div className="mr-5">
-                            {currencyIcon &&
-                              <img
-                                src={`${currencyIcon}`}
-                                className='mr-[8px] w-[21px]'
-                                alt="icon"
-                              />
-                            }
+                          <div className="relative group flex justify-between items-center max-w-[100%]">
+                            <span
+                              className={[
+                                'whitespace-nowrap',
+                                'rounded',
+                                'bg-black',
+                                'px-2',
+                                'py-1',
+                                'text-white',
+                                'absolute',
+                                '-top-12',
+                                'left-1/2',
+                                '-translate-x-1/2',
+                                "before:content-['']",
+                                'before:absolute',
+                                'before:-translate-x-1/2',
+                                'before:left-1/2',
+                                'before:top-full',
+                                'before:border-4',
+                                'before:border-transparent',
+                                'before:border-t-black',
+                                'opacity-0',
+                                'group-hover:opacity-100',
+                                'transition',
+                                'pointer-events-none',
+                              ].join(' ')}
+                            >
+                              {numberLocalize(Number(formattedPrice))}
+                            </span>
+                            <h1 className="overflow-hidden text-ellipsis text-[#1E1C21] text-[60px] font-normal">
+                              {numberLocalize(Number(formattedPrice))}
+                            </h1>
+                            <div className="mr-5 w-[30px]">
+                              {currencyIcon &&
+                                <img
+                                  src={`${currencyIcon}`}
+                                  className='mr-[8px] w-[21px]'
+                                  alt="icon"
+                                />
+                              }
+                            </div>
                           </div>
                         </>
                       )}

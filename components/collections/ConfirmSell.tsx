@@ -159,6 +159,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
           onListing={onListing}
           nftImage={nftImage}
           nftTitle={nftTitle}
+          nftChainId={tradingInput.selectedNFTItem?.chain_id || 0}
           sellType={sellType}
           listingStep={listingStep}
           processing={processing}
