@@ -11,7 +11,9 @@ module.exports = {
     extend: {
       backgroundImage: {
         'primary-gradient': 'linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%)',
-        'border-gradient': 'linear-gradient(to right, #161616, #161616), linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%)'
+        'border-gradient': 'linear-gradient(to right, #161616, #161616), linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%)',
+        'rainbow-gradient': 'linear-gradient(103.58deg, #8600F0 15.1%, #008BF0 40.13%, #00F0EC 63.65%, #16FFC5 87.92%)',
+        'dark-gradient': 'linear-gradient(120.31deg, rgba(125, 125, 125, 0.2) 20%, rgba(125, 125, 125, 0.06) 85.18%)'
       },
       spacing: {
         84: '21rem',
@@ -76,7 +78,8 @@ module.exports = {
         primary: '#161616',
         'primary-light': '#F5F5F5',
         secondary: '#969696',
-        gradient: 'linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%)',
+        // gradient: 'linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%)',
+        // rainbow: 'linear-gradient(103.58deg, #8600F0 15.1%, #008BF0 40.13%, #00F0EC 63.65%, #16FFC5 87.92%)',
       },
       fontFamily: {
         sans: ['Inter', ...fontFamily.sans],
@@ -90,7 +93,7 @@ module.exports = {
         lg: '16px',
         xg: '18px',
         xl: '20px',
-        xg1:'28px',
+        xg1:'24px',
         xl2:'40px',
         xxl:'32px',
         xxl2:'60px'

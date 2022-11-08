@@ -103,7 +103,7 @@ const Banner = ({ blur }: BannerProps): JSX.Element => {
                   }
                 </div>
 
-                <div className="text-[16px] text-[#969696]">
+                <div className="text-lg text-[#969696]">
                   {profile && profile.address ? truncateAddress(profile.address) : truncateAddress(address || '')}
                 </div>
               </div>

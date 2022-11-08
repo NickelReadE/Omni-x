@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
 import { DotButton } from './carouselButtons'
+import Link from 'next/link'
 
 const slides = [
   { image: '/images/home/slide_1.png' },
@@ -43,9 +44,11 @@ export default function HomeSlider() {
                     alt={'banner - ' + index}
                   />
                   <div className='absolute bottom-4'>
-                    <button className='px-[16px] py-[4px] bg-border-gradient rounded-full flex items-center justify-center border-[1px] border-solid border-transparent' style={{backgroundOrigin: 'padding-box, border-box', backgroundClip: 'padding-box, border-box'}}>
-                      <span className='bg-primary-gradient bg-clip-text text-transparent'>learn more</span>
-                    </button>
+                    <Link href={'/learn-more'}>
+                      <button className='px-[16px] py-[4px] bg-border-gradient rounded-full flex items-center justify-center border-[1px] border-solid border-transparent' style={{backgroundOrigin: 'padding-box, border-box', backgroundClip: 'padding-box, border-box'}}>
+                        <span className='bg-primary-gradient bg-clip-text text-transparent'>learn more</span>
+                      </button>
+                    </Link>
                   </div>
                 </div>
               </div>

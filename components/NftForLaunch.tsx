@@ -64,7 +64,7 @@ const NftForLaunch = (pro: ITypeNFT) => {
             <div>
               <Link href={`/launchpad/${pro.col_url}`}>
                 <div
-                  className="w-[230px] text-[18px] text-white	 text-extrabold text-center items-center bg-[#B444F9] rounded-lg  py-[7px] hover:cursor-pointer">view
+                  className="w-[230px] text-xg text-white	 text-extrabold text-center items-center bg-[#B444F9] rounded-lg  py-[7px] hover:cursor-pointer">view
                   collection
                 </div>
               </Link>
@@ -74,7 +74,7 @@ const NftForLaunch = (pro: ITypeNFT) => {
         </div>
 
         <div className="flex flex-row justify-between  px-3 mt-[12px] align-middle  font-['RetniSans']">
-          <div className=" text-[#000000] text-[14px] font-bold">
+          <div className=" text-[#000000] text-md font-bold">
             {pro.name.toUpperCase()}
           </div>
         </div>

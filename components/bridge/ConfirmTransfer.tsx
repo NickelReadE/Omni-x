@@ -143,7 +143,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
                     </div>
                     <div className="tx-status-section">
                       {status === ConfirmTransferStatus.APPROVING && (<>
-                        <div className="text-[14px] w-[250px] leading-18">
+                        <div className="text-md w-[250px] leading-18">
                           <p className="">Please confirm the transaction in your wallet to begin transfer.</p>
                         </div>
                           
@@ -168,7 +168,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
                     </div>
                     <div className='tx-status-section mb-3'>
                       {status === ConfirmTransferStatus.TRANSFERRING && (<>
-                        <div className="text-[14px] w-[250px] leading-18">
+                        <div className="text-md w-[250px] leading-18">
                           <p className="">Please confirm the transaction in your wallet to complete the transfer.</p>
                         </div>
                       </>)}

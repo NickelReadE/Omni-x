@@ -116,8 +116,8 @@ const PriceFeed = () => {
             </svg>
           </div>
           <div className='flex items-center'>
-            <div className='text-[16px] leading-[19px] text-primary-light'>omni&nbsp;x</div>
-            <span className='text-[16px] leading-[19px] text-secondary ml-1'>info</span>
+            <div className='text-lg leading-[19px] text-primary-light'>omni&nbsp;x</div>
+            <span className='text-lg leading-[19px] text-secondary ml-1'>info</span>
           </div>
         </div>
       </div>

@@ -23,7 +23,7 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
       <main className='w-full flex flex-col'>
         <SideBar />
         <Header />
-        <div className={'pt-[88px] pb-[62px] px-[52px] bg-primary'}>
+        <div className={'pt-[72px] pb-[62px] px-[52px] bg-primary'}>
           {children}
         </div>
         <Footer />

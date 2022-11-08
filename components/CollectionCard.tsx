@@ -24,16 +24,16 @@ const CollectionCard = (props:any) => {
         <div className={classNames('absolute w-full h-full  flex items-center justify-center  ', editStyle.actionBtn)}>
           <div>
             <Link href={`/collections/${props.collection.col_url}`}>
-              <div className='w-[230px] text-[18px] text-white	 text-extrabold text-center items-center bg-[#B444F9] rounded-lg mb-[24px]  py-[7px] hover:cursor-pointer'>view collection</div>
+              <div className='w-[230px] text-xg text-white	 text-extrabold text-center items-center bg-[#B444F9] rounded-lg mb-[24px]  py-[7px] hover:cursor-pointer'>view collection</div>
             </Link>
 
-            <div className='w-[230px] text-[18px] text-white	 text-extrabold text-center items-center bg-[#38B000] rounded-lg  py-[7px]'>make a collection bid</div>
+            <div className='w-[230px] text-xg text-white	 text-extrabold text-center items-center bg-[#38B000] rounded-lg  py-[7px]'>make a collection bid</div>
           </div>
 
         </div>
       </div>
       <div className="flex flex-row mt-2.5 justify-between px-3">
-        <div className="text-primary-light text-[18px] leading-[22px] font-bold ">
+        <div className="text-primary-light text-xg leading-[22px] font-bold ">
           {props.collection.name}
         </div>
         <div className="flex items-center space-x-1">
@@ -56,22 +56,22 @@ const CollectionCard = (props:any) => {
 
       <div className="flex flex-row space-x-2 justify-between p-2">
         <div className={classNames('col-span-2 flex p-2 rounded-lg')}>
-          <div className='text-[14px] flex flex-col justify-between'>
+          <div className='text-md flex flex-col justify-between'>
             <span className='mr-[1px] text-center text-secondary font-medium'>Items</span>
-            <span className='font-medium text-[12px] text-center text-primary-light'>{props.collection?props.collection.itemsCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+            <span className='font-medium text-sm text-center text-primary-light'>{props.collection?props.collection.itemsCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
           </div>
         </div>
         <div  className={classNames('col-span-2 flex p-2 rounded-lg')} >
-          <div className='text-[14px] flex flex-col justify-center' style={{justifyContent: 'space-between'}}>
+          <div className='text-md flex flex-col justify-center' style={{justifyContent: 'space-between'}}>
             <span className='mr-[1px] text-center text-secondary font-medium'>Owners</span>
-            <span className='font-medium text-[12px] text-center text-primary-light'>{props.collection?props.collection.ownerCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+            <span className='font-medium text-sm text-center text-primary-light'>{props.collection?props.collection.ownerCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
           </div>
         </div>
         <div className={classNames('col-span-2 flex p-2 rounded-lg')} >
-          <div className='text-[14px] flex flex-col justify-center' style={{justifyContent: 'space-between'}}>
-            <div className='text-[14px] font-medium  mb-1 text-center text-secondary'>Floor</div>
+          <div className='text-md flex flex-col justify-center' style={{justifyContent: 'space-between'}}>
+            <div className='text-md font-medium  mb-1 text-center text-secondary'>Floor</div>
             <div className='flex flex-row space-x-2 justify-center' >
-              <span className='font-medium text-[12px] mr-[px] text-primary-light'>
+              <span className='font-medium text-sm mr-[px] text-primary-light'>
                 {props.collection ? numberShortify(props.collection.floorPrice.omni) : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
               </span>
               <img src='/svgs/omni_asset.svg' className='w-[16px]' alt='asset img'></img>
@@ -79,15 +79,15 @@ const CollectionCard = (props:any) => {
           </div>
         </div>
         <div className={classNames('col-span-3 flex flex-col p-2 rounded-lg')} >
-          <div className='text-[14px] font-medium mb-1 text-center text-secondary'>Volume(7d)</div>
-          <div className='text-[14px] flex flex-row justify-center space-x-4' >
+          <div className='text-md font-medium mb-1 text-center text-secondary'>Volume(7d)</div>
+          <div className='text-md flex flex-row justify-center space-x-4' >
             <div className='flex flex-row mr-4'>
-              <span className='font-medium mr-1 text-[12px] text-primary-light'>
+              <span className='font-medium mr-1 text-sm text-primary-light'>
                 {props.collection ? 0 /* numberShortify(props.collection.totalVolume) */ : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
               </span>
               <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img>
             </div>
-            <span className='font-medium text-[#38B000] text-[12px]'>
+            <span className='font-medium text-[#38B000] text-sm'>
               {props.collection ? '0%' /* numberShortify(props.collection.totalVolumeChange) */ : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
             </span>
           </div>

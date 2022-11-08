@@ -150,8 +150,8 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
         <div className="columns-2 mt-5">
           <div className="text-[#1E1C21] text-[28px] font-semibold">list item for sale</div>
           <div className="flex justify-end">
-            <button className={`w-[132px] px-5 py-2 text-[#ADB5BD] font-['Roboto Mono'] font-semibold text-[16px] rounded-[8px] border-2 border-[#ADB5BD] ${sellType==SaleType.FIXED?'z-10 bg-[#E9ECEF]':'bg-[#F8F9FA]'}`} onClick={() => setSellType(SaleType.FIXED)}>fixed price</button>
-            <button className={`w-[132px] px-5 py-2 text-[#6C757D] font-['Roboto Mono'] font-semibold text-[16px] rounded-[8px] border-2 border-[#ADB5BD] relative -left-2.5 ${sellType==SaleType.AUCTION?'z-10 bg-[#E9ECEF]':'bg-[#F8F9FA]'}`}onClick={() => setSellType(SaleType.FIXED)}>auction</button>
+            <button className={`w-[132px] px-5 py-2 text-[#ADB5BD] font-['Roboto Mono'] font-semibold text-lg rounded-[8px] border-2 border-[#ADB5BD] ${sellType==SaleType.FIXED?'z-10 bg-[#E9ECEF]':'bg-[#F8F9FA]'}`} onClick={() => setSellType(SaleType.FIXED)}>fixed price</button>
+            <button className={`w-[132px] px-5 py-2 text-[#6C757D] font-['Roboto Mono'] font-semibold text-lg rounded-[8px] border-2 border-[#ADB5BD] relative -left-2.5 ${sellType==SaleType.AUCTION?'z-10 bg-[#E9ECEF]':'bg-[#F8F9FA]'}`}onClick={() => setSellType(SaleType.FIXED)}>auction</button>
           </div>
         </div>
       </DialogTitle>

@@ -143,7 +143,7 @@ const Item: NextPage = () => {
                   </div>
                   <div className="flex justify-between items-center mt-5">
                     <div className="flex items-center">
-                      <h1 className="text-[#1E1C21] text-[24px] font-medium">{currentNFT.token_id}</h1>
+                      <h1 className="text-[#1E1C21] text-xg1 font-medium">{currentNFT.token_id}</h1>
                       <img alt='chainIcon' src={chainIcon} className="ml-4 w-[32px] h-[32px]" />
                     </div>
                     <button>
@@ -154,9 +154,9 @@ const Item: NextPage = () => {
                 <div className="grid 2xl:grid-cols-3 lg:grid-cols-[200px_1fr_1fr] xl:grid-cols-[230px_1fr_1fr] px-6 pt-3 mt-6 bg-[#F6F8FC] rounded-[2px]">
                   <div className="">
                     <div className="flex justify-start items-center">
-                      <h1 className="text-[#1E1C21] text-[18px] font-bold">owner:</h1>
+                      <h1 className="text-[#1E1C21] text-xg font-bold">owner:</h1>
                       {currentNFT && currentNFT.owner && (
-                        <h1 className="flex justify-start items-center text-[#B444F9] text-[20px] font-normal underline ml-4 break-all lg:ml-1">
+                        <h1 className="flex justify-start items-center text-[#B444F9] text-xl font-normal underline ml-4 break-all lg:ml-1">
                           <Link href={`/user/${currentNFT.owner}`}>
                             {truncateAddress(currentNFT.owner)}
                           </Link>
@@ -270,15 +270,15 @@ const Item: NextPage = () => {
                   </div>
                   <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
                     <div className="overflow-x-hidden overflow-y-auto grid 2xl:grid-cols-[30%_25%_25%_20%] lg:grid-cols-[30%_18%_32%_20%] xl:grid-cols-[30%_18%_32%_20%]">
-                      <div className="font-bold text-[18px] text-[#000000]">account</div>
-                      <div className="font-bold text-[18px] text-[#000000]">chain</div>
-                      <div className="font-bold text-[18px] text-[#000000]">bid</div>
+                      <div className="font-bold text-xg text-[#000000]">account</div>
+                      <div className="font-bold text-xg text-[#000000]">chain</div>
+                      <div className="font-bold text-xg text-[#000000]">bid</div>
                       <div></div>
                       {
                         sortedBids?.map((item: any, index: number) => {
                           return (
                             <Fragment key={index}>
-                              <div className='flex justify-start items-center break-all mt-3 text-[16px] font-bold'>{truncateAddress(item.signer)}</div>
+                              <div className='flex justify-start items-center break-all mt-3 text-lg font-bold'>{truncateAddress(item.signer)}</div>
                               <div className="flex justify-start items-center text-center mt-3">
                                 <img
                                   src={getChainIconById(item.chain_id.toString())}
@@ -298,7 +298,7 @@ const Item: NextPage = () => {
                               </div>
                               <div className='text-right mt-3'>
                                 {currentNFT?.owner?.toLowerCase() == address?.toLowerCase() &&
-                                  <button className='bg-[#ADB5BD] hover:bg-[#38B000] rounded-[4px] text-[14px] text-[#fff] py-px px-2.5'
+                                  <button className='bg-[#ADB5BD] hover:bg-[#38B000] rounded-[4px] text-md text-[#fff] py-px px-2.5'
                                     onClick={() => {
                                       setSelectedBid(item.order_data)
                                       setOpenAcceptDlg(true)
@@ -321,7 +321,7 @@ const Item: NextPage = () => {
                         {
                           isListed && currentNFT?.owner?.toLowerCase() != address?.toLowerCase() &&
                             <button
-                              className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]"
+                              className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular Std'] font-semibold text-xg rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]"
                               onClick={() => {setOpenBuyDlg(true)}}
                             >
                               buy
@@ -330,7 +330,7 @@ const Item: NextPage = () => {
                         {
                           currentNFT?.owner?.toLowerCase() == address?.toLowerCase() &&
                             <button
-                              className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]"
+                              className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular Std'] font-semibold text-xg rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]"
                               onClick={() => {setOpenSellDlg(true)}}
                             >
                               sell
@@ -343,7 +343,7 @@ const Item: NextPage = () => {
                     {
                       currentNFT?.owner && address && currentNFT?.owner.toLowerCase() != address.toLowerCase() &&
                         <button
-                          className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]"
+                          className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-xg rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]"
                           onClick={() => { setOpenBidDlg(true) }}
                         >
                           bid
@@ -373,9 +373,9 @@ const Item: NextPage = () => {
                         const attr = attrs[item[0]].values
                         const trait = attr[(item[1] as string)]
                         return <div className="px-5 py-2 bg-[#b444f926] border-2 border-[#B444F9] rounded-[8px]" key={idx}>
-                          <p className="text-[#B444F9] text-[12px] font-bold">{item[0]}</p>
+                          <p className="text-[#B444F9] text-sm font-bold">{item[0]}</p>
                           <div className="flex justify-start items-center mt-2">
-                            <p className="text-[#1E1C21] text-[18px] font-bold">{item[1]}<span className="ml-3 font-normal">[{trait ? trait[1] : 0}%]</span></p>
+                            <p className="text-[#1E1C21] text-xg font-bold">{item[1]}<span className="ml-3 font-normal">[{trait ? trait[1] : 0}%]</span></p>
                           </div>
                         </div>
                       })

@@ -547,7 +547,7 @@ const Collection: NextPage = () => {
             <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 p-1 gap-4">
               <div className="2xl:col-start-4 xl:col-start-3 lg:col-start-2 md:col-start-1">
                 <button
-                  className="rounded-lg bg-[#38B000] text-[#F6F8FC] py-2 xl:text-[18px] lg:text-[14px] w-full">make a
+                  className="rounded-lg bg-[#38B000] text-[#F6F8FC] py-2 xl:text-xg lg:text-md w-full">make a
                   collection bid
                 </button>
               </div>

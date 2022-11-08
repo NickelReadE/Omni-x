@@ -178,7 +178,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           </LazyLoad>
         </div>
         <div className="flex flex-row mt-2.5 justify-between align-middle font-['RetniSans']">
-          <div className="ml-3 text-[#000000] text-[14px] font-bold">
+          <div className="ml-3 text-[#000000] text-md font-bold">
             {nftName}
           </div>
           <div className="mr-3 flex items-center">
@@ -191,7 +191,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           <div className="flex items-center ml-3">
             {isListed && <>
               <img src={currencyIcon || '/svgs/ethereum.svg'} className="w-[18px] h-[18px]" alt='icon'/>
-              <span className="text-[#000000] text-[18px] font-extrabold ml-2">{numberLocalize(Number(nft?.price || 0))}</span>
+              <span className="text-[#000000] text-xg font-extrabold ml-2">{numberLocalize(Number(nft?.price || 0))}</span>
             </>}
           </div>
         </div>
@@ -203,16 +203,16 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     return (
       <div className="flex items-center ml-3">
         {(!!lastSale && lastSale > 0) && <>
-          <span className="text-[#6C757D] text-[14px] font-bold">last sale: &nbsp;</span>
+          <span className="text-[#6C757D] text-md font-bold">last sale: &nbsp;</span>
           <img alt={'saleIcon'} src={lastSaleCoin} className="w-[18px] h-[18px]"/>&nbsp;
           <span
-            className="text-[#6C757D] text-[14px]font-bold">{numberLocalize(Number(lastSale))}</span>
+            className="text-[#6C757D] text-mdfont-bold">{numberLocalize(Number(lastSale))}</span>
         </>}
         {(!lastSale && !!highestBid && highestBid > 0) && <>
-          <span className="text-[#6C757D] text-[14px] font-bold">highest offer: &nbsp;</span>
+          <span className="text-[#6C757D] text-md font-bold">highest offer: &nbsp;</span>
           <img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;
           <span
-            className="text-[#6C757D] text-[14px] font-bold">{numberLocalize(Number(highestBid))}</span>
+            className="text-[#6C757D] text-md font-bold">{numberLocalize(Number(highestBid))}</span>
         </>}
       </div>
     )
@@ -248,7 +248,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
         <div className="flex items-center ml-3">
           {isShowBtn && isOwner && isWhitelisted && (
             <div
-              className="ml-2 mr-2 py-[1px] px-2 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] cursor-pointer font-blod hover:bg-[#B00000]"
+              className="ml-2 mr-2 py-[1px] px-2 bg-[#A0B3CC] rounded-[10px] text-md text-[#F8F9FA] cursor-pointer font-blod hover:bg-[#B00000]"
               onClick={() => {
                 setOpenSellDlg(true)
               }}>
@@ -257,14 +257,14 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           )}
           {isShowBtn && !isOwner && isListed && isWhitelisted && (
             <div
-              className="ml-2 mr-2 py-[1px] px-2 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] cursor-pointer font-blod hover:bg-[#38B000]"
+              className="ml-2 mr-2 py-[1px] px-2 bg-[#A0B3CC] rounded-[10px] text-md text-[#F8F9FA] cursor-pointer font-blod hover:bg-[#38B000]"
               onClick={() => setOpenBuyDlg(true)}>
               {'Buy now'}
             </div>
           )}
           {isShowBtn && !isOwner && !isListed && isWhitelisted && (
             <div
-              className="ml-2 mr-2 py-[1px] px-2 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] cursor-pointer font-blod hover:bg-[#38B000]"
+              className="ml-2 mr-2 py-[1px] px-2 bg-[#A0B3CC] rounded-[10px] text-md text-[#F8F9FA] cursor-pointer font-blod hover:bg-[#38B000]"
               onClick={() => setOpenBidDlg(true)}>
               {'Bid'}
             </div>

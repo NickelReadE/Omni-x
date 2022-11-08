@@ -39,7 +39,7 @@ const Tabs = ({ blur }: TabProps) => {
         <div className={`flex justify-center mt-36 w-[90%] ${blur ? 'blur-sm' : ''} mb-20`}>
           <div className="w-[90%]">
             <ul
-              className="flex relative justify-item-stretch text-[16px] font-medium text-center border-b-2 border-[#E9ECEF]">
+              className="flex relative justify-item-stretch text-lg font-medium text-center border-b-2 border-[#E9ECEF]">
               <li
                 className={`select-none inline-block p-4 border-b-2 border-black w-36 cursor-pointer z-30 ${currentTab === 'NFTs' ? 'text-[#1E1C21] ' : ' text-[#ADB5BD] '} `}
                 onClick={() => setCurrentTable('NFTs')}>

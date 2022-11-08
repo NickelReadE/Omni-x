@@ -647,13 +647,13 @@ const SideBar: React.FC = () => {
             </button>
             {expandedMenu == 3 &&
               <div className='flex flex-col w-full space-y-4 p-6 pt-8 pb-0' ref={menu_wallets}>
-                <span className="font-semibold w-auto text-[16px]">OMNI balance: {numberLocalize(balances.omni)}</span>
-                <span className="font-semibold w-auto text-[16px]">USDC balance: {numberLocalize(balances.usdc)}</span>
-                <span className="font-semibold w-auto text-[16px]">USDT balance: {numberLocalize(balances.usdt)}</span>
-                <span className="font-semibold w-auto text-[16px]">
+                <span className="font-semibold w-auto text-lg">OMNI balance: {numberLocalize(balances.omni)}</span>
+                <span className="font-semibold w-auto text-lg">USDC balance: {numberLocalize(balances.usdc)}</span>
+                <span className="font-semibold w-auto text-lg">USDT balance: {numberLocalize(balances.usdt)}</span>
+                <span className="font-semibold w-auto text-lg">
                   {getChainInfo(chainId)?.nativeCurrency.symbol} balance: {numberLocalize(parseFloat(nativeBalance?.formatted || '0'))}
                 </span>
-                <span className="w-auto text-[16px]">Staking: coming soon</span>
+                <span className="w-auto text-lg">Staking: coming soon</span>
               </div>
             }
           </li>
@@ -726,7 +726,7 @@ const SideBar: React.FC = () => {
             {expandedMenu == 4 &&
               <div className='flex flex-col w-full space-y-4 p-6 pt-8 pb-0' ref={menu_watchlist}>
                 <div className="p-[51px] flex flex-col items-center border border-dashed border-g-300">
-                  <span className="text-[14px] text-g-300">coming soon</span>
+                  <span className="text-md text-g-300">coming soon</span>
                 </div>
               </div>
             }

@@ -63,11 +63,11 @@ export default function SearchBar() {
                               <img src={item.profile_image} alt={'collection profile image'} width={50} height={50} className={'rounded-sm'}/>
                             </div>
                             <div className={'flex flex-col'}>
-                              <span className={'text-[16px]'}>{item.name}</span>
+                              <span className={'text-lg'}>{item.name}</span>
                               <div className={'flex items-center'}>
-                                <span className={'text-[14px] text-[#A0B3CC]'}>floor ${getMinValue([item.floorPrice.omni, item.floorPrice.usd])}</span>
-                                <span className={'text-[14px] text-[#A0B3CC] mx-2'}> | </span>
-                                <span className={'text-[14px] text-[#A0B3CC]'}>items {item.itemsCnt}</span>
+                                <span className={'text-md text-[#A0B3CC]'}>floor ${getMinValue([item.floorPrice.omni, item.floorPrice.usd])}</span>
+                                <span className={'text-md text-[#A0B3CC] mx-2'}> | </span>
+                                <span className={'text-md text-[#A0B3CC]'}>items {item.itemsCnt}</span>
                               </div>
                             </div>
                           </div>
@@ -97,8 +97,8 @@ export default function SearchBar() {
                               />
                             </div>
                             <div className={'flex flex-col'}>
-                              <div className={'text-[16px]'}>{item.username}</div>
-                              <div className={'text-[14px] text-[#A0B3CC] truncate'}>{truncateAddress(item.address)}</div>
+                              <div className={'text-lg'}>{item.username}</div>
+                              <div className={'text-md text-[#A0B3CC] truncate'}>{truncateAddress(item.address)}</div>
                             </div>
                           </div>
                         </Link>

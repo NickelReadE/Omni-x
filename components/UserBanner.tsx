@@ -101,7 +101,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
                 }
               </div>
 
-              <div className="text-[16px] text-[#969696]">
+              <div className="text-lg text-[#969696]">
                 {user && user.address ? truncateAddress(user.address) : truncateAddress(address || '')}
               </div>
             </div>

@@ -10,7 +10,7 @@ export default function NavMenu() {
       return 'collections'
     } else if (router.pathname === '/launchpad') {
       return 'analytics'
-    } else if (router.pathname === '/') {
+    } else if (router.pathname === '/' || router.pathname === '/learn-more') {
       return 'home'
     } else {
       return 'others'
