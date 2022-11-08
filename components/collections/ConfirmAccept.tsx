@@ -10,6 +10,7 @@ import { AcceptStep } from '../../types/enum'
 import useWallet from '../../hooks/useWallet'
 import AcceptContent from './AcceptContent'
 import { useSwitchedNetwork } from '../../hooks/useSwitchedNetwork'
+import useTrading, { TradingInput } from '../../hooks/useTrading'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -31,10 +32,7 @@ export interface IConfirmAcceptProps {
   nftImage: string,
   nftTitle: string,
   bidOrder?: IOrder,
-  onAcceptApprove?: (checkNetwork: boolean) => Promise<any>,
-  onAcceptConfirm?: (bidOrder: IOrder) => Promise<any>,
-  onAcceptComplete?: (bidOrder: IOrder) => void
-  onAcceptDone?: () => void
+  tradingInput: TradingInput,
   handleAcceptDlgClose: () => void,
 }
 
@@ -42,10 +40,7 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
   nftImage,
   nftTitle,
   bidOrder,
-  onAcceptApprove,
-  onAcceptConfirm,
-  onAcceptComplete,
-  onAcceptDone,
+  tradingInput,
   handleAcceptDlgClose,
 }) => {
   const classes = useStyles()
@@ -54,6 +49,7 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
   const [approveTx, setApproveTx] = useState('')
   const [tradingTx, setTradingTx] = useState('')
   const { chainId } = useWallet()
+  const { onAcceptApprove, onAcceptConfirm, onAcceptComplete, onAcceptDone } = useTrading(tradingInput)
 
   useSwitchedNetwork(() => {
     if (acceptStep === AcceptStep.StepCheckNetwork) {
@@ -76,6 +72,7 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
 
   const doLogic = async () => {
     if (!bidOrder) throw new Error('Invalid bid')
+    console.log('-doLogic-', chainId)
 
     if (acceptStep === AcceptStep.StepCheckNetwork && onAcceptApprove) {
       await onAcceptApprove(true)
@@ -92,7 +89,7 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
       setStep(AcceptStep.StepConfirm)
     }
     else if (acceptStep === AcceptStep.StepConfirm && onAcceptConfirm) {
-      const tx = await onAcceptConfirm(bidOrder)
+      const tx = await onAcceptConfirm(bidOrder, tradingInput.tokenId || '0')
       
       if (tx) {
         setTradingTx(tx.hash)

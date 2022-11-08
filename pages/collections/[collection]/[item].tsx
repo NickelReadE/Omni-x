@@ -6,7 +6,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import useWallet from '../../../hooks/useWallet'
-import useTrading from '../../../hooks/useTrading'
 import { getChainIconById, getCurrencyIconByAddress, numberLocalize } from '../../../utils/constants'
 import PngCheck from '../../../public/images/check.png'
 import PngSub from '../../../public/images/subButton.png'
@@ -47,34 +46,19 @@ const Item: NextPage = () => {
     lastSale,
     lastSaleCoin
   } = useOrderStatics({
-    nft: currentNFT
+    nft: currentNFT,
+    collection
   })
 
   const { openModal, closeModal } = useModal()
 
-  // trading hook
-  const {
-    onListingApprove,
-    onListingConfirm,
-    onListingDone,
-    onBuyApprove,
-    onBuyConfirm,
-    onBuyComplete,
-    onBuyDone,
-    onBidApprove,
-    onBidConfirm,
-    onBidDone,
-    onAcceptApprove,
-    onAcceptConfirm,
-    onAcceptComplete,
-    onAcceptDone,
-  } = useTrading({
+  const tradingInput = {
     collectionUrl: col_url,
     collectionAddressMap: collection_address_map,
     tokenId: token_id,
     selectedNFTItem: currentNFT,
     onRefresh
-  })
+  }
 
   const currencyIcon = getCurrencyIconByAddress(currentNFT?.currency)
   const formattedPrice = currentNFT?.price
@@ -228,10 +212,7 @@ const Item: NextPage = () => {
                                         nftImage: currentNFT.image,
                                         nftTitle: currentNFT.name,
                                         bidOrder: item.order_data,
-                                        onAcceptApprove,
-                                        onAcceptConfirm,
-                                        onAcceptComplete,
-                                        onAcceptDone,
+                                        tradingInput,
                                         handleAcceptDlgClose: closeModal
                                       })
                                     }}>
@@ -259,10 +240,7 @@ const Item: NextPage = () => {
                                   nftImage: currentNFT.image,
                                   nftTitle: currentNFT.name,
                                   order,
-                                  onBuyApprove,
-                                  onBuyConfirm,
-                                  onBuyComplete,
-                                  onBuyDone,
+                                  tradingInput,
                                   handleBuyDlgClose: closeModal
                                 })
                               }}
@@ -278,9 +256,7 @@ const Item: NextPage = () => {
                                 openModal(ModalIDs.MODAL_LISTING, {
                                   nftImage: currentNFT.image,
                                   nftTitle: currentNFT.name,
-                                  onListingApprove,
-                                  onListingConfirm,
-                                  onListingDone,
+                                  tradingInput,
                                   handleSellDlgClose: closeModal
                                 })
                               }}
@@ -300,9 +276,7 @@ const Item: NextPage = () => {
                             openModal(ModalIDs.MODAL_BID, {
                               nftImage: currentNFT.image,
                               nftTitle: currentNFT.name,
-                              onBidApprove,
-                              onBidConfirm,
-                              onBidDone,
+                              tradingInput,
                               handleBidDlgClose: closeModal
                             })
                           }}

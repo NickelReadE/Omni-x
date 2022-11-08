@@ -9,6 +9,7 @@ import { ContractName, formatCurrency, getCurrencyNameAddress, validateCurrencyN
 import { BuyStep } from '../../types/enum'
 import BuyContent from './BuyContent'
 import useWallet from '../../hooks/useWallet'
+import useTrading, { TradingInput } from '../../hooks/useTrading'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -30,6 +31,7 @@ export interface IConfirmBuyProps {
   nftImage: string,
   nftTitle: string,
   order?: IOrder,
+  tradingInput: TradingInput,
   onBuyApprove?: (order?: IOrder) => Promise<any>,
   onBuyConfirm?: (order?: IOrder) => Promise<any>,
   onBuyComplete?: (order?: IOrder) => void
@@ -41,10 +43,7 @@ const ConfirmBuy: React.FC<IConfirmBuyProps> = ({
   nftImage,
   nftTitle,
   order,
-  onBuyApprove,
-  onBuyConfirm,
-  onBuyComplete,
-  onBuyDone,
+  tradingInput,
   handleBuyDlgClose,
 }) => {
   const classes = useStyles()
@@ -53,6 +52,7 @@ const ConfirmBuy: React.FC<IConfirmBuyProps> = ({
   const [approveTx, setApproveTx] = useState('')
   const [tradingTx, setTradingTx] = useState('')
   const { chainId } = useWallet()
+  const { onBuyApprove, onBuyConfirm, onBuyComplete, onBuyDone } = useTrading(tradingInput)
 
   const onBuy = () => {
     if (buyStep === BuyStep.StepBuy) {

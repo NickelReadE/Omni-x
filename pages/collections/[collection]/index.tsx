@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { Fragment, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import type { NextPage } from 'next'
@@ -39,7 +39,6 @@ import useCollectionNfts from '../../../hooks/useCollectionNfts'
 import useData from '../../../hooks/useData'
 import Dropdown from '../../../components/dropdown'
 import { useModal } from '../../../hooks/useModal'
-import { useCollectionBid } from '../../../hooks/useCollectionBid'
 import { ModalIDs } from '../../../contexts/modal'
 
 const sort_fields = [
@@ -194,14 +193,10 @@ const Collection: NextPage = () => {
   }
 
   const { openModal, closeModal } = useModal()
-  const {
-    onCollectionBidApprove,
-    onCollectionBidConfirm,
-    onCollectionBidDone
-  } = useCollectionBid({
+  const collectionBid = {
     collectionUrl: col_url,
     collectionAddressMap: collection_address_map
-  })
+  }
 
   const searchAttrsCheck = (bChecked: boolean, attrKey: string, valueKey: string) => {
     const obj = Array.isArray(searchObj[attrKey]) ? searchObj[attrKey] : []
@@ -510,9 +505,7 @@ const Collection: NextPage = () => {
                     openModal(ModalIDs.MODAL_BID, {
                       nftImage: collectionInfo?.profile_image,
                       nftTitle: collectionInfo?.name,
-                      onBidApprove: onCollectionBidApprove,
-                      onBidConfirm: onCollectionBidConfirm,
-                      onBidDone: onCollectionBidDone,
+                      collectionBid,
                       handleBidDlgClose: closeModal
                     })
                   }}

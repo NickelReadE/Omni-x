@@ -4,11 +4,11 @@ import { makeStyles, createStyles } from '@material-ui/core/styles'
 import Dialog from '@material-ui/core/Dialog'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import { IListingData } from '../../interface/interface'
 import { CURRENCIES_LIST, PERIOD_LIST } from '../../utils/constants'
 import { ListingStep, SaleType } from '../../types/enum'
 import ListingContent from './ListingContent'
 import { useSwitchedNetwork } from '../../hooks/useSwitchedNetwork'
+import useTrading, { TradingInput } from '../../hooks/useTrading'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -29,18 +29,14 @@ const useStyles = makeStyles(() =>
 export interface IConfirmSellProps {
   nftImage: string,
   nftTitle: string,
-  onListingApprove?: (isAuction: boolean, checkNetwork: boolean) => Promise<any>,
-  onListingConfirm?: (listingData: IListingData) => Promise<any>,
-  onListingDone?: () => void
+  tradingInput: TradingInput,
   handleSellDlgClose: () => void,
 }
 
 const ConfirmSell: React.FC<IConfirmSellProps> = ({
   nftImage,
   nftTitle,
-  onListingApprove,
-  onListingConfirm,
-  onListingDone,
+  tradingInput,
   handleSellDlgClose,
 }) => {
   const classes = useStyles()
@@ -51,6 +47,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
   const [listingStep, setStep] = useState<ListingStep>(ListingStep.StepListing)
   const [processing, setProcessing] = useState(false)
   const [approveTx, setApproveTx] = useState('')
+  const { onListingApprove, onListingConfirm, onListingDone } = useTrading(tradingInput)
 
   useSwitchedNetwork(() => {
     if (listingStep === ListingStep.StepCheckNetwork) {
@@ -87,11 +84,11 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
     const isAuction = sellType != SaleType.FIXED
 
     if (listingStep === ListingStep.StepCheckNetwork && onListingApprove) {
-      await onListingApprove(isAuction, true)
+      await onListingApprove(true)
       setStep(ListingStep.StepApprove)
     }
     else if (listingStep === ListingStep.StepApprove && onListingApprove) {
-      const tx = await onListingApprove(isAuction, false)
+      const tx = await onListingApprove(false)
 
       if (tx) {
         setApproveTx(tx.hash)
@@ -138,7 +135,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
         // will be hooked by useSwitchedNetwork
       }
     })
-  }, [listingStep, currency, period, setStep])
+  }, [listingStep])
 
   return (
     <Dialog open={true} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>

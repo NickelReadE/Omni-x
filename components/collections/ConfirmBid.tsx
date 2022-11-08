@@ -5,9 +5,10 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import BidContent from './BidContent'
-import { IBidData } from '../../interface/interface'
 import { CURRENCIES_LIST, PERIOD_LIST } from '../../utils/constants'
 import { BidStep } from '../../types/enum'
+import useTrading, { TradingInput } from '../../hooks/useTrading'
+import { CollectionBidInput, useCollectionBid } from '../../hooks/useCollectionBid'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -28,18 +29,16 @@ const useStyles = makeStyles(() =>
 export interface IConfirmBidProps {
   nftImage: string,
   nftTitle: string,
-  onBidApprove?: (bidData: IBidData) => Promise<any>,
-  onBidConfirm?: (bidData: IBidData) => Promise<void>,
-  onBidDone?: () => void
+  tradingInput?: TradingInput,
+  collectionBid?: CollectionBidInput,
   handleBidDlgClose: () => void,
 }
 
 const ConfirmBid: React.FC<IConfirmBidProps> = ({
   nftImage,
   nftTitle,
-  onBidApprove,
-  onBidConfirm,
-  onBidDone,
+  tradingInput,
+  collectionBid,
   handleBidDlgClose,
 }) => {
   const classes = useStyles()
@@ -49,6 +48,28 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
   const [bidStep, setStep] = useState<BidStep>(BidStep.StepBid)
   const [processing, setProcessing] = useState(false)
   const [approveTx, setApproveTx] = useState('')
+  let onBidApprove: any = null, onBidConfirm: any = null, onBidDone: any = null
+  const {
+    onBidApprove: onTradingBidApprove,
+    onBidConfirm: onTradingBidConfirm,
+    onBidDone: onTradingBidDone
+  } = useTrading(tradingInput)
+  const {
+    onCollectionBidApprove,
+    onCollectionBidConfirm,
+    onCollectionBidDone
+  } = useCollectionBid(collectionBid)
+
+  if (tradingInput) {
+    onBidApprove = onTradingBidApprove
+    onBidConfirm = onTradingBidConfirm
+    onBidDone = onTradingBidDone
+  }
+  else if (collectionBid) {  
+    onBidApprove = onCollectionBidApprove
+    onBidConfirm = onCollectionBidConfirm
+    onBidDone = onCollectionBidDone
+  }
 
   const onChangePrice = (e: any) => {
     setPrice(e.target.value)

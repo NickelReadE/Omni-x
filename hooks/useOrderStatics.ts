@@ -1,6 +1,7 @@
 import {useMemo} from 'react'
-import {IOrder} from '../interface/interface'
+import {IOrder, NFTItem} from '../interface/interface'
 import {getCurrencyIconByAddress} from '../utils/constants'
+import { CollectionType } from './useCollection'
 
 export type OrderStatics = {
   order: IOrder,
@@ -12,18 +13,33 @@ export type OrderStatics = {
   lastSaleCoin?:  string,
 }
 
+export type OrderStaticsInput = {
+  nft?: NFTItem,
+  collection?: CollectionType
+}
 const useOrderStatics = ({
-  nft
-}: any): OrderStatics => {
+  nft,
+  collection
+}: OrderStaticsInput): OrderStatics => {
   const combinedBids = useMemo(() => {
+    const bidDatas = []
+    const bidOrderDatas: any[] = []
+
     if (nft && nft.bidDatas && nft.bidOrderData) {
-      return nft.bidDatas.map((data: any, index: number) => ({
-        ...data,
-        order_data: nft.bidOrderData[index]
-      }))
+      bidDatas.push(...nft.bidDatas)
+      bidOrderDatas.push(...nft.bidOrderData)
     }
-    return []
-  }, [nft])
+
+    if (collection && collection.bid_datas && collection.bid_orders) {
+      bidDatas.push(...collection.bid_datas)
+      bidOrderDatas.push(...collection.bid_orders)
+    }
+
+    return bidDatas.map((data: any, index: number) => ({
+      ...data,
+      order_data: bidOrderDatas[index]
+    }))
+  }, [nft, collection])
 
   const sortedBids = useMemo(() => {
     if (combinedBids) {
@@ -54,7 +70,7 @@ const useOrderStatics = ({
     }
   }, [nft])
 
-  const isListed = nft?.price > 0
+  const isListed = (!!nft?.price && nft.price > 0)
   return {
     order: nft?.order_data,
     isListed,

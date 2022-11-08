@@ -11,7 +11,6 @@ import {
   numberLocalize
 } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'
-import useTrading from '../../hooks/useTrading'
 import useData from '../../hooks/useData'
 import useOrderStatics from '../../hooks/useOrderStatics'
 import { useModal } from '../../hooks/useModal'
@@ -57,27 +56,19 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     highestBidCoin,
     lastSale,
     lastSaleCoin
-  } = useOrderStatics({nft})
+  } = useOrderStatics({
+    nft,
+    collection: nft_collection
+  })
   
   const { openModal, closeModal } = useModal()
-  const {
-    onListingApprove,
-    onListingConfirm,
-    onListingDone,
-    onBuyApprove,
-    onBuyConfirm,
-    onBuyComplete,
-    onBuyDone,
-    onBidApprove,
-    onBidConfirm,
-    onBidDone
-  } = useTrading({
+  const tradingInput = {
     collectionUrl: nft_collection?.col_url,
     collectionAddressMap: collection_address_map,
     tokenId: nft?.token_id,
     selectedNFTItem: nft,
     onRefresh
-  })
+  }
 
   const chainIcon = useMemo(() => {
     return getChainIconById(nft && nft.chain_id ? nft.chain_id.toString() : '5')
@@ -236,9 +227,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                 openModal(ModalIDs.MODAL_LISTING, {
                   nftImage: image,
                   nftTitle: nftName,
-                  onListingApprove,
-                  onListingConfirm,
-                  onListingDone,
+                  tradingInput,
                   handleSellDlgClose: closeModal
                 })
               }}>
@@ -253,10 +242,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                   nftImage: image,
                   nftTitle: nftName,
                   order,
-                  onBuyApprove,
-                  onBuyConfirm,
-                  onBuyComplete,
-                  onBuyDone,
+                  tradingInput,
                   handleBuyDlgClose: closeModal
                 })
               }}>
@@ -270,9 +256,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                 openModal(ModalIDs.MODAL_BID, {
                   nftImage: image,
                   nftTitle: nftName,
-                  onBidApprove,
-                  onBidConfirm,
-                  onBidDone,
+                  tradingInput,
                   handleBidDlgClose: closeModal
                 })
               }}>

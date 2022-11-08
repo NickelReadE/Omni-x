@@ -27,24 +27,43 @@ type TradingFunction = {
   onBidConfirm: (bid_data: IBidData) => Promise<void>,
   onBidDone: () => void,
   onAcceptApprove: (check_network: boolean) => Promise<any>,
-  onAcceptConfirm: (bid_order: IOrder) => Promise<any>,
+  onAcceptConfirm: (bid_order: IOrder, tokenId: string) => Promise<any>,
   onAcceptComplete: (bid_order: IOrder) => Promise<void>,
   onAcceptDone: () => void
 }
 
-export const useTrading = (data: TradingInput): TradingFunction => {
+export const useTrading = (data?: TradingInput): TradingFunction => {
   const { addTxToHistories } = useProgress()
   const { listenONFTEvents } = useContract()
   const { switchNetworkAsync } = useSwitchedNetwork()
   const { provider, signer, address, chainId } = useWallet()
   const dispatch = useDispatch()
 
+  if (!data) {
+    return {
+      onListingApprove: async() => {},
+      onListingConfirm: async() => {},
+      onListingDone: () => {},
+      onBuyApprove: async() => {},
+      onBuyConfirm: async() => {},
+      onBuyComplete: async() => {},
+      onBuyDone: () => {},
+      onBidApprove: async() => {},
+      onBidConfirm: async() => {},
+      onBidDone: () => {},
+      onAcceptApprove: async() => {},
+      onAcceptConfirm: async() => {},
+      onAcceptComplete: async() => {},
+      onAcceptDone: () => {}
+    }
+  }
+
   const collection_address = useMemo(() => {
     if (data.collectionAddressMap && chainId) return data.collectionAddressMap[chainId]
     return undefined
   }, [data.collectionAddressMap, chainId])
 
-  const common_data: TradingCommonData = {
+  const getCommonData = () => ({
     provider,
     signer,
     address,
@@ -54,62 +73,63 @@ export const useTrading = (data: TradingInput): TradingFunction => {
     collectionAddress: collection_address,
     selectedNFTItem: data.selectedNFTItem,
     onRefresh: data.onRefresh
-  }
-  const special_data: TradingSpecialData = {
+  })
+  const getSpecialData = () => ({
     dispatch,
     switchNetworkAsync,
     addTxToHistories,
     listenONFTEvents
-  }
+  })
 
   // listing
   const onListingApprove = (check_network: boolean) => {
-    return doListingApprove(check_network, common_data, special_data)
+    return doListingApprove(check_network, getCommonData(), getSpecialData())
   }
   const onListingConfirm = (listing_data: IListingData) => {
-    return doListingConfirm(listing_data, common_data)
+    return doListingConfirm(listing_data, getCommonData())
   }
   const onListingDone = () => {
-    return doListingDone(common_data)
+    return doListingDone(getCommonData())
   }
   // buy
   const onBuyApprove = (order?: IOrder) => {
     if (!order) throw new Error('Not listed')
-    return doBuyApprove(order, common_data, special_data)
+    return doBuyApprove(order, getCommonData(), getSpecialData())
   }
   const onBuyConfirm = (order?: IOrder) => {
     if (!order) throw new Error('Not listed')
-    return doBuyConfirm(order, common_data, special_data)
+    return doBuyConfirm(order, getCommonData(), getSpecialData())
   }
   const onBuyComplete = (order?: IOrder) => {
     if (!order) throw new Error('Not listed')
-    return doBuyComplete(order, common_data)
+    return doBuyComplete(order, getCommonData())
   }
   const onBuyDone = () => {
-    return doBuyDone(common_data)
+    return doBuyDone(getCommonData())
   }
   // bid
   const onBidApprove = (bid_data: IBidData) => {
-    return doBidApprove(bid_data, common_data, special_data)
+    return doBidApprove(bid_data, getCommonData(), getSpecialData())
   }
   const onBidConfirm = (bid_data: IBidData) => {
-    return doBidConfirm(bid_data, common_data)
+    return doBidConfirm(bid_data, getCommonData())
   }
   const onBidDone = () => {
-    return doBidDone(common_data)
+    return doBidDone(getCommonData())
   }
   // accept
   const onAcceptApprove = (check_network: boolean) => {
-    return doAcceptApprove(check_network, common_data, special_data)
+    console.log('---approve--', getCommonData().chainId, chainId)
+    return doAcceptApprove(check_network, getCommonData(), getSpecialData())
   }
-  const onAcceptConfirm = (bid_order: IOrder) => {
-    return doAcceptConfirm(bid_order, common_data, special_data)
+  const onAcceptConfirm = (bid_order: IOrder, tokenId: string) => {
+    return doAcceptConfirm(bid_order, tokenId, getCommonData(), getSpecialData())
   }
   const onAcceptComplete = (bid_order: IOrder) => {
-    return doAcceptComplete(bid_order, common_data)
+    return doAcceptComplete(bid_order, getCommonData())
   }
   const onAcceptDone = () => {
-    return doAcceptDone(common_data)
+    return doAcceptDone(getCommonData())
   }
 
   return {

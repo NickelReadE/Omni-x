@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { IOrder } from '../interface/interface'
 import { collectionsService } from '../services/collections'
 
 export type CollectionType = {
@@ -21,7 +22,9 @@ export type CollectionType = {
         usd: number,
         omni: number
     },
-    attrs: any
+    attrs: any,
+    bid_datas: any[]
+    bid_orders: IOrder[]
 }
 
 export type CollectionTypeFunc = {

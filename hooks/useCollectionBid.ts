@@ -1,10 +1,7 @@
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useDispatch } from 'react-redux'
-import { doAcceptApprove, doAcceptComplete, doAcceptConfirm, doAcceptDone, doBidApprove, doBidConfirm, doBidDone, doBuyApprove, doBuyComplete, doBuyConfirm, doBuyDone, doListingApprove, doListingConfirm, doListingDone, TradingCommonData, TradingSpecialData } from '../components/providers/TradingProvider'
-import { IBidData, IListingData, IOrder, NFTItem } from '../interface/interface'
-import useContract from './useContract'
-import useProgress from './useProgress'
-import { useSwitchedNetwork } from './useSwitchedNetwork'
+import { doBidApprove, doBidConfirm, doBidDone, TradingCommonData, TradingSpecialData } from '../components/providers/TradingProvider'
+import { IBidData } from '../interface/interface'
 import useWallet from './useWallet'
 
 export type CollectionBidInput = {
@@ -19,9 +16,17 @@ type CollectionBidFunction = {
   onCollectionBidDone: () => void,
 }
 
-export const useCollectionBid = (data: CollectionBidInput): CollectionBidFunction => {
+export const useCollectionBid = (data?: CollectionBidInput): CollectionBidFunction => {
   const { provider, signer, address, chainId } = useWallet()
   const dispatch = useDispatch()
+
+  if (!data) {
+    return {
+      onCollectionBidApprove: async() => {},
+      onCollectionBidConfirm: async() => {},
+      onCollectionBidDone: () => {},
+    }
+  }
 
   const collection_address = useMemo(() => {
     if (data.collectionAddressMap && chainId) return data.collectionAddressMap[chainId]

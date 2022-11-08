@@ -8,7 +8,6 @@ import classNames from '../helpers/classNames'
 import Loading from '../public/images/loading_f.gif'
 import { numberShortify } from '../utils/constants'
 import { useModal } from '../hooks/useModal'
-import { useCollectionBid } from '../hooks/useCollectionBid'
 import { ModalIDs } from '../contexts/modal'
 
 const CollectionCard = (props:any) => {
@@ -18,14 +17,10 @@ const CollectionCard = (props:any) => {
   ///only in the beta version
 
   const { openModal, closeModal } = useModal()
-  const {
-    onCollectionBidApprove,
-    onCollectionBidConfirm,
-    onCollectionBidDone
-  } = useCollectionBid({
+  const collectionBid = {
     collectionUrl: props.collection.col_url as string,
     collectionAddressMap: props.collection.address
-  })
+  }
 
   const { transform } = useDraggable({
     id: `draggable-${1}`,
@@ -56,9 +51,7 @@ const CollectionCard = (props:any) => {
                 openModal(ModalIDs.MODAL_BID, {
                   nftImage: props.collection.profile_image,
                   nftTitle: props.collection.name,
-                  onBidApprove: onCollectionBidApprove,
-                  onBidConfirm: onCollectionBidConfirm,
-                  onBidDone: onCollectionBidDone,
+                  collectionBid,
                   handleBidDlgClose: closeModal
                 })
               }}
