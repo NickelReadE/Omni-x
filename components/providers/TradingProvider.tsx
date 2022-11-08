@@ -5,7 +5,7 @@ import { IBidData, IListingData, IOrder, NFTItem, OrderStatus } from '../../inte
 import { openSnackBar } from '../../redux/reducers/snackBarReducer'
 import { collectionsService } from '../../services/collections'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../../types'
-import { ContractName, CREATOR_FEE, getAddressByName, getChainNameFromId, getConversionRate, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from '../../utils/constants'
+import { ContractName, CREATOR_FEE, formatCurrency, getAddressByName, getChainNameFromId, getConversionRate, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from '../../utils/constants'
 import { decodeFromBytes, getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, getOmnixExchangeInstance, getONFTCore721Instance, getTransferSelectorNftInstance } from '../../utils/contracts'
 import { acceptOrder, postMakerOrder } from '../../utils/makeOrder'
 
@@ -180,8 +180,10 @@ export const doBuyApprove = async (order: IOrder, common_data: TradingCommonData
   const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
   const newCurrencyName = validateCurrencyName(currencyName, common_data.chainId)
   const currencyAddress = getAddressByName(newCurrencyName, common_data.chainId)
+  const formattedPrice = formatCurrency(order?.price || 0, currencyName)
+  const parsedPrice = parseCurrency(formattedPrice, newCurrencyName)
 
-  await checkValid(currencyAddress, order?.price, common_data.chainId, common_data.signer)
+  await checkValid(currencyAddress, formattedPrice, common_data.chainId, common_data.signer)
 
   const omni = getCurrencyInstance(currencyAddress, common_data.chainId, common_data.signer)
 
@@ -191,14 +193,14 @@ export const doBuyApprove = async (order: IOrder, common_data: TradingCommonData
 
   {
     const balance = await omni.balanceOf(common_data.address)
-    if (balance.lt(order.price)) {
+    if (balance.lt(parsedPrice)) {
       const errMessage = 'Not enough balance'
       speical_data.dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
       throw new Error(errMessage)
     }
   }
 
-  const buy_price = order?.price
+  const buy_price = parsedPrice
   approveTxs.push(await approve(omni, common_data.address, getAddressByName('FundManager', common_data.chainId), buy_price))
 
   if (isUsdcOrUsdt(order?.currencyAddress)) {
@@ -222,8 +224,10 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
   const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
   const newCurrencyName = validateCurrencyName(currencyName, common_data.chainId)
   const currencyAddress = getAddressByName(newCurrencyName, common_data.chainId)
+  const formattedPrice = formatCurrency(order?.price || 0, currencyName)
+  const parsedPrice = parseCurrency(formattedPrice, newCurrencyName)
 
-  await checkValid(currencyAddress, order?.price, common_data.chainId, common_data.signer)
+  await checkValid(currencyAddress, formattedPrice, common_data.chainId, common_data.signer)
 
   const omni = getCurrencyInstance(currencyAddress, common_data.chainId, common_data.signer)
   if (!omni) {
@@ -251,7 +255,7 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
   const takerBid : TakerOrderWithEncodedParams = {
     isOrderAsk: false,
     taker: common_data.address || '0x',
-    price: order?.price || '0',
+    price: parsedPrice,
     tokenId: order?.tokenId || '0',
     minPercentageToAsk: order?.minPercentageToAsk || '0',
     params: ethers.utils.defaultAbiCoder.encode([
@@ -485,12 +489,14 @@ export const doAcceptConfirm = async (bid_order: IOrder, tokenId: string, common
   const currencyName = getCurrencyNameAddress(bid_order.currencyAddress) as ContractName
   const newCurrencyName = validateCurrencyName(currencyName, common_data.chainId)
   const currencyAddress = getAddressByName(newCurrencyName, common_data.chainId)
+  const formattedPrice = formatCurrency(bid_order.price, currencyName)
+  const parsedPrice = parseCurrency(formattedPrice, newCurrencyName)
 
   const isCollectionOffer = !bid_order.tokenId || Number(bid_order.tokenId) === 0
   const takerAsk : TakerOrderWithEncodedParams = {
     isOrderAsk: true,
     taker: common_data.address || '0x',
-    price: bid_order.price || '0',
+    price: parsedPrice,
     tokenId: tokenId,
     minPercentageToAsk: bid_order.minPercentageToAsk || '0',
     params: ethers.utils.defaultAbiCoder.encode([
