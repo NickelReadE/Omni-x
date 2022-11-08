@@ -119,11 +119,10 @@ export const useTrading = (data?: TradingInput): TradingFunction => {
   }
   // accept
   const onAcceptApprove = (check_network: boolean) => {
-    console.log('---approve--', getCommonData().chainId, chainId)
     return doAcceptApprove(check_network, getCommonData(), getSpecialData())
   }
-  const onAcceptConfirm = (bid_order: IOrder, tokenId: string) => {
-    return doAcceptConfirm(bid_order, tokenId, getCommonData(), getSpecialData())
+  const onAcceptConfirm = (bid_order: IOrder) => {
+    return doAcceptConfirm(bid_order, getCommonData(), getSpecialData())
   }
   const onAcceptComplete = (bid_order: IOrder) => {
     return doAcceptComplete(bid_order, getCommonData())

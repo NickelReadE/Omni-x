@@ -453,7 +453,7 @@ export const doAcceptApprove = async (check_network: boolean, common_data: Tradi
   return txApprove
 }
 
-export const doAcceptConfirm = async (bid_order: IOrder, tokenId: string, common_data: TradingCommonData, speical_data: TradingSpecialData) => {
+export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCommonData, speical_data: TradingSpecialData) => {
   if (!common_data.selectedNFTItem?.chain_id) throw new Error('Invalid NFT chain')
   if (!common_data.chainId) throw new Error('Please connect to your wallet')
   if (!common_data.collectionAddress) throw new Error('Invalid collection')
@@ -497,7 +497,7 @@ export const doAcceptConfirm = async (bid_order: IOrder, tokenId: string, common
     isOrderAsk: true,
     taker: common_data.address || '0x',
     price: parsedPrice,
-    tokenId: tokenId,
+    tokenId: common_data.tokenId || '0',
     minPercentageToAsk: bid_order.minPercentageToAsk || '0',
     params: ethers.utils.defaultAbiCoder.encode([
       'uint16',
@@ -514,7 +514,6 @@ export const doAcceptConfirm = async (bid_order: IOrder, tokenId: string, common
     ])
   }
 
-  console.log('--getLzFeesForTrading-', takerAsk, makerBid)
   const [omnixFee, currencyFee, nftFee] = await omnixExchange.getLzFeesForTrading(takerAsk, makerBid)
   const lzFee = omnixFee.add(currencyFee).add(nftFee)
 

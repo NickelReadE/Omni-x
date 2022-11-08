@@ -72,7 +72,6 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
 
   const doLogic = async () => {
     if (!bidOrder) throw new Error('Invalid bid')
-    console.log('-doLogic-', chainId)
 
     if (acceptStep === AcceptStep.StepCheckNetwork && onAcceptApprove) {
       await onAcceptApprove(true)
