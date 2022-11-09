@@ -305,9 +305,9 @@ export const numberShortify = (price: string | number | undefined) => {
   if (!price) return '0'
   const decimalized = Number(price)
 
-  if (decimalized / 1e12 >= 1) return `${(decimalized / 1e12).toPrecision(5)}T`
-  if (decimalized / 1e9 >= 1) return `${(~~decimalized / 1e9)}B`
-  if (decimalized / 1e6 >= 1) return `${(~~decimalized / 1e6)}M`
+  if (decimalized / 1e12 >= 1) return `${(~~(decimalized / 1e9) / 1e3)}T`
+  if (decimalized / 1e9 >= 1) return `${(~~(decimalized / 1e6) / 1e3)}B`
+  if (decimalized / 1e6 >= 1) return `${(~~(decimalized / 1e3) / 1e3)}M`
   if (decimalized / 1000 >= 1) return `${(~~decimalized / 1000)}K`
 
   return decimalized

@@ -24,6 +24,18 @@ const CollectionCard = (props:any) => {
     transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
     zIndex: 99
   } : undefined
+
+  const calcVolumeUp = (volume24h: number, volume48h: number) => {
+    if (volume48h > 0) {
+      return ~~(volume24h / volume48h) - 100
+    }
+    if (volume24h > 0) {
+      return 100
+    }
+    return 0
+  }
+  const volumeUp = props.collection ? calcVolumeUp(props.collection.volume24h, props.collection.volume48h) : 0
+  
   return (
     <div className={classNames(' border-[2px] border-[#F6F8FC] w-[340px] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F6F8FC]', editStyle.nftContainer)}>
       <div className='relative'  style={style} >
@@ -72,13 +84,13 @@ const CollectionCard = (props:any) => {
           </div>
         </div>
         <div className={classNames(' col-span-3 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
-          <div className='text-[14px] font-extrabold mb-1 text-center'>Volume(7d)</div>
+          <div className='text-[14px] font-extrabold mb-1 text-center'>Volume(24h)</div>
           <div className='text-[14px] flex flex-row justify-center space-x-4' >
             <div className='flex flex-row mr-4'>
-              <span className='font-medium mr-1 text-[12px]'>{props.collection?0:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
-              <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img>
+              <span className='font-medium mr-1 text-[12px]'>{props.collection?numberShortify(props.collection.volume24h):<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+              {/* <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img> */}
             </div>
-            <span className='font-medium text-[#38B000] text-[12px]'> {props.collection?'0%':<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+            <span className={classNames('font-medium text-[12px]', volumeUp >= 0 ? 'text-[#38B000]': 'text-[#B444F9]')}> {props.collection ? `${Math.abs(volumeUp)}%` : <Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
           </div>
         </div>
       </div>
