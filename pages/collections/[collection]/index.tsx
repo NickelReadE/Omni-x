@@ -40,8 +40,8 @@ import useData from '../../../hooks/useData'
 import Dropdown from '../../../components/dropdown'
 
 const sort_fields = [
-  { text: 'price: high to low', value: '-price' },
   { text: 'price: low to high', value: 'price' },
+  { text: 'price: high to low', value: '-price' },
   { text: 'Highest last sale', value: '-last_sale' },
 ]
 

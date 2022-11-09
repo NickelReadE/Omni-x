@@ -110,9 +110,6 @@ const Item: NextPage = () => {
 
   const nftImage = useMemo(() => {
     if (currentNFT && currentNFT.image) {
-      if (currentNFT.image.startsWith('https://ipfs.io/')) {
-        return currentNFT.image.replace('https://ipfs.io/', 'https://omni-x.infura-ipfs.io/')
-      }
       return currentNFT.image
     }
     return '/images/omnix_logo_black_1.png'
