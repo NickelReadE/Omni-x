@@ -49,6 +49,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
   const [processing, setProcessing] = useState(false)
   const [approveTx, setApproveTx] = useState('')
   let onBidApprove: any = null, onBidConfirm: any = null, onBidDone: any = null
+  let isCollectionBid = false
   const {
     onBidApprove: onTradingBidApprove,
     onBidConfirm: onTradingBidConfirm,
@@ -69,6 +70,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
     onBidApprove = onCollectionBidApprove
     onBidConfirm = onCollectionBidConfirm
     onBidDone = onCollectionBidDone
+    isCollectionBid = true
   }
 
   const onChangePrice = (e: any) => {
@@ -160,6 +162,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
           bidStep={bidStep}
           processing={processing}
           approveTx={approveTx}
+          isCollectionBid={isCollectionBid}
         />
       </DialogContent>
     </Dialog>
