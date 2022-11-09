@@ -27,7 +27,7 @@ const CollectionCard = (props:any) => {
 
   const calcVolumeUp = (volume24h: number, volume48h: number) => {
     if (volume48h > 0) {
-      return ~~(volume24h / volume48h) - 100
+      return ~~(100 * volume24h / volume48h - 100)
     }
     if (volume24h > 0) {
       return 100
@@ -90,7 +90,7 @@ const CollectionCard = (props:any) => {
               <span className='font-medium mr-1 text-[12px]'>{props.collection?numberShortify(props.collection.volume24h):<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
               {/* <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img> */}
             </div>
-            <span className={classNames('font-medium text-[12px]', volumeUp >= 0 ? 'text-[#38B000]': 'text-[#B444F9]')}> {props.collection ? `${Math.abs(volumeUp)}%` : <Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+            <span className={classNames('font-medium text-[12px]', volumeUp >= 0 ? 'text-[#38B000]': 'text-[#B00000]')}> {props.collection ? `${(volumeUp)}%` : <Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
           </div>
         </div>
       </div>
