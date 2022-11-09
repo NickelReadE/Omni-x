@@ -6,7 +6,8 @@ import {useDraggable} from '@dnd-kit/core'
 import editStyle from '../styles/nftbox.module.scss'
 import classNames from '../helpers/classNames'
 import Loading from '../public/images/loading_f.gif'
-import { numberShortify } from '../utils/constants'
+import { longNumberShortify, numberShortify } from '../utils/constants'
+import { BigNumber } from 'ethers'
 
 const CollectionCard = (props:any) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -25,12 +26,21 @@ const CollectionCard = (props:any) => {
     zIndex: 99
   } : undefined
 
-  const calcVolumeUp = (volume24h: number, volume48h: number) => {
-    if (volume48h > 0) {
-      return ~~(100 * volume24h / volume48h - 100)
-    }
-    if (volume24h > 0) {
+  const calcVolumeUp = (volume24h: string, volume48h: string) => {
+    const a = BigNumber.from(volume24h)
+    const b = BigNumber.from(volume48h)
+
+    if (a.gte(b)) {
+      if (b.gt(0)) {
+        return ~~(a.mul(100).div(b).toNumber() - 100)
+      }
       return 100
+    }
+    else if (a.gt(0)) {
+      return ~~(100 - b.mul(100).div(a).toNumber())
+    }
+    else if (b.eq(0)) {
+      return -100
     }
     return 0
   }
@@ -87,10 +97,9 @@ const CollectionCard = (props:any) => {
           <div className='text-[14px] font-extrabold mb-1 text-center'>Volume(24h)</div>
           <div className='text-[14px] flex flex-row justify-center space-x-4' >
             <div className='flex flex-row mr-4'>
-              <span className='font-medium mr-1 text-[12px]'>{props.collection?numberShortify(props.collection.volume24h):<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
-              {/* <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img> */}
+              <span className='font-medium mr-1 text-[12px]'>${props.collection?longNumberShortify(props.collection.volume24h):<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
             </div>
-            <span className={classNames('font-medium text-[12px]', volumeUp >= 0 ? 'text-[#38B000]': 'text-[#B00000]')}> {props.collection ? `${(volumeUp)}%` : <Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+            <span className={classNames('font-medium text-[12px]', volumeUp >= 0 ? 'text-[#38B000]': 'text-[#B00000]')}> {props.collection ? `${(numberShortify(volumeUp, 0))}%` : <Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
           </div>
         </div>
       </div>
