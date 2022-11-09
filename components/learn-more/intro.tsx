@@ -3,6 +3,7 @@ import OmniChainImage from '../../public/images/learn-more/omnichain.png'
 
 interface IPropsIntroCard {
     title: string,
+    className?: string,
     children: React.ReactNode
 }
 
@@ -10,9 +11,9 @@ interface IPropsIconBox {
     children: React.ReactNode
 }
 
-export const IntroCard = ({ title, children }: IPropsIntroCard) => {
+export const IntroCard = ({ title, children, className }: IPropsIntroCard) => {
   return (
-    <div className="flex flex-1 justify-center h-[214px]">
+    <div className={className ? className : 'flex flex-1 justify-center h-[214px]'}>
       <div className="flex flex-col w-full items-center bg-drak-gradient border-[1px] border-solid border-[#383838] shadow-[0_0_30px_rgba(255,255,255,0.06)] rounded-lg backdrop-blur-sm p-8">
         <span className="text-xl text-primary-light leaading-[24px]">{title}</span>
         <div className='flex items-center justify-center w-full h-full'>

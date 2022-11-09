@@ -78,6 +78,7 @@ module.exports = {
         primary: '#161616',
         'primary-light': '#F5F5F5',
         secondary: '#969696',
+        'primary-blue': '#00F0EC'
         // gradient: 'linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%)',
         // rainbow: 'linear-gradient(103.58deg, #8600F0 15.1%, #008BF0 40.13%, #00F0EC 63.65%, #16FFC5 87.92%)',
       },
