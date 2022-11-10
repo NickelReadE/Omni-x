@@ -78,7 +78,8 @@ module.exports = {
         primary: '#161616',
         'primary-light': '#F5F5F5',
         secondary: '#969696',
-        'primary-blue': '#00F0EC'
+        'primary-blue': '#00F0EC',
+        'primary-green': '#16FFC5'
         // gradient: 'linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%)',
         // rainbow: 'linear-gradient(103.58deg, #8600F0 15.1%, #008BF0 40.13%, #00F0EC 63.65%, #16FFC5 87.92%)',
       },
@@ -91,13 +92,14 @@ module.exports = {
         xs: '10px',
         sm: '12px',
         md: '14px',
-        lg: '16px',
+        lg: ['16px', '19px'],
         xg: '18px',
-        xl: '20px',
+        xl: ['20px', '24px'],
         xg1:'24px',
         xl2:'40px',
         xxl:'32px',
-        xxl2:'60px'
+        xxl2:'60px',
+        extraxl: ['64px', '77px']
       },
       gridTemplateColumns: {
         '13': 'repeat(13, minmax(0, 1fr))',

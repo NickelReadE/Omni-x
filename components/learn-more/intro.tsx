@@ -3,6 +3,7 @@ import OmniChainImage from '../../public/images/learn-more/omnichain.png'
 
 interface IPropsIntroCard {
     title: string,
+    titleColor?: string,
     className?: string,
     children: React.ReactNode
 }
@@ -11,11 +12,11 @@ interface IPropsIconBox {
     children: React.ReactNode
 }
 
-export const IntroCard = ({ title, children, className }: IPropsIntroCard) => {
+export const IntroCard = ({ title, titleColor, children, className }: IPropsIntroCard) => {
   return (
     <div className={className ? className : 'flex flex-1 justify-center h-[214px]'}>
       <div className="flex flex-col w-full items-center bg-drak-gradient border-[1px] border-solid border-[#383838] shadow-[0_0_30px_rgba(255,255,255,0.06)] rounded-lg backdrop-blur-sm p-8">
-        <span className="text-xl text-primary-light leaading-[24px]">{title}</span>
+        <span className={`text-xl ${titleColor ? titleColor : 'text-primary-light'}`}>{title}</span>
         <div className='flex items-center justify-center w-full h-full'>
           {children}
         </div>
@@ -37,8 +38,8 @@ export default function LearnMoreIntro() {
     <div>
       <div className="flex justify-center py-[207px]">
         <div className="flex flex-col">
-          <span className="text-primary-light text-center text-[64px] leading-[77px] font-bold shadow-[0_4_6px_rgba(0,0,0,0.25)]">where web3</span>
-          <span className="bg-clip-text text-center text-transparent bg-rainbow-gradient text-[64px] leading-[77px] font-bold shadow-[0_4_6px_rgba(0,0,0,0.25)]">connects through art</span>
+          <span className="text-primary-light text-center text-extraxl font-bold shadow-[0_4_6px_rgba(0,0,0,0.25)]">where web3</span>
+          <span className="bg-clip-text text-center text-transparent bg-rainbow-gradient text-extraxl font-bold shadow-[0_4_6px_rgba(0,0,0,0.25)]">connects through art</span>
           <span className="text-secondary mt-2 text-xg1 leading-[29px] text-center shadow-[0_4_6px_rgba(0,0,0,0.25)]">art for everyone, everywhere, all in one place</span>
         </div>
       </div>
@@ -75,7 +76,7 @@ export default function LearnMoreIntro() {
                 </defs>
               </svg>
             </IconBox>
-                      
+
             <IconBox>
               <svg width="22" height="27" viewBox="0 0 22 27" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M16.2727 1.6665L20.6363 6.03014L16.2727 10.3938" stroke="url(#paint0_linear_185_428)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
