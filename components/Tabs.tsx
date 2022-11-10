@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import NFTGrid from './NFTGrid'
-import WatchList from './WatchList'
 import Stats from './Stats'
 import { makeStyles } from '@material-ui/core/styles'
 import Dialog from '@material-ui/core/Dialog'
