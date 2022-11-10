@@ -37,7 +37,6 @@ export const rpcDatafeedProvider:IRpcDatafeed = {
   'fantom':'https://rpc.ankr.com/fantom',
   'optimism':'https://rpc.ankr.com/optimism',
   'polygon':'https://rpc.ankr.com/polygon'
-
 }
 export const rpcGasProvider:IRpcDatafeed = {
   'eth':'https://rpc.ankr.com/eth',
