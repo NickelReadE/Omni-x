@@ -1,8 +1,100 @@
-import React from 'react'
+import React, {useMemo, useState} from 'react'
+import Link from 'next/link'
 import {ActivityType} from '../../hooks/useActivities'
-import {chainInfos, USER_ACTIVITY_TYPE_NAMES} from '../../utils/constants'
+import {getBlockExplorer, getChainIcons, USER_ACTIVITY_TYPE_NAMES} from '../../utils/constants'
 import {truncateAddress} from '../../utils/utils'
-import {ChainIds, USER_ACTIVITY_TYPE} from '../../types/enum'
+import {USER_ACTIVITY_TYPE} from '../../types/enum'
+
+const ActivitySend = ({activity}: {activity: ActivityType}) => {
+  const [hovered, setHovered] = useState(false)
+  const [targetHovered, setTargetHovered] = useState(false)
+
+  const sendTransactionHashLink = useMemo(() => {
+    return getBlockExplorer(activity.srcChainId) + '/tx/' + activity.senderTransactionHash
+  }, [activity.srcChainId, activity.senderTransactionHash])
+
+  const receiveTransactionHashLink = useMemo(() => {
+    return getBlockExplorer(activity.chainId) + '/tx/' + activity.transactionHash
+  }, [activity.chainId, activity.transactionHash])
+
+  const senderChainIcon = useMemo(() => {
+    return getChainIcons(activity.srcChainId)
+  }, [activity.srcChainId])
+
+  const receiverChainIcon = useMemo(() => {
+    return getChainIcons(activity.chainId)
+  }, [activity.chainId])
+
+  const onHover = (type: 'sender' | 'target') => {
+    if (type === 'sender') {
+      setHovered(true)
+    } else {
+      setTargetHovered(true)
+    }
+  }
+
+  const onLeave = (type: 'sender' | 'target') => {
+    if (type === 'sender') {
+      setHovered(false)
+    } else {
+      setTargetHovered(false)
+    }
+  }
+
+  return (
+    <div className="flex items-center justify-between mt-4">
+      <Link href={`/collections/${activity.col_url}/${activity.tokenId}`}>
+        <div className="flex flex-1 items-center rounded-lg cursor-pointer">
+          <img src={activity.tokenData?.image} width={50} height={50} alt={'token Image'} />
+          <div className={'flex flex-col ml-2'}>
+            <span>{activity.tokenData?.name}</span>
+            <span>{activity.tokenId}</span>
+          </div>
+        </div>
+      </Link>
+
+      <div className={'flex flex-1'}>{USER_ACTIVITY_TYPE_NAMES[activity.activity]}</div>
+
+      <div className={'flex flex-1 items-center'}>
+        {
+          activity.srcChainId && activity.activity === USER_ACTIVITY_TYPE.Send &&
+          <img
+            alt={'networkIcon'}
+            src={(hovered) ? senderChainIcon.explorer : senderChainIcon.icon}
+            onMouseEnter={() => onHover('sender')}
+            onMouseLeave={() => onLeave('sender')}
+            onClick={() => window.open(sendTransactionHashLink, '_blank')}
+            className="mr-2 h-[20px]"
+          />
+        }
+        {
+          activity.activity === USER_ACTIVITY_TYPE.Transfer &&
+          <img
+            alt={'networkIcon'}
+            src={(hovered) ? senderChainIcon.explorer : senderChainIcon.icon}
+            onMouseEnter={() => onHover('sender')}
+            onMouseLeave={() => onLeave('sender')}
+            onClick={() => window.open(sendTransactionHashLink, '_blank')}
+            className="mr-2 h-[20px]"
+          />
+        }
+        {truncateAddress(activity.from)}
+      </div>
+      <div className={'flex flex-1 items-center'}>
+        <img
+          alt={'networkIcon'}
+          src={(targetHovered) ? receiverChainIcon.explorer : receiverChainIcon.icon}
+          onMouseEnter={() => onHover('target')}
+          onMouseLeave={() => onLeave('target')}
+          onClick={() => window.open(receiveTransactionHashLink, '_blank')}
+          className="mr-2 h-[20px]"
+        />
+        {truncateAddress(activity.to)}
+      </div>
+      <div className={'flex flex-1'}>{new Date(activity.createdAt).toLocaleString()}</div>
+    </div>
+  )
+}
 
 const UserActivity = ({ activities }: { activities: ActivityType[] }) => {
   return (
@@ -12,34 +104,7 @@ const UserActivity = ({ activities }: { activities: ActivityType[] }) => {
           {
             activities.map((activity, index) => {
               return (
-                <div key={index} className="flex items-center justify-between mt-4">
-                  <div className="flex flex-1 items-center rounded-lg">
-                    <img src={activity.tokenData?.image} width={50} height={50} alt={'token Image'} />
-                    <div className={'flex flex-col ml-2'}>
-                      <span>{activity.tokenData?.name}</span>
-                      <span>{activity.tokenId}</span>
-                    </div>
-                  </div>
-
-                  <div className={'flex flex-1'}>{USER_ACTIVITY_TYPE_NAMES[activity.activity]}</div>
-
-                  <div className={'flex flex-1 items-center'}>
-                    {
-                      activity.srcChainId && activity.activity === USER_ACTIVITY_TYPE.Send &&
-                      <img key={index} alt={'networkIcon'} src={chainInfos[activity.srcChainId].logo || chainInfos[ChainIds.ETHEREUM].logo} className="mr-2 h-[20px]" />
-                    }
-                    {
-                      activity.activity === USER_ACTIVITY_TYPE.Transfer &&
-                      <img key={index} alt={'networkIcon'} src={chainInfos[activity.chainId].logo || chainInfos[ChainIds.ETHEREUM].logo} className="mr-2 h-[20px]" />
-                    }
-                    {truncateAddress(activity.from)}
-                  </div>
-                  <div className={'flex flex-1 items-center'}>
-                    <img key={index} alt={'networkIcon'} src={chainInfos[activity.chainId].logo || chainInfos[ChainIds.ETHEREUM].logo} className="mr-2 h-[20px]" />
-                    {truncateAddress(activity.to)}
-                  </div>
-                  <div className={'flex flex-1'}>{new Date(activity.createdAt).toLocaleString()}</div>
-                </div>
+                <ActivitySend key={index} activity={activity} />
               )
             })
           }

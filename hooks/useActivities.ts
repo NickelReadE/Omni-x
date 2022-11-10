@@ -11,6 +11,8 @@ export type ActivityType = {
   srcChainId: number,
   chainId: number,
   createdAt: string,
+  senderTransactionHash: string,
+  transactionHash: string,
   tokenData?: any,
 }
 
