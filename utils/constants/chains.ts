@@ -306,7 +306,6 @@ export const numberShortify = (price: string | number | undefined, decimal?: num
   const decimalized = Number(price)
 
   if (decimal === 0) {
-    console.log('decimalized--', decimalized)
     if (Math.abs(decimalized) / 1e12 >= 1) return `${(~~(decimalized / 1e12))}T`
     if (Math.abs(decimalized) / 1e9 >= 1) return `${(~~(decimalized / 1e9))}B`
     if (Math.abs(decimalized) / 1e6 >= 1) return `${(~~(decimalized / 1e6))}M`
