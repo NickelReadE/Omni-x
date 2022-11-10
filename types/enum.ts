@@ -1,5 +1,5 @@
 export enum SupportedChainId {
-    RINKEBY = 10001   
+    RINKEBY = 10001
 }
 
 export enum ChainIds {
@@ -72,4 +72,13 @@ export enum AcceptStep {
     StepComplete,
     StepDone,
     StepFail,
+}
+
+export enum USER_ACTIVITY_TYPE {
+    Transfer,
+    Send,
+    Buy,
+    Sell,
+    List,
+    Bid,
 }

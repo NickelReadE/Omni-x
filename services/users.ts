@@ -20,6 +20,10 @@ const getUserNFTs = async (address: string) => {
   return res.data.data
 }
 
+const getActivity = async (address: string) => {
+  const res = await API.get(`users/activity/${address}`)
+  return res.data.data
+}
 
 const getUserNonce = async (address: string) => {
   const res = await API.get(`users/getUserNonce/${address}`)
@@ -31,5 +35,6 @@ export const userService = {
   getUserByAddress,
   searchByKeyword,
   getUserNFTs,
+  getActivity,
   getUserNonce
 }
