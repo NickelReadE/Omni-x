@@ -309,7 +309,7 @@ export const numberShortify = (price: string | number | undefined, decimal?: num
     if (Math.abs(decimalized) / 1e12 >= 1) return `${(~~(decimalized / 1e12))}T`
     if (Math.abs(decimalized) / 1e9 >= 1) return `${(~~(decimalized / 1e9))}B`
     if (Math.abs(decimalized) / 1e6 >= 1) return `${(~~(decimalized / 1e6))}M`
-    if (Math.abs(decimalized) / 1000 >= 1) return `${(~~(decimalized / 1e3))}K`
+    if (Math.abs(decimalized) / 1000 >= 1) return `${(~~(decimalized / 1e3)).toLocaleString()}`
 
     return ~~decimalized
   }
@@ -317,7 +317,7 @@ export const numberShortify = (price: string | number | undefined, decimal?: num
     if (decimalized / 1e12 >= 1) return `${(~~(decimalized / 1e9) / 1e3)}T`
     if (decimalized / 1e9 >= 1) return `${(~~(decimalized / 1e6) / 1e3)}B`
     if (decimalized / 1e6 >= 1) return `${(~~(decimalized / 1e3) / 1e3)}M`
-    if (decimalized / 1000 >= 1) return `${(~~decimalized / 1000)}K`
+    if (decimalized / 1000 >= 1) return `${(~~decimalized / 1000).toLocaleString()}`
 
     return decimalized
   }
@@ -335,9 +335,9 @@ export const longNumberShortify = (price: string | number | undefined) => {
   if (decimalized.div(e12).gte(1)) return `${(~~(decimalized.div(e9).toNumber()) / 1e3)}T`
   if (decimalized.div(e9).gte(1)) return `${(~~(decimalized.div(e6).toNumber()) / 1e3)}B`
   if (decimalized.div(e6).gte(1)) return `${(~~(decimalized.div(e3).toNumber()) / 1e3)}M`
-  if (decimalized.div(e3).gte(1)) return `${(~~(decimalized.toNumber()) / 1e3)}K`
+  if (decimalized.div(e3).gte(1)) return `${((~~decimalized.toNumber()).toLocaleString())}`
 
-  return decimalized.toString()
+  return decimalized.toLocaleString()
 }
 
 export const numberLocalize = (price: number) => {

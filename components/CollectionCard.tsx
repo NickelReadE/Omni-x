@@ -72,13 +72,13 @@ const CollectionCard = (props:any) => {
       <div className="flex flex-row space-x-2 justify-between p-2">
         <div className={classNames(' col-span-2 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)}>
           <div className='text-[14px] flex flex-col justify-between'>
-            <span className='font-extrabold mr-[1px] text-center'>Items</span>
+            <span className='font-extrabold mr-[1px] text-center mb-1'>Items</span>
             <span className='font-medium text-[12px] text-center'>{props.collection?props.collection.itemsCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
           </div>
         </div>
         <div  className={classNames(' col-span-2 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
           <div className='text-[14px] flex flex-col justify-center' style={{justifyContent: 'space-between'}}>
-            <span className='font-extrabold mr-[1px] text-center'>Owners</span>
+            <span className='font-extrabold mr-[1px] text-center mb-1'>Owners</span>
             <span className='font-medium text-[12px] text-center'>{props.collection?props.collection.ownerCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
           </div>
         </div>
@@ -86,8 +86,8 @@ const CollectionCard = (props:any) => {
           <div className='text-[14px] flex flex-col justify-center' style={{justifyContent: 'space-between'}}>
             <div className='text-[14px] flex flex-col justify-center' style={{justifyContent: 'space-between'}}>
               <div className='text-[14px] font-extrabold  mb-1 text-center'>Floor</div>
-              <div className='flex flex-row space-x-2 justify-center' >
-                <span className='font-medium text-[12px] mr-[px]'>{props.collection?numberShortify(props.collection.floorPrice.omni):<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+              <div className='flex flex-row space-x-1 justify-center' >
+                <span className='font-medium text-[12px]'>{props.collection?numberShortify(props.collection.floorPrice.omni):<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
                 <img src='/svgs/omni_asset.svg' className='w-[16px]' alt='asset img'></img>
               </div>
             </div>
