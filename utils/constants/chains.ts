@@ -310,9 +310,9 @@ export const numberShortify = (price: string | number | undefined, decimal?: num
     if (Math.abs(decimalized) / 1e12 >= 1) return `${(~~(decimalized / 1e12))}T`
     if (Math.abs(decimalized) / 1e9 >= 1) return `${(~~(decimalized / 1e9))}B`
     if (Math.abs(decimalized) / 1e6 >= 1) return `${(~~(decimalized / 1e6))}M`
-    if (Math.abs(decimalized) / 1000 >= 1) return `${(~~decimalized / 1e3)}K`
+    if (Math.abs(decimalized) / 1000 >= 1) return `${(~~(decimalized / 1e3))}K`
 
-    return decimalized
+    return ~~decimalized
   }
   else {
     if (decimalized / 1e12 >= 1) return `${(~~(decimalized / 1e9) / 1e3)}T`
