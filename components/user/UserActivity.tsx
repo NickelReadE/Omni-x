@@ -14,7 +14,10 @@ const ActivitySend = ({activity}: {activity: ActivityType}) => {
   }, [activity.srcChainId, activity.senderTransactionHash])
 
   const receiveTransactionHashLink = useMemo(() => {
-    return getBlockExplorer(activity.chainId) + '/tx/' + activity.transactionHash
+    if (activity.transactionHash) {
+      return getBlockExplorer(activity.chainId) + '/tx/' + activity.transactionHash
+    }
+    return undefined
   }, [activity.chainId, activity.transactionHash])
 
   const senderChainIcon = useMemo(() => {
@@ -26,9 +29,9 @@ const ActivitySend = ({activity}: {activity: ActivityType}) => {
   }, [activity.chainId])
 
   const onHover = (type: 'sender' | 'target') => {
-    if (type === 'sender') {
+    if (type === 'sender' && sendTransactionHashLink) {
       setHovered(true)
-    } else {
+    } else if (type === 'target' && receiveTransactionHashLink) {
       setTargetHovered(true)
     }
   }
@@ -63,8 +66,10 @@ const ActivitySend = ({activity}: {activity: ActivityType}) => {
             src={(hovered) ? senderChainIcon.explorer : senderChainIcon.icon}
             onMouseEnter={() => onHover('sender')}
             onMouseLeave={() => onLeave('sender')}
-            onClick={() => window.open(sendTransactionHashLink, '_blank')}
-            className="mr-2 h-[20px]"
+            onClick={() => {
+              if (sendTransactionHashLink) window.open(sendTransactionHashLink, '_blank')
+            }}
+            className={`mr-2 h-[20px] ${sendTransactionHashLink ? 'cursor-pointer opacity-1' : 'opacity-40'}`}
           />
         }
         {
@@ -74,8 +79,10 @@ const ActivitySend = ({activity}: {activity: ActivityType}) => {
             src={(hovered) ? senderChainIcon.explorer : senderChainIcon.icon}
             onMouseEnter={() => onHover('sender')}
             onMouseLeave={() => onLeave('sender')}
-            onClick={() => window.open(sendTransactionHashLink, '_blank')}
-            className="mr-2 h-[20px]"
+            onClick={() => {
+              if (sendTransactionHashLink) window.open(sendTransactionHashLink, '_blank')
+            }}
+            className={`mr-2 h-[20px] ${sendTransactionHashLink ? 'cursor-pointer opacity-1' : 'opacity-40'}`}
           />
         }
         {truncateAddress(activity.from)}
@@ -86,8 +93,10 @@ const ActivitySend = ({activity}: {activity: ActivityType}) => {
           src={(targetHovered) ? receiverChainIcon.explorer : receiverChainIcon.icon}
           onMouseEnter={() => onHover('target')}
           onMouseLeave={() => onLeave('target')}
-          onClick={() => window.open(receiveTransactionHashLink, '_blank')}
-          className="mr-2 h-[20px]"
+          onClick={() => {
+            if (receiveTransactionHashLink) window.open(receiveTransactionHashLink, '_blank')
+          }}
+          className={`mr-2 h-[20px] ${receiveTransactionHashLink ? 'cursor-pointer opacity-1' : 'opacity-40'}`}
         />
         {truncateAddress(activity.to)}
       </div>
