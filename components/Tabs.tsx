@@ -45,13 +45,13 @@ const Tabs = ({ blur }: TabProps) => {
                 onClick={() => setCurrentTable('NFTs')}>
               NFTs
               </li>
-              <li className={'select-none inline-block p-4  w-36 cursor-pointer  z-0  text-[#ADB5BD]'}>watchlist</li>
+              <li className={'select-none inline-block p-4  w-36 cursor-pointer  z-0  text-[#ADB5BD]'}>activity</li>
               <li className={'select-none inline-block p-4  w-36 cursor-pointer  z-0  text-[#ADB5BD]'}>feed</li>
               <li className={'select-none inline-block p-4  w-36 cursor-pointer  z-0  text-[#ADB5BD]'}>stats</li>
               <li className={'absolute right-0 select-none inline-block p-4  w-36 cursor-pointer   text-[#6C757D]'} onClick={() => setOpenModal(true) }>settings</li>
             </ul>
             {currentTab === 'NFTs' && <NFTGrid nfts={nfts} isLoading={isLoadingNfts} />}
-            {currentTab === 'watchlist' && <WatchList/>}
+            {currentTab === 'activity' && <WatchList/>}
             {currentTab === 'feed' && <div/>}
             {currentTab === 'stats' && <Stats/>}
           </div>

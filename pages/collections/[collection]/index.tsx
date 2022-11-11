@@ -42,8 +42,8 @@ import { useModal } from '../../../hooks/useModal'
 import { ModalIDs } from '../../../contexts/modal'
 
 const sort_fields = [
-  { text: 'price: high to low', value: '-price' },
   { text: 'price: low to high', value: 'price' },
+  { text: 'price: high to low', value: '-price' },
   { text: 'Highest last sale', value: '-last_sale' },
 ]
 

@@ -1,4 +1,4 @@
-import {ethers} from 'ethers'
+import {BigNumber, ethers} from 'ethers'
 import ChainIds from '../../constants/layerzero/chainIds.json'
 import CHAINS from '../../constants/chains.json'
 import {CHAIN_TYPE} from '../../types/enum'
@@ -301,16 +301,43 @@ export const getChainInfo = (chainId: number | undefined) => {
 }
 
 
-export const numberShortify = (price: string | number | undefined) => {
+export const numberShortify = (price: string | number | undefined, decimal?: number) => {
   if (!price) return '0'
   const decimalized = Number(price)
 
-  if (decimalized / 1e12 >= 1) return `${(decimalized / 1e12).toPrecision(5)}T`
-  if (decimalized / 1e9 >= 1) return `${(~~decimalized / 1e9)}B`
-  if (decimalized / 1e6 >= 1) return `${(~~decimalized / 1e6)}M`
-  if (decimalized / 1000 >= 1) return `${(~~decimalized / 1000)}K`
+  if (decimal === 0) {
+    if (Math.abs(decimalized) / 1e12 >= 1) return `${(~~(decimalized / 1e12))}T`
+    if (Math.abs(decimalized) / 1e9 >= 1) return `${(~~(decimalized / 1e9))}B`
+    if (Math.abs(decimalized) / 1e6 >= 1) return `${(~~(decimalized / 1e6))}M`
+    if (Math.abs(decimalized) / 1000 >= 1) return `${(~~(decimalized / 1e3)).toLocaleString()}`
 
-  return decimalized
+    return ~~decimalized
+  }
+  else {
+    if (decimalized / 1e12 >= 1) return `${(~~(decimalized / 1e9) / 1e3)}T`
+    if (decimalized / 1e9 >= 1) return `${(~~(decimalized / 1e6) / 1e3)}B`
+    if (decimalized / 1e6 >= 1) return `${(~~(decimalized / 1e3) / 1e3)}M`
+    if (decimalized / 1000 >= 1) return `${(~~decimalized / 1000).toLocaleString()}`
+
+    return decimalized
+  }
+}
+
+export const longNumberShortify = (price: string | number | undefined) => {
+  if (!price) return '0'
+  const e12 = ethers.utils.parseUnits('1', 12)
+  const e9 = ethers.utils.parseUnits('1', 9)
+  const e6 = ethers.utils.parseUnits('1', 6)
+  const e3 = ethers.utils.parseUnits('1', 3)
+
+  const decimalized = BigNumber.from(price)
+
+  if (decimalized.div(e12).gte(1)) return `${(~~(decimalized.div(e9).toNumber()) / 1e3)}T`
+  if (decimalized.div(e9).gte(1)) return `${(~~(decimalized.div(e6).toNumber()) / 1e3)}B`
+  if (decimalized.div(e6).gte(1)) return `${(~~(decimalized.div(e3).toNumber()) / 1e3)}M`
+  if (decimalized.div(e3).gte(1)) return `${((~~decimalized.toNumber()).toLocaleString())}`
+
+  return decimalized.toLocaleString()
 }
 
 export const numberLocalize = (price: number) => {

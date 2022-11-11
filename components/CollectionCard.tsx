@@ -6,9 +6,10 @@ import {useDraggable} from '@dnd-kit/core'
 import editStyle from '../styles/nftbox.module.scss'
 import classNames from '../helpers/classNames'
 import Loading from '../public/images/loading_f.gif'
-import { numberShortify } from '../utils/constants'
 import { useModal } from '../hooks/useModal'
 import { ModalIDs } from '../contexts/modal'
+import { longNumberShortify, numberShortify } from '../utils/constants'
+import { BigNumber } from 'ethers'
 
 const CollectionCard = (props:any) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -33,6 +34,26 @@ const CollectionCard = (props:any) => {
     zIndex: 99
   } : undefined
 
+  const calcVolumeUp = (volume24h: string, volume48h: string) => {
+    const a = BigNumber.from(volume24h)
+    const b = BigNumber.from(volume48h)
+
+    if (a.gte(b)) {
+      if (b.gt(0)) {
+        return ~~(a.mul(100).div(b).toNumber() - 100)
+      }
+      return 100
+    }
+    else if (a.gt(0)) {
+      return ~~(100 - b.mul(100).div(a).toNumber())
+    }
+    else if (b.eq(0)) {
+      return -100
+    }
+    return 0
+  }
+  const volumeUp = props.collection ? calcVolumeUp(props.collection.volume24h, props.collection.volume48h) : 0
+  
   return (
     <div className={classNames(' border-[2px] border-[#F6F8FC] w-[340px] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F6F8FC]', editStyle.nftContainer)}>
       <div className='relative'  style={style} >
@@ -71,13 +92,13 @@ const CollectionCard = (props:any) => {
       <div className="flex flex-row space-x-2 justify-between p-2">
         <div className={classNames(' col-span-2 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)}>
           <div className='text-[14px] flex flex-col justify-between'>
-            <span className='font-extrabold mr-[1px] text-center'>Items</span>
+            <span className='font-extrabold mr-[1px] text-center mb-1'>Items</span>
             <span className='font-medium text-[12px] text-center'>{props.collection?props.collection.itemsCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
           </div>
         </div>
         <div  className={classNames(' col-span-2 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
           <div className='text-[14px] flex flex-col justify-center' style={{justifyContent: 'space-between'}}>
-            <span className='font-extrabold mr-[1px] text-center'>Owners</span>
+            <span className='font-extrabold mr-[1px] text-center mb-1'>Owners</span>
             <span className='font-medium text-[12px] text-center'>{props.collection?props.collection.ownerCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
           </div>
         </div>
@@ -85,21 +106,20 @@ const CollectionCard = (props:any) => {
           <div className='text-[14px] flex flex-col justify-center' style={{justifyContent: 'space-between'}}>
             <div className='text-[14px] flex flex-col justify-center' style={{justifyContent: 'space-between'}}>
               <div className='text-[14px] font-extrabold  mb-1 text-center'>Floor</div>
-              <div className='flex flex-row space-x-2 justify-center' >
-                <span className='font-medium text-[12px] mr-[px]'>{props.collection?numberShortify(props.collection.floorPrice.omni):<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+              <div className='flex flex-row space-x-1 justify-center' >
+                <span className='font-medium text-[12px]'>{props.collection?numberShortify(props.collection.floorPrice.omni):<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
                 <img src='/svgs/omni_asset.svg' className='w-[16px]' alt='asset img'></img>
               </div>
             </div>
           </div>
         </div>
         <div className={classNames(' col-span-3 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
-          <div className='text-[14px] font-extrabold mb-1 text-center'>Volume(7d)</div>
-          <div className='text-[14px] flex flex-row justify-center space-x-4' >
+          <div className='text-[14px] font-extrabold mb-1 text-center'>Volume(24h)</div>
+          <div className='text-[14px] flex flex-row justify-center' >
             <div className='flex flex-row mr-4'>
-              <span className='font-medium mr-1 text-[12px]'>{props.collection?0:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
-              <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img>
+              <span className='font-medium mr-1 text-[12px]'>${props.collection?longNumberShortify(props.collection.volume24h):<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
             </div>
-            <span className='font-medium text-[#38B000] text-[12px]'> {props.collection?'0%':<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+            <span className={classNames('font-medium text-[12px] ml-auto', volumeUp >= 0 ? 'text-[#38B000]': 'text-[#B00000]')}> {props.collection ? `${(numberShortify(volumeUp, 0))}%` : <Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
           </div>
         </div>
       </div>

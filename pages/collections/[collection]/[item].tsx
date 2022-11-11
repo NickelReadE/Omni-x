@@ -76,9 +76,6 @@ const Item: NextPage = () => {
 
   const nftImage = useMemo(() => {
     if (currentNFT && currentNFT.image) {
-      if (currentNFT.image.startsWith('https://ipfs.io/')) {
-        return currentNFT.image.replace('https://ipfs.io/', 'https://omni-x.infura-ipfs.io/')
-      }
       return currentNFT.image
     }
     return '/images/omnix_logo_black_1.png'
@@ -234,7 +231,7 @@ const Item: NextPage = () => {
                       </div>
                     </div>
                   </div>
-                  <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
+                  <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD] h-[250px] overflow-y-auto'>
                     <div className="overflow-x-hidden overflow-y-auto grid 2xl:grid-cols-[30%_25%_25%_20%] lg:grid-cols-[30%_18%_32%_20%] xl:grid-cols-[30%_18%_32%_20%]">
                       <div className="font-bold text-[18px] text-[#000000]">account</div>
                       <div className="font-bold text-[18px] text-[#000000]">chain</div>
