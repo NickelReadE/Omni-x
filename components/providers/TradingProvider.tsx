@@ -6,7 +6,7 @@ import { openSnackBar } from '../../redux/reducers/snackBarReducer'
 import { collectionsService } from '../../services/collections'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../../types'
 import { ContractName, CREATOR_FEE, formatCurrency, getAddressByName, getChainNameFromId, getConversionRate, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from '../../utils/constants'
-import { decodeFromBytes, getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, getOmnixExchangeInstance, getONFTCore721Instance, getTransferSelectorNftInstance } from '../../utils/contracts'
+import { decodeFromBytes, getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, getFundManagerInstance, getOmnixExchangeInstance, getONFTCore721Instance, getTransferSelectorNftInstance } from '../../utils/contracts'
 import { acceptOrder, postMakerOrder } from '../../utils/makeOrder'
 
 export type TradingCommonData = {
@@ -273,7 +273,7 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
     ])
   }
 
-  const [omnixFee, currencyFee, nftFee] = await omnixExchange.getLzFeesForTrading(takerBid, makerAsk)
+  const [omnixFee, currencyFee, nftFee] = await omnixExchange.getLzFeesForTrading(takerBid, makerAsk, 0)
   const lzFee = omnixFee.add(currencyFee).add(nftFee)
 
   console.log('---lzFee---',
@@ -301,7 +301,7 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
     }
   }
 
-  const tx = await omnixExchange.connect(common_data.signer).matchAskWithTakerBid(takerBid, makerAsk, { value: lzFee })
+  const tx = await omnixExchange.connect(common_data.signer).matchAskWithTakerBid(0, takerBid, makerAsk, { value: lzFee })
 
   let targetCollectionAddress = ''
   if (isONFTCore) {
@@ -514,14 +514,19 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
     ])
   }
 
-  const [omnixFee, currencyFee, nftFee] = await omnixExchange.getLzFeesForTrading(takerAsk, makerBid)
+  const fundManager = getFundManagerInstance(orderChainId)
+  const destAirdrop = await fundManager.lzFeeTransferCurrency(makerBid.currency, takerAsk.taker, takerAsk.price, getLayerzeroChainId(orderChainId), lzChainId)
+  const [omnixFee, currencyFee, nftFee] = await omnixExchange.getLzFeesForTrading(takerAsk, makerBid, destAirdrop)
   const lzFee = omnixFee.add(currencyFee).add(nftFee)
 
   console.log('---lzFee---',
     ethers.utils.formatEther(omnixFee),
     ethers.utils.formatEther(currencyFee),
     ethers.utils.formatEther(nftFee),
-    ethers.utils.formatEther(lzFee)
+    ethers.utils.formatEther(lzFee),
+    ethers.utils.formatEther(destAirdrop),
+    takerAsk.taker,
+    common_data.signer,
   )
 
   {
@@ -533,7 +538,7 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
     }
   }
 
-  const tx = await omnixExchange.connect(common_data.signer).matchBidWithTakerAsk(takerAsk, makerBid, { value: lzFee })
+  const tx = await omnixExchange.connect(common_data.signer).matchBidWithTakerAsk(destAirdrop, takerAsk, makerBid, { value: lzFee })
 
   // PendingTxType
   // txHash: tx hash of seller
