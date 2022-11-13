@@ -29,9 +29,9 @@ const ActivitySend = ({activity}: {activity: ActivityType}) => {
   }, [activity.chainId])
 
   const onHover = (type: 'sender' | 'target') => {
-    if (type === 'sender' && sendTransactionHashLink) {
+    if (type === 'sender' && activity.senderTransactionHash) {
       setHovered(true)
-    } else if (type === 'target' && receiveTransactionHashLink) {
+    } else if (type === 'target' && activity.transactionHash) {
       setTargetHovered(true)
     }
   }
@@ -67,9 +67,9 @@ const ActivitySend = ({activity}: {activity: ActivityType}) => {
             onMouseEnter={() => onHover('sender')}
             onMouseLeave={() => onLeave('sender')}
             onClick={() => {
-              if (sendTransactionHashLink) window.open(sendTransactionHashLink, '_blank')
+              if (activity.senderTransactionHash) window.open(sendTransactionHashLink, '_blank')
             }}
-            className={`mr-2 h-[20px] ${sendTransactionHashLink ? 'cursor-pointer opacity-1' : 'opacity-40'}`}
+            className={`mr-2 h-[20px] ${activity.senderTransactionHash ? 'cursor-pointer opacity-1' : 'opacity-40'}`}
           />
         }
         {
@@ -80,9 +80,17 @@ const ActivitySend = ({activity}: {activity: ActivityType}) => {
             onMouseEnter={() => onHover('sender')}
             onMouseLeave={() => onLeave('sender')}
             onClick={() => {
-              if (sendTransactionHashLink) window.open(sendTransactionHashLink, '_blank')
+              if (activity.senderTransactionHash) window.open(sendTransactionHashLink, '_blank')
             }}
-            className={`mr-2 h-[20px] ${sendTransactionHashLink ? 'cursor-pointer opacity-1' : 'opacity-40'}`}
+            className={`mr-2 h-[20px] ${activity.senderTransactionHash ? 'cursor-pointer opacity-1' : 'opacity-40'}`}
+          />
+        }
+        {
+          activity.activity === USER_ACTIVITY_TYPE.Sell &&
+          <img
+            alt={'networkIcon'}
+            src={senderChainIcon.icon}
+            className={'mr-2 h-[20px]'}
           />
         }
         {truncateAddress(activity.from)}
@@ -94,9 +102,9 @@ const ActivitySend = ({activity}: {activity: ActivityType}) => {
           onMouseEnter={() => onHover('target')}
           onMouseLeave={() => onLeave('target')}
           onClick={() => {
-            if (receiveTransactionHashLink) window.open(receiveTransactionHashLink, '_blank')
+            if (activity.transactionHash) window.open(receiveTransactionHashLink, '_blank')
           }}
-          className={`mr-2 h-[20px] ${receiveTransactionHashLink ? 'cursor-pointer opacity-1' : 'opacity-40'}`}
+          className={`mr-2 h-[20px] ${activity.transactionHash ? 'cursor-pointer opacity-1' : 'opacity-40'}`}
         />
         {truncateAddress(activity.to)}
       </div>
