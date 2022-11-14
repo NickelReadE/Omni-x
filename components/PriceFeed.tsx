@@ -26,40 +26,45 @@ const PriceFeed = () => {
     if (assetPrices && gasPrices) {
       return [
         {
-          icon: '/images/roundedColorEthereum.png',
+          icon: '/images/chain/omni_dark_round.png',
+          gasFee: 0,
+          price: 100
+        },
+        {
+          icon: '/images/chain/ethereum_dark_round.png',
           gasFee: gasPrices['eth'],
           price: assetPrices['eth']
         },
         {
-          icon: '/svgs/arbitrum.svg',
+          icon: '/images/chain/arbitrum_dark_round.png',
           gasFee: gasPrices['arbitrm'],
           price: 0
         },
         {
-          icon: '/svgs/avax.svg',
+          icon: '/images/chain/avalanche_dark_round.png',
           gasFee: gasPrices['avalanche'],
           price: assetPrices['avax']
         },
         {
-          icon: '/svgs/binance.svg',
+          icon: '/images/chain/binance_dark_round.png',
           gasFee: gasPrices['bsc'],
           price: assetPrices['bnb']
         },
-        {
+        /*{
           icon: '/svgs/fantom.svg',
           gasFee: gasPrices['fantom'],
           price: assetPrices['ftm']
-        },
+        },*/
         {
-          icon: '/svgs/polygon.svg',
+          icon: '/images/chain/polygon_dark_round.png',
           gasFee: gasPrices['polygon'],
           price: assetPrices['matic']
         },
-        {
+        /*{
           icon: '/svgs/optimism.svg',
           gasFee: gasPrices['optimism'],
           price: assetPrices['op']
-        },
+        },*/
       ]
     }
     return []
