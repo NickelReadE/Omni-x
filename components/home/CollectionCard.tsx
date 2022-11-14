@@ -2,18 +2,26 @@ import React from 'react'
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import editStyle from '../../styles/nftbox.module.scss'
 import classNames from '../../helpers/classNames'
 import Loading from '../../public/images/loading_f.gif'
 import { numberShortify } from '../../utils/constants'
+import useWallet from '../../hooks/useWallet'
 
 const CollectionCard = (props:any) => {
+  const { address } = useWallet()
+  const [hover, setHover] = useState<boolean>(false)
   const [imageError, setImageError] = useState(false)
 
   return (
-    <div className={classNames('bg-[#202020] rounded-[8px] hover:shadow-[0_0_12px_rgba(160,179,204,0.3)]', editStyle.nftContainer)}>
+    <div
+      className={classNames('relative bg-[#202020] rounded-[8px] hover:shadow-[0_0_12px_rgba(160,179,204,0.3)]')}
+      onMouseEnter={() => {
+        if (address) setHover(true)
+      }}
+      onMouseLeave={() => setHover(false)}
+    >
       <div className='relative'>
-        <div >
+        <div>
           <img
             className='nft-image w-[340px] rounded-tr-[8px] rounded-tl-[8px] background-fill'
             src={imageError ? '/images/omnix_logo_black_1.png' : props.collection.profile_image}
@@ -21,7 +29,7 @@ const CollectionCard = (props:any) => {
             onError={() => { setImageError(true) }}
             data-src={props.collection.profile_image} />
         </div>
-        <div className={classNames('absolute w-full h-full rounded-tr-[8px] rounded-tl-[8px] flex items-center justify-center ', editStyle.actionBtn)}>
+        <div className={classNames('absolute w-full h-full rounded-tr-[8px] rounded-tl-[8px] flex items-center justify-center top-0', `${hover ? 'flex bg-[#303030b3] backdrop-blur block' : 'hidden top-0'}`)}>
           <div>
             <Link href={`/collections/${props.collection.col_url}`}>
               <div className='w-[230px] h-[40px] text-xg text-primary text-extrabold text-center items-center bg-primary-gradient rounded-lg mb-[24px] py-[7px] hover:cursor-pointer'>view collection</div>
@@ -34,6 +42,7 @@ const CollectionCard = (props:any) => {
           </div>
         </div>
       </div>
+
       <div className="flex flex-row mt-2.5 justify-between px-3">
         <div className="text-primary-light text-xg leading-[22px] font-bold ">
           {props.collection.name}
@@ -94,6 +103,10 @@ const CollectionCard = (props:any) => {
             </span>
           </div>
         </div>
+      </div>
+
+      <div className={`w-full h-[62px] flex items-center justify-center text-xg bg-dark-green text-white absolute bottom-0 rounded-br-[8px] rounded-bl-[8px] ${hover ? 'block' : 'hidden'}`}>
+        instant floor buy
       </div>
     </div>
   )

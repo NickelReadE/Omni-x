@@ -1,26 +1,34 @@
 import React, { useMemo, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import classNames from '../helpers/classNames'
-import useProgress from '../hooks/useProgress'
-import ProcessingTransaction from './transaction/ProcessingTransaction'
 import { Menu } from '@headlessui/react'
+import {useConnectModal} from '@rainbow-me/rainbowkit'
+import ProcessingTransaction from './transaction/ProcessingTransaction'
+import NavMenu from './layout/header/NavMenu'
+import useProgress from '../hooks/useProgress'
 import useData from '../hooks/useData'
 import SearchBar from './layout/header/SearchBar'
+import useWallet from '../hooks/useWallet'
+import classNames from '../helpers/classNames'
 import { chainInfos } from '../utils/constants'
 import { ChainIds } from '../types/enum'
-import useWallet from '../hooks/useWallet'
-import NavMenu from './layout/header/NavMenu'
 
 const Header = (): JSX.Element => {
-  const { chainId } = useWallet()
+  const { chainId, address } = useWallet()
   const { profile } = useData()
   const { pending, histories, clearHistories } = useProgress()
+  const { openConnectModal } = useConnectModal()
 
   const [avatarError, setAvatarError] = useState(false)
 
   const onClear = () => {
     clearHistories()
+  }
+
+  const onConnect = () => {
+    if (!address && openConnectModal) {
+      openConnectModal()
+    }
   }
 
   const avatarImage = useMemo(() => {
@@ -70,26 +78,33 @@ const Header = (): JSX.Element => {
           <NavMenu />
 
           <div className='flex flex-1 items-center justify-end ml-auto space-x-[20px]'>
-            <Link href='/'>
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle opacity="0.1" cx="16" cy="16" r="16" fill="#F5F5F5"/>
-                <path d="M8.37412 12.9145C8.37278 11.966 8.5591 11.0267 8.92234 10.1506C9.28558 9.27452 9.81856 8.47894 10.4906 7.8097C11.1626 7.14046 11.9604 6.61079 12.838 6.2512C13.7156 5.8916 14.6557 5.70919 15.6041 5.71447C19.5641 5.74447 22.7341 9.03447 22.7341 13.0045V13.7145C22.7341 17.2945 23.4841 19.3745 24.1441 20.5145C24.2142 20.6359 24.2512 20.7736 24.2513 20.9138C24.2514 21.054 24.2147 21.1917 24.1448 21.3132C24.0749 21.4348 23.9744 21.5358 23.8531 21.6062C23.7319 21.6766 23.5943 21.714 23.4541 21.7145H7.65412C7.51393 21.714 7.37633 21.6766 7.2551 21.6062C7.13388 21.5358 7.03329 21.4348 6.96341 21.3132C6.89353 21.1917 6.85681 21.054 6.85693 20.9138C6.85706 20.7736 6.89402 20.6359 6.96412 20.5145C7.62412 19.3745 8.37412 17.2945 8.37412 13.7145V12.9145Z" stroke="#969696" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M12.354 21.7144V22.5144C12.354 23.363 12.6911 24.177 13.2913 24.7771C13.8914 25.3772 14.7053 25.7144 15.554 25.7144C16.4027 25.7144 17.2166 25.3772 17.8167 24.7771C18.4169 24.177 18.754 23.363 18.754 22.5144V21.7144" stroke="#969696" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </Link>
-            <div className='w-[32px] h-[32px]'>
-              <img alt={'networkIcon'} src={chainInfos[chainId || ChainIds.ETHEREUM].logo} className="h-full w-full" />
-            </div>
-            <div className='w-[32px] h-[32px]'>
-              <Image
-                src={avatarImage}
-                alt="avatar"
-                onError={() => { profile && profile.avatar && setAvatarError(true) }}
-                width={32}
-                height={32}
-                className='rounded-full'
-              />
-            </div>
+            {
+              address ?
+                <>
+                  <Link href='/'>
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle opacity="0.1" cx="16" cy="16" r="16" fill="#F5F5F5"/>
+                      <path d="M8.37412 12.9145C8.37278 11.966 8.5591 11.0267 8.92234 10.1506C9.28558 9.27452 9.81856 8.47894 10.4906 7.8097C11.1626 7.14046 11.9604 6.61079 12.838 6.2512C13.7156 5.8916 14.6557 5.70919 15.6041 5.71447C19.5641 5.74447 22.7341 9.03447 22.7341 13.0045V13.7145C22.7341 17.2945 23.4841 19.3745 24.1441 20.5145C24.2142 20.6359 24.2512 20.7736 24.2513 20.9138C24.2514 21.054 24.2147 21.1917 24.1448 21.3132C24.0749 21.4348 23.9744 21.5358 23.8531 21.6062C23.7319 21.6766 23.5943 21.714 23.4541 21.7145H7.65412C7.51393 21.714 7.37633 21.6766 7.2551 21.6062C7.13388 21.5358 7.03329 21.4348 6.96341 21.3132C6.89353 21.1917 6.85681 21.054 6.85693 20.9138C6.85706 20.7736 6.89402 20.6359 6.96412 20.5145C7.62412 19.3745 8.37412 17.2945 8.37412 13.7145V12.9145Z" stroke="#969696" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M12.354 21.7144V22.5144C12.354 23.363 12.6911 24.177 13.2913 24.7771C13.8914 25.3772 14.7053 25.7144 15.554 25.7144C16.4027 25.7144 17.2166 25.3772 17.8167 24.7771C18.4169 24.177 18.754 23.363 18.754 22.5144V21.7144" stroke="#969696" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </Link>
+                  <div className='w-[32px] h-[32px]'>
+                    <img alt={'networkIcon'} src={chainInfos[chainId || ChainIds.ETHEREUM].logo} className="h-full w-full" />
+                  </div>
+                  <div className='w-[32px] h-[32px]'>
+                    <Image
+                      src={avatarImage}
+                      alt="avatar"
+                      onError={() => { profile && profile.avatar && setAvatarError(true) }}
+                      width={32}
+                      height={32}
+                      className='rounded-full'
+                    />
+                  </div>
+                </>
+                :
+                <div className={'w-[100px] h-[40px] bg-primary-gradient text-primary px-[16px] py-[9px] flex items-center justify-center rounded-md cursor-pointer'} onClick={onConnect}>connect</div>
+            }
           </div>
 
           {

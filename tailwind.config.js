@@ -78,6 +78,7 @@ module.exports = {
         primary: '#161616',
         'primary-light': '#F5F5F5',
         secondary: '#969696',
+        'dark-green': '#38B000',
         'primary-blue': '#00F0EC',
         'primary-green': '#16FFC5'
         // gradient: 'linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%)',
@@ -93,7 +94,7 @@ module.exports = {
         sm: '12px',
         md: '14px',
         lg: ['16px', '19px'],
-        xg: '18px',
+        xg: ['18px', '22px'],
         xl: ['20px', '24px'],
         xg1:'24px',
         xl2:'40px',
