@@ -403,3 +403,27 @@ button.sidebar {
   background: linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%);
   opacity: 1;
 }
+
+.border-gradient-radius {
+  display: inline-block;
+  position: relative;
+  color: white;
+  z-index: 0;
+
+  &:before {
+    aspect-ratio: 1;
+    width: 230px;
+    height: 40px;
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    padding: 2px;
+    border-radius: 8px;
+    background: linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+}

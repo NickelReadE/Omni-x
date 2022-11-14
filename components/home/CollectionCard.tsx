@@ -2,10 +2,10 @@ import React from 'react'
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import editStyle from '../styles/nftbox.module.scss'
-import classNames from '../helpers/classNames'
-import Loading from '../public/images/loading_f.gif'
-import { numberShortify } from '../utils/constants'
+import editStyle from '../../styles/nftbox.module.scss'
+import classNames from '../../helpers/classNames'
+import Loading from '../../public/images/loading_f.gif'
+import { numberShortify } from '../../utils/constants'
 
 const CollectionCard = (props:any) => {
   const [imageError, setImageError] = useState(false)
@@ -21,15 +21,17 @@ const CollectionCard = (props:any) => {
             onError={() => { setImageError(true) }}
             data-src={props.collection.profile_image} />
         </div>
-        <div className={classNames('absolute w-full h-full  flex items-center justify-center  ', editStyle.actionBtn)}>
+        <div className={classNames('absolute w-full h-full rounded-tr-[8px] rounded-tl-[8px] flex items-center justify-center ', editStyle.actionBtn)}>
           <div>
             <Link href={`/collections/${props.collection.col_url}`}>
-              <div className='w-[230px] text-xg text-white	 text-extrabold text-center items-center bg-[#B444F9] rounded-lg mb-[24px]  py-[7px] hover:cursor-pointer'>view collection</div>
+              <div className='w-[230px] h-[40px] text-xg text-primary text-extrabold text-center items-center bg-primary-gradient rounded-lg mb-[24px] py-[7px] hover:cursor-pointer'>view collection</div>
             </Link>
-
-            <div className='w-[230px] text-xg text-white	 text-extrabold text-center items-center bg-[#38B000] rounded-lg  py-[7px]'>make a collection bid</div>
+            <div className='border-gradient-radius w-[230px] h-[40px] hover:cursor-pointer'>
+              <div className={'w-full h-full flex items-center justify-center'}>
+                <span className='bg-primary-gradient text-xg text-extrabold text-center bg-clip-text text-transparent'>make a collection bid</span>
+              </div>
+            </div>
           </div>
-
         </div>
       </div>
       <div className="flex flex-row mt-2.5 justify-between px-3">

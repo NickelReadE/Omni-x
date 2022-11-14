@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import useData from '../../hooks/useData'
-import CollectionCard from '../CollectionCard'
+import CollectionCard from './CollectionCard'
 
 export default function HomeCollections() {
   const { collections } = useData()

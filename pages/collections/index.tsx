@@ -2,7 +2,7 @@
 import {useState, useEffect, ReactNode, useCallback} from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
 import type {NextPage} from 'next'
-import CollectionCard from '../../components/CollectionCard'
+import CollectionCard from '../../components/home/CollectionCard'
 import useData from '../../hooks/useData'
 import Image from 'next/image'
 import Loading from '../../public/images/loading_f.gif'
