@@ -38,6 +38,7 @@ import useCollection from '../../../hooks/useCollection'
 import useCollectionNfts from '../../../hooks/useCollectionNfts'
 import useData from '../../../hooks/useData'
 import Dropdown from '../../../components/dropdown'
+import {CollectionBanner} from '../../../components/collections/banner'
 
 const sort_fields = [
   { text: 'price: low to high', value: 'price' },
@@ -241,7 +242,11 @@ const Collection: NextPage = () => {
 
   return (
     <>
-      <div className={classNames('w-full', 'mt-20', 'pr-[70px]', 'pt-[30px]', 'relative', editStyle.collection)}>
+      <div className={classNames('w-full', 'pt-6 pb-4 px-0', 'relative', editStyle.collection)}>
+        {
+          collectionInfo &&
+            <CollectionBanner collection={collectionInfo} />
+        }
         <div className="w-[100%] h-[100%] mt-20">
           <img
             alt={''}

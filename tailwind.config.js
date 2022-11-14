@@ -92,11 +92,11 @@ module.exports = {
       fontSize: {
         xs: '10px',
         sm: '12px',
-        md: '14px',
+        md: ['15px', '18px'],
         lg: ['16px', '19px'],
         xg: ['18px', '22px'],
         xl: ['20px', '24px'],
-        xg1:'24px',
+        xg1:['24px', '29px'],
         xl2:'40px',
         xxl:'32px',
         xxl2:'60px',
