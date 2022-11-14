@@ -7,7 +7,6 @@ import {useDispatch, useSelector} from 'react-redux'
 import AdvancedONT from '../constants/abis/AdvancedONT.json'
 import useWallet from '../hooks/useWallet'
 
-import editStyle from '../styles/nftbox.module.scss'
 import classNames from '../helpers/classNames'
 import {ChainIds} from '../types/enum'
 
@@ -55,12 +54,12 @@ const NftForLaunch = (pro: ITypeNFT) => {
   return (
     <div className=" border-[#F8F9FA]  rounded-[8px] hover:cursor-pointer">
       <div className={classNames(' flex flex-col bg-l-50 ')}>
-        <div className={classNames('relative', editStyle.nftContainer)}>
+        <div className={classNames('relative')}>
           <div className={classNames('group relative flex justify-center text-center overflow-hidden rounded-md')}>
             <img className="w-[300px] rounded-md " src={pro.img ? pro.img : '/images/nft.png'} alt="nft-image"/>
           </div>
           <div
-            className={classNames('absolute w-full h-full  flex items-center justify-center  ', editStyle.actionBtn)}>
+            className={classNames('absolute w-full h-full  flex items-center justify-center')}>
             <div>
               <Link href={`/launchpad/${pro.col_url}`}>
                 <div
