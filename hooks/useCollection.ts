@@ -13,9 +13,11 @@ export type CollectionType = {
     name: string,
     discord: string,
     twitter: string,
+    telegram: string,
     website: string,
     symbol: string,
     col_url: string,
+    description: string,
     floorPrice: {
         eth: number,
         usd: number,

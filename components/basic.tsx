@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
-import React from 'react'
+import React, {ReactNode} from 'react'
 import {makeStyles} from '@material-ui/core/styles'
 import classNames from '../helpers/classNames'
 
@@ -17,6 +17,7 @@ const useStyles = makeStyles({
     display: 'inline-block',
     position: 'relative',
     color: 'white',
+    width: '100%',
     zIndex: 0,
     '&:before': {
       aspectRatio: 1,
@@ -36,13 +37,26 @@ const useStyles = makeStyles({
   }
 })
 
-export const GradientButton = ({ title, width, height }: { title: string, width: number, height: number }) => {
-  const classes = useStyles({ borderRadius: 50 })
+export const GradientButton = ({ title, height, borderRadius, textSize }: { title: string, height: number, borderRadius: number, textSize: string }) => {
+  const classes = useStyles({ borderRadius: borderRadius })
   return (
-    <div className={classNames(classes.borderGradientRadius, `w-[${width}px] h-[${height}px] hover:cursor-pointer webkit-mask-composite`)} style={{'-webkitMastComposite': 'xor'}}>
+    <div className={classNames(classes.borderGradientRadius, `h-[${height}px] hover:cursor-pointer webkit-mask-composite`)} style={{'webkitMastComposite': 'xor'}}>
       <div className={'w-full h-full flex items-center justify-center'}>
-        <span className='bg-primary-gradient text-xg text-extrabold text-center bg-clip-text text-transparent'>{title}</span>
+        <span className={`bg-primary-gradient text-${textSize} text-center bg-clip-text text-transparent`}>{title}</span>
       </div>
     </div>
+  )
+}
+
+export const ExternalLink = ({ children, link }: { children: ReactNode, link: string | undefined }) => {
+  if (link) {
+    return (
+      <a href={link} target="_blank" className="hover:cursor-pointer" rel="noreferrer">
+        {children}
+      </a>
+    )
+  }
+  return (
+    <div>{children}</div>
   )
 }

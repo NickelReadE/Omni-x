@@ -9,7 +9,7 @@ import useWallet from '../../hooks/useWallet'
 
 const CollectionCard = (props:any) => {
   const { address } = useWallet()
-  const [hover, setHover] = useState<boolean>(true)
+  const [hover, setHover] = useState<boolean>(false)
   const [imageError, setImageError] = useState(false)
 
   return (

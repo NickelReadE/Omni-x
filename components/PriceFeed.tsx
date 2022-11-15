@@ -73,7 +73,7 @@ const PriceFeed = () => {
   return (
     <div className="fixed bottom-0 w-full z-[99] h-[42px] bg-[#F6F8FC] dark:bg-[#161616] border-t-[1px] border-[#303030]">
       <div className='flex items-center justify-between h-full px-10'>
-        <div className="flex items-center h-full w-full  text-center">
+        <div className="flex items-center h-full">
           <div className='mr-3'>
             <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M11 9.5C11 8.67157 10.3284 8 9.5 8C8.67157 8 8 8.67157 8 9.5C8 10.3284 8.67157 11 9.5 11C10.3284 11 11 10.3284 11 9.5Z" fill="#969696"/>
@@ -81,6 +81,8 @@ const PriceFeed = () => {
               <path d="M18 9.5C18 8.67157 17.3284 8 16.5 8C15.6716 8 15 8.67157 15 9.5C15 10.3284 15.6716 11 16.5 11C17.3284 11 18 10.3284 18 9.5Z" fill="#969696"/>
             </svg>
           </div>
+        </div>
+        <div className={'flex items-center space-x-4'}>
           {
             data.map((item, index) => {
               return (
@@ -88,15 +90,15 @@ const PriceFeed = () => {
                   <Image alt={'chainIcon'} src={item.icon} width={20} height={20} />
                   {
                     item.price > 0 &&
-                  <span className="text-[13px] text-black dark:text-white font-normal ml-1">
+                    <span className="text-[13px] text-black dark:text-white font-normal ml-1">
                     ${item.price}
-                  </span>
+                    </span>
                   }
                   {
                     item.gasFee > 0 &&
-                  <span className="text-[13px] text-[#969696] font-normal ml-1">
-                    {item.gasFee} gwei
-                  </span>
+                    <span className="text-[13px] text-[#969696] font-normal ml-1">
+                      {item.gasFee} gwei
+                    </span>
                   }
                 </div>
               )

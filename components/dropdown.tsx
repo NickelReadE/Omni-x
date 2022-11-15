@@ -1,5 +1,6 @@
 import {Menu} from '@headlessui/react'
 import {Fragment, useEffect, useState} from 'react'
+import ArrowDown from '../public/images/icons/arrow_down.svg'
 
 type MenuItem = {
   text: string,
@@ -29,12 +30,11 @@ const Dropdown = ({ menus, onChange }: IDropdownProps) => {
     <div className={'relative'}>
       <Menu>
         <>
-          <Menu.Button className={'bg-gray-50 flex rounded-md justify-around p-3 font-medium cursor-pointer text-[#6C757D] min-w-[230px] w-full'}>
-            <img alt={'listing'} src="/images/listing.png" className="w-[21px] h-[22px]"/>
+          <Menu.Button className={'bg-[#303030] text-primary-light text-md flex items-center rounded-full justify-around p-3 font-medium cursor-pointer text-[#6C757D] min-w-[230px] h-[32px] w-full'}>
             <span>{selectedMenu}</span>
-            <img alt={'listing'} src="/images/downArrow.png" className="w-[10px] h-[7px] ml-5 mt-auto mb-auto"/>
+            <ArrowDown />
           </Menu.Button>
-          <Menu.Items className={'absolute z-10 top-[48px] right-0 left-0'}>
+          <Menu.Items className={'absolute z-10 top-[32px] right-0 left-0'}>
             {
               menus.map((item, index) => {
                 return (
