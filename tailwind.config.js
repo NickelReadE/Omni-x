@@ -11,6 +11,7 @@ module.exports = {
     extend: {
       backgroundImage: {
         'primary-gradient': 'linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%)',
+        'like-gradient': 'linear-gradient(103.58deg, #FA16FF 15.1%, #F00056 87.92%)',
         'border-gradient': 'linear-gradient(to right, #161616, #161616), linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%)',
         'rainbow-gradient': 'linear-gradient(103.58deg, #8600F0 15.1%, #008BF0 40.13%, #00F0EC 63.65%, #16FFC5 87.92%)',
         'dark-gradient': 'linear-gradient(120.31deg, rgba(125, 125, 125, 0.2) 20%, rgba(125, 125, 125, 0.06) 85.18%)'
@@ -91,7 +92,7 @@ module.exports = {
       },
       fontSize: {
         xs: '10px',
-        sm: '12px',
+        sm: ['12px', '14px'],
         md: ['15px', '18px'],
         lg: ['16px', '19px'],
         xg: ['18px', '22px'],

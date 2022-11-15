@@ -153,9 +153,8 @@ button.sidebar {
   }
 
   .nft-image {
-    border-radius: 6px;
-
     &:hover {
+      border-radius: 8px;
       background: radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.25) 0%, rgba(254, 254, 255, 0.1) 100%);
       backdrop-filter: blur(2px);
       transform: scale(1.3);

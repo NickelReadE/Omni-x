@@ -8,7 +8,7 @@ import { IPropsNFTItem } from '../../interface/interface'
 import {
   getCurrencyIconByAddress,
   getChainIconById,
-  numberLocalize
+  numberLocalize, getDarkChainIconById
 } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'
 import ConfirmBid from './ConfirmBid'
@@ -20,7 +20,7 @@ import useOrderStatics from '../../hooks/useOrderStatics'
 
 const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
-  const [isShowBtn, SetIsShowBtn] = useState(false)
+  const [isShowBtn, setIsShowBtn] = useState(false)
   const {
     provider,
     signer,
@@ -94,7 +94,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   })
 
   const chainIcon = useMemo(() => {
-    return getChainIconById(nft && nft.chain_id ? nft.chain_id.toString() : '5')
+    return getDarkChainIconById(nft && nft.chain_id ? nft.chain_id.toString() : '5')
   }, [nft])
   const currencyIcon = getCurrencyIconByAddress(nft.currency)
 
@@ -157,7 +157,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     return (
       <>
         <div
-          className="nft-image-container group relative flex justify-center text-center overflow-hidden rounded-md"
+          className="nft-image-container group relative flex justify-center text-center overflow-hidden rounded-tr-[8px] rounded-tl-[8px]"
           ref={isHomePage ? setNodeRef : null}
           style={isHomePage ? style : {}}
           {...(isHomePage ? listeners : {})}
@@ -165,7 +165,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
         >
           <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
             <img
-              className='nft-image rounded-md object-cover duration-300'
+              className='nft-image rounded-tr-[8px] rounded-tl-[8px] object-cover duration-300'
               src={imageError ? '/images/omnix_logo_black_1.png' : image}
               alt="nft-image"
               onError={() => { setImageError(true) }}
@@ -174,21 +174,30 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
             />
           </LazyLoad>
         </div>
-        <div className="flex flex-row mt-2.5 justify-between align-middle font-['RetniSans']">
-          <div className="ml-3 text-[#000000] text-md font-bold">
-            {nftName}
+        <div className="flex flex-row mt-2.5 justify-between align-middle font-['RetniSans'] px-3">
+          <div className="text-[#000000] text-md text-secondary font-bold">
+            {nft.token_id}
           </div>
-          <div className="mr-3 flex items-center">
-            <div className="flex items-center ml-1">
-              <img alt='chainIcon' src={chainIcon} className="w-[16px] h-[16px]" />
-            </div>
+          <div className={'flex items-center'}>
+            <svg width="17" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9.64864 1.81096L9.64873 1.81087C9.98536 1.47408 10.3851 1.20691 10.825 1.02463C11.2649 0.842355 11.7364 0.748535 12.2126 0.748535C12.6888 0.748535 13.1603 0.842355 13.6002 1.02463C14.0401 1.20691 14.4398 1.47408 14.7765 1.81087L15.1301 1.45744L14.7766 1.81104C15.1134 2.14768 15.3806 2.54737 15.5629 2.98728C15.7451 3.4272 15.839 3.89872 15.839 4.3749C15.839 4.85109 15.7451 5.32261 15.5629 5.76252C15.3806 6.20244 15.1134 6.60213 14.7766 6.93877L14.7765 6.93885L13.9815 7.73385L8.50009 13.2153L3.01864 7.73385L2.22364 6.93885C1.54364 6.25885 1.16162 5.33657 1.16162 4.3749C1.16162 3.41324 1.54364 2.49096 2.22364 1.81096C2.90364 1.13096 3.82592 0.748936 4.78759 0.748936C5.74926 0.748936 6.67153 1.13096 7.35154 1.81096L8.14654 2.60596C8.3418 2.80122 8.65838 2.80122 8.85364 2.60596L9.64864 1.81096Z" stroke="url(#paint0_linear_329_6115)" strokeLinecap="round" strokeLinejoin="round"/>
+              <defs>
+                <linearGradient id="paint0_linear_329_6115" x1="3.60112" y1="0.248535" x2="16.7643" y2="3.89337" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#FA16FF"/>
+                  <stop offset="1" stopColor="#F00056"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <span className={'bg-clip-text bg-like-gradient text-transparent text-md opacity-50 ml-2'}>24</span>
           </div>
         </div>
         <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
           <div className="flex items-center ml-3">
             {isListed && <>
               <img src={currencyIcon || '/svgs/ethereum.svg'} className="w-[18px] h-[18px]" alt='icon'/>
-              <span className="text-[#000000] text-xg font-extrabold ml-2">{numberLocalize(Number(nft?.price || 0))}</span>
+              <span className="text-primary-light text-md font-extrabold ml-2">
+                {numberLocalize(Number(nft?.price || 0))}
+              </span>
             </>}
           </div>
         </div>
@@ -198,28 +207,29 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
 
   const renderSaleFooter = () => {
     return (
-      <div className="flex items-center ml-3">
-        {(!!lastSale && lastSale > 0) && <>
-          <span className="text-[#6C757D] text-md font-bold">last sale: &nbsp;</span>
+      <div className="flex items-center justify-between w-full px-3">
+        {(!!lastSale && lastSale > 0) ? <div className={'flex items-center'}>
+          <span className="text-secondary text-sm font-bold">last sale: &nbsp;</span>
           <img alt={'saleIcon'} src={lastSaleCoin} className="w-[18px] h-[18px]"/>&nbsp;
           <span
-            className="text-[#6C757D] text-mdfont-bold">{numberLocalize(Number(lastSale))}</span>
-        </>}
-        {(!lastSale && !!highestBid && highestBid > 0) && <>
+            className="text-secondary text-sm font-bold">{numberLocalize(Number(lastSale))}</span>
+        </div>: <div /> }
+        {(!lastSale && !!highestBid && highestBid > 0) && <div className={'flex items-center'}>
           <span className="text-[#6C757D] text-md font-bold">highest offer: &nbsp;</span>
           <img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;
           <span
-            className="text-[#6C757D] text-md font-bold">{numberLocalize(Number(highestBid))}</span>
-        </>}
+            className="text-secondary text-sm font-bold">{numberLocalize(Number(highestBid))}</span>
+        </div>}
+        <img src={chainIcon} alt={'chainicon'} width={18} height={18} />
       </div>
     )
   }
 
   return (
     <div
-      className='border-[2px] border-[#F8F9FA] rounded-[8px] hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F8F9FA]'
-      onMouseEnter={() => SetIsShowBtn(true)}
-      onMouseLeave={() => SetIsShowBtn(false)}
+      className='relative rounded-[8px] bg-[#202020] hover:shadow-[0_0_20px_rgba(245,245,245,0.22)]'
+      onMouseEnter={() => setIsShowBtn(true)}
+      onMouseLeave={() => setIsShowBtn(false)}
     >
       {
         (isHomePage || isUserPage) && renderImageContainer()
@@ -232,7 +242,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           </a>
         </Link>
       }
-      <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans'] min-h-[25px]">
+      <div className="w-full mt-2.5 mb-3.5 font-['RetniSans'] min-h-[25px]">
         {(isHomePage || isUserPage) && renderSaleFooter()}
         {
           isCollectionPage &&
@@ -242,32 +252,33 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
             </a>
           </Link>
         }
-        <div className="flex items-center ml-3">
-          {isShowBtn && isOwner && isWhitelisted && (
+      </div>
+      {
+        isShowBtn &&
+        <div className="absolute bottom-0 w-full bg-dark-green text-primary-light rounded-br-[8px] rounded-bl-[8px] h-[38px] flex items-center justify-center text-xg">
+          {isOwner && isWhitelisted && (
             <div
-              className="ml-2 mr-2 py-[1px] px-2 bg-[#A0B3CC] rounded-[10px] text-md text-[#F8F9FA] cursor-pointer font-blod hover:bg-[#B00000]"
-              onClick={() => {
-                setOpenSellDlg(true)
-              }}>
+              className="px-2 cursor-pointer font-blod"
+              onClick={() => {setOpenSellDlg(true)}}>
               {'Sell'}
             </div>
           )}
-          {isShowBtn && !isOwner && isListed && isWhitelisted && (
+          {!isOwner && isListed && isWhitelisted && (
             <div
-              className="ml-2 mr-2 py-[1px] px-2 bg-[#A0B3CC] rounded-[10px] text-md text-[#F8F9FA] cursor-pointer font-blod hover:bg-[#38B000]"
+              className="px-2 cursor-pointer font-blod"
               onClick={() => setOpenBuyDlg(true)}>
               {'Buy now'}
             </div>
           )}
-          {isShowBtn && !isOwner && !isListed && isWhitelisted && (
+          {!isOwner && !isListed && isWhitelisted && (
             <div
-              className="ml-2 mr-2 py-[1px] px-2 bg-[#A0B3CC] rounded-[10px] text-md text-[#F8F9FA] cursor-pointer font-blod hover:bg-[#38B000]"
+              className="px-2 cursor-pointer font-blod"
               onClick={() => setOpenBidDlg(true)}>
               {'Bid'}
             </div>
           )}
         </div>
-      </div>
+      }
 
       <ConfirmSell
         handleSellDlgClose={() => {

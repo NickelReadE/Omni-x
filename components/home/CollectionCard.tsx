@@ -59,7 +59,7 @@ const CollectionCard = (props:any) => {
               </defs>
             </svg>
           </div>
-          <span className='bg-clip-text text-transparent text-[15px] leading-[18px] opacity-50' style={{ backgroundImage: 'linear-gradient(103.58deg, #FA16FF 15.1%, #F00056 87.92%)' }}>
+          <span className='bg-clip-text bg-like-gradient text-transparent text-md opacity-50'>
             24
           </span>
         </div>
