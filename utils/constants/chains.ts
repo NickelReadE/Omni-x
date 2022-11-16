@@ -83,7 +83,7 @@ export const SUPPORTED_CHAIN_IDS = [
   CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET],
   CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET],
   CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET],
-  CHAIN_IDS[CHAIN_TYPE.APTOS],
+  // CHAIN_IDS[CHAIN_TYPE.APTOS],
 ]
 
 export const getChainIcons = (chainId: number) => {
@@ -362,6 +362,14 @@ export const numberLocalize = (price: number) => {
 export const getProfileLink = (chain_id: number, owner: string) => {
   const explorer_link = getBlockExplorer(chain_id)
   return (explorer_link + '/address/' + owner)
+}
+
+export const getChainOfficialNameById = (chainId?: number) => {
+  return chainId && chainInfos[chainId]?.officialName
+}
+
+export const getChainLogoById = (chainId?: string) => {
+  return chainId && chainInfos[Number(chainId)]?.roundedLogo
 }
 
 export const getChainIconById = (chainId?: string) => {
