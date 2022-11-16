@@ -11,7 +11,6 @@ const User: NextPage = () => {
   const userAddress = router.query.address as string
   const {profile, nfts, isLoading} = useProfile(userAddress)
 
-  const [currentTab, setCurrentTab] = useState<string>('NFTs')
   const [selectedTab, setSelectedTab] = useState(0)
 
   const activeClasses = (index: number) => {

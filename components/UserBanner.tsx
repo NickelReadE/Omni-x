@@ -12,8 +12,6 @@ import { truncateAddress } from '../utils/utils'
 import {ExternalLink, GradientButton} from './basic'
 import WebsiteIcon from '../public/images/icons/website.svg'
 import TwitterIcon from '../public/images/icons/twitter.svg'
-import DiscordIcon from '../public/images/icons/discord.svg'
-import TelegramIcon from '../public/images/icons/telegram.svg'
 import BlockscanChatIcon from '../public/images/icons/blockscan_chat.svg'
 
 type UserBannerProps = {
@@ -22,6 +20,7 @@ type UserBannerProps = {
 
 const UserBanner = ({user}: UserBannerProps): JSX.Element => {
   const {address} = useWallet()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [avatarError, setAvatarError] = useState(false)
   const [isStgStacker, setIsStgStacker] = useState(false)
   const [balances, setBalanceSTG] = useState(0)
