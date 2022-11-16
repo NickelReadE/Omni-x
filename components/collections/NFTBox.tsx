@@ -7,7 +7,6 @@ import { useDraggable } from '@dnd-kit/core'
 import { IPropsNFTItem } from '../../interface/interface'
 import {
   getCurrencyIconByAddress,
-  getChainIconById,
   numberLocalize, getDarkChainIconById
 } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'

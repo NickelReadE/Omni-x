@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { BigNumber, ethers } from 'ethers'
 import { useDndMonitor, useDroppable } from '@dnd-kit/core'
 import { Dialog } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import { useNetwork, useSwitchNetwork, useBalance } from 'wagmi'
+import { useSwitchNetwork, useBalance } from 'wagmi'
 import useWallet from '../hooks/useWallet'
 import { NFTItem } from '../interface/interface'
 import {
@@ -19,13 +19,9 @@ import {
   getONFTCore721Instance,
 } from '../utils/contracts'
 import {
-  chainInfos,
   CHAIN_IDS,
-  getChainInfo,
   getLayerzeroChainId,
   getProvider,
-  numberLocalize,
-  SUPPORTED_CHAIN_IDS,
 } from '../utils/constants'
 import ConfirmTransfer, { ConfirmTransferStatus } from './bridge/ConfirmTransfer'
 import ConfirmUnwrap from './bridge/ConfirmUnwrap'
@@ -56,7 +52,6 @@ const SideBar: React.FC = () => {
     signer,
     address,
     chainId,
-    disconnect,
   } = useWallet()
   const { data: nativeBalance } = useBalance({
     addressOrName: address
@@ -65,12 +60,10 @@ const SideBar: React.FC = () => {
   const { estimateGasFee, estimateGasFeeONFTCore, unwrapInfo, selectedUnwrapInfo, validateOwNFT, validateONFT } = useBridge()
   const { addTxToHistories } = useProgress()
   const { listenONFTEvents } = useContract()
-  const { chain } = useNetwork()
   const { switchNetwork } = useSwitchNetwork()
-  const { balances, profile, userNfts: nfts, refreshUserNfts } = useData()
+  const { profile, userNfts: nfts, refreshUserNfts } = useData()
   const dispatch = useDispatch()
 
-  const ref = useRef(null)
   const menu_profile = useRef<HTMLUListElement>(null)
   const menu_ethereum = useRef<HTMLUListElement>(null)
   const menu_wallets = useRef<HTMLDivElement>(null)
@@ -78,28 +71,41 @@ const SideBar: React.FC = () => {
   const menu_bridge = useRef<HTMLDivElement>(null)
   const menu_cart = useRef<HTMLDivElement>(null)
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [showSidebar, setShowSidebar] = useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [onMenu, setOnMenu] = useState(false)
   const [expandedMenu, setExpandedMenu] = useState(0)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [fixed, setFixed] = useState(false)
   const [confirmTransfer, setConfirmTransfer] = useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isFirstDrag, setIsFirstDrag] = useState(true)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [offsetMenu, setOffsetMenu] = useState(0)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [avatarError, setAvatarError] = useState(false)
   const [selectedNFTItem, setSelectedNFTItem] = useState<NFTItem>()
   const [isONFTCore, setIsONFTCore] = useState(false)
   const [image, setImage] = useState('/images/omnix_logo_black_1.png')
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [imageError, setImageError] = useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [dragOver, setDragOver] = useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [dragEnd, setDragEnd] = useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [targetChain, setTargetChain] = useState(ChainIds.ETHEREUM)
   const [transferStatus, setTransferStatus] = useState<ConfirmTransferStatus | undefined>()
   const [approveTxHash, setApproveTxHash] = useState<string | undefined>()
   const [estimatedFee, setEstimatedFee] = useState<BigNumber>(BigNumber.from('0'))
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isONFT, setIsONFT] = useState(false)
   const [unwrap, setUnwrap] = useState(false)
   const [bOpenModal, setOpenModal] = useState(false)
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { setNodeRef } = useDroppable({
     id: 'droppable',
     data: {
@@ -181,21 +187,6 @@ const SideBar: React.FC = () => {
     }
   }, [expandedMenu])
 
-  const hideSidebar = () => {
-    if (!onMenu) {
-      setExpandedMenu(0)
-      setOffsetMenu(0)
-      setShowSidebar(false)
-      setOnMenu(false)
-    }
-  }
-
-  const onLeaveMenu = () => {
-    if (!fixed) {
-      onLeave()
-    }
-  }
-
   const onLeave = () => {
     setExpandedMenu(0)
     setOffsetMenu(0)
@@ -203,21 +194,7 @@ const SideBar: React.FC = () => {
     setOnMenu(false)
   }
 
-  const toggleMenu = (menu: number) => {
-    setExpandedMenu(menu == expandedMenu ? 0 : menu)
-    setFixed(false)
-  }
-
-  const fixMenu = (menu: number) => {
-    setExpandedMenu(menu == expandedMenu ? 0 : menu)
-    setFixed(!fixed)
-    setIsFirstDrag(!isFirstDrag)
-  }
-
-  const handleTargetChainChange = (networkIndex: number) => {
-    setTargetChain(networkIndex)
-  }
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleTransfer = async () => {
     if (!selectedNFTItem) return
     if (!targetChain) return
@@ -511,17 +488,6 @@ const SideBar: React.FC = () => {
   const updateModal = (status: boolean) => {
     setConfirmTransfer(status)
   }
-
-  const setLogout = () => {
-    disconnect()
-  }
-
-  const avatarImage = useMemo(() => {
-    if (!avatarError && profile && profile.avatar) {
-      return process.env.API_URL + profile.avatar
-    }
-    return '/images/default_avatar.png'
-  }, [profile])
 
   return (
     <>
