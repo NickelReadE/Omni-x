@@ -2,9 +2,11 @@ import React, {Fragment} from 'react'
 import {getChainLogoById, getChainOfficialNameById, SUPPORTED_CHAIN_IDS} from '../../../utils/constants'
 import useWallet from '../../../hooks/useWallet'
 import {Menu, Transition} from '@headlessui/react'
+import {useSwitchNetwork} from 'wagmi'
 
 export const SelectNetworks = () => {
   const { chainId } = useWallet()
+  const { switchNetwork } = useSwitchNetwork()
 
   return (
     <div className='w-8 h-8'>
@@ -34,7 +36,7 @@ export const SelectNetworks = () => {
                       return (
                         <Menu.Item key={index} as={Fragment}>
                           {({ active }) => (
-                            <div className={`py-2 px-6 flex items-center cursor-pointer ${active ? 'bg-[#303030]' : ''}`}>
+                            <div className={`py-2 px-6 flex items-center cursor-pointer ${active ? 'bg-[#303030]' : ''}`} onClick={() => switchNetwork?.(chainId)}>
                               <img alt={'chainIcon'} src={getChainLogoById(chainId.toString())}/>
                               <span className={'text-primary-light text-lg pl-4'}>{getChainOfficialNameById(chainId)}</span>
                             </div>

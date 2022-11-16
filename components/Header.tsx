@@ -10,9 +10,9 @@ import SearchBar from './layout/header/SearchBar'
 import useWallet from '../hooks/useWallet'
 import classNames from '../helpers/classNames'
 import HomeLogo from '../public/images/icons/home_logo.svg'
-import NotificationIcon from '../public/images/icons/notification.svg'
 import {SelectNetworks} from './layout/header/SelectNetworks'
 import {PfpMenu} from './layout/header/PfpMenu'
+import {NotificationArea} from './layout/header/NotificationArea'
 
 const Header = (): JSX.Element => {
   const { address } = useWallet()
@@ -67,9 +67,7 @@ const Header = (): JSX.Element => {
             {
               address ?
                 <>
-                  <Link href='/'>
-                    <NotificationIcon />
-                  </Link>
+                  <NotificationArea />
                   <SelectNetworks />
                   <PfpMenu avatarImage={avatarImage} />
                 </>
