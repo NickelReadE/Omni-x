@@ -50,7 +50,6 @@ const useOnchainPrices = (): OnChainInformation => {
         CHAIN_IDS[CHAIN_TYPE.POLYGON],
         CHAIN_IDS[CHAIN_TYPE.OPTIMISM],
       ])
-      await getOnchainInfos()
       const interval = setInterval(() => {
         getOnchainInfos()
       }, 30000)
@@ -59,7 +58,10 @@ const useOnchainPrices = (): OnChainInformation => {
   }, [])
 
   useEffect(() => {
-    localStorage.setItem('gasSupportChainIds', JSON.stringify(gasSupportChainIds))
+    (async () => {
+      localStorage.setItem('gasSupportChainIds', JSON.stringify(gasSupportChainIds))
+      await getOnchainInfos()
+    })()
   }, [gasSupportChainIds])
 
   return {

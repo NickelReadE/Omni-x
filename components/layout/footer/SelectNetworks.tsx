@@ -30,7 +30,7 @@ export const SelectNetworks = ({ gasSupportChainIds, updateGasChainId }: {gasSup
               <div
                 className={'absolute bottom-10 left-[-12px] w-[166px] origin-bottom-left rounded-md bg-primary-gradient p-[1px]'}>
                 <Menu.Items
-                  className="bg-[#202020e6] rounded-md shadow-lg backdrop-blur-[10px] shadow-[0_0px_20px_rgba(231,237,245,0.25)] focus:outline-none py-2">
+                  className="bg-[#202020e6] rounded-md shadow-lg backdrop-blur-[10px] shadow-[0_0px_20px_rgba(231,237,245,0.25)] focus:outline-none py-1">
                   {
                     GAS_SUPPORTED_CHAIN_IDS.map((chainId, index) => {
                       return (
