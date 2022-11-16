@@ -3,24 +3,14 @@
 @tailwind utilities;
 
 @import './loader.scss';
+@import "../public/fonts/circular/stylesheet.css";
+@import "../public/fonts/retnisans/stylesheet.css";
+@import "../public/fonts/sfpro/stylesheet.css";
 
-// @font-face {
-// 	font-family: 'Roboto Mono';
-// 	src: url(/fonts/RobotoMono-Medium.woff2) format('woff2'), url(/fonts/RobotoMono-Medium.woff) format('woff');
-// 	font-weight: 500;
-// 	font-style: normal;
-// }
-// @font-face {
-// 	font-family: 'Circular Std';
-// 	src: url(/fonts/CircularStd-Medium.woff2) format('woff2'), url(/fonts/CircularStd-Medium.woff) format('woff');
-// 	font-weight: 500;
-// 	font-style: normal;
-// }
-@font-face {
-  font-family: 'RetniSans';
-  src: url(/fonts/RetniSans-Regular.ttf);
-  font-weight: 400;
-  font-style: normal;
+@layer base {
+  html {
+    font-family: CircularXX TT, system-ui, Retni Sans;
+  }
 }
 
 .bg-sidebar-hover {
@@ -34,27 +24,6 @@ button.sidebar {
 .sidebar.active {
   background-color: #B444F9 !important;
   color: #FEFEFF !important;
-}
-
-.img-network {
-  width: 36px;
-  height: 36px;
-}
-
-.img-ethereum {
-  background-image: url(/svgs/ethereum.svg);
-}
-
-.sidebar-icon {
-  height: 51px;
-  width: 100%;
-  display: flex;
-}
-
-.bg-wallet-output {
-  background-image: url(/sidebar/wallet_output.jpg);
-  background-size: contain;
-  background-repeat: no-repeat;
 }
 
 .fade-left {
