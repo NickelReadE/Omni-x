@@ -86,6 +86,15 @@ export const SUPPORTED_CHAIN_IDS = [
   // CHAIN_IDS[CHAIN_TYPE.APTOS],
 ]
 
+export const GAS_SUPPORTED_CHAIN_IDS = [
+  CHAIN_IDS[CHAIN_TYPE.ETHEREUM],
+  CHAIN_IDS[CHAIN_TYPE.BINANCE],
+  CHAIN_IDS[CHAIN_TYPE.AVALANCHE],
+  CHAIN_IDS[CHAIN_TYPE.POLYGON],
+  CHAIN_IDS[CHAIN_TYPE.OPTIMISM],
+  CHAIN_IDS[CHAIN_TYPE.FANTOM],
+]
+
 export const getChainIcons = (chainId: number) => {
   if (SUPPORTED_CHAIN_IDS.includes(chainId)) {
     return {
@@ -115,7 +124,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
     roundedLogo: '/images/chain/binance.png',
     explorerLogo: '/images/binanceExplorer.png',
     darkIcon: '/images/chain/binance_dark_round.png',
-    officialName: 'Fantom',
+    officialName: 'Binance',
     currency: 'FTM'
   },
   137: {
@@ -124,7 +133,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
     roundedLogo: '/images/chain/polygon.png',
     explorerLogo: '/images/polygonExplorer.png',
     darkIcon: '/images/chain/polygon_dark_round.png',
-    officialName: 'Fantom',
+    officialName: 'Polygon',
     currency: 'FTM'
   },
   43114: {
@@ -133,7 +142,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
     roundedLogo: '/images/chain/avalanche.png',
     explorerLogo: '/images/avalancheExplorer.png',
     darkIcon: '/images/chain/avalanche_dark_round.png',
-    officialName: 'Fantom',
+    officialName: 'Avalanche',
     currency: 'FTM'
   },
   250: {
@@ -151,7 +160,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
     roundedLogo: '/images/chain/optimism.png',
     explorerLogo: '/images/optimismExplorer.png',
     darkIcon: '/images/chain/optimism_dark_round.png',
-    officialName: 'Fantom',
+    officialName: 'Optimism',
     currency: 'FTM'
   },
   42161: {
@@ -160,7 +169,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
     roundedLogo: '/images/chain/arbitrum.png',
     explorerLogo: '/images/arbitrumExplorer.png',
     darkIcon: '/images/chain/arbitrum_dark_round.png',
-    officialName: 'Fantom',
+    officialName: 'Arbitrum',
     currency: 'FTM'
   },
   [CHAIN_IDS[CHAIN_TYPE.GOERLI]]: {

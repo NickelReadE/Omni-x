@@ -1,6 +1,6 @@
 import React from 'react'
 import type { NextPage } from 'next'
-import MetaMaskConnect from '../components/MetaMaskConnect'
+import MetaMaskConnect from '../components/layout/header/MetaMaskConnect'
 // import Tabs from '../components/Tabs'
 import useWallet from '../hooks/useWallet'
 import { supportChainIDs } from '../utils/constants'

@@ -1,9 +1,9 @@
 import React from 'react'
 import Head from 'next/head'
-import Header from './Header'
-import Footer from './layout/Footer'
-import SideBar from './SideBar'
-import SnackbarComponent from './SnackBar'
+import Header from './header/Header'
+import Footer from './footer/Footer'
+import SideBar from '../SideBar'
+import SnackbarComponent from '../SnackBar'
 
 type LayoutProps = {
   children?: React.ReactNode

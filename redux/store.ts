@@ -4,7 +4,6 @@ import { HYDRATE, createWrapper } from 'next-redux-wrapper'
 import thunkMiddleware from 'redux-thunk'
 import collectionsReducer from './reducers/collectionsReducer'
 import snackBarReducer from './reducers/snackBarReducer'
-import feeddataReducer from './reducers/feeddataReducer'
 
 const bindMiddleware = (middleware: any) => {
   if (process.env.NODE_ENV !== 'production') {
@@ -17,7 +16,6 @@ const bindMiddleware = (middleware: any) => {
 const combinedReducer = combineReducers({
   snackBarState: snackBarReducer,
   collectionsState: collectionsReducer,
-  feeddataState:feeddataReducer,
 })
 
 const reducer = (state: any, action: any) => {

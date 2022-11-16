@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useCallback, useMemo} from 'react'
 import {ethers, Signer} from 'ethers'
-import {supportChains} from '../utils/constants'
-import { WalletContext } from '../contexts/wallet'
+import {supportChains} from '../../utils/constants'
+import { WalletContext } from '../../contexts/wallet'
 import {useAccount, useConnect, useDisconnect, useNetwork, useProvider, useSigner} from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 

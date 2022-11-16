@@ -1,14 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
-// import { useConnectModal } from '@rainbow-me/rainbowkit'
 import {useSwitchNetwork} from 'wagmi'
-import { CHAIN_IDS, supportChainIDs } from '../utils/constants'
-import useWallet from '../hooks/useWallet'
-import { CHAIN_TYPE } from '../types/enum'
+import { CHAIN_IDS, supportChainIDs } from '../../../utils/constants'
+import useWallet from '../../../hooks/useWallet'
+import { CHAIN_TYPE } from '../../../types/enum'
 
 const MetaMaskConnect = (): JSX.Element => {
   const { chainId, address, provider } = useWallet()
   const [show, setShow] = useState<boolean>(true)
-  // const { openConnectModal } = useConnectModal()
   const {isLoading, pendingChainId, switchNetwork} = useSwitchNetwork()
 
   const isSupportChain = useMemo(() => {
@@ -25,12 +23,6 @@ const MetaMaskConnect = (): JSX.Element => {
       }
     } else setShow(true)
   }, [address, chainId, isSupportChain, provider])
-
-  // useEffect(() => {
-  //   if (!address && openConnectModal) {
-  //     openConnectModal()
-  //   }
-  // }, [address, openConnectModal])
 
   const signSection = () => {
     if (!isSupportChain && address) {

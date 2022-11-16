@@ -1,5 +1,5 @@
 import React from 'react'
-import PriceFeed from '../PriceFeed'
+import PriceFeed from './PriceFeed'
 
 export default function Footer() {
   return (

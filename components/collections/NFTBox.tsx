@@ -20,7 +20,7 @@ import useOrderStatics from '../../hooks/useOrderStatics'
 
 const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
-  const [isShowBtn, setIsShowBtn] = useState(false)
+  const [boxHovered, setBoxHovered] = useState(false)
   const {
     provider,
     signer,
@@ -174,7 +174,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
             />
           </LazyLoad>
         </div>
-        <div className="flex flex-row mt-2.5 justify-between align-middle font-['RetniSans'] px-3">
+        <div className="flex flex-row py-2 px-3 justify-between align-middle font-['RetniSans']">
           <div className="text-[#000000] text-md text-secondary font-bold">
             {nft.token_id}
           </div>
@@ -191,7 +191,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
             <span className={'bg-clip-text bg-like-gradient text-transparent text-md opacity-50 ml-2'}>24</span>
           </div>
         </div>
-        <div className="flex flex-row mt-2.5 mb-3.5 justify-between align-middle font-['RetniSans']">
+        <div className="flex flex-row justify-between align-middle font-['RetniSans'] pt-[2px] pb-[7px]">
           <div className="flex items-center ml-3">
             {isListed && <>
               <img src={currencyIcon || '/svgs/ethereum.svg'} className="w-[18px] h-[18px]" alt='icon'/>
@@ -207,7 +207,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
 
   const renderSaleFooter = () => {
     return (
-      <div className="flex items-center justify-between w-full px-3">
+      <div className="flex items-center justify-between w-full px-3 mt-4">
         {(!!lastSale && lastSale > 0) ? <div className={'flex items-center'}>
           <span className="text-secondary text-sm font-bold">last sale: &nbsp;</span>
           <img alt={'saleIcon'} src={lastSaleCoin} className="w-[18px] h-[18px]"/>&nbsp;
@@ -227,9 +227,9 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
 
   return (
     <div
-      className='relative rounded-[8px] bg-[#202020] hover:shadow-[0_0_20px_rgba(245,245,245,0.22)]'
-      onMouseEnter={() => setIsShowBtn(true)}
-      onMouseLeave={() => setIsShowBtn(false)}
+      className='relative rounded-[8px] bg-[#202020] hover:shadow-[0_0_20px_rgba(245,245,245,0.22)] pb-3'
+      onMouseEnter={() => setBoxHovered(true)}
+      onMouseLeave={() => setBoxHovered(false)}
     >
       {
         (isHomePage || isUserPage) && renderImageContainer()
@@ -242,7 +242,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           </a>
         </Link>
       }
-      <div className="w-full mt-2.5 mb-3.5 font-['RetniSans'] min-h-[25px]">
+      <div className="w-full font-['RetniSans']">
         {(isHomePage || isUserPage) && renderSaleFooter()}
         {
           isCollectionPage &&
@@ -254,29 +254,45 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
         }
       </div>
       {
-        isShowBtn &&
-        <div className="absolute bottom-0 w-full bg-dark-green text-primary-light rounded-br-[8px] rounded-bl-[8px] h-[38px] flex items-center justify-center text-xg">
+        boxHovered &&
+        <div className={`absolute bottom-0 w-full bg-dark-${isOwner && isWhitelisted ? 'red' : 'green'} text-primary-light rounded-br-[8px] rounded-bl-[8px] h-10 flex items-center justify-center text-xg cursor-pointer`}>
           {isOwner && isWhitelisted && (
             <div
-              className="px-2 cursor-pointer font-blod"
+              className="font-bold"
               onClick={() => {setOpenSellDlg(true)}}>
-              {'Sell'}
+              {'sell'}
             </div>
           )}
           {!isOwner && isListed && isWhitelisted && (
             <div
-              className="px-2 cursor-pointer font-blod"
+              className="font-bold"
               onClick={() => setOpenBuyDlg(true)}>
-              {'Buy now'}
+              {'buy'}
             </div>
           )}
           {!isOwner && !isListed && isWhitelisted && (
             <div
-              className="px-2 cursor-pointer font-blod"
+              className="font-bold"
               onClick={() => setOpenBidDlg(true)}>
-              {'Bid'}
+              {'bid'}
             </div>
           )}
+        </div>
+      }
+
+      {
+        boxHovered &&
+        <div className={'absolute top-2 w-full flex items-center justify-between px-2'}>
+          <div className={'w-10 h-10'}>
+            {
+              isOwner && isWhitelisted &&
+                <img src={'/images/icons/weird-active.png'} alt={'weird icon'} />
+            }
+          </div>
+          <div className={'flex items-center space-x-2'}>
+            <img src={'/images/icons/fullscreen-active.png'} alt={'fullscreen icon'} />
+            <img src={'/images/icons/yellow-star-active.png'} alt={'yellow-star icon'} />
+          </div>
         </div>
       }
 

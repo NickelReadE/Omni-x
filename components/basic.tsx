@@ -40,7 +40,7 @@ const useStyles = makeStyles({
 export const GradientButton = ({ title, height, borderRadius, textSize }: { title: string, height: number, borderRadius: number, textSize: string }) => {
   const classes = useStyles({ borderRadius: borderRadius })
   return (
-    <div className={classNames(classes.borderGradientRadius, `h-[${height}px] hover:cursor-pointer webkit-mask-composite`)} style={{'webkitMastComposite': 'xor'}}>
+    <div className={classNames(classes.borderGradientRadius, `h-[${height}px] hover:cursor-pointer webkit-mask-composite`)} style={{WebkitMaskComposite: 'xor'}}>
       <div className={'w-full h-full flex items-center justify-center'}>
         <span className={`bg-primary-gradient text-${textSize} text-center bg-clip-text text-transparent`}>{title}</span>
       </div>

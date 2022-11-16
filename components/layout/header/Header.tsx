@@ -2,17 +2,17 @@ import React, {useMemo} from 'react'
 import Link from 'next/link'
 import { Menu } from '@headlessui/react'
 import {useConnectModal} from '@rainbow-me/rainbowkit'
-import ProcessingTransaction from './transaction/ProcessingTransaction'
-import NavMenu from './layout/header/NavMenu'
-import useProgress from '../hooks/useProgress'
-import useData from '../hooks/useData'
-import SearchBar from './layout/header/SearchBar'
-import useWallet from '../hooks/useWallet'
-import classNames from '../helpers/classNames'
-import HomeLogo from '../public/images/icons/home_logo.svg'
-import {SelectNetworks} from './layout/header/SelectNetworks'
-import {PfpMenu} from './layout/header/PfpMenu'
-import {NotificationArea} from './layout/header/NotificationArea'
+import ProcessingTransaction from '../../transaction/ProcessingTransaction'
+import NavMenu from './NavMenu'
+import useProgress from '../../../hooks/useProgress'
+import useData from '../../../hooks/useData'
+import SearchBar from './SearchBar'
+import useWallet from '../../../hooks/useWallet'
+import classNames from '../../../helpers/classNames'
+import HomeLogo from '../../../public/images/icons/home_logo.svg'
+import {SelectNetworks} from './SelectNetworks'
+import {PfpMenu} from './PfpMenu'
+import {NotificationArea} from './NotificationArea'
 
 const Header = (): JSX.Element => {
   const { address } = useWallet()
@@ -53,7 +53,7 @@ const Header = (): JSX.Element => {
       >
         <div className='flex items-center'>
           <div className='flex flex-1 items-center mr-auto space-x-[24px]'>
-            <Link href='/'>
+            <Link href='/pages'>
               <button className='flex items-center'>
                 <HomeLogo />
               </button>

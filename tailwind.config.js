@@ -80,6 +80,7 @@ module.exports = {
         'primary-light': '#F5F5F5',
         secondary: '#969696',
         'dark-green': '#38B000',
+        'dark-red': '#E84142',
         'primary-blue': '#00F0EC',
         'primary-green': '#16FFC5'
         // gradient: 'linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%)',
