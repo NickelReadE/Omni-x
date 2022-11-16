@@ -91,7 +91,7 @@ module.exports = {
         RetniSans:['RetniSans']
       },
       fontSize: {
-        xs: '10px',
+        xs: ['10px', '12px'],
         sm: ['12px', '14px'],
         md: ['15px', '18px'],
         lg: ['16px', '19px'],

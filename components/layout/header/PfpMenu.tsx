@@ -7,6 +7,8 @@ interface IPfpMenuPros {
   avatarImage: string
 }
 
+const menuItems = ['messages', 'events', 'settings', 'wallet']
+
 export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
   return (
     <div className='w-8 h-8'>
@@ -51,30 +53,20 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
                     </div>
                   </div>
                   {/*Menu Items for user*/}
-                  <Menu.Item as={Fragment}>
-                    <div className={'py-2 px-6 flex items-center'}>
-                      <img src={'/images/icons/messages.png'}/>
-                      <span className={'text-secondary text-lg pl-4'}>messages</span>
-                    </div>
-                  </Menu.Item>
-                  <Menu.Item as={Fragment}>
-                    <div className={'py-2 px-6 flex items-center'}>
-                      <img src={'/images/icons/events.png'}/>
-                      <span className={'text-secondary text-lg pl-4'}>events</span>
-                    </div>
-                  </Menu.Item>
-                  <Menu.Item as={Fragment}>
-                    <div className={'py-2 px-6 flex items-center'}>
-                      <img src={'/images/icons/settings.png'}/>
-                      <span className={'text-secondary text-lg pl-4'}>settings</span>
-                    </div>
-                  </Menu.Item>
-                  <Menu.Item as={Fragment}>
-                    <div className={'py-2 px-6 flex items-center'}>
-                      <img src={'/images/icons/wallet.png'}/>
-                      <span className={'text-secondary text-lg pl-4'}>wallet</span>
-                    </div>
-                  </Menu.Item>
+                  {
+                    menuItems.map((menu, index) => {
+                      return (
+                        <Menu.Item key={index} as={Fragment}>
+                          {({ active }) => (
+                            <div className={`py-2 px-6 flex items-center cursor-pointer ${active ? 'bg-[#303030]' : ''}`}>
+                              <img src={`/images/icons/${menu}${active ? '-active' : ''}.png`} alt={'menu icon'}/>
+                              <span className={`text-${active ? 'primary-light' : 'secondary'} text-lg pl-4`}>{menu}</span>
+                            </div>
+                          )}
+                        </Menu.Item>
+                      )
+                    })
+                  }
                 </Menu.Items>
               </div>
             </Transition>

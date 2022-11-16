@@ -33,10 +33,12 @@ export const SelectNetworks = () => {
                     SUPPORTED_CHAIN_IDS.map((chainId, index) => {
                       return (
                         <Menu.Item key={index} as={Fragment}>
-                          <div className={'py-2 px-6 flex items-center'}>
-                            <img alt={'chainIcon'} src={getChainLogoById(chainId.toString())}/>
-                            <span className={'text-secondary text-lg pl-4'}>{getChainOfficialNameById(chainId)}</span>
-                          </div>
+                          {({ active }) => (
+                            <div className={`py-2 px-6 flex items-center cursor-pointer ${active ? 'bg-[#303030]' : ''}`}>
+                              <img alt={'chainIcon'} src={getChainLogoById(chainId.toString())}/>
+                              <span className={'text-primary-light text-lg pl-4'}>{getChainOfficialNameById(chainId)}</span>
+                            </div>
+                          )}
                         </Menu.Item>
                       )
                     })

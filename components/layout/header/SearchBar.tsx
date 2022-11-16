@@ -52,22 +52,22 @@ export default function SearchBar() {
             {
               query !== '' && isComponentVisible &&
               <div className='p-3 overflow-auto' style={{maxHeight: 'calc(100vh - 150px)'}}>
-                <div className="text-[#A0B3CC]" style={{fontSize: 15, lineHeight: '19px'}}>Collections</div>
+                <div className="text-secondary" style={{fontSize: 15, lineHeight: '19px'}}>Collections</div>
                 {
                   collections.map((item, index) => {
                     return (
-                      <div className='my-2 h-[50px] font-bold' key={index}>
+                      <div className='my-2 h-[30px] font-bold' key={index}>
                         <Link href={`/collections/${item.col_url}`}>
                           <div className={'flex items-center cursor-pointer'}>
                             <div className={'mr-2'}>
-                              <img src={item.profile_image} alt={'collection profile image'} width={50} height={50} className={'rounded-sm'}/>
+                              <img src={item.profile_image} alt={'collection profile image'} width={30} height={30} className={'rounded-sm'}/>
                             </div>
                             <div className={'flex flex-col'}>
-                              <span className={'text-lg'}>{item.name}</span>
-                              <div className={'flex items-center'}>
-                                <span className={'text-md text-[#A0B3CC]'}>floor ${getMinValue([item.floorPrice.omni, item.floorPrice.usd])}</span>
-                                <span className={'text-md text-[#A0B3CC] mx-2'}> | </span>
-                                <span className={'text-md text-[#A0B3CC]'}>items {item.itemsCnt}</span>
+                              <span className={'text-lg text-primary-light'}>{item.name}</span>
+                              <div className={'flex items-center text-xs'}>
+                                <span className={'bg-primary-gradient bg-clip-text text-transparent'}>floor ${getMinValue([item.floorPrice.omni, item.floorPrice.usd])}</span>
+                                <span className={'bg-primary-gradient bg-clip-text text-transparent mx-2'}> | </span>
+                                <span className={'bg-primary-gradient bg-clip-text text-transparent'}>items {item.itemsCnt}</span>
                               </div>
                             </div>
                           </div>
@@ -78,27 +78,27 @@ export default function SearchBar() {
                 }
                 {
                   collections.length === 0 &&
-                  <div className='my-2 font-bold'>No results found</div>
+                  <div className='my-2 font-bold text-primary-light'>No results found</div>
                 }
-                <div className="text-[#A0B3CC] mt-4" style={{ fontSize: 15, lineHeight: '19px' }}>Profiles</div>
+                <div className="text-secondary mt-4" style={{ fontSize: 15, lineHeight: '19px' }}>Profiles</div>
                 {
                   profiles.map((item, index) => {
                     return (
-                      <div className='my-2 h-[50px] font-bold truncate' key={index}>
+                      <div className='my-2 h-[30px] font-bold truncate' key={index}>
                         <Link href={`/user/${item.address}`}>
                           <div className={'flex items-center cursor-pointer'}>
-                            <div className={'mr-2 w-[50px] h-[50px]'}>
+                            <div className={'mr-2 w-[30px] h-[30px]'}>
                               <img
                                 src={item.avatar ? (S3_BUCKET_URL + item.avatar) : '/images/omnix_logo_black_1.png'}
                                 alt={'avatar'}
-                                width={50}
-                                height={50}
-                                className={'rounded-sm'}
+                                width={30}
+                                height={30}
+                                className={'rounded-full'}
                               />
                             </div>
-                            <div className={'flex flex-col'}>
-                              <div className={'text-lg'}>{item.username}</div>
-                              <div className={'text-md text-[#A0B3CC] truncate'}>{truncateAddress(item.address)}</div>
+                            <div className={'flex flex-col h-[30px]'}>
+                              <div className={'text-md text-primary-light'}>{item.username}</div>
+                              <div className={'text-xs truncate bg-primary-gradient bg-clip-text text-transparent'}>{truncateAddress(item.address)}</div>
                             </div>
                           </div>
                         </Link>
@@ -108,7 +108,7 @@ export default function SearchBar() {
                 }
                 {
                   profiles.length === 0 &&
-                  <div className='my-2 font-bold'>No results found</div>
+                  <div className='my-2 font-bold text-primary-light'>No results found</div>
                 }
               </div>
             }
