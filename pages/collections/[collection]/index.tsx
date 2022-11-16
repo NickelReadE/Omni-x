@@ -11,7 +11,6 @@ import AccordionDetails from '@material-ui/core/AccordionDetails'
 import AccordionSummary from '@material-ui/core/AccordionSummary'
 import Typography from '@material-ui/core/Typography'
 import Checkbox from '@material-ui/core/Checkbox'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import FormGroup from '@material-ui/core/FormGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import InputBase from '@material-ui/core/InputBase'
@@ -41,6 +40,10 @@ const useStyles = makeStyles((theme: Theme) =>
     accordion: {
       width: '100%',
       boxShadow: 'none',
+      background: 'linear-gradient(120.31deg, rgba(125, 125, 125, 0.2) 20%, rgba(125, 125, 125, 0.06) 85.18%)',
+      border: '1px solid #383838',
+      backdropFilter: 'blur(15px)',
+      borderRadius: 6,
       '& .MuiAccordionDetails-root': {
         display: 'flex',
         flexDirection: 'column',
@@ -225,40 +228,38 @@ const Collection: NextPage = () => {
         {
           filterVisible &&
             <div>
-              <ul className="flex flex-col space-y-4">
+              <ul className="flex flex-col space-y-2">
                 <li className="w-full">
                   <div
-                    className={`w-full px-4 py-4 text-left text-g-600  font-semibold  ${expandedMenu == 1 ? 'active' : ''}`}
+                    className={`w-full px-4 py-2 text-left text-md text-secondary font-semibold  ${expandedMenu == 1 ? 'active' : ''}`}
                   >
                     Buy Now
                     <Switch
                       checked={enabled}
                       onChange={setEnabled}
                       onClick={() => setIsActiveBuyNow(!isActiveBuyNow)}
-                      className={`${enabled ? 'bg-[#E9ECEF]' : 'bg-[#E9ECEF]'}
-                      pull-right relative inline-flex h-[22px] w-[57px] shrink-0 cursor-pointer rounded-full border-2 border-[#6C757D] transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
+                      className={'bg-transparent pull-right relative inline-flex h-[16px] w-[28px] shrink-0 cursor-pointer rounded-full border-[2px] border-[#969696] transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75 flex items-center'}
                     >
                       <span className="sr-only">Use setting</span>
                       <span
                         aria-hidden="true"
-                        className={`${enabled ? 'translate-x-6' : 'translate-x-px'}
-                          pointer-events-none inline-block h-[16px] w-[28px] transform rounded-full bg-[#6C757D] shadow-lg ring-0 transition duration-200 ease-in-out mt-px`}
+                        className={`${enabled ? 'translate-x-3' : 'translate-x-px'}
+                          pointer-events-none inline-block h-2 w-2 border-[2px] border-[#969696] transform rounded-full bg-transparent ring-0 transition duration-200 ease-in-out mt-px`}
                       />
                     </Switch>
                   </div>
                 </li>
-                <hr />
                 {collectionInfo && collectionInfo.attrs && Object.keys(collectionInfo.attrs).map((key, idx) => {
                   const attrs = collectionInfo.attrs
                   return <li className="w-full" key={idx}>
                     <Accordion className={classes.accordion}>
                       <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
+                        expandIcon={<img src={'/images/icons/caret_down.png'} alt="caret-down" />}
                         aria-controls="panel1a-content"
                         id="panel1a-header"
                       >
                         <Typography
-                          className={classNames(classes.heading, 'font-RetniSans')}
+                          className={classNames('text-secondary text-md', 'font-RetniSans')}
                           style={{ fontFamily: 'RetniSans' }}>{key}</Typography>
                       </AccordionSummary>
                       <AccordionDetails>
@@ -315,7 +316,6 @@ const Collection: NextPage = () => {
                         </div>
                       </AccordionDetails>
                     </Accordion>
-                    <hr />
                   </li>
                 })}
                 {/* <li className="w-full">
