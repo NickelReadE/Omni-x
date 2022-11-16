@@ -38,6 +38,7 @@ const sort_fields = [
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     accordion: {
+      minHeight: 34,
       width: '100%',
       boxShadow: 'none',
       background: 'linear-gradient(120.31deg, rgba(125, 125, 125, 0.2) 20%, rgba(125, 125, 125, 0.06) 85.18%)',
@@ -66,6 +67,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: '1rem',
     },
     frmLabel: {
+      color: 'white',
       width: '100%'
     },
     search: {
@@ -93,7 +95,7 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
     },
     inputRoot: {
-      color: 'inherit',
+      color: 'white',
     },
     inputInput: {
       padding: theme.spacing(1, 1, 1, 0),
@@ -101,6 +103,7 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
       transition: theme.transitions.create('width'),
       width: '100%',
+      text: 'white',
       [theme.breakpoints.up('md')]: {
         width: '20ch',
       },
@@ -297,7 +300,7 @@ const Collection: NextPage = () => {
                                     onChange={(e) => {
                                       searchAttrsCheck(e.target.checked, key, attrs[key].values[valueKey][3])
                                     }}
-                                    color="default"
+                                    color="primary"
                                     inputProps={{ 'aria-label': 'checkbox with default color' }} />
                                   }
                                   label={

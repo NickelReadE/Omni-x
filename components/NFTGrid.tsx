@@ -2,7 +2,7 @@
 import {useEffect, useState} from 'react'
 import NFTBox from './collections/NFTBox'
 import {IPropsImage, NFTItem} from '../interface/interface'
-import {chainInfos, SUPPORTED_CHAIN_IDS} from '../utils/constants'
+import {getChainLogoById, getDarkChainIconById, SUPPORTED_CHAIN_IDS} from '../utils/constants'
 import {ChainIds} from '../types/enum'
 import useData from '../hooks/useData'
 import Loading from './Loading'
@@ -77,28 +77,28 @@ const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
   return (
     <>
       <div className="w-full mb-5">
-        <div className="flex relative justify-start bg-[#F8F9FA] pl-2 w-fit" style={{'width': '100%'}}>
+        <div className="flex relative justify-start pl-2 w-fit" style={{'width': '100%'}}>
           <div className="flex items-center justify-between w-full">
-            <div className="flex items-center">
+            <div className="flex flex-row space-x-4 justify-items-center">
               <div
-                className={`grid justify-items-center content-center p-3 font-medium cursor-pointer m-[1px] min-w-[80px] ${chain === -1 ? 'bg-[#C8D6E8]' : ''} `}
+                className={'font-medium cursor-pointer m-[1px]'}
                 onClick={() => {
                   setChain(-1)
                 }}
               >
-                <img alt={'listing'} src="/svgs/all_chain.svg" className="w-[21px] h-[22px] "/>
+                <span className={'text-primary-light text-md'}>all</span>
               </div>
               {
                 SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
-                  return <div
-                    key={index}
-                    className={`grid justify-items-center content-center p-3 font-medium cursor-pointer m-[1px] min-w-[80px] ${chain === networkId ? 'bg-[#C8D6E8]' : ''} `}
-                    onClick={() => {
-                      setChain(networkId)
-                    }}
-                  >
-                    <img alt={'listing'} src={chainInfos[networkId].logo} className="w-[21px] h-[22px] "/>
-                  </div>
+                  return (
+                    <div
+                      key={index}
+                      className={`font-medium cursor-pointer m-[1px] ${chain === networkId ? '' : ''} `}
+                      onClick={() => {setChain(networkId)}}
+                    >
+                      <img alt={'listing'} src={chain === networkId ? getChainLogoById(networkId.toString()) : getDarkChainIconById(networkId.toString())} className="w-[28px] h-[28px] "/>
+                    </div>
+                  )
                 })
               }
             </div>

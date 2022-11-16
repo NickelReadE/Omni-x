@@ -63,6 +63,7 @@ export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
         </div>
 
         <div className={'flex items-center justify-between w-full pl-[160px] pt-5'}>
+          {/*Collection information section*/}
           <div className={'flex flex-col space-y-2'}>
             <span className={'text-xg1 text-primary-light'}>{collection.name}</span>
             <span className={'text-md text-secondary'}>{truncateAddress(collectionAddress)}</span>
@@ -91,6 +92,7 @@ export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
             </div>
             <span className={'text-md text-primary-light'}>1.65k followers</span>
           </div>
+          {/*Social buttons section*/}
           <div className={'flex items-center space-x-3'}>
             <div className={'w-8 h-8 p-1'}>
               <ExternalLink link={collection.website}>
@@ -115,6 +117,7 @@ export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
           </div>
         </div>
 
+        {/*Collection description section*/}
         <div className={'pl-[160px] pt-2 flex items-center'}>
           <span className={`text-secondary ${moreOrLess ? '' : 'truncate'} text-md`}>
             {collection.description}
@@ -130,6 +133,7 @@ export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
           }
         </div>
 
+        {/*items & activity Tabs section*/}
         <div className={'flex items-center mt-8'}>
           <div className="text-xl font-medium text-center text-secondary">
             <ul className="flex flex-wrap -mb-px">

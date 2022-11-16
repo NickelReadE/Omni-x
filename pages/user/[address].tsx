@@ -1,9 +1,10 @@
 import { useRouter } from 'next/router'
 import type { NextPage } from 'next'
 import useProfile from '../../hooks/useProfile'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import UserBanner from '../../components/UserBanner'
 import NFTGrid from '../../components/NFTGrid'
+import {UserLikes} from '../../components/user/Likes'
 
 const User: NextPage = () => {
   const router = useRouter()
@@ -11,6 +12,14 @@ const User: NextPage = () => {
   const {profile, nfts, isLoading} = useProfile(userAddress)
 
   const [currentTab, setCurrentTab] = useState<string>('NFTs')
+  const [selectedTab, setSelectedTab] = useState(0)
+
+  const activeClasses = (index: number) => {
+    return index === selectedTab ? 'bg-primary-gradient': 'bg-secondary'
+  }
+  const activeTextClasses = (index: number) => {
+    return index === selectedTab ? 'bg-primary-gradient bg-clip-text text-transparent': 'text-secondary'
+  }
 
   return (
     <div>
@@ -18,26 +27,50 @@ const User: NextPage = () => {
         profile &&
         <>
           <UserBanner user={profile} />
-          <div className="flex justify-center">
-            <div className={'flex justify-center mt-36 w-[90%] mb-20'}>
-              <div className="w-[90%]">
-                <ul
-                  className="flex relative justify-item-stretch text-lg font-medium text-center border-b-2 border-[#E9ECEF]">
-                  <li
-                    className={`select-none inline-block p-4 border-b-2 border-black w-36 cursor-pointer z-30 ${currentTab === 'NFTs' ? 'text-[#1E1C21] ' : ' text-[#ADB5BD] '} `}
-                    onClick={() => setCurrentTab('NFTs')}>
-                    NFTs
+          <div className={'grid grid-cols-6'}>
+            <div />
+            {/*Tabs section*/}
+            <div className={'col-span-4 flex items-center mt-8'}>
+              <div className="text-xl font-medium text-center text-secondary">
+                <ul className="flex flex-wrap -mb-px">
+                  <li onClick={() => setSelectedTab(0)}>
+                    <div className={`${activeClasses(0)} pb-[2px] cursor-pointer`}>
+                      <div className={'flex flex-col justify-between h-full bg-primary text-white p-4 pb-1'}>
+                        <span className={`${activeTextClasses(0)}`}>collected</span>
+                      </div>
+                    </div>
                   </li>
-                  <li className={'select-none inline-block p-4  w-36 cursor-pointer  z-0  text-[#ADB5BD]'}>watchlist</li>
-                  <li className={'select-none inline-block p-4  w-36 cursor-pointer  z-0  text-[#ADB5BD]'}>feed</li>
-                  <li className={'select-none inline-block p-4  w-36 cursor-pointer  z-0  text-[#ADB5BD]'}>stats</li>
+                  <li onClick={() => setSelectedTab(1)}>
+                    <div className={`${activeClasses(1)} pb-[2px] cursor-pointer`}>
+                      <div className={'flex flex-col justify-between h-full bg-primary text-white p-4 pb-1'}>
+                        <span className={`${activeTextClasses(1)}`}>created</span>
+                      </div>
+                    </div>
+                  </li>
+                  <li onClick={() => setSelectedTab(2)}>
+                    <div className={`${activeClasses(2)} pb-[2px] cursor-pointer`}>
+                      <div className={'flex flex-col justify-between h-full bg-primary text-white p-4 pb-1'}>
+                        <span className={`${activeTextClasses(2)}`}>likes</span>
+                      </div>
+                    </div>
+                  </li>
+                  <li onClick={() => setSelectedTab(3)}>
+                    <div className={`${activeClasses(3)} pb-[2px] cursor-pointer`}>
+                      <div className={'flex flex-col justify-between h-full bg-primary text-white p-4 pb-1'}>
+                        <span className={`${activeTextClasses(3)}`}>activity</span>
+                      </div>
+                    </div>
+                  </li>
                 </ul>
-                {currentTab === 'NFTs' && <NFTGrid nfts={nfts} isLoading={isLoading} />}
-                {currentTab === 'watchlist' && <div/>}
-                {currentTab === 'feed' && <div/>}
-                {currentTab === 'stats' && <div/>}
               </div>
             </div>
+          </div>
+
+          <div className={'mt-6 mb-20'}>
+            {selectedTab === 0 && <NFTGrid nfts={nfts} isLoading={isLoading} />}
+            {selectedTab === 1 && <div/>}
+            {selectedTab === 2 && <UserLikes />}
+            {selectedTab === 3 && <div/>}
           </div>
         </>
       }
