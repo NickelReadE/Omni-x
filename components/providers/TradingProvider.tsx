@@ -516,7 +516,10 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
 
   const fundManager = getFundManagerInstance(orderChainId)
   const destAirdrop = await fundManager.lzFeeTransferCurrency(makerBid.currency, takerAsk.taker, takerAsk.price, getLayerzeroChainId(orderChainId), lzChainId)
-  const [omnixFee, currencyFee, nftFee] = await omnixExchange.getLzFeesForTrading(takerAsk, makerBid, destAirdrop)
+
+  const destFee = destAirdrop.add(ethers.utils.parseEther('0.001'))
+  console.log('-airdrop-', ethers.utils.formatEther(destAirdrop))
+  const [omnixFee, currencyFee, nftFee] = await omnixExchange.getLzFeesForTrading(takerAsk, makerBid, destFee)
   const lzFee = omnixFee.add(currencyFee).add(nftFee)
 
   console.log('---lzFee---',
@@ -538,7 +541,7 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
     }
   }
 
-  const tx = await omnixExchange.connect(common_data.signer).matchBidWithTakerAsk(destAirdrop, takerAsk, makerBid, { value: lzFee })
+  const tx = await omnixExchange.connect(common_data.signer).matchBidWithTakerAsk(destFee, takerAsk, makerBid, { value: lzFee })
 
   // PendingTxType
   // txHash: tx hash of seller
