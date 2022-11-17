@@ -60,7 +60,7 @@ const ActivitySend = ({activity}: {activity: ActivityType}) => {
 
       <div className={'flex flex-1 items-center'}>
         {
-          activity.srcChainId && activity.activity === USER_ACTIVITY_TYPE.Send &&
+          activity.srcChainId && (activity.activity === USER_ACTIVITY_TYPE.Send || activity.activity === USER_ACTIVITY_TYPE.Sell || activity.activity === USER_ACTIVITY_TYPE.Buy) &&
           <img
             alt={'networkIcon'}
             src={(hovered) ? senderChainIcon.explorer : senderChainIcon.icon}
@@ -83,14 +83,6 @@ const ActivitySend = ({activity}: {activity: ActivityType}) => {
               if (activity.senderTransactionHash) window.open(sendTransactionHashLink, '_blank')
             }}
             className={`mr-2 h-[20px] ${activity.senderTransactionHash ? 'cursor-pointer opacity-1' : 'opacity-40'}`}
-          />
-        }
-        {
-          activity.activity === USER_ACTIVITY_TYPE.Sell &&
-          <img
-            alt={'networkIcon'}
-            src={senderChainIcon.icon}
-            className={'mr-2 h-[20px]'}
           />
         }
         {truncateAddress(activity.from)}
