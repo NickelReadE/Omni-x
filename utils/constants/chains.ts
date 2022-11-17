@@ -33,7 +33,7 @@ export const CHAIN_IDS = {
   [CHAIN_TYPE.ARBITRUM]: 42161,
   [CHAIN_TYPE.OPTIMISM]: 10,
   [CHAIN_TYPE.FANTOM]: 250,
-  
+
   [CHAIN_TYPE.APTOS]: 2222,
 }
 
@@ -66,12 +66,12 @@ export const RPC_PROVIDERS: { [key: number]: string } = {
   [CHAIN_IDS[CHAIN_TYPE.FANTOM]]: 'https://rpcapi.fantom.network',
 
   // TESTNET RPC
-  [CHAIN_IDS[CHAIN_TYPE.GOERLI]]: 'https://eth-goerli.g.alchemy.com/v2/ktVT-atYLgvp1wP-mKCBztHNxysOhuS1',
+  [CHAIN_IDS[CHAIN_TYPE.GOERLI]]: 'https://goerli.infura.io/v3/94915ad2755844d2854ea9f99d5c30c7',
   [CHAIN_IDS[CHAIN_TYPE.BSC_TESTNET]]: 'https://data-seed-prebsc-1-s1.binance.org:8545',
-  [CHAIN_IDS[CHAIN_TYPE.FUJI_TESTNET]]: 'https://api.avax-test.network/ext/bc/C/rpc',
-  [CHAIN_IDS[CHAIN_TYPE.MUMBAI]]: 'https://polygon-mumbai.g.alchemy.com/v2/02MXkyOyWIK3ZxlnTbMaRMgbsFdvmthv',
-  [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: 'https://arb-goerli.g.alchemy.com/v2/f4BBpxxxWEVDtsmrk2N-B8WAGVZAMLpb',
-  [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: 'https://opt-goerli.g.alchemy.com/v2/o_ikS1EqcWS_gz-vnqtDZuqI41BB7zIO',
+  [CHAIN_IDS[CHAIN_TYPE.FUJI_TESTNET]]: 'https://avalanche-fuji.infura.io/v3/94915ad2755844d2854ea9f99d5c30c7',
+  [CHAIN_IDS[CHAIN_TYPE.MUMBAI]]: 'https://polygon-mumbai.g.alchemy.com/v2/CR8XscJ6acHp2UMJix9AyNM_zAuzV-q3',
+  [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: 'https://arb-goerli.g.alchemy.com/v2/Agc4K6fFfxXQ1s3QG69kj1CB6nu',
+  [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: 'https://opt-goerli.g.alchemy.com/v2/ngF3JRIxa7BQOqSHGASzPf-8BFW1yA0z',
   [CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET]]: 'https://rpc.testnet.fantom.network'
 }
 
