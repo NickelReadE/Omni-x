@@ -75,7 +75,7 @@ const Mint: NextPage = () => {
     } catch (error) {
       console.log(error)
     }
-  }, [chainId, collectionInfo])
+  }, [chainId, collectionInfo, signer])
 
   const mint = async (): Promise<void> => {
     if (chainId === undefined || !provider || !collectionInfo) {
