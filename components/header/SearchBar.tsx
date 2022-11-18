@@ -26,7 +26,7 @@ export default function SearchBar() {
   }
 
   const getMinValue = (values: number[]) => {
-    return values.filter(item => item > 0).reduce((a, b) => Math.min(a, b))
+    return values.filter(item => item > 0).reduce((a, b) => Math.min(a, b), 0)
   }
 
   return (

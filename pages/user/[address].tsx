@@ -4,11 +4,14 @@ import useProfile from '../../hooks/useProfile'
 import { useState } from 'react'
 import UserBanner from '../../components/UserBanner'
 import NFTGrid from '../../components/NFTGrid'
+import useActivities from '../../hooks/useActivities'
+import UserActivity from '../../components/user/UserActivity'
 
 const User: NextPage = () => {
   const router = useRouter()
   const userAddress = router.query.address as string
   const {profile, nfts, isLoading} = useProfile(userAddress)
+  const { activities } = useActivities(userAddress)
 
   const [currentTab, setCurrentTab] = useState<string>('NFTs')
 
@@ -24,16 +27,20 @@ const User: NextPage = () => {
                 <ul
                   className="flex relative justify-item-stretch text-[16px] font-medium text-center border-b-2 border-[#E9ECEF]">
                   <li
-                    className={`select-none inline-block p-4 border-b-2 border-black w-36 cursor-pointer z-30 ${currentTab === 'NFTs' ? 'text-[#1E1C21] ' : ' text-[#ADB5BD] '} `}
+                    className={`select-none inline-block p-4 w-36 cursor-pointer z-30 ${currentTab === 'NFTs' ? 'text-[#1E1C21] border-black border-b-2' : ' text-[#ADB5BD] '} `}
                     onClick={() => setCurrentTab('NFTs')}>
                     NFTs
                   </li>
-                  <li className={'select-none inline-block p-4  w-36 cursor-pointer  z-0  text-[#ADB5BD]'}>watchlist</li>
+                  <li
+                    className={`select-none inline-block p-4  w-36 cursor-pointer  z-0  ${currentTab === 'activity' ? 'text-[#1E1C21] border-black border-b-2' : ' text-[#ADB5BD] '}`}
+                    onClick={() => setCurrentTab('activity')}>
+                    activity
+                  </li>
                   <li className={'select-none inline-block p-4  w-36 cursor-pointer  z-0  text-[#ADB5BD]'}>feed</li>
                   <li className={'select-none inline-block p-4  w-36 cursor-pointer  z-0  text-[#ADB5BD]'}>stats</li>
                 </ul>
                 {currentTab === 'NFTs' && <NFTGrid nfts={nfts} isLoading={isLoading} />}
-                {currentTab === 'watchlist' && <div/>}
+                {currentTab === 'activity' && <UserActivity activities={activities} />}
                 {currentTab === 'feed' && <div/>}
                 {currentTab === 'stats' && <div/>}
               </div>
