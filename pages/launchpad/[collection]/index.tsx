@@ -61,7 +61,7 @@ const Mint: NextPage = () => {
 
   const getInfo = useCallback(async (): Promise<void> => {
     try {
-      if (collectionInfo) {
+      if (collectionInfo && signer) {
         const tokenContract = getAdvancedInstance(collectionInfo.address[chainId ? chainId : 0], (chainId ? chainId : ChainIds.ETHEREUM), signer)
         setStartId(Number(collectionInfo.start_ids[chainId ? chainId : 0]))
 
@@ -169,11 +169,11 @@ const Mint: NextPage = () => {
 
   useEffect(() => {
     (async () => {
-      if (chainId && provider && address && collectionInfo) {
+      if (chainId && signer && collectionInfo) {
         await getInfo()
       }
     })()
-  }, [provider, address, collectionInfo, chainId, getInfo])
+  }, [signer, collectionInfo, chainId, getInfo])
   useEffect(() => {
     dispatch(getCollectionInfo(col_url) as any)
   }, [col_url, dispatch])
