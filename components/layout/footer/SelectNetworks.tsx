@@ -15,7 +15,7 @@ export const SelectNetworks = ({ gasSupportChainIds, updateGasChainId }: {gasSup
           <>
             <Menu.Button className={'focus:outline-none'}>
               <div className={''}>
-                <img src={`/images/icons/${open ? 'vertical' : 'horizontal'}-dots.png`} alt={'dots'} />
+                <img src={`/images/icons/${open ? 'horizontal' : 'vertical'}-dots.png`} alt={'dots'} />
               </div>
             </Menu.Button>
             <Transition
