@@ -14,7 +14,8 @@ module.exports = {
         'like-gradient': 'linear-gradient(103.58deg, #FA16FF 15.1%, #F00056 87.92%)',
         'border-gradient': 'linear-gradient(to right, #161616, #161616), linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%)',
         'rainbow-gradient': 'linear-gradient(103.58deg, #8600F0 15.1%, #008BF0 40.13%, #00F0EC 63.65%, #16FFC5 87.92%)',
-        'dark-gradient': 'linear-gradient(120.31deg, rgba(125, 125, 125, 0.2) 20%, rgba(125, 125, 125, 0.06) 85.18%)'
+        'dark-gradient': 'linear-gradient(120.31deg, rgba(125, 125, 125, 0.2) 20%, rgba(125, 125, 125, 0.06) 85.18%)',
+        'fire-gradient': 'linear-gradient(224.6deg, #FFA216 0.01%, #FF1616 100.09%)'
       },
       spacing: {
         84: '21rem',

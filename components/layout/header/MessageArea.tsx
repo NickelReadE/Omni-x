@@ -2,17 +2,16 @@ import React, {Fragment, useState} from 'react'
 import {Transition} from '@headlessui/react'
 import Image from 'next/image'
 
-export const NotificationArea = () => {
+export const MessageArea = () => {
   const [hovered, setHovered] = useState(false)
-  const [iconHovered, setIconHovered] = useState(false)
 
   return (
     <div className='w-8 h-8'>
       <div className="relative inline-block text-left" onMouseLeave={() => setHovered(false)}>
         <div className={'focus:outline-none'} onMouseEnter={() => setHovered(true)}>
-          <div className={'w-8 h-8 p-[1px] rounded-full'} onMouseEnter={() => setIconHovered(true)} onMouseLeave={() => setIconHovered(false)}>
+          <div className={'w-8 h-8 p-[1px] rounded-full'}>
             <Image
-              src={hovered ? '/images/icons/notification-active.svg' : (iconHovered ? '/images/icons/notification-hover.svg' : '/images/icons/notification.svg')}
+              src={hovered ? '/images/icons/chat-active.svg' : '/images/icons/chat.svg'}
               alt="avatar"
               width={32}
               height={32}

@@ -32,11 +32,11 @@ const CollectionCard = (props:any) => {
         <div className={classNames('absolute w-full h-full rounded-tr-[8px] rounded-tl-[8px] flex items-center justify-center top-0', `${hover ? 'flex bg-[#303030b3] backdrop-blur block' : 'hidden top-0'}`)}>
           <div>
             <Link href={`/collections/${props.collection.col_url}`}>
-              <div className='w-[230px] h-[40px] text-xg text-primary text-extrabold text-center items-center bg-primary-gradient rounded-lg mb-[24px] py-[7px] hover:cursor-pointer'>view collection</div>
+              <div className='w-[230px] h-[40px] text-xg text-primary font-bold justify-center flex items-center bg-primary-gradient rounded-lg mb-[24px] hover:cursor-pointer'>view collection</div>
             </Link>
             <div className='border-gradient-radius w-[230px] h-[40px] hover:cursor-pointer'>
               <div className={'w-full h-full flex items-center justify-center'}>
-                <span className='bg-primary-gradient text-xg text-extrabold text-center bg-clip-text text-transparent'>make a collection bid</span>
+                <span className='bg-primary-gradient text-xg font-bold text-center bg-clip-text text-transparent'>make a collection bid</span>
               </div>
             </div>
           </div>
