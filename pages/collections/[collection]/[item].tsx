@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, Fragment, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import LazyLoad from 'react-lazyload'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
@@ -61,10 +61,10 @@ const Item: NextPage = () => {
   // statistics hook
   const {
     order,
-    isListed,
+    // isListed,
     sortedBids,
-    highestBid,
-    highestBidCoin,
+    // highestBid,
+    // highestBidCoin,
     lastSale,
     lastSaleCoin
   } = useOrderStatics({
@@ -109,8 +109,8 @@ const Item: NextPage = () => {
     onRefresh
   })
 
-  const currencyIcon = getCurrencyIconByAddress(currentNFT?.currency)
-  const formattedPrice = currentNFT?.price
+  // const currencyIcon = getCurrencyIconByAddress(currentNFT?.currency)
+  // const formattedPrice = currentNFT?.price
   const chainIcon = useMemo(() => {
     return getChainIconById(currentNFT && currentNFT.chain_id ? currentNFT.chain_id.toString() : '5')
   }, [currentNFT])
@@ -263,7 +263,7 @@ const Item: NextPage = () => {
                     <div className={'w-6 h-6 cursor-pointer'}>
                       <BlueGreen />
                     </div>
-                    <div className={'w-6 h-6 cursor-pointer'}>
+                    <div className={'w-6 h-6 cursor-pointer'} onClick={onCopyToClipboard}>
                       <ShareIcon />
                     </div>
                   </div>
