@@ -21,6 +21,7 @@ import {chainInfos} from '../../../utils/constants'
 const Mint: NextPage = () => {
   const {
     chainId,
+    signer,
     provider,
     address
   } = useWallet()
@@ -60,8 +61,8 @@ const Mint: NextPage = () => {
 
   const getInfo = useCallback(async (): Promise<void> => {
     try {
-      if (collectionInfo) {
-        const tokenContract = getAdvancedInstance(collectionInfo.address[chainId ? chainId : 0], (chainId ? chainId : ChainIds.ETHEREUM), null)
+      if (collectionInfo && signer) {
+        const tokenContract = getAdvancedInstance(collectionInfo.address[chainId ? chainId : 0], (chainId ? chainId : ChainIds.ETHEREUM), signer)
         setStartId(Number(collectionInfo.start_ids[chainId ? chainId : 0]))
 
         const priceT = await tokenContract.price()
@@ -74,16 +75,12 @@ const Mint: NextPage = () => {
     } catch (error) {
       console.log(error)
     }
-  }, [chainId, collectionInfo])
+  }, [chainId, collectionInfo, signer])
 
   const mint = async (): Promise<void> => {
-    if (chainId === undefined || !collectionInfo) {
+    if (chainId === undefined || !provider || !collectionInfo) {
       return
     }
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
-    const signer = provider.getSigner()
     const tokenContract = getAdvancedInstance(collectionInfo?.address[chainId], chainId, signer)
 
     let mintResult
@@ -172,11 +169,11 @@ const Mint: NextPage = () => {
 
   useEffect(() => {
     (async () => {
-      if (chainId && provider && address && collectionInfo) {
+      if (chainId && signer && collectionInfo) {
         await getInfo()
       }
     })()
-  }, [provider, address, collectionInfo, chainId, getInfo])
+  }, [signer, collectionInfo, chainId, getInfo])
   useEffect(() => {
     dispatch(getCollectionInfo(col_url) as any)
   }, [col_url, dispatch])
