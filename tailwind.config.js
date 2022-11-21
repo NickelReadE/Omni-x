@@ -83,8 +83,6 @@ module.exports = {
         'dark-red': '#E84142',
         'primary-blue': '#00F0EC',
         'primary-green': '#16FFC5'
-        // gradient: 'linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%)',
-        // rainbow: 'linear-gradient(103.58deg, #8600F0 15.1%, #008BF0 40.13%, #00F0EC 63.65%, #16FFC5 87.92%)',
       },
       fontFamily: {
         sans: ['Inter', ...fontFamily.sans],
@@ -99,8 +97,9 @@ module.exports = {
         xg: ['18px', '22px'],
         xl: ['20px', '24px'],
         xg1:['24px', '29px'],
+        xxl:['30px', '36px'],
+        xxxl:['32px', '38px'],
         xl2:'40px',
-        xxl:'32px',
         xxl2:'60px',
         extraxl: ['64px', '77px']
       },

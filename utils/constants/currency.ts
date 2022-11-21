@@ -10,9 +10,9 @@ export const usdc: any = USDC
 export const usdt: any = USDT
 
 export const CURRENCIES_LIST = [
-  {value: 0, text: 'OMNI', decimals: 18, icon: 'payment/omni.png'},
-  {value: 1, text: 'USDC', decimals: 6, icon: 'payment/usdc.png'},
-  {value: 2, text: 'USDT', decimals: 18, icon: 'payment/usdt.png'},
+  {value: 0, text: 'OMNI', decimals: 18, icon: 'currency/omni.svg'},
+  {value: 1, text: 'USDC', decimals: 6, icon: 'currency/usdc.svg'},
+  {value: 2, text: 'USDT', decimals: 18, icon: 'currency/usdt.svg'},
 ]
 
 export const STABLECOIN_DECIMAL: any = {

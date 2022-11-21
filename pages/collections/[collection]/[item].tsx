@@ -1,28 +1,33 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, Fragment, useMemo } from 'react'
+import React, { useState, Fragment, useMemo } from 'react'
 import LazyLoad from 'react-lazyload'
 import type { NextPage } from 'next'
-import Link from 'next/link'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux'
 import ConfirmSell from '../../../components/collections/ConfirmSell'
 import ConfirmBid from '../../../components/collections/ConfirmBid'
 import useWallet from '../../../hooks/useWallet'
 import useTrading from '../../../hooks/useTrading'
-import { getChainIconById, getCurrencyIconByAddress, numberLocalize } from '../../../utils/constants'
-import PngCheck from '../../../public/images/check.png'
-import PngSub from '../../../public/images/subButton.png'
+import {
+  getChainIconById,
+  getCurrencyIconByAddress,
+  getDarkChainIconById,
+  numberLocalize
+} from '../../../utils/constants'
 import useOrderStatics from '../../../hooks/useOrderStatics'
 import ConfirmBuy from '../../../components/collections/ConfirmBuy'
 import ConfirmAccept from '../../../components/collections/ConfirmAccept'
 import useCollectionNft from '../../../hooks/useCollectionNft'
-import {truncateAddress} from '../../../utils/utils'
 import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
+import BlueGreen from '../../../public/images/icons/bluegreen_linear.svg'
+import ShareIcon from '../../../public/images/icons/share.svg'
+import {truncateAddress} from '../../../utils/utils'
+import {GradientButton} from '../../../components/basic'
 
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
-  const [currentTab, setCurrentTab] = useState<string>('items')
+  const [selectedTab, setSelectedTab] = useState(0)
+  const [bidHover, setBidHover] = useState<number | undefined>(undefined)
 
   const {
     provider,
@@ -38,6 +43,13 @@ const Item: NextPage = () => {
 
   const onRefresh = () => {
     refreshNft()
+  }
+
+  const activeClasses = (index: number) => {
+    return index === selectedTab ? 'bg-primary-gradient': 'bg-secondary'
+  }
+  const activeTextClasses = (index: number) => {
+    return index === selectedTab ? 'bg-primary-gradient bg-clip-text text-transparent': 'text-secondary'
   }
 
   const collection_address_map = useMemo(() => {
@@ -118,9 +130,9 @@ const Item: NextPage = () => {
   return (
     <>
       {currentNFT && collection &&
-        <div className="w-full mt-40 pr-[70px] pb-[120px] font-[Retni_Sans]">
+        <div className="w-full py-8">
           <div className="w-full 2xl:px-[10%] xl:px-[5%] lg:px-[2%] md:px-[2%] ">
-            <div className="grid grid-cols-3 2xl:gap-12 lg:gap-1 xl:gap-4">
+            <div className="grid grid-cols-2 2xl:gap-12 lg:gap-1 xl:gap-4">
               <div className="col-span-1 h-full">
                 <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image"/>}>
                   <img
@@ -131,8 +143,181 @@ const Item: NextPage = () => {
                     data-src={nftImage}
                   />
                 </LazyLoad>
+                
+                <div className="mt-10">
+                  <div className="text-xl font-medium text-center text-secondary">
+                    <ul className="flex flex-wrap -mb-px">
+                      <li onClick={() => setSelectedTab(0)}>
+                        <div className={`${activeClasses(0)} pb-[2px] cursor-pointer`}>
+                          <div className={'flex flex-col justify-between h-full bg-primary text-white p-4 pb-1'}>
+                            <span className={`${activeTextClasses(0)}`}>bids</span>
+                          </div>
+                        </div>
+                      </li>
+                      <li onClick={() => setSelectedTab(1)}>
+                        <div className={`${activeClasses(1)} pb-[2px] cursor-pointer`}>
+                          <div className={'flex flex-col justify-between h-full bg-primary text-white p-4 pb-1'}>
+                            <span className={`${activeTextClasses(1)}`}>history</span>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="py-4">
+                    {
+                      selectedTab === 0 &&
+                        <div className={'w-full grid grid-cols-5'}>
+                          <div className='col-span-1 text-secondary underline'>
+                            account
+                          </div>
+                          <div className='col-span-1'/>
+                          <div className='col-span-1 text-secondary text-center underline'>
+                            chain
+                          </div>
+                          <div className='col-span-1'/>
+                          <div className='col-span-1 text-secondary underline'>
+                            bid
+                          </div>
+                        </div>
+                    }
+                    {
+                      selectedTab === 0 &&
+                      sortedBids?.map((item: any, index: number) => {
+                        return (
+                          <div key={index} onMouseEnter={() => setBidHover(index)} onMouseLeave={() => setBidHover(undefined)}>
+                            <div className={'w-full grid grid-cols-5'}>
+                              <div className='col-span-1 break-all mt-3 text-lg font-bold text-secondary'>{truncateAddress(item.signer)}</div>
+                              <div className='col-span-1' />
+                              <div className="col-span-1 flex justify-center mt-3">
+                                <img
+                                  src={getDarkChainIconById(item.chain_id.toString())}
+                                  className='w-[21px]'
+                                  alt="icon"
+                                />
+                              </div>
+                              <div className='col-span-1 mt-3'>
+                                {currentNFT?.owner?.toLowerCase() == address?.toLowerCase() && bidHover === index &&
+                                  <div className={'w-[68px]'}>
+                                    <GradientButton
+                                      title={'accept'}
+                                      height={22}
+                                      borderRadius={50}
+                                      textSize={'text-md font-bold'}
+                                      onClick={() => {
+                                        setSelectedBid(item.order_data)
+                                        setOpenAcceptDlg(true)
+                                      }}
+                                    />
+                                  </div>
+                                }
+                              </div>
+                              <div className='col-span-1 mt-3 flex items-center'>
+                                <img
+                                  src={getCurrencyIconByAddress(item.currency)}
+                                  width={21}
+                                  height={21}
+                                  alt="icon"
+                                  className="mr-5"
+                                />
+                                <p className='ml-3 text-primary-light'>${item && item.price}</p>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })
+                    }
+                    {/*<div className="grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 gap-4">
+                    {
+                        currentNFT && currentNFT.attributes && Object.entries(currentNFT.attributes).map((item: any, idx: number) => {
+                          const attrs = collection.attrs
+                          const attr = attrs[item[0]].values
+                          const trait = attr[(item[1] as string)]
+                          return <div className="px-5 py-2 bg-[#b444f926] border-2 border-[#B444F9] rounded-[8px]" key={idx}>
+                            <p className="text-[#B444F9] text-sm font-bold">{item[0]}</p>
+                            <div className="flex justify-start items-center mt-2">
+                              <p className="text-[#1E1C21] text-xg font-bold">{item[1]}<span className="ml-3 font-normal">[{trait ? trait[1] : 0}%]</span></p>
+                            </div>
+                          </div>
+                        })
+                    }
+                    </div>*/}
+                  </div>
+                </div>
               </div>
-              <div className="col-span-2">
+              <div className={'col-span-1'}>
+                <div className={'flex justify-between items-center'}>
+                  <div className={'text-primary-light text-xxl font-bold'}>{currentNFT.token_id}</div>
+                  {/*icon group*/}
+                  <div className={'flex items-center space-x-3'}>
+                    <div className={'w-6 h-6 cursor-pointer'}>
+                      <svg width="28" height="24" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M24.6874 2.82871L24.6877 2.82905C25.2675 3.40853 25.7274 4.09656 26.0412 4.85384C26.3549 5.61111 26.5164 6.42279 26.5164 7.24249C26.5164 8.06219 26.3549 8.87387 26.0412 9.63114C25.7274 10.3884 25.2675 11.0765 24.6877 11.6559L24.6876 11.6561L23.2922 13.0515L13.7579 22.5858L4.22354 13.0515L2.82818 11.6561C1.65761 10.4855 1 8.89791 1 7.24249C1 5.58707 1.65761 3.99944 2.82818 2.82888C3.99874 1.65832 5.58636 1.0007 7.24179 1.0007C8.89721 1.0007 10.4848 1.65832 11.6554 2.82888L13.0508 4.22424C13.4413 4.61477 14.0744 4.61477 14.465 4.22424L15.8603 2.82888L15.8605 2.82872C16.44 2.24896 17.128 1.78906 17.8853 1.47528C18.6426 1.1615 19.4542 1 20.2739 1C21.0937 1 21.9053 1.1615 22.6626 1.47528C23.4199 1.78906 24.1079 2.24896 24.6874 2.82871Z" stroke="url(#paint0_linear_11_3106)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <defs>
+                          <linearGradient id="paint0_linear_11_3106" x1="5.15933" y1="-9.31788e-07" x2="28.2631" y2="6.39731" gradientUnits="userSpaceOnUse">
+                            <stop stopColor="#FA16FF"/>
+                            <stop offset="1" stopColor="#F00056"/>
+                          </linearGradient>
+                        </defs>
+                      </svg>
+                    </div>
+                    <div className={'w-6 h-6 cursor-pointer'}>
+                      <BlueGreen />
+                    </div>
+                    <div className={'w-6 h-6 cursor-pointer'}>
+                      <ShareIcon />
+                    </div>
+                  </div>
+                </div>
+
+                {/*collection name*/}
+                <div className={'flex flex-col mt-4'}>
+                  <div className={'text-secondary text-lg'}>collection</div>
+                  <div className={'text-primary-light text-lg mt-2'}>{collection.name}</div>
+                </div>
+
+                {/*creator*/}
+                <div className={'flex flex-col mt-4'}>
+                  <div className={'text-secondary text-lg'}>creator</div>
+                  <div className={'text-primary-light text-lg mt-2'}>@{collection.name.toLowerCase()}</div>
+                </div>
+
+                {/*collector*/}
+                <div className={'flex flex-col mt-4'}>
+                  <div className={'text-secondary text-lg'}>collector</div>
+                  <div className={'text-primary-light text-lg mt-2'}>{truncateAddress(currentNFT.owner)}</div>
+                </div>
+
+                {/*current price*/}
+                <div className={'flex flex-col mt-4 border-[1px] rounded-[8px] w-full border-[#383838] pt-3 pb-6 px-6'}>
+                  <div className={'flex items-center justify-between'}>
+                    <div className={'text-secondary text-xl'}>current price</div>
+                    <div className={'flex items-center'}>
+                      <div className={'text-primary-blue text-xxxl'}>{currentNFT.price}</div>
+                      <img alt='chainIcon' src={chainIcon} className="ml-2 w-[32px] h-[32px]" />
+                    </div>
+                  </div>
+                  <div className={'flex items-center justify-around mt-5'}>
+                    <div className={'w-[107px] h-8 flex rounded-full border-[1px] border-secondary items-center justify-center text-secondary text-md'}>
+                      place bid
+                    </div>
+                    <div className={'w-[107px]'}>
+                      <GradientButton title={'buy now'} height={32} borderRadius={50} textSize={'tex-md'} />
+                    </div>
+                  </div>
+                </div>
+
+                {/*last sale*/}
+                <div className={'flex flex-col mt-4 border-[1px] rounded-[8px] w-full border-[#383838] py-3 px-6'}>
+                  <div className={'flex items-center justify-between'}>
+                    <div className={'text-secondary text-xl'}>last sale</div>
+                    <div className={'flex items-center'}>
+                      <div className={'text-primary-blue text-xxxl'}>{numberLocalize(Number(lastSale))}</div>
+                      <img alt='chainIcon' src={lastSaleCoin} className="ml-2 w-[32px] h-[32px]" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/*<div className="col-span-1">
                 <div className="px-6 py-3 bg-[#F6F8FC]">
                   <div className='flex items-center'>
                     <h1 className="text-[#1E1C21] text-[32px] font-extrabold mr-8">{collection.name}</h1>
@@ -348,38 +533,7 @@ const Item: NextPage = () => {
                     }
                   </div>
                 </div>
-              </div>
-            </div>
-
-            <div className="mt-10">
-              <div>
-                <ul className="flex flex-wrap relative justify-item-stretch text-sm font-medium text-center text-gray-500">
-                  <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='items'?' text-[#1E1C21] border-b-2 border-black':' text-[#A0B3CC]'}`} onClick={()=>setCurrentTab('items')}>properties</li>
-                  <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='activity'?' text-[#1E1C21]':' text-[#A0B3CC]'}`} >activity</li>
-                  <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='info'?' text-[#1E1C21]':' text-[#A0B3CC]'}`} >info</li>
-                  <li className={`select-none inline-block  text-xl px-10 py-2  ${currentTab==='stats'?' text-[#1E1C21]':' text-[#A0B3CC]'}`} >stats</li>
-                </ul>
-              </div>
-              <div className="border-2 border-[#E9ECEF] bg-[#F6F8FC] px-10 py-8">
-                {
-                  currentTab == 'items' &&
-                  <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 gap-4">
-                    {
-                      currentNFT && currentNFT.attributes && Object.entries(currentNFT.attributes).map((item: any, idx: number) => {
-                        const attrs = collection.attrs
-                        const attr = attrs[item[0]].values
-                        const trait = attr[(item[1] as string)]
-                        return <div className="px-5 py-2 bg-[#b444f926] border-2 border-[#B444F9] rounded-[8px]" key={idx}>
-                          <p className="text-[#B444F9] text-sm font-bold">{item[0]}</p>
-                          <div className="flex justify-start items-center mt-2">
-                            <p className="text-[#1E1C21] text-xg font-bold">{item[1]}<span className="ml-3 font-normal">[{trait ? trait[1] : 0}%]</span></p>
-                          </div>
-                        </div>
-                      })
-                    }
-                  </div>
-                }
-              </div>
+              </div>*/}
             </div>
           </div>
           <ConfirmSell
