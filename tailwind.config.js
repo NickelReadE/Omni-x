@@ -101,6 +101,7 @@ module.exports = {
         xxl:['30px', '36px'],
         xxxl:['32px', '38px'],
         xl2:'40px',
+        xl3:['48px', '58px'],
         xxl2:'60px',
         extraxl: ['64px', '77px']
       },

@@ -14,6 +14,8 @@ export default function NavMenu() {
     if (router.pathname.includes('/collections')) {
       return 'collections'
     } else if (router.pathname === '/launchpad') {
+      return 'launchpad'
+    } else if (router.pathname === '/analytics') {
       return 'analytics'
     } else if (router.pathname === '/' || router.pathname === '/learn-more') {
       return 'home'
@@ -45,15 +47,15 @@ export default function NavMenu() {
           </Link>
         </li>
         <li className="flex w-[92px]">
-          <Link href='/collections'>
+          <Link href='/launchpad'>
             <a className='relative flex items-center h-full'>
-              <div className={`w-[100px] h-[40px] pb-1 ${menu === 'collections' && 'bg-primary-gradient'} ${activeClass(1)}`} onMouseEnter={() => setHoveredId(1)} onMouseLeave={() => setHoveredId(undefined)}>
-                <div className={`bg-primary w-full flex justify-center ${(menu === 'collections' || hoveredId === 1) ? 'h-[39px]' : 'h-[40px]'}`}>
+              <div className={`w-[100px] h-[40px] pb-1 ${menu === 'launchpad' && 'bg-primary-gradient'} ${activeClass(1)}`} onMouseEnter={() => setHoveredId(1)} onMouseLeave={() => setHoveredId(undefined)}>
+                <div className={`bg-primary w-full flex justify-center ${(menu === 'launchpad' || hoveredId === 1) ? 'h-[39px]' : 'h-[40px]'}`}>
                   <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M10.2922 20.1908C9.04531 23.8986 4.10156 23.8986 4.10156 23.8986C4.10156 23.8986 4.10156 18.9549 7.80938 17.708" fill={menu === 'collections' ? 'url(#paint0_linear_185_8613)' : '#969696'}/>
-                    <path d="M20.1906 12.7642V19.8298C20.1873 20.0606 20.093 20.2807 19.9281 20.4423L16.3953 23.986C16.2832 24.098 16.1429 24.1774 15.9892 24.2158C15.8355 24.2543 15.6743 24.2502 15.5227 24.2042C15.3711 24.1582 15.2349 24.0718 15.1285 23.9544C15.0221 23.837 14.9496 23.693 14.9187 23.5376L14 18.9548" fill={menu === 'collections' ? 'url(#paint0_linear_185_8613)' : '#969696'}/>
-                    <path d="M15.2361 7.80957H8.17048C7.93968 7.81286 7.71953 7.90721 7.55798 8.07207L4.01423 11.6049C3.90227 11.717 3.82285 11.8573 3.78443 12.011C3.74601 12.1647 3.75003 12.3259 3.79606 12.4775C3.8421 12.6291 3.92842 12.7653 4.04582 12.8717C4.16322 12.9781 4.30729 13.0506 4.46266 13.0814L9.04548 14.0002" fill={menu === 'collections' ? 'url(#paint0_linear_185_8613)' : '#969696'}/>
-                    <path d="M13.6465 19.3082L14.0001 19.6617L14.3537 19.3082L21.7802 11.8816C24.7304 8.93142 24.7155 5.94766 24.525 4.63373C24.4851 4.3405 24.3503 4.06837 24.141 3.85907C23.9317 3.64978 23.6595 3.5149 23.3663 3.47507C22.0524 3.28451 19.0686 3.26962 16.1184 6.21982L8.69186 13.6464L8.3383 13.9999L8.69186 14.3535L13.6465 19.3082Z" fill={menu === 'collections' ? 'url(#paint0_linear_185_8613)' : '#969696'} stroke="#161616" strokeLinecap="round"/>
+                    <path d="M10.2922 20.1908C9.04531 23.8986 4.10156 23.8986 4.10156 23.8986C4.10156 23.8986 4.10156 18.9549 7.80938 17.708" fill={menu === 'launchpad' ? 'url(#paint0_linear_185_8613)' : '#969696'}/>
+                    <path d="M20.1906 12.7642V19.8298C20.1873 20.0606 20.093 20.2807 19.9281 20.4423L16.3953 23.986C16.2832 24.098 16.1429 24.1774 15.9892 24.2158C15.8355 24.2543 15.6743 24.2502 15.5227 24.2042C15.3711 24.1582 15.2349 24.0718 15.1285 23.9544C15.0221 23.837 14.9496 23.693 14.9187 23.5376L14 18.9548" fill={menu === 'launchpad' ? 'url(#paint0_linear_185_8613)' : '#969696'}/>
+                    <path d="M15.2361 7.80957H8.17048C7.93968 7.81286 7.71953 7.90721 7.55798 8.07207L4.01423 11.6049C3.90227 11.717 3.82285 11.8573 3.78443 12.011C3.74601 12.1647 3.75003 12.3259 3.79606 12.4775C3.8421 12.6291 3.92842 12.7653 4.04582 12.8717C4.16322 12.9781 4.30729 13.0506 4.46266 13.0814L9.04548 14.0002" fill={menu === 'launchpad' ? 'url(#paint0_linear_185_8613)' : '#969696'}/>
+                    <path d="M13.6465 19.3082L14.0001 19.6617L14.3537 19.3082L21.7802 11.8816C24.7304 8.93142 24.7155 5.94766 24.525 4.63373C24.4851 4.3405 24.3503 4.06837 24.141 3.85907C23.9317 3.64978 23.6595 3.5149 23.3663 3.47507C22.0524 3.28451 19.0686 3.26962 16.1184 6.21982L8.69186 13.6464L8.3383 13.9999L8.69186 14.3535L13.6465 19.3082Z" fill={menu === 'launchpad' ? 'url(#paint0_linear_185_8613)' : '#969696'} stroke="#161616" strokeLinecap="round"/>
                     <linearGradient id="paint0_linear_185_8613" x1="7.98438" y1="3.80664" x2="24.4789" y2="7.67595" gradientUnits="userSpaceOnUse">
                       <stop stopColor="#00F0EC"/>
                       <stop offset="1" stopColor="#16FFC5"/>
@@ -65,7 +67,7 @@ export default function NavMenu() {
           </Link>
         </li>
         <li className="flex w-[92px]">
-          <Link href='/launchpad'>
+          <Link href='/analytics'>
             <a className='relative flex items-center h-full'>
               <div className={`w-[100px] h-[40px] pb-1 ${menu === 'analytics' && 'bg-primary-gradient'} ${activeClass(2)}`} onMouseEnter={() => setHoveredId(2)} onMouseLeave={() => setHoveredId(undefined)}>
                 <div className={`bg-primary w-full flex justify-center ${(menu === 'analytics' || hoveredId === 2) ? 'h-[39px]' : 'h-[40px]'}`}>

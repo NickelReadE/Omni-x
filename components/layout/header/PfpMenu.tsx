@@ -1,6 +1,8 @@
 import React, {Fragment, useState} from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import {Transition} from '@headlessui/react'
+import useWallet from '../../../hooks/useWallet'
 import DropdownArrow from '../../../public/images/icons/dropdown_arrow.svg'
 
 interface IPfpMenuPros {
@@ -10,6 +12,7 @@ interface IPfpMenuPros {
 const menuItems = ['messages', 'events', 'settings', 'wallet']
 
 export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
+  const { address } = useWallet()
   const [hovered, setHovered] = useState(false)
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined)
     
@@ -17,15 +20,17 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
     <div className='w-8 h-8'>
       <div className="relative inline-block text-left" onMouseLeave={() => setHovered(false)}>
         <div className={'focus:outline-none'} onMouseEnter={() => setHovered(true)}>
-          <div className={`w-8 h-8 ${hovered ? 'bg-primary-gradient' : ''} p-[1px] rounded-full`}>
-            <Image
-              src={avatarImage}
-              alt="avatar"
-              width={32}
-              height={32}
-              className="rounded-full"
-            />
-          </div>
+          <Link href={`/user/${address}`}>
+            <div className={`w-8 h-8 ${hovered ? 'bg-primary-gradient' : ''} p-[1px] rounded-full`}>
+              <Image
+                src={avatarImage}
+                alt="avatar"
+                width={32}
+                height={32}
+                className="rounded-full"
+              />
+            </div>
+          </Link>
         </div>
         <Transition
           as={Fragment}
@@ -37,7 +42,7 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
           leaveTo="transform opacity-0 scale-95"
           show={hovered}
         >
-          <div className={'absolute right-0 top-0 w-56 origin-top-right pt-10'}>
+          <div className={'absolute right-0 w-56 origin-top-right pt-4'}>
             <div className={'rounded-md bg-primary-gradient p-[1px]'}>
               <div
                 className="bg-[#202020e6] rounded-md shadow-lg backdrop-blur-[10px] shadow-[0_0px_20px_rgba(231,237,245,0.25)] focus:outline-none py-2">

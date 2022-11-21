@@ -85,7 +85,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
               <span className={'text-xg1 text-primary-light'}>{user.username || 'username'}</span>
               <span className={'text-md text-secondary'}>{user && user.address ? truncateAddress(user.address) : truncateAddress(address || '')}</span>
             </div>
-            <div className={'flex'}>
+            {/*<div className={'flex'}>
               {
                 user.isGregHolder &&
                 <div className="mr-2">
@@ -95,7 +95,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
               {
                 isStgStacker && <Image src={Stg} alt="avatar" width="30px" height="30px"/>
               }
-            </div>
+            </div>*/}
           </div>
           <div className={'flex items-center'}>
             <div className={'flex flex-col items-end space-y-2 mr-4'}>
