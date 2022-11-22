@@ -1,14 +1,13 @@
 import type {NextPage} from 'next'
 import React from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import NftForLaunch from '../../components/NftForLaunch'
 import useLaunchPad, { LaunchPadType } from '../../hooks/useLaunchPad'
 import Loading from '../../public/images/loading_f.gif'
 import {FeaturedCard} from '../../components/launchpad/FeaturedCard'
 
 const Launchpad: NextPage = () => {
-  const { collectionsForLive, collectionsForComing, sampleCollection } = useLaunchPad()
+  const { collectionsForLive, collectionsForComing } = useLaunchPad()
 
   return (
     <div className="pt-6 w-full">

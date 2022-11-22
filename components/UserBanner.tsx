@@ -1,13 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect, useMemo, useState} from 'react'
-import Image from 'next/image'
+import React, {useMemo, useState} from 'react'
 import useWallet from '../hooks/useWallet'
 import classNames from '../helpers/classNames'
-import {getVeSTGInstance} from '../utils/contracts'
-import Hgreg from '../public/images/gregs/logo.png'
-import Stg from '../public/images/stg/stg.png'
 import { ProfileData } from '../hooks/useProfile'
-import { chainsFroSTG, veSTGContractAddress } from '../utils/constants/addresses'
 import { truncateAddress } from '../utils/utils'
 import {ExternalLink, GradientButton} from './basic'
 import WebsiteIcon from '../public/images/icons/website.svg'
@@ -22,27 +17,27 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
   const {address} = useWallet()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [avatarError, setAvatarError] = useState(false)
-  const [isStgStacker, setIsStgStacker] = useState(false)
-  const [balances, setBalanceSTG] = useState(0)
+  // const [isStgStacker, setIsStgStacker] = useState(false)
+  // const [balances, setBalanceSTG] = useState(0)
+  //
+  // const fetchToken = async (chain: number) => {
+  //   const veSTGInstance = getVeSTGInstance(veSTGContractAddress[chain], chain, null)
+  //   setBalanceSTG(await veSTGInstance.balanceOf(address))
+  // }
+  //
+  // useEffect(() => {
+  //   if (address) {
+  //     chainsFroSTG.map((chain) => {
+  //       fetchToken(chain)
+  //     })
+  //   }
+  // }, [address])
 
-  const fetchToken = async (chain: number) => {
-    const veSTGInstance = getVeSTGInstance(veSTGContractAddress[chain], chain, null)
-    setBalanceSTG(await veSTGInstance.balanceOf(address))
-  }
-
-  useEffect(() => {
-    if (address) {
-      chainsFroSTG.map((chain) => {
-        fetchToken(chain)
-      })
-    }
-  }, [address])
-
-  useEffect(() => {
-    if (balances > 0) {
-      setIsStgStacker(true)
-    }
-  }, [balances])
+  // useEffect(() => {
+  //   if (balances > 0) {
+  //     setIsStgStacker(true)
+  //   }
+  // }, [balances])
 
   const bannerImage = useMemo(() => {
     if (user && user.banner) {
