@@ -12,12 +12,12 @@ export default function LearnMorePartners () {
             <img src={'/images/learn-more/partners/pif.png'} alt={'pif'} />
           </div>
           <div className={'flex justify-between w-full mt-8 h-[70px]'}>
-            <img src={'/images/learn-more/partners/pontem.png'} alt={'sneaky'} />
-            <img src={'/images/learn-more/partners/galxe.png'} alt={'kanpai pandas'} />
+            <img src={'/images/learn-more/partners/pontem.png'} alt={'pontem'} />
+            <img src={'/images/learn-more/partners/galxe.png'} alt={'galxe'} />
           </div>
           <div className={'flex justify-between w-full mt-8 h-[70px]'}>
-            <img src={'/images/learn-more/partners/layerzero.png'} alt={'sneaky'} />
-            <img src={'/images/learn-more/partners/polygonstudios.png'} alt={'kanpai pandas'} />
+            <img src={'/images/learn-more/partners/layerzero.png'} alt={'layerzero'} />
+            <img src={'/images/learn-more/partners/polygonstudios.png'} alt={'polygonstudios'} />
           </div>
         </div>
       </div>
