@@ -6,7 +6,7 @@ import { IntroCard } from './intro'
 
 export default function LearnMoreInfrastructure() {
   return (
-    <div className="py-[230px]">
+    <div className="pt-[150px]">
       <div className="flex justify-center w-full space-x-2">
         <span className="text-[40px] leading-[48px] font-semibold text-primary-light shadow-[0_4_6px_rgba(0,0,0,0.25)]">truly</span>
         <span className="text-[40px] leading-[48px] font-semibold text-primary-blue italic shadow-[0_4_6px_rgba(0,0,0,0.25)]">omnichain</span>

@@ -4,6 +4,9 @@ import Link from 'next/link'
 import {Transition} from '@headlessui/react'
 import useWallet from '../../../hooks/useWallet'
 import DropdownArrow from '../../../public/images/icons/dropdown_arrow.svg'
+import {getChainInfo, numberLocalize} from '../../../utils/constants'
+import {useBalance} from 'wagmi'
+import useData from '../../../hooks/useData'
 
 interface IPfpMenuPros {
   avatarImage: string
@@ -12,7 +15,11 @@ interface IPfpMenuPros {
 const menuItems = ['messages', 'events', 'settings', 'wallet']
 
 export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
-  const { address } = useWallet()
+  const { address, chainId } = useWallet()
+  const { balances } = useData()
+  const { data: nativeBalance } = useBalance({
+    addressOrName: address
+  })
   const [hovered, setHovered] = useState(false)
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined)
     
@@ -49,13 +56,13 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
                 {/*Wallet Balance Section*/}
                 <div className={'p-4'}>
                   <div className={'flex items-center pb-3'}>
-                    <span className={'flex-none text-secondary w-10'}>USD</span>
-                    <span className={'grow px-3 text-primary-light'}>$32,435.34</span>
+                    <span className={'flex-none text-secondary w-14'}>USD</span>
+                    <span className={'grow px-3 text-primary-light'}>{numberLocalize(balances.usdc)}</span>
                     <span className={'flex-none w-6'}><DropdownArrow/></span>
                   </div>
                   <div className={'flex items-center'}>
-                    <span className={'flex-none text-secondary w-10'}>AVAX</span>
-                    <span className={'grow px-3 text-primary-light'}>24.5</span>
+                    <span className={'flex-none text-secondary w-14'}>{getChainInfo(chainId)?.nativeCurrency.symbol}</span>
+                    <span className={'grow px-3 text-primary-light'}>{numberLocalize(parseFloat(nativeBalance?.formatted || '0'))}</span>
                     <span className={'flex-none w-6'}/>
                   </div>
                 </div>

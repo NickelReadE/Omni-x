@@ -36,14 +36,14 @@ const IconBox = ({ children }: IPropsIconBox) => {
 export default function LearnMoreIntro() {
   return (
     <div>
-      <div className="flex justify-center py-[207px]">
+      <div className="flex justify-center pt-[150px]">
         <div className="flex flex-col">
           <span className="text-primary-light text-center text-extraxl font-bold shadow-[0_4_6px_rgba(0,0,0,0.25)]">where web3</span>
           <span className="bg-clip-text text-center text-transparent bg-rainbow-gradient text-extraxl font-bold shadow-[0_4_6px_rgba(0,0,0,0.25)]">connects through art</span>
           <span className="text-secondary mt-2 text-xg1 leading-[29px] text-center shadow-[0_4_6px_rgba(0,0,0,0.25)]">art for everyone, everywhere, all in one place</span>
         </div>
       </div>
-      <div className='flex justify-between space-x-12'>
+      <div className='flex justify-between space-x-12 pt-[150px]'>
         <IntroCard title="omnichain interoperability">
           <Image src={OmniChainImage} alt="omnichain" />
         </IntroCard>

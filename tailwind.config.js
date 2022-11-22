@@ -98,11 +98,11 @@ module.exports = {
         xg: ['18px', '22px'],
         xl: ['20px', '24px'],
         xg1:['24px', '29px'],
-        xxl:['30px', '36px'],
-        xxxl:['32px', '38px'],
-        xl2:'40px',
-        xl3:['48px', '58px'],
-        xxl2:'60px',
+        xxl: ['30px', '36px'],
+        xxxl: ['32px', '38px'],
+        xl2: ['40px', '48px'],
+        xl3: ['48px', '58px'],
+        xxl2: '60px',
         extraxl: ['64px', '77px']
       },
       gridTemplateColumns: {

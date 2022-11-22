@@ -5,7 +5,7 @@ import Image from 'next/image'
 
 export default function LearnMoreSocial() {
   return (
-    <div className="py-[230px]">
+    <div className="pt-[150px]">
       <div className="w-full flex justify-center">
         <span className="text-[40px] text-center leading-[48px] font-semibold text-primary-light shadow-[0_4_6px_rgba(0,0,0,0.25)]">
             we3 NFT <span className="text-primary-blue">communities live here</span>
