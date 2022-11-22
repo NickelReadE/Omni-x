@@ -140,7 +140,7 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
 
   const currencyName = getCurrencyNameAddress(bidOrder?.currencyAddress) as ContractName
   const newCurrencyName = validateCurrencyName(currencyName, chainId || 0)
-  const formattedPrice = formatCurrency(bidOrder?.price || 0, getCurrencyNameAddress(bidOrder?.currencyAddress))
+  const formattedPrice = formatCurrency(bidOrder?.price || 0, bidOrder?.chain_id || 0, getCurrencyNameAddress(bidOrder?.currencyAddress))
   return (
     <Dialog open={openAcceptDlg} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
       <DialogTitle id="form-dialog-title" className={classes.rootTitle}>

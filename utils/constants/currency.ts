@@ -17,8 +17,9 @@ export const CURRENCY_USDT = {value: 2, text: 'USDT', icon: 'payment/usdt.png'}
 export const CURRENCY_WETH = {value: 3, text: 'WETH', icon: 'payment/eth.png'}
 
 const getCurrency = (currency: any, address: string, decimals: number) => ({...currency, address, decimals})
+type CurrencyType = {value: number, text: string, icon: string, address: string, decimals: number}
 
-export const VALID_CURRENCIES = {
+export const VALID_CURRENCIES: {[chain: number | string]: CurrencyType[]} = {
   [ChainIDS.BINANCE]: [
     getCurrency(CURRENCY_OMNI, oft[ChainIDS.BINANCE], 18),
     getCurrency(CURRENCY_USDT, oft[ChainIDS.BINANCE], 18),
@@ -49,6 +50,8 @@ export const VALID_CURRENCIES = {
     getCurrency(CURRENCY_OMNI, oft[ChainIDS.OPTIMISM], 18),
     getCurrency(CURRENCY_USDC, usdc[ChainIDS.OPTIMISM], 6),
     getCurrency(CURRENCY_WETH, weth[ChainIDS.OPTIMISM], 18),
+  ],
+  [ChainIDS.APTOS]: [
   ]
 }
 
@@ -83,50 +86,40 @@ export const STABLECOIN_DECIMAL: any = {
   },
 }
 
-const DECIMAL_MAP = (CURRENCIES_LIST.reduce((acc, c) => {
-  (acc as any)[c.text] = c.decimals
-  return acc
-}, {})) as any
-
-const loopCurrencies = (currencies: any, idx: number, address?: string) => {
-  if (Object.values(currencies).indexOf(address) != -1) {
-    return CURRENCIES_LIST[idx]
-  }
-  return null
-}
-
 export const getCurrencyIconByAddress = (address?: string) => {
-  const currency_addr_list = [oft, usdc, usdt]
-  for (let idx = 0; idx < currency_addr_list.length; idx++) {
-    const currency = loopCurrencies(currency_addr_list[idx], idx, address)
+  for (const chain in VALID_CURRENCIES) {
+    const currency = VALID_CURRENCIES[chain].find(c => c.address.toLowerCase() === address?.toLowerCase())
     if (currency) {
       return `/images/${currency.icon}`
     }
   }
 
-  return `/images/${CURRENCIES_LIST[0].icon}`
+  return `/images/${CURRENCY_OMNI.icon}`
 }
 
-
 export const getCurrencyNameAddress = (address?: string) => {
-  const currency_addr_list = [oft, usdc, usdt]
-  for (let idx = 0; idx < currency_addr_list.length; idx++) {
-    const currency = loopCurrencies(currency_addr_list[idx], idx, address)
+  for (const chain in VALID_CURRENCIES) {
+    const currency = VALID_CURRENCIES[chain].find(c => c.address.toLowerCase() === address?.toLowerCase())
     if (currency) {
       return currency.text
     }
   }
 
-  return CURRENCIES_LIST[0].text
+  return CURRENCY_OMNI.text
 }
 
-export const formatCurrency = (price: BigNumberish, currencyName: string) => {
-  if (price) return ethers.utils.formatUnits(price, DECIMAL_MAP[currencyName])
+export const getDecimals = (chainId: number, currencyName: string) => {
+  const currency = VALID_CURRENCIES[chainId].find(c => c.text === currencyName)
+  return currency ? currency.decimals : 18
+}
+
+export const formatCurrency = (price: BigNumberish, chainId: number, currencyName: string) => {
+  if (price) return ethers.utils.formatUnits(price, getDecimals(chainId, currencyName))
   return '0'
 }
 
-export const parseCurrency = (price: string, currencyName: string) => {
-  if (price) return ethers.utils.parseUnits(price, DECIMAL_MAP[currencyName])
+export const parseCurrency = (price: string, chainId: number, currencyName: string) => {
+  if (price) return ethers.utils.parseUnits(price, getDecimals(chainId, currencyName))
   return BigNumber.from(0)
 }
 
@@ -148,11 +141,11 @@ export const getValidCurrencies = (chainId: number) => {
   return (VALID_CURRENCIES as any)[chainId]
 }
 
-export const getConversionRate = (currencyFrom: ContractName, currencyTo: ContractName) => {
+export const getConversionRate = (fromChainId: number, currencyFrom: ContractName, toChainId: number, currencyTo: ContractName) => {
   // if decimals is positive, price1 = price2 * 10 ** decimals
   // if decimals is negative, price1 = price2 / 10 ** (decimals - 100)
 
-  const decimals = DECIMAL_MAP[currencyFrom] - DECIMAL_MAP[currencyTo]
+  const decimals = getDecimals(fromChainId, currencyFrom) - getDecimals(toChainId, currencyTo)
 
   if (decimals < 0) return 100 - decimals
   return decimals

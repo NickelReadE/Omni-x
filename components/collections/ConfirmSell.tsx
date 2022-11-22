@@ -5,7 +5,7 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import { IListingData } from '../../interface/interface'
-import { CURRENCIES_LIST, PERIOD_LIST } from '../../utils/constants'
+import { CURRENCY_OMNI, PERIOD_LIST } from '../../utils/constants'
 import { ListingStep, SaleType } from '../../types/enum'
 import ListingContent from './ListingContent'
 import { useSwitchedNetwork } from '../../hooks/useSwitchedNetwork'
@@ -50,7 +50,7 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
   const classes = useStyles()
   const [sellType, setSellType] = useState<SaleType>(SaleType.FIXED)
   const [price, setPrice] = useState(0)
-  const [currency, setCurrency] = useState(CURRENCIES_LIST[0])
+  const [currency, setCurrency] = useState(CURRENCY_OMNI)
   const [period, setPeriod] = useState(PERIOD_LIST[2])
   const [listingStep, setStep] = useState<ListingStep>(ListingStep.StepListing)
   const [processing, setProcessing] = useState(false)

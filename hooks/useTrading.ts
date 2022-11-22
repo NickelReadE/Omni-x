@@ -204,7 +204,7 @@ const useTrading = ({
     const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
     const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
     const lzChainId = getLayerzeroChainId(chainId)
-    const price = parseCurrency(listingData.price.toString(), listingData.currencyName) // ethers.utils.parseEther(listingData.price.toString())
+    const price = parseCurrency(listingData.price.toString(), chainId, listingData.currencyName) // ethers.utils.parseEther(listingData.price.toString())
     const startTime = Date.now()
 
     await postMakerOrder(
@@ -246,8 +246,8 @@ const useTrading = ({
     const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
     const newCurrencyName = validateCurrencyName(currencyName, chainId)
     const currencyAddress = getAddressByName(newCurrencyName, chainId)
-    const formattedPrice = formatCurrency(order?.price || 0, currencyName)
-    const parsedPrice = parseCurrency(formattedPrice, newCurrencyName)
+    const formattedPrice = formatCurrency(order?.price || 0, order?.chain_id, currencyName)
+    const parsedPrice = parseCurrency(formattedPrice, chainId, newCurrencyName)
 
     await checkValid(currencyAddress, formattedPrice, chainId)
 
@@ -291,8 +291,8 @@ const useTrading = ({
     const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
     const newCurrencyName = validateCurrencyName(currencyName, chainId)
     const currencyAddress = getAddressByName(newCurrencyName, chainId)
-    const formattedPrice = formatCurrency(order?.price || 0, currencyName)
-    const parsedPrice = parseCurrency(formattedPrice, newCurrencyName)
+    const formattedPrice = formatCurrency(order?.price || 0, order?.chain_id, currencyName)
+    const parsedPrice = parseCurrency(formattedPrice, chainId, newCurrencyName)
 
     await checkValid(currencyAddress, formattedPrice, chainId)
 
@@ -336,7 +336,7 @@ const useTrading = ({
         currencyAddress,
         collection_address,
         getAddressByName('Strategy', chainId),
-        getConversionRate(currencyName, newCurrencyName)
+        getConversionRate(order.chain_id, currencyName, chainId, newCurrencyName)
       ])
     }
 
@@ -560,8 +560,8 @@ const useTrading = ({
     const currencyName = getCurrencyNameAddress(bidOrder.currencyAddress) as ContractName
     const newCurrencyName = validateCurrencyName(currencyName, chainId)
     const currencyAddress = getAddressByName(newCurrencyName, chainId)
-    const formattedPrice = formatCurrency(bidOrder.price, currencyName)
-    const parsedPrice = parseCurrency(formattedPrice, newCurrencyName)
+    const formattedPrice = formatCurrency(bidOrder.price, bidOrder.chain_id, currencyName)
+    const parsedPrice = parseCurrency(formattedPrice, chainId, newCurrencyName)
 
     const takerAsk : TakerOrderWithEncodedParams = {
       isOrderAsk: true,
@@ -580,7 +580,7 @@ const useTrading = ({
         currencyAddress,
         collection_address,
         getAddressByName('Strategy', chainId),
-        getConversionRate(currencyName, newCurrencyName)
+        getConversionRate(bidOrder.chain_id, currencyName, chainId, newCurrencyName)
       ])
     }
 
