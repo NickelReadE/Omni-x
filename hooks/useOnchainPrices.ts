@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useState} from 'react'
+import {useEffect, useState} from 'react'
 import {getGasOnChains, getPriceFeeddata} from '../services/datafeed'
 import {CHAIN_TYPE} from '../types/enum'
 import {CHAIN_IDS, getDarkChainIconById} from '../utils/constants'
@@ -10,56 +10,49 @@ export type OnChainInformation = {
 }
 
 const useOnchainPrices = (): OnChainInformation => {
-  const [assetsPrices, setAssetsPrices] = useState<any>()
-  const [gasPrices, setGasPrices] = useState<any>([])
-  const [gasSupportChainIds, setGasSupportChainIds] = useState<number[]>([])
+  const [gasSupportChainIds, setGasSupportChainIds] = useState<number[]>(JSON.parse(localStorage.getItem('gasSupportChainIds') || JSON.stringify([
+    CHAIN_IDS[CHAIN_TYPE.ETHEREUM],
+    CHAIN_IDS[CHAIN_TYPE.BINANCE],
+    CHAIN_IDS[CHAIN_TYPE.AVALANCHE],
+    CHAIN_IDS[CHAIN_TYPE.POLYGON],
+    CHAIN_IDS[CHAIN_TYPE.OPTIMISM],
+  ])))
+  const [chainInfos, setChainInfos] = useState<any[]>([])
 
   const getOnchainInfos = async () => {
-    setAssetsPrices(await getPriceFeeddata(gasSupportChainIds))
-    setGasPrices(await getGasOnChains(gasSupportChainIds))
+    const _gasSupportChainIds = JSON.parse(localStorage.getItem('gasSupportChainIds') || '[]')
+    const _assetsPrices = await getPriceFeeddata(_gasSupportChainIds)
+    const _gasPrices = await getGasOnChains(_gasSupportChainIds)
+    const _chainInfos = _gasSupportChainIds.map((chainId: number) => {
+      return {
+        icon: getDarkChainIconById(chainId.toString()),
+        gasFee: _gasPrices[chainId] || 0,
+        price: _assetsPrices[chainId] || 0,
+      }
+    })
+    setChainInfos(_chainInfos)
   }
-
-  const chainInfos = useMemo(() => {
-    if (assetsPrices && gasPrices) {
-      return gasSupportChainIds.map((chainId) => {
-        return {
-          icon: getDarkChainIconById(chainId.toString()),
-          gasFee: gasPrices[chainId] || 0,
-          price: assetsPrices[chainId] || 0,
-        }
-      })
-    }
-    return []
-  }, [assetsPrices, gasPrices, gasSupportChainIds])
 
   const updateGasChainId = (chainId: number) => {
     if (gasSupportChainIds.includes(chainId)) {
       setGasSupportChainIds(gasSupportChainIds.filter((id) => id !== chainId).sort())
+      localStorage.setItem('gasSupportChainIds', JSON.stringify(gasSupportChainIds.filter((id) => id !== chainId).sort()))
     } else {
       setGasSupportChainIds([...gasSupportChainIds, chainId].sort())
+      localStorage.setItem('gasSupportChainIds', JSON.stringify([...gasSupportChainIds, chainId].sort()))
     }
   }
 
   useEffect(() => {
-    (async () => {
-      const supportedChainIdFromStorage = localStorage.getItem('gasSupportChainIds')
-      setGasSupportChainIds(supportedChainIdFromStorage ? JSON.parse(supportedChainIdFromStorage) : [
-        CHAIN_IDS[CHAIN_TYPE.ETHEREUM],
-        CHAIN_IDS[CHAIN_TYPE.BINANCE],
-        CHAIN_IDS[CHAIN_TYPE.AVALANCHE],
-        CHAIN_IDS[CHAIN_TYPE.POLYGON],
-        CHAIN_IDS[CHAIN_TYPE.OPTIMISM],
-      ])
-      const interval = setInterval(() => {
-        getOnchainInfos()
-      }, 30000)
-      return () => clearInterval(interval)
-    })()
+    const interval = setInterval(async () => {
+      await getOnchainInfos()
+    }, 3000)
+    getOnchainInfos().then(r => r)
+    return () => clearInterval(interval)
   }, [])
 
   useEffect(() => {
     (async () => {
-      localStorage.setItem('gasSupportChainIds', JSON.stringify(gasSupportChainIds))
       await getOnchainInfos()
     })()
   }, [gasSupportChainIds])

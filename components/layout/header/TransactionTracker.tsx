@@ -15,7 +15,7 @@ export const TransactionTracker = () => {
     <div className=''>
       <Menu as="div" className="relative flex items-center">
         <>
-          <Menu.Button className={'focus:outline-none'}>
+          <Menu.Button as="div" className={'focus:outline-none'}>
             <button className='flex items-center'>
               <HomeLogo />
             </button>
