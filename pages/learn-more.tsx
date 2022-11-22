@@ -4,6 +4,7 @@ import LearnMoreIntro from '../components/learn-more/intro'
 import LearnMoreInfrastructure from '../components/learn-more/infrastructure'
 import LearnMoreSocial from '../components/learn-more/social'
 import LearnMoreLaunchWithUs from '../components/learn-more/launchWithUs'
+import LearnMorePartners from '../components/learn-more/partners'
 
 const LearnMore: NextPage = () => {
 
@@ -13,6 +14,7 @@ const LearnMore: NextPage = () => {
       <LearnMoreInfrastructure />
       <LearnMoreSocial />
       <LearnMoreLaunchWithUs />
+      <LearnMorePartners />
     </div>
   )
 }
