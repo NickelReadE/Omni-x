@@ -517,7 +517,7 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
   const fundManager = getFundManagerInstance(orderChainId)
   const destAirdrop = await fundManager.lzFeeTransferCurrency(makerBid.currency, takerAsk.taker, takerAsk.price, getLayerzeroChainId(orderChainId), lzChainId)
 
-  const destFee = destAirdrop.add(ethers.utils.parseEther('0.001'))
+  const destFee = destAirdrop
   console.log('-airdrop-', ethers.utils.formatEther(destAirdrop))
   const [omnixFee, currencyFee, nftFee] = await omnixExchange.getLzFeesForTrading(takerAsk, makerBid, destFee)
   const lzFee = omnixFee.add(currencyFee).add(nftFee)
