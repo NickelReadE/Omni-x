@@ -12,6 +12,7 @@ interface IBidContentProps {
   processing: boolean,
   approveTx?: string,
   price: number,
+  isCollectionBid: boolean,
   onChangePrice: (e: any) => void,
   currency: any,
   onChangeCurrency: (e: any) => void,
@@ -27,6 +28,7 @@ const BidContent: React.FC<IBidContentProps> = ({
   processing,
   approveTx,
   price,
+  isCollectionBid,
   onChangePrice,
   currency,
   onChangeCurrency,
@@ -75,7 +77,7 @@ const BidContent: React.FC<IBidContentProps> = ({
             />
 
             {bidStep === BidStep.StepDone && (
-              <CongratsSection failed={false} succeedMessage={'you successfully bid on this NFT'}/>
+              <CongratsSection failed={false} succeedMessage={isCollectionBid ? 'you successfully bid on this collection' : 'you successfully bid on this NFT'}/>
             )}
             {bidStep === BidStep.StepFail && (
               <CongratsSection failed={true} failedMessage={'you failed to place a bid'}/>

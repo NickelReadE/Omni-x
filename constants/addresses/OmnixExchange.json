@@ -7,11 +7,11 @@
   "optimism": "",
   "fantom": "",
 
-  "goerli": "0x99f0B9e954deDf6A1a49deD7A99db566BC7E9160",
-  "bsc testnet": "0xd5288e875F4028a37463F97C4b42d26E8c72DC6A",
-  "fuji": "0xAdE97adF7D6272797c56127B514D86EB86463bdF",
-  "mumbai": "0xdbd929a3d4d369AA67E527F61814Bdf04d07b0f4",
-  "arbitrum-goerli": "0x7dEdC2f494F2e224b0EA355D2961564B955819dF",
-  "optimism-goerli": "0xDD64E82F747D90C5d5A924C4BD1afac74AB81372",
+  "goerli": "0x0829f0bBc8bd1859dCCd30c341bF74ec3393aB3a",
+  "bsc testnet": "0x6f2d8D283d2B39A87D0BfBbeED2C1C7703492a6B",
+  "fuji": "0x4E3B9d34a3479A305ae1dBaAb286Ec93Ab1487d9",
+  "mumbai": "0x9c0D4bb29deA913e04868df4dC63E77Ce635F945",
+  "arbitrum-goerli": "0xAD7Ee99f2cb5592955Dfd4FAf1e69dfe9C3274f8",
+  "optimism-goerli": "0xa4fa4ECdacbF8143092D1C6cf2f0729489b110B7",
   "fantom-testnet": ""
 }

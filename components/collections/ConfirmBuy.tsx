@@ -9,6 +9,7 @@ import { ContractName, formatCurrency, getCurrencyNameAddress, validateCurrencyN
 import { BuyStep } from '../../types/enum'
 import BuyContent from './BuyContent'
 import useWallet from '../../hooks/useWallet'
+import useTrading, { TradingInput } from '../../hooks/useTrading'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -26,28 +27,24 @@ const useStyles = makeStyles(() =>
   }),
 )
 
-interface IConfirmBuyProps {
-  handleBuyDlgClose: () => void,
-  openBuyDlg: boolean,
+export interface IConfirmBuyProps {
   nftImage: string,
   nftTitle: string,
   order?: IOrder,
+  tradingInput: TradingInput,
   onBuyApprove?: (order?: IOrder) => Promise<any>,
   onBuyConfirm?: (order?: IOrder) => Promise<any>,
   onBuyComplete?: (order?: IOrder) => void
   onBuyDone?: () => void
+  handleBuyDlgClose: () => void,
 }
 
 const ConfirmBuy: React.FC<IConfirmBuyProps> = ({
-  handleBuyDlgClose,
-  openBuyDlg,
   nftImage,
   nftTitle,
   order,
-  onBuyApprove,
-  onBuyConfirm,
-  onBuyComplete,
-  onBuyDone,
+  tradingInput,
+  handleBuyDlgClose,
 }) => {
   const classes = useStyles()
   const [buyStep, setStep] = useState<BuyStep>(BuyStep.StepBuy)
@@ -55,6 +52,7 @@ const ConfirmBuy: React.FC<IConfirmBuyProps> = ({
   const [approveTx, setApproveTx] = useState('')
   const [tradingTx, setTradingTx] = useState('')
   const { chainId } = useWallet()
+  const { onBuyApprove, onBuyConfirm, onBuyComplete, onBuyDone } = useTrading(tradingInput)
 
   const onBuy = () => {
     if (buyStep === BuyStep.StepBuy) {
@@ -123,7 +121,7 @@ const ConfirmBuy: React.FC<IConfirmBuyProps> = ({
   const formattedPrice = formatCurrency(order?.price || 0, order?.chain_id || 0, getCurrencyNameAddress(order?.currencyAddress))
 
   return (
-    <Dialog open={openBuyDlg} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
+    <Dialog open={true} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
       <DialogTitle id="form-dialog-title" className={classes.rootTitle}>
         <div className="columns-2 mt-5">
           <div className="text-[#1E1C21] text-[28px] font-semibold">purchase confirmation</div>

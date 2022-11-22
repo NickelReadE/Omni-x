@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { NFTItem } from '../interface/interface'
 import { collectionsService } from '../services/collections'
+import useCollection from './useCollection'
 
 export type CollectionNftTypeFunc = {
     nft: NFTItem | undefined,
@@ -18,8 +19,8 @@ const getNftInfo = async (col_url: string, token_id: string): Promise<any> => {
 
 const useCollectionNft = (col_url: string, token_id: string): CollectionNftTypeFunc => {
   const [nft, setNft] = useState<NFTItem | undefined>()
-  const [collection, setCollection] = useState<any>()
   const [refresh, setRefresh] = useState<boolean>(false)
+  const {collectionInfo, refreshCollection} = useCollection(col_url)
 
   const refreshNft = () => {
     setRefresh(!refresh)
@@ -27,15 +28,15 @@ const useCollectionNft = (col_url: string, token_id: string): CollectionNftTypeF
 
   useEffect(() => {
     (async () => {
-      const { info, collection } = await getNftInfo(col_url, token_id)
+      await refreshCollection()
+      const { info } = await getNftInfo(col_url, token_id)
       setNft(info)
-      setCollection(collection)
     })()
   }, [col_url, token_id, refresh])
 
   return {
     nft,
-    collection,
+    collection: collectionInfo,
     refreshNft
   }
 }

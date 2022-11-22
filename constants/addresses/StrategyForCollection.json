@@ -1,0 +1,17 @@
+{
+  "ethereum": "",
+  "bsc": "",
+  "avalanche": "",
+  "polygon": "",
+  "arbitrum": "",
+  "optimism": "",
+  "fantom": "",
+
+  "goerli": "0x5ffCF1c35604C8E1Be1fe5863f0B7bb290C935dC",
+  "bsc testnet": "0x9dF538C3791B45dbE1cb0ba958f0518F1ec01090",
+  "fuji": "0x0da05258E872dCa63be004a02Ef61Ca6fca0A1f2",
+  "mumbai": "0x19f9CFB37171eE6FF7d15cc2131d22bcF2f752f6",
+  "arbitrum-goerli": "0xad551CE845b6D126f3aB413C85215CaBc3FCdb93",
+  "optimism-goerli": "0xB3b475f50b44e4c94A57209de2703b1CEBe9CA28",
+  "fantom-testnet": ""
+}

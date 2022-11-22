@@ -6,6 +6,8 @@ import {useDraggable} from '@dnd-kit/core'
 import editStyle from '../styles/nftbox.module.scss'
 import classNames from '../helpers/classNames'
 import Loading from '../public/images/loading_f.gif'
+import { useModal } from '../hooks/useModal'
+import { ModalIDs } from '../contexts/modal'
 import { longNumberShortify, numberShortify } from '../utils/constants'
 import { BigNumber } from 'ethers'
 
@@ -15,7 +17,13 @@ const CollectionCard = (props:any) => {
   const [imageError, setImageError] = useState(false)
   ///only in the beta version
 
-  const { transform} = useDraggable({
+  const { openModal, closeModal } = useModal()
+  const collectionBid = {
+    collectionUrl: props.collection.col_url as string,
+    collectionAddressMap: props.collection.address
+  }
+
+  const { transform } = useDraggable({
     id: `draggable-${1}`,
     data: {
       type: 'NFT',
@@ -58,7 +66,19 @@ const CollectionCard = (props:any) => {
               <div className='w-[230px] text-[18px] text-white	 text-extrabold text-center items-center bg-[#B444F9] rounded-lg mb-[24px]  py-[7px] hover:cursor-pointer'>view collection</div>
             </Link>
 
-            <div className='w-[230px] text-[18px] text-white	 text-extrabold text-center items-center bg-[#38B000] rounded-lg  py-[7px]'>make a collection bid</div>
+            <button
+              className='w-[230px] text-[18px] text-white text-extrabold text-center items-center bg-[#38B000] rounded-lg  py-[7px]'
+              onClick={() => {
+                openModal(ModalIDs.MODAL_BID, {
+                  nftImage: props.collection.profile_image,
+                  nftTitle: props.collection.name,
+                  collectionBid,
+                  handleBidDlgClose: closeModal
+                })
+              }}
+            >
+              make a collection bid
+            </button>
           </div>
 
         </div>
