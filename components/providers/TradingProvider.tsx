@@ -138,7 +138,7 @@ export const doListingConfirm = async (listing_data: IListingData, common_data: 
   const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
   const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
   const lzChainId = getLayerzeroChainId(common_data.chainId)
-  const price = parseCurrency(listing_data.price.toString(), listing_data.currencyName) // ethers.utils.parseEther(listing_data.price.toString())
+  const price = parseCurrency(listing_data.price.toString(), common_data.chainId, listing_data.currencyName) // ethers.utils.parseEther(listing_data.price.toString())
   const startTime = Date.now()
 
   await postMakerOrder(
@@ -180,8 +180,8 @@ export const doBuyApprove = async (order: IOrder, common_data: TradingCommonData
   const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
   const newCurrencyName = validateCurrencyName(currencyName, common_data.chainId)
   const currencyAddress = getAddressByName(newCurrencyName, common_data.chainId)
-  const formattedPrice = formatCurrency(order?.price || 0, currencyName)
-  const parsedPrice = parseCurrency(formattedPrice, newCurrencyName)
+  const formattedPrice = formatCurrency(order?.price || 0, order.chain_id, currencyName)
+  const parsedPrice = parseCurrency(formattedPrice, common_data.chainId, newCurrencyName)
 
   await checkValid(currencyAddress, formattedPrice, common_data.chainId, common_data.signer)
 
@@ -224,8 +224,8 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
   const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
   const newCurrencyName = validateCurrencyName(currencyName, common_data.chainId)
   const currencyAddress = getAddressByName(newCurrencyName, common_data.chainId)
-  const formattedPrice = formatCurrency(order?.price || 0, currencyName)
-  const parsedPrice = parseCurrency(formattedPrice, newCurrencyName)
+  const formattedPrice = formatCurrency(order?.price || 0, order.chain_id, currencyName)
+  const parsedPrice = parseCurrency(formattedPrice,  common_data.chainId, newCurrencyName)
 
   await checkValid(currencyAddress, formattedPrice, common_data.chainId, common_data.signer)
 
@@ -269,7 +269,7 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
       currencyAddress,
       common_data.collectionAddress,
       getAddressByName('Strategy', common_data.chainId),
-      getConversionRate(currencyName, newCurrencyName)
+      getConversionRate(order.chain_id, currencyName, common_data.chainId, newCurrencyName)
     ])
   }
 
@@ -489,8 +489,8 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
   const currencyName = getCurrencyNameAddress(bid_order.currencyAddress) as ContractName
   const newCurrencyName = validateCurrencyName(currencyName, common_data.chainId)
   const currencyAddress = getAddressByName(newCurrencyName, common_data.chainId)
-  const formattedPrice = formatCurrency(bid_order.price, currencyName)
-  const parsedPrice = parseCurrency(formattedPrice, newCurrencyName)
+  const formattedPrice = formatCurrency(bid_order.price, bid_order.chain_id, currencyName)
+  const parsedPrice = parseCurrency(formattedPrice, common_data.chainId, newCurrencyName)
 
   const isCollectionOffer = !bid_order.tokenId || Number(bid_order.tokenId) === 0
   const takerAsk : TakerOrderWithEncodedParams = {
@@ -510,7 +510,7 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
       currencyAddress,
       common_data.collectionAddress,
       getAddressByName(isCollectionOffer ? 'StrategyForCollection' : 'Strategy', common_data.chainId),
-      getConversionRate(currencyName, newCurrencyName)
+      getConversionRate(bid_order.chain_id, currencyName, common_data.chainId, newCurrencyName)
     ])
   }
 
