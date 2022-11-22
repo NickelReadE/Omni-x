@@ -35,7 +35,7 @@ export const SelectNetworks = ({ gasSupportChainIds, updateGasChainId }: {gasSup
                     GAS_SUPPORTED_CHAIN_IDS.map((chainId, index) => {
                       return (
                         <Menu.Item key={index} as={Fragment}>
-                          <div className={`py-2 px-6 flex items-center cursor-pointer ${gasSupportChainIds.includes(chainId) ? 'bg-[#303030]' : ''}`} onClick={() => updateGasChainId(chainId)}>
+                          <div className={`py-2 px-6 flex items-center cursor-pointer ${gasSupportChainIds.includes(chainId) ? '' : 'bg-[#303030]'}`} onClick={() => updateGasChainId(chainId)}>
                             <img alt={'chainIcon'} src={getChainLogoById(chainId.toString())}/>
                             <span className={'text-primary-light text-lg pl-4'}>{getChainOfficialNameById(chainId)}</span>
                           </div>
