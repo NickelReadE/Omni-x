@@ -55,37 +55,6 @@ export const VALID_CURRENCIES: {[chain: number | string]: CurrencyType[]} = {
   ]
 }
 
-export const CURRENCIES_LIST = [
-  {value: 0, text: 'OMNI', decimals: 18, icon: 'payment/omni.png'},
-  {value: 1, text: 'USDC', decimals: 6, icon: 'payment/usdc.png'},
-  {value: 2, text: 'USDT', decimals: 18, icon: 'payment/usdt.png'},
-  {value: 3, text: 'WETH', decimals: 18, icon: 'payment/eth.png'},
-]
-
-export const STABLECOIN_DECIMAL: any = {
-  [ChainIDS.BINANCE]: {
-    [USDT[ChainIDS.BINANCE]]: 18,
-  },
-  [ChainIDS.AVALANCHE]: {
-    [USDC[ChainIDS.AVALANCHE]]: 6,
-  },
-  [ChainIDS.POLYGON]: {
-    [USDC[ChainIDS.POLYGON]]: 6,
-  },
-  [ChainIDS.FANTOM]: {
-    [USDC[ChainIDS.FANTOM]]: 6,
-  },
-  [ChainIDS.ETHEREUM]: {
-    [USDC[ChainIDS.ETHEREUM]]: 6,
-  },
-  [ChainIDS.ARBITRUM]: {
-    [USDC[ChainIDS.ARBITRUM]]: 6,
-  },
-  [ChainIDS.OPTIMISM]: {
-    [USDC[ChainIDS.OPTIMISM]]: 6,
-  },
-}
-
 export const getCurrencyIconByAddress = (address?: string) => {
   for (const chain in VALID_CURRENCIES) {
     const currency = VALID_CURRENCIES[chain].find(c => c.address.toLowerCase() === address?.toLowerCase())
@@ -110,6 +79,11 @@ export const getCurrencyNameAddress = (address?: string) => {
 
 export const getDecimals = (chainId: number, currencyName: string) => {
   const currency = VALID_CURRENCIES[chainId].find(c => c.text === currencyName)
+  return currency ? currency.decimals : 18
+}
+
+export const getDecimalsByAddress = (chainId: number, currencyAddr: string) => {
+  const currency = VALID_CURRENCIES[chainId].find(c => c.address === currencyAddr)
   return currency ? currency.decimals : 18
 }
 
