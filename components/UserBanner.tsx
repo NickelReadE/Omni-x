@@ -95,7 +95,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
           <div className={'flex items-center'}>
             <div className={'flex flex-col items-end space-y-2 mr-4'}>
               <div className={'w-[90px]'}>
-                <GradientButton height={26} borderRadius={50} title={'following'} textSize={'md'} />
+                <GradientButton height={26} borderRadius={50} title={'following'} textSize={'text-md font-medium'} />
               </div>
               <div className={'flex items-center'}>
                 <span className={'text-md text-primary-light'}>1.65k followers</span>

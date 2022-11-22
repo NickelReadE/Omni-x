@@ -385,7 +385,7 @@ const Collection: NextPage = () => {
                   height={32}
                   borderRadius={20}
                   title={'make a collection bid'}
-                  textSize={'md'}
+                  textSize={'text-md font-medium'}
                 />
               </div>
               <Dropdown menus={sort_fields} onChange={onChangeSort} />

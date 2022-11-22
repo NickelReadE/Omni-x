@@ -89,7 +89,7 @@ export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
           </div>
           <div className={'flex flex-col space-y-2'}>
             <div className={'w-[90px]'}>
-              <GradientButton height={26} borderRadius={50} title={'following'} textSize={'md'} />
+              <GradientButton height={26} borderRadius={50} title={'following'} textSize={'text-md font-medium'} />
             </div>
             <span className={'text-md text-primary-light'}>1.65k followers</span>
           </div>

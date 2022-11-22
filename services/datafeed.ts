@@ -17,16 +17,24 @@ export const getPriceForUSD = async (rpcChainId: number, chainId: number) => {
   const provider = new ethers.providers.JsonRpcProvider(rpcDatafeedProvider[rpcChainId])
   const priceFeed = new ethers.Contract(crypto_list[rpcChainId][chainId], Aggregator, provider)
   let result: any = 0
-  await priceFeed.latestRoundData()
-    .then((roundData: any) => {
-      result = (parseFloat((roundData.answer)) / 100000000.0)
-    })
+  try {
+    const roundData = await priceFeed.latestRoundData()
+    result = (parseFloat((roundData.answer)) / 100000000.0)
+  } catch (e) {
+    console.error(`While getting roundData for ${chainId} on ${rpcChainId}: `, e)
+  }
   return result.toFixed(3)
 
 }
 const getGasOnChain = async (chainId: number) => {
-  const provider = new ethers.providers.JsonRpcProvider(rpcGasProvider[chainId])
-  const gasPrice = ethers.utils.formatUnits(await provider.getGasPrice(), 'gwei')
+  let gasPrice = '0'
+  try {
+    const provider = new ethers.providers.JsonRpcProvider(rpcGasProvider[chainId])
+    const _gasPrice = await provider.getGasPrice()
+    gasPrice = ethers.utils.formatUnits(_gasPrice, 'gwei')
+  } catch (e) {
+    console.error(`While getting gas price for ${chainId}: `, e)
+  }
   return parseFloat(gasPrice).toFixed(3)
 }
 
