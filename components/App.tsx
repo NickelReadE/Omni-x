@@ -23,6 +23,7 @@ import Layout from './Layout'
 import {supportChains} from '../utils/constants'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import { SwitchedNetworkProvider } from './SwitchedNetworkProvider'
+import { ModalProvider } from './providers/ModalProvider'
 
 const MORALIS_SERVER_URL = process.env.MORALIS_SERVER_URL || ''
 const MORALIS_APP_ID = process.env.MORALIS_APP_ID || ''
@@ -78,7 +79,9 @@ function App({children}: AppProps) {
                     <ContractProvider>
                       <DndContext>
                         <SwitchedNetworkProvider>
-                          <Layout>{children}</Layout>
+                          <ModalProvider>
+                            <Layout>{children}</Layout>
+                          </ModalProvider>
                         </SwitchedNetworkProvider>
                       </DndContext>
                     </ContractProvider>

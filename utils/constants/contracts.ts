@@ -2,6 +2,7 @@ import OmnixBridge from '../../constants/addresses/OmnixBridge.json'
 import OmnixBridge1155 from '../../constants/addresses/OmnixBridge1155.json'
 import OmnixExchange from '../../constants/addresses/OmnixExchange.json'
 import Strategy from '../../constants/addresses/Strategy.json'
+import StrategyForCollection from '../../constants/addresses/StrategyForCollection.json'
 import TransferSelectorNFT from '../../constants/addresses/TransferSelectorNFT.json'
 import FundManager from '../../constants/addresses/FundManager.json'
 import Stargate from '../../constants/addresses/Stargate.json'
@@ -15,6 +16,7 @@ const omnixBridge: any = OmnixBridge
 const omnixBridge1155: any = OmnixBridge1155
 const omnixExchange: any = OmnixExchange
 const strategy: any = Strategy
+const strategyForCollection: any = StrategyForCollection
 const transferSelectorNFT: any = TransferSelectorNFT
 const fundManager: any = FundManager
 
@@ -29,6 +31,7 @@ export type ContractName =
     'LayerZeroEndpoint' |
     'OmnixExchange' |
     'Strategy' |
+    'StrategyForCollection' |
     'OMNI' |
     'USDC' |
     'USDT' |
@@ -50,6 +53,8 @@ export const getAddressByName = (name: ContractName, chainId: number) => {
     return omnixExchange[chainInfos[chainId].name]
   } else if (name === 'Strategy') {
     return strategy[chainInfos[chainId].name]
+  } else if (name === 'StrategyForCollection') {
+    return strategyForCollection[chainInfos[chainId].name]
   } else if (name === 'OMNI') {
     return oft[chainInfos[chainId].name]
   } else if (name === 'USDC') {

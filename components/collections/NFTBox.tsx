@@ -11,21 +11,15 @@ import {
   numberLocalize
 } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'
-import ConfirmBid from './ConfirmBid'
-import useTrading from '../../hooks/useTrading'
-import ConfirmSell from './ConfirmSell'
-import ConfirmBuy from './ConfirmBuy'
 import useData from '../../hooks/useData'
 import useOrderStatics from '../../hooks/useOrderStatics'
+import { useModal } from '../../hooks/useModal'
+import { ModalIDs } from '../../contexts/modal'
 
 const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
   const [isShowBtn, SetIsShowBtn] = useState(false)
-  const {
-    provider,
-    signer,
-    address
-  } = useWallet()
+  const { address } = useWallet()
   const router = useRouter()
   const { collections } = useData()
 
@@ -62,36 +56,19 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     highestBidCoin,
     lastSale,
     lastSaleCoin
-  } = useOrderStatics({nft})
-
-  const {
-    openBidDlg,
-    openSellDlg,
-    openBuyDlg,
-    setOpenBidDlg,
-    setOpenSellDlg,
-    setOpenBuyDlg,
-    onListingApprove,
-    onListingConfirm,
-    onListingDone,
-    onBuyApprove,
-    onBuyConfirm,
-    onBuyComplete,
-    onBuyDone,
-    onBidApprove,
-    onBidConfirm,
-    onBidDone
-  } = useTrading({
-    provider,
-    signer,
-    address,
-    collection_name: nft_collection?.col_url,
-    collection_address_map,
-    owner_collection_chain_id: nft.chain_id,
-    token_id: nft?.token_id,
+  } = useOrderStatics({
+    nft,
+    collection: nft_collection
+  })
+  
+  const { openModal, closeModal } = useModal()
+  const tradingInput = {
+    collectionUrl: nft_collection?.col_url,
+    collectionAddressMap: collection_address_map,
+    tokenId: nft?.token_id,
     selectedNFTItem: nft,
     onRefresh
-  })
+  }
 
   const chainIcon = useMemo(() => {
     return getChainIconById(nft && nft.chain_id ? nft.chain_id.toString() : '5')
@@ -247,7 +224,12 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
             <div
               className="ml-2 mr-2 py-[1px] px-2 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] cursor-pointer font-blod hover:bg-[#B00000]"
               onClick={() => {
-                setOpenSellDlg(true)
+                openModal(ModalIDs.MODAL_LISTING, {
+                  nftImage: image,
+                  nftTitle: nftName,
+                  tradingInput,
+                  handleSellDlgClose: closeModal
+                })
               }}>
               {'Sell'}
             </div>
@@ -255,56 +237,34 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           {isShowBtn && !isOwner && isListed && isWhitelisted && (
             <div
               className="ml-2 mr-2 py-[1px] px-2 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] cursor-pointer font-blod hover:bg-[#38B000]"
-              onClick={() => setOpenBuyDlg(true)}>
+              onClick={() => {
+                openModal(ModalIDs.MODAL_BUY, {
+                  nftImage: image,
+                  nftTitle: nftName,
+                  order,
+                  tradingInput,
+                  handleBuyDlgClose: closeModal
+                })
+              }}>
               {'Buy now'}
             </div>
           )}
           {isShowBtn && !isOwner && !isListed && isWhitelisted && (
             <div
               className="ml-2 mr-2 py-[1px] px-2 bg-[#A0B3CC] rounded-[10px] text-[14px] text-[#F8F9FA] cursor-pointer font-blod hover:bg-[#38B000]"
-              onClick={() => setOpenBidDlg(true)}>
+              onClick={() => {
+                openModal(ModalIDs.MODAL_BID, {
+                  nftImage: image,
+                  nftTitle: nftName,
+                  tradingInput,
+                  handleBidDlgClose: closeModal
+                })
+              }}>
               {'Bid'}
             </div>
           )}
         </div>
       </div>
-
-      <ConfirmSell
-        handleSellDlgClose={() => {
-          setOpenSellDlg(false)
-        }}
-        openSellDlg={openSellDlg}
-        nftImage={image}
-        nftTitle={nftName}
-        nftChainId={nft.chain_id}
-        onListingApprove={onListingApprove}
-        onListingConfirm={onListingConfirm}
-        onListingDone={onListingDone}
-      />
-      <ConfirmBuy
-        handleBuyDlgClose={() => {
-          setOpenBuyDlg(false)
-        }}
-        openBuyDlg={openBuyDlg}
-        nftImage={image}
-        nftTitle={nftName}
-        onBuyApprove={onBuyApprove}
-        onBuyConfirm={onBuyConfirm}
-        onBuyComplete={onBuyComplete}
-        onBuyDone={onBuyDone}
-        order={order}
-      />
-      <ConfirmBid
-        onBidApprove={onBidApprove}
-        onBidConfirm={onBidConfirm}
-        onBidDone={onBidDone}
-        handleBidDlgClose={() => {
-          setOpenBidDlg(false)
-        }}
-        openBidDlg={openBidDlg}
-        nftImage={image}
-        nftTitle={nftName}
-      />
     </div>
   )
 }
