@@ -26,6 +26,7 @@ export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
     if (chainId) {
       return collection.address[chainId.toString()]
     }
+    return undefined
   }, [collection, chainId])
 
   const activeClasses = (index: number) => {
@@ -66,7 +67,7 @@ export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
           {/*Collection information section*/}
           <div className={'flex flex-col space-y-2'}>
             <span className={'text-xg1 text-primary-light'}>{collection.name}</span>
-            <span className={'text-md text-secondary'}>{truncateAddress(collectionAddress)}</span>
+            <span className={'text-md text-secondary'}>{collectionAddress ? truncateAddress(collectionAddress) : ''}</span>
           </div>
           <div className={'flex items-center space-x-6'}>
             <div className={'flex flex-col items-center space-y-2'}>
