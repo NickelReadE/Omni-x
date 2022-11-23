@@ -14,7 +14,7 @@ export const weth: any = WETH
 export const CURRENCY_OMNI = {value: 0, text: 'OMNI', icon: 'payment/omni.png'}
 export const CURRENCY_USDC = {value: 1, text: 'USDC', icon: 'payment/usdc.png'}
 export const CURRENCY_USDT = {value: 2, text: 'USDT', icon: 'payment/usdt.png'}
-export const CURRENCY_WETH = {value: 3, text: 'WETH', icon: 'payment/eth.png'}
+export const CURRENCY_WETH = {value: 3, text: 'WETH', icon: 'payment/eth2.png'}
 
 const getCurrency = (currency: any, address: string, decimals: number) => ({...currency, address, decimals})
 type CurrencyType = {value: number, text: string, icon: string, address: string, decimals: number}

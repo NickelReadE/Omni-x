@@ -57,7 +57,7 @@ export const getAddressByName = (name: ContractName, chainId: number) => {
   } else if (name === 'StrategyForCollection') {
     return strategyForCollection[chainInfos[chainId].name]
   } else if (name === 'OMNI') {
-    return oft[chainInfos[chainId].name]
+    return oft[chainId.toString()]
   } else if (name === 'USDC') {
     return usdc[chainId.toString()]
   } else if (name === 'USDT') {
