@@ -183,12 +183,12 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
             </div>
           </div>
           <div className="flex flex-col-1 items-center justify-between w-full">
-            {(!!lastSale && lastSale > 0) ? <div className={'flex items-center'}>
+            {(!!lastSale && lastSale > 0) && <div className={'flex items-center'}>
               <span className="text-secondary text-sm font-bold">last sale: &nbsp;</span>
               <img alt={'saleIcon'} src={lastSaleCoin} className="w-[18px] h-[18px]"/>&nbsp;
               <span
                 className="text-secondary text-sm font-bold">{numberLocalize(Number(lastSale))}</span>
-            </div>: <div /> }
+            </div>}
             {(!lastSale && !!highestBid && highestBid > 0) && <div className={'flex items-center'}>
               <span className="text-[#6C757D] text-md font-bold">highest offer: &nbsp;</span>
               <img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;

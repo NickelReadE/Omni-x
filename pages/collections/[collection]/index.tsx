@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import Image from 'next/image'
 import type { NextPage } from 'next'
 import { Switch } from '@headlessui/react'
@@ -154,6 +154,12 @@ const Collection: NextPage = () => {
       setListNFTs(temp)
     }
   }, [isActiveBuyNow, nfts])
+
+  const collection_address_map = useMemo(() => {
+    if (collectionInfo) {
+      return collectionInfo.address
+    }
+  }, [collectionInfo])
 
   const onChangeSort = (value: string) => {
     setSelected(value)
@@ -394,6 +400,14 @@ const Collection: NextPage = () => {
                   borderRadius={20}
                   title={'make a collection bid'}
                   textSize={'text-md font-medium'}
+                  onClick={() => {
+                    openModal(ModalIDs.MODAL_BID, {
+                      nftImage: collectionInfo?.profile_image,
+                      nftTitle: collectionInfo?.name,
+                      collectionBid,
+                      handleBidDlgClose: closeModal
+                    })
+                  }}
                 />
               </div>
               <Dropdown menus={sort_fields} onChange={onChangeSort} />
