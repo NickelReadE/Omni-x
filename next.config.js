@@ -4,7 +4,7 @@ module.exports = {
     API_URL: 'https://bucket-26n19n.s3.amazonaws.com/',
     MORALIS_SERVER_URL: process.env.NEXT_MORALIS_SERVER_URL,
     MORALIS_APP_ID: process.env.NEXT_MORALIS_APP_ID,
-    MORALIS_SECRET: process.env.NEXT_MORALIS_SECRET,
+    MORALIS_API_KEY: process.env.NEXT_MORALIS_API_KEY,
     INFURA_API_KEY: process.env.NEXT_INFURA_API_KEY,
     GOERLI_ALCHEMY_API_KEY: process.env.NEXT_GOERLI_ALCHEMY_API_KEY,
     ARBITRUM_ALCHEMY_API_KEY: process.env.NEXT_ARBITRUM_ALCHEMY_API_KEY,

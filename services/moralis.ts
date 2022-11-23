@@ -11,6 +11,8 @@ const moralisSupportChainIds = [
   CHAIN_IDS[CHAIN_TYPE.MUMBAI],
 ]
 
+const MORALIS_API_KEY = process.env.MORALIS_API_KEY
+
 export const getERC20Balances = async (chainId: number, address: string) => {
   const balances = {
     chainId: chainId,
@@ -46,7 +48,7 @@ export const getERC20Balances = async (chainId: number, address: string) => {
         chain: `0x${(chainId).toString(16)}`,
         token_addresses: USDT_ADDRESS[chainId],
       },
-      headers: {accept: 'application/json', 'X-API-Key': 'ErEG80UwJVJ0dQ2mdKweipKGeXWcOKCcSF5R87xD2H92tZeeQKT0hyACfDXPFBNp'}
+      headers: {accept: 'application/json', 'X-API-Key': MORALIS_API_KEY as string}
     })
     if (data && data.length > 0) {
       balances.usdt = parseFloat(ethers.utils.formatUnits(data[0].balance, data[0].decimals))
