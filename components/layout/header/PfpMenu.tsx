@@ -1,10 +1,12 @@
 import React, {Fragment, useState} from 'react'
+import { Disclosure } from '@headlessui/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import {Transition} from '@headlessui/react'
 import useWallet from '../../../hooks/useWallet'
 import DropdownArrow from '../../../public/images/icons/dropdown_arrow.svg'
-import {getChainInfo, numberLocalize} from '../../../utils/constants'
+import DropdownArrowUp from '../../../public/images/icons/dropdown_arrow_up.svg'
+import {getChainIcons, getChainInfo, getChainLogoById, numberLocalize} from '../../../utils/constants'
 import {useBalance} from 'wagmi'
 import useData from '../../../hooks/useData'
 
@@ -16,7 +18,7 @@ const menuItems = ['messages', 'events', 'settings', 'wallet']
 
 export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
   const { address, chainId } = useWallet()
-  const { balances } = useData()
+  const { totalUSDCBalance, totalUSDTBalance, usdcAvailableChainIds, usdtAvailableChainIds } = useData()
   const { data: nativeBalance } = useBalance({
     addressOrName: address
   })
@@ -55,11 +57,54 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
                 className="bg-[#202020e6] rounded-md shadow-lg backdrop-blur-[10px] shadow-[0_0px_20px_rgba(231,237,245,0.25)] focus:outline-none py-2">
                 {/*Wallet Balance Section*/}
                 <div className={'p-4'}>
-                  <div className={'flex items-center pb-3'}>
-                    <span className={'flex-none text-secondary w-14'}>USD</span>
-                    <span className={'grow px-3 text-primary-light'}>{numberLocalize(balances.usdc)}</span>
-                    <span className={'flex-none w-6'}><DropdownArrow/></span>
-                  </div>
+                  <Disclosure>
+                    {({ open }) => (
+                      <>
+                        <Disclosure.Button className={`flex items-center w-full ${open ? '' : 'pb-3'}`}>
+                          <span className={'flex-none text-left text-secondary w-14'}>USD</span>
+                          <span className={'grow text-left px-3 text-primary-light'}>${numberLocalize(totalUSDCBalance + totalUSDTBalance)}</span>
+                          <span className={'flex-none w-6'}>
+                            {
+                              open ? 
+                                <DropdownArrowUp />
+                                :
+                                <DropdownArrow/>
+                            }
+                          </span>
+                        </Disclosure.Button>
+                        <Disclosure.Panel className="flex flex-col w-full py-2">
+                          <div className={'flex w-full'}>
+                            <span className={'flex-none text-left text-[14px] text-secondary w-14'}>USDC</span>
+                            <span className={'grow text-left px-3 text-primary-light'}>${numberLocalize(totalUSDCBalance)}</span>
+                            <span className={'flex-none w-6'} />
+                          </div>
+                          <div className={'flex w-full pb-2'}>
+                            {
+                              usdcAvailableChainIds.map((chainId: number, index: number) => {
+                                return (
+                                  <img key={index} src={getChainLogoById(chainId.toString())} className={'w-[18px] h-[18px]'} alt={'chainIcon'} />
+                                )
+                              })
+                            }
+                          </div>
+                          <div className={'flex w-full'}>
+                            <span className={'flex-none text-left text-[14px] text-secondary w-14'}>USDT</span>
+                            <span className={'grow text-left px-3 text-primary-light'}>${numberLocalize(totalUSDTBalance)}</span>
+                            <span className={'flex-none w-6'} />
+                          </div>
+                          <div className={'flex w-full pb-2'}>
+                            {
+                              usdtAvailableChainIds.map((chainId: number, index: number) => {
+                                return (
+                                  <img key={index} src={getChainLogoById(chainId.toString())} className={'w-[18px] h-[18px]'} alt={'chainIcon'} />
+                                )
+                              })
+                            }
+                          </div>
+                        </Disclosure.Panel>
+                      </>
+                    )}
+                  </Disclosure>
                   <div className={'flex items-center'}>
                     <span className={'flex-none text-secondary w-14'}>{getChainInfo(chainId)?.nativeCurrency.symbol}</span>
                     <span className={'grow px-3 text-primary-light'}>{numberLocalize(parseFloat(nativeBalance?.formatted || '0'))}</span>

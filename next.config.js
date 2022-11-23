@@ -5,7 +5,11 @@ module.exports = {
     MORALIS_SERVER_URL: process.env.NEXT_MORALIS_SERVER_URL,
     MORALIS_APP_ID: process.env.NEXT_MORALIS_APP_ID,
     MORALIS_SECRET: process.env.NEXT_MORALIS_SECRET,
-    INFURA_API_KEY: process.env.NEXT_INFURA_API_KEY
+    INFURA_API_KEY: process.env.NEXT_INFURA_API_KEY,
+    GOERLI_ALCHEMY_API_KEY: process.env.NEXT_GOERLI_ALCHEMY_API_KEY,
+    ARBITRUM_ALCHEMY_API_KEY: process.env.NEXT_ARBITRUM_ALCHEMY_API_KEY,
+    OPTIMISM_ALCHEMY_API_KEY: process.env.NEXT_OPTIMISM_ALCHEMY_API_KEY,
+    MUMBAI_ALCHEMY_API_KEY: process.env.NEXT_MUMBAI_ALCHEMY_API_KEY,
   },
   images: {
     domains: ['localhost', 'bucket-26n19n.s3.amazonaws.com']

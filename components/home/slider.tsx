@@ -1,14 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
 import { DotButton } from './carouselButtons'
-import Link from 'next/link'
-import HomeIntro from "./intro";
-import useData from "../../hooks/useData";
-
-const slides = [
-  { image: '/images/home/slide_1.png' },
-  { image: '/images/home/slide_1.png' },
-]
+import HomeIntro from './intro'
+import useData from '../../hooks/useData'
 
 export default function HomeSlider() {
   const { collections } = useData()
