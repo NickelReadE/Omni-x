@@ -111,8 +111,14 @@ export const isUsdcOrUsdt = (address?: string) => {
   return false
 }
 
+export const isWeth = (address?: string) => {
+  const chainIdx = Object.values(weth).indexOf(address)
+
+  return chainIdx != -1
+}
+
 export const getValidCurrencies = (chainId: number) => {
-  return (VALID_CURRENCIES as any)[chainId]
+  return VALID_CURRENCIES[chainId]
 }
 
 export const getConversionRate = (fromChainId: number, currencyFrom: ContractName, toChainId: number, currencyTo: ContractName) => {
@@ -133,5 +139,7 @@ export const validateCurrencyName = (currencyName: ContractName, chainId: number
     if (currencyName === 'USDT')
       return 'USDC'
   }
-  return currencyName
+  const validCurrency = VALID_CURRENCIES[chainId].find(c => c.text == currencyName)
+  
+  return validCurrency ? currencyName : undefined
 }

@@ -13,7 +13,7 @@ interface IBuyContentProps {
   approveTx?: string,
   tradingTx?: string,
   price: number,
-  currency: string,
+  currency?: string,
   nftImage: string,
   nftTitle: string,
   onBuy?: () => void
@@ -102,7 +102,7 @@ const BuyContent: React.FC<IBuyContentProps> = ({
             <button
               className='bg-[#38B000] rounded text-[#fff] w-[95px] h-[35px]'
               onClick={onBuy}
-              disabled={processing}>
+              disabled={processing || !currency || !price}>
               buy
             </button>
           )}

@@ -5,7 +5,7 @@ import { getValidCurrencies } from '../../utils/constants'
 
 interface IBuySectionProps {
   price: number,
-  currency: string,
+  currency?: string,
 }
 
 const BuySection: React.FC<IBuySectionProps> = ({
@@ -23,7 +23,11 @@ const BuySection: React.FC<IBuySectionProps> = ({
         <CustomSelect optionData={validCurrencies} value={selectedCurrency} />
         <input type="text" value={price} className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg" disabled={true}/>
       </div>
-      <p className="text-[#ADB5BD] text-[14px] font-light italic leading-6 w-[435px] mt-10">*sale funds are recieved on the blockchain the NFT is currently hosted on</p>
+      {currency ? (
+        <p className="text-[#ADB5BD] text-[14px] font-light italic leading-6 w-[435px] mt-10">*sale funds are recieved on the blockchain the NFT is currently hosted on</p>
+      ) : (
+        <p className="text-warning text-[14px] font-light italic leading-6 w-[435px] mt-10">you choose the currency not supported</p>
+      )}
     </div>
   )
 }

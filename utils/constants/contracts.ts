@@ -10,7 +10,7 @@ import StargatePoolManager from '../../constants/addresses/StargatePoolManager.j
 import CurrencyManager from '../../constants/addresses/CurrencyManager.json'
 import LZEndpoint from '../../constants/layerzero/LayerzeroEndpoints.json'
 import { chainInfos } from './chains'
-import { oft, usdc, usdt } from './currency'
+import { oft, usdc, usdt, weth } from './currency'
 
 const omnixBridge: any = OmnixBridge
 const omnixBridge1155: any = OmnixBridge1155
@@ -35,6 +35,7 @@ export type ContractName =
     'OMNI' |
     'USDC' |
     'USDT' |
+    'WETH' |
     'TransferSelectorNFT' |
     'FundManager' |
     'StargateRouter' |
@@ -61,6 +62,8 @@ export const getAddressByName = (name: ContractName, chainId: number) => {
     return usdc[chainId.toString()]
   } else if (name === 'USDT') {
     return usdt[chainId.toString()]
+  } else if (name === 'WETH') {
+    return weth[chainId.toString()]
   } else if (name === 'TransferSelectorNFT') {
     return transferSelectorNFT[chainInfos[chainId].name]
   } else if (name === 'FundManager') {

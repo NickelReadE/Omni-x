@@ -5,7 +5,7 @@ import { IBidData, IListingData, IOrder, NFTItem, OrderStatus } from '../../inte
 import { openSnackBar } from '../../redux/reducers/snackBarReducer'
 import { collectionsService } from '../../services/collections'
 import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../../types'
-import { ContractName, CREATOR_FEE, formatCurrency, getAddressByName, getChainNameFromId, getConversionRate, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from '../../utils/constants'
+import { ContractName, CREATOR_FEE, formatCurrency, getAddressByName, getChainNameFromId, getConversionRate, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, isWeth, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from '../../utils/constants'
 import { decodeFromBytes, getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, getFundManagerInstance, getOmnixExchangeInstance, getONFTCore721Instance, getTransferSelectorNftInstance } from '../../utils/contracts'
 import { acceptOrder, postMakerOrder } from '../../utils/makeOrder'
 
@@ -179,32 +179,47 @@ export const doBuyApprove = async (order: IOrder, common_data: TradingCommonData
 
   const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
   const newCurrencyName = validateCurrencyName(currencyName, common_data.chainId)
+
+  if (!newCurrencyName) {
+    throw new Error(`Not supported currency ${currencyName}`)
+  }
+
   const currencyAddress = getAddressByName(newCurrencyName, common_data.chainId)
   const formattedPrice = formatCurrency(order?.price || 0, order.chain_id, currencyName)
   const parsedPrice = parseCurrency(formattedPrice, common_data.chainId, newCurrencyName)
 
   await checkValid(currencyAddress, formattedPrice, common_data.chainId, common_data.signer)
 
-  const omni = getCurrencyInstance(currencyAddress, common_data.chainId, common_data.signer)
-
-  if (!omni) {
-    throw new Error('Could not find the currency')
-  }
-
-  {
-    const balance = await omni.balanceOf(common_data.address)
+  if (isWeth(currencyAddress)) {
+    const balance = await common_data.signer.getBalance()
     if (balance.lt(parsedPrice)) {
       const errMessage = 'Not enough balance'
       speical_data.dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
       throw new Error(errMessage)
     }
   }
+  else {
+    const omni = getCurrencyInstance(currencyAddress, common_data.chainId, common_data.signer)
 
-  const buy_price = parsedPrice
-  approveTxs.push(await approve(omni, common_data.address, getAddressByName('FundManager', common_data.chainId), buy_price))
-
-  if (isUsdcOrUsdt(order?.currencyAddress)) {
-    approveTxs.push(await approve(omni, common_data.address, getAddressByName('StargatePoolManager', common_data.chainId), buy_price))
+    if (!omni) {
+      throw new Error('Could not find the currency')
+    }
+  
+    {
+      const balance = await omni.balanceOf(common_data.address)
+      if (balance.lt(parsedPrice)) {
+        const errMessage = 'Not enough balance'
+        speical_data.dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
+        throw new Error(errMessage)
+      }
+    }
+  
+    const buy_price = parsedPrice
+    approveTxs.push(await approve(omni, common_data.address, getAddressByName('FundManager', common_data.chainId), buy_price))
+  
+    if (isUsdcOrUsdt(order?.currencyAddress)) {
+      approveTxs.push(await approve(omni, common_data.address, getAddressByName('StargatePoolManager', common_data.chainId), buy_price))
+    }  
   }
 
   return approveTxs.filter(Boolean)
@@ -223,6 +238,11 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
   const lzChainId = getLayerzeroChainId(common_data.chainId)
   const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
   const newCurrencyName = validateCurrencyName(currencyName, common_data.chainId)
+
+  if (!newCurrencyName) {
+    throw new Error(`Not supported currency ${currencyName}`)
+  }
+
   const currencyAddress = getAddressByName(newCurrencyName, common_data.chainId)
   const formattedPrice = formatCurrency(order?.price || 0, order.chain_id, currencyName)
   const parsedPrice = parseCurrency(formattedPrice,  common_data.chainId, newCurrencyName)
@@ -283,25 +303,39 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
     ethers.utils.formatEther(lzFee)
   )
 
-  {
+  let tx = null
+  if (isWeth(currencyAddress)) {
     const balance = await common_data.provider?.getBalance(common_data.address)
-    if (balance.lt(lzFee)) {
-      const errMessage = `Not enough native balance ${ethers.utils.formatEther(lzFee)}`
+    const payPrice = lzFee.add(takerBid.price)
+    if (balance.lt(payPrice)) {
+      const errMessage = `Not enough native balance ${ethers.utils.formatEther(payPrice)}`
       speical_data.dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
       throw new Error(errMessage)
     }
-  }
-  
-  {
-    const balance = await omni.balanceOf(common_data.address)
-    if (balance.lt(takerBid.price)) {
-      const errMessage = 'Not enough balance'
-      speical_data.dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
-      throw new Error(errMessage)
-    }
-  }
 
-  const tx = await omnixExchange.connect(common_data.signer).matchAskWithTakerBid(0, takerBid, makerAsk, { value: lzFee })
+    tx = await omnixExchange.connect(common_data.signer).matchAskWithTakerBidUsingETHAndWETH(0, takerBid, makerAsk, { value: payPrice })
+  }
+  else {
+    {
+      const balance = await common_data.provider?.getBalance(common_data.address)
+      if (balance.lt(lzFee)) {
+        const errMessage = `Not enough native balance ${ethers.utils.formatEther(lzFee)}`
+        speical_data.dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
+        throw new Error(errMessage)
+      }
+    }
+    
+    {
+      const balance = await omni.balanceOf(common_data.address)
+      if (balance.lt(takerBid.price)) {
+        const errMessage = 'Not enough balance'
+        speical_data.dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
+        throw new Error(errMessage)
+      }
+    }
+  
+    tx = await omnixExchange.connect(common_data.signer).matchAskWithTakerBid(0, takerBid, makerAsk, { value: lzFee })
+  }
 
   let targetCollectionAddress = ''
   if (isONFTCore) {
@@ -488,6 +522,11 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
 
   const currencyName = getCurrencyNameAddress(bid_order.currencyAddress) as ContractName
   const newCurrencyName = validateCurrencyName(currencyName, common_data.chainId)
+
+  if (!newCurrencyName) {
+    throw new Error(`Not supported currency ${currencyName}`)
+  }
+
   const currencyAddress = getAddressByName(newCurrencyName, common_data.chainId)
   const formattedPrice = formatCurrency(bid_order.price, bid_order.chain_id, currencyName)
   const parsedPrice = parseCurrency(formattedPrice, common_data.chainId, newCurrencyName)
