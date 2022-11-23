@@ -8,6 +8,7 @@ import {ExternalLink, GradientButton} from './basic'
 import WebsiteIcon from '../public/images/icons/website.svg'
 import TwitterIcon from '../public/images/icons/twitter.svg'
 import BlockscanChatIcon from '../public/images/icons/blockscan_chat.svg'
+import Image from "next/image";
 
 type UserBannerProps = {
     user: ProfileData,
@@ -57,12 +58,14 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
     <div className={'grid grid-cols-6'}>
       <div className={''} />
       <div className={classNames( 'col-span-4')}>
-        <div className={'relative'}>
-          <img
-            src={bannerImage}
-            className="banner-slider h-full w-full"
-            alt={'banner'}
-          />
+        <div className={'relative max-h-[350px]'}>
+          <div className={'max-h-[350px] overflow-hidden'}>
+            <img
+              src={bannerImage}
+              className="rounded-md w-full object-cover"
+              alt={'banner'}
+            />
+          </div>
           <div className="bottom-[-80px] left-6 h-[120px] absolute flex items-end">
             <img
               src={avatarImage}
