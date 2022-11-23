@@ -6,7 +6,7 @@ import {Transition} from '@headlessui/react'
 import useWallet from '../../../hooks/useWallet'
 import DropdownArrow from '../../../public/images/icons/dropdown_arrow.svg'
 import DropdownArrowUp from '../../../public/images/icons/dropdown_arrow_up.svg'
-import {getChainIcons, getChainInfo, getChainLogoById, numberLocalize} from '../../../utils/constants'
+import {getChainInfo, getChainLogoById, numberLocalize} from '../../../utils/constants'
 import {useBalance} from 'wagmi'
 import useData from '../../../hooks/useData'
 
