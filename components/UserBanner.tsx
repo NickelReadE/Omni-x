@@ -8,7 +8,6 @@ import {ExternalLink, GradientButton} from './basic'
 import WebsiteIcon from '../public/images/icons/website.svg'
 import TwitterIcon from '../public/images/icons/twitter.svg'
 import BlockscanChatIcon from '../public/images/icons/blockscan_chat.svg'
-import Image from "next/image";
 
 type UserBannerProps = {
     user: ProfileData,

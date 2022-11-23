@@ -18,11 +18,7 @@ import { ModalIDs } from '../../contexts/modal'
 const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
   const [boxHovered, setBoxHovered] = useState(false)
-  const {
-    provider,
-    signer,
-    address
-  } = useWallet()
+  const { address } = useWallet()
   const router = useRouter()
   const { collections } = useData()
 

@@ -1,32 +1,32 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, Fragment, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import LazyLoad from 'react-lazyload'
 import type { NextPage } from 'next'
-import Link from 'next/link'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
+import {useDispatch} from 'react-redux'
 import useWallet from '../../../hooks/useWallet'
-import useTrading from '../../../hooks/useTrading'
-import { getChainIconById, getCurrencyIconByAddress, numberLocalize } from '../../../utils/constants'
-import PngCheck from '../../../public/images/check.png'
-import PngSub from '../../../public/images/subButton.png'
+import {
+  getChainIconById,
+  getCurrencyIconByAddress,
+  getDarkChainIconById,
+  numberLocalize
+} from '../../../utils/constants'
 import useOrderStatics from '../../../hooks/useOrderStatics'
 import useCollectionNft from '../../../hooks/useCollectionNft'
 import { useModal } from '../../../hooks/useModal'
 import { ModalIDs } from '../../../contexts/modal'
 import {truncateAddress} from '../../../utils/utils'
 import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
+import {GradientButton} from '../../../components/basic'
+import ShareIcon from '../../../public/images/icons/share.svg'
+import BridgeIcon from '../../../public/images/icons/bluegreen_linear.svg'
 
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
   const [selectedTab, setSelectedTab] = useState(0)
   const [bidHover, setBidHover] = useState<number | undefined>(undefined)
 
-  const {
-    provider,
-    address,
-    signer
-  } = useWallet()
+  const { address } = useWallet()
   const router = useRouter()
   const dispatch = useDispatch()
   const col_url = router.query.collection as string
@@ -53,11 +53,11 @@ const Item: NextPage = () => {
 
   // statistics hook
   const {
-    order,
-    isListed,
+    // order,
+    // isListed,
     sortedBids,
-    highestBid,
-    highestBidCoin,
+    // highestBid,
+    // highestBidCoin,
     lastSale,
     lastSaleCoin
   } = useOrderStatics({
@@ -170,8 +170,13 @@ const Item: NextPage = () => {
                                       borderRadius={50}
                                       textSize={'text-md font-bold'}
                                       onClick={() => {
-                                        setSelectedBid(item.order_data)
-                                        setOpenAcceptDlg(true)
+                                        openModal(ModalIDs.MODAL_ACCEPT, {
+                                          nftImage: currentNFT.image,
+                                          nftTitle: currentNFT.name,
+                                          bidOrder: item.order_data,
+                                          tradingInput,
+                                          handleAcceptDlgClose: closeModal
+                                        })
                                       }}
                                     />
                                   </div>
@@ -227,7 +232,7 @@ const Item: NextPage = () => {
                       </svg>
                     </div>
                     <div className={'w-6 h-6 cursor-pointer'}>
-                      <BlueGreen />
+                      <BridgeIcon />
                     </div>
                     <div className={'w-6 h-6 cursor-pointer'} onClick={onCopyToClipboard}>
                       <ShareIcon />
