@@ -28,6 +28,8 @@ import {CollectionBanner} from '../../../components/collections/banner'
 import {GradientButton} from '../../../components/basic'
 import FilterActive from '../../../public/images/icons/filter_active.svg'
 import FilterInactive from '../../../public/images/icons/filter_inactive.svg'
+import { useModal } from '../../../hooks/useModal'
+import { ModalIDs } from '../../../contexts/modal'
 
 const sort_fields = [
   { text: 'price: low to high', value: 'price' },
@@ -161,6 +163,12 @@ const Collection: NextPage = () => {
     await refreshNfts()
     refreshCollection()
     refreshUserNfts()
+  }
+
+  const { openModal, closeModal } = useModal()
+  const collectionBid = {
+    collectionUrl: col_url,
+    collectionAddressMap: collection_address_map
   }
 
   const searchAttrsCheck = (bChecked: boolean, attrKey: string, valueKey: string) => {

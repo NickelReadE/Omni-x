@@ -67,9 +67,9 @@ export const RPC_PROVIDERS: { [key: number]: string } = {
 
   // TESTNET RPC
   [CHAIN_IDS[CHAIN_TYPE.GOERLI]]: 'https://goerli.infura.io/v3/94915ad2755844d2854ea9f99d5c30c7',
-  [CHAIN_IDS[CHAIN_TYPE.BSC_TESTNET]]: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+  [CHAIN_IDS[CHAIN_TYPE.BSC_TESTNET]]: 'https://rpc.ankr.com/bsc_testnet_chapel',
   [CHAIN_IDS[CHAIN_TYPE.FUJI_TESTNET]]: 'https://avalanche-fuji.infura.io/v3/94915ad2755844d2854ea9f99d5c30c7',
-  [CHAIN_IDS[CHAIN_TYPE.MUMBAI]]: 'https://polygon-mumbai.g.alchemy.com/v2/CR8XscJ6acHp2UMJix9AyNM_zAuzV-q3',
+  [CHAIN_IDS[CHAIN_TYPE.MUMBAI]]: 'https://rpc.ankr.com/polygon_mumbai',
   [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: 'https://arb-goerli.g.alchemy.com/v2/Agc4K6fFfxXQ1s3QG69kj1CB6nu',
   [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: 'https://opt-goerli.g.alchemy.com/v2/ngF3JRIxa7BQOqSHGASzPf-8BFW1yA0z',
   [CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET]]: 'https://rpc.testnet.fantom.network'

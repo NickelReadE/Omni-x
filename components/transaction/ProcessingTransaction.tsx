@@ -145,7 +145,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
             &&
             <div className='flex items-center justify-between'>
               <span className="text-[#38B000] w-[30px] truncate" style={{fontSize: 14, lineHeight: '18px', fontWeight: 700}}>
-                apt:
+                sell:
               </span>
               <Image
                 onMouseEnter={() => onHover('sender')}

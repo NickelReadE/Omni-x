@@ -10,6 +10,7 @@ import { AcceptStep } from '../../types/enum'
 import useWallet from '../../hooks/useWallet'
 import AcceptContent from './AcceptContent'
 import { useSwitchedNetwork } from '../../hooks/useSwitchedNetwork'
+import useTrading, { TradingInput } from '../../hooks/useTrading'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -27,28 +28,20 @@ const useStyles = makeStyles(() =>
   }),
 )
 
-interface IConfirmAcceptProps {
-  handleAcceptDlgClose: () => void,
-  openAcceptDlg: boolean,
+export interface IConfirmAcceptProps {
   nftImage: string,
   nftTitle: string,
   bidOrder?: IOrder,
-  onAcceptApprove?: (checkNetwork: boolean) => Promise<any>,
-  onAcceptConfirm?: (bidOrder: IOrder) => Promise<any>,
-  onAcceptComplete?: (bidOrder: IOrder) => void
-  onAcceptDone?: () => void
+  tradingInput: TradingInput,
+  handleAcceptDlgClose: () => void,
 }
 
 const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
-  handleAcceptDlgClose,
-  openAcceptDlg,
   nftImage,
   nftTitle,
   bidOrder,
-  onAcceptApprove,
-  onAcceptConfirm,
-  onAcceptComplete,
-  onAcceptDone,
+  tradingInput,
+  handleAcceptDlgClose,
 }) => {
   const classes = useStyles()
   const [acceptStep, setStep] = useState<AcceptStep>(AcceptStep.StepAccept)
@@ -56,6 +49,7 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
   const [approveTx, setApproveTx] = useState('')
   const [tradingTx, setTradingTx] = useState('')
   const { chainId } = useWallet()
+  const { onAcceptApprove, onAcceptConfirm, onAcceptComplete, onAcceptDone } = useTrading(tradingInput)
 
   useSwitchedNetwork(() => {
     if (acceptStep === AcceptStep.StepCheckNetwork) {
@@ -94,7 +88,7 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
       setStep(AcceptStep.StepConfirm)
     }
     else if (acceptStep === AcceptStep.StepConfirm && onAcceptConfirm) {
-      const tx = await onAcceptConfirm(bidOrder)
+      const tx = await onAcceptConfirm(bidOrder, tradingInput.tokenId || '0')
       
       if (tx) {
         setTradingTx(tx.hash)
@@ -142,7 +136,7 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
   const newCurrencyName = validateCurrencyName(currencyName, chainId || 0)
   const formattedPrice = formatCurrency(bidOrder?.price || 0, getCurrencyNameAddress(bidOrder?.currencyAddress))
   return (
-    <Dialog open={openAcceptDlg} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
+    <Dialog open={true} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
       <DialogTitle id="form-dialog-title" className={classes.rootTitle}>
         <div className="columns-2 mt-5">
           <div className="text-[#1E1C21] text-[28px] font-semibold">accept confirmation</div>

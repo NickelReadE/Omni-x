@@ -3,6 +3,7 @@ import {ContractName, getAddressByName, getProvider} from './constants'
 import OmnixBridgeABI from '../constants/abis/OmnixBridge.json'
 import OmnixBridge1155ABI from '../constants/abis/OmnixBridge1155.json'
 import OmnixExchangeABI from '../constants/abis/OmnixExchange.json'
+import FundManagerABI from '../constants/abis/FundManager.json'
 import TransferSelectorNFTABI from '../constants/abis/TransferSelectorNFT.json'
 import OmniABI from '../constants/abis/Omni.json'
 import ERC721ABI from '../constants/abis/ERC721.json'
@@ -68,6 +69,10 @@ export const getONFTCore1155Instance = (contractAddress: string, chainId: number
 
 export const getOmnixExchangeInstance = (chainId: number, signer: any) => {
   return getContractInstance('OmnixExchange', OmnixExchangeABI, chainId, signer)
+}
+
+export const getFundManagerInstance = (chainId: number) => {
+  return getContractInstance('FundManager', FundManagerABI, chainId, null)
 }
 
 export const getOmniInstance = (chainId: number, signer: any) => {
