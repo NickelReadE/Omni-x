@@ -2,14 +2,16 @@ import { useCallback, useEffect, useState } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
 import { DotButton } from './carouselButtons'
 import Link from 'next/link'
+import HomeIntro from "./intro";
+import useData from "../../hooks/useData";
 
 const slides = [
-  { image: '/images/home/slide_1.png' },
   { image: '/images/home/slide_1.png' },
   { image: '/images/home/slide_1.png' },
 ]
 
 export default function HomeSlider() {
+  const { collections } = useData()
   const [viewportRef, embla] = useEmblaCarousel({ skipSnaps: false })
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([])
   const [selectedIndex, setSelectedIndex] = useState(0)
@@ -35,21 +37,19 @@ export default function HomeSlider() {
       <div className="embla">
         <div className="embla__viewport" ref={viewportRef}>
           <div className="embla__container">
-            {slides.map((item, index) => (
+            <div className="embla__slide">
+              <div className="embla__slide__inner flex justify-center relative">
+                <HomeIntro />
+              </div>
+            </div>
+            {collections.map((collection, index) => (
               <div className="embla__slide" key={index}>
                 <div className="embla__slide__inner flex justify-center relative">
                   <img
                     className="embla__slide__img"
-                    src={item.image}
+                    src={collection.banner_image}
                     alt={'banner - ' + index}
                   />
-                  <div className='absolute bottom-4'>
-                    <Link href={'/learn-more'}>
-                      <button className='px-[16px] py-[4px] bg-border-gradient rounded-full flex items-center justify-center border-[1px] border-solid border-transparent' style={{backgroundOrigin: 'padding-box, border-box', backgroundClip: 'padding-box, border-box'}}>
-                        <span className='bg-primary-gradient bg-clip-text text-transparent'>learn more</span>
-                      </button>
-                    </Link>
-                  </div>
                 </div>
               </div>
             ))}

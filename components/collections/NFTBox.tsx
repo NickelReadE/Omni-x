@@ -243,7 +243,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
 
       {
         boxHovered && isWhitelisted &&
-        <div className={`absolute bottom-0 w-full bg-dark-${isOwner ? 'red' : 'green'} text-primary-light rounded-br-[8px] rounded-bl-[8px] h-10 text-xg cursor-pointer`}>
+        <div className={`absolute bottom-0 w-full ${isOwner ? 'bg-dark-red' : 'bg-dark-green'} text-primary-light rounded-br-[8px] rounded-bl-[8px] h-10 text-xg cursor-pointer`}>
           {isOwner && (
             <div
               className="font-bold w-full h-full flex items-center justify-center"
@@ -274,7 +274,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           <div className={'w-10 h-10'}>
             {
               isOwner && isWhitelisted &&
-                <img src={'/images/icons/weird-active.png'} alt={'weird icon'} />
+                <img src={'/images/icons/bridge-active.png'} alt={'bridge icon'} />
             }
           </div>
           <div className={'flex items-center space-x-2'}>
