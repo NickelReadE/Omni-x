@@ -82,7 +82,7 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
                             {
                               usdcAvailableChainIds.map((chainId: number, index: number) => {
                                 return (
-                                  <img key={index} src={getChainLogoById(chainId.toString())} className={'w-[18px] h-[18px]'} alt={'chainIcon'} />
+                                  <img key={index} src={getChainLogoById(chainId.toString())} className={'w-[18px] h-[18px] mr-1'} alt={'chainIcon'} />
                                 )
                               })
                             }

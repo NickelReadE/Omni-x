@@ -5,8 +5,10 @@ import {CHAIN_TYPE} from '../types/enum'
 import {ethers} from 'ethers'
 
 const moralisSupportChainIds = [
+  CHAIN_IDS[CHAIN_TYPE.GOERLI],
   CHAIN_IDS[CHAIN_TYPE.BSC_TESTNET],
   CHAIN_IDS[CHAIN_TYPE.FUJI_TESTNET],
+  CHAIN_IDS[CHAIN_TYPE.MUMBAI],
 ]
 
 export const getERC20Balances = async (chainId: number, address: string) => {
