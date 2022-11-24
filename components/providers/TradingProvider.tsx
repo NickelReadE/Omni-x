@@ -8,6 +8,7 @@ import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../../type
 import { ContractName, CREATOR_FEE, formatCurrency, getAddressByName, getChainNameFromId, getConversionRate, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, isWeth, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from '../../utils/constants'
 import { decodeFromBytes, getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, getFundManagerInstance, getOmnixExchangeInstance, getONFTCore721Instance, getTransferSelectorNftInstance } from '../../utils/contracts'
 import { acceptOrder, postMakerOrder } from '../../utils/makeOrder'
+import { serializeMakeOrder, serializeTakeOrder } from '../../utils/utils'
 
 export type TradingCommonData = {
   provider?: any,
@@ -293,6 +294,10 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
     ])
   }
 
+  
+  serializeMakeOrder(makerAsk)
+  serializeTakeOrder(takerBid)
+  
   const [omnixFee, currencyFee, nftFee] = await omnixExchange.getLzFeesForTrading(takerBid, makerAsk, 0)
   const lzFee = omnixFee.add(currencyFee).add(nftFee)
 

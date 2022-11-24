@@ -57,7 +57,7 @@ export const VALID_CURRENCIES: {[chain: number | string]: CurrencyType[]} = {
 
 export const getCurrencyIconByAddress = (address?: string) => {
   for (const chain in VALID_CURRENCIES) {
-    const currency = VALID_CURRENCIES[chain].find(c => c.address.toLowerCase() === address?.toLowerCase())
+    const currency = VALID_CURRENCIES[chain]?.find(c => c.address.toLowerCase() === address?.toLowerCase())
     if (currency) {
       return `/images/${currency.icon}`
     }
@@ -68,7 +68,7 @@ export const getCurrencyIconByAddress = (address?: string) => {
 
 export const getCurrencyNameAddress = (address?: string) => {
   for (const chain in VALID_CURRENCIES) {
-    const currency = VALID_CURRENCIES[chain].find(c => c.address.toLowerCase() === address?.toLowerCase())
+    const currency = VALID_CURRENCIES[chain]?.find(c => c.address.toLowerCase() === address?.toLowerCase())
     if (currency) {
       return currency.text
     }
@@ -78,12 +78,12 @@ export const getCurrencyNameAddress = (address?: string) => {
 }
 
 export const getDecimals = (chainId: number, currencyName: string) => {
-  const currency = VALID_CURRENCIES[chainId].find(c => c.text === currencyName)
+  const currency = VALID_CURRENCIES[chainId]?.find(c => c.text === currencyName)
   return currency ? currency.decimals : 18
 }
 
 export const getDecimalsByAddress = (chainId: number, currencyAddr: string) => {
-  const currency = VALID_CURRENCIES[chainId].find(c => c.address === currencyAddr)
+  const currency = VALID_CURRENCIES[chainId]?.find(c => c.address === currencyAddr)
   return currency ? currency.decimals : 18
 }
 
@@ -139,7 +139,7 @@ export const validateCurrencyName = (currencyName: ContractName, chainId: number
     if (currencyName === 'USDT')
       return 'USDC'
   }
-  const validCurrency = VALID_CURRENCIES[chainId].find(c => c.text == currencyName)
+  const validCurrency = VALID_CURRENCIES[chainId]?.find(c => c.text == currencyName)
   
   return validCurrency ? currencyName : undefined
 }
