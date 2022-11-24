@@ -30,7 +30,7 @@ export const getERC20Balances = async (chainId: number, address: string) => {
         },
         headers: {
           accept: 'application/json',
-          'X-API-Key': 'ErEG80UwJVJ0dQ2mdKweipKGeXWcOKCcSF5R87xD2H92tZeeQKT0hyACfDXPFBNp'
+          'X-API-Key': MORALIS_API_KEY as string
         }
       })
       if (data && data.length > 0) {

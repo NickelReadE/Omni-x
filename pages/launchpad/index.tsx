@@ -7,7 +7,7 @@ import Loading from '../../public/images/loading_f.gif'
 import {FeaturedCard} from '../../components/launchpad/FeaturedCard'
 
 const Launchpad: NextPage = () => {
-  const { collectionsForLive, collectionsForComing } = useLaunchPad()
+  const { collectionsForPast, collectionsForComing, collectionsFeatured } = useLaunchPad()
 
   return (
     <div className="pt-6 w-full">
@@ -30,39 +30,6 @@ const Launchpad: NextPage = () => {
           </a>
         </div>
       </div>
-      {/*<div className="flex  justify-between">
-        <div className="py-6 px-12 flex flex-col bg-l-50 space-y-4 ">
-          <p className="text-xg1 italic font-bold text-center">
-            **CREATORS**
-          </p>
-          <p className="text-xg text-[#A0B3CC]">
-            Interested in launching your own collection?
-          </p>
-          <div className='flex items-center justify-center'>
-            <div
-              className="transition-all duration-300 ease-in-out hover:scale-105 hover:drop-shadow-[0_10px_10px_rgba(180,68,249,0.7)] active:scale-100 active:drop-shadow-[0_5px_5px_rgba(180,68,249,0.8)]">
-              <Link
-                href={'https://docs.google.com/forms/d/e/1FAIpQLSf6VCJyF1uf9SZ9BJwbGuP7bMla7JzOXMg6ctXN6SlSgNgFlw/viewform?usp=pp_url'}>
-                <a target="_blank">
-                  <button
-                    className="w-[304px] h-[64px] text-[32px] px-2 py-1 text-white border-2 border-[#B444F9] bg-[#B444F9] rounded-lg transition-all duration-300 ease-in-out hover:scale-105 hover:drop-shadow-[0_10px_10px_rgba(180,68,249,0.7)] active:scale-100 active:drop-shadow-[0_5px_5px_rgba(180,68,249,0.8)]">
-                  apply to launchpad
-                  </button>
-                </a>
-              </Link>
-            </div>
-          </div>
-          <div className="flex flex-column space-x-2 justify-center space-x-16 mt-[40px]">
-            <Link href="https://omni-x.gitbook.io/omni-x-nft-marketplace/marketplace-features/launchpad">
-              <a target="_blank">
-                <button className="py-1 text-[#B444F9] border-b-2 border-b-[#B444F9] bg-transparent">
-                  learn more
-                </button>
-              </a>
-            </Link>
-          </div>
-        </div>
-      </div>*/}
       <div className="flex mt-12">
         <div className="text-primary-light text-xxxl pl-8">
           Featured Launches
@@ -72,7 +39,7 @@ const Launchpad: NextPage = () => {
       <div className={'mt-8 w-full'}>
         <div className={'flex space-x-8'}>
           {
-            collectionsForLive.map((collection: LaunchPadType, index: number) => {
+            collectionsFeatured.map((collection: LaunchPadType, index: number) => {
               return (
                 <FeaturedCard key={index} collection={collection} />
               )
@@ -82,7 +49,7 @@ const Launchpad: NextPage = () => {
       </div>
       <div className="mt-12">
         {
-          (collectionsForLive?.length <= 0 && collectionsForComing?.length <= 0) &&
+          (collectionsForPast?.length <= 0 && collectionsForComing?.length <= 0) &&
           <Image src={Loading} alt="Loading..." width="80px" height="80px"/>
         }
         {

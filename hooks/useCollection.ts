@@ -25,8 +25,10 @@ export type CollectionType = {
         omni: number
     },
     attrs: any,
-    bid_datas: any[]
-    bid_orders: IOrder[]
+    bid_datas: any[],
+    bid_orders: IOrder[],
+    mint_start_timestamp: number,
+    mint_end_timestamp: number,
 }
 
 export type CollectionTypeFunc = {

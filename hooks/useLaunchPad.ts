@@ -10,32 +10,35 @@ export type LaunchPadType = {
     price: string,
     description: string,
     itemsCnt: string,
+    mint_start_timestamp: number,
+    mint_end_timestamp: number
 }
 
 export type LaunchPadTypeFunc = {
-    collectionsForLive: LaunchPadType[],
+    collectionsForPast: LaunchPadType[],
     collectionsForComing: LaunchPadType[],
-    sampleCollection: LaunchPadType | undefined
+    collectionsFeatured: LaunchPadType[],
 }
 
 const getLaunchpadInfo = async (): Promise<LaunchPadTypeFunc> => {
   const {data: collections} = await collectionsService.getCollections()
-  const collectionsForLive = collections.filter((collection: LaunchPadType) => collection.mint_status === 'Live')
-  const collectionsForComing = collections.filter((collection: LaunchPadType) => collection.mint_status === 'Upcoming')
+  const currentTimestamp = Math.floor(Date.now() / 1000)
+  const collectionsForPast = collections.filter((collection: LaunchPadType) => collection.mint_end_timestamp < currentTimestamp)
+  const collectionsForComing = collections.filter((collection: LaunchPadType) => collection.mint_start_timestamp > currentTimestamp)
+  const collectionsFeatured = collections.filter((collection: LaunchPadType) => collection.mint_start_timestamp < currentTimestamp && collection.mint_end_timestamp > currentTimestamp)
     
-  const filteredSamples = collectionsForLive.filter((collection: LaunchPadType) => collection.col_url === 'kanpai_pandas')
   return {
-    collectionsForLive,
+    collectionsForPast,
     collectionsForComing,
-    sampleCollection: filteredSamples.length > 0 ? filteredSamples[0]: undefined
+    collectionsFeatured,
   }
 }
 
 const useLaunchPad = (): LaunchPadTypeFunc => {
   const [launchpadInfo, setLaunchpadInfo] = useState<LaunchPadTypeFunc>({
-    collectionsForLive: [],
+    collectionsForPast: [],
     collectionsForComing: [],
-    sampleCollection: undefined
+    collectionsFeatured: [],
   })
 
   useEffect(() => {
