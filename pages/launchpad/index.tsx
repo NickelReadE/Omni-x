@@ -7,7 +7,7 @@ import Loading from '../../public/images/loading_f.gif'
 import {FeaturedCard} from '../../components/launchpad/FeaturedCard'
 
 const Launchpad: NextPage = () => {
-  const { collectionsForPast, collectionsForComing, collectionsFeatured } = useLaunchPad()
+  const { loading, collectionsForPast, collectionsForComing, collectionsFeatured } = useLaunchPad()
 
   return (
     <div className="pt-6 w-full">
@@ -49,7 +49,7 @@ const Launchpad: NextPage = () => {
       </div>
       <div className="mt-12">
         {
-          (collectionsForPast?.length <= 0 && collectionsForComing?.length <= 0) &&
+          loading &&
           <Image src={Loading} alt="Loading..." width="80px" height="80px"/>
         }
         {

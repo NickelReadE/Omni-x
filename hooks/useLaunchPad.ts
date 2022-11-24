@@ -15,6 +15,7 @@ export type LaunchPadType = {
 }
 
 export type LaunchPadTypeFunc = {
+    loading: boolean,
     collectionsForPast: LaunchPadType[],
     collectionsForComing: LaunchPadType[],
     collectionsFeatured: LaunchPadType[],
@@ -28,6 +29,7 @@ const getLaunchpadInfo = async (): Promise<LaunchPadTypeFunc> => {
   const collectionsFeatured = collections.filter((collection: LaunchPadType) => collection.mint_start_timestamp < currentTimestamp && collection.mint_end_timestamp > currentTimestamp)
     
   return {
+    loading: true,
     collectionsForPast,
     collectionsForComing,
     collectionsFeatured,
@@ -35,7 +37,9 @@ const getLaunchpadInfo = async (): Promise<LaunchPadTypeFunc> => {
 }
 
 const useLaunchPad = (): LaunchPadTypeFunc => {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [launchpadInfo, setLaunchpadInfo] = useState<LaunchPadTypeFunc>({
+    loading: true,
     collectionsForPast: [],
     collectionsForComing: [],
     collectionsFeatured: [],
@@ -43,11 +47,22 @@ const useLaunchPad = (): LaunchPadTypeFunc => {
 
   useEffect(() => {
     (async () => {
-      setLaunchpadInfo(await getLaunchpadInfo())
+      try {
+        setIsLoading(true)
+        const _launchInfo = await getLaunchpadInfo()
+        setLaunchpadInfo(_launchInfo)
+      } catch (e) {
+        console.log(e)
+      } finally {
+        setIsLoading(false)
+      }
     })()
   }, [])
 
-  return launchpadInfo
+  return {
+    ...launchpadInfo,
+    loading: isLoading,
+  }
 }
 
 export default useLaunchPad
