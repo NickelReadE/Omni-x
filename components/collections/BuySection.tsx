@@ -26,7 +26,7 @@ const BuySection: React.FC<IBuySectionProps> = ({
       {currency ? (
         <p className="text-[#ADB5BD] text-[14px] font-light italic leading-6 w-[435px] mt-10">*sale funds are recieved on the blockchain the NFT is currently hosted on</p>
       ) : (
-        <p className="text-warning text-[14px] font-light italic leading-6 w-[435px] mt-10">you choose the currency not supported</p>
+        <p className="text-warning text-[14px] font-light italic leading-6 w-[435px] mt-10">the chosen currency is not supported on the current chain</p>
       )}
     </div>
   )
