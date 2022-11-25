@@ -13,6 +13,7 @@ interface IBuyContentProps {
   approveTx?: string,
   tradingTx?: string,
   price: number,
+  srcCurrency?: string,
   currency?: string,
   nftImage: string,
   nftTitle: string,
@@ -25,6 +26,7 @@ const BuyContent: React.FC<IBuyContentProps> = ({
   approveTx,
   tradingTx,
   price,
+  srcCurrency,
   currency,
   nftImage,
   nftTitle,
@@ -37,6 +39,7 @@ const BuyContent: React.FC<IBuyContentProps> = ({
           <div>
             <BuySection
               price={price}
+              srcCurrency={srcCurrency}
               currency={currency}
             />
 

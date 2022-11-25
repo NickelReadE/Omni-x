@@ -1,20 +1,21 @@
 import React from 'react'
 import CustomSelect from './CustomSelect'
-import useWallet from '../../hooks/useWallet'
-import { getValidCurrencies } from '../../utils/constants'
+import { getAllCurrencies } from '../../utils/constants'
 
 interface IBuySectionProps {
   price: number,
+  srcCurrency?: string,
   currency?: string,
 }
 
 const BuySection: React.FC<IBuySectionProps> = ({
   price,
+  srcCurrency,
   currency
 }) => {
-  const { chainId } = useWallet()
-  const validCurrencies = getValidCurrencies(chainId || 0)
-  const selectedCurrency = validCurrencies?.find(v => v.text == currency) || {}
+  const validCurrencies = getAllCurrencies()
+  const oldCurrency = validCurrencies?.find(v => v.text == srcCurrency) || {}
+  const selectedCurrency = validCurrencies?.find(v => v.text == currency) || oldCurrency
   
   return (
     <div>
