@@ -35,7 +35,7 @@ export type ContractName =
     'OMNI' |
     'USDC' |
     'USDT' |
-    'WETH' |
+    'ETH' |
     'TransferSelectorNFT' |
     'FundManager' |
     'StargateRouter' |
@@ -62,7 +62,7 @@ export const getAddressByName = (name: ContractName, chainId: number) => {
     return usdc[chainId.toString()]
   } else if (name === 'USDT') {
     return usdt[chainId.toString()]
-  } else if (name === 'WETH') {
+  } else if (name === 'ETH') {
     return weth[chainId.toString()]
   } else if (name === 'TransferSelectorNFT') {
     return transferSelectorNFT[chainInfos[chainId].name]

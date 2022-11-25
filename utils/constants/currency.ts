@@ -14,11 +14,12 @@ export const weth: any = WETH
 export const CURRENCY_OMNI = {value: 0, text: 'OMNI', icon: 'payment/omni.png'}
 export const CURRENCY_USDC = {value: 1, text: 'USDC', icon: 'payment/usdc.png'}
 export const CURRENCY_USDT = {value: 2, text: 'USDT', icon: 'payment/usdt.png'}
-export const CURRENCY_WETH = {value: 3, text: 'WETH', icon: 'payment/eth2.png'}
+export const CURRENCY_WETH = {value: 3, text: 'ETH', icon: 'payment/eth2.png'}
 
 const getCurrency = (currency: any, address: string, decimals: number) => ({...currency, address, decimals})
 type CurrencyType = {value: number, text: string, icon: string, address: string, decimals: number}
 
+export const ALL_CURRENCIES = [CURRENCY_OMNI, CURRENCY_USDC, CURRENCY_USDT, CURRENCY_WETH]
 export const VALID_CURRENCIES: {[chain: number | string]: CurrencyType[]} = {
   [ChainIDS.BINANCE]: [
     getCurrency(CURRENCY_OMNI, oft[ChainIDS.BINANCE], 18),
@@ -119,6 +120,10 @@ export const isWeth = (address?: string) => {
 
 export const getValidCurrencies = (chainId: number) => {
   return VALID_CURRENCIES[chainId]
+}
+
+export const getAllCurrencies = () => {
+  return ALL_CURRENCIES
 }
 
 export const getConversionRate = (fromChainId: number, currencyFrom: ContractName, toChainId: number, currencyTo: ContractName) => {

@@ -130,6 +130,7 @@ const ConfirmBuy: React.FC<IConfirmBuyProps> = ({
       <DialogContent className={classes.rootContent}>
         <BuyContent
           price={formattedPrice ? Number(formattedPrice) : 0}
+          srcCurrency={currencyName}
           currency={newCurrencyName}
           onBuy={onBuy}
           nftImage={nftImage}
