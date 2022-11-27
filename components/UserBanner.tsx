@@ -7,8 +7,8 @@ import { ProfileData } from '../hooks/useProfile'
 import { truncateAddress } from '../utils/utils'
 import {ExternalLink, GradientButton} from './basic'
 import WebsiteIcon from '../public/images/icons/website.svg'
+import InstagramIcon from '../public/images/icons/instagram.svg'
 import TwitterIcon from '../public/images/icons/twitter.svg'
-import BlockscanChatIcon from '../public/images/icons/blockscan_chat.svg'
 import UserEdit from './user/UserEdit'
 import Dialog from '@material-ui/core/Dialog'
 import {makeStyles} from '@material-ui/core/styles'
@@ -19,7 +19,7 @@ type UserBannerProps = {
 
 const useStyles = makeStyles({
   paper: {
-    padding: '0rem 0rem 0rem 0rem',
+    padding: 0,
     width: '90%',
     maxWidth: '960px',
   },
@@ -30,30 +30,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
   const router = useRouter()
   const classes = useStyles()
   const userAddress = router.query.address as string
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [avatarError, setAvatarError] = useState(false)
   const [settingModal, setSettingModal] = useState(false)
-  // const [isStgStacker, setIsStgStacker] = useState(false)
-  // const [balances, setBalanceSTG] = useState(0)
-  //
-  // const fetchToken = async (chain: number) => {
-  //   const veSTGInstance = getVeSTGInstance(veSTGContractAddress[chain], chain, null)
-  //   setBalanceSTG(await veSTGInstance.balanceOf(address))
-  // }
-  //
-  // useEffect(() => {
-  //   if (address) {
-  //     chainsFroSTG.map((chain) => {
-  //       fetchToken(chain)
-  //     })
-  //   }
-  // }, [address])
-
-  // useEffect(() => {
-  //   if (balances > 0) {
-  //     setIsStgStacker(true)
-  //   }
-  // }, [balances])
 
   const bannerImage = useMemo(() => {
     if (user && user.banner) {
@@ -63,7 +40,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
   }, [user])
 
   const avatarImage = useMemo(() => {
-    if (!avatarError && user && user.avatar) {
+    if (user && user.avatar) {
       return process.env.API_URL + user.avatar
     }
     return '/images/default_avatar.png'
@@ -99,17 +76,6 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
                 <span className={'text-xg1 text-primary-light'}>{user.username || 'username'}</span>
                 <span className={'text-md text-secondary'}>{user && user.address ? truncateAddress(user.address) : truncateAddress(address || '')}</span>
               </div>
-              {/*<div className={'flex'}>
-              {
-                user.isGregHolder &&
-                <div className="mr-2">
-                  <Image src={Hgreg} alt="avatar" width="30px" height="30px" />
-                </div>
-              }
-              {
-                isStgStacker && <Image src={Stg} alt="avatar" width="30px" height="30px"/>
-              }
-            </div>*/}
             </div>
             <div className={'flex items-center'}>
               <div className={'flex flex-col h-[60px] items-end justify-between space-y-2 mr-4'}>
@@ -142,8 +108,8 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
                       </ExternalLink>
                     </div>
                     <div className={'w-8 h-8 p-1'}>
-                      <ExternalLink link={`https://chat.blockscan.com/index?a=${user.address}`}>
-                        <BlockscanChatIcon />
+                      <ExternalLink link={user.instagram}>
+                        <InstagramIcon />
                       </ExternalLink>
                     </div>
                   </div>

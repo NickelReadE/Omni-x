@@ -174,29 +174,10 @@ button.sidebar {
     }
 }
 
-.section-content {
-    margin-top: 16px;
-    margin-bottom: 16px;
-    margin-left: 26px;
-    max-width: 450px;
-
-    p.section-description:not(:first-child) {
-        padding-top: 8px;
-    }
-
-    .section-description {
-        font-weight: 400;
-        font-size: 14px;
-        color: #A0B3CC;
-        line-height: 18px;
-    }
-}
-
 .tx-status-section {
     color: #A0B3CC;
     line-height: 16px;
     font-size: 12px;
-    margin-top: 16px;
 
     .tx-status-row {
         display: flex;

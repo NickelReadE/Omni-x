@@ -20,8 +20,12 @@ const useStyles = makeStyles(() =>
       padding: '16px 40px 32px 40px'
     },
     dlgWidth: {
-      maxWidth: '800px',
-      width: '800px'
+      maxWidth: 500,
+      width: '800px',
+      background: 'rgba(22, 22, 22, 0.9)',
+      boxShadow: '0px 0px 250px #000000',
+      backdropFilter: 'blur(10px)',
+      borderRadius: 8
     }
   }),
 )
@@ -29,6 +33,8 @@ const useStyles = makeStyles(() =>
 export interface IConfirmBidProps {
   nftImage: string,
   nftTitle: string,
+  nftTokenId: string,
+  collectionName: string,
   tradingInput?: TradingInput,
   collectionBid?: CollectionBidInput,
   handleBidDlgClose: () => void,
@@ -37,6 +43,8 @@ export interface IConfirmBidProps {
 const ConfirmBid: React.FC<IConfirmBidProps> = ({
   nftImage,
   nftTitle,
+  nftTokenId,
+  collectionName,
   tradingInput,
   collectionBid,
   handleBidDlgClose,
@@ -143,9 +151,9 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
 
   return (
     <Dialog open={true} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
-      <DialogTitle id="form-dialog-title" className={classes.root}>
-        <div className="columns-2 mt-5">
-          <div className="text-[#1E1C21] text-[28px] font-semibold">place bid</div>
+      <DialogTitle id="form-dialog-title" className={'py-6 px-10 m-0'}>
+        <div className="mt-5">
+          <div className="text-primary-light text-xg2 font-bold">place bid</div>
         </div>
       </DialogTitle>
       <DialogContent className={classes.rootContent}>
@@ -159,6 +167,8 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
           onBid={onBid}
           nftImage={nftImage}
           nftTitle={nftTitle}
+          nftTokenId={nftTokenId}
+          collectionName={collectionName}
           bidStep={bidStep}
           processing={processing}
           approveTx={approveTx}

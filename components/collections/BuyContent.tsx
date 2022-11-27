@@ -1,6 +1,5 @@
 import React from 'react'
 import { BuyStep } from '../../types/enum'
-import ListingFeeSection from './ListingFeeSection'
 import ApproveSection from './ApproveSection'
 import CongratsSection from './CongratsSection'
 import BuySection from './BuySection'
@@ -16,6 +15,8 @@ interface IBuyContentProps {
   currency: string,
   nftImage: string,
   nftTitle: string,
+  nftTokenId: string,
+  collectionName: string,
   onBuy?: () => void
 }
 
@@ -27,20 +28,28 @@ const BuyContent: React.FC<IBuyContentProps> = ({
   price,
   currency,
   nftImage,
-  nftTitle,
+  nftTokenId,
+  collectionName,
   onBuy
 }) => {
   return (
     <>
-      <div className='flex justify-between'>
+      <div className='flex flex-col justify-between'>
+        <div className={'flex justify-center'}>
+          <div className={'flex flex-col'}>
+            <div className={'bg-primary-gradient p-[1px] rounded'}>
+              <img alt={'nftImage'} className='bg-primary rounded' width={190} height={190} src={nftImage} />
+            </div>
+            <p className={'text-primary-light mt-3'}>#{nftTokenId}</p>
+            <p className='text-secondary font-medium'>{collectionName}</p>
+          </div>
+        </div>
         {buyStep === BuyStep.StepBuy ? (
           <div>
             <BuySection
               price={price}
               currency={currency}
             />
-
-            <ListingFeeSection/>
           </div>
         ) : (
           <div>
@@ -82,31 +91,24 @@ const BuyContent: React.FC<IBuyContentProps> = ({
             )}
           </div>
         )}
-        
-        <div>
-          <img alt={'nftImage'} className='rounded-[8px] max-w-[250px]' src={nftImage} />
-          <p className='mt-2 text-center text-[#6C757D] font-medium'>{nftTitle}</p>
-        </div>
       </div>
 
-      <div className="grid grid-cols-4 mt-20 flex items-end">
-        <div className="col-span-1">
-          {(buyStep === BuyStep.StepDone || buyStep === BuyStep.StepFail) ? (
-            <button
-              className='bg-[#B444F9] rounded text-[#fff] w-[95px] h-[35px]'
-              onClick={onBuy}
-              disabled={processing}>
-              close
-            </button>
-          ) : (
-            <button
-              className='bg-[#38B000] rounded text-[#fff] w-[95px] h-[35px]'
-              onClick={onBuy}
-              disabled={processing}>
-              buy
-            </button>
-          )}
-        </div>
+      <div className="mt-20 flex justify-center">
+        {(buyStep === BuyStep.StepDone || buyStep === BuyStep.StepFail) ? (
+          <button
+            className='bg-primary-gradient rounded-full text-black w-[95px] px-4 py-1.5 font-medium'
+            onClick={onBuy}
+            disabled={processing}>
+            close
+          </button>
+        ) : (
+          <button
+            className='bg-primary-gradient rounded-full text-black w-[95px] px-4 py-1.5 font-medium'
+            onClick={onBuy}
+            disabled={processing}>
+            confirm
+          </button>
+        )}
       </div>
     </>
   )

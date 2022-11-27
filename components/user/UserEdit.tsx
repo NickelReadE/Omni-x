@@ -326,7 +326,7 @@ const UserEdit: FC<IUserEditProps> = ({ updateModal }) => {
                       </div>
                       <input
                         type="text"
-                        name="website"
+                        name="instagram"
                         className="h-8 bg-[#303030] border-[2px] border-secondary rounded w-full text-primary-light"
                         placeholder="https://"
                         value={instagram}

@@ -228,6 +228,8 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                 openModal(ModalIDs.MODAL_LISTING, {
                   nftImage: image,
                   nftTitle: nftName,
+                  nftTokenId: nft.token_id,
+                  collectionName: nft_collection?.name,
                   tradingInput,
                   handleSellDlgClose: closeModal
                 })
@@ -242,6 +244,8 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                 openModal(ModalIDs.MODAL_BUY, {
                   nftImage: image,
                   nftTitle: nftName,
+                  nftTokenId: nft.token_id,
+                  collectionName: nft_collection?.name,
                   order,
                   tradingInput,
                   handleBuyDlgClose: closeModal
@@ -257,6 +261,8 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                 openModal(ModalIDs.MODAL_BID, {
                   nftImage: image,
                   nftTitle: nftName,
+                  nftTokenId: nft.token_id,
+                  collectionName: nft_collection?.name,
                   tradingInput,
                   handleBidDlgClose: closeModal
                 })

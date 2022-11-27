@@ -188,6 +188,8 @@ const Item: NextPage = () => {
                                         openModal(ModalIDs.MODAL_ACCEPT, {
                                           nftImage: currentNFT.image,
                                           nftTitle: currentNFT.name,
+                                          nftTokenId: currentNFT?.token_id,
+                                          collectionName: collection.name,
                                           bidOrder: item.order_data,
                                           tradingInput,
                                           handleAcceptDlgClose: closeModal

@@ -16,6 +16,8 @@ interface IAcceptContentProps {
   currency: string,
   nftImage: string,
   nftTitle: string,
+  nftTokenId: string,
+  collectionName: string,
   onAccept?: () => void
 }
 
@@ -27,20 +29,28 @@ const AcceptContent: React.FC<IAcceptContentProps> = ({
   price,
   currency,
   nftImage,
-  nftTitle,
+  nftTokenId,
+  collectionName,
   onAccept
 }) => {
   return (
     <>
-      <div className='flex justify-between'>
+      <div className='flex flex-col justify-between'>
+        <div className={'flex justify-center'}>
+          <div className={'flex flex-col'}>
+            <div className={'bg-primary-gradient p-[1px] rounded'}>
+              <img alt={'nftImage'} className='bg-primary rounded' width={190} height={190} src={nftImage} />
+            </div>
+            <p className={'text-primary-light mt-3'}>#{nftTokenId}</p>
+            <p className='text-secondary font-medium'>{collectionName}</p>
+          </div>
+        </div>
         {(acceptStep === AcceptStep.StepAccept || acceptStep === AcceptStep.StepCheckNetwork) ? (
           <div>
             <BuySection
               price={price}
               currency={currency}
             />
-
-            <ListingFeeSection/>
           </div>
         ) : (
           <div>
@@ -83,31 +93,24 @@ const AcceptContent: React.FC<IAcceptContentProps> = ({
             )}
           </div>
         )}
-        
-        <div>
-          <img alt={'nftImage'} className='rounded-[8px] max-w-[250px]' src={nftImage} />
-          <p className='mt-2 text-center text-[#6C757D] font-medium'>{nftTitle}</p>
-        </div>
       </div>
 
-      <div className="grid grid-cols-4 mt-20 flex items-end">
-        <div className="col-span-1">
-          {(acceptStep === AcceptStep.StepDone || acceptStep === AcceptStep.StepFail) ? (
-            <button
-              className='bg-[#B444F9] rounded text-[#fff] w-[95px] h-[35px]'
-              onClick={onAccept}
-              disabled={processing}>
-              close
-            </button>
-          ) : (
-            <button
-              className='bg-[#38B000] rounded text-[#fff] w-[95px] h-[35px]'
-              onClick={onAccept}
-              disabled={processing}>
-              accept
-            </button>
-          )}
-        </div>
+      <div className="mt-20 flex justify-center">
+        {(acceptStep === AcceptStep.StepDone || acceptStep === AcceptStep.StepFail) ? (
+          <button
+            className='bg-primary-gradient rounded-full text-black w-[95px] px-4 py-1.5 font-medium'
+            onClick={onAccept}
+            disabled={processing}>
+            close
+          </button>
+        ) : (
+          <button
+            className='bg-primary-gradient rounded-full text-black w-[95px] px-4 py-1.5 font-medium'
+            onClick={onAccept}
+            disabled={processing}>
+            accept
+          </button>
+        )}
       </div>
     </>
   )

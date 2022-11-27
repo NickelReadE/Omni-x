@@ -3,24 +3,14 @@ import Select, { components } from 'react-select'
 
 const { Option } = components
 const IconOption = (props: any) => (
-  <Option {...props}>
-    <div className='flex justify-start items-center'>
-      <img
-        src={`/images/${props.data.icon}`}
-        className='mr-[8px] w-[21px]'
-        alt={props.data.text}
-      />
+  <Option {...props} className={'bg-primary'}>
+    <div className='flex justify-start items-center text-md'>
       {props.data.text}
     </div>
   </Option>
 )
 const CustomSelectValue = (props: any) => (
-  <div className='flex justify-start items-center'>
-    <img
-      src={`/images/${props.data.icon}`}
-      className='mr-[8px] w-[21px]'
-      alt={props.data.text}
-    />
+  <div className='flex justify-start items-center bg-primary text-md'>
     {props.data.text}
   </div>
 )
@@ -40,14 +30,30 @@ const CustomSelect: React.FC<ICustomSelectProps> = ({
     <Select
       placeholder="Select"
       styles={{
+        indicatorSeparator: (styles:any) => ({ ...styles,
+          display: 'none'
+        }),
+        option: (styles:any) => ({ ...styles,
+          background: '#969696',
+          color: '#F5F5F5',
+        }),
+        menu: (styles:any) => ({ ...styles,
+          background: '#969696',
+          color: '#F5F5F5',
+        }),
         control: (styles:any) => ({ ...styles,
-          borderRadius: '8px',
-          backgroundColor: '#F6F8FC',
-          border: '2px solid #E9ECEF',
+          maxWidth: '100px',
+          borderRadius: '20px',
+          color: '#F5F5F5',
+          height: 30,
+          backgroundColor: 'transparent',
+          border: '1px solid #969696',
           width: '170px'
         }),
         valueContainer: (styles:any) => ({ ...styles,
           display: 'flex',
+          justifyContent: 'center',
+          paddingRight: 0
         }),
       }}
       value={value}

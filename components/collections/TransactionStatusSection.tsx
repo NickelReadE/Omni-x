@@ -19,23 +19,23 @@ const TransactionStatusSection: React.FC<ITransactionStatusSectionProps> = ({
   const txHashLink = txHash && `${explorer}/tx/${txHash}`
 
   return (
-    <div className="tx-status-section">
+    <div className="tx-status-section mt-4">
       {isTx && (<>
         <div className="tx-status-row">
-          <p className="tx-status-name">transaction status:</p>
-          <p className="tx-status-value">{processing ? 'confirming...' : 'done'}</p>
+          <p className="text-primary-light text-[14px] leading-[17px]">transaction status:</p>
+          <p className="text-primary-light text-[14px] leading-[17px] ml-3">{processing ? 'confirming...' : 'done'}</p>
         </div>
         
         <div className="tx-status-row">
-          <p className="tx-status-name">transaction record:</p>
-          <a className="tx-status-value tx-hash-ellipsis" href={txHashLink} target="_blank" rel="noreferrer">{txHash || ''}</a>
+          <p className="text-primary-light text-[14px] leading-[17px]">transaction record:</p>
+          <a className="text-primary-light text-[14px] leading-[17px] ml-3 tx-hash-ellipsis" href={txHashLink} target="_blank" rel="noreferrer">{txHash || ''}</a>
         </div>
       </>)}
 
       {!isTx && (<>
         <div className="tx-status-row">
-          <p className="tx-status-name">action status:</p>
-          <p className="tx-status-value">{processing ? 'waiting...' : 'done'}</p>
+          <p className="text-primary-light text-[14px] leading-[17px]">action status:</p>
+          <p className="text-primary-light text-[14px] leading-[17px] ml-3">{processing ? 'waiting...' : 'done'}</p>
         </div>
       </>)}
       

@@ -1,7 +1,7 @@
 import { createContext } from 'react'
 
 export enum ModalIDs {
-  MODAL_NONE = 0,
+  MODAL_NONE,
   MODAL_LISTING,
   MODAL_BUY,
   MODAL_BID,

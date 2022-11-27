@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import React from 'react'
+import React, {useMemo} from 'react'
 import CustomSelect from './CustomSelect'
 import Select from 'react-select'
 import { getValidCurrencies, PERIOD_LIST } from '../../utils/constants'
@@ -15,6 +15,7 @@ interface IListingSectionProps {
   currency: any,
   onChangeCurrency: (e: any) => void,
   period: any,
+  showDescription: boolean,
   onChangePeriod: (e: any) => void
 }
 
@@ -26,28 +27,60 @@ const ListingSection: React.FC<IListingSectionProps> = ({
   currency,
   onChangeCurrency,
   period,
+  showDescription = true,
   onChangePeriod,
 }) => {
   const validCurrencies = getValidCurrencies(nftChainId)
 
+  const aboutPrice = useMemo(() => {
+    return price
+  }, [price])
+    
   return (
     <div>
-      <p className="text-[#6C757D] text-xg font-semibold">{priceLabel}</p>
+      <p className="text-primary-light text-xg font-semibold">{priceLabel}</p>
       <div className="flex justify-start items-center mt-5">
         <CustomSelect optionData={validCurrencies} value={currency} onChange={onChangeCurrency} />
-        <input type="text" value={price} className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg" onChange={onChangePrice}/>
+        <div className={'relative ml-4 bg-primary-gradient p-[1px] rounded-lg h-[40px] w-[110px]'}>
+          <div className={'absolute top-[8px] left-1.5 h-full'}>
+            <img src={`/images/${currency.icon}`} alt={'currency'} width={25} height={25} />
+          </div>
+          <input type="text" value={price} className="text-primary-light font-medium w-full h-full text-left pl-8 bg-primary rounded-lg" onChange={onChangePrice}/>
+        </div>
+        <span className={'text-secondary text-lg ml-4'}>
+          ~{aboutPrice}
+        </span>
       </div>
-      <p className="text-[#ADB5BD] text-md font-light italic leading-6 w-[435px] mt-10">*sale funds are recieved on the blockchain the NFT is currently hosted on</p>
-      <p className="text-[#6C757D] text-xg font-semibold mt-10">Duration</p>
+      <p className="text-primary-light text-md w-[435px] mt-6">service fee: 1.50%<br />
+          creator fee: 5.00%</p>
+      {
+        showDescription &&
+            <p className="text-secondary text-md font-light italic leading-6 w-[435px] mt-6">*sale funds are received on the blockchain the NFT is listed on, NOT on the blockchain of the buyer</p>
+      }
+      <p className="text-primary-light text-xg font-semibold mt-6">Duration</p>
       <div className="flex justify-start items-center mt-5">
         <Select
           placeholder="Select"
           styles={{
+            indicatorSeparator: (styles:any) => ({ ...styles,
+              display: 'none'
+            }),
+            option: (styles:any) => ({ ...styles,
+              background: '#969696',
+              color: '#F5F5F5',
+            }),
+            menu: (styles:any) => ({ ...styles,
+              background: '#969696',
+              color: '#F5F5F5',
+            }),
             control: (styles:any) => ({ ...styles,
-              borderRadius: '8px',
-              backgroundColor: '#F6F8FC',
-              border: '2px solid #E9ECEF',
-              width: '170px'
+              borderRadius: '20px',
+              backgroundColor: 'transparent',
+              border: '1px solid #969696',
+              width: '180px'
+            }),
+            singleValue: (styles:any) => ({ ...styles,
+              color: '#F5F5F5',
             })
           }}
           options={PERIOD_LIST as any}
