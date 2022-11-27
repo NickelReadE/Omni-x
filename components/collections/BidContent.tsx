@@ -1,7 +1,6 @@
 import React from 'react'
 import { BidStep } from '../../types/enum'
 import ListingSection from './ListingSection'
-import ListingFeeSection from './ListingFeeSection'
 import ApproveSection from './ApproveSection'
 import CongratsSection from './CongratsSection'
 import CompleteSection from './CompleteSection'

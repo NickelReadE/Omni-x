@@ -1,5 +1,4 @@
 import React, {useMemo} from 'react'
-import CustomSelect from './CustomSelect'
 import useWallet from '../../hooks/useWallet'
 import { getValidCurrencies } from '../../utils/constants'
 

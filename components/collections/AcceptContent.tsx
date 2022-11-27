@@ -1,6 +1,5 @@
 import React from 'react'
 import { AcceptStep } from '../../types/enum'
-import ListingFeeSection from './ListingFeeSection'
 import ApproveSection from './ApproveSection'
 import CongratsSection from './CongratsSection'
 import BuySection from './BuySection'
