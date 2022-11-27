@@ -57,7 +57,7 @@ export const CHAIN_NAMES = {
 
 export const RPC_PROVIDERS: { [key: number]: string } = {
   // MAINNET RPC
-  [CHAIN_IDS[CHAIN_TYPE.ETHEREUM]]: 'https://mainnet.infura.io/v3/94915ad2755844d2854ea9f99d5c30c7',
+  [CHAIN_IDS[CHAIN_TYPE.ETHEREUM]]: 'https://rpc.ankr.com/eth',
   [CHAIN_IDS[CHAIN_TYPE.BINANCE]]: 'https://bsc-dataseed.binance.org/',
   [CHAIN_IDS[CHAIN_TYPE.POLYGON]]: 'https://polygon-rpc.com',
   [CHAIN_IDS[CHAIN_TYPE.AVALANCHE]]: 'https://api.avax.network/ext/bc/C/rpc',
@@ -68,7 +68,7 @@ export const RPC_PROVIDERS: { [key: number]: string } = {
   // TESTNET RPC
   [CHAIN_IDS[CHAIN_TYPE.GOERLI]]: 'https://nd-167-846-928.p2pify.com/94182b585faad8b97f50136ae44643e9',
   [CHAIN_IDS[CHAIN_TYPE.BSC_TESTNET]]: 'https://rpc.ankr.com/bsc_testnet_chapel',
-  [CHAIN_IDS[CHAIN_TYPE.FUJI_TESTNET]]: 'https://avalanche-fuji.infura.io/v3/94915ad2755844d2854ea9f99d5c30c7',
+  [CHAIN_IDS[CHAIN_TYPE.FUJI_TESTNET]]: 'https://rpc.ankr.com/avalanche_fuji',
   [CHAIN_IDS[CHAIN_TYPE.MUMBAI]]: 'https://rpc.ankr.com/polygon_mumbai',
   [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: 'https://arb-goerli.g.alchemy.com/v2/Agc4K6fFfxXQ1s3QG69kj1CB6nu',
   [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: 'https://opt-goerli.g.alchemy.com/v2/ngF3JRIxa7BQOqSHGASzPf-8BFW1yA0z',
