@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 import {useDispatch} from 'react-redux'
 import useWallet from '../../../hooks/useWallet'
 import {
+  getBlockExplorer,
   getChainIconById,
   getCurrencyIconByAddress,
   getDarkChainIconById,
@@ -20,13 +21,14 @@ import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
 import {GradientButton} from '../../../components/basic'
 import ShareIcon from '../../../public/images/icons/share.svg'
 import BridgeIcon from '../../../public/images/icons/bluegreen_linear.svg'
+import Accordion from '../../../components/collections/Accordion'
 
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
   const [selectedTab, setSelectedTab] = useState(0)
   const [bidHover, setBidHover] = useState<number | undefined>(undefined)
 
-  const { address } = useWallet()
+  const { address, chainId, chainName } = useWallet()
   const router = useRouter()
   const dispatch = useDispatch()
   const col_url = router.query.collection as string
@@ -50,6 +52,19 @@ const Item: NextPage = () => {
       return collection.address
     }
   }, [collection])
+
+  const item_contract_address = useMemo(() => {
+    if (chainId && collection && collection.address) {
+      return truncateAddress(collection.address[chainId])
+    }
+  }, [collection, chainId])
+
+  const contract_explore_url = useMemo(() => {
+    if (chainId && collection && collection.address) {
+      const explorerLink = getBlockExplorer(chainId)
+      return explorerLink ? `${explorerLink}/address/${collection.address[chainId]}` : ''
+    }
+  }, [chainId, collection])
 
   // statistics hook
   const {
@@ -278,15 +293,61 @@ const Item: NextPage = () => {
                 </div>
 
                 {/*last sale*/}
-                <div className={'flex flex-col mt-4 border-[1px] rounded-[8px] w-full border-[#383838] py-3 px-6'}>
-                  <div className={'flex items-center justify-between'}>
-                    <div className={'text-secondary text-xl'}>last sale</div>
-                    <div className={'flex items-center'}>
-                      <div className={'text-primary-blue text-xxxl'}>{numberLocalize(Number(lastSale))}</div>
-                      <img alt='chainIcon' src={lastSaleCoin} className="ml-2 w-[32px] h-[32px]" />
+                {
+                  lastSale !== 0 &&
+                    <div className={'flex flex-col mt-4 border-[1px] rounded-[8px] w-full border-[#383838] py-3 px-6'}>
+                      <div className={'flex items-center justify-between'}>
+                        <div className={'text-secondary text-xl'}>last sale</div>
+                        <div className={'flex items-center'}>
+                          <div className={'text-primary-blue text-xxxl'}>{numberLocalize(Number(lastSale))}</div>
+                          <img alt='chainIcon' src={lastSaleCoin} className="ml-2 w-[32px] h-[32px]" />
+                        </div>
+                      </div>
                     </div>
+                }
+
+                {/*details*/}
+                <Accordion title={'details'}>
+                  <div className={'px-4 flex items-center justify-between'}>
+                    <span className={'text-primary-light'}>Contract address</span>
+                    <span className={'text-primary-green'}>
+                      <a href={contract_explore_url} target="_blank" rel="noreferrer">
+                        {item_contract_address}
+                      </a>
+                    </span>
                   </div>
-                </div>
+                  <div className={'px-4 mt-2 flex items-center justify-between'}>
+                    <span className={'text-primary-light'}>Token ID</span>
+                    <span className={'text-primary-light'}>{token_id}</span>
+                  </div>
+                  <div className={'px-4 mt-2 flex items-center justify-between'}>
+                    <span className={'text-primary-light'}>Token Standard</span>
+                    <span className={'text-primary-light'}>ERC721</span>
+                  </div>
+                  <div className={'px-4 mt-2 flex items-center justify-between'}>
+                    <span className={'text-primary-light'}>Chain</span>
+                    <span className={'text-primary-light'}>{chainName}</span>
+                  </div>
+                </Accordion>
+
+                {/*attributes*/}
+                <Accordion title={'attributes'}>
+                  <div className="w-full">
+                    {
+                      currentNFT && currentNFT.attributes && Object.entries(currentNFT.attributes).map((item: any, idx: number) => {
+                        const attrs = collection.attrs
+                        const attr = attrs[item[0]].values
+                        const trait = attr[(item[1] as string)]
+                        return <div className="px-5 py-2 rounded-[8px]" key={idx}>
+                          <p className="text-primary-green text-sm font-bold">{item[0]}</p>
+                          <div className="flex justify-start items-center mt-2">
+                            <p className="text-primary-light text-xg font-bold">{item[1]}<span className="ml-3 font-normal">[{trait ? trait[1] : 0}%]</span></p>
+                          </div>
+                        </div>
+                      })
+                    }
+                  </div>
+                </Accordion>
               </div>
               {/*<div className="col-span-1">
                 <div className="px-6 py-3 bg-[#F6F8FC]">
