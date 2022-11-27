@@ -6,15 +6,13 @@ import Dialog from '@material-ui/core/Dialog'
 import Slider from '@material-ui/core/Slider'
 import { getCroppedImg } from './CanvasUtils'
 import Image from 'next/image'
-import Twitter from '../../public/images/twitter.png'
-import Web from '../../public/images/web.png'
 import Photo from '../../public/images/photo.png'
 import useWallet from '../../hooks/useWallet'
 import classNames from '../../helpers/classNames'
 import editStyle from '../../styles/useredit.module.scss'
-import UserSVG from '../../public/svgs/user.svg'
-import AlertSVG from '../../public/svgs/alert.svg'
-import PaymentSVG from '../../public/svgs/payment.svg'
+import UserSVG from '../../public/images/icons/user_circle.svg'
+import AlertSVG from '../../public/images/icons/bell.svg'
+import PaymentSVG from '../../public/images/icons/currency_circle_dollar.svg'
 import EthIMG from '../../public/images/payment/eth.png'
 import OmniIMG from '../../public/images/payment/omni.png'
 import UsdcIMG from '../../public/images/payment/usdc.png'
@@ -36,9 +34,9 @@ const UserEdit: FC<IUserEditProps> = ({ updateModal }) => {
   const [banner, setBanner] = useState('/images/default_banner.png')
   const [bannerSelected, setBannerSelect] = useState(0)
   const [username, setUserName] = useState('')
-  const [bio, setBio] = useState('')
   const [twitter, setTwitter] = useState('')
   const [website, setWebsite] = useState('')
+  const [instagram, setInstagram] = useState('')
   const [selectedTab, setSelectedTab] = useState(0)
 
   const [cropDlgOpen, setCropDlgOpen] = useState(false)
@@ -61,9 +59,9 @@ const UserEdit: FC<IUserEditProps> = ({ updateModal }) => {
         setBanner(S3_BUCKET_URL + profile.banner)
       }
       setUserName(profile.username)
-      setBio(profile.bio)
       setTwitter(profile.twitter)
       setWebsite(profile.website)
+      setWebsite(profile.instagram)
     }
   }, [profile])
 
@@ -158,24 +156,24 @@ const UserEdit: FC<IUserEditProps> = ({ updateModal }) => {
   return (
     <>
       <div className="w-full flex flex-row min-h-[750px]">
-        <div className={classNames('basis-1/6', editStyle.sidemenu)}>
-          <ul className="mt-[1rem]">
-            <li className={selectedTab == 0 ? classNames(editStyle.current) : ''}>
-              <button onClick={() => setSelectedTab(0)} className="flex justify-start">
-                <div><UserSVG className="inline" /></div>
-                <span className="ml-4">profile</span>
+        <div className={classNames('basis-1/6', 'bg-primary opacity-90')}>
+          <ul className="mt-[1rem] pt-10 pl-3">
+            <li className={`${selectedTab == 0 ? 'pr-1' : ''} leading-[60px] bg-primary-gradient`}>
+              <button onClick={() => setSelectedTab(0)} className="flex justify-start items-center text-lg pl-0 font-medium w-full border-r-1 border-r-transparent outline-none bg-primary">
+                <div className={''}><UserSVG className="inline stroke-primary-light" /></div>
+                <span className={`ml-4 text-lg2 ${selectedTab === 0 ? 'text-primary-light' : 'text-secondary'}`}>profile</span>
               </button>
             </li>
-            <li className={selectedTab == 1 ? classNames(editStyle.current) : ''}>
-              <button onClick={() => setSelectedTab(1)} className="flex justify-start">
-                <div><AlertSVG className="inline" /></div>
-                <span className="ml-4">alert</span>
+            <li className={`${selectedTab == 1 ? 'pr-1' : ''} leading-[60px] bg-primary-gradient mt-10`}>
+              <button onClick={() => setSelectedTab(1)} className="flex justify-start items-center text-lg pl-0 font-medium w-full border-r-1 border-r-transparent outline-none bg-primary">
+                <div className={'stroke-primary-light'}><AlertSVG className="inline stroke-primary-light" /></div>
+                <span className={`ml-4 text-lg2 ${selectedTab === 1 ? 'text-primary-light' : 'text-secondary'}`}>alert</span>
               </button>
             </li>
-            <li className={selectedTab == 2 ? classNames(editStyle.current) : ''}>
-              <button onClick={() => setSelectedTab(2)} className="flex justify-start">
-                <div><PaymentSVG className="inline" /></div>
-                <span className="ml-4">payment</span>
+            <li className={`${selectedTab == 2 ? 'pr-1' : ''} leading-[60px] bg-primary-gradient mt-10`}>
+              <button onClick={() => setSelectedTab(2)} className="flex justify-start items-center text-lg pl-0 font-medium w-full border-r-1 border-r-transparent outline-none bg-primary">
+                <div className={''}><PaymentSVG className="inline stroke-primary-light" /></div>
+                <span className={`ml-4 text-lg2 ${selectedTab === 2 ? 'text-primary-light' : 'text-secondary'}`}>payment</span>
               </button>
             </li>
           </ul>
@@ -216,127 +214,132 @@ const UserEdit: FC<IUserEditProps> = ({ updateModal }) => {
             </div>
           </div>
         </Dialog>
-        <div className="basis-5/6 pl-4  mt-[1rem]" style={{ position: 'relative' }}>
+        <div className="basis-5/6 p-12 bg-primary" style={{ position: 'relative' }}>
           {
             selectedTab == 0 &&
             <form
               ref={updateProfileFormRef}
               onSubmit={updateProfile}
+              className={'h-full flex flex-col justify-between'}
             >
-              <input
-                id="image_banner"
-                accept="image/*"
-                type="file"
-                onChange={onChangeBanner}
-                className="hidden"
-              />
-              <div className="border-gray-300 bg-[#E9ECEF] border-2 p-5 px-10">
-                <div className={'h-[200px]'}>
-                  <div className="mb-5 relative cursor-pointer h-full" onClick={onClickBanner}>
-                    <div
-                      className="absolute z-10 top-[50%] mt-[-20px] left-[50%] ml-[-20px] bg-[#E9ECEF99] rounded-full w-[40px] h-[40px] p-2"
-                    >
-                      <Image src={Photo} alt="photo" />
-                    </div>
-                    <div className="flex justify-center items-center">
-                      <div className="border-[#B444F9] h-full">
+              <div className={'flex flex-col'}>
+                <input
+                  id="image_banner"
+                  accept="image/*"
+                  type="file"
+                  onChange={onChangeBanner}
+                  className="hidden"
+                />
+                <div className="border-gray-300 bg-primary-gradient p-[4px] rounded-[20px]">
+                  <div className={'h-[200px]'}>
+                    <div className="mb-5 rounded-[20px] relative cursor-pointer h-full" onClick={onClickBanner}>
+                      <div
+                        className="absolute z-10 top-[50%] mt-[-20px] left-[50%] ml-[-20px] bg-[#E9ECEF99] rounded-full w-[40px] h-[40px] p-2"
+                      >
+                        <Image src={Photo} alt="photo" />
+                      </div>
+                      <div className="h-full">
                         <Image
                           src={(typeof banner == 'string') ? banner : URL.createObjectURL(banner)}
                           alt="first image1"
+                          className={'rounded-[20px]'}
                           layout="fill"
-                          objectFit={'contain'}
+                          objectFit={'cover'}
                         />
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex mt-5 w-full">
-                <div>
-                  <div
-                    className="relative cursor-pointer"
-                    onClick={onClickAvatar}
-                  >
+                <div className="flex mt-5 w-full ">
+                  <div>
                     <div
-                      className="absolute z-10 top-[50%] mt-[-20px] left-[50%] ml-[-20px] bg-[#E9ECEF99] rounded-full w-[40px] h-[40px] p-2"
+                      className="relative cursor-pointer bg-primary-gradient p-[4px] rounded-[20px] w-[130px] h-[130px]"
+                      onClick={onClickAvatar}
                     >
-                      <Image src={Photo} alt="photo" />
-                    </div>
-                    <Image
-                      src={(typeof avatar == 'string') ? avatar : URL.createObjectURL(avatar)}
-                      alt="avatar"
-                      width={250}
-                      height={250}
-                      className="rounded-xl"
-                    />
-                  </div>
-                </div>
-                <input
-                  id="image_avatar"
-                  accept="image/*"
-                  type="file"
-                  onChange={onChangeAvatar}
-                  className="hidden"
-                  name="avatar"
-                />
-                <div className="ml-7 w-full">
-                  <div className="w-full flex">
-                    <div className="w-full mr-[30px] ">
-                      <div className="w-full mb-3">
-                        <div className="text-[#6C757D]">username:</div>
-                        <input
-                          type="text"
-                          name="username"
-                          className="user-input"
-                          value={username}
-                          onChange={(e) => setUserName(e.target.value)}
-                        />
+                      <div
+                        className="absolute z-10 top-[50%] mt-[-20px] left-[50%] ml-[-20px] bg-[#E9ECEF99] rounded-full w-[40px] h-[40px] p-2"
+                      >
+                        <Image src={Photo} alt="photo" />
                       </div>
-                      <div className="text-[#6C757D]">
-                        <div>bio:</div>
-                        <textarea
-                          className="user-textarea w-full"
-                          placeholder="(200 characters max)"
-                          name="bio"
-                          value={bio}
-                          onChange={(e) => setBio(e.target.value)}
-                        />
-                      </div>
+                      <img
+                        src={(typeof avatar == 'string') ? avatar : URL.createObjectURL(avatar)}
+                        alt="avatar"
+                        width={130}
+                        height={130}
+                        className="rounded-[20px] w-full h-full"
+                      />
                     </div>
                   </div>
+                  <input
+                    id="image_avatar"
+                    accept="image/*"
+                    type="file"
+                    onChange={onChangeAvatar}
+                    className="hidden"
+                    name="avatar"
+                  />
+                  <div className="ml-7 w-full">
+                    <div className="w-full flex">
+                      <div className="w-full">
+                        <div className="w-full mb-3">
+                          <div className="text-primary-light text-lg">username:</div>
+                          <input
+                            type="text"
+                            name="username"
+                            className="h-8 bg-[#303030] border-[2px] border-secondary rounded w-full mt-2 text-primary-light"
+                            value={username}
+                            onChange={(e) => setUserName(e.target.value)}
+                          />
+                        </div>
+                      </div>
+                    </div>
 
-                  <div className="w-full mb-3 mt-3 flex items-center">
-                    <div className="text-[#6C757D] mr-2">
-                      <Image src={Twitter} alt="twitter" />
+                    <div className="w-full mb-3 mt-3 flex items-center">
+                      <div className="flex items-center mr-3">
+                        <Image src={'/images/icons/twitter.svg'} width={32} height={32} alt="twitter" />
+                      </div>
+                      <input
+                        type="text"
+                        className="h-8 bg-[#303030] border-[2px] border-secondary rounded w-full text-primary-light"
+                        name="twitter"
+                        placeholder="https://"
+                        value={twitter}
+                        onChange={(e) => setTwitter(e.target.value)}
+                      />
                     </div>
-                    <input
-                      type="text"
-                      className="user-input"
-                      name="twitter"
-                      placeholder="https://"
-                      value={twitter}
-                      onChange={(e) => setTwitter(e.target.value)}
-                    />
-                  </div>
-                  <div className="w-full mb-5 flex items-center">
-                    <div className="text-[#6C757D] mr-2">
-                      <Image src={Web} alt="web" />
+                    <div className="w-full mb-3 flex items-center">
+                      <div className="flex items-center mr-3">
+                        <Image src={'/images/icons/website.svg'} width={32} height={32} alt="web" />
+                      </div>
+                      <input
+                        type="text"
+                        name="website"
+                        className="h-8 bg-[#303030] border-[2px] border-secondary rounded w-full text-primary-light"
+                        placeholder="https://"
+                        value={website}
+                        onChange={(e) => setWebsite(e.target.value)}
+                      />
                     </div>
-                    <input
-                      type="text"
-                      name="website"
-                      className="user-input"
-                      placeholder="https://"
-                      value={website}
-                      onChange={(e) => setWebsite(e.target.value)}
-                    />
+                    <div className="w-full flex items-center">
+                      <div className="flex items-center mr-3">
+                        <Image src={'/images/icons/instagram.svg'} width={32} height={32} alt="web" />
+                      </div>
+                      <input
+                        type="text"
+                        name="website"
+                        className="h-8 bg-[#303030] border-[2px] border-secondary rounded w-full text-primary-light"
+                        placeholder="https://"
+                        value={instagram}
+                        onChange={(e) => setInstagram(e.target.value)}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="flex space-x-2 justify-end mb-5">
+              <div className="flex justify-center">
                 <button
                   type="submit"
-                  className="inline-block absolute right-[2rem] bottom-[20px] px-10 py-1 bg-[#B444F9] hover:bg-[#9557bb] text-white  font-medium text-xg rounded-[4px] cursor-pointer"
+                  className="px-4 py-1 bg-primary-gradient text-primary rounded-full font-medium text-xg cursor-pointer"
                 >
                   save
                 </button>
@@ -390,8 +393,8 @@ const UserEdit: FC<IUserEditProps> = ({ updateModal }) => {
                       disabled={true} type="checkbox" />
                   </div>
                   <div className="inline-block align-middle ml-4">
-                    <p className="text-[#ADB5BD] text-lg leading-6 font-medium">Succesful Purchase</p>
-                    <p className="text-[#ADB5BD] text-base leading-5">an NFT is succesfully bought</p>
+                    <p className="text-[#ADB5BD] text-lg leading-6 font-medium">Successful Purchase</p>
+                    <p className="text-[#ADB5BD] text-base leading-5">an NFT is successfully bought</p>
                   </div>
                 </div>
                 <div className="flex flex-row my-4">
@@ -508,17 +511,6 @@ const UserEdit: FC<IUserEditProps> = ({ updateModal }) => {
           }
         </div>
       </div>
-      <img alt={'alienIcon'} src={'/images/gregs/Alien_1a.png'} className=" w-[0px] hidden" />
-      <img alt={'alienIcon'} src={'/images/gregs/Alien_1b.png'} className=" w-[0px] hidden" />
-      <img alt={'alienIcon'} src={'/images/gregs/Alien_2a.png'} className=" w-[0px] hidden" />
-      <img alt={'alienIcon'} src={'/images/gregs/Alien_2b.png'} className=" w-[0px] hidden" />
-      <img alt={'alienIcon'} src={'/images/gregs/Alien_3a.png'} className=" w-[0px] hidden" />
-      <img alt={'alienIcon'} src={'/images/gregs/Alien_3b.png'} className=" w-[0px] hidden" />
-      <img alt={'alienIcon'} src={'/images/gregs/Alien_4a.png'} className=" w-[0px] hidden" />
-      <img alt={'alienIcon'} src={'/images/gregs/Alien_4b.png'} className=" w-[0px] hidden" />
-      <img alt={'alienIcon'} src={'/images/gregs/Alien_5a.png'} className=" w-[0px] hidden" />
-      <img alt={'alienIcon'} src={'/images/gregs/Alien_5b.png'} className=" w-[0px] hidden" />
-
     </>
   )
 }

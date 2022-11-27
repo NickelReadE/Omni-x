@@ -30,7 +30,7 @@ export const NotificationArea = () => {
           leaveTo="transform opacity-0 scale-95"
           show={hovered}
         >
-          <div className={'absolute top-0 right-0 w-[233px] origin-top-right pt-10'}>
+          <div className={'absolute right-0 w-[233px] origin-top-right pt-4'}>
             <div
               className={'rounded-md bg-primary-gradient p-[1px]'}>
               <div

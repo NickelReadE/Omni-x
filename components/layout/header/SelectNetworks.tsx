@@ -28,7 +28,7 @@ export const SelectNetworks = () => {
           leaveTo="transform opacity-0 scale-95"
           show={hovered}
         >
-          <div className={'absolute right-0 top-0 w-[166px] origin-top-right pt-10'}>
+          <div className={'absolute right-0 w-[166px] origin-top-right pt-4'}>
             <div className={'rounded-md bg-primary-gradient p-[1px]'}>
               <div
                 className="bg-[#202020e6] rounded-md shadow-lg backdrop-blur-[10px] shadow-[0_0px_20px_rgba(231,237,245,0.25)] focus:outline-none py-2">

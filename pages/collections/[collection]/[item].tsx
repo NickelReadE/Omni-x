@@ -287,7 +287,7 @@ const Item: NextPage = () => {
                       place bid
                     </div>
                     <div className={'w-[107px]'}>
-                      <GradientButton title={'buy now'} height={32} borderRadius={50} textSize={'tex-md'} />
+                      <GradientButton title={'buy now'} height={32} borderRadius={50} textSize={'tex-md font-bold'} />
                     </div>
                   </div>
                 </div>

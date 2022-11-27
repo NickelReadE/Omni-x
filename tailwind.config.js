@@ -98,6 +98,7 @@ module.exports = {
         xg: ['18px', '22px'],
         xl: ['20px', '24px'],
         xg1:['24px', '29px'],
+        xg2:['28px', '34px'],
         xxl: ['30px', '36px'],
         xxxl: ['32px', '38px'],
         xl2: ['40px', '48px'],

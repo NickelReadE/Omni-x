@@ -27,7 +27,7 @@ const useStyles = makeStyles({
       position: 'absolute',
       zIndex: -1,
       inset: 0,
-      padding: 2,
+      padding: 1,
       borderRadius: props => props.borderRadius,
       background: 'linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%)',
       '-webkitMask': 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
