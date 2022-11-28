@@ -9,6 +9,7 @@ import { CURRENCIES_LIST, PERIOD_LIST } from '../../utils/constants'
 import { BidStep } from '../../types/enum'
 import useTrading, { TradingInput } from '../../hooks/useTrading'
 import { CollectionBidInput, useCollectionBid } from '../../hooks/useCollectionBid'
+import { CollectionType } from '../../hooks/useCollection'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -31,6 +32,8 @@ export interface IConfirmBidProps {
   nftTitle: string,
   tradingInput?: TradingInput,
   collectionBid?: CollectionBidInput,
+  collectionInfo?: CollectionType,
+  onBuyFloor?: (nft: any) => void,
   handleBidDlgClose: () => void,
 }
 
@@ -39,6 +42,8 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
   nftTitle,
   tradingInput,
   collectionBid,
+  collectionInfo,
+  onBuyFloor,
   handleBidDlgClose,
 }) => {
   const classes = useStyles()
@@ -145,7 +150,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
     <Dialog open={true} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
       <DialogTitle id="form-dialog-title" className={classes.root}>
         <div className="columns-2 mt-5">
-          <div className="text-[#1E1C21] text-[28px] font-semibold">place bid</div>
+          <div className="text-[#1E1C21] text-[28px] font-semibold">{isCollectionBid ? 'make a collection bid' : 'place bid'}</div>
         </div>
       </DialogTitle>
       <DialogContent className={classes.rootContent}>
@@ -163,6 +168,8 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
           processing={processing}
           approveTx={approveTx}
           isCollectionBid={isCollectionBid}
+          collectionInfo={collectionInfo}
+          onBuyFloor={onBuyFloor}
         />
       </DialogContent>
     </Dialog>
