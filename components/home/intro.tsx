@@ -34,7 +34,7 @@ export default function HomeIntro () {
       </div>
       <Link href={'/learn-more'} className={'mt-4'}>
         <button className='px-[16px] py-[4px] bg-border-gradient rounded-full flex items-center justify-center border-[1px] border-solid border-transparent' style={{backgroundOrigin: 'padding-box, border-box', backgroundClip: 'padding-box, border-box'}}>
-          <span className='bg-primary-gradient bg-clip-text text-transparent'>learn more</span>
+          <span className='bg-primary-gradient bg-clip-text text-transparent font-medium'>learn more</span>
         </button>
       </Link>
     </div>
