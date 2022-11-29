@@ -25,6 +25,12 @@ const Header = (): JSX.Element => {
 
   const avatarImage = useMemo(() => {
     if (profile && profile.avatar) {
+      if (profile.avatar.startsWith('https://ipfs.io')) {
+        return profile.avatar
+      }
+      if (profile.avatar.startsWith('ipfs')) {
+        return `https://ipfs.io/${profile.avatar}`
+      }
       return process.env.API_URL + profile.avatar
     }
     return '/images/default_avatar.png'

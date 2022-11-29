@@ -41,6 +41,12 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
 
   const avatarImage = useMemo(() => {
     if (user && user.avatar) {
+      if (user.avatar.startsWith('https://ipfs.io')) {
+        return user.avatar
+      }
+      if (user.avatar.startsWith('ipfs')) {
+        return `https://ipfs.io/${user.avatar}`
+      }
       return process.env.API_URL + user.avatar
     }
     return '/images/default_avatar.png'

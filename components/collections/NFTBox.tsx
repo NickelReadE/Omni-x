@@ -17,6 +17,7 @@ import { ModalIDs } from '../../contexts/modal'
 import {openSnackBar} from '../../redux/reducers/snackBarReducer'
 import {NFTBoxFullscreenDialog} from './FullscreenDialog'
 import { collectionsService } from '../../services/collections'
+import {userService} from '../../services/users'
 
 const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
@@ -145,6 +146,17 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
       try {
         await collectionsService.refreshMetadata(nft_collection.col_url, nft.token_id)
         dispatch(openSnackBar({ message: 'Metadata will be synced in a few minutes', status: 'info' }))
+      } catch (e) {
+        console.error(e)
+      }
+    }
+  }
+
+  const setAsPfp = async () => {
+    if (address) {
+      try {
+        await userService.updateProfileImage(address, nft.image)
+        dispatch(openSnackBar({ message: 'pfp image is updated', status: 'info' }))
       } catch (e) {
         console.error(e)
       }
@@ -316,7 +328,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                 </div>
                 <span className={'text-primary-light text-md'}>fullscreen view</span>
               </div>
-              <div className={'flex items-center px-2'}>
+              <div className={'flex items-center px-2 cursor-pointer'} onClick={setAsPfp}>
                 <div className={'p-1 mr-2'}>
                   <img src={'/images/icons/nftbox/pfp.svg'} alt={'star'} width={24} height={24} />
                 </div>

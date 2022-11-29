@@ -31,7 +31,7 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
         <div className={'focus:outline-none'} onMouseEnter={() => setHovered(true)}>
           <Link href={`/user/${address}`}>
             <div className={`w-8 h-8 ${hovered ? 'bg-primary-gradient' : ''} p-[1px] rounded-full cursor-pointer`}>
-              <Image
+              <img
                 src={avatarImage}
                 alt="avatar"
                 width={32}
