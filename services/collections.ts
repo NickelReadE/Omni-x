@@ -69,7 +69,10 @@ const getNFTOwner = async (col_address: string, collection_chain_name: string, t
 }
 
 const refreshMetadata = async (col_url: string, token_id: string) => {
-  const res = await API.get(`collections/refresh_metadata/${col_url}/${token_id}/refresh`)
+  const res = await API.post('collections/refresh_metadata', {
+    col_url,
+    token_id,
+  })
   return res.data
 }
 

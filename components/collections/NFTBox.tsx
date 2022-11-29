@@ -144,6 +144,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     if (nft_collection?.col_url) {
       try {
         await collectionsService.refreshMetadata(nft_collection.col_url, nft.token_id)
+        dispatch(openSnackBar({ message: 'Metadata will be synced in a few minutes', status: 'info' }))
       } catch (e) {
         console.error(e)
       }
