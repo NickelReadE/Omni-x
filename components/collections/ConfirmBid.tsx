@@ -5,7 +5,7 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import BidContent from './BidContent'
-import { CURRENCIES_LIST, PERIOD_LIST } from '../../utils/constants'
+import { CURRENCY_OMNI, PERIOD_LIST } from '../../utils/constants'
 import { BidStep } from '../../types/enum'
 import useTrading, { TradingInput } from '../../hooks/useTrading'
 import { CollectionBidInput, useCollectionBid } from '../../hooks/useCollectionBid'
@@ -43,7 +43,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
 }) => {
   const classes = useStyles()
   const [price, setPrice] = useState(0)
-  const [currency, setCurrency] = useState(CURRENCIES_LIST[0])
+  const [currency, setCurrency] = useState(CURRENCY_OMNI)
   const [period, setPeriod] = useState(PERIOD_LIST[2])
   const [bidStep, setStep] = useState<BidStep>(BidStep.StepBid)
   const [processing, setProcessing] = useState(false)

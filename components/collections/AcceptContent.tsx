@@ -103,7 +103,7 @@ const AcceptContent: React.FC<IAcceptContentProps> = ({
             <button
               className='bg-[#38B000] rounded text-[#fff] w-[95px] h-[35px]'
               onClick={onAccept}
-              disabled={processing}>
+              disabled={processing || !currency || !price}>
               accept
             </button>
           )}
