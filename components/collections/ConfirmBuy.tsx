@@ -31,6 +31,7 @@ export interface IConfirmBuyProps {
   nftImage: string,
   nftTitle: string,
   order?: IOrder,
+  instantBuy?: boolean,
   tradingInput: TradingInput,
   onBuyApprove?: (order?: IOrder) => Promise<any>,
   onBuyConfirm?: (order?: IOrder) => Promise<any>,
@@ -43,11 +44,12 @@ const ConfirmBuy: React.FC<IConfirmBuyProps> = ({
   nftImage,
   nftTitle,
   order,
+  instantBuy,
   tradingInput,
   handleBuyDlgClose,
 }) => {
   const classes = useStyles()
-  const [buyStep, setStep] = useState<BuyStep>(BuyStep.StepBuy)
+  const [buyStep, setStep] = useState<BuyStep>(instantBuy ? BuyStep.StepApprove : BuyStep.StepBuy)
   const [processing, setProcessing] = useState(false)
   const [approveTx, setApproveTx] = useState('')
   const [tradingTx, setTradingTx] = useState('')
@@ -69,13 +71,13 @@ const ConfirmBuy: React.FC<IConfirmBuyProps> = ({
 
   const doLogic = async () => {
     if (buyStep === BuyStep.StepApprove && onBuyApprove) {
+      setProcessing(true)
+
       const txs = await onBuyApprove(order)
 
       if (!txs) {
         setStep(BuyStep.StepFail)
       }
-
-      setProcessing(true)
 
       if (txs.length > 0) {
         setApproveTx(txs[0].hash)

@@ -37,6 +37,7 @@ const CollectionCard = (props:any) => {
       nftTitle: nft.name,
       order: nft.order_data,
       tradingInput,
+      instantBuy: true,
       handleBuyDlgClose: closeModal
     })
   }

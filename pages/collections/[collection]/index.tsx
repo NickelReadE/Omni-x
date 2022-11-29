@@ -212,6 +212,7 @@ const Collection: NextPage = () => {
       nftTitle: nft.name,
       order: nft.order_data,
       tradingInput,
+      instantBuy: true,
       handleBuyDlgClose: closeModal
     })
   }
