@@ -1,6 +1,5 @@
 import React, {Fragment, useState} from 'react'
 import { Disclosure } from '@headlessui/react'
-import Image from 'next/image'
 import Link from 'next/link'
 import {Transition} from '@headlessui/react'
 import useWallet from '../../../hooks/useWallet'
