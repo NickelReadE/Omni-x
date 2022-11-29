@@ -1,7 +1,7 @@
-import React, {useMemo} from 'react'
-import {useState} from 'react'
-import Link from 'next/link'
+import React, {useState, useMemo} from 'react'
 import LazyLoad from 'react-lazyload'
+import {useDispatch} from 'react-redux'
+import Link from 'next/link'
 import Router, { useRouter } from 'next/router'
 import { useDraggable } from '@dnd-kit/core'
 import { IPropsNFTItem } from '../../interface/interface'
@@ -15,12 +15,14 @@ import useOrderStatics from '../../hooks/useOrderStatics'
 import { useModal } from '../../hooks/useModal'
 import { ModalIDs } from '../../contexts/modal'
 import {openSnackBar} from '../../redux/reducers/snackBarReducer'
-import {useDispatch} from 'react-redux'
+import {NFTBoxFullscreenDialog} from './FullscreenDialog'
+import { collectionsService } from '../../services/collections'
 
 const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
   const [boxHovered, setBoxHovered] = useState(false)
   const [dotHover, setDotHover] = useState(false)
+  const [isFullscreenView, setIsFullscreenView] = useState(false)
 
   const { address } = useWallet()
   const router = useRouter()
@@ -136,6 +138,16 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   const onCopyToClipboard = async () => {
     await navigator.clipboard.writeText(window.location.host + `/collections/${nft_collection?.col_url}/${nft.token_id}`)
     dispatch(openSnackBar({ message: 'copied link to clipboard', status: 'info' }))
+  }
+
+  const onRefreshMetadata = async () => {
+    if (nft_collection?.col_url) {
+      try {
+        await collectionsService.refreshMetadata(nft_collection.col_url, nft.token_id)
+      } catch (e) {
+        console.error(e)
+      }
+    }
   }
 
   const renderImageContainer = () => {
@@ -297,7 +309,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                 </div>
                 <span className={'text-primary-light text-md'}>favorite</span>
               </div>
-              <div className={'flex items-center px-2'}>
+              <div className={'flex items-center px-2 cursor-pointer'} onClick={() => setIsFullscreenView(true)}>
                 <div className={'p-1 mr-2'}>
                   <img src={'/images/icons/nftbox/fullscreen.svg'} alt={'star'} width={24} height={24} />
                 </div>
@@ -327,7 +339,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                 </div>
                 <span className={'text-primary-light text-md'}>hide</span>
               </div>
-              <div className={'flex items-center px-2'}>
+              <div className={'flex items-center px-2 cursor-pointer'} onClick={onRefreshMetadata}>
                 <div className={'p-1 mr-2'}>
                   <img src={'/images/icons/nftbox/refresh.svg'} alt={'star'} width={24} height={24} />
                 </div>
@@ -375,7 +387,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                 </div>
                 <span className={'text-primary-light text-md'}>follow creator</span>
               </div>
-              <div className={'flex items-center px-2'}>
+              <div className={'flex items-center px-2 cursor-pointer'} onClick={() => setIsFullscreenView(true)}>
                 <div className={'p-1 mr-2'}>
                   <img src={'/images/icons/nftbox/fullscreen.svg'} alt={'star'} width={24} height={24} />
                 </div>
@@ -424,6 +436,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           </div>
         </div>
       }*/}
+      <NFTBoxFullscreenDialog open={isFullscreenView} nftImage={image} closeModal={() => setIsFullscreenView(false)} />
     </div>
   )
 }

@@ -41,6 +41,7 @@ export const rpcDatafeedProvider:IRpcDatafeed = {
   [CHAIN_IDS[CHAIN_TYPE.OPTIMISM]]: 'https://rpc.ankr.com/optimism',
   [CHAIN_IDS[CHAIN_TYPE.POLYGON]]: 'https://rpc.ankr.com/polygon'
 }
+
 export const rpcGasProvider:IRpcDatafeed = {
   [CHAIN_IDS[CHAIN_TYPE.ETHEREUM]]:'https://rpc.ankr.com/eth',
   [CHAIN_IDS[CHAIN_TYPE.BINANCE]]:'https://rpc.ankr.com/bsc',

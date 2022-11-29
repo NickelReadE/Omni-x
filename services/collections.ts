@@ -68,6 +68,11 @@ const getNFTOwner = async (col_address: string, collection_chain_name: string, t
   return res.data.owner
 }
 
+const refreshMetadata = async (col_url: string, token_id: string) => {
+  const res = await API.get(`collections/refresh_metadata/${col_url}/${token_id}/refresh`)
+  return res.data
+}
+
 export const collectionsService = {
   getCollectionNFTs,
   getCollectionInfo,
@@ -75,6 +80,7 @@ export const collectionsService = {
   getNFTInfo,
   getCollections,
   getNFTOwner,
+  refreshMetadata,
   getCollectionAllNFTs,
   updateCollectionNFTSalePrice,
   updateCollectionNFTChainID,

@@ -24,8 +24,8 @@ export const getPriceForUSD = async (rpcChainId: number, chainId: number) => {
     console.error(`While getting roundData for ${chainId} on ${rpcChainId}: `, e)
   }
   return result.toFixed(3)
-
 }
+
 const getGasOnChain = async (chainId: number) => {
   let gasPrice = '0'
   try {
