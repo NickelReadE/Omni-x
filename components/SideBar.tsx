@@ -760,7 +760,7 @@ const SideBar: React.FC = () => {
             </div>
           </div>
         </div>
-      </div> */}
+      </div>
 
       <div className="w-full md:w-auto">
         <Dialog open={confirmTransfer} onClose={() => setConfirmTransfer(false)}>
@@ -776,7 +776,7 @@ const SideBar: React.FC = () => {
             image={image}
           />
         </Dialog>
-      </div>
+      </div> */}
       <div className="w-full md:w-auto">
         <Dialog open={unwrap} onClose={() => setUnwrap(false)}>
           <ConfirmUnwrap

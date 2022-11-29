@@ -5,7 +5,6 @@ import {BridgeProvider} from './providers/BridgeProvider'
 import {DataProvider} from './providers/DataProvider'
 import {ProgressProvider} from './providers/ProgressProvider'
 import {ContractProvider} from './providers/ContractProvider'
-import { MoralisProvider } from 'react-moralis'
 import {
   getDefaultWallets,
   RainbowKitProvider,
@@ -24,10 +23,7 @@ import {supportChains} from '../utils/constants'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import { SwitchedNetworkProvider } from './SwitchedNetworkProvider'
 import { ModalProvider } from './providers/ModalProvider'
-
-const MORALIS_SERVER_URL = process.env.MORALIS_SERVER_URL || ''
-const MORALIS_APP_ID = process.env.MORALIS_APP_ID || ''
-const MORALIS_SECRET = process.env.MORALIS_SECRET || ''
+import {TransferProvider} from './providers/TransferProvider'
 
 const supportedChains = supportChains()
 
@@ -63,18 +59,18 @@ type AppProps = {
 function App({children}: AppProps) {
   return (
     <React.StrictMode>
-      <MoralisProvider serverUrl={MORALIS_SERVER_URL} appId={MORALIS_APP_ID} jsKey={MORALIS_SECRET}>
-        <WagmiConfig client={wagmiClient}>
-          <RainbowKitProvider chains={chains} theme={darkTheme({
-            accentColor: '#623485', //color of wallet  try #703844
-            accentColorForeground: 'black',
-            borderRadius: 'large',
-            fontStack: 'system',
-          })}
-          >
-            <WalletProvider>
-              <BridgeProvider>
-                <DataProvider>
+      <WagmiConfig client={wagmiClient}>
+        <RainbowKitProvider chains={chains} theme={darkTheme({
+          accentColor: '#623485',
+          accentColorForeground: 'black',
+          borderRadius: 'large',
+          fontStack: 'system',
+        })}
+        >
+          <WalletProvider>
+            <BridgeProvider>
+              <DataProvider>
+                <TransferProvider>
                   <ProgressProvider>
                     <ContractProvider>
                       <DndContext>
@@ -86,12 +82,12 @@ function App({children}: AppProps) {
                       </DndContext>
                     </ContractProvider>
                   </ProgressProvider>
-                </DataProvider>
-              </BridgeProvider>
-            </WalletProvider>
-          </RainbowKitProvider>
-        </WagmiConfig>
-      </MoralisProvider>
+                </TransferProvider>
+              </DataProvider>
+            </BridgeProvider>
+          </WalletProvider>
+        </RainbowKitProvider>
+      </WagmiConfig>
     </React.StrictMode>
 
   )

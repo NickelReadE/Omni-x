@@ -53,7 +53,11 @@ const UserEdit: FC<IUserEditProps> = ({ updateModal }) => {
   useEffect(() => {
     if (profile) {
       if (profile.avatar) {
-        setAvatar(S3_BUCKET_URL + profile.avatar)
+        if (profile.avatar.startsWith('https://ipfs.io')) {
+          setAvatar(profile.avatar)
+        } else {
+          setAvatar(S3_BUCKET_URL + profile.avatar)
+        }
       }
       if (profile.banner) {
         setBanner(S3_BUCKET_URL + profile.banner)

@@ -275,9 +275,7 @@ const Collection: NextPage = () => {
                         aria-controls="panel1a-content"
                         id="panel1a-header"
                       >
-                        <Typography
-                          className={classNames('text-secondary text-md', 'font-RetniSans')}
-                          style={{ fontFamily: 'RetniSans' }}>{key}</Typography>
+                        <Typography className={classNames('text-secondary text-md')}>{key}</Typography>
                       </AccordionSummary>
                       <AccordionDetails>
                         <div>

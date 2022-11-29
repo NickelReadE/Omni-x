@@ -2,11 +2,10 @@
 import {useEffect, useState} from 'react'
 import NFTBox from './collections/NFTBox'
 import {IPropsImage, NFTItem} from '../interface/interface'
-import {getChainLogoById, getDarkChainIconById, SUPPORTED_CHAIN_IDS} from '../utils/constants'
-import {ChainIds} from '../types/enum'
 import useData from '../hooks/useData'
 import Loading from './Loading'
 import Dropdown from './dropdown'
+import {ChainSelection} from './common/ChainSelection'
 
 const sortMenu = [
   { text: 'A - Z', value: 'name' },
@@ -17,7 +16,7 @@ const sortMenu = [
 ]
 
 const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
-  const [chain, setChain] = useState(-1)
+  const [selectedChainIds, setSelectedChainIds] = useState<number[]>([])
   const [sortedItems, setSortedItems] = useState<Array<NFTItem>>(nfts)
 
   const { refreshUserNfts } = useData()
@@ -36,6 +35,14 @@ const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
 
   const onRefresh = () => {
     refreshUserNfts()
+  }
+
+  const addSelectedChainId = (chainId: number) => {
+    setSelectedChainIds([...selectedChainIds, chainId])
+  }
+
+  const removeSelectedChainId = (chainId: number) => {
+    setSelectedChainIds(selectedChainIds.filter((id) => id !== chainId))
   }
 
   const onChangeSort = (value: string) => {
@@ -79,29 +86,7 @@ const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
       <div className="w-full mb-5">
         <div className="flex relative justify-start pl-2 w-fit" style={{'width': '100%'}}>
           <div className="flex items-center justify-between w-full">
-            <div className="flex flex-row space-x-4 justify-items-center">
-              <div
-                className={'font-medium cursor-pointer m-[1px]'}
-                onClick={() => {
-                  setChain(-1)
-                }}
-              >
-                <span className={'text-primary-light text-md'}>all</span>
-              </div>
-              {
-                SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className={`font-medium cursor-pointer m-[1px] ${chain === networkId ? '' : ''} `}
-                      onClick={() => {setChain(networkId)}}
-                    >
-                      <img alt={'listing'} src={chain === networkId ? getChainLogoById(networkId.toString()) : getDarkChainIconById(networkId.toString())} className="w-[28px] h-[28px] "/>
-                    </div>
-                  )
-                })
-              }
-            </div>
+            <ChainSelection selectedChainIds={selectedChainIds} addChainId={addSelectedChainId} removeChainId={removeSelectedChainId} />
             <Dropdown menus={sortMenu} onChange={onChangeSort} />
           </div>
         </div>
@@ -115,7 +100,7 @@ const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
           !isLoading &&
           <div className="grid grid-cols-4 gap-6 2xl:grid-cols-5 2xl:gap-10 mt-4">
             {sortedItems.map((item, index) => {
-              if (chain == -1) {
+              if (selectedChainIds.length === 0) {
                 return (
                   <NFTBox
                     nft={item}
@@ -124,7 +109,7 @@ const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
                   />
                 )
               } else {
-                if (chain == item.chain_id) {
+                if (selectedChainIds.includes(item.chain_id)) {
                   return (
                     <NFTBox
                       nft={item}
