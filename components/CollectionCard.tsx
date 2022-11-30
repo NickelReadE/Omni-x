@@ -28,8 +28,7 @@ const CollectionCard = (props:any) => {
       collectionUrl: collectionBid.collectionUrl,
       collectionAddressMap: collectionBid.collectionAddressMap,
       tokenId: nft.token_id,
-      selectedNFTItem: nft,
-      onRefresh: () => {}
+      selectedNFTItem: nft
     }
 
     openModal(ModalIDs.MODAL_BUY, {

@@ -32,7 +32,7 @@ const ListingSection: React.FC<IListingSectionProps> = ({
 }) => {
   const validCurrencies = getValidCurrencies(nftChainId)
 
-  const floorMessage = floorNft ? `if you want to buy an nft with floor price, please click buy floor.` : undefined
+  const floorMessage = floorNft ? 'if you want to buy an nft with floor price, please click buy floor.' : undefined
 
   return (
     <div>
