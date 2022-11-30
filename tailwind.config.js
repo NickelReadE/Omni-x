@@ -67,7 +67,10 @@ module.exports = {
       },
       boxShadow:{
         'ml':'0 0 10px rgba(0,0,0,0.25)'
-      }
+      },
+      aspectRatio: {
+        '3/1': '3 / 1',
+      },
     },
   },
   plugins: [require('@tailwindcss/forms')],

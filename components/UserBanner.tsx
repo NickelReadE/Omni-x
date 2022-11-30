@@ -57,8 +57,8 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
       <div className={'grid grid-cols-6'}>
         <div className={''} />
         <div className={classNames( 'col-span-4')}>
-          <div className={'relative max-h-[350px]'}>
-            <div className={'max-h-[350px] overflow-hidden'}>
+          <div className={'relative'}>
+            <div className={'overflow-hidden aspect-[3/1]'}>
               <img
                 src={bannerImage}
                 className="rounded-md w-full object-cover"

@@ -6,6 +6,7 @@ import useData from '../hooks/useData'
 import Loading from './Loading'
 import Dropdown from './dropdown'
 import {ChainSelection} from './common/ChainSelection'
+import {SUPPORTED_CHAIN_IDS} from '../utils/constants'
 
 const sortMenu = [
   { text: 'A - Z', value: 'name' },
@@ -16,7 +17,7 @@ const sortMenu = [
 ]
 
 const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
-  const [selectedChainIds, setSelectedChainIds] = useState<number[]>([])
+  const [selectedChainIds, setSelectedChainIds] = useState<number[]>(SUPPORTED_CHAIN_IDS)
   const [sortedItems, setSortedItems] = useState<Array<NFTItem>>(nfts)
 
   const { refreshUserNfts } = useData()
@@ -39,6 +40,10 @@ const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
 
   const addSelectedChainId = (chainId: number) => {
     setSelectedChainIds([...selectedChainIds, chainId])
+  }
+
+  const addAllChainIds = () => {
+    setSelectedChainIds(SUPPORTED_CHAIN_IDS)
   }
 
   const removeSelectedChainId = (chainId: number) => {
@@ -86,7 +91,7 @@ const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
       <div className="w-full mb-5">
         <div className="flex relative justify-start pl-2 w-fit" style={{'width': '100%'}}>
           <div className="flex items-center justify-between w-full">
-            <ChainSelection selectedChainIds={selectedChainIds} addChainId={addSelectedChainId} removeChainId={removeSelectedChainId} />
+            <ChainSelection selectedChainIds={selectedChainIds} addChainId={addSelectedChainId} removeChainId={removeSelectedChainId} addAllChainIds={addAllChainIds} />
             <Dropdown menus={sortMenu} onChange={onChangeSort} />
           </div>
         </div>

@@ -10,24 +10,26 @@ const Launchpad: NextPage = () => {
   const { loading, collectionsForComing, collectionsFeatured } = useLaunchPad()
 
   return (
-    <div className="pt-6 w-full">
+    <div className="pt-[20px] w-full">
       <div className="flex w-full justify-center">
-        <div className={'bg-dark-gradient border-1 border-[#383838] rounded-[20px] backdrop-blur shadow-[0_0_30px_rgba(255,255,255,0.06)] w-[1000px] flex flex-col items-center pt-6 pb-10'}>
-          <span className="bg-clip-text text-center text-transparent bg-rainbow-gradient text-extraxl font-bold shadow-[0_4_6px_rgba(0,0,0,0.25)]">connect through art</span>
-          <span className={'text-secondary text-xg1'}>
+        <div className={'aspect-[3/1] flex justify-center'}>
+          <div className={'bg-dark-gradient border-1 border-[#383838] rounded-[20px] backdrop-blur w-[1000px] flex flex-col items-center py-6'}>
+            <span className="bg-clip-text text-center text-transparent bg-rainbow-gradient text-extraxl font-bold shadow-[0_4_6px_rgba(0,0,0,0.25)]">connect through art</span>
+            <span className={'text-secondary text-xg1'}>
             the best place to launch your next NFT collection
-          </span>
-          <a href={'https://omni-x.gitbook.io/omni-x-nft-marketplace/marketplace-features/launchpad'} target={'_blank'} rel="noreferrer" className={'my-8'}>
-            <span className={'bg-clip-text text-center text-transparent bg-primary-gradient text-xg1 font-medium'}>
-                learn why
             </span>
-          </a>
-          <a
-            href={'https://docs.google.com/forms/d/e/1FAIpQLSf6VCJyF1uf9SZ9BJwbGuP7bMla7JzOXMg6ctXN6SlSgNgFlw/viewform?usp=pp_url'} target={'_blank'} rel="noreferrer">
-            <div className={'flex items-center justify-center bg-primary-gradient rounded-full py-2 px-8 text-xxxl font-medium'}>
+            <a href={'https://omni-x.gitbook.io/omni-x-nft-marketplace/marketplace-features/launchpad'} target={'_blank'} rel="noreferrer" className={'my-8'}>
+              <span className={'bg-clip-text text-center text-transparent bg-primary-gradient text-xg1 font-medium'}>
+                learn why
+              </span>
+            </a>
+            <a
+              href={'https://docs.google.com/forms/d/e/1FAIpQLSf6VCJyF1uf9SZ9BJwbGuP7bMla7JzOXMg6ctXN6SlSgNgFlw/viewform?usp=pp_url'} target={'_blank'} rel="noreferrer">
+              <div className={'flex items-center justify-center bg-primary-gradient rounded-full py-2 px-8 text-xxxl font-medium'}>
                 creators apply here!
-            </div>
-          </a>
+              </div>
+            </a>
+          </div>
         </div>
       </div>
       <div className="flex mt-12">
