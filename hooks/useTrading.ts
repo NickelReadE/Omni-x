@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useDispatch } from 'react-redux'
 import { doAcceptApprove, doAcceptComplete, doAcceptConfirm, doAcceptDone, doBidApprove, doBidConfirm, doBidDone, doBuyApprove, doBuyComplete, doBuyConfirm, doBuyDone, doListingApprove, doListingConfirm, doListingDone, TradingCommonData, TradingSpecialData } from '../components/providers/TradingProvider'
 import { IBidData, IListingData, IOrder, NFTItem } from '../interface/interface'

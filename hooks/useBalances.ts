@@ -2,7 +2,7 @@ import { ethers } from 'ethers'
 import { useEffect,useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { openSnackBar } from '../redux/reducers/snackBarReducer'
-import { ContractName, getAddressByName, STABLECOIN_DECIMAL } from '../utils/constants'
+import { ContractName, getAddressByName, getDecimalsByAddress } from '../utils/constants'
 import { getCurrencyInstance, getOmniInstance, getUSDCInstance } from '../utils/contracts'
 import useWallet from './useWallet'
 
@@ -52,7 +52,7 @@ const useBalances = (): BalancesType => {
             const usdContract = getCurrencyInstance(usdcAddress, chainId, signer)
             const balance = await usdContract?.balanceOf(address)
             if (balance) {
-              const decimal = STABLECOIN_DECIMAL[chainId][usdcAddress] || 6
+              const decimal = getDecimalsByAddress(chainId, usdcAddress)
               newBalances.usdc = Number(ethers.utils.formatUnits(balance, decimal))
             }
           }
@@ -66,7 +66,7 @@ const useBalances = (): BalancesType => {
             const usdContract = getCurrencyInstance(usdtAddress, chainId, signer)
             const balance = await usdContract?.balanceOf(address)
             if (balance) {
-              const decimal = STABLECOIN_DECIMAL[chainId][usdtAddress] || 6
+              const decimal = getDecimalsByAddress(chainId, usdtAddress)
               newBalances.usdt = Number(ethers.utils.formatUnits(balance, decimal))
             }
           }
@@ -109,7 +109,7 @@ const useBalances = (): BalancesType => {
 
       const usdc = getUSDCInstance(currencyAddr, chainId, signer)
       if (usdc) {
-        const decimal = STABLECOIN_DECIMAL[chainId][currencyAddr] || 6
+        const decimal = getDecimalsByAddress(chainId, currencyAddr)
         const tx = await usdc.mint(await signer.getAddress(), ethers.utils.parseUnits('25000', decimal), { gasLimit: '300000' })
         await tx.wait()
   

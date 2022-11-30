@@ -1,20 +1,21 @@
 import React from 'react'
 import CustomSelect from './CustomSelect'
-import useWallet from '../../hooks/useWallet'
-import { getValidCurrencies } from '../../utils/constants'
+import { getAllCurrencies } from '../../utils/constants'
 
 interface IBuySectionProps {
   price: number,
-  currency: string,
+  srcCurrency?: string,
+  currency?: string,
 }
 
 const BuySection: React.FC<IBuySectionProps> = ({
   price,
+  srcCurrency,
   currency
 }) => {
-  const { chainId } = useWallet()
-  const validCurrencies = getValidCurrencies(chainId || 0)
-  const selectedCurrency = validCurrencies.find(v => v.text == currency) || validCurrencies[0]
+  const validCurrencies = getAllCurrencies()
+  const oldCurrency = validCurrencies?.find(v => v.text == srcCurrency) || {}
+  const selectedCurrency = validCurrencies?.find(v => v.text == currency) || oldCurrency
   
   return (
     <div>
@@ -23,7 +24,11 @@ const BuySection: React.FC<IBuySectionProps> = ({
         <CustomSelect optionData={validCurrencies} value={selectedCurrency} />
         <input type="text" value={price} className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg" disabled={true}/>
       </div>
-      <p className="text-[#ADB5BD] text-[14px] font-light italic leading-6 w-[435px] mt-10">*sale funds are recieved on the blockchain the NFT is currently hosted on</p>
+      {currency ? (
+        <p className="text-[#ADB5BD] text-[14px] font-light italic leading-6 w-[435px] mt-10">*sale funds are recieved on the blockchain the NFT is currently hosted on</p>
+      ) : (
+        <p className="text-warning text-[14px] font-light italic leading-6 w-[435px] mt-10">the chosen currency is not supported on the current chain</p>
+      )}
     </div>
   )
 }
