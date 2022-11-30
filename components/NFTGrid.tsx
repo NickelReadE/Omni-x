@@ -103,7 +103,7 @@ const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
         }
         {
           !isLoading &&
-          <div className="grid grid-cols-4 gap-6 2xl:grid-cols-5 2xl:gap-10 mt-4">
+          <div className="grid grid-cols-4 gap-1 2xl:grid-cols-6 2xl:gap-10 mt-4">
             {sortedItems.map((item, index) => {
               if (selectedChainIds.length === 0) {
                 return (

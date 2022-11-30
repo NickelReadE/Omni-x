@@ -54,7 +54,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
 
   return (
     <>
-      <div className={'grid grid-cols-6'}>
+      <div className={'grid grid-cols-6 pt-5'}>
         <div className={''} />
         <div className={classNames( 'col-span-4')}>
           <div className={'relative'}>
@@ -65,13 +65,11 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
                 alt={'banner'}
               />
             </div>
-            <div className="bottom-[-80px] left-6 h-[120px] absolute flex items-end">
+            <div className="bottom-[-80px] left-6 w-[120px] h-[120px] absolute flex items-end">
               <img
                 src={avatarImage}
                 alt="avatar"
-                width={120}
-                height={120}
-                className={'rounded-[8px]'}
+                className={'w-full h-full rounded-[8px]'}
               />
             </div>
           </div>

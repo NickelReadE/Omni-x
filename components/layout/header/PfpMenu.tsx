@@ -33,9 +33,7 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
               <img
                 src={avatarImage}
                 alt="avatar"
-                width={32}
-                height={32}
-                className="rounded-full"
+                className="w-full h-full rounded-full"
               />
             </div>
           </Link>

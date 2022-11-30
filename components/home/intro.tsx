@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export default function HomeIntro () {
   return (
-    <div className={'bg-dark-gradient border-1 border-[#383838] rounded-[20px] backdrop-blur shadow-[0_0_30px_rgba(255,255,255,0.06)] w-[1000px] flex flex-col items-center justify-between py-6'}>
+    <div className={'bg-dark-gradient border-1 border-[#383838] rounded-[20px] backdrop-blur shadow-[0_0_30px_rgba(255,255,255,0.06)] flex flex-col items-center justify-between aspect-[3/1] py-6'}>
       <span className="bg-clip-text text-center text-transparent bg-rainbow-gradient text-extraxl font-bold shadow-[0_4_6px_rgba(0,0,0,0.25)]">connect through art</span>
       <span className={'text-secondary text-xg1'}>
             art for everyone, everywhere, all in one place

@@ -54,9 +54,12 @@ export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, ad
               <div className={'flex items-center'}>
                 <div className={'h-full w-[2px] bg-primary-light h-[18px] rounded-sm'} />
               </div>
-              <div className={'flex items-center font-medium cursor-pointer ml-[1px]'} onClick={addAllChainIds}>
-                <span className={'text-primary-light text-md'}>all</span>
-              </div>
+              {
+                activeChainIds.length > 0 &&
+                  <div className={'flex items-center font-medium cursor-pointer ml-[1px]'} onClick={addAllChainIds}>
+                    <span className={'text-primary-light text-md'}>all</span>
+                  </div>
+              }
               {
                 activeChainIds.map((networkId: ChainIds, index) => {
                   return (

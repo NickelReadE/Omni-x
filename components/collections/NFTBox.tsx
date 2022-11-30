@@ -247,9 +247,9 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   }
 
   return (
-    <>
+    <div className={'flex justify-center '}>
       <div
-        className='relative rounded-[8px] bg-[#202020] hover:shadow-[0_0_20px_rgba(245,245,245,0.22)]'
+        className='relative rounded-[8px] bg-[#202020] hover:shadow-[0_0_20px_rgba(245,245,245,0.22)] w-[230px]'
         onMouseEnter={() => setBoxHovered(true)}
         onMouseLeave={() => {
           setBoxHovered(false)
@@ -500,7 +500,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
         onClose={() => setConfirmTransfer(false)}
         updateModal={updateModal}
       />
-    </>
+    </div>
   )
 }
 
