@@ -14,7 +14,7 @@ const CollectionCard = (props:any) => {
 
   return (
     <div
-      className={classNames('relative bg-[#202020] rounded-[8px] hover:shadow-[0_0_12px_rgba(160,179,204,0.3)]')}
+      className={classNames('relative bg-[#202020] rounded-lg hover:shadow-[0_0_12px_rgba(160,179,204,0.3)]')}
       onMouseEnter={() => {
         if (address) setHover(true)
       }}

@@ -62,7 +62,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
 
   return (
     <>
-      <div className={'rounded-[8px] w-[250px] h-[40px] md:order-2 mr-[70px] px-4 flex flex-col justify-center py-2'}>
+      <div className={'rounded-lg w-[250px] h-[40px] md:order-2 mr-[70px] px-4 flex flex-col justify-center py-2'}>
         {
           txInfo?.type === 'bridge'
             &&

@@ -19,7 +19,7 @@ export default function HomeCollections() {
       <div className="w-full flex flex-wrap justify-start gap-12 mt-3">
         {
           collectionCards.map((item, index) => (
-            <div className='w-[340px] rounded-[8px]' key={index} >
+            <div className='w-[340px] rounded-lg' key={index} >
               {item}
             </div>
           ))

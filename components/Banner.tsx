@@ -85,7 +85,7 @@ const Banner = ({ blur }: BannerProps): JSX.Element => {
                   }}
                   width={200}
                   height={200}
-                  className={'rounded-[8px]'}
+                  className={'rounded-lg'}
                 />
               </div>
               <div className="flex flex-col ml-[20rem] mt-[10px]">

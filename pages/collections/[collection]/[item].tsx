@@ -117,7 +117,7 @@ const Item: NextPage = () => {
               <div className="col-span-1 h-full">
                 <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image"/>}>
                   <img
-                    className='rounded-[8px]'
+                    className='rounded-lg'
                     src={imageError ? '/images/omnix_logo_black_1.png' : nftImage}
                     alt="nft-image"
                     onError={() => { setImageError(true) }}
@@ -220,7 +220,7 @@ const Item: NextPage = () => {
                           const attrs = collection.attrs
                           const attr = attrs[item[0]].values
                           const trait = attr[(item[1] as string)]
-                          return <div className="px-5 py-2 bg-[#b444f926] border-2 border-[#B444F9] rounded-[8px]" key={idx}>
+                          return <div className="px-5 py-2 bg-[#b444f926] border-2 border-[#B444F9] rounded-lg" key={idx}>
                             <p className="text-[#B444F9] text-sm font-bold">{item[0]}</p>
                             <div className="flex justify-start items-center mt-2">
                               <p className="text-[#1E1C21] text-xg font-bold">{item[1]}<span className="ml-3 font-normal">[{trait ? trait[1] : 0}%]</span></p>
@@ -276,7 +276,7 @@ const Item: NextPage = () => {
                 </div>
 
                 {/*current price*/}
-                <div className={'flex flex-col mt-4 border-[1px] rounded-[8px] w-full border-[#383838] pt-3 pb-6 px-6'}>
+                <div className={'flex flex-col mt-4 border-[1px] rounded-lg w-full border-[#383838] pt-3 pb-6 px-6'}>
                   <div className={'flex items-center justify-between'}>
                     <div className={'text-secondary text-xl'}>current price</div>
                     <div className={'flex items-center'}>
@@ -297,7 +297,7 @@ const Item: NextPage = () => {
                 {/*last sale*/}
                 {
                   lastSale !== 0 &&
-                    <div className={'flex flex-col mt-4 border-[1px] rounded-[8px] w-full border-[#383838] py-3 px-6'}>
+                    <div className={'flex flex-col mt-4 border-[1px] rounded-lg w-full border-[#383838] py-3 px-6'}>
                       <div className={'flex items-center justify-between'}>
                         <div className={'text-secondary text-xl'}>last sale</div>
                         <div className={'flex items-center'}>
@@ -340,7 +340,7 @@ const Item: NextPage = () => {
                         const attrs = collection.attrs
                         const attr = attrs[item[0]].values
                         const trait = attr[(item[1] as string)]
-                        return <div className="px-5 py-2 rounded-[8px]" key={idx}>
+                        return <div className="px-5 py-2 rounded-lg" key={idx}>
                           <p className="text-primary-green text-sm font-bold">{item[0]}</p>
                           <div className="flex justify-start items-center mt-2">
                             <p className="text-primary-light text-xg font-bold">{item[1]}<span className="ml-3 font-normal">[{trait ? trait[1] : 0}%]</span></p>

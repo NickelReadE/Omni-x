@@ -52,7 +52,7 @@ const NftForLaunch = (pro: ITypeNFT) => {
   }, [collectionInfo])
 
   return (
-    <div className=" border-[#F8F9FA]  rounded-[8px] hover:cursor-pointer">
+    <div className=" border-[#F8F9FA]  rounded-lg hover:cursor-pointer">
       <div className={classNames(' flex flex-col bg-l-50 ')}>
         <div className={classNames('relative')}>
           <div className={classNames('group relative flex justify-center text-center overflow-hidden rounded-md')}>

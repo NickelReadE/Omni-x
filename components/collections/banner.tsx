@@ -58,7 +58,7 @@ export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
               alt="avatar"
               width={120}
               height={120}
-              className={'rounded-[8px]'}
+              className={'rounded-lg'}
             />
           </div>
         </div>

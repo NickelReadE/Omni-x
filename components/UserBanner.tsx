@@ -69,7 +69,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
               <img
                 src={avatarImage}
                 alt="avatar"
-                className={'w-full h-full rounded-[8px]'}
+                className={'w-full h-full rounded-lg'}
               />
             </div>
           </div>
