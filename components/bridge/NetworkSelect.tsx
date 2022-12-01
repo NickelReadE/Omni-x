@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react'
+import React from 'react'
 import Select, { components } from 'react-select'
 import {CHAIN_NAMES, SUPPORTED_CHAIN_IDS} from '../../utils/constants'
 

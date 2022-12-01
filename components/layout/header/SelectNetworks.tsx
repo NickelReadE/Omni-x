@@ -11,11 +11,11 @@ export const SelectNetworks = () => {
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined)
 
   return (
-    <div className='w-8 h-8'>
+    <div className='w-9 h-9'>
       <div className="relative inline-block text-left" onMouseLeave={() => setHovered(false)}>
         <div className={'focus:outline-none'} onMouseEnter={() => setHovered(true)}>
-          <div className={`w-8 h-8 ${hovered ? 'bg-primary-gradient' : ''} p-[1px] rounded-full`}>
-            <img alt={'networkIcon'} src={getChainLogoById(chainId ? chainId.toString() : '5')} className="h-full w-full" />
+          <div className={`w-9 h-9 ${hovered ? 'bg-primary-gradient' : ''} rounded-full`}>
+            <img alt={'networkIcon'} src={getChainLogoById(chainId ? chainId.toString() : '5')} width={36} height={36} />
           </div>
         </div>
         <Transition
@@ -30,24 +30,26 @@ export const SelectNetworks = () => {
         >
           <div className={'absolute right-0 w-[166px] origin-top-right pt-4'}>
             <div className={'rounded-md bg-primary-gradient p-[1px]'}>
-              <div
-                className="bg-[#202020e6] rounded-md shadow-lg backdrop-blur-[10px] shadow-[0_0px_20px_rgba(231,237,245,0.25)] focus:outline-none py-2">
-                {
-                  SUPPORTED_CHAIN_IDS.map((chainId, index) => {
-                    return (
-                      <div key={index} onMouseEnter={() => setActiveIndex(index)}
-                        onMouseLeave={() => setActiveIndex(undefined)}>
-                        <div
-                          className={`py-2 px-6 flex items-center cursor-pointer ${activeIndex === index ? 'bg-[#303030]' : ''}`}
-                          onClick={() => switchNetwork?.(chainId)}>
-                          <img alt={'chainIcon'} src={getChainLogoById(chainId.toString())}/>
-                          <span
-                            className={'text-primary-light text-lg pl-4'}>{getChainOfficialNameById(chainId)}</span>
+              <div className={'bg-primary rounded-md'}>
+                <div
+                  className="bg-[#202020] opacity-90 rounded-md backdrop-filter backdrop-blur-[10px] shadow-[0_0px_250px_rgba(0,0,0,1)] focus:outline-none py-2">
+                  {
+                    SUPPORTED_CHAIN_IDS.map((chainId, index) => {
+                      return (
+                        <div key={index} onMouseEnter={() => setActiveIndex(index)}
+                          onMouseLeave={() => setActiveIndex(undefined)}>
+                          <div
+                            className={`py-2 px-6 flex items-center cursor-pointer ${activeIndex === index ? 'bg-[#303030]' : ''}`}
+                            onClick={() => switchNetwork?.(chainId)}>
+                            <img alt={'chainIcon'} src={getChainLogoById(chainId.toString())}/>
+                            <span
+                              className={'text-primary-light text-lg pl-4'}>{getChainOfficialNameById(chainId)}</span>
+                          </div>
                         </div>
-                      </div>
-                    )
-                  })
-                }
+                      )
+                    })
+                  }
+                </div>
               </div>
             </div>
           </div>

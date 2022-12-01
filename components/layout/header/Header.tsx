@@ -62,7 +62,7 @@ const Header = (): JSX.Element => {
             {
               address ?
                 <>
-                  <CalendarArea />
+                  {/*<CalendarArea />*/}
                   <MessageArea />
                   <NotificationArea />
                   <SelectNetworks />

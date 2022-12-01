@@ -14,8 +14,8 @@ export const CalendarArea = () => {
             <Image
               src={hovered ? '/images/icons/calendar-active.svg' : '/images/icons/calendar.svg'}
               alt="avatar"
-              width={32}
-              height={32}
+              width={36}
+              height={36}
               className="rounded-full"
             />
           </div>

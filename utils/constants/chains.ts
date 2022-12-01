@@ -130,7 +130,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   1: {
     name: 'eth',
     logo: '/svgs/ethereum.svg',
-    roundedLogo: '/images/chain/ethereum.png',
+    roundedLogo: '/images/chain/ethereum.svg',
     explorerLogo: '/images/ethereumExplorer.png',
     darkIcon: '/images/chain/ethereum_dark.svg',
     officialName: 'Ethereum',
@@ -139,7 +139,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   56: {
     name: 'bsc',
     logo: '/svgs/binance.svg',
-    roundedLogo: '/images/chain/binance.png',
+    roundedLogo: '/images/chain/binance.svg',
     explorerLogo: '/images/binanceExplorer.png',
     darkIcon: '/images/chain/binance_dark.svg',
     officialName: 'Binance',
@@ -148,7 +148,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   137: {
     name: 'polygon',
     logo: '/svgs/polygon.svg',
-    roundedLogo: '/images/chain/polygon.png',
+    roundedLogo: '/images/chain/polygon.svg',
     explorerLogo: '/images/polygonExplorer.png',
     darkIcon: '/images/chain/polygon_dark.svg',
     officialName: 'Polygon',
@@ -157,7 +157,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   43114: {
     name: 'avalanche',
     logo: '/svgs/avax.svg',
-    roundedLogo: '/images/chain/avalanche.png',
+    roundedLogo: '/images/chain/avalanche.svg',
     explorerLogo: '/images/avalancheExplorer.png',
     darkIcon: '/images/chain/avalanche_dark.svg',
     officialName: 'Avalanche',
@@ -166,7 +166,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   250: {
     name: 'fantom',
     logo: '/svgs/fantom.svg',
-    roundedLogo: '/images/chain/fantom.png',
+    roundedLogo: '/images/chain/fantom.svg',
     explorerLogo: '/images/fantomExplorer.png',
     darkIcon: '/images/chain/fantom_dark.svg',
     officialName: 'Fantom',
@@ -175,7 +175,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   10: {
     name: 'optimism',
     logo: '/svgs/optimism.svg',
-    roundedLogo: '/images/chain/optimism.png',
+    roundedLogo: '/images/chain/optimism.svg',
     explorerLogo: '/images/optimismExplorer.png',
     darkIcon: '/images/chain/optimism_dark.svg',
     officialName: 'Optimism',
@@ -184,7 +184,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   42161: {
     name: 'arbitrum',
     logo: '/svgs/arbitrum.svg',
-    roundedLogo: '/images/chain/arbitrum.png',
+    roundedLogo: '/images/chain/arbitrum.svg',
     explorerLogo: '/images/arbitrumExplorer.png',
     darkIcon: '/images/chain/arbitrum_dark.svg',
     officialName: 'Arbitrum',
@@ -193,7 +193,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   [CHAIN_IDS[CHAIN_TYPE.GOERLI]]: {
     name: 'goerli',
     logo: '/svgs/ethereum.svg',
-    roundedLogo: '/images/chain/ethereum.png',
+    roundedLogo: '/images/chain/ethereum.svg',
     explorerLogo: '/images/ethereumExplorer.png',
     darkIcon: '/images/chain/ethereum_dark.svg',
     officialName: 'Goerli',
@@ -202,7 +202,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   [CHAIN_IDS[CHAIN_TYPE.BSC_TESTNET]]: {
     name: 'bsc testnet',
     logo: '/svgs/binance.svg',
-    roundedLogo: '/images/chain/binance.png',
+    roundedLogo: '/images/chain/binance.svg',
     explorerLogo: '/images/binanceExplorer.png',
     darkIcon: '/images/chain/binance_dark.svg',
     officialName: 'BSC',
@@ -211,7 +211,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   [CHAIN_IDS[CHAIN_TYPE.FUJI_TESTNET]]: {
     name: 'fuji',
     logo: '/svgs/avax.svg',
-    roundedLogo: '/images/chain/avalanche.png',
+    roundedLogo: '/images/chain/avalanche.svg',
     explorerLogo: '/images/avalancheExplorer.png',
     darkIcon: '/images/chain/avalanche_dark.svg',
     officialName: 'Fuji',
@@ -220,7 +220,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   [CHAIN_IDS[CHAIN_TYPE.MUMBAI]]: {
     name: 'mumbai',
     logo: '/svgs/polygon.svg',
-    roundedLogo: '/images/chain/polygon.png',
+    roundedLogo: '/images/chain/polygon.svg',
     explorerLogo: '/images/polygonExplorer.png',
     darkIcon: '/images/chain/polygon_dark.svg',
     officialName: 'Mumbai',
@@ -229,7 +229,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: {
     name: 'arbitrum-goerli',
     logo: '/svgs/arbitrum.svg',
-    roundedLogo: '/images/chain/arbitrum.png',
+    roundedLogo: '/images/chain/arbitrum.svg',
     explorerLogo: '/images/arbitrumExplorer.png',
     darkIcon: '/images/chain/arbitrum_dark.svg',
     officialName: 'Arbitrum',
@@ -238,7 +238,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: {
     name: 'optimism-goerli',
     logo: '/svgs/optimism.svg',
-    roundedLogo: '/images/chain/optimism.png',
+    roundedLogo: '/images/chain/optimism.svg',
     explorerLogo: '/images/optimismExplorer.png',
     darkIcon: '/images/chain/optimism_dark.svg',
     officialName: 'Optimism',
@@ -247,7 +247,7 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   [CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET]]: {
     name: 'fantom-testnet',
     logo: '/svgs/fantom.svg',
-    roundedLogo: '/images/chain/fantom.png',
+    roundedLogo: '/images/chain/fantom.svg',
     explorerLogo: '/images/fantomExplorer.png',
     darkIcon: '/images/chain/fantom_dark.svg',
     officialName: 'Fantom',
