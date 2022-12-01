@@ -30,6 +30,7 @@ import FilterActive from '../../../public/images/icons/filter_active.svg'
 import FilterInactive from '../../../public/images/icons/filter_inactive.svg'
 import { useModal } from '../../../hooks/useModal'
 import { ModalIDs } from '../../../contexts/modal'
+import {SkeletonCard} from '../../../components/skeleton/card'
 
 const sort_fields = [
   { text: 'price: low to high', value: 'price' },
@@ -236,8 +237,11 @@ const Collection: NextPage = () => {
     <>
       <div className={classNames('w-full', 'pt-6 pb-4 px-0', 'relative', editStyle.collection)}>
         {
-          collectionInfo &&
+          collectionInfo 
+            ?
             <CollectionBanner collection={collectionInfo} />
+            :
+            <SkeletonCard />
         }
       </div>
 
