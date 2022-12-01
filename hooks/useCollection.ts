@@ -23,8 +23,13 @@ export type CollectionType = {
         omni: number
     },
     attrs: any,
-    bid_datas: any[]
-    bid_orders: IOrder[]
+    bid_datas: any[],
+    bid_orders: IOrder[],
+    floorNft: {
+      eth?: any,
+      usd?: any,
+      omni?: any
+    }
 }
 
 export type CollectionTypeFunc = {

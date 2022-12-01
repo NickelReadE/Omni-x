@@ -23,6 +23,24 @@ const CollectionCard = (props:any) => {
     collectionAddressMap: props.collection.address
   }
 
+  const onBuyFloor = (nft: any) => {
+    const tradingInput = {
+      collectionUrl: collectionBid.collectionUrl,
+      collectionAddressMap: collectionBid.collectionAddressMap,
+      tokenId: nft.token_id,
+      selectedNFTItem: nft
+    }
+
+    openModal(ModalIDs.MODAL_BUY, {
+      nftImage: nft.image,
+      nftTitle: nft.name,
+      order: nft.order_data,
+      tradingInput,
+      instantBuy: true,
+      handleBuyDlgClose: closeModal
+    })
+  }
+
   const { transform } = useDraggable({
     id: `draggable-${1}`,
     data: {
@@ -73,6 +91,8 @@ const CollectionCard = (props:any) => {
                   nftImage: props.collection.profile_image,
                   nftTitle: props.collection.name,
                   collectionBid,
+                  collectionInfo: props.collection,
+                  onBuyFloor,
                   handleBidDlgClose: closeModal
                 })
               }}

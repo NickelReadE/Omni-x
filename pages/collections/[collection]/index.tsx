@@ -198,6 +198,25 @@ const Collection: NextPage = () => {
     collectionAddressMap: collection_address_map
   }
 
+  const onBuyFloor = (nft: any) => {
+    const tradingInput = {
+      collectionUrl: collectionBid.collectionUrl,
+      collectionAddressMap: collectionBid.collectionAddressMap,
+      tokenId: nft.token_id,
+      selectedNFTItem: nft,
+      onRefresh
+    }
+
+    openModal(ModalIDs.MODAL_BUY, {
+      nftImage: nft.image,
+      nftTitle: nft.name,
+      order: nft.order_data,
+      tradingInput,
+      instantBuy: true,
+      handleBuyDlgClose: closeModal
+    })
+  }
+
   const searchAttrsCheck = (bChecked: boolean, attrKey: string, valueKey: string) => {
     const obj = Array.isArray(searchObj[attrKey]) ? searchObj[attrKey] : []
 
@@ -506,6 +525,8 @@ const Collection: NextPage = () => {
                       nftImage: collectionInfo?.profile_image,
                       nftTitle: collectionInfo?.name,
                       collectionBid,
+                      collectionInfo: collectionInfo,
+                      onBuyFloor,
                       handleBidDlgClose: closeModal
                     })
                   }}

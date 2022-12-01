@@ -11,6 +11,7 @@ interface IListingSectionProps {
   priceLabel: string,
   nftChainId: number,
   price: number,
+  floorNft?: any,
   onChangePrice: (e: any) => void,
   currency: any,
   onChangeCurrency: (e: any) => void,
@@ -27,8 +28,11 @@ const ListingSection: React.FC<IListingSectionProps> = ({
   onChangeCurrency,
   period,
   onChangePeriod,
+  floorNft
 }) => {
   const validCurrencies = getValidCurrencies(nftChainId)
+
+  const floorMessage = floorNft ? 'if you want to buy an nft with floor price, please click buy floor.' : undefined
 
   return (
     <div>
@@ -38,6 +42,9 @@ const ListingSection: React.FC<IListingSectionProps> = ({
         <input type="text" value={price} className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg" onChange={onChangePrice}/>
       </div>
       <p className="text-[#ADB5BD] text-[14px] font-light italic leading-6 w-[435px] mt-10">*sale funds are recieved on the blockchain the NFT is currently hosted on</p>
+      {!!floorMessage && (
+        <p className="text-[#ADB5BD] text-[14px] font-light italic leading-6 w-[435px]">{floorMessage}</p>
+      )}
       <p className="text-[#6C757D] text-[18px] font-semibold mt-10">Duration</p>
       <div className="flex justify-start items-center mt-5">
         <Select
