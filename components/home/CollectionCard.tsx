@@ -99,7 +99,7 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
               <span className='font-medium mr-1 text-md text-primary-light'>
                 {collection ? 0 /* numberShortify(collection.totalVolume) */ : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
               </span>
-              <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img>
+              <img src='/images/chain/ethereum_solid.svg' className='' alt='asset img'></img>
             </div>
             <span className='font-medium text-[#38B000] text-md'>
               {collection ? '0%' /* numberShortify(collection.totalVolumeChange) */ : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
