@@ -92,7 +92,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   }, [router.pathname])
 
   const isHomePage = useMemo(() => {
-    return router.pathname === '/'
+    return router.pathname === '/' || router.pathname === '/playground'
   }, [router.pathname])
 
   const isCollectionPage = useMemo(() => {
@@ -195,24 +195,23 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
               onDoubleClick={doubleClickToSetDetailLink}
             />
           </LazyLoad>
+          <div className={`flex absolute top-3 left-3 rounded-[20px] bg-primary opacity-80 items-center px-2 py-1.5 space-x-1 ${boxHovered ? 'block' : 'hidden'}`}>
+            <div>
+              <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11.5023 2.75601L11.5024 2.75588C11.9009 2.35715 12.3741 2.04085 12.895 1.82505C13.4158 1.60924 13.974 1.49817 14.5378 1.49817C15.1015 1.49817 15.6598 1.60924 16.1806 1.82505C16.7014 2.04085 17.1746 2.35715 17.5732 2.75588L17.5734 2.75613C17.9721 3.15467 18.2884 3.62787 18.5042 4.14869C18.72 4.66951 18.8311 5.22775 18.8311 5.79151C18.8311 6.35527 18.72 6.9135 18.5042 7.43432C18.2884 7.95514 17.9721 8.42834 17.5734 8.82689L17.5733 8.82701L16.6016 9.79868L10.0003 16.4L3.39893 9.79868L2.42727 8.82701C1.6222 8.02195 1.16992 6.93004 1.16992 5.79151C1.16992 4.65297 1.6222 3.56107 2.42727 2.75601C3.23233 1.95094 4.32424 1.49866 5.46277 1.49866C6.60131 1.49866 7.69321 1.95094 8.49828 2.75601L9.46994 3.72767C9.76283 4.02057 10.2377 4.02057 10.5306 3.72767L11.5023 2.75601Z" stroke="#FF166A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <span className='text-md text-[#FF166A]'>
+              24
+            </span>
+          </div>
         </div>
         <div className={'flex flex-col justify-between min-h-[100px] pt-2 pb-3 px-3'}>
           <div className="flex flex-col-1 flex-row justify-between items-center">
             <div className="text-md text-secondary font-bold">
               {nft.token_id}
             </div>
-            <div className={'flex items-center'}>
-              <svg width="17" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9.64864 1.81096L9.64873 1.81087C9.98536 1.47408 10.3851 1.20691 10.825 1.02463C11.2649 0.842355 11.7364 0.748535 12.2126 0.748535C12.6888 0.748535 13.1603 0.842355 13.6002 1.02463C14.0401 1.20691 14.4398 1.47408 14.7765 1.81087L15.1301 1.45744L14.7766 1.81104C15.1134 2.14768 15.3806 2.54737 15.5629 2.98728C15.7451 3.4272 15.839 3.89872 15.839 4.3749C15.839 4.85109 15.7451 5.32261 15.5629 5.76252C15.3806 6.20244 15.1134 6.60213 14.7766 6.93877L14.7765 6.93885L13.9815 7.73385L8.50009 13.2153L3.01864 7.73385L2.22364 6.93885C1.54364 6.25885 1.16162 5.33657 1.16162 4.3749C1.16162 3.41324 1.54364 2.49096 2.22364 1.81096C2.90364 1.13096 3.82592 0.748936 4.78759 0.748936C5.74926 0.748936 6.67153 1.13096 7.35154 1.81096L8.14654 2.60596C8.3418 2.80122 8.65838 2.80122 8.85364 2.60596L9.64864 1.81096Z" stroke="url(#paint0_linear_329_6115)" strokeLinecap="round" strokeLinejoin="round"/>
-                <defs>
-                  <linearGradient id="paint0_linear_329_6115" x1="3.60112" y1="0.248535" x2="16.7643" y2="3.89337" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#FA16FF"/>
-                    <stop offset="1" stopColor="#F00056"/>
-                  </linearGradient>
-                </defs>
-              </svg>
-              <span className={'bg-clip-text bg-like-gradient text-transparent text-md opacity-50 ml-2'}>24</span>
-            </div>
+            <img src={chainIcon} alt={'chainicon'} width={18} height={18} />
           </div>
           <div className="flex flex-col-1 flex-row justify-between items-center">
             <div className="flex items-center">
@@ -239,7 +238,6 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                   className="text-secondary text-sm font-bold">{numberLocalize(Number(highestBid))}</span>
               </div>}
             </div>
-            <img src={chainIcon} alt={'chainicon'} width={18} height={18} />
           </div>
         </div>
       </>
@@ -247,7 +245,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   }
 
   return (
-    <div className={'flex justify-center '}>
+    <div className={'flex justify-center max-w-[300px]'}>
       <div
         className='relative rounded-lg bg-[#202020] hover:shadow-[0_0_20px_rgba(245,245,245,0.22)] w-full'
         onMouseEnter={() => setBoxHovered(true)}
@@ -262,18 +260,18 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           }
           {
             isCollectionPage &&
-                <Link href={`/collections/${col_url}/${nft.token_id}`}>
-                  <a>
-                    {renderImageContainer()}
-                  </a>
-                </Link>
+              <Link href={`/collections/${col_url}/${nft.token_id}`}>
+                <a>
+                  {renderImageContainer()}
+                </a>
+              </Link>
           }
         </div>
 
         {
           boxHovered && isWhitelisted &&
               <div
-                className={`absolute bottom-0 w-full ${isOwner ? 'bg-dark-red' : 'bg-dark-green'} text-primary-light rounded-br-[8px] rounded-bl-[8px] h-10 text-xg cursor-pointer flex`}>
+                className={`absolute rounded-lg bottom-0 w-full ${isOwner ? 'bg-dark-red' : 'bg-dark-green'} text-primary-light rounded-br-[8px] rounded-bl-[8px] h-10 text-xg cursor-pointer flex`}>
                 {isOwner && (
                   <div
                     className="font-bold w-full h-full flex items-center justify-center"

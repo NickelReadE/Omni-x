@@ -32,13 +32,13 @@ export default function HomeSlider() {
         <div className="embla__viewport" ref={viewportRef}>
           <div className="embla__container">
             <div className="embla__slide flex justify-center">
-              <div className="embla__slide__inner flex justify-center relative">
+              <div className="embla__slide__inner rounded-[20px] flex justify-center relative">
                 <HomeIntro />
               </div>
             </div>
             {collections.map((collection, index) => (
               <div className="embla__slide flex justify-center" key={index}>
-                <div className="embla__slide__inner aspect-[3/1] flex justify-center relative">
+                <div className="embla__slide__inner rounded-[20px] aspect-[3/1] flex justify-center relative">
                   <img
                     className="embla__slide__img"
                     src={collection.banner_image}
