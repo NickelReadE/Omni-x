@@ -72,20 +72,20 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
         <div className={classNames('col-span-2 flex p-2 rounded-lg')}>
           <div className='text-md flex flex-col justify-between'>
             <span className='mr-[1px] text-center text-secondary'>Items</span>
-            <span className='font-medium text-sm text-center text-primary-light'>{collection?collection.itemsCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+            <span className='font-medium text-md text-center text-primary-light'>{collection?collection.itemsCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
           </div>
         </div>
         <div  className={classNames('col-span-2 flex p-2 rounded-lg')} >
           <div className='text-md flex flex-col justify-center' style={{justifyContent: 'space-between'}}>
             <span className='mr-[1px] text-center text-secondary'>Owners</span>
-            <span className='font-medium text-sm text-center text-primary-light'>{collection?collection.ownerCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+            <span className='font-medium text-md text-center text-primary-light'>{collection?collection.ownerCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
           </div>
         </div>
         <div className={classNames('col-span-2 flex p-2 rounded-lg')} >
           <div className='text-md flex flex-col justify-center' style={{justifyContent: 'space-between'}}>
             <div className='text-md mb-1 text-center text-secondary'>Floor</div>
             <div className='flex flex-row space-x-2 justify-center' >
-              <span className='font-medium text-sm mr-[px] text-primary-light'>
+              <span className='font-medium text-md mr-[px] text-primary-light'>
                 {collection ? numberShortify(collection.floorPrice.omni) : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
               </span>
               <img src='/svgs/omni_asset.svg' className='w-[16px]' alt='asset img' />
@@ -96,12 +96,12 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
           <div className='text-md mb-1 text-center text-secondary'>7d Volume</div>
           <div className='text-md flex flex-row justify-center space-x-4' >
             <div className='flex flex-row mr-4'>
-              <span className='font-medium mr-1 text-sm text-primary-light'>
+              <span className='font-medium mr-1 text-md text-primary-light'>
                 {collection ? 0 /* numberShortify(collection.totalVolume) */ : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
               </span>
               <img src='/svgs/ethereum.svg' className='w-[16px]' alt='asset img'></img>
             </div>
-            <span className='font-medium text-[#38B000] text-sm'>
+            <span className='font-medium text-[#38B000] text-md'>
               {collection ? '0%' /* numberShortify(collection.totalVolumeChange) */ : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
             </span>
           </div>
