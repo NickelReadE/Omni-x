@@ -67,7 +67,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
           txInfo?.type === 'bridge'
             &&
             <div className='flex items-center justify-between'>
-              <span className="text-[#38B000] w-[30px] truncate" style={{fontSize: 14, lineHeight: '18px', fontWeight: 700}}>
+              <span className="text-dark-green w-[30px] truncate" style={{fontSize: 14, lineHeight: '18px', fontWeight: 700}}>
                 xfer:
               </span>
               <Image
@@ -99,7 +99,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
           txInfo?.type === 'buy'
             &&
             <div className='flex items-center justify-between'>
-              <span className="text-[#38B000] w-[30px] truncate" style={{fontSize: 14, lineHeight: '18px', fontWeight: 700}}>
+              <span className="text-dark-green w-[30px] truncate" style={{fontSize: 14, lineHeight: '18px', fontWeight: 700}}>
                 buy:
               </span>
               <Image
@@ -144,7 +144,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
           txInfo?.type === 'accept'
             &&
             <div className='flex items-center justify-between'>
-              <span className="text-[#38B000] w-[30px] truncate" style={{fontSize: 14, lineHeight: '18px', fontWeight: 700}}>
+              <span className="text-dark-green w-[30px] truncate" style={{fontSize: 14, lineHeight: '18px', fontWeight: 700}}>
                 sell:
               </span>
               <Image

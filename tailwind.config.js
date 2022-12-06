@@ -8,6 +8,10 @@ module.exports = {
     './components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
+    textShadow: {
+      'sm': '0 4px 6px rgba(0, 0, 0, 0.25)',
+      'sm2': '0 4px 6px rgba(0, 0, 0, 0.12)',
+    },
     extend: {
       backgroundImage: {
         'primary-gradient': 'linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%)',
@@ -73,5 +77,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require('@tailwindcss/forms')],
+  plugins: [require('@tailwindcss/forms'), require('tailwindcss-textshadow')],
 }

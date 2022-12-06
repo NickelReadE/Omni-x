@@ -22,6 +22,19 @@ export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, ad
       removeChainId(chainId)
     }
   }
+  
+  const DarkChainIcon = ({chainId, onClick}: {chainId: number, onClick: () => void}) => {
+    return (
+      <div
+        className={'font-medium cursor-pointer m-[1px]'}
+        onClick={onClick}
+      >
+        <img alt={'listing'}
+          src={getDarkChainIconById(chainId.toString())}
+          className="w-[28px] h-[28px] "/>
+      </div>
+    )
+  }
     
   return (
     <>
@@ -29,15 +42,15 @@ export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, ad
         <div className="flex flex-row justify-items-center" onMouseLeave={() => setIsShow(false)}>
           <div className={'flex items-center space-x-2'} onMouseEnter={() => setIsShow(true)}>
             {
-              selectedChainIds.map((chainId: number, index) => {
-                return (
-                  <div key={index} className={'font-medium cursor-pointer m-[1px]'} onClick={() => removeFromList(chainId)}>
-                    <img alt={'listing'}
-                      src={getDarkChainIconById(chainId.toString())}
-                      className="w-[28px] h-[28px] "/>
-                  </div>
-                )
-              })
+              selectedChainIds.length !== SUPPORTED_CHAIN_IDS.length 
+                ?
+                selectedChainIds.map((chainId: number, index) => {
+                  return (
+                    <DarkChainIcon key={index} chainId={chainId} onClick={() => removeFromList(chainId)} />
+                  )
+                })
+                :
+                <span className={'text-primary-light text-md'}>all networks</span>
             }
           </div>
           <Transition 
@@ -61,19 +74,18 @@ export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, ad
                   </div>
               }
               {
-                activeChainIds.map((networkId: ChainIds, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className={'font-medium cursor-pointer m-[1px]'}
-                      onClick={() => addChainId(networkId)}
-                    >
-                      <img alt={'listing'}
-                        src={getDarkChainIconById(networkId.toString())}
-                        className="w-[28px] h-[28px] "/>
-                    </div>
-                  )
-                })
+                activeChainIds.length === 0
+                  ?
+                  SUPPORTED_CHAIN_IDS.map((chainId: ChainIds, index) => {
+                    return (
+                      <DarkChainIcon key={index} chainId={chainId} onClick={() => removeFromList(chainId)} />
+                    )
+                  })
+                  :activeChainIds.map((chainId: ChainIds, index) => {
+                    return (
+                      <DarkChainIcon key={index} chainId={chainId} onClick={() => addChainId(chainId)} />
+                    )
+                  })
               }
             </div>
           </Transition>

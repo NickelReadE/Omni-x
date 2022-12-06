@@ -29,6 +29,8 @@ export type CollectionType = {
     bid_orders: IOrder[],
     mint_start_timestamp: number,
     mint_end_timestamp: number,
+    start_ids: any,
+    price: number,
 }
 
 export type CollectionTypeFunc = {

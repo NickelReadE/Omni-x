@@ -13,10 +13,10 @@ export default function HomeCollections() {
 
   return (
     <div className="mt-12">
-      <span className="text-primary-light text-[32px] leading-[38px]">
+      <span className="text-primary-light text-xxxl font-medium">
         Omni Collections
       </span>
-      <div className="w-full flex flex-wrap justify-start gap-12 mt-3">
+      <div className="w-full flex flex-wrap justify-start gap-12 mt-6">
         {
           collectionCards.map((item, index) => (
             <div className='w-[340px] rounded-lg' key={index} >

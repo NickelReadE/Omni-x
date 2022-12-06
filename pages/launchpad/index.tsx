@@ -14,8 +14,8 @@ const Launchpad: NextPage = () => {
       <div className="flex w-full justify-center">
         <div className={'aspect-[3/1] flex justify-center'}>
           <div className={'bg-dark-gradient border-1 border-[#383838] rounded-[20px] backdrop-blur w-[1000px] flex flex-col items-center py-6'}>
-            <span className="bg-clip-text text-center text-transparent bg-rainbow-gradient text-extraxl font-bold shadow-[0_4_6px_rgba(0,0,0,0.25)]">connect through art</span>
-            <span className={'text-secondary text-xg1'}>
+            <span className="bg-clip-text text-center text-transparent bg-rainbow-gradient text-extraxl font-bold text-shadow-sm">connect through art</span>
+            <span className={'text-secondary text-xg1 text-shadow-sm'}>
             the best place to launch your next NFT collection
             </span>
             <a href={'https://omni-x.gitbook.io/omni-x-nft-marketplace/marketplace-features/launchpad'} target={'_blank'} rel="noreferrer" className={'my-8'}>
@@ -25,7 +25,7 @@ const Launchpad: NextPage = () => {
             </a>
             <a
               href={'https://docs.google.com/forms/d/e/1FAIpQLSf6VCJyF1uf9SZ9BJwbGuP7bMla7JzOXMg6ctXN6SlSgNgFlw/viewform?usp=pp_url'} target={'_blank'} rel="noreferrer">
-              <div className={'flex items-center justify-center bg-primary-gradient rounded-full py-2 px-8 text-xxxl font-medium'}>
+              <div className={'flex items-center justify-center bg-primary-gradient rounded-full py-2 px-8 text-xxxl font-medium hover:shadow-[0_0_6px_rgba(0,240,236,1)]'}>
                 creators apply here!
               </div>
             </a>

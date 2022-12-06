@@ -55,10 +55,10 @@ const CollectionCard = (props:any) => {
         <div className={classNames('absolute w-full h-full  flex items-center justify-center  ', editStyle.actionBtn)}>
           <div>
             <Link href={`/collections/${props.collection.col_url}`}>
-              <div className='w-[230px] text-[18px] text-white	 text-extrabold text-center items-center bg-[#B444F9] rounded-lg mb-[24px]  py-[7px] hover:cursor-pointer'>view collection</div>
+              <div className='w-[230px] text-[18px] text-white text-extrabold text-center items-center bg-[#B444F9] rounded-lg mb-[24px]  py-[7px] hover:cursor-pointer'>view collection</div>
             </Link>
 
-            <div className='w-[230px] text-[18px] text-white	 text-extrabold text-center items-center bg-[#38B000] rounded-lg  py-[7px]'>make a collection bid</div>
+            <div className='w-[230px] text-[18px] text-white text-extrabold text-center items-center bg-[#38B000] rounded-lg  py-[7px]'>make a collection bid</div>
           </div>
 
         </div>

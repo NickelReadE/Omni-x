@@ -12,7 +12,7 @@ export const FeaturedCard = ({collection}: { collection: LaunchPadType }) => {
       </img>
       <div className="flex flex-col pt-4">
         <span className={'text-xl3 text-primary-light'}>{collection.name}</span>
-        <Link href={`/collections/${collection.col_url}`}>
+        <Link href={`/launchpad/${collection.col_url}`}>
           <span className={'bg-clip-text text-transparent bg-primary-gradient text-xg font-medium cursor-pointer mt-4'}>
             view launchpad page
           </span>

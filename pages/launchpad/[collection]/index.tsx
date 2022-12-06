@@ -1,22 +1,23 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type {NextPage} from 'next'
-import Image from 'next/image'
 import {useRouter} from 'next/router'
 import {ethers} from 'ethers'
 import React, {useState, useEffect, useCallback} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
 import {getAdvancedInstance} from '../../../utils/contracts'
 import {ToastContainer, toast} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import {Slide} from 'react-toastify'
-import {getCollectionInfo, selectCollectionInfo} from '../../../redux/reducers/collectionsReducer'
-import MinusSign from '../../../public/images/minus-sign.png'
-import PlusSign from '../../../public/images/plus-sign.png'
-import mintstyles from '../../../styles/mint.module.scss'
 import classNames from '../../../helpers/classNames'
 import useWallet from '../../../hooks/useWallet'
 import {ChainIds} from '../../../types/enum'
-import {SUPPORTED_CHAIN_IDS} from '../../../utils/constants'
 import {chainInfos} from '../../../utils/constants'
+import useCollection from '../../../hooks/useCollection'
+import {ExternalLink} from '../../../components/basic'
+import WebsiteIcon from '../../../public/images/icons/website.svg'
+import TwitterIcon from '../../../public/images/icons/twitter.svg'
+import TelegramIcon from '../../../public/images/icons/telegram.svg'
+import DiscordIcon from '../../../public/images/icons/discord.svg'
+import {PrimaryButton} from '../../../components/common/buttons/PrimaryButton'
 
 const Mint: NextPage = () => {
   const {
@@ -27,19 +28,25 @@ const Mint: NextPage = () => {
   } = useWallet()
   const router = useRouter()
   const col_url = router.query.collection as string
-  const dispatch = useDispatch()
-  const collectionInfo = useSelector(selectCollectionInfo)
-  const [toChain] = useState<string>('1')
   const [mintNum, setMintNum] = useState<number>(1)
   const [totalNFTCount, setTotalNFTCount] = useState<number>(0)
   const [nextTokenId, setNextTokenId] = useState<number>(0)
-  const [transferNFT] = useState<number>(0)
   const [isMinting, setIsMinting] = useState<boolean>(false)
-  const [isSwitchingNetwork] = useState<boolean>(false)
   const [price, setPrice] = useState(0)
   const [startId, setStartId] = useState(0)
   const [totalCnt, setTotalCnt] = useState(0)
   const [mintedCnt, setMintedCnt] = useState(0)
+  const [selectedTab, setSelectedTab] = useState(0)
+
+  const { collectionInfo } = useCollection(col_url)
+  
+  const activeClasses = (index: number) => {
+    return index === selectedTab ? 'bg-primary-gradient': 'bg-secondary'
+  }
+  const activeTextClasses = (index: number) => {
+    return index === selectedTab ? 'bg-primary-gradient bg-clip-text text-transparent': 'text-secondary'
+  }
+  
   const decrease = (): void => {
     if (mintNum > 1) {
       setMintNum(mintNum - 1)
@@ -111,61 +118,6 @@ const Mint: NextPage = () => {
       setIsMinting(false)
     }
   }
-  const mintButton = () => {
-    // if(mintable){
-    const tmp = 1
-    if (tmp === 1) {
-      if (isMinting) {
-        return (
-          <button type="button" disabled>
-            <i className="fa fa-spinner fa-spin font-bold text-xl"
-              style={{'letterSpacing': 'normal'}}
-            />
-            mint now
-          </button>
-        )
-      } else {
-        if (isSwitchingNetwork) {
-          return (
-            <button type="button" disabled>mint now</button>
-          )
-        } else {
-          return (
-            <button type="button" onClick={() => mint()}>mint now</button>
-          )
-        }
-      }
-    } else {
-      return (
-        <button type="button" disabled>mint now</button>
-      )
-    }
-  }
-  useEffect(() => {
-    const calculateFee = async (): Promise<void> => {
-      try {
-        if (transferNFT) {
-          //const provider = new ethers.providers.Web3Provider(window.ethereum)
-          //const signer = provider.getSigner()
-          // const tokenContract =  new ethers.Contract(addresses[`${Number(chainId).toString(10)}`].address, AdvancedONT.abi, signer)
-          //const adapterParam = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 200000])
-          //const fee:any =[0.001] //await tokenContract.estimateSendFee(addresses[toChain].chainId, account,transferNFT,false,adapterParam)
-          // setEstimateFee('Estimate Fee :'+(Number(fee[0])/Math.pow(10,18)*1.1).toFixed(10)+addresses[chainId].unit)
-        } else {
-          //setEstimateFee('')
-        }
-      } catch (error) {
-        console.log(error)
-        if (String(chainId) == toChain) {
-          //errorToast(`${addresses[toChain].name} is currently unavailable for transfer`)
-        } else {
-          //errorToast('Please Check the Internet Connection!!!')
-        }
-
-      }
-    }
-    calculateFee()
-  }, [toChain, transferNFT, chainId])
 
   useEffect(() => {
     (async () => {
@@ -174,73 +126,185 @@ const Mint: NextPage = () => {
       }
     })()
   }, [signer, collectionInfo, chainId, getInfo])
-  useEffect(() => {
-    dispatch(getCollectionInfo(col_url) as any)
-  }, [col_url, dispatch])
+
   useEffect(() => {
     if (Number(nextTokenId) >= 0 && startId >= 0) {
       setMintedCnt(Number(nextTokenId) - startId)
     }
   }, [nextTokenId, startId])
+
   useEffect(() => {
     if (Number(totalNFTCount) >= 0 && startId >= 0) {
       setTotalCnt(Number(totalNFTCount) - startId)
     }
   }, [totalNFTCount, startId])
+
   return (
     <>
       <ToastContainer/>
-      <div className={classNames(mintstyles.mintHero, 'font-RetniSans')}>
-        <div className={classNames(mintstyles.container, 'flex justify-between px-[150px]')}>
-          <div className={mintstyles.mintImgWrap}>
-            <div className={mintstyles.mintImgT}>
-              <img className="w-[600px] rounded-md "
-                src={collectionInfo && collectionInfo.profile_image ? collectionInfo.profile_image : '/images/nft.png'}
+      <div className={'pt-8 px-8 lg:px-[150px]'}>
+        <div className={classNames('flex justify-between')}>
+          <div className={'flex flex-1 justify-center mr-2'}>
+            <div className={'max-w-[600px]'}>
+              <img className="w-[600px] rounded-md" src={collectionInfo && collectionInfo.profile_image ? collectionInfo.profile_image : '/images/nft.png'}
                 alt="nft-image"/>
-            </div>
-          </div>
-          <div>
-            <h1 className="font-bold text-xxl2">{collectionInfo && collectionInfo.name ? collectionInfo.name : 'Collection Name'}</h1>
-            <div className={mintstyles.mintDescSec}>
-              <p
-                className="font-bold text-[#A0B3CC] text-xg1 w-[830px]">{collectionInfo && collectionInfo.description ? collectionInfo.description : 'Description here'}</p>
-            </div>
-            <div className={mintstyles.mintDataGrid}>
-              <div className={mintstyles.mintDataWrap}>
-                <h5>minted</h5>
-                <span>{mintedCnt > 0 ? mintedCnt : 0}/{totalCnt > 0 ? totalCnt : 0}</span>
-              </div>
-              <span className={mintstyles.line}></span>
-              <div className={mintstyles.mintDataWrap}>
-                <h5>price</h5>
-                {/* <span>{chainId?addresses[`${Number(chainId)}`].price:0}<Image src={chainId?addresses[`${Number(chainId)}`].imageSVG:EthereumImageSVG} width={29.84} height={25.46} alt='ikon'></Image></span> */}
-                <div className="flex flex-row space-x-2 items-center mt-[15px]">
-                  <div className="text-xg1 ">
-                    {(price * mintNum).toFixed(2)}
-                  </div>
+
+              <div className="mt-10">
+                <div className="text-xl font-medium text-center text-secondary">
+                  <ul className="flex flex-wrap -mb-px">
+                    <li onClick={() => setSelectedTab(0)}>
+                      <div className={`${activeClasses(0)} pb-[2px] cursor-pointer`}>
+                        <div className={'flex flex-col justify-between h-full bg-primary text-white p-4 pb-1'}>
+                          <span className={`${activeTextClasses(0)}`}>about</span>
+                        </div>
+                      </div>
+                    </li>
+                    <li onClick={() => setSelectedTab(1)}>
+                      <div className={`${activeClasses(1)} pb-[2px] cursor-pointer`}>
+                        <div className={'flex flex-col justify-between h-full bg-primary text-white p-4 pb-1'}>
+                          <span className={`${activeTextClasses(1)}`}>utility</span>
+                        </div>
+                      </div>
+                    </li>
+                    <li onClick={() => setSelectedTab(2)}>
+                      <div className={`${activeClasses(2)} pb-[2px] cursor-pointer`}>
+                        <div className={'flex flex-col justify-between h-full bg-primary text-white p-4 pb-1'}>
+                          <span className={`${activeTextClasses(2)}`}>team</span>
+                        </div>
+                      </div>
+                    </li>
+                    <li onClick={() => setSelectedTab(4)}>
+                      <div className={`${activeClasses(4)} pb-[2px] cursor-pointer`}>
+                        <div className={'flex flex-col justify-between h-full bg-primary text-white p-4 pb-1'}>
+                          <span className={`${activeTextClasses(4)}`}>roadmap</span>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <div className="py-4">
                   {
-                    chainId &&
-                    SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
-                      return chainId === networkId && <img key={index} alt={'networkIcon'}
-                        src={chainInfos[networkId].logo || chainInfos[ChainIds.ETHEREUM].logo}
-                        className="m-auto h-[45px]"/>
-                    })
+                    selectedTab === 0 &&
+                      <div className="text-primary-light text-[16px] leading-[19px]">{collectionInfo && collectionInfo.description ? collectionInfo.description : 'Description here'}</div>
+                  }
+                  {
+                    selectedTab === 1 &&
+                      <div className={''}>
+                      </div>
                   }
                 </div>
               </div>
-              <span className={mintstyles.line}></span>
-              <div className={mintstyles.mintDataWrap}>
-                <h5>quantity</h5>
-                <div className={mintstyles.counterWrap}>
-                  <button onClick={() => decrease()}><Image src={MinusSign} alt="minus"></Image></button>
-                  <span>{mintNum}</span>
-                  <button onClick={() => increase()}><Image src={PlusSign} alt="plus"></Image></button>
+            </div>
+          </div>
+          <div className={'flex flex-1'}>
+            <div>
+              <span className="font-medium text-primary-light text-xxl">
+                {collectionInfo && collectionInfo.name ? collectionInfo.name : 'Collection Name'}
+              </span>
+
+              {/*Icon group*/}
+              <div className={'flex items-center mt-4'}>
+                <div className={'w-8 h-8 p-1'}>
+                  <ExternalLink link={collectionInfo?.website}>
+                    <WebsiteIcon />
+                  </ExternalLink>
+                </div>
+                <div className={'w-8 h-8 p-1'}>
+                  <ExternalLink link={collectionInfo?.twitter}>
+                    <TwitterIcon />
+                  </ExternalLink>
+                </div>
+                <div className={'w-8 h-8 p-1'}>
+                  <ExternalLink link={collectionInfo?.discord}>
+                    <DiscordIcon />
+                  </ExternalLink>
+                </div>
+                <div className={'w-8 h-8 p-1'}>
+                  <ExternalLink link={collectionInfo?.telegram}>
+                    <TelegramIcon />
+                  </ExternalLink>
                 </div>
               </div>
-            </div>
-            <div
-              className="w-fit px-2 py-1 text-white border-2 border-[#B444F9] bg-[#B444F9] rounded-lg transition-all duration-300 ease-in-out hover:scale-105 hover:drop-shadow-[0_10px_10px_rgba(180,68,249,0.7)] active:scale-100 active:drop-shadow-[0_5px_5px_rgba(180,68,249,0.8)]">
-              {mintButton()}
+
+              {/*creator*/}
+              <div className={'flex flex-col mt-4'}>
+                <div className={'text-secondary text-lg'}>creator</div>
+                <div className={'text-primary-light text-lg mt-2'}>@{collectionInfo?.col_url.toLowerCase()}</div>
+              </div>
+
+              {/*items*/}
+              <div className={'flex mt-4'}>
+                <div className={'text-secondary text-lg'}>items</div>
+                <div className={'text-primary-light text-lg ml-2 text-shadow-sm2'}>{totalCnt}</div>
+              </div>
+
+              {/*whitelist 1*/}
+              <div className={'flex flex-col mt-4'}>
+                <div className={'rounded-[8px] p-[1px] bg-primary-gradient w-[350px]'}>
+                  <div className={'flex flex-col py-2 px-3 rounded-[8px] bg-primary'}>
+                    <div className={'flex justify-between'}>
+                      <div className={'text-secondary text-xl text-shadow-sm2'}>whitelist 1</div>
+                      <div className={'text-xl text-shadow-sm2 bg-clip-text text-transparent bg-primary-gradient font-medium'}>live
+                      </div>
+                    </div>
+                    <div className={'flex justify-between mt-2'}>
+                      <div className={'flex items-center'}>
+                        <span className={'text-secondary text-xxxl text-shadow-sm2 mr-4'}>
+                          {(price * mintNum).toFixed(2)}
+                        </span>
+                        {
+                          chainId &&
+                            <img 
+                              alt={'networkIcon'}
+                              src={chainInfos[chainId].logo || chainInfos[ChainIds.ETHEREUM].logo}
+                              className="'w-8 h-8"
+                            />
+                        }
+                      </div>
+                      <PrimaryButton text={'mint'} className={'px-6'} onClick={() => mint()} />
+                    </div>
+                    <div className={'mt-2 text-primary-light font-medium text-[14px] leading-[18px] text-shadow-sm2'}>
+                      2,000 max - 1 per wallet
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/*<div className={mintstyles.mintDataGrid}>
+                <div className={mintstyles.mintDataWrap}>
+                  <h5>minted</h5>
+                  <span>{mintedCnt > 0 ? mintedCnt : 0}/{totalCnt > 0 ? totalCnt : 0}</span>
+                </div>
+                <span className={mintstyles.line}></span>
+                <div className={mintstyles.mintDataWrap}>
+                  <h5>price</h5>
+                  <div className="flex flex-row space-x-2 items-center mt-[15px]">
+                    <div className="text-xg1 ">
+                      {(price * mintNum).toFixed(2)}
+                    </div>
+                    {
+                      chainId &&
+                      SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
+                        return chainId === networkId && <img key={index} alt={'networkIcon'}
+                          src={chainInfos[networkId].logo || chainInfos[ChainIds.ETHEREUM].logo}
+                          className="m-auto h-[45px]"/>
+                      })
+                    }
+                  </div>
+                </div>
+                <span className={mintstyles.line}></span>
+                <div className={mintstyles.mintDataWrap}>
+                  <h5>quantity</h5>
+                  <div className={mintstyles.counterWrap}>
+                    <button onClick={() => decrease()}><Image src={MinusSign} alt="minus"></Image></button>
+                    <span>{mintNum}</span>
+                    <button onClick={() => increase()}><Image src={PlusSign} alt="plus"></Image></button>
+                  </div>
+                </div>
+              </div>
+              <div
+                className="w-fit px-2 py-1 text-white border-2 border-[#B444F9] bg-[#B444F9] rounded-lg transition-all duration-300 ease-in-out hover:scale-105 hover:drop-shadow-[0_10px_10px_rgba(180,68,249,0.7)] active:scale-100 active:drop-shadow-[0_5px_5px_rgba(180,68,249,0.8)]">
+                {mintButton()}
+              </div>*/}
             </div>
           </div>
         </div>

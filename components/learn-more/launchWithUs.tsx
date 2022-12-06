@@ -1,6 +1,6 @@
 import {IntroCard} from './intro'
-import {GradientButton} from '../basic'
 import Image from 'next/image'
+import {PrimaryButton} from '../common/buttons/PrimaryButton'
 
 export default function LearnMoreLaunchWithUs() {
   return (
@@ -32,9 +32,7 @@ export default function LearnMoreLaunchWithUs() {
                 <span className={'text-secondary text-lg text-center'}>
                   launching on specific chains, adding metadata, keeping your community up to date, and selling out - we make sure it all happens perfectly
                 </span>
-                <div className={'w-[124px]'}>
-                  <GradientButton title={'apply now!'} height={32} borderRadius={50} textSize={'text-md font-medium cursor-pointer'} />
-                </div>
+                <PrimaryButton text={'apply now!'} className={'text-md font-medium cursor-pointer rounded-full h-[32px] w-[124px]'} />
               </div>
             </IntroCard>
           </div>
