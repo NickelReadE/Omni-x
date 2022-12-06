@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {useState, useMemo} from 'react'
 import Image from 'next/image'
 import {ethers} from 'ethers'

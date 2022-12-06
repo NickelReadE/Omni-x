@@ -23,7 +23,7 @@ import {userService} from '../../services/users'
 import ConfirmTransfer from '../bridge/ConfirmTransfer'
 import {DangerButton} from '../common/buttons/DangerButton'
 import {PrimaryButton} from '../common/buttons/PrimaryButton'
-import {GreenButton} from "../common/buttons/GreenButton";
+import {GreenButton} from '../common/buttons/GreenButton'
 
 const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)

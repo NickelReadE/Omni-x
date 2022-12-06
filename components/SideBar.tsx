@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { BigNumber, ethers } from 'ethers'
