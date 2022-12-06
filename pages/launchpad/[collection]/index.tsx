@@ -4,7 +4,7 @@ import {useRouter} from 'next/router'
 import {ethers} from 'ethers'
 import React, {useState, useEffect, useCallback} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {getAdvancedInstance} from '../../../utils/contracts'
+import {getAdvancedInstance, getUSDCInstance} from '../../../utils/contracts'
 import {ToastContainer, toast} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import {Slide} from 'react-toastify'
@@ -15,8 +15,10 @@ import mintstyles from '../../../styles/mint.module.scss'
 import classNames from '../../../helpers/classNames'
 import useWallet from '../../../hooks/useWallet'
 import {ChainIds} from '../../../types/enum'
-import {SUPPORTED_CHAIN_IDS} from '../../../utils/constants'
+import {getAddressByName, parseCurrency, SUPPORTED_CHAIN_IDS, validateCurrencyName} from '../../../utils/constants'
 import {chainInfos} from '../../../utils/constants'
+import { useGaslessMint } from '../../../hooks/useGelato'
+
 
 const Mint: NextPage = () => {
   const {
@@ -40,6 +42,8 @@ const Mint: NextPage = () => {
   const [startId, setStartId] = useState(0)
   const [totalCnt, setTotalCnt] = useState(0)
   const [mintedCnt, setMintedCnt] = useState(0)
+  const { gaslessMint, waitForRelayTask } = useGaslessMint()
+
   const decrease = (): void => {
     if (mintNum > 1) {
       setMintNum(mintNum - 1)
@@ -131,7 +135,10 @@ const Mint: NextPage = () => {
           )
         } else {
           return (
-            <button type="button" onClick={() => mint()}>mint now</button>
+            <>
+              <button type="button" onClick={() => mint()}>mint now</button>
+            </>
+            
           )
         }
       }
@@ -141,6 +148,36 @@ const Mint: NextPage = () => {
       )
     }
   }
+
+  const stableMint = async (): Promise<void> => {
+    if (chainId === undefined || !provider || !collectionInfo || !address) {
+      return
+    }
+    const collectionAddr = '0xe96Ce71bB49D630f075413618CCf097c4A0b7b9A'
+    const newCurrencyName = validateCurrencyName('USDC', chainId) || 'USDC'
+    const tokenContract = getAdvancedInstance(collectionAddr, chainId, signer)
+    const usdContract = getUSDCInstance(getAddressByName(newCurrencyName, chainId), chainId, signer)
+
+    setIsMinting(true)
+    try {
+
+      const price = await tokenContract.stablePrice()
+      const allowance = await usdContract?.allowance(address, tokenContract.address)
+      if (allowance.lt(price)) {
+        await (await usdContract?.approve(tokenContract.address, price)).wait()
+      }
+      const response = await gaslessMint(tokenContract, chainId, mintNum, address)
+      await waitForRelayTask(response)
+
+      setIsMinting(false)
+      await getInfo()
+
+    } catch (e: any) {
+      console.log(e)
+      setIsMinting(false)
+    }
+  }
+
   useEffect(() => {
     const calculateFee = async (): Promise<void> => {
       try {
@@ -241,6 +278,10 @@ const Mint: NextPage = () => {
             <div
               className="w-fit px-2 py-1 text-white border-2 border-[#B444F9] bg-[#B444F9] rounded-lg transition-all duration-300 ease-in-out hover:scale-105 hover:drop-shadow-[0_10px_10px_rgba(180,68,249,0.7)] active:scale-100 active:drop-shadow-[0_5px_5px_rgba(180,68,249,0.8)]">
               {mintButton()}
+            </div>
+            <div
+              className="mt-1 w-fit px-2 py-1 text-white border-2 border-[#B444F9] bg-[#B444F9] rounded-lg transition-all duration-300 ease-in-out hover:scale-105 hover:drop-shadow-[0_10px_10px_rgba(180,68,249,0.7)] active:scale-100 active:drop-shadow-[0_5px_5px_rgba(180,68,249,0.8)]">
+              <button type="button" onClick={() => stableMint()}>stable mint</button>
             </div>
           </div>
         </div>
