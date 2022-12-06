@@ -13,7 +13,7 @@ const Launchpad: NextPage = () => {
     <div className="pt-[20px] w-full">
       <div className="flex w-full justify-center">
         <div className={'aspect-[3/1] flex justify-center'}>
-          <div className={'bg-dark-gradient border-1 border-[#383838] rounded-[20px] backdrop-blur w-[1000px] flex flex-col items-center py-6'}>
+          <div className={'bg-dark-gradient border-[1px] border-[#383838] rounded-[20px] backdrop-blur-[15px] w-[1000px] flex flex-col items-center py-6'}>
             <span className="bg-clip-text text-center text-transparent bg-rainbow-gradient text-extraxl font-bold text-shadow-sm">connect through art</span>
             <span className={'text-secondary text-xg1 text-shadow-sm'}>
             the best place to launch your next NFT collection

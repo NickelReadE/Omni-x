@@ -10,12 +10,16 @@ export const SelectNetworks = ({ gasSupportChainIds, updateGasChainId }: {gasSup
 
   return (
     <div>
-      <Menu as="div" className="relative inline-block align-middle">
+      <Menu as="div" className="relative inline-block align-middle flex items-center">
         {({ open }) => (
           <>
-            <Menu.Button className={'focus:outline-none'}>
-              <div className={''}>
-                <img src={`/images/icons/${open ? 'horizontal' : 'vertical'}-dots.png`} alt={'dots'} />
+            <Menu.Button className={'focus:outline-none w-5 h-5'}>
+              <div className={`${open ? 'rotate-90' : ''} duration-300 flex items-center justify-center`}>
+                <svg width="19" height="3" viewBox="0 0 19 3" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M11 1.5C11 0.671573 10.3284 0 9.5 0C8.67157 0 8 0.671573 8 1.5C8 2.32843 8.67157 3 9.5 3C10.3284 3 11 2.32843 11 1.5Z" fill={!open ? '#969696': '#00F0EC'}/>
+                  <path d="M4 1.5C4 0.671573 3.32843 0 2.5 0C1.67157 0 1 0.671573 1 1.5C1 2.32843 1.67157 3 2.5 3C3.32843 3 4 2.32843 4 1.5Z" fill={!open ? '#969696': '#00F0EC'}/>
+                  <path d="M18 1.5C18 0.671573 17.3284 0 16.5 0C15.6716 0 15 0.671573 15 1.5C15 2.32843 15.6716 3 16.5 3C17.3284 3 18 2.32843 18 1.5Z" fill={!open ? '#969696': '#00F0EC'}/>
+                </svg>
               </div>
             </Menu.Button>
             <Transition

@@ -24,9 +24,15 @@ export default function HomeIntro () {
         </div>
         <div className={'flex flex-col items-center justify-between'}>
           <div className={'flex items-center justify-between h-[80px]'}>
-            <img src={'/images/home/heart.svg'} alt={'heart'} className={'w-[55px] h-[55px]'} />
-            <img src={'/images/home/message.svg'} alt={'message'} className={'w-[55px] h-[55px]'} />
-            <img src={'/images/home/exchange.svg'} alt={'exchange'} className={'w-[55px] h-[55px]'} />
+            <div className={'flex items-center justify-center w-[55px] h-[55px]'}>
+              <img src={'/images/home/heart.svg'} alt={'heart'} className={'w-6 h-6'} />
+            </div>
+            <div className={'flex items-center justify-center w-[55px] h-[55px]'}>
+              <img src={'/images/home/message.svg'} alt={'message'} className={'w-6 h-6'} />
+            </div>
+            <div className={'flex items-center justify-center w-[55px] h-[55px]'}>
+              <img src={'/images/home/exchange.svg'} alt={'exchange'} className={'w-6 h-6'} />
+            </div>
           </div>
           <span className={'text-primary-light text-xl text-shadow-sm2'}>
               web3 social<span className={'text-secondary'}>&nbsp;(soon)</span>
