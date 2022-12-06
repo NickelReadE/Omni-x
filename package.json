@@ -57,6 +57,7 @@
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.4.1",
     "swiper": "^8.2.2",
+    "tailwind-merge": "^1.8.0",
     "wagmi": "^0.7.2",
     "walletlink": "^2.5.0"
   },

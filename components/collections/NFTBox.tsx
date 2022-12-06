@@ -21,6 +21,9 @@ import {NFTBoxFullscreenDialog} from './FullscreenDialog'
 import { collectionsService } from '../../services/collections'
 import {userService} from '../../services/users'
 import ConfirmTransfer from '../bridge/ConfirmTransfer'
+import {DangerButton} from '../common/buttons/DangerButton'
+import {PrimaryButton} from '../common/buttons/PrimaryButton'
+import {GreenButton} from "../common/buttons/GreenButton";
 
 const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
@@ -92,11 +95,11 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   }, [router.pathname])
 
   const isHomePage = useMemo(() => {
-    return router.pathname === '/' || router.pathname === '/playground'
+    return router.pathname === '/'
   }, [router.pathname])
 
   const isCollectionPage = useMemo(() => {
-    return router.pathname === '/collections/[collection]'
+    return router.pathname === '/collections/[collection]' || router.pathname === '/playground'
   }, [router.pathname])
 
   const isWhitelisted = useMemo(() => {
@@ -185,16 +188,20 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           {...(isHomePage ? listeners : {})}
           {...(isHomePage ? attributes : {})}
         >
-          <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
-            <img
-              className='nft-image rounded-tr-[8px] rounded-tl-[8px] object-cover duration-300'
-              src={imageError ? '/images/omnix_logo_black_1.png' : image}
-              alt="nft-image"
-              onError={() => { setImageError(true) }}
-              data-src={image}
-              onDoubleClick={doubleClickToSetDetailLink}
-            />
-          </LazyLoad>
+          <Link href={`/collections/${col_url}/${nft.token_id}`}>
+            <div className="w-full h-full">
+              <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
+                <img
+                  className='rounded-tr-[8px] rounded-tl-[8px] object-contain object-center  hover:backdrop-blur-[2px] hover:rounded-tr-[8px] hover:rounded-tl-[8px] duration-300 absolute top-0 bottom-0 left-0 right-0'
+                  src={imageError ? '/images/omnix_logo_black_1.png' : image}
+                  alt="nft-image"
+                  onError={() => { setImageError(true) }}
+                  data-src={image}
+                  onDoubleClick={doubleClickToSetDetailLink}
+                />
+              </LazyLoad>
+            </div>
+          </Link>
           <div className={`flex absolute top-3 left-3 rounded-[20px] bg-primary opacity-80 items-center px-2 py-1.5 space-x-1 ${boxHovered ? 'block' : 'hidden'}`}>
             <div>
               <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -206,39 +213,97 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
             </span>
           </div>
         </div>
-        <div className={'flex flex-col justify-between min-h-[100px] pt-2 pb-3 px-3'}>
+        <div className={'flex flex-col justify-between min-h-[100px] p-3'}>
           <div className="flex flex-col-1 flex-row justify-between items-center">
             <div className="text-md text-secondary font-bold">
               {nft.token_id}
             </div>
             <img src={chainIcon} alt={'chainicon'} width={18} height={18} />
           </div>
-          <div className="flex flex-col-1 flex-row justify-between items-center">
-            <div className="flex items-center">
-              {isListed && <>
-                <img src={currencyIcon || '/svgs/ethereum.svg'} className="w-[18px] h-[18px]" alt='icon'/>
-                <span className="text-primary-light text-md font-extrabold ml-2">
-                  {numberLocalize(Number(nft?.price || 0))}
-                </span>
-              </>}
-            </div>
+          {
+            boxHovered 
+              ?
+              <div className={'flex items-center justify-between'}>
+                {isOwner && isWhitelisted && (
+                  <DangerButton text={'sell'} className={'px-6'} onClick={() => {
+                    openModal(ModalIDs.MODAL_LISTING, {
+                      nftImage: image,
+                      nftTitle: nftName,
+                      nftTokenId: nft.token_id,
+                      collectionName: nft_collection?.name,
+                      tradingInput,
+                      handleSellDlgClose: closeModal
+                    })
+                  }} />
+                )}
+                {!isOwner && isCollectionPage && (
+                  <GreenButton text={'buy'} className={'w-[120px]'} onClick={() => {
+                    openModal(ModalIDs.MODAL_BUY, {
+                      nftImage: image,
+                      nftTitle: nftName,
+                      nftTokenId: nft.token_id,
+                      collectionName: nft_collection?.name,
+                      order,
+                      tradingInput,
+                      handleBuyDlgClose: closeModal
+                    })
+                  }} />
+                )}
+                {
+                  isOwner &&
+                    <PrimaryButton text={'send'} className={'px-[23px]'} onClick={onTransfer} />
+                }
+                {/*{!isOwner && !isListed && isCollectionPage && (
+          <div
+            className="font-bold w-full h-full flex items-center justify-center"
+            onClick={() => {
+              openModal(ModalIDs.MODAL_BID, {
+                nftImage: image,
+                nftTitle: nftName,
+                nftTokenId: nft.token_id,
+                collectionName: nft_collection?.name,
+                tradingInput,
+                handleBidDlgClose: closeModal
+              })
+            }}>
+            {'bid'}
           </div>
-          <div className="flex flex-col-1 items-center justify-between w-full">
-            <div>
-              {(!!lastSale && lastSale > 0) && <div className={'flex items-center'}>
-                <span className="text-secondary text-sm font-bold">last sale: &nbsp;</span>
-                <img alt={'saleIcon'} src={lastSaleCoin} className="w-[18px] h-[18px]"/>&nbsp;
-                <span
-                  className="text-secondary text-sm font-bold">{numberLocalize(Number(lastSale))}</span>
-              </div>}
-              {(!lastSale && !!highestBid && highestBid > 0) && <div className={'flex items-center'}>
-                <span className="text-[#6C757D] text-md font-bold">highest offer: &nbsp;</span>
-                <img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;
-                <span
-                  className="text-secondary text-sm font-bold">{numberLocalize(Number(highestBid))}</span>
-              </div>}
-            </div>
-          </div>
+        )}*/}
+                <div className={'w-8 flex items-center justify-center cursor-pointer'}
+                  onClick={() => setDotHover(!dotHover)}>
+                  <img src={`/images/icons/${dotHover ? 'vertical' : 'horizontal'}-dots.png`} alt={'dots'}/>
+                </div>
+              </div>
+              :
+              <>
+                <div className="flex flex-col-1 flex-row justify-between items-center">
+                  <div className="flex items-center">
+                    {isListed && <>
+                      <img src={currencyIcon || '/svgs/ethereum.svg'} className="w-[18px] h-[18px]" alt='icon'/>
+                      <span className="text-primary-light text-md font-extrabold ml-2">
+                        {numberLocalize(Number(nft?.price || 0))}
+                      </span>
+                    </>}
+                  </div>
+                </div>
+                <div className="flex flex-col-1 items-center justify-between w-full">
+                  <div>
+                    {(!!lastSale && lastSale > 0) && <div className={'flex items-center'}>
+                      <span className="text-secondary text-sm font-bold">last sale: &nbsp;</span>
+                      <img alt={'saleIcon'} src={lastSaleCoin} className="w-[18px] h-[18px]"/>&nbsp;
+                      <span
+                        className="text-secondary text-sm font-bold">{numberLocalize(Number(lastSale))}</span>
+                    </div>}
+                    {(!lastSale && !!highestBid && highestBid > 0) && <div className={'flex items-center'}>
+                      <span className="text-[#6C757D] text-md font-bold">highest offer: &nbsp;</span>
+                      <img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;
+                      <span
+                        className="text-secondary text-sm font-bold">{numberLocalize(Number(highestBid))}</span>
+                    </div>}
+                  </div>
+                </div>
+              </>
+          }
         </div>
       </>
     )
@@ -255,78 +320,9 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
         }}
       >
         <div className="w-full">
-          {
-            (isHomePage || isUserPage) && renderImageContainer()
-          }
-          {
-            isCollectionPage &&
-              <Link href={`/collections/${col_url}/${nft.token_id}`}>
-                <a>
-                  {renderImageContainer()}
-                </a>
-              </Link>
-          }
+          {renderImageContainer()}
         </div>
 
-        {
-          boxHovered && isWhitelisted &&
-              <div
-                className={`absolute rounded-lg bottom-0 w-full ${isOwner ? 'bg-dark-red' : 'bg-dark-green'} text-primary-light rounded-br-[8px] rounded-bl-[8px] h-10 text-xg cursor-pointer flex`}>
-                {isOwner && (
-                  <div
-                    className="font-bold w-full h-full flex items-center justify-center"
-                    onClick={() => {
-                      openModal(ModalIDs.MODAL_LISTING, {
-                        nftImage: image,
-                        nftTitle: nftName,
-                        nftTokenId: nft.token_id,
-                        collectionName: nft_collection?.name,
-                        tradingInput,
-                        handleSellDlgClose: closeModal
-                      })
-                    }}>
-                    {'sell'}
-                  </div>
-                )}
-                {!isOwner && isCollectionPage && (
-                  <div
-                    className="font-bold w-full h-full flex items-center justify-center"
-                    onClick={() => {
-                      openModal(ModalIDs.MODAL_BUY, {
-                        nftImage: image,
-                        nftTitle: nftName,
-                        nftTokenId: nft.token_id,
-                        collectionName: nft_collection?.name,
-                        order,
-                        tradingInput,
-                        handleBuyDlgClose: closeModal
-                      })
-                    }}>
-                    {'buy'}
-                  </div>
-                )}
-                {/*{!isOwner && !isListed && isCollectionPage && (
-            <div
-              className="font-bold w-full h-full flex items-center justify-center"
-              onClick={() => {
-                openModal(ModalIDs.MODAL_BID, {
-                  nftImage: image,
-                  nftTitle: nftName,
-                  nftTokenId: nft.token_id,
-                  collectionName: nft_collection?.name,
-                  tradingInput,
-                  handleBidDlgClose: closeModal
-                })
-              }}>
-              {'bid'}
-            </div>
-          )}*/}
-                <div className={'bg-[#303030] w-12 rounded-br-[8px] flex items-center justify-center'}
-                  onClick={() => setDotHover(!dotHover)}>
-                  <img src={`/images/icons/${dotHover ? 'vertical' : 'horizontal'}-dots.png`} alt={'dots'}/>
-                </div>
-              </div>
-        }
         <Transition
           as={Fragment}
           enter="transition ease duration-150 transform origin-bottom"
@@ -338,135 +334,107 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           show={dotHover}
         >
           <div
-            className={'absolute w-full left-0 right-0 top-0 bg-[#303030] rounded-tr rounded-tl grid grid-rows-7 grid-flow-col gap-1'}
-            style={{height: 'calc(100% - 40px)'}} onMouseLeave={() => {
+            className={'absolute w-full left-0 right-0 top-0 bg-[#202020] rounded-tr rounded-tl grid grid-rows-6 grid-flow-col gap-1'}
+            style={{height: 'calc(100% - 60px)'}} onMouseLeave={() => {
               setDotHover(false)
             }}>
             {
               (isOwner && isWhitelisted) &&
-                  <>
-                    <div className={'flex items-center px-2 rounded-tr-[8px] rounded-tl-[8px]'}>
-                      <div className={'p-1 mr-2'}>
-                        <img src={'/images/icons/nftbox/star.svg'} alt={'star'} width={24} height={24}/>
-                      </div>
-                      <span className={'text-primary-light text-md'}>favorite</span>
+                <>
+                  <div className={'flex items-center px-2 rounded-tr-[8px] rounded-tl-[8px]'}>
+                    <div className={'p-1 mr-2'}>
+                      <img src={'/images/icons/nftbox/star.svg'} alt={'star'} width={24} height={24}/>
                     </div>
-                    <div className={'flex items-center px-2 cursor-pointer'} onClick={() => setIsFullscreenView(true)}>
-                      <div className={'p-1 mr-2'}>
-                        <img src={'/images/icons/nftbox/fullscreen.svg'} alt={'star'} width={24} height={24}/>
-                      </div>
-                      <span className={'text-primary-light text-md'}>fullscreen view</span>
+                    <span className={'text-primary-light text-md'}>favorite</span>
+                  </div>
+                  <div className={'flex items-center px-2 cursor-pointer'} onClick={() => setIsFullscreenView(true)}>
+                    <div className={'p-1 mr-2'}>
+                      <img src={'/images/icons/nftbox/fullscreen.svg'} alt={'star'} width={24} height={24}/>
                     </div>
-                    <div className={'flex items-center px-2 cursor-pointer'} onClick={setAsPfp}>
-                      <div className={'p-1 mr-2'}>
-                        <img src={'/images/icons/nftbox/pfp.svg'} alt={'star'} width={24} height={24}/>
-                      </div>
-                      <span className={'text-primary-light text-md'}>set as pfp</span>
+                    <span className={'text-primary-light text-md'}>fullscreen view</span>
+                  </div>
+                  <div className={'flex items-center px-2 cursor-pointer'} onClick={setAsPfp}>
+                    <div className={'p-1 mr-2'}>
+                      <img src={'/images/icons/nftbox/pfp.svg'} alt={'star'} width={24} height={24}/>
                     </div>
-                    <div className={'flex items-center px-2 cursor-pointer'} onClick={onTransfer}>
-                      <div className={'mr-2'}>
-                        <img src={'/images/icons/nftbox/transfer.svg'} alt={'star'} width={32} height={32}/>
-                      </div>
-                      <span className={'text-primary-light text-md'}>transfer</span>
+                    <span className={'text-primary-light text-md'}>set as pfp</span>
+                  </div>
+                  <div className={'flex items-center px-2 cursor-pointer'} onClick={onCopyToClipboard}>
+                    <div className={'p-1 mr-2'}>
+                      <img src={'/images/icons/nftbox/link.svg'} alt={'star'} width={24} height={24}/>
                     </div>
-                    <div className={'flex items-center px-2 cursor-pointer'} onClick={onCopyToClipboard}>
-                      <div className={'p-1 mr-2'}>
-                        <img src={'/images/icons/nftbox/link.svg'} alt={'star'} width={24} height={24}/>
-                      </div>
-                      <span className={'text-primary-light text-md'}>copy link</span>
+                    <span className={'text-primary-light text-md'}>copy link</span>
+                  </div>
+                  <div className={'flex items-center px-2'}>
+                    <div className={'p-1 mr-2'}>
+                      <img src={'/images/icons/nftbox/hide.svg'} alt={'star'} width={24} height={24}/>
                     </div>
-                    <div className={'flex items-center px-2'}>
-                      <div className={'p-1 mr-2'}>
-                        <img src={'/images/icons/nftbox/hide.svg'} alt={'star'} width={24} height={24}/>
-                      </div>
-                      <span className={'text-primary-light text-md'}>hide</span>
+                    <span className={'text-primary-light text-md'}>hide</span>
+                  </div>
+                  <div className={'flex items-center px-2 cursor-pointer'} onClick={onRefreshMetadata}>
+                    <div className={'p-1 mr-2'}>
+                      <img src={'/images/icons/nftbox/refresh.svg'} alt={'star'} width={24} height={24}/>
                     </div>
-                    <div className={'flex items-center px-2 cursor-pointer'} onClick={onRefreshMetadata}>
-                      <div className={'p-1 mr-2'}>
-                        <img src={'/images/icons/nftbox/refresh.svg'} alt={'star'} width={24} height={24}/>
-                      </div>
-                      <span className={'text-primary-light text-md'}>refresh metadata</span>
-                    </div>
-                  </>
+                    <span className={'text-primary-light text-md'}>refresh metadata</span>
+                  </div>
+                </>
             }
             {
               (!isOwner && isWhitelisted) &&
-                  <>
-                    <div
-                      className="flex flex-row justify-between items-center px-2 bg-primary rounded-tr-[8px] rounded-tl-[8px]">
-                      <div className="text-md text-secondary font-bold">
-                        {nft.token_id}
-                      </div>
-                      <div className={'flex items-center'}>
-                        <svg width="17" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path
-                            d="M9.64864 1.81096L9.64873 1.81087C9.98536 1.47408 10.3851 1.20691 10.825 1.02463C11.2649 0.842355 11.7364 0.748535 12.2126 0.748535C12.6888 0.748535 13.1603 0.842355 13.6002 1.02463C14.0401 1.20691 14.4398 1.47408 14.7765 1.81087L15.1301 1.45744L14.7766 1.81104C15.1134 2.14768 15.3806 2.54737 15.5629 2.98728C15.7451 3.4272 15.839 3.89872 15.839 4.3749C15.839 4.85109 15.7451 5.32261 15.5629 5.76252C15.3806 6.20244 15.1134 6.60213 14.7766 6.93877L14.7765 6.93885L13.9815 7.73385L8.50009 13.2153L3.01864 7.73385L2.22364 6.93885C1.54364 6.25885 1.16162 5.33657 1.16162 4.3749C1.16162 3.41324 1.54364 2.49096 2.22364 1.81096C2.90364 1.13096 3.82592 0.748936 4.78759 0.748936C5.74926 0.748936 6.67153 1.13096 7.35154 1.81096L8.14654 2.60596C8.3418 2.80122 8.65838 2.80122 8.85364 2.60596L9.64864 1.81096Z"
-                            stroke="url(#paint0_linear_329_6115)" strokeLinecap="round" strokeLinejoin="round"/>
-                          <defs>
-                            <linearGradient id="paint0_linear_329_6115" x1="3.60112" y1="0.248535" x2="16.7643"
-                              y2="3.89337" gradientUnits="userSpaceOnUse">
-                              <stop stopColor="#FA16FF"/>
-                              <stop offset="1" stopColor="#F00056"/>
-                            </linearGradient>
-                          </defs>
-                        </svg>
-                        <span
-                          className={'bg-clip-text bg-like-gradient text-transparent text-md opacity-50 ml-2'}>24</span>
-                      </div>
+                <>
+                  <div className={'flex items-center px-2'}>
+                    <div className={'p-1 mr-2'}>
+                      <img src={'/images/icons/nftbox/star.svg'} alt={'star'} width={24} height={24}/>
                     </div>
-                    <div className={'flex items-center px-2'}>
+                    <span className={'text-primary-light text-md'}>favorite</span>
+                  </div>
+                  <div className={'flex items-center px-2 cursor-pointer'} onClick={() => setIsFullscreenView(true)}>
+                    <div className={'p-1 mr-2'}>
+                      <img src={'/images/icons/nftbox/fullscreen.svg'} alt={'star'} width={24} height={24}/>
+                    </div>
+                    <span className={'text-primary-light text-md'}>fullscreen view</span>
+                  </div>
+                  <a href={`https://chat.blockscan.com/index?a=${nft.owner}`} target="_blank" rel="noreferrer"
+                    className={'flex items-center px-2'}>
+                    <div className={'flex items-center'}>
                       <div className={'p-1 mr-2'}>
-                        <img src={'/images/icons/nftbox/star.svg'} alt={'star'} width={24} height={24}/>
+                        <img src={'/images/icons/nftbox/chat.svg'} alt={'star'} width={24} height={24}/>
                       </div>
-                      <span className={'text-primary-light text-md'}>favorite</span>
+                      <span className={'text-primary-light text-md'}>message owner</span>
                     </div>
-                    <a href={`https://chat.blockscan.com/index?a=${nft.owner}`} target="_blank" rel="noreferrer"
-                      className={'flex items-center px-2'}>
-                      <div className={'flex items-center'}>
-                        <div className={'p-1 mr-2'}>
-                          <img src={'/images/icons/nftbox/chat.svg'} alt={'star'} width={24} height={24}/>
-                        </div>
-                        <span className={'text-primary-light text-md'}>message owner</span>
-                      </div>
-                    </a>
-                    <div className={'flex items-center px-2'}>
-                      <div className={'mr-2'}>
-                        <img src={'/images/icons/nftbox/creator_follow.svg'} alt={'star'} width={32} height={32}/>
-                      </div>
-                      <span className={'text-primary-light text-md'}>follow creator</span>
+                  </a>
+                  <div className={'flex items-center px-2'}>
+                    <div className={'mr-2'}>
+                      <img src={'/images/icons/nftbox/creator_follow.svg'} alt={'star'} width={32} height={32}/>
                     </div>
-                    <div className={'flex items-center px-2 cursor-pointer'} onClick={() => setIsFullscreenView(true)}>
-                      <div className={'p-1 mr-2'}>
-                        <img src={'/images/icons/nftbox/fullscreen.svg'} alt={'star'} width={24} height={24}/>
-                      </div>
-                      <span className={'text-primary-light text-md'}>fullscreen view</span>
+                    <span className={'text-primary-light text-md'}>follow creator</span>
+                  </div>
+                  <div className={'flex items-center px-2 cursor-pointer'} onClick={onCopyToClipboard}>
+                    <div className={'p-1 mr-2'}>
+                      <img src={'/images/icons/nftbox/link.svg'} alt={'star'} width={24} height={24}/>
                     </div>
-                    <div className={'flex items-center px-2 cursor-pointer'} onClick={onCopyToClipboard}>
-                      <div className={'p-1 mr-2'}>
-                        <img src={'/images/icons/nftbox/link.svg'} alt={'star'} width={24} height={24}/>
-                      </div>
-                      <span className={'text-primary-light text-md'}>copy link</span>
-                    </div>
-                    <div className={`flex items-center px-2 ${!isOwner && !isListed ? 'cursor-pointer' : 'cursor-none'}`}
-                      onClick={() => {
-                        if (!isOwner && !isListed) {
-                          openModal(ModalIDs.MODAL_BID, {
-                            nftImage: image,
-                            nftTitle: nftName,
-                            nftTokenId: nft.token_id,
-                            collectionName: nft_collection?.name,
-                            tradingInput,
-                            handleBidDlgClose: closeModal
-                          })
-                        }
+                    <span className={'text-primary-light text-md'}>copy link</span>
+                  </div>
+                  <div className={`flex items-center px-2 ${!isOwner && !isListed ? 'cursor-pointer' : 'cursor-none'}`}
+                    onClick={() => {
+                      if (!isOwner && !isListed) {
+                        openModal(ModalIDs.MODAL_BID, {
+                          nftImage: image,
+                          nftTitle: nftName,
+                          nftTokenId: nft.token_id,
+                          collectionName: nft_collection?.name,
+                          tradingInput,
+                          handleBidDlgClose: closeModal
+                        })
                       }
-                      }>
-                      <div className={'p-1 mr-2'}>
-                        <img src={'/images/icons/nftbox/place_bid.svg'} alt={'star'} width={24} height={24}/>
-                      </div>
-                      <span className={'text-primary-light text-md'}>place a bid</span>
+                    }
+                    }>
+                    <div className={'p-1 mr-2'}>
+                      <img src={'/images/icons/nftbox/place_bid.svg'} alt={'star'} width={24} height={24}/>
                     </div>
-                  </>
+                    <span className={'text-primary-light text-md'}>place a bid</span>
+                  </div>
+                </>
             }
           </div>
         </Transition>

@@ -48,62 +48,50 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
               data-src={collection.profile_image} />
           </div>
         </Link>
-        {/*<div className={classNames('absolute w-full h-full rounded-tr-[8px] rounded-tl-[8px] flex items-center justify-center top-0', `${hover ? 'flex bg-[#303030b3] backdrop-blur block' : 'hidden top-0'}`)}>
-          <div>
-            <Link href={`/collections/${collection.col_url}`}>
-              <div className='w-[230px] h-[40px] text-xg text-primary font-bold justify-center flex items-center bg-primary-gradient rounded-lg mb-[24px] hover:cursor-pointer'>view collection</div>
-            </Link>
-            <div className='border-gradient-radius w-[230px] h-[40px] hover:cursor-pointer'>
-              <div className={'w-full h-full flex items-center justify-center'}>
-                <span className='bg-primary-gradient text-xg font-bold text-center bg-clip-text text-transparent'>make a collection bid</span>
+      </div>
+
+      <div className={'flex flex-col justify-between h-[115px] pt-[14px] px-3 pb-3'}>
+        <div className="text-primary-light text-xg leading-[22px]">
+          {collection.name}
+        </div>
+
+        <div className="flex justify-between">
+          <div className={classNames('col-span-2 flex p-2 rounded-lg')}>
+            <div className='text-md flex flex-col space-y-2 justify-between'>
+              <span className='mr-[1px] text-center text-secondary'>Items</span>
+              <span className='font-medium text-md text-center text-primary-light'>{collection?collection.itemsCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+            </div>
+          </div>
+          <div className={classNames('col-span-2 flex p-2 rounded-lg')} >
+            <div className='text-md flex flex-col space-y-2 justify-center' style={{justifyContent: 'space-between'}}>
+              <span className='mr-[1px] text-center text-secondary'>Owners</span>
+              <span className='font-medium text-md text-center text-primary-light'>{collection?collection.ownerCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
+            </div>
+          </div>
+          <div className={classNames('col-span-2 flex p-2 rounded-lg')} >
+            <div className='text-md flex flex-col space-y-2 justify-center' style={{justifyContent: 'space-between'}}>
+              <div className='text-md mb-1 text-center text-secondary'>Floor</div>
+              <div className='flex flex-row space-x-1 justify-center' >
+                <span className='font-medium text-md mr-[px] text-primary-light'>
+                  {collection ? numberShortify(collection.floorPrice.omni) : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
+                </span>
+                <img src='/svgs/omni_asset.svg' className='w-[16px]' alt='asset img' />
               </div>
             </div>
           </div>
-        </div>*/}
-      </div>
-
-      <div className="flex flex-row mt-2.5 justify-between px-3">
-        <div className="text-primary-light text-xg leading-[22px] font-bold ">
-          {collection.name}
-        </div>
-      </div>
-
-      <div className="flex flex-row space-x-2 justify-between p-2">
-        <div className={classNames('col-span-2 flex p-2 rounded-lg')}>
-          <div className='text-md flex flex-col justify-between'>
-            <span className='mr-[1px] text-center text-secondary'>Items</span>
-            <span className='font-medium text-md text-center text-primary-light'>{collection?collection.itemsCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
-          </div>
-        </div>
-        <div  className={classNames('col-span-2 flex p-2 rounded-lg')} >
-          <div className='text-md flex flex-col justify-center' style={{justifyContent: 'space-between'}}>
-            <span className='mr-[1px] text-center text-secondary'>Owners</span>
-            <span className='font-medium text-md text-center text-primary-light'>{collection?collection.ownerCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
-          </div>
-        </div>
-        <div className={classNames('col-span-2 flex p-2 rounded-lg')} >
-          <div className='text-md flex flex-col justify-center' style={{justifyContent: 'space-between'}}>
-            <div className='text-md mb-1 text-center text-secondary'>Floor</div>
-            <div className='flex flex-row space-x-2 justify-center' >
-              <span className='font-medium text-md mr-[px] text-primary-light'>
-                {collection ? numberShortify(collection.floorPrice.omni) : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
+          <div className={classNames('col-span-3 flex flex-col space-y-2 p-2 rounded-lg')} >
+            <div className='text-md mb-1 text-center text-secondary'>7d Volume</div>
+            <div className='text-md flex flex-row justify-between space-x-3'>
+              <div className='flex flex-row justify-between'>
+                <span className='font-medium mr-1 text-md text-primary-light'>
+                  {collection ? 0 /* numberShortify(collection.totalVolume) */ : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
+                </span>
+                <img src='/images/chain/ethereum_solid.svg' className='' alt='asset img'></img>
+              </div>
+              <span className='font-medium text-[#38B000] text-md'>
+                {collection ? '0%' /* numberShortify(collection.totalVolumeChange) */ : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
               </span>
-              <img src='/svgs/omni_asset.svg' className='w-[16px]' alt='asset img' />
             </div>
-          </div>
-        </div>
-        <div className={classNames('col-span-3 flex flex-col p-2 rounded-lg')} >
-          <div className='text-md mb-1 text-center text-secondary'>7d Volume</div>
-          <div className='text-md flex flex-row justify-center space-x-4' >
-            <div className='flex flex-row mr-4'>
-              <span className='font-medium mr-1 text-md text-primary-light'>
-                {collection ? 0 /* numberShortify(collection.totalVolume) */ : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
-              </span>
-              <img src='/images/chain/ethereum_solid.svg' className='' alt='asset img'></img>
-            </div>
-            <span className='font-medium text-[#38B000] text-md'>
-              {collection ? '0%' /* numberShortify(collection.totalVolumeChange) */ : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
-            </span>
           </div>
         </div>
       </div>
@@ -118,9 +106,9 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
           24
         </span>
       </div>
-      
+
       {/*button group at the bottom*/}
-      <div className={`w-full flex items-center justify-between bg-[#202020] absolute h-[65px] right-0 left-0 bottom-0 rounded-br-[8px] rounded-bl-[8px] px-3 ${hover ? 'block' : 'hidden'}`}>
+      <div className={`w-full flex items-center justify-between bg-[#202020] absolute h-[65px] right-0 left-0 bottom-2 rounded-br-[8px] rounded-bl-[8px] px-3 ${hover ? 'block' : 'hidden'}`}>
         <SecondaryButton text={'bid collection'} />
         <PrimaryButton text={'instant floor buy'} />
       </div>

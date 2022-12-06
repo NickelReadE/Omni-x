@@ -10,7 +10,6 @@ import {PfpMenu} from './PfpMenu'
 import {NotificationArea} from './NotificationArea'
 import {TransactionTracker} from './TransactionTracker'
 import {MessageArea} from './MessageArea'
-import {CalendarArea} from './CalendarArea'
 
 const Header = (): JSX.Element => {
   const { address } = useWallet()
