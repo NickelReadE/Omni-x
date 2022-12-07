@@ -32,7 +32,7 @@ export default function HomeSlider() {
 
   return (
     <>
-      <div className="embla">
+      <div className="py-5 relative">
         <div className="embla__viewport" ref={viewportRef}>
           <div className="embla__container">
             <div className="embla__slide flex justify-center">

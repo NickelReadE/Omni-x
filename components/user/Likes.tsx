@@ -8,8 +8,8 @@ export const UserLikes = () => {
   }
 
   return (
-    <div className={'grid grid-cols-6'}>
-      <div />
+    <div className={'grid grid-cols-4 lg:grid-cols-6'}>
+      <div className={'hidden lg:block'} />
       <div className="col-span-4 inline-flex rounded-md shadow-sm" role="group">
         {/*Button Group section*/}
         <div className={`${activeClasses(0)} w-[105px] text-center bg-primary-gradient rounded-l-lg p-[1px]`}>

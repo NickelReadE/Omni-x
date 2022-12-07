@@ -56,8 +56,8 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
 
   return (
     <>
-      <div className={'grid grid-cols-6 pt-5'}>
-        <div className={''} />
+      <div className={'grid grid-cols-4 lg:grid-cols-6 pt-5'}>
+        <div className={'hidden lg:block'} />
         <div className={classNames( 'col-span-4')}>
           <div className={'relative'}>
             <div className={'overflow-hidden aspect-[3/1]'}>
@@ -122,7 +122,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
             </div>
           </div>
         </div>
-        <div className={''} />
+        <div className={'hidden lg:block'} />
       </div>
       <Dialog open={settingModal} onClose={() => setSettingModal(false)} aria-labelledby='simple-dialog-title' maxWidth={'xl'} classes={{ paper: classes.paper }}>
         <UserEdit updateModal={() => setSettingModal(false)} />

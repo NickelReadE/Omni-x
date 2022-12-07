@@ -44,8 +44,8 @@ export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
   }, [dispatch, signer])
 
   return (
-    <div className={'w-full grid grid-cols-6'}>
-      <div className={''} />
+    <div className={'w-full grid grid-cols-4 lg:grid-cols-6'}>
+      <div className={'hidden lg:block'} />
       <div className={'col-span-4'}>
         <div className={'relative'}>
           <img
@@ -148,21 +148,35 @@ export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
               <li onClick={() => setSelectedTab(0)}>
                 <div className={`${activeClasses(0)} pb-[2px] cursor-pointer`}>
                   <div className={'flex flex-col justify-between h-full bg-primary text-white py-1 px-4'}>
-                    <span className={`${activeTextClasses(0)}`}>items</span>
+                    <span className={`${activeTextClasses(0)}`}>collected</span>
                   </div>
                 </div>
               </li>
               <li onClick={() => setSelectedTab(1)}>
                 <div className={`${activeClasses(1)} pb-[2px] cursor-pointer`}>
                   <div className={'flex flex-col justify-between h-full bg-primary text-white py-1 px-4'}>
-                    <span className={`${activeTextClasses(1)}`}>activity</span>
+                    <span className={`${activeTextClasses(1)}`}>created</span>
                   </div>
                 </div>
               </li>
               <li onClick={() => setSelectedTab(2)}>
                 <div className={`${activeClasses(2)} pb-[2px] cursor-pointer`}>
                   <div className={'flex flex-col justify-between h-full bg-primary text-white py-1 px-4'}>
-                    <span className={`${activeTextClasses(2)}`}>posts</span>
+                    <span className={`${activeTextClasses(2)}`}>activity</span>
+                  </div>
+                </div>
+              </li>
+              <li onClick={() => setSelectedTab(3)}>
+                <div className={`${activeClasses(3)} pb-[2px] cursor-pointer`}>
+                  <div className={'flex flex-col justify-between h-full bg-primary text-white py-1 px-4'}>
+                    <span className={`${activeTextClasses(3)}`}>favorites</span>
+                  </div>
+                </div>
+              </li>
+              <li onClick={() => setSelectedTab(4)}>
+                <div className={`${activeClasses(4)} pb-[2px] cursor-pointer`}>
+                  <div className={'flex flex-col justify-between h-full bg-primary text-white py-1 px-4'}>
+                    <span className={`${activeTextClasses(4)}`}>hidden</span>
                   </div>
                 </div>
               </li>
@@ -170,7 +184,7 @@ export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
           </div>
         </div>
       </div>
-      <div className={''} />
+      <div className={'hidden lg:block'} />
     </div>
   )
 }

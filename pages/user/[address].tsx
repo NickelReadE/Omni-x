@@ -27,10 +27,10 @@ const User: NextPage = () => {
         profile ?
           <>
             <UserBanner user={profile} />
-            <div className={'grid grid-cols-6'}>
-              <div />
+            <div className={'grid grid-cols-4 lg:grid-cols-6'}>
+              <div className={'hidden lg:block'} />
               {/*Tabs section*/}
-              <div className={'col-span-4 flex items-center mt-8'}>
+              <div className={'col-span-4 flex items-center mt-6'}>
                 <div className="text-xl font-medium text-center text-secondary">
                   <ul className="flex flex-wrap -mb-px">
                     <li onClick={() => setSelectedTab(0)}>
@@ -73,7 +73,7 @@ const User: NextPage = () => {
               </div>
             </div>
 
-            <div className={'mt-6 mb-20'}>
+            <div className={'my-6'}>
               {selectedTab === 0 && <NFTGrid nfts={nfts} isLoading={isLoading} />}
               {selectedTab === 1 && <div/>}
               {selectedTab === 2 && <UserLikes />}
