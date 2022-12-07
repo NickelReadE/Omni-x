@@ -35,13 +35,15 @@ const useOnchainPrices = (): OnChainInformation => {
   }
 
   const updateGasChainId = (chainId: number) => {
-    if (gasSupportChainIds.includes(chainId)) {
-      setGasSupportChainIds(gasSupportChainIds.filter((id) => id !== chainId).sort())
-      localStorage.setItem('gasSupportChainIds', JSON.stringify(gasSupportChainIds.filter((id) => id !== chainId).sort()))
-      setChainInfos(chainInfos.filter((info) => info.chainId !== chainId))
-    } else {
-      setGasSupportChainIds([...gasSupportChainIds, chainId].sort())
-      localStorage.setItem('gasSupportChainIds', JSON.stringify([...gasSupportChainIds, chainId].sort()))
+    if (![CHAIN_IDS[CHAIN_TYPE.ETHEREUM], CHAIN_IDS[CHAIN_TYPE.POLYGON]].includes(chainId)) {
+      if (gasSupportChainIds.includes(chainId)) {
+        setGasSupportChainIds(gasSupportChainIds.filter((id) => id !== chainId).sort())
+        localStorage.setItem('gasSupportChainIds', JSON.stringify(gasSupportChainIds.filter((id) => id !== chainId).sort()))
+        setChainInfos(chainInfos.filter((info) => info.chainId !== chainId))
+      } else {
+        setGasSupportChainIds([...gasSupportChainIds, chainId].sort())
+        localStorage.setItem('gasSupportChainIds', JSON.stringify([...gasSupportChainIds, chainId].sort()))
+      }
     }
   }
 
