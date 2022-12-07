@@ -32,16 +32,22 @@ const Dropdown = ({ menus, onChange }: IDropdownProps) => {
         <>
           <Menu.Button className={'bg-[#303030] text-primary-light text-md flex items-center rounded-full justify-between py-3 px-5 font-medium cursor-pointer text-primary-light min-w-[230px] h-[32px] w-full'}>
             <span>{selectedMenu}</span>
-            <ArrowDown />
+            <img src={'/images/icons/arrow_down.svg'} alt={'arrow'} />
           </Menu.Button>
-          <Menu.Items className={'absolute z-10 top-[32px] right-0 left-0'}>
+          <Menu.Items className={'absolute z-10 top-0 bg-[#303030] rounded-[20px] right-0 left-0'}>
+            <Menu.Item as={Fragment}>
+              <div className={'cursor-pointer text-primary-light flex items-center justify-between h-[32px] min-w-[230px] w-full px-5 font-medium text-md'}>
+                <span>{selectedMenu}</span>
+                <img src={'/images/icons/arrow_down.svg'} alt={'arrow'} className={'rotate-180'} />
+              </div>
+            </Menu.Item>
             {
               menus.map((item, index) => {
                 return (
                   <Menu.Item key={index} as={Fragment}>
                     {({ active }) => (
                       <div
-                        className={`${active && 'bg-gray-50'} cursor-pointer text-[#6C757D] flex items-center rounded-md h-[44px] min-w-[230px] w-full bg-white pl-[60px]`}
+                        className={`${active && 'bg-gray-50'} cursor-pointer text-secondary flex items-center h-[36px] min-w-[230px] w-full px-5 font-medium text-md`}
                         onClick={() => onChangeMenu(item)}
                       >
                         {item.text}

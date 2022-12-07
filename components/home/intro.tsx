@@ -40,7 +40,7 @@ export default function HomeIntro () {
         </div>
       </div>
       <Link href={'/learn-more'} className={'mt-4'}>
-        <PrimaryButton text={'learn more'} />
+        <PrimaryButton text={'learn more'} className={'bg-[#242424]'} />
       </Link>
     </div>
   )
