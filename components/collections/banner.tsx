@@ -4,11 +4,12 @@ import {truncateAddress} from '../../utils/utils'
 import useWallet from '../../hooks/useWallet'
 import {useDispatch, useSelector} from 'react-redux'
 import {getRoyalty, selectRoyalty} from '../../redux/reducers/collectionsReducer'
-import {ExternalLink, GradientButton} from '../basic'
+import {ExternalLink} from '../basic'
 import WebsiteIcon from '../../public/images/icons/website.svg'
 import TwitterIcon from '../../public/images/icons/twitter.svg'
 import DiscordIcon from '../../public/images/icons/discord.svg'
 import TelegramIcon from '../../public/images/icons/telegram.svg'
+import {PrimaryButton} from '../common/buttons/PrimaryButton'
 
 interface CollectionBannerProps {
     collection: CollectionType
@@ -88,9 +89,7 @@ export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
             </div>
           </div>
           <div className={'flex flex-col space-y-2'}>
-            <div className={'w-[90px]'}>
-              <GradientButton height={26} borderRadius={50} title={'following'} textSize={'text-md font-medium'} />
-            </div>
+            <PrimaryButton text={'following'} className={'h-[26px] text-md font-medium'} />
             <span className={'text-md text-primary-light'}>1.65k followers</span>
           </div>
           {/*Social buttons section*/}

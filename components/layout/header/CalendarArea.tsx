@@ -1,7 +1,7 @@
 import React, {Fragment, useState} from 'react'
 import {Transition} from '@headlessui/react'
 import Image from 'next/image'
-import {GradientButton} from '../../basic'
+import {PrimaryButton} from '../../common/buttons/PrimaryButton'
 
 export const CalendarArea = () => {
   const [hovered, setHovered] = useState(false)
@@ -53,9 +53,7 @@ export const CalendarArea = () => {
 
                 {/*Calendar footer*/}
                 <div className={'flex items-center justify-center mt-4'}>
-                  <div className={'w-[130px]'}>
-                    <GradientButton title={'new event'} height={35} borderRadius={8} textSize={'text-md font-bold'} />
-                  </div>
+                  <PrimaryButton text={'new event'} className={'h-[35px] text-md font-bold'} />
                 </div>
               </div>
             </div>

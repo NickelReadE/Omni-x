@@ -25,12 +25,12 @@ import useCollectionNfts from '../../../hooks/useCollectionNfts'
 import useData from '../../../hooks/useData'
 import Dropdown from '../../../components/dropdown'
 import {CollectionBanner} from '../../../components/collections/banner'
-import {GradientButton} from '../../../components/basic'
 import FilterActive from '../../../public/images/icons/filter_active.svg'
 import FilterInactive from '../../../public/images/icons/filter_inactive.svg'
 import { useModal } from '../../../hooks/useModal'
 import { ModalIDs } from '../../../contexts/modal'
 import {SkeletonCard} from '../../../components/skeleton/card'
+import {PrimaryButton} from '../../../components/common/buttons/PrimaryButton'
 
 const sort_fields = [
   { text: 'price: low to high', value: 'price' },
@@ -396,22 +396,18 @@ const Collection: NextPage = () => {
               }
             </div>
             <div className={'flex items-center space-x-4'}>
-              <div className={'w-[180px]'}>
-                <GradientButton
-                  height={32}
-                  borderRadius={20}
-                  title={'make a collection bid'}
-                  textSize={'text-md font-medium'}
-                  onClick={() => {
-                    openModal(ModalIDs.MODAL_BID, {
-                      nftImage: collectionInfo?.profile_image,
-                      nftTitle: collectionInfo?.name,
-                      collectionBid,
-                      handleBidDlgClose: closeModal
-                    })
-                  }}
-                />
-              </div>
+              <PrimaryButton
+                text={'make a collection bid'}
+                className={'h-[32px] text-md font-medium'}
+                onClick={() => {
+                  openModal(ModalIDs.MODAL_BID, {
+                    nftImage: collectionInfo?.profile_image,
+                    nftTitle: collectionInfo?.name,
+                    collectionBid,
+                    handleBidDlgClose: closeModal
+                  })
+                }}
+              />
               <Dropdown menus={sort_fields} onChange={onChangeSort} />
             </div>
           </div>

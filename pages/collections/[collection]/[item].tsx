@@ -18,10 +18,11 @@ import { useModal } from '../../../hooks/useModal'
 import { ModalIDs } from '../../../contexts/modal'
 import {truncateAddress} from '../../../utils/utils'
 import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
-import {GradientButton} from '../../../components/basic'
 import ShareIcon from '../../../public/images/icons/share.svg'
 import BridgeIcon from '../../../public/images/icons/bluegreen_linear.svg'
 import Accordion from '../../../components/collections/Accordion'
+import {PrimaryButton} from '../../../components/common/buttons/PrimaryButton'
+import {GreyButton} from '../../../components/common/buttons/GreyButton'
 
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
@@ -178,25 +179,21 @@ const Item: NextPage = () => {
                               </div>
                               <div className='col-span-1 mt-3'>
                                 {currentNFT?.owner?.toLowerCase() == address?.toLowerCase() && bidHover === index &&
-                                  <div className={'w-[68px]'}>
-                                    <GradientButton
-                                      title={'accept'}
-                                      height={22}
-                                      borderRadius={50}
-                                      textSize={'text-md font-bold'}
-                                      onClick={() => {
-                                        openModal(ModalIDs.MODAL_ACCEPT, {
-                                          nftImage: currentNFT.image,
-                                          nftTitle: currentNFT.name,
-                                          nftTokenId: currentNFT?.token_id,
-                                          collectionName: collection.name,
-                                          bidOrder: item.order_data,
-                                          tradingInput,
-                                          handleAcceptDlgClose: closeModal
-                                        })
-                                      }}
-                                    />
-                                  </div>
+                                  <PrimaryButton
+                                    text={'accept'}
+                                    className={'h-[22px] text-md font-bold'}
+                                    onClick={() => {
+                                      openModal(ModalIDs.MODAL_ACCEPT, {
+                                        nftImage: currentNFT.image,
+                                        nftTitle: currentNFT.name,
+                                        nftTokenId: currentNFT?.token_id,
+                                        collectionName: collection.name,
+                                        bidOrder: item.order_data,
+                                        tradingInput,
+                                        handleAcceptDlgClose: closeModal
+                                      })
+                                    }}
+                                  />
                                 }
                               </div>
                               <div className='col-span-1 mt-3 flex items-center'>
@@ -285,12 +282,8 @@ const Item: NextPage = () => {
                     </div>
                   </div>
                   <div className={'flex items-center justify-around mt-5'}>
-                    <div className={'w-[107px] h-8 flex rounded-full border-[1px] border-secondary items-center justify-center text-secondary text-md'}>
-                      place bid
-                    </div>
-                    <div className={'w-[107px]'}>
-                      <GradientButton title={'buy now'} height={32} borderRadius={50} textSize={'tex-md font-bold'} />
-                    </div>
+                    <GreyButton text={'place bid'} className={'h-[32px]'} />
+                    <PrimaryButton text={'buy now'} className={'h-[30px]'} />
                   </div>
                 </div>
 

@@ -5,13 +5,14 @@ import useWallet from '../hooks/useWallet'
 import classNames from '../helpers/classNames'
 import { ProfileData } from '../hooks/useProfile'
 import { truncateAddress } from '../utils/utils'
-import {ExternalLink, GradientButton} from './basic'
+import {ExternalLink} from './basic'
 import WebsiteIcon from '../public/images/icons/website.svg'
 import InstagramIcon from '../public/images/icons/instagram.svg'
 import TwitterIcon from '../public/images/icons/twitter.svg'
 import UserEdit from './user/UserEdit'
 import Dialog from '@material-ui/core/Dialog'
 import {makeStyles} from '@material-ui/core/styles'
+import {PrimaryButton} from './common/buttons/PrimaryButton'
 
 type UserBannerProps = {
     user: ProfileData,
@@ -84,7 +85,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
             <div className={'flex items-center'}>
               <div className={'flex flex-col h-[60px] items-end justify-between space-y-2 mr-4'}>
                 <div className={'w-[90px]'}>
-                  <GradientButton height={26} borderRadius={50} title={'following'} textSize={'text-md font-medium'} />
+                  <PrimaryButton text={'following'} className={'h-[26px] text-md font-medium'} />
                 </div>
                 <div className={'flex items-center'}>
                   <span className={'text-md text-primary-light'}>1.65k followers</span>
