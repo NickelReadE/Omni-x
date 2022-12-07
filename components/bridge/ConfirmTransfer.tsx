@@ -3,12 +3,8 @@
 import React, {useState, useMemo, useCallback, useEffect} from 'react'
 import Image from 'next/image'
 import {BigNumber, ethers} from 'ethers'
-import {Dialog} from '@material-ui/core'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import DialogContent from '@material-ui/core/DialogContent'
-import {createStyles, makeStyles} from '@material-ui/core/styles'
+import { Dialog } from '@headlessui/react'
 import {NFTItem} from '../../interface/interface'
-import PngCheck from '../../public/images/check.png'
 import SpinLoader from '../collections/SpinLoader'
 import {chainInfos, CHAIN_IDS, getBlockExplorer, getLayerzeroChainId, getProvider} from '../../utils/constants'
 import {CHAIN_TYPE} from '../../types/enum'
@@ -25,6 +21,7 @@ import {
   getONFTCore721Instance
 } from '../../utils/contracts'
 import {PendingTxType} from '../../contexts/contract'
+import {SecondaryButton} from '../common/buttons/SecondaryButton'
 
 export enum ConfirmTransferStatus {
   APPROVING,
@@ -41,22 +38,6 @@ interface IConfirmTransferProps {
   updateModal: (status: boolean) => void,
 }
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    rootContent: {
-      padding: '16px 40px 32px 40px'
-    },
-    dlgWidth: {
-      maxWidth: 400,
-      width: '800px',
-      background: 'rgba(22, 22, 22, 0.9)',
-      boxShadow: '0px 0px 250px #000000',
-      backdropFilter: 'blur(10px)',
-      borderRadius: 8
-    }
-  }),
-)
-
 const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
   nft,
   open,
@@ -69,7 +50,6 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
   const { estimateGasFee, estimateGasFeeONFTCore, unwrapInfo, selectedUnwrapInfo, validateOwNFT, validateONFT } = useBridge()
   const { addTxToHistories } = useProgress()
   const { listenONFTEvents } = useContract()
-  const classes = useStyles()
 
   const [status, setStatus] = useState<ConfirmTransferStatus | undefined>(undefined)
   const [estimatedFee, setEstimatedFee] = useState<BigNumber>(BigNumber.from('0'))
@@ -285,131 +265,136 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
   }
 
   return (
-    <Dialog open={open} onClose={onClose}  aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
-      <DialogTitle id="form-dialog-title" className={'py-6 px-10 m-0'}>
-        <div className="mt-5">
-          <div className="text-primary-light text-xg2 font-bold">send item</div>
-        </div>
-      </DialogTitle>
-      <DialogContent className={classes.rootContent}>
-        <div className='flex flex-col justify-between'>
-          <div className={'flex justify-center'}>
-            <div className={'flex flex-col'}>
-              <div className={'bg-primary-gradient p-[1px] rounded'}>
-                <img alt={'nftImage'} className='bg-primary rounded' width={190} height={190} src={image} />
+    <Dialog open={open} onClose={onClose} className={'pt-4 px-10 pb-8 z-50'}>
+      <div className="fixed inset-0 flex items-center justify-center p-4">
+        <div className={'max-w-[400px] shadow-[0_0_250px_rgba(0,0,0,1)] w-full bg-primary-gradient backdrop-blur-[10px] rounded-lg p-[1px]'}>
+          <Dialog.Panel
+            className={'w-full bg-[#161616] backdrop-blur-[10px] rounded-lg p-8'}>
+            <Dialog.Title>
+              <div className="text-primary-light text-xg2 font-bold">send item</div>
+            </Dialog.Title>
+            <div className='flex flex-col justify-between mt-6'>
+              <div className={'flex justify-center'}>
+                <div className={'flex flex-col'}>
+                  <div className={'bg-primary-gradient p-[1px] rounded'}>
+                    <img alt={'nftImage'} className='bg-primary rounded' width={190} height={190} src={image}/>
+                  </div>
+                  <p className={'text-primary-light mt-3 font-medium'}>#{nft?.token_id}</p>
+                  <p className='text-secondary font-medium'>{collectionName}</p>
+                </div>
               </div>
-              <p className={'text-primary-light mt-3 font-medium'}>#{nft?.token_id}</p>
-              <p className='text-secondary font-medium'>{collectionName}</p>
             </div>
-          </div>
-        </div>
-        <div className="border-0 rounded-lg relative flex flex-col w-full outline-none focus:outline-none">
-          {/*body*/}
-          <div className="relative flex-auto">
-            {
-              status === undefined ? (
-                <>
-                  <div className={'flex mt-5'}>
-                    <span className={'font-medium text-primary-light text-md mr-6 h-6 flex items-center'}>to:</span>
-                    <div className={'flex flex-col w-full'}>
-                      <div className={'flex'}>
-                        <span className={`cursor-pointer border-[1px] rounded-full h-6 px-2 flex items-center justify-center text-md font-medium ${target === 'me' ? 'text-primary-green border-primary-green' : 'text-secondary border-secondary'}`} onClick={() => setTarget('me')}>me</span>
-                        <span className={`cursor-pointer border-[1px] rounded-full h-6 px-2 flex items-center justify-center text-md font-medium  ${target === 'other' ? 'text-primary-green border-primary-green' : 'text-secondary border-secondary'} ml-2`} onClick={() => setTarget('other')}>other</span>
-                      </div>
-                      {
-                        target === 'other' && (
-                          <div className={'flex w-full mt-3'}>
-                            <input className={'w-full bg-transparent rounded-full text-primary-light text-md border-[1px] border-secondary pl-4 h-6'} placeholder={'enter address...'} />
+            <div className="border-0 rounded-lg relative flex flex-col w-full outline-none focus:outline-none">
+              {/*body*/}
+              <div className="relative flex-auto">
+                {
+                  status === undefined ? (
+                    <>
+                      <div className={'flex mt-5'}>
+                        <span className={'font-medium text-primary-light text-md mr-6 h-6 flex items-center'}>to:</span>
+                        <div className={'flex flex-col w-full'}>
+                          <div className={'flex'}>
+                            <span
+                              className={`cursor-pointer border-[1px] rounded-full h-6 px-2 flex items-center justify-center text-md font-medium ${target === 'me' ? 'text-primary-green border-primary-green' : 'text-secondary border-secondary'}`}
+                              onClick={() => setTarget('me')}>me</span>
+                            <span
+                              className={`cursor-pointer border-[1px] rounded-full h-6 px-2 flex items-center justify-center text-md font-medium  ${target === 'other' ? 'text-primary-green border-primary-green' : 'text-secondary border-secondary'} ml-2`}
+                              onClick={() => setTarget('other')}>other</span>
                           </div>
-                        )
+                          {
+                            target === 'other' && (
+                              <div className={'flex w-full mt-3'}>
+                                <input
+                                  className={'w-full bg-transparent rounded-full text-primary-light text-md border-[1px] border-secondary pl-4 h-6'}
+                                  placeholder={'enter address...'}/>
+                              </div>
+                            )
+                          }
+                          <div className={'mt-3'}>
+                            <NetworkSelect value={networkOption} onChange={(value: any) => setNetworkOption(value)}/>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center text-primary-light text-md font-medium mt-3">
+                        <span className={'mr-3'}>gas cost:</span>
+                        <p>{estimatedFee != undefined && ethers.utils.formatEther(estimatedFee)}&nbsp;{chainInfos[senderChainId].currency}</p>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div
+                        className={`flex items-center mt-6 ${status === ConfirmTransferStatus.APPROVING ? 'active' : ''}`}>
+                        <p className={`${status === ConfirmTransferStatus.APPROVING ? 'bg-primary-gradient' : 'bg-secondary'} w-[18px] h-[18px] rounded-full text-black text-md flex items-center justify-center font-bold`}>1</p>
+                        <p className={`${status === ConfirmTransferStatus.APPROVING ? 'bg-primary-gradient bg-clip-text text-transparent' : 'text-secondary'} px-2 text-lg font-bold`}>Approve
+                          Collection</p>
+                        {(status === ConfirmTransferStatus.TRANSFERRING || status === ConfirmTransferStatus.DONE) && (
+                          <Image src={'/images/icons/check.svg'} alt="completed" width={18} height={18}/>
+                        )}
+                        {status === ConfirmTransferStatus.APPROVING && (
+                          <SpinLoader/>
+                        )}
+                      </div>
+                      <div className="tx-status-section mt-4">
+                        {status === ConfirmTransferStatus.APPROVING && (<>
+                          <div className="text-primary-light text-[14px] leading-[17px]">
+                            <p className="">Please confirm the transaction in your wallet to begin transfer.</p>
+                          </div>
+
+                          <div className="tx-status-row">
+                            <p className="text-primary-light text-[14px] leading-[17px]">transaction status:</p>
+                            <p className="text-primary-light text-[14px] leading-[17px] ml-3">{status === ConfirmTransferStatus.APPROVING ? 'confirming...' : 'done'}</p>
+                          </div>
+
+                          <div className="tx-status-row">
+                            <p className="text-primary-light text-[14px] leading-[17px]">transaction record:</p>
+                            <a className="text-primary-light text-[14px] leading-[17px] ml-3 tx-hash-ellipsis"
+                              href={approveTxHashLink} target="_blank" rel="noreferrer">{approveTxHash || ''}</a>
+                          </div>
+                        </>)}
+                      </div>
+
+                      <div
+                        className={`flex items-center mt-3 ${status === ConfirmTransferStatus.TRANSFERRING ? 'active' : ''}`}>
+                        <p className={`${status === ConfirmTransferStatus.TRANSFERRING ? 'bg-primary-gradient' : 'bg-secondary'} w-[18px] h-[18px] rounded-full text-black text-md flex items-center justify-center font-bold`}>2</p>
+                        <p className={`${status === ConfirmTransferStatus.TRANSFERRING ? 'bg-primary-gradient bg-clip-text text-transparent' : 'text-secondary'} px-2 text-lg font-bold`}>Complete
+                          Transfer</p>
+                        {status === ConfirmTransferStatus.DONE && (
+                          <Image src={'/images/icons/check.svg'} alt="completed" width={18} height={18}/>
+                        )}
+                        {status === ConfirmTransferStatus.TRANSFERRING && (
+                          <SpinLoader/>
+                        )}
+                      </div>
+                      <div className='tx-status-section mb-3'>
+                        {status === ConfirmTransferStatus.TRANSFERRING && (<>
+                          <div className="mt-3 text-primary-light text-[14px] leading-[17px]">
+                            <p className="">Please confirm the transaction in your wallet to complete the transfer.</p>
+                          </div>
+                        </>)}
+                      </div>
+
+                      {status === ConfirmTransferStatus.DONE &&
+                          <div className="my-3" style={{marginTop: 12}}>
+                            <p className="bg-primary-gradient bg-clip-text text-transparent font-bold text-xg1">Congrats!</p>
+                            <p className="text-lg text-primary-light font-medium mt-2">your NFT is on the way</p>
+                          </div>
                       }
-                      <div className={'mt-3'}>
-                        <NetworkSelect value={networkOption} onChange={(value: any) => setNetworkOption(value)} />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center text-primary-light text-md font-medium mt-3">
-                    <span className={'mr-3'}>gas cost:</span>
-                    <p>{estimatedFee != undefined && ethers.utils.formatEther(estimatedFee)}&nbsp;{chainInfos[senderChainId].currency}</p>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className={`flex items-center mt-6 ${status === ConfirmTransferStatus.APPROVING ? 'active' : ''}`}>
-                    <p className={`${status === ConfirmTransferStatus.APPROVING ? 'bg-primary-gradient': 'bg-secondary'} w-[18px] h-[18px] rounded-full text-black text-md flex items-center justify-center font-bold`}>1</p>
-                    <p className={`${status === ConfirmTransferStatus.APPROVING ? 'bg-primary-gradient bg-clip-text text-transparent': 'text-secondary'} px-2 text-lg font-bold`}>Approve Collection</p>
-                    {(status === ConfirmTransferStatus.TRANSFERRING || status === ConfirmTransferStatus.DONE) && (
-                      <Image src={'/images/icons/check.svg'} alt="completed" width={18} height={18}/>
-                    )}
-                    {status === ConfirmTransferStatus.APPROVING && (
-                      <SpinLoader />
-                    )}
-                  </div>
-                  <div className="tx-status-section mt-4">
-                    {status === ConfirmTransferStatus.APPROVING && (<>
-                      <div className="text-primary-light text-[14px] leading-[17px]">
-                        <p className="">Please confirm the transaction in your wallet to begin transfer.</p>
-                      </div>
-
-                      <div className="tx-status-row">
-                        <p className="text-primary-light text-[14px] leading-[17px]">transaction status:</p>
-                        <p className="text-primary-light text-[14px] leading-[17px] ml-3">{status === ConfirmTransferStatus.APPROVING ? 'confirming...' : 'done'}</p>
-                      </div>
-
-                      <div className="tx-status-row">
-                        <p className="text-primary-light text-[14px] leading-[17px]">transaction record:</p>
-                        <a className="text-primary-light text-[14px] leading-[17px] ml-3 tx-hash-ellipsis" href={approveTxHashLink} target="_blank" rel="noreferrer">{approveTxHash || ''}</a>
-                      </div>
-                    </>)}
-                  </div>
-
-                  <div className={`flex items-center mt-3 ${status === ConfirmTransferStatus.TRANSFERRING ? 'active' : ''}`}>
-                    <p className={`${status === ConfirmTransferStatus.TRANSFERRING ? 'bg-primary-gradient': 'bg-secondary'} w-[18px] h-[18px] rounded-full text-black text-md flex items-center justify-center font-bold`}>2</p>
-                    <p className={`${status === ConfirmTransferStatus.TRANSFERRING ? 'bg-primary-gradient bg-clip-text text-transparent': 'text-secondary'} px-2 text-lg font-bold`}>Complete Transfer</p>
-                    {status === ConfirmTransferStatus.DONE && (
-                      <Image src={'/images/icons/check.svg'} alt="completed" width={18} height={18}/>
-                    )}
-                    {status === ConfirmTransferStatus.TRANSFERRING && (
-                      <SpinLoader />
-                    )}
-                  </div>
-                  <div className='tx-status-section mb-3'>
-                    {status === ConfirmTransferStatus.TRANSFERRING && (<>
-                      <div className="mt-3 text-primary-light text-[14px] leading-[17px]">
-                        <p className="">Please confirm the transaction in your wallet to complete the transfer.</p>
-                      </div>
-                    </>)}
-                  </div>
-
-                  {status === ConfirmTransferStatus.DONE &&
-                    <div className="my-3" style={{marginTop: 12}}>
-                      <p className="bg-primary-gradient bg-clip-text text-transparent font-bold text-xg1">Congrats!</p>
-                      <p className="text-lg text-primary-light font-medium mt-2">your NFT is on the way</p>
-                    </div>
-                  }
-                </>
-              )
-            }
-          </div>
-          {/*footer*/}
-          <div className="mt-20 flex justify-center">
-            {(status !== undefined) ? (
-              <button
-                className='bg-primary-gradient rounded-full text-black w-[95px] px-4 py-1.5 font-medium'
-                disabled={status !== ConfirmTransferStatus.DONE}
-                onClick={() => updateModal(false)}>
-                  close
-              </button>
-            ) : (
-              <button
-                className='bg-primary-gradient rounded-full text-black w-[95px] px-4 py-1.5 font-medium'
-                onClick={onTransfer}>
-                  send
-              </button>
-            )}
-          </div>
+                    </>
+                  )
+                }
+              </div>
+              {/*footer*/}
+              <div className="mt-20 flex justify-center">
+                {(status !== undefined) ? (
+                  <SecondaryButton text={'close'} onClick={() => updateModal(false)}/>
+                ) : (
+                  <SecondaryButton text={'send'} onClick={onTransfer}/>
+                )}
+              </div>
+            </div>
+          </Dialog.Panel>
         </div>
-      </DialogContent>
+      </div>
     </Dialog>
   )
 }

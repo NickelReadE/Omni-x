@@ -66,7 +66,7 @@ const NetworkSelect: React.FC<INetworkSelectProps> = ({
         }),
         valueContainer: (styles:any) => ({ ...styles,
           display: 'flex',
-          justifyContent: 'center',
+          justifyContent: 'start',
           paddingRight: 0,
           paddingBottom: 0,
           paddingTop: 0

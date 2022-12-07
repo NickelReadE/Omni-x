@@ -5,6 +5,7 @@ import {Transition} from '@headlessui/react'
 import Link from 'next/link'
 import Router, { useRouter } from 'next/router'
 import { useDraggable } from '@dnd-kit/core'
+import { useSwitchNetwork } from 'wagmi'
 import { IPropsNFTItem } from '../../interface/interface'
 import {
   getCurrencyIconByAddress,
@@ -32,7 +33,8 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   const [isFullscreenView, setIsFullscreenView] = useState(false)
   const [confirmTransfer, setConfirmTransfer] = useState(false)
 
-  const { address } = useWallet()
+  const { address, chainId } = useWallet()
+  const { switchNetwork } = useSwitchNetwork()
   const router = useRouter()
   const dispatch = useDispatch()
   const { collections } = useData()
@@ -171,6 +173,9 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   }
 
   const onTransfer = () => {
+    if (chainId !== nft.chain_id) {
+      return switchNetwork ? switchNetwork(nft.chain_id) : dispatch(openSnackBar({ message: 'Please switch to correct network', status: 'error' }))
+    }
     setConfirmTransfer(true)
   }
 
