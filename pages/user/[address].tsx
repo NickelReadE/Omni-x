@@ -50,14 +50,21 @@ const User: NextPage = () => {
                     <li onClick={() => setSelectedTab(2)}>
                       <div className={`${activeClasses(2)} pb-[2px] cursor-pointer`}>
                         <div className={'flex flex-col justify-between h-full bg-primary text-white p-4 pb-1'}>
-                          <span className={`${activeTextClasses(2)}`}>likes</span>
+                          <span className={`${activeTextClasses(2)}`}>activity</span>
                         </div>
                       </div>
                     </li>
                     <li onClick={() => setSelectedTab(3)}>
                       <div className={`${activeClasses(3)} pb-[2px] cursor-pointer`}>
                         <div className={'flex flex-col justify-between h-full bg-primary text-white p-4 pb-1'}>
-                          <span className={`${activeTextClasses(3)}`}>activity</span>
+                          <span className={`${activeTextClasses(3)}`}>favorites</span>
+                        </div>
+                      </div>
+                    </li>
+                    <li onClick={() => setSelectedTab(4)}>
+                      <div className={`${activeClasses(4)} pb-[2px] cursor-pointer`}>
+                        <div className={'flex flex-col justify-between h-full bg-primary text-white p-4 pb-1'}>
+                          <span className={`${activeTextClasses(4)}`}>hidden</span>
                         </div>
                       </div>
                     </li>
@@ -71,6 +78,7 @@ const User: NextPage = () => {
               {selectedTab === 1 && <div/>}
               {selectedTab === 2 && <UserLikes />}
               {selectedTab === 3 && <div/>}
+              {selectedTab === 4 && <div/>}
             </div>
           </>
           :

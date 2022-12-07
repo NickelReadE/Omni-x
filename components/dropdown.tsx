@@ -30,7 +30,7 @@ const Dropdown = ({ menus, onChange }: IDropdownProps) => {
     <div className={'relative'}>
       <Menu>
         <>
-          <Menu.Button className={'bg-[#303030] text-primary-light text-md flex items-center rounded-full justify-between py-3 px-5 font-medium cursor-pointer text-[#6C757D] min-w-[230px] h-[32px] w-full'}>
+          <Menu.Button className={'bg-[#303030] text-primary-light text-md flex items-center rounded-full justify-between py-3 px-5 font-medium cursor-pointer text-primary-light min-w-[230px] h-[32px] w-full'}>
             <span>{selectedMenu}</span>
             <ArrowDown />
           </Menu.Button>

@@ -103,24 +103,20 @@ const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
         }
         {
           !isLoading &&
-          <div className="grid gap-4 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 xl:gap-4 2xl:grid-cols-6 2xl:gap-8 mt-4">
+          <div className="grid gap-4 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 2xl:grid-cols-6 mt-4">
             {sortedItems.map((item, index) => {
               if (selectedChainIds.length === 0) {
                 return (
-                  <NFTBox
-                    nft={item}
-                    key={index}
-                    onRefresh={onRefresh}
-                  />
+                  <div className={'flex justify-center w-full'} key={index}>
+                    <NFTBox nft={item} onRefresh={onRefresh} />
+                  </div>
                 )
               } else {
                 if (selectedChainIds.includes(item.chain_id)) {
                   return (
-                    <NFTBox
-                      nft={item}
-                      key={index}
-                      onRefresh={onRefresh}
-                    />
+                    <div className={'flex justify-center w-full'} key={index}>
+                      <NFTBox nft={item} onRefresh={onRefresh} />
+                    </div>
                   )
                 }
               }

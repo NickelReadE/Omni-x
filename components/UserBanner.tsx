@@ -13,6 +13,7 @@ import UserEdit from './user/UserEdit'
 import Dialog from '@material-ui/core/Dialog'
 import {makeStyles} from '@material-ui/core/styles'
 import {PrimaryButton} from './common/buttons/PrimaryButton'
+import {GreyButton} from "./common/buttons/GreyButton";
 
 type UserBannerProps = {
     user: ProfileData,
@@ -85,7 +86,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
             <div className={'flex items-center'}>
               <div className={'flex flex-col h-[60px] items-end justify-between space-y-2 mr-4'}>
                 <div className={'w-[90px]'}>
-                  <PrimaryButton text={'following'} className={'h-[26px] text-md font-medium'} />
+                  <PrimaryButton text={'following'} className={'h-[24px] text-md font-medium'} />
                 </div>
                 <div className={'flex items-center'}>
                   <span className={'text-md text-primary-light'}>1.65k followers</span>
@@ -97,9 +98,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
                 <div className={`flex flex-col h-[60px] items-end ${userAddress === address ? 'justify-between' : 'justify-center'} space-y-2`}>
                   {
                     userAddress === address &&
-                    <button className={'text-secondary font-medium text-md border-secondary flex items-center border-[1.5px] rounded-full h-[26px] px-2 py-1'} onClick={() => setSettingModal(true)}>
-                      edit profile
-                    </button>
+                      <GreyButton text={'settings'} className={'h-[26px]'} onClick={() => setSettingModal(true)} />
                   }
                   <div className={'flex items-center'}>
                     <div className={'w-8 h-8 p-1'}>

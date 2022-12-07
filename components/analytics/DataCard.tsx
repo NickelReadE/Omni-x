@@ -1,4 +1,5 @@
-import {CHAIN_COLORS, CHAIN_NAMES} from '../../utils/constants'
+import {chainInfos} from '../../utils/constants'
+import {twMerge} from 'tailwind-merge'
 
 export type AnalyticsData = {
     chainId: number,
@@ -17,7 +18,7 @@ export const AnalyticsCard = ({ header, amount, chainData }: IAnalyticsCardProps
       <div className={'text-primary-light font-medium text-md'}>
         {header}
       </div>
-      <div className={'text-primary-light font-medium text-xxxl'}>
+      <div className={'text-primary-light font-medium text-xxxl my-2'}>
         {amount}
       </div>
       {
@@ -25,12 +26,12 @@ export const AnalyticsCard = ({ header, amount, chainData }: IAnalyticsCardProps
           return (
             <div key={index} className={'flex items-center justify-between'}>
               <div className={'flex items-center'}>
-                <div className={`w-2 h-2 ${CHAIN_COLORS[data.chainId]} `} />
+                <div className={twMerge('w-2 h-2', `${'bg-chain-' + data.chainId}`)} />
                 <div className={'ml-2 text-md font-medium text-secondary'}>
-                  {CHAIN_NAMES[data.chainId]}
+                  {chainInfos[data.chainId].officialName}
                 </div>
               </div>
-              <div className={'text-md font-medium text-primary-light'}>
+              <div className={'text-md font-medium text-primary-light ml-4'}>
                 {data.value}
               </div>
             </div>

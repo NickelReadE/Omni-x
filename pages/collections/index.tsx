@@ -21,7 +21,7 @@ const Collections: NextPage = () => {
     if (collections.length > 0) {
       collections.map((item: any) => {
         slides.push(
-          <CollectionCard collection={item} card={null}/>
+          <CollectionCard collection={item} />
         )
       })
     }

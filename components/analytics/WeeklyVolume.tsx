@@ -1,4 +1,4 @@
-import {CHAIN_COLORS, CHAIN_NAMES} from '../../utils/constants'
+import {chainInfos} from '../../utils/constants'
 import {AnalyticsData} from './DataCard'
 
 const mockData = [
@@ -29,12 +29,12 @@ export const AnalyticsWeeklyVolume = () => {
               return (
                 <div key={index} className={'flex items-center justify-between'}>
                   <div className={'flex items-center'}>
-                    <div className={`w-2 h-2 ${CHAIN_COLORS[data.chainId]} `} />
+                    <div className={`w-2 h-2 ${'bg-chain-' + data.chainId}`} />
                     <div className={'ml-2 text-md font-medium text-secondary'}>
-                      {CHAIN_NAMES[data.chainId]}
+                      {chainInfos[data.chainId].officialName}
                     </div>
                   </div>
-                  <div className={'text-md font-medium text-primary-light'}>
+                  <div className={'ml-3 text-md font-medium text-primary-light'}>
                     {data.value}
                   </div>
                 </div>
