@@ -75,17 +75,25 @@ export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
               <span className={'text-xg text-primary-light'}>{collection.itemsCnt}</span>
               <span className={'text-md text-secondary'}>items</span>
             </div>
-            <div className={'flex flex-col items-center space-y-2'}>
+            <div className={'md:flex flex-col items-center space-y-2 hidden'}>
               <span className={'text-xg text-primary-light'}>{collection.ownerCnt}</span>
               <span className={'text-md text-secondary'}>owners</span>
             </div>
-            <div className={'flex flex-col items-center space-y-2'}>
+            <div className={'lg:flex flex-col items-center space-y-2 hidden'}>
               <span className={'text-xg text-primary-light'}>{royalty}%</span>
               <span className={'text-md text-secondary'}>creator&nbsp;fee</span>
             </div>
-            <div className={'flex flex-col items-center space-y-2'}>
+            <div className={'xl:flex flex-col items-center space-y-2 hidden'}>
+              <span className={'text-xg text-primary-light'}>{collection.itemsCnt}</span>
+              <span className={'text-md text-secondary'}>total&nbsp;vol</span>
+            </div>
+            <div className={'2xl:flex flex-col items-center space-y-2 hidden'}>
               <span className={'text-xg text-primary-light'}>{collection.itemsCnt}</span>
               <span className={'text-md text-secondary'}>7d&nbsp;vol</span>
+            </div>
+            <div className={'2xl:flex flex-col items-center space-y-2 hidden'}>
+              <span className={'text-xg text-primary-light'}>{collection.itemsCnt}</span>
+              <span className={'text-md text-secondary'}>listed</span>
             </div>
           </div>
           <div className={'flex flex-col space-y-2'}>
