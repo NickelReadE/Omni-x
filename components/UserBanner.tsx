@@ -13,7 +13,7 @@ import UserEdit from './user/UserEdit'
 import Dialog from '@material-ui/core/Dialog'
 import {makeStyles} from '@material-ui/core/styles'
 import {PrimaryButton} from './common/buttons/PrimaryButton'
-import {GreyButton} from "./common/buttons/GreyButton";
+import {GreyButton} from './common/buttons/GreyButton'
 
 type UserBannerProps = {
     user: ProfileData,

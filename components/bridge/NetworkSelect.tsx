@@ -48,8 +48,9 @@ const NetworkSelect: React.FC<INetworkSelectProps> = ({
           color: '#F5F5F5',
         }),
         control: (styles:any) => ({ ...styles,
-          maxWidth: '100px',
           borderRadius: '20px',
+          maxHeight: 24,
+          minHeight: 28,
           color: '#F5F5F5',
           height: 24,
           fontWeight: 500,
@@ -57,13 +58,18 @@ const NetworkSelect: React.FC<INetworkSelectProps> = ({
           border: '1px solid #969696',
           width: 170
         }),
+        dropdownIndicator: (styles:any) => ({ ...styles,
+          padding: 2,
+        }),
         indicatorsContainer: (styles:any) => ({ ...styles,
-          padding: 0,
+          padding: 2,
         }),
         valueContainer: (styles:any) => ({ ...styles,
           display: 'flex',
           justifyContent: 'center',
-          paddingRight: 0
+          paddingRight: 0,
+          paddingBottom: 0,
+          paddingTop: 0
         }),
       }}
       value={value}
