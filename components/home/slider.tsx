@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
+import Autoplay from 'embla-carousel-autoplay'
 import { DotButton } from './carouselButtons'
 import HomeIntro from './intro'
 import useData from '../../hooks/useData'
 
 export default function HomeSlider() {
   const { collections } = useData()
-  const [viewportRef, embla] = useEmblaCarousel({ skipSnaps: false })
+  const [viewportRef, embla] = useEmblaCarousel({ skipSnaps: false, loop: true }, [Autoplay({ delay: 4000, playOnInit: true })])
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([])
   const [selectedIndex, setSelectedIndex] = useState(0)
 
@@ -21,11 +22,14 @@ export default function HomeSlider() {
     
   useEffect(() => {
     if (!embla) return
-    onSelect()
-    setScrollSnaps(embla.scrollSnapList())
-    embla.on('select', onSelect)
-  }, [embla, setScrollSnaps, onSelect])
-    
+    if (collections.length > 0) {
+      onSelect()
+      embla.reInit({ skipSnaps: false, loop: true }, [Autoplay({ delay: 4000, playOnInit: true })])
+      setScrollSnaps(embla.scrollSnapList())
+      embla.on('select', onSelect)
+    }
+  }, [embla, setScrollSnaps, onSelect, collections])
+
   return (
     <>
       <div className="embla">
