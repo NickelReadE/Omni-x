@@ -1,6 +1,5 @@
 import {Menu} from '@headlessui/react'
 import {Fragment, useEffect, useState} from 'react'
-import ArrowDown from '../public/images/icons/arrow_down.svg'
 
 type MenuItem = {
   text: string,
