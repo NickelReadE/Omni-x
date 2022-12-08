@@ -23,13 +23,13 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
   })
   const [hovered, setHovered] = useState(false)
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined)
-    
+
   return (
     <div className='w-9 h-9'>
       <div className="relative inline-block text-left" onMouseLeave={() => setHovered(false)}>
         <div className={'focus:outline-none'} onMouseEnter={() => setHovered(true)}>
           <Link href={`/user/${address}`}>
-            <div className={`w-9 h-9 ${hovered ? 'bg-primary-gradient' : ''}  rounded-full cursor-pointer`}>
+            <div className={`w-9 h-9 ${hovered ? 'bg-primary-gradient' : ''} rounded-full cursor-pointer`}>
               <img
                 src={avatarImage}
                 alt="avatar"
@@ -63,7 +63,7 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
                             <span className={'grow text-left px-3 text-primary-light'}>${numberLocalize(totalUSDCBalance + totalUSDTBalance)}</span>
                             <span className={'flex-none w-6'}>
                               {
-                                open ? 
+                                open ?
                                   <DropdownArrowUp />
                                   :
                                   <DropdownArrow/>
