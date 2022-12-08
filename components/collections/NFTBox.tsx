@@ -197,7 +197,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
             <div className="w-full h-full cursor-pointer">
               <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
                 <img
-                  className='rounded-tr-[8px] rounded-tl-[8px] object-contain object-center  hover:backdrop-blur-[2px] hover:rounded-tr-[8px] hover:rounded-tl-[8px] duration-300 absolute top-0 bottom-0 left-0 right-0'
+                  className='rounded-tr-[8px] rounded-tl-[8px] object-fill object-center  hover:backdrop-blur-[2px] hover:rounded-tr-[8px] hover:rounded-tl-[8px] duration-300 absolute top-0 bottom-0 left-0 right-0'
                   src={imageError ? '/images/omnix_logo_black_1.png' : image}
                   alt="nft-image"
                   onError={() => { setImageError(true) }}

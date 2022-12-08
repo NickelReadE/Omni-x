@@ -268,7 +268,7 @@ button.sidebar {
 .embla__slide__inner {
   position: relative;
   overflow: hidden;
-  height: 333.33px;
+  max-height: 333.33px;
 }
 
 .embla__slide__img {
