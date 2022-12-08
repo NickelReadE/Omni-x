@@ -20,6 +20,7 @@ import DiscordIcon from '../../../public/images/icons/discord.svg'
 import {PrimaryButton} from '../../../components/common/buttons/PrimaryButton'
 import {SkeletonCard} from '../../../components/skeleton/card'
 import {WhitelistCard} from '../../../components/launchpad/WhitelistCard'
+import {Logger} from "ethers/lib/utils";
 
 const Mint: NextPage = () => {
   const {
@@ -41,25 +42,14 @@ const Mint: NextPage = () => {
   const [selectedTab, setSelectedTab] = useState(0)
 
   const { collectionInfo } = useCollection(col_url)
-  
+
   const activeClasses = (index: number) => {
     return index === selectedTab ? 'bg-primary-gradient': 'bg-secondary'
   }
   const activeTextClasses = (index: number) => {
     return index === selectedTab ? 'bg-primary-gradient bg-clip-text text-transparent': 'text-secondary'
   }
-  
-  const decrease = (): void => {
-    if (mintNum > 1) {
-      setMintNum(mintNum - 1)
-    }
-  }
 
-  const increase = (): void => {
-    if (mintNum < 5) {
-      setMintNum(mintNum + 1)
-    }
-  }
   const errorToast = (error: string): void => {
     toast.error(error, {
       position: toast.POSITION.TOP_RIGHT,
@@ -86,27 +76,24 @@ const Mint: NextPage = () => {
     }
   }, [chainId, collectionInfo, signer])
 
-  const mint = async (): Promise<void> => {
+  const mint = async (quantity: number): Promise<void> => {
     if (chainId === undefined || !provider || !collectionInfo) {
       return
     }
-    const tokenContract = getAdvancedInstance(collectionInfo?.address[chainId], chainId, signer)
+    const tokenContract = getAdvancedInstance(collectionInfo.address[chainId], chainId, signer)
 
     let mintResult
     setIsMinting(true)
     try {
-      mintResult = await tokenContract.publicMint(mintNum, {value: ethers.utils.parseEther((price * mintNum).toString())})
-
+      mintResult = await tokenContract.publicMint(quantity, {value: ethers.utils.parseEther((price * quantity).toString())})
       const receipt = await mintResult.wait()
-
       if (receipt != null) {
         setIsMinting(false)
         await getInfo()
       }
-
     } catch (e: any) {
       console.log(e)
-      if (e['code'] == 4001) {
+      if (e && e.code && e.code === Logger.errors.ACTION_REJECTED) {
         errorToast('user denied transaction signature')
       } else {
         const currentBalance = await provider.getBalance(address ? address : '')
@@ -242,9 +229,9 @@ const Mint: NextPage = () => {
                     <div className={'text-primary-light text-lg ml-2 text-shadow-sm2'}>{totalCnt}</div>
                   </div>
 
-                  <WhitelistCard title={'whitelist 1'} price={0.08} mintNum={1} mintStatus={''} maxLimit={2000} limitPerWallet={1} active={false} mint={mint} gasless={collectionInfo.is_gasless} />
-                  <WhitelistCard title={'whitelist 2'} price={0.10} mintNum={1} mintStatus={''} maxLimit={2000} limitPerWallet={1} active={false} mint={mint} gasless={collectionInfo.is_gasless} />
-                  <WhitelistCard title={'public mint'} price={price} mintNum={1} mintStatus={'public'} maxLimit={0} limitPerWallet={5} active={true} mint={mint} gasless={collectionInfo.is_gasless} />
+                  <WhitelistCard title={'whitelist 1'} price={0.08} mintStatus={''} maxLimit={2000} limitPerWallet={1} active={false} mint={mint} gasless={collectionInfo.is_gasless} />
+                  <WhitelistCard title={'whitelist 2'} price={0.10} mintStatus={''} maxLimit={2000} limitPerWallet={1} active={false} mint={mint} gasless={collectionInfo.is_gasless} />
+                  <WhitelistCard title={'public mint'} price={price} mintStatus={'public'} maxLimit={0} limitPerWallet={5} active={true} mint={mint} gasless={collectionInfo.is_gasless} />
                   {/*<div className={mintstyles.mintDataGrid}>
               <div className={mintstyles.mintDataWrap}>
                 <h5>minted</h5>

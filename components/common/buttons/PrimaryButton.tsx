@@ -4,14 +4,15 @@ import {twMerge} from 'tailwind-merge'
 interface IPrimaryButtonProps {
     text: string,
     className?: string,
+    parentClassName?: string,
     onClick?: () => void
 }
 
-export const PrimaryButton = ({ text, className, onClick }: IPrimaryButtonProps) => {
+export const PrimaryButton = ({ text, className, parentClassName, onClick }: IPrimaryButtonProps) => {
   const [hovered, setHovered] = useState(false)
 
   return (
-    <button className={'bg-primary-gradient rounded-full p-[1px]'} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onClick={onClick}>
+    <button className={`bg-primary-gradient rounded-full p-[1px] ${parentClassName ?? ''}`} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onClick={onClick}>
       <div
         className={twMerge(`${hovered ? 'bg-transparent' : 'bg-primary'} flex items-center justify-center rounded-full px-[15px] py-[7px] h-full ${className ?? ''}`)}>
         <div
