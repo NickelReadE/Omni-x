@@ -31,6 +31,7 @@ export type CollectionType = {
     mint_end_timestamp: number,
     start_ids: any,
     price: number,
+    is_gasless: boolean,
 }
 
 export type CollectionTypeFunc = {

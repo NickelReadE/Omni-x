@@ -5,11 +5,13 @@ import {LaunchPadType} from '../../hooks/useLaunchPad'
 export const FeaturedCard = ({collection}: { collection: LaunchPadType }) => {
   return (
     <div className={'w-[600px]'}>
-      <img
-        className="w-[600px] hover:cursor-pointer"
-        src={collection.profile_image}
-        alt="NFT">
-      </img>
+      <Link href={`/launchpad/${collection.col_url}`}>
+        <img
+          className="w-[600px] hover:cursor-pointer"
+          src={collection.profile_image}
+          alt="NFT">
+        </img>
+      </Link>
       <div className="flex flex-col pt-4">
         <span className={'text-xl3 text-primary-light'}>{collection.name}</span>
         <Link href={`/launchpad/${collection.col_url}`}>

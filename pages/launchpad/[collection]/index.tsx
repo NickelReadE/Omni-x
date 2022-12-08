@@ -242,9 +242,9 @@ const Mint: NextPage = () => {
                     <div className={'text-primary-light text-lg ml-2 text-shadow-sm2'}>{totalCnt}</div>
                   </div>
 
-                  <WhitelistCard title={'whitelist 1'} price={0.08} mintNum={1} mintStatus={'ENDED'} />
-                  <WhitelistCard title={'whitelist 2'} price={0.10} mintNum={1} mintStatus={'live'} mint={mint} />
-                  <WhitelistCard title={'public mint'} price={0.15} mintNum={1} mintStatus={'public'} />
+                  <WhitelistCard title={'whitelist 1'} price={0.08} mintNum={1} mintStatus={''} maxLimit={2000} limitPerWallet={1} active={false} mint={mint} gasless={collectionInfo.is_gasless} />
+                  <WhitelistCard title={'whitelist 2'} price={0.10} mintNum={1} mintStatus={''} maxLimit={2000} limitPerWallet={1} active={false} mint={mint} gasless={collectionInfo.is_gasless} />
+                  <WhitelistCard title={'public mint'} price={price} mintNum={1} mintStatus={'public'} maxLimit={0} limitPerWallet={5} active={true} mint={mint} gasless={collectionInfo.is_gasless} />
                   {/*<div className={mintstyles.mintDataGrid}>
               <div className={mintstyles.mintDataWrap}>
                 <h5>minted</h5>
