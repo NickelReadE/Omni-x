@@ -15,10 +15,9 @@ import mintstyles from '../../../styles/mint.module.scss'
 import classNames from '../../../helpers/classNames'
 import useWallet from '../../../hooks/useWallet'
 import {ChainIds} from '../../../types/enum'
-import {getAddressByName, parseCurrency, SUPPORTED_CHAIN_IDS, validateCurrencyName} from '../../../utils/constants'
+import {formatCurrency, getAddressByName, getChainNameFromId, isGasslessMintable, parseCurrency, SUPPORTED_CHAIN_IDS, validateCurrencyName} from '../../../utils/constants'
 import {chainInfos} from '../../../utils/constants'
 import { useGaslessMint } from '../../../hooks/useGelato'
-
 
 const Mint: NextPage = () => {
   const {
@@ -39,6 +38,8 @@ const Mint: NextPage = () => {
   const [isMinting, setIsMinting] = useState<boolean>(false)
   const [isSwitchingNetwork] = useState<boolean>(false)
   const [price, setPrice] = useState(0)
+  const [stablePrice, setStablePrice] = useState(0)
+  const [mintType, setMintType] = useState('')
   const [startId, setStartId] = useState(0)
   const [totalCnt, setTotalCnt] = useState(0)
   const [mintedCnt, setMintedCnt] = useState(0)
@@ -65,9 +66,9 @@ const Mint: NextPage = () => {
 
   const getInfo = useCallback(async (): Promise<void> => {
     try {
-      if (collectionInfo && signer) {
-        const tokenContract = getAdvancedInstance(collectionInfo.address[chainId ? chainId : 0], (chainId ? chainId : ChainIds.ETHEREUM), signer)
-        setStartId(Number(collectionInfo.start_ids[chainId ? chainId : 0]))
+      if (collectionInfo && signer && chainId) {
+        const tokenContract = getAdvancedInstance(collectionInfo.address[chainId], (chainId), signer)
+        setStartId(Number(collectionInfo.start_ids[chainId]))
 
         const priceT = await tokenContract.price()
         setPrice(parseFloat(ethers.utils.formatEther(priceT)))
@@ -75,13 +76,19 @@ const Mint: NextPage = () => {
         const nextId = await tokenContract.nextMintId()
         setTotalNFTCount(Number(max_mint))
         setNextTokenId(Number(nextId))
+
+        const isGasslesMint = isGasslessMintable(col_url, getChainNameFromId(chainId))
+        if (isGasslesMint) {
+          const stablePrice = await tokenContract.stablePrice()
+          setStablePrice(parseFloat(formatCurrency(stablePrice, chainId, 'USDC')))
+        }
       }
     } catch (error) {
       console.log(error)
     }
   }, [chainId, collectionInfo, signer])
 
-  const mint = async (): Promise<void> => {
+  const nativeMint = async (): Promise<void> => {
     if (chainId === undefined || !provider || !collectionInfo) {
       return
     }
@@ -115,6 +122,9 @@ const Mint: NextPage = () => {
       setIsMinting(false)
     }
   }
+
+  const isGasslessMintAvailable = (mintType === 'gasless' && stablePrice != 0)
+  const mintButtonName = isGasslessMintAvailable ? 'gasless mint' : 'mint'
   const mintButton = () => {
     // if(mintable){
     const tmp = 1
@@ -125,18 +135,18 @@ const Mint: NextPage = () => {
             <i className="fa fa-spinner fa-spin font-bold text-xl"
               style={{'letterSpacing': 'normal'}}
             />
-            mint now
+            {mintButtonName}
           </button>
         )
       } else {
         if (isSwitchingNetwork) {
           return (
-            <button type="button" disabled>mint now</button>
+            <button type="button" disabled>{mintButtonName}</button>
           )
         } else {
           return (
             <>
-              <button type="button" onClick={() => mint()}>mint now</button>
+              <button type="button" onClick={() => mint()}>{mintButtonName}</button>
             </>
             
           )
@@ -144,8 +154,14 @@ const Mint: NextPage = () => {
       }
     } else {
       return (
-        <button type="button" disabled>mint now</button>
+        <button type="button" disabled>{mintButtonName}</button>
       )
+    }
+  }
+
+  const switchMintType = (type: string) => {
+    if (type === 'gasless' && stablePrice != 0) {
+      setMintType(type)
     }
   }
 
@@ -153,7 +169,7 @@ const Mint: NextPage = () => {
     if (chainId === undefined || !provider || !collectionInfo || !address) {
       return
     }
-    const collectionAddr = '0xe96Ce71bB49D630f075413618CCf097c4A0b7b9A'
+    const collectionAddr = collectionInfo?.address[chainId]
     const newCurrencyName = validateCurrencyName('USDC', chainId) || 'USDC'
     const tokenContract = getAdvancedInstance(collectionAddr, chainId, signer)
     const usdContract = getUSDCInstance(getAddressByName(newCurrencyName, chainId), chainId, signer)
@@ -175,6 +191,15 @@ const Mint: NextPage = () => {
     } catch (e: any) {
       console.log(e)
       setIsMinting(false)
+    }
+  }
+
+  const mint = () => {
+    if (isGasslessMintAvailable) {
+      return stableMint()
+    }
+    else {
+      return nativeMint()
     }
   }
 
@@ -224,6 +249,8 @@ const Mint: NextPage = () => {
       setTotalCnt(Number(totalNFTCount) - startId)
     }
   }, [totalNFTCount, startId])
+
+
   return (
     <>
       <ToastContainer/>
@@ -256,12 +283,24 @@ const Mint: NextPage = () => {
                     {(price * mintNum).toFixed(2)}
                   </div>
                   {
-                    chainId &&
+                    chainId && !isGasslessMintAvailable &&
                     SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
-                      return chainId === networkId && <img key={index} alt={'networkIcon'}
+                      return chainId === networkId && <img
+                        onClick={() => switchMintType('gasless')}
+                        key={index}
+                        alt={'networkIcon'}
                         src={chainInfos[networkId].logo || chainInfos[ChainIds.ETHEREUM].logo}
                         className="m-auto h-[45px]"/>
                     })
+                  }
+                  {
+                    chainId && isGasslessMintAvailable && (
+                      <img 
+                        onClick={() => switchMintType('')}
+                        alt={'networkIcon'}
+                        src={'images/payment/usdc.png'}
+                        className="m-auto h-[45px]"/>
+                    )
                   }
                 </div>
               </div>
@@ -278,10 +317,6 @@ const Mint: NextPage = () => {
             <div
               className="w-fit px-2 py-1 text-white border-2 border-[#B444F9] bg-[#B444F9] rounded-lg transition-all duration-300 ease-in-out hover:scale-105 hover:drop-shadow-[0_10px_10px_rgba(180,68,249,0.7)] active:scale-100 active:drop-shadow-[0_5px_5px_rgba(180,68,249,0.8)]">
               {mintButton()}
-            </div>
-            <div
-              className="mt-1 w-fit px-2 py-1 text-white border-2 border-[#B444F9] bg-[#B444F9] rounded-lg transition-all duration-300 ease-in-out hover:scale-105 hover:drop-shadow-[0_10px_10px_rgba(180,68,249,0.7)] active:scale-100 active:drop-shadow-[0_5px_5px_rgba(180,68,249,0.8)]">
-              <button type="button" onClick={() => stableMint()}>stable mint</button>
             </div>
           </div>
         </div>

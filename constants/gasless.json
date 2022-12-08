@@ -1,0 +1,7 @@
+{
+  "milady": {
+    "goerli": true,
+    "optimism-goerli": true,
+    "mumbai": true
+  }
+}
