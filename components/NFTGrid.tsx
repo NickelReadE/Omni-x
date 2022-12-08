@@ -26,7 +26,7 @@ const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
     const namedNftItems = [...nfts].map((item) => {
       return {
         ...item,
-        newName: JSON.parse(item.metadata || '{}')?.name
+        newName: item.name.toLowerCase(),
       }
     })
     const hasNameItems = [...namedNftItems].filter((item) => item.newName)
@@ -55,7 +55,7 @@ const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
       const namedNftItems = [...nfts].map((item) => {
         return {
           ...item,
-          newName: JSON.parse(item.metadata || '{}')?.name
+          newName: item.name.toLowerCase(),
         }
       })
       const hasNameItems = [...namedNftItems].filter((item) => item.newName)
@@ -65,7 +65,7 @@ const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
       const namedNftItems = [...nfts].map((item) => {
         return {
           ...item,
-          newName: JSON.parse(item.metadata || '{}')?.name
+          newName: item.name.toLowerCase(),
         }
       })
       const hasNameItems = [...namedNftItems].filter((item) => item.newName)
@@ -108,14 +108,14 @@ const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
               if (selectedChainIds.length === 0) {
                 return (
                   <div className={'flex justify-center w-full'} key={index}>
-                    <NFTBox nft={item} onRefresh={onRefresh} />
+                    <NFTBox nft={item} col_url={item.col_url} onRefresh={onRefresh} />
                   </div>
                 )
               } else {
                 if (selectedChainIds.includes(item.chain_id)) {
                   return (
                     <div className={'flex justify-center w-full'} key={index}>
-                      <NFTBox nft={item} onRefresh={onRefresh} />
+                      <NFTBox nft={item} col_url={item.col_url} onRefresh={onRefresh} />
                     </div>
                   )
                 }

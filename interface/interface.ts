@@ -25,6 +25,7 @@ export interface NFTItem {
   last_sale:number,
   last_sale_currency:string,
   chain_id:number,
+  col_url: string,
   metadata: string,
   token_uri: string,
   amount: string,
