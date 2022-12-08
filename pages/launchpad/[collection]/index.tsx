@@ -19,6 +19,7 @@ import TelegramIcon from '../../../public/images/icons/telegram.svg'
 import DiscordIcon from '../../../public/images/icons/discord.svg'
 import {PrimaryButton} from '../../../components/common/buttons/PrimaryButton'
 import {SkeletonCard} from '../../../components/skeleton/card'
+import {WhitelistCard} from '../../../components/launchpad/WhitelistCard'
 
 const Mint: NextPage = () => {
   const {
@@ -241,39 +242,9 @@ const Mint: NextPage = () => {
                     <div className={'text-primary-light text-lg ml-2 text-shadow-sm2'}>{totalCnt}</div>
                   </div>
 
-                  {/*whitelist 1*/}
-                  <div className={'flex flex-col mt-4'}>
-                    <div className={'rounded-[8px] p-[1px] bg-primary-gradient w-[350px]'}>
-                      <div className={'flex flex-col py-2 px-3 rounded-[8px] bg-primary'}>
-                        <div className={'flex justify-between'}>
-                          <div className={'text-secondary text-xl text-shadow-sm2'}>whitelist 1</div>
-                          <div
-                            className={'text-xl text-shadow-sm2 bg-clip-text text-transparent bg-primary-gradient font-medium'}>live
-                          </div>
-                        </div>
-                        <div className={'flex justify-between mt-2'}>
-                          <div className={'flex items-center'}>
-                            <span className={'text-secondary text-xxxl text-shadow-sm2 mr-4'}>
-                              {(price * mintNum).toFixed(2)}
-                            </span>
-                            {
-                              chainId &&
-                                  <img
-                                    alt={'networkIcon'}
-                                    src={chainInfos[chainId].logo || chainInfos[ChainIds.ETHEREUM].logo}
-                                    className="'w-8 h-8"
-                                  />
-                            }
-                          </div>
-                          <PrimaryButton text={'mint'} className={'px-6'} onClick={() => mint()}/>
-                        </div>
-                        <div
-                          className={'mt-2 text-primary-light font-medium text-[14px] leading-[18px] text-shadow-sm2'}>
-                            2,000 max - 1 per wallet
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <WhitelistCard title={'whitelist 1'} price={0.08} mintNum={1} mintStatus={'ENDED'} />
+                  <WhitelistCard title={'whitelist 2'} price={0.10} mintNum={1} mintStatus={'live'} mint={mint} />
+                  <WhitelistCard title={'public mint'} price={0.15} mintNum={1} mintStatus={'public'} />
                   {/*<div className={mintstyles.mintDataGrid}>
               <div className={mintstyles.mintDataWrap}>
                 <h5>minted</h5>
