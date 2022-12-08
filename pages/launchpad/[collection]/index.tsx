@@ -7,20 +7,17 @@ import {getAdvancedInstance} from '../../../utils/contracts'
 import {ToastContainer, toast} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import {Slide} from 'react-toastify'
-import classNames from '../../../helpers/classNames'
 import useWallet from '../../../hooks/useWallet'
 import {ChainIds} from '../../../types/enum'
-import {chainInfos} from '../../../utils/constants'
 import useCollection from '../../../hooks/useCollection'
 import {ExternalLink} from '../../../components/basic'
 import WebsiteIcon from '../../../public/images/icons/website.svg'
 import TwitterIcon from '../../../public/images/icons/twitter.svg'
 import TelegramIcon from '../../../public/images/icons/telegram.svg'
 import DiscordIcon from '../../../public/images/icons/discord.svg'
-import {PrimaryButton} from '../../../components/common/buttons/PrimaryButton'
 import {SkeletonCard} from '../../../components/skeleton/card'
 import {WhitelistCard} from '../../../components/launchpad/WhitelistCard'
-import {Logger} from "ethers/lib/utils";
+import {Logger} from 'ethers/lib/utils'
 
 const Mint: NextPage = () => {
   const {
