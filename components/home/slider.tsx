@@ -19,7 +19,7 @@ export default function HomeSlider() {
   const scrollTo = useCallback((index) => embla && embla.scrollTo(index), [
     embla
   ])
-    
+
   useEffect(() => {
     if (!embla) return
     if (collections.length > 0) {
