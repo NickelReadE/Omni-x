@@ -201,7 +201,7 @@ const Mint: NextPage = () => {
                 </div>
               </div>
               <div className={'w-full flex flex-1'}>
-                <div className={'flex flex-col'}>
+                <div className={'flex flex-col w-full'}>
                   <span className="font-medium text-primary-light text-xxl">
                     {collectionInfo.name}
                   </span>

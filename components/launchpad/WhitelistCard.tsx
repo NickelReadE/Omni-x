@@ -18,7 +18,7 @@ export const WhitelistCard = ({ title, price, mintNum, mintStatus, mint }: IWhit
 
   return (
     <div className={'flex flex-col mt-4'}>
-      <div className={`rounded-[8px] p-[1px] ${mintStatus === 'live' ? 'bg-primary-gradient' : 'bg-secondary'} w-[350px]`}>
+      <div className={`rounded-[8px] p-[1px] ${mintStatus === 'live' ? 'bg-primary-gradient' : 'bg-secondary'} min-w-[350px] w-full`}>
         <div className={'flex flex-col py-2 px-3 rounded-[8px] bg-primary'}>
           <div className={'flex justify-between'}>
             <div className={'text-secondary text-xl text-shadow-sm2'}>{title}</div>
