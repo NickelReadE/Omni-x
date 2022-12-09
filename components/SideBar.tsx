@@ -145,6 +145,9 @@ const SideBar: React.FC = () => {
               setImage('/images/omnix_logo_black_1.png')
             }
           }
+          else {
+            setImage(selectedItem && selectedItem.image ? selectedItem.image : '/images/omnix_logo_black_1.png')
+          }
         }
       }
       setDragEnd(true)
