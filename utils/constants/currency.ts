@@ -52,6 +52,8 @@ export const VALID_CURRENCIES: {[chain: number | string]: CurrencyType[]} = {
     getCurrency(CURRENCY_USDC, usdc[ChainIDS.OPTIMISM], 6),
     getCurrency(CURRENCY_WETH, weth[ChainIDS.OPTIMISM], 18),
   ],
+  [ChainIDS.MOONBEAM]: [
+  ],
   [ChainIDS.APTOS]: [
   ]
 }

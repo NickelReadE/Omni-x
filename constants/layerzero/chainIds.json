@@ -18,7 +18,7 @@
   "optimism-goerli":  10132,
   "fantom-testnet":   10112,
   "harmony-testnet":  10033,
-  "moonbeam-testnet": 10026,
+  "moonbeam-testnet": 10126,
   "celo-testnet":     10025,
 
   "5":           10121,
@@ -27,5 +27,6 @@
   "80001":           10109,
   "421613":  10143,
   "420":  10132,
-  "4002":   10112
+  "4002":   10112,
+  "1287": 10126
 }
