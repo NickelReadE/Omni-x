@@ -84,7 +84,7 @@ const Mint: NextPage = () => {
     } catch (error) {
       console.log(error)
     }
-  }, [chainId, collectionInfo, signer])
+  }, [chainId, collectionInfo, signer, col_url])
 
   const nativeMint = async (): Promise<void> => {
     if (chainId === undefined || !provider || !collectionInfo) {
@@ -204,11 +204,10 @@ const Mint: NextPage = () => {
   useEffect(() => {
     const calculateFee = async (): Promise<void> => {
       try {
-        if (transferNFT) {
-          
-        } else {
-          //setEstimateFee('')
-        }
+        // if (transferNFT) {
+        // } else {
+        //   //setEstimateFee('')
+        // }
       } catch (error) {
         console.log(error)
         if (String(chainId) == toChain) {
