@@ -85,7 +85,7 @@ export const useGaslessMint = () => {
   const { buildRelayRequest, sendRelayRequest, waitForRelayTask } = useGelato()
 
   const gaslessMint = async (contract: ethers.Contract, chainId: number, mintNum: number, minter: string): Promise<RelayResponse> => {
-    const { data } = await contract.populateTransaction.gaslessMint(mintNum, minter)
+    const { data } = await contract.populateTransaction.publicMintGasless(mintNum, minter)
 
     if (!data) throw new Error('useGaslessMint: Unable to encode gaslessMint function data')
 

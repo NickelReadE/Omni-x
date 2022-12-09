@@ -4,7 +4,7 @@ import {useRouter} from 'next/router'
 import {ethers} from 'ethers'
 import React, {useState, useEffect, useCallback} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {getAdvancedInstance, getUSDCInstance} from '../../../utils/contracts'
+import {getAdvancedONFT721Instance, getGaslessONFT721Instance, getUSDCInstance} from '../../../utils/contracts'
 import {ToastContainer, toast} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import {Slide} from 'react-toastify'
@@ -15,7 +15,7 @@ import mintstyles from '../../../styles/mint.module.scss'
 import classNames from '../../../helpers/classNames'
 import useWallet from '../../../hooks/useWallet'
 import {ChainIds} from '../../../types/enum'
-import {formatCurrency, getAddressByName, getChainNameFromId, isGasslessMintable, parseCurrency, SUPPORTED_CHAIN_IDS, validateCurrencyName} from '../../../utils/constants'
+import {formatCurrency, getChainNameFromId, isGaslessCollection, isGaslessMintable, SUPPORTED_CHAIN_IDS} from '../../../utils/constants'
 import {chainInfos} from '../../../utils/constants'
 import { useGaslessMint } from '../../../hooks/useGelato'
 
@@ -38,8 +38,6 @@ const Mint: NextPage = () => {
   const [isMinting, setIsMinting] = useState<boolean>(false)
   const [isSwitchingNetwork] = useState<boolean>(false)
   const [price, setPrice] = useState(0)
-  const [stablePrice, setStablePrice] = useState(0)
-  const [mintType, setMintType] = useState('')
   const [startId, setStartId] = useState(0)
   const [totalCnt, setTotalCnt] = useState(0)
   const [mintedCnt, setMintedCnt] = useState(0)
@@ -67,21 +65,21 @@ const Mint: NextPage = () => {
   const getInfo = useCallback(async (): Promise<void> => {
     try {
       if (collectionInfo && signer && chainId) {
-        const tokenContract = getAdvancedInstance(collectionInfo.address[chainId], (chainId), signer)
+        const tokenContract = getAdvancedONFT721Instance(collectionInfo.address[chainId], (chainId), signer)
         setStartId(Number(collectionInfo.start_ids[chainId]))
 
         const priceT = await tokenContract.price()
-        setPrice(parseFloat(ethers.utils.formatEther(priceT)))
+        if (isGaslessCollection(col_url)) {
+          setPrice(parseFloat(formatCurrency(priceT, chainId, 'USDC')))
+        }
+        else {
+          setPrice(parseFloat(ethers.utils.formatEther(priceT)))
+        }
+
         const max_mint = await tokenContract.maxMintId()
         const nextId = await tokenContract.nextMintId()
-        setTotalNFTCount(Number(max_mint))
-        setNextTokenId(Number(nextId))
-
-        const isGasslesMint = isGasslessMintable(col_url, getChainNameFromId(chainId))
-        if (isGasslesMint) {
-          const stablePrice = await tokenContract.stablePrice()
-          setStablePrice(parseFloat(formatCurrency(stablePrice, chainId, 'USDC')))
-        }
+        setTotalNFTCount(max_mint.toNumber())
+        setNextTokenId(nextId.toNumber())
       }
     } catch (error) {
       console.log(error)
@@ -92,7 +90,7 @@ const Mint: NextPage = () => {
     if (chainId === undefined || !provider || !collectionInfo) {
       return
     }
-    const tokenContract = getAdvancedInstance(collectionInfo?.address[chainId], chainId, signer)
+    const tokenContract = getAdvancedONFT721Instance(collectionInfo?.address[chainId], chainId, signer)
 
     let mintResult
     setIsMinting(true)
@@ -123,8 +121,7 @@ const Mint: NextPage = () => {
     }
   }
 
-  const isGasslessMintAvailable = (mintType === 'gasless' && stablePrice != 0)
-  const mintButtonName = isGasslessMintAvailable ? 'gasless mint' : 'mint'
+  const mintButtonName = isGaslessCollection(col_url) ? isGaslessMintable(col_url, getChainNameFromId(chainId || 0)) ? 'gasless mint' : 'mint' : 'mint'
   const mintButton = () => {
     // if(mintable){
     const tmp = 1
@@ -159,31 +156,32 @@ const Mint: NextPage = () => {
     }
   }
 
-  const switchMintType = (type: string) => {
-    if (type === 'gasless' && stablePrice != 0) {
-      setMintType(type)
-    }
-  }
-
   const stableMint = async (): Promise<void> => {
     if (chainId === undefined || !provider || !collectionInfo || !address) {
       return
     }
     const collectionAddr = collectionInfo?.address[chainId]
-    const newCurrencyName = validateCurrencyName('USDC', chainId) || 'USDC'
-    const tokenContract = getAdvancedInstance(collectionAddr, chainId, signer)
-    const usdContract = getUSDCInstance(getAddressByName(newCurrencyName, chainId), chainId, signer)
+    const tokenContract = getGaslessONFT721Instance(collectionAddr, chainId, signer)
+    const usdAddress = await tokenContract.stableToken()
+    const usdContract = getUSDCInstance(usdAddress, chainId, signer)
 
     setIsMinting(true)
     try {
-
-      const price = await tokenContract.stablePrice()
       const allowance = await usdContract?.allowance(address, tokenContract.address)
-      if (allowance.lt(price)) {
-        await (await usdContract?.approve(tokenContract.address, price)).wait()
+      const stablePrice = await tokenContract.price()
+      const stablePrices = stablePrice.mul(mintNum)
+      if (allowance.lt(stablePrices)) {
+        await (await usdContract?.approve(tokenContract.address, stablePrices)).wait()
       }
-      const response = await gaslessMint(tokenContract, chainId, mintNum, address)
-      await waitForRelayTask(response)
+
+      if (isGaslessMintable(col_url, getChainNameFromId(chainId))) {
+        const response = await gaslessMint(tokenContract, chainId, mintNum, address)
+        await waitForRelayTask(response)
+      }
+      else {
+        const mintResult = await tokenContract.publicMint(mintNum)
+        await mintResult.wait()
+      }
 
       setIsMinting(false)
       await getInfo()
@@ -195,7 +193,7 @@ const Mint: NextPage = () => {
   }
 
   const mint = () => {
-    if (isGasslessMintAvailable) {
+    if (isGaslessCollection(col_url)) {
       return stableMint()
     }
     else {
@@ -207,12 +205,7 @@ const Mint: NextPage = () => {
     const calculateFee = async (): Promise<void> => {
       try {
         if (transferNFT) {
-          //const provider = new ethers.providers.Web3Provider(window.ethereum)
-          //const signer = provider.getSigner()
-          // const tokenContract =  new ethers.Contract(addresses[`${Number(chainId).toString(10)}`].address, AdvancedONT.abi, signer)
-          //const adapterParam = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 200000])
-          //const fee:any =[0.001] //await tokenContract.estimateSendFee(addresses[toChain].chainId, account,transferNFT,false,adapterParam)
-          // setEstimateFee('Estimate Fee :'+(Number(fee[0])/Math.pow(10,18)*1.1).toFixed(10)+addresses[chainId].unit)
+          
         } else {
           //setEstimateFee('')
         }
@@ -280,27 +273,18 @@ const Mint: NextPage = () => {
                 {/* <span>{chainId?addresses[`${Number(chainId)}`].price:0}<Image src={chainId?addresses[`${Number(chainId)}`].imageSVG:EthereumImageSVG} width={29.84} height={25.46} alt='ikon'></Image></span> */}
                 <div className="flex flex-row space-x-2 items-center mt-[15px]">
                   <div className="text-xg1 ">
+                    {isGaslessCollection(col_url) ? '$' : ''}
                     {(price * mintNum).toFixed(2)}
                   </div>
                   {
-                    chainId && !isGasslessMintAvailable &&
+                    chainId && !isGaslessCollection(col_url) &&
                     SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
                       return chainId === networkId && <img
-                        onClick={() => switchMintType('gasless')}
                         key={index}
                         alt={'networkIcon'}
                         src={chainInfos[networkId].logo || chainInfos[ChainIds.ETHEREUM].logo}
                         className="m-auto h-[45px]"/>
                     })
-                  }
-                  {
-                    chainId && isGasslessMintAvailable && (
-                      <img 
-                        onClick={() => switchMintType('')}
-                        alt={'networkIcon'}
-                        src={'images/payment/usdc.png'}
-                        className="m-auto h-[45px]"/>
-                    )
                   }
                 </div>
               </div>

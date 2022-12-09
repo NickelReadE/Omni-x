@@ -37,6 +37,11 @@
         "type": "string"
       },
       {
+        "internalType": "string",
+        "name": "_hiddenURI",
+        "type": "string"
+      },
+      {
         "internalType": "address",
         "name": "_stableToken",
         "type": "address"
@@ -474,24 +479,6 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_nbTokens",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "minter",
-        "type": "address"
-      }
-    ],
-    "name": "gaslessMint",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
         "name": "tokenId",
         "type": "uint256"
       }
@@ -571,6 +558,13 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -703,7 +697,30 @@
     ],
     "name": "mint",
     "outputs": [],
-    "stateMutability": "payable",
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_nbTokens",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "minter",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes32[]",
+        "name": "_merkleProof",
+        "type": "bytes32[]"
+      }
+    ],
+    "name": "mintGasless",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -815,7 +832,25 @@
     ],
     "name": "publicMint",
     "outputs": [],
-    "stateMutability": "payable",
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_nbTokens",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "minter",
+        "type": "address"
+      }
+    ],
+    "name": "publicMintGasless",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -924,7 +959,7 @@
       },
       {
         "internalType": "bytes",
-        "name": "_data",
+        "name": "data",
         "type": "bytes"
       }
     ],
@@ -1064,12 +1099,61 @@
   {
     "inputs": [
       {
+        "internalType": "string",
+        "name": "_hiddenMetadataUri",
+        "type": "string"
+      }
+    ],
+    "name": "setHiddenMetadataUri",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_lzEndpoint",
+        "type": "address"
+      }
+    ],
+    "name": "setLzEndpoint",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "bytes32",
         "name": "_merkleRoot",
         "type": "bytes32"
       }
     ],
     "name": "setMerkleRoot",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_startMintId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_endMintId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_maxTokensPerMint",
+        "type": "uint256"
+      }
+    ],
+    "name": "setMintRage",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1129,12 +1213,12 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "newPrice",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "_stableToken",
+        "type": "address"
       }
     ],
-    "name": "setStablePrice",
+    "name": "setStableToken",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1155,19 +1239,6 @@
     "name": "setTrustedRemote",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "stablePrice",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
