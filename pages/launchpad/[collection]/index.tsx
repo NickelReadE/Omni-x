@@ -3,7 +3,7 @@ import type {NextPage} from 'next'
 import {useRouter} from 'next/router'
 import {ethers} from 'ethers'
 import React, {useState, useEffect, useCallback} from 'react'
-import {getAdvancedInstance} from '../../../utils/contracts'
+import {getAdvancedInstance, getCurrencyInstance} from '../../../utils/contracts'
 import {ToastContainer, toast} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import {Slide} from 'react-toastify'
@@ -57,12 +57,18 @@ const Mint: NextPage = () => {
 
   const getInfo = useCallback(async (): Promise<void> => {
     try {
-      if (collectionInfo && signer) {
+      if (collectionInfo && signer && chainId) {
         const tokenContract = getAdvancedInstance(collectionInfo.address[chainId ? chainId : 0], (chainId ? chainId : ChainIds.ETHEREUM), signer)
         setStartId(Number(collectionInfo.start_ids[chainId ? chainId : 0]))
 
+        let decimals = 18
+        if (collectionInfo.is_gasless) {
+          const tokenAddress = await tokenContract.stableToken()
+          const tokenInstance = getCurrencyInstance(tokenAddress, chainId, signer)
+          decimals = Number(await tokenInstance?.decimals())
+        }
         const priceT = await tokenContract.price()
-        setPrice(parseFloat(ethers.utils.formatEther(priceT)))
+        setPrice(parseFloat(ethers.utils.formatUnits(priceT, decimals)))
         const max_mint = await tokenContract.maxMintId()
         const nextId = await tokenContract.nextMintId()
         setTotalNFTCount(Number(max_mint))
