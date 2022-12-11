@@ -8,7 +8,6 @@ import {ToastContainer, toast} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import {Slide} from 'react-toastify'
 import useWallet from '../../../hooks/useWallet'
-import {ChainIds} from '../../../types/enum'
 import useCollection from '../../../hooks/useCollection'
 import {ExternalLink} from '../../../components/basic'
 import WebsiteIcon from '../../../public/images/icons/website.svg'
@@ -142,7 +141,7 @@ const Mint: NextPage = () => {
 
   return (
     <>
-      <ToastContainer/>
+      {/*<ToastContainer/>*/}
       <div className={'pt-8 px-8 2xl:px-[250px] xl:px-[200px] lg:px-[100px] md:px-12'}>
         {
           collectionInfo ?

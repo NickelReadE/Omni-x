@@ -2,7 +2,6 @@ import React from 'react'
 import Head from 'next/head'
 import Header from './header/Header'
 import Footer from './footer/Footer'
-import SideBar from '../SideBar'
 import SnackbarComponent from '../SnackBar'
 
 type LayoutProps = {
@@ -21,7 +20,6 @@ const Layout: React.FC = ({ children }: LayoutProps) => {
       </Head>
       <SnackbarComponent />
       <main className='w-full flex flex-col'>
-        <SideBar />
         <Header />
         <div className={'pt-[72px] pb-[62px] px-[42px] lg:px-[52px] bg-primary'}>
           {children}

@@ -2,24 +2,22 @@ import {CollectionType} from '../../hooks/useCollection'
 import React, {useEffect, useMemo, useState} from 'react'
 import {truncateAddress} from '../../utils/utils'
 import useWallet from '../../hooks/useWallet'
-import {useDispatch, useSelector} from 'react-redux'
-import {getRoyalty, selectRoyalty} from '../../redux/reducers/collectionsReducer'
 import {ExternalLink} from '../basic'
 import WebsiteIcon from '../../public/images/icons/website.svg'
 import TwitterIcon from '../../public/images/icons/twitter.svg'
 import DiscordIcon from '../../public/images/icons/discord.svg'
 import TelegramIcon from '../../public/images/icons/telegram.svg'
 import {PrimaryButton} from '../common/buttons/PrimaryButton'
+import {getRoyalty} from '../../utils/helpers'
 
 interface CollectionBannerProps {
     collection: CollectionType
 }
 
 export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
-  const { chainId, signer } = useWallet()
-  const royalty = useSelector(selectRoyalty)
-  const dispatch = useDispatch()
+  const { chainId } = useWallet()
 
+  const [royalty, setRoyalty] = useState<number>(0)
   const [moreOrLess, setMoreOrLess] = useState(false)
   const [selectedTab, setSelectedTab] = useState(0)
 
@@ -38,10 +36,10 @@ export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
   }
 
   useEffect(() => {
-    if (dispatch && signer) {
-      dispatch(getRoyalty('ERC721', '0x4aA142f1Db95B50dA7ca22267Da557050f9A7Ec9', 5, signer) as any)
-    }
-  }, [dispatch, signer])
+    (async () => {
+      setRoyalty(await getRoyalty('ERC721', '0x4aA142f1Db95B50dA7ca22267Da557050f9A7Ec9', 5))
+    })()
+  }, [])
 
   return (
     <div className={'w-full grid grid-cols-4 lg:grid-cols-6'}>

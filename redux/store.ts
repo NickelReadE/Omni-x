@@ -2,7 +2,6 @@ import { createStore, applyMiddleware, combineReducers } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { HYDRATE, createWrapper } from 'next-redux-wrapper'
 import thunkMiddleware from 'redux-thunk'
-import collectionsReducer from './reducers/collectionsReducer'
 import snackBarReducer from './reducers/snackBarReducer'
 
 const bindMiddleware = (middleware: any) => {
@@ -15,7 +14,6 @@ const bindMiddleware = (middleware: any) => {
 
 const combinedReducer = combineReducers({
   snackBarState: snackBarReducer,
-  collectionsState: collectionsReducer,
 })
 
 const reducer = (state: any, action: any) => {

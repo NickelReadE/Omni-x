@@ -1,5 +1,6 @@
 import React from 'react'
 import {DndContext} from '@dnd-kit/core'
+import {ToastContainer} from 'react-toastify'
 import {WalletProvider} from './providers/WalletProvider'
 import {BridgeProvider} from './providers/BridgeProvider'
 import {DataProvider} from './providers/DataProvider'
@@ -24,6 +25,8 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import { SwitchedNetworkProvider } from './SwitchedNetworkProvider'
 import { ModalProvider } from './providers/ModalProvider'
 import {TransferProvider} from './providers/TransferProvider'
+import '@rainbow-me/rainbowkit/styles.css'
+import 'react-toastify/dist/ReactToastify.css'
 
 const supportedChains = supportChains()
 
@@ -67,6 +70,7 @@ function App({children}: AppProps) {
           fontStack: 'system',
         })}
         >
+          <ToastContainer />
           <WalletProvider>
             <BridgeProvider>
               <DataProvider>

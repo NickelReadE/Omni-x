@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import {useEffect, useState} from 'react'
 import NFTBox from './collections/NFTBox'
 import {IPropsImage, NFTItem} from '../interface/interface'

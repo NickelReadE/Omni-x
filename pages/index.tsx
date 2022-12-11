@@ -1,23 +1,22 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import type { NextPage } from 'next'
-import MetaMaskConnect from '../components/layout/header/MetaMaskConnect'
 import useWallet from '../hooks/useWallet'
-import { supportChainIDs } from '../utils/constants'
-import '@rainbow-me/rainbowkit/styles.css'
+import MetaMaskConnect from '../components/layout/header/MetaMaskConnect'
 import HomeSlider from '../components/home/slider'
 import HomeCollections from '../components/home/collections'
+import { supportChainIDs } from '../utils/constants'
 
 const Home: NextPage = () => {
   const {chainId, address} = useWallet()
-  const [isBlur, setIsBlur] = React.useState<boolean>(false)
+  const [isBlur, setIsBlur] = useState<boolean>(false)
 
-  React.useEffect(() => {
+  useEffect(() => {
     if(address){
       setIsBlur(false)
     } else setIsBlur(true)
   }, [address])
 
-  React.useEffect(()=>{
+  useEffect(()=>{
     if(chainId && supportChainIDs.includes(chainId)){
       setIsBlur(false)
     } else setIsBlur(true)
