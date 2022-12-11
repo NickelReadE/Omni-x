@@ -218,7 +218,7 @@ const UserEdit: FC<IUserEditProps> = ({ updateModal }) => {
             </div>
           </div>
         </Dialog>
-        <div className="basis-5/6 p-12 bg-primary" style={{ position: 'relative' }}>
+        <div className="relative basis-5/6 p-12 bg-primary">
           {
             selectedTab == 0 &&
             <form

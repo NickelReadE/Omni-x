@@ -19,7 +19,12 @@ module.exports = {
         'border-gradient': 'linear-gradient(to right, #161616, #161616), linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%)',
         'rainbow-gradient': 'linear-gradient(103.58deg, #8600F0 15.1%, #008BF0 40.13%, #00F0EC 63.65%, #16FFC5 87.92%)',
         'dark-gradient': 'linear-gradient(120.31deg, rgba(125, 125, 125, 0.2) 20%, rgba(125, 125, 125, 0.06) 85.18%)',
-        'fire-gradient': 'linear-gradient(224.6deg, #FFA216 0.01%, #FF1616 100.09%)'
+        'fire-gradient': 'linear-gradient(224.6deg, #FFA216 0.01%, #FF1616 100.09%)',
+        'repost-gradient': 'linear-gradient(103.58deg, #05F000 15.1%, #00B51D 87.92%)',
+        'comment-gradient': 'linear-gradient(103.58deg, #00B6F0 15.1%, #1673FF 87.92%)',
+        'harmony-gradient': 'linear-gradient(47.44deg, #00AEE9 12.22%, #69FABD 85.54%)',
+        'star-gradient': 'linear-gradient(103.58deg, #F0D800 15.1%, #FFE816 87.92%)',
+        'alert-gradient': 'linear-gradient(224.6deg, #BF1212 0.01%, #FF1616 100.09%)'
       },
       colors: {
         chain: {
@@ -53,7 +58,8 @@ module.exports = {
         'dark-green': '#38B000',
         'dark-red': '#E84142',
         'primary-blue': '#00F0EC',
-        'primary-green': '#16FFC5'
+        'primary-green': '#16FFC5',
+        'like': '#FF166A'
       },
       fontFamily: {
         sans: ['Inter', ...fontFamily.sans],

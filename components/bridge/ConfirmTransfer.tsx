@@ -89,7 +89,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
       setEstimatedFee(gasFee)
     })()
   }, [nft, targetChainId, senderChainId])
-  
+
   const onTransfer = async () => {
     if (!signer) return
     if (!chainId) return
@@ -374,7 +374,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
                       </div>
 
                       {status === ConfirmTransferStatus.DONE &&
-                          <div className="my-3" style={{marginTop: 12}}>
+                          <div className="my-3">
                             <p className="bg-primary-gradient bg-clip-text text-transparent font-bold text-xg1">Congrats!</p>
                             <p className="text-lg text-primary-light font-medium mt-2">your NFT is on the way</p>
                           </div>

@@ -74,7 +74,7 @@ const CollectionCard = (props:any) => {
 
   return (
     <div className={classNames(' border-[2px] border-[#F6F8FC] w-[340px] rounded-lg hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F6F8FC]', editStyle.nftContainer)}>
-      <div className='relative'  style={style} >
+      <div className='relative' style={style} >
         <div >
           <img className='nft-image w-[340px] background-fill' src={imageError?'/images/omnix_logo_black_1.png':image} alt="nft-image" onError={()=>{setImageError(true)}} data-src={image} />
         </div>
@@ -117,14 +117,14 @@ const CollectionCard = (props:any) => {
           </div>
         </div>
         <div  className={classNames(' col-span-2 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
-          <div className='text-[14px] flex flex-col justify-center' style={{justifyContent: 'space-between'}}>
+          <div className='text-[14px] flex flex-col justify-between'>
             <span className='font-extrabold mr-[1px] text-center mb-1'>Owners</span>
             <span className='font-medium text-[12px] text-center'>{props.collection?props.collection.ownerCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
           </div>
         </div>
         <div className={classNames('col-span-2 bg-l-50 p-2 rounded-lg',editStyle.valuePanel)} >
-          <div className='text-[14px] flex flex-col justify-center' style={{justifyContent: 'space-between'}}>
-            <div className='text-[14px] flex flex-col justify-center' style={{justifyContent: 'space-between'}}>
+          <div className='text-[14px] flex flex-col justify-between'>
+            <div className='text-[14px] flex flex-col justify-between'>
               <div className='text-[14px] font-extrabold  mb-1 text-center'>Floor</div>
               <div className='flex flex-row space-x-1 justify-center' >
                 <span className='font-medium text-[12px]'>{props.collection?numberShortify(props.collection.floorPrice.omni):<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>

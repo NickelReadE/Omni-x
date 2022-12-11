@@ -88,7 +88,7 @@ const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
   return (
     <>
       <div className="w-full">
-        <div className="flex relative justify-start w-fit" style={{'width': '100%'}}>
+        <div className="flex relative justify-start w-fit w-full">
           <div className="flex items-center justify-between w-full">
             <ChainSelection selectedChainIds={selectedChainIds} addChainId={addSelectedChainId} removeChainId={removeSelectedChainId} addAllChainIds={addAllChainIds} />
             <Dropdown menus={sortMenu} onChange={onChangeSort} />

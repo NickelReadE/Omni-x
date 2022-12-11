@@ -63,13 +63,13 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
             </div>
           </div>
           <div className={classNames('col-span-2 flex p-2 rounded-lg')} >
-            <div className='text-md flex flex-col space-y-2 justify-center' style={{justifyContent: 'space-between'}}>
+            <div className='text-md flex flex-col space-y-2 justify-between'>
               <span className='mr-[1px] text-center text-secondary'>Owners</span>
               <span className='font-medium text-md text-center text-primary-light'>{collection?collection.ownerCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
             </div>
           </div>
           <div className={classNames('col-span-2 flex p-2 rounded-lg')} >
-            <div className='text-md flex flex-col space-y-2 justify-center' style={{justifyContent: 'space-between'}}>
+            <div className='text-md flex flex-col space-y-2 justify-between'>
               <div className='text-md mb-1 text-center text-secondary'>Floor</div>
               <div className='flex flex-row space-x-1 justify-center' >
                 <span className='font-medium text-md mr-[px] text-primary-light'>
