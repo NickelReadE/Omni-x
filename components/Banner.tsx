@@ -68,14 +68,14 @@ const Banner = ({ blur }: BannerProps): JSX.Element => {
           <div className={'flex justify-center h-[540px]'}>
             <img
               src={bannerImage}
-              className="banner-slider"
+              className="rounded-[10px]"
               alt={'banner'}
             />
           </div>
         </div>
         {
           <div className="flex justify-center w-full ">
-            <div className="flex justify-between fw-60 mt-5 relative">
+            <div className="flex justify-between w-[60%] mt-5 relative">
               <div className="bottom-[0rem] left-[4rem]  absolute">
                 <Image
                   src={avatarImage}

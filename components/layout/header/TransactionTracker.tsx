@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {Fragment} from 'react'
 import {Menu, Transition} from '@headlessui/react'
 import HomeLogo from '../../../public/images/icons/home_logo.svg'

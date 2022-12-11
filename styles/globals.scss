@@ -13,48 +13,6 @@
   }
 }
 
-.bg-sidebar-hover {
-  background-color: rgba(180, 68, 249, 0.15);
-}
-
-button.sidebar {
-  padding-left: 100px;
-}
-
-.sidebar.active {
-  background-color: #B444F9 !important;
-  color: #FEFEFF !important;
-}
-
-.fade-left {
-  background: linear-gradient(to right, #F6F8FC, #F6F8FC00);
-  border-radius: 14px;
-  z-index: 2;
-  width: 15%;
-  height: 100%;
-  left: 40px;
-}
-
-.fade-right {
-  background: linear-gradient(to left, #F6F8FC, #F6F8FC00);
-  border-radius: 14px;
-  z-index: 2;
-  width: 15%;
-  height: 100%;
-  right: 40px;
-}
-
-.slide {
-  background: #F6F8FC;
-  border-radius: 14px;
-  z-index: 2;
-  width: 100%;
-}
-
-.fw-60 {
-  width: 60%;
-}
-
 .user-input {
   height: 50px;
   width: 50%;
@@ -76,14 +34,6 @@ button.sidebar {
   &:focus {
     outline: none;
     border: 2px solid #dbdbdb;
-  }
-}
-
-.border-image {
-  max-width: 500px;
-  img {
-    border-radius: 10px;
-    border: 2px #B444F9 solid !important;
   }
 }
 
@@ -131,70 +81,13 @@ button.sidebar {
   }
 }
 
-.collection-nft-image-item {
-  background: radial-gradient(50% 50% at 50% 50%, rgba(254, 254, 255, 0.25) 0%, rgba(254, 254, 255, 0.1) 100%);
-  backdrop-filter: blur(2px);
-  border-radius: 6px;
-}
-
-.banner-slider {
-    border-radius: 10px;
-}
-
-.section-header {
-    font-weight: 700;
-    font-size: 18px;
-    color: #6C757D;
-    display: flex;
-    align-items: center;
-    text-align: center;
-
-    .section-no {
-        background: #6C757D;
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        color: #ffffff;
-        line-height: 18px;
-        font-size: 14px;
-    }
-
-    .section-title {
-        padding-left: 8px;
-        padding-right: 8px;
-        line-height: 23px;
-    }
-
-    &.active {
-        color: #B444F9;
-
-        .section-no {
-            background: #B444F9;
-        }
-    }
-}
-
 .tx-status-section {
     color: #A0B3CC;
     line-height: 16px;
     font-size: 12px;
 
-    .tx-status-row {
-        display: flex;
-        align-items: center;
-    }
-
     p.tx-status-row:not(:first-child) {
         padding-top: 5px;
-    }
-
-    .tx-status-name {
-        font-weight: 600;
-    }
-
-    .tx-status-value {
-        margin-left: 12px;
-        font-weight: 300;
     }
 
     .tx-hash-ellipsis {
@@ -204,28 +97,6 @@ button.sidebar {
         text-overflow: ellipsis;
         color: #B444F9;
         text-decoration: underline;
-    }
-}
-
-.congrats-section {
-    margin-top: 72px;
-    color: #B444F9;
-
-    &.failed {
-        color: #A0B3CC;
-    }
-
-    .congrats-title {
-        font-weight: 700;
-        font-size: 22px;
-        line-height: 28px;
-    }
-
-    .congrats-description {
-        margin-top: 16px;
-        font-weight: 700;
-        font-size: 16px;
-        line-height: 20px;
     }
 }
 
@@ -351,36 +222,6 @@ button.sidebar {
 .embla__dot.is-selected:after {
   background: linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%);
   opacity: 1;
-}
-
-.border-gradient-radius {
-  display: inline-block;
-  position: relative;
-  color: white;
-  z-index: 0;
-
-  &:before {
-    aspect-ratio: 1;
-    width: 100%;
-    height: 100%;
-    content: "";
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    padding: 1px;
-    border-radius: 8px;
-    background: linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-  }
-
-  .rounded {
-    &:before {
-      border-radius: 50px !important;
-    }
-  }
 }
 
 .webkit-mask-composite {

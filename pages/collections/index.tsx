@@ -68,7 +68,7 @@ const Collections: NextPage = () => {
                               <img
                                 src={item.banner_image}
                                 alt="banner - 4"
-                                className={'banner-slider'}
+                                className={'rounded-[10px]'}
                               />
                             </a>
                           </Link>

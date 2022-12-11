@@ -334,18 +334,18 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
                           <SpinLoader/>
                         )}
                       </div>
-                      <div className="tx-status-section mt-4">
+                      <div className="tx-status-section text-[12px] leading-[16px] text-[#A0B3CC] mt-4">
                         {status === ConfirmTransferStatus.APPROVING && (<>
                           <div className="text-primary-light text-[14px] leading-[17px]">
                             <p className="">Please confirm the transaction in your wallet to begin transfer.</p>
                           </div>
 
-                          <div className="tx-status-row">
+                          <div className="tx-status-row flex items-center">
                             <p className="text-primary-light text-[14px] leading-[17px]">transaction status:</p>
                             <p className="text-primary-light text-[14px] leading-[17px] ml-3">{status === ConfirmTransferStatus.APPROVING ? 'confirming...' : 'done'}</p>
                           </div>
 
-                          <div className="tx-status-row">
+                          <div className="tx-status-row flex items-center">
                             <p className="text-primary-light text-[14px] leading-[17px]">transaction record:</p>
                             <a className="text-primary-light text-[14px] leading-[17px] ml-3 tx-hash-ellipsis"
                               href={approveTxHashLink} target="_blank" rel="noreferrer">{approveTxHash || ''}</a>

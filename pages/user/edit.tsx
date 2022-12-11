@@ -70,7 +70,7 @@ const UserEdit: NextPage = () => {
       if (banner !== '/images/default_banner.png' && (profile && banner === (S3_BUCKET_URL + profile.banner))) {
         formData.append('banner', (await getFileFromUrl(banner, 'banner.png')) as any)
       }
-      if (avatar !== '/images/default_avatar.png' && (profile && avatar === (S3_BUCKET_URL + profile.avatar))) { 
+      if (avatar !== '/images/default_avatar.png' && (profile && avatar === (S3_BUCKET_URL + profile.avatar))) {
         formData.append('avatar', (await getFileFromUrl(avatar, 'avatar.png')) as any)
       }
       updateProfileData(formData)
@@ -117,11 +117,12 @@ const UserEdit: NextPage = () => {
                   >
                     <Image src={Photo} alt="photo" />
                   </div>
-                  <div className="border-image">
+                  <div className="max-w-[500px]">
                     <Image
                       src={(typeof banner === 'string') ? banner : URL.createObjectURL(banner)}
                       alt="first image"
                       layout="responsive"
+                      className={'rounded-[10px] border-[2px] border-[#B444F9]'}
                       width={200}
                       height={100}
                     />
