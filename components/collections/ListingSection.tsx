@@ -16,7 +16,7 @@ interface IListingSectionProps {
   currency: any,
   onChangeCurrency: (e: any) => void,
   period: any,
-  showDescription: boolean,
+  showDescription?: boolean,
   onChangePeriod: (e: any) => void
 }
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import { BidStep } from '../../types/enum'
 import ListingSection from './ListingSection'
 import ApproveSection from './ApproveSection'
@@ -23,7 +23,8 @@ interface IBidContentProps {
   nftTitle: string,
   nftTokenId: string,
   collectionName: string,
-  onBid?: () => void
+  onBid?: () => void,
+  onBuyFloor?: (floorNft: any) => void,
 }
 
 const BidContent: React.FC<IBidContentProps> = ({
@@ -47,7 +48,7 @@ const BidContent: React.FC<IBidContentProps> = ({
   const { chainId } = useWallet()
   const [ floorNft, setFloorNft ] = useState<any>(null)
 
-  const updateFloorNft = (c?: string) => {
+  const updateFloorNft = useCallback((c?: string) => {
     if (isCollectionBid && collectionInfo && c) {
       const nft = (collectionInfo.floorNft as any)[c.toLowerCase()]
       if (nft && nft.order_data) {
@@ -57,7 +58,7 @@ const BidContent: React.FC<IBidContentProps> = ({
         setFloorNft(null)
       }
     }
-  }
+  }, [collectionInfo, isCollectionBid])
   const onChangeCurrencyFloor = (v: any) => {
     if (onChangeCurrency) onChangeCurrency(v)
     updateFloorNft(v?.text)
@@ -65,7 +66,7 @@ const BidContent: React.FC<IBidContentProps> = ({
 
   useEffect(() => {
     updateFloorNft(currency.text)
-  }, [])
+  }, [currency.text, updateFloorNft])
 
   return (
     <>

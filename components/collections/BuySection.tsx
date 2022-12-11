@@ -1,7 +1,6 @@
-import React, {useMemo} from 'react'
+import React from 'react'
 import CustomSelect from './CustomSelect'
-import useWallet from '../../hooks/useWallet'
-import { getValidCurrencies, getAllCurrencies } from '../../utils/constants'
+import { getAllCurrencies } from '../../utils/constants'
 
 interface IBuySectionProps {
   price: number,
@@ -18,9 +17,9 @@ const BuySection: React.FC<IBuySectionProps> = ({
   const oldCurrency = validCurrencies?.find(v => v.text == srcCurrency) || {}
   const selectedCurrency = validCurrencies?.find(v => v.text == currency) || oldCurrency
 
-  const aboutPrice = useMemo(() => {
-    return price
-  }, [price])
+  // const aboutPrice = useMemo(() => {
+  //   return price
+  // }, [price])
 
   return (
     <div>
