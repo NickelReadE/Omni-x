@@ -22,12 +22,12 @@ export type LaunchPadTypeFunc = {
 }
 
 const getLaunchpadInfo = async (): Promise<LaunchPadTypeFunc> => {
-  const {data: collections} = await collectionsService.getCollections()
+  const {data: collections} = await collectionsService.getCollectionsWithoutMetadata()
   const currentTimestamp = Math.floor(Date.now() / 1000)
   const collectionsForPast = collections.filter((collection: LaunchPadType) => collection.mint_end_timestamp < currentTimestamp)
   const collectionsForComing = collections.filter((collection: LaunchPadType) => collection.mint_start_timestamp > currentTimestamp)
   const collectionsFeatured = collections.filter((collection: LaunchPadType) => collection.mint_start_timestamp < currentTimestamp && collection.mint_end_timestamp > currentTimestamp)
-    
+
   return {
     loading: true,
     collectionsForPast,

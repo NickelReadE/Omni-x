@@ -1,9 +1,10 @@
-import { useMemo } from 'react'
+import {useMemo} from 'react'
 import useData from '../../hooks/useData'
 import CollectionCard from './CollectionCard'
+import {SkeletonCard} from '../skeleton/card'
 
 export default function HomeCollections() {
-  const { collections } = useData()
+  const { isCollectionLoading, collections } = useData()
 
   const collectionCards = useMemo(() => {
     return collections.map((item: any, index: number) => {
@@ -18,7 +19,11 @@ export default function HomeCollections() {
       </span>
       <div className="w-full flex flex-wrap justify-start gap-12 mt-6">
         {
-          collectionCards.map((item, index) => (
+          isCollectionLoading &&
+          <SkeletonCard />
+        }
+        {
+          !isCollectionLoading && collectionCards.map((item, index) => (
             <div className='w-[340px] rounded-lg' key={index} >
               {item}
             </div>

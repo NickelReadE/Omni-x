@@ -35,12 +35,12 @@ export default function HomeIntro () {
             </div>
           </div>
           <span className={'text-primary-light text-xl text-shadow-sm2'}>
-              web3 social<span className={'text-secondary'}>&nbsp;(soon)</span>
+            web3 social<span className={'text-secondary'}>&nbsp;(soon)</span>
           </span>
         </div>
       </div>
       <Link href={'/learn-more'} className={'mt-4'}>
-        <PrimaryButton text={'learn more'} className={'bg-[#242424]'} />
+        <PrimaryButton text={'learn more'} background={'bg-[#242424]'} />
       </Link>
     </div>
   )

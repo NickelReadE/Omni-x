@@ -63,6 +63,11 @@ const getCollections = async () => {
   return res.data
 }
 
+const getCollectionsWithoutMetadata = async () => {
+  const res = await API.get('collections/all_without_metadata')
+  return res.data
+}
+
 const getNFTOwner = async (col_address: string, collection_chain_name: string, token_id: string) => {
   const res = await API.get(`collections/owner/${col_address}/${collection_chain_name}/${token_id}`)
   return res.data.owner
@@ -82,6 +87,7 @@ export const collectionsService = {
   getCollectionOwners,
   getNFTInfo,
   getCollections,
+  getCollectionsWithoutMetadata,
   getNFTOwner,
   refreshMetadata,
   getCollectionAllNFTs,
