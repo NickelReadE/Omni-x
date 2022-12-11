@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import type {NextPage} from 'next'
 import {useRouter} from 'next/router'
 import {ethers} from 'ethers'
 import React, {useState, useEffect, useCallback} from 'react'
 import {getAdvancedInstance, getCurrencyInstance} from '../../../utils/contracts'
-import {ToastContainer, toast} from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import {toast} from 'react-toastify'
 import {Slide} from 'react-toastify'
 import useWallet from '../../../hooks/useWallet'
 import useCollection from '../../../hooks/useCollection'
@@ -19,25 +17,19 @@ import {WhitelistCard} from '../../../components/launchpad/WhitelistCard'
 import {Logger} from 'ethers/lib/utils'
 
 const Mint: NextPage = () => {
-  const {
-    chainId,
-    signer,
-    provider,
-    address
-  } = useWallet()
+  const { chainId, signer, provider, address } = useWallet()
   const router = useRouter()
   const col_url = router.query.collection as string
-  const [mintNum, setMintNum] = useState<number>(1)
+  const { collectionInfo } = useCollection(col_url)
+
   const [totalNFTCount, setTotalNFTCount] = useState<number>(0)
-  const [nextTokenId, setNextTokenId] = useState<number>(0)
+  // const [nextTokenId, setNextTokenId] = useState<number>(0)
   const [isMinting, setIsMinting] = useState<boolean>(false)
   const [price, setPrice] = useState(0)
   const [startId, setStartId] = useState(0)
   const [totalCnt, setTotalCnt] = useState(0)
-  const [mintedCnt, setMintedCnt] = useState(0)
+  // const [mintedCnt, setMintedCnt] = useState(0)
   const [selectedTab, setSelectedTab] = useState(0)
-
-  const { collectionInfo } = useCollection(col_url)
 
   const activeClasses = (index: number) => {
     return index === selectedTab ? 'bg-primary-gradient': 'bg-secondary'
@@ -69,9 +61,9 @@ const Mint: NextPage = () => {
         const priceT = await tokenContract.price()
         setPrice(parseFloat(ethers.utils.formatUnits(priceT, decimals)))
         const max_mint = await tokenContract.maxMintId()
-        const nextId = await tokenContract.nextMintId()
+        // const nextId = await tokenContract.nextMintId()
         setTotalNFTCount(Number(max_mint))
-        setNextTokenId(Number(nextId))
+        // setNextTokenId(Number(nextId))
       }
     } catch (error) {
       console.log(error)
@@ -108,7 +100,7 @@ const Mint: NextPage = () => {
       } else {
         const currentBalance = await provider.getBalance(address ? address : '')
 
-        if (Number(currentBalance) / Math.pow(10, 18) < collectionInfo.price * mintNum) {
+        if (Number(currentBalance) / Math.pow(10, 18) < collectionInfo.price * quantity) {
           errorToast('There is not enough money to mint nft')
         } else {
           errorToast('your address is not whitelisted on ' + provider?._network.name)
@@ -127,11 +119,11 @@ const Mint: NextPage = () => {
     })()
   }, [signer, collectionInfo, chainId, getInfo])
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (Number(nextTokenId) >= 0 && startId >= 0) {
       setMintedCnt(Number(nextTokenId) - startId)
     }
-  }, [nextTokenId, startId])
+  }, [nextTokenId, startId])*/
 
   useEffect(() => {
     if (Number(totalNFTCount) >= 0 && startId >= 0) {
@@ -141,7 +133,6 @@ const Mint: NextPage = () => {
 
   return (
     <>
-      {/*<ToastContainer/>*/}
       <div className={'pt-8 px-8 2xl:px-[250px] xl:px-[200px] lg:px-[100px] md:px-12'}>
         {
           collectionInfo ?
@@ -240,9 +231,9 @@ const Mint: NextPage = () => {
                     <div className={'text-primary-light text-lg ml-2 text-shadow-sm2'}>{totalCnt}</div>
                   </div>
 
-                  <WhitelistCard title={'whitelist 1'} price={0.08} mintStatus={''} maxLimit={2000} limitPerWallet={1} active={false} mint={mint} gasless={collectionInfo.is_gasless} />
-                  <WhitelistCard title={'whitelist 2'} price={0.10} mintStatus={''} maxLimit={2000} limitPerWallet={1} active={false} mint={mint} gasless={collectionInfo.is_gasless} />
-                  <WhitelistCard title={'public mint'} price={price} mintStatus={'public'} maxLimit={0} limitPerWallet={5} active={true} mint={mint} gasless={collectionInfo.is_gasless} />
+                  <WhitelistCard title={'whitelist 1'} price={0.08} mintStatus={''} maxLimit={2000} limitPerWallet={1} active={false} isMinting={isMinting} mint={mint} gasless={collectionInfo.is_gasless} />
+                  <WhitelistCard title={'whitelist 2'} price={0.10} mintStatus={''} maxLimit={2000} limitPerWallet={1} active={false} isMinting={isMinting} mint={mint} gasless={collectionInfo.is_gasless} />
+                  <WhitelistCard title={'public mint'} price={price} mintStatus={'public'} maxLimit={0} limitPerWallet={5} active={true} isMinting={isMinting} mint={mint} gasless={collectionInfo.is_gasless} />
                   {/*<div className={mintstyles.mintDataGrid}>
               <div className={mintstyles.mintDataWrap}>
                 <h5>minted</h5>

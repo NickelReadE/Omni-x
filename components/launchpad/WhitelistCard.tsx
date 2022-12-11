@@ -12,11 +12,12 @@ interface IWhitelistCardProps {
     maxLimit: number,
     limitPerWallet: number,
     active: boolean,
+    isMinting: boolean,
     gasless: boolean,
     mint: (quantity: number) => void
 }
 
-export const WhitelistCard = ({ title, price, mintStatus, maxLimit, limitPerWallet, active, gasless, mint }: IWhitelistCardProps) => {
+export const WhitelistCard = ({ title, price, mintStatus, maxLimit, limitPerWallet, active, isMinting, gasless, mint }: IWhitelistCardProps) => {
   const { chainId } = useWallet()
   const [quantity, setQuantity] = useState(1)
 
@@ -65,7 +66,7 @@ export const WhitelistCard = ({ title, price, mintStatus, maxLimit, limitPerWall
             {
               active
                 ?
-                <PrimaryButton text={'mint'} className={'px-6'} parentClassName={'h-[32px]'} onClick={() => mint(quantity)}/>
+                <PrimaryButton text={'mint'} className={'px-6'} loading={isMinting} parentClassName={'h-[32px]'} onClick={() => mint(quantity)}/>
                 :
                 <GreyButton text={'mint'} className={'px-6 h-[32px]'} />
             }
