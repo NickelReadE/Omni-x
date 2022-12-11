@@ -38,7 +38,7 @@ const useOrderStatics = ({
     return bidDatas.map((data: any, index: number) => ({
       ...data,
       order_data: bidOrderDatas[index]
-    })).filter(data => data.signer?.toLowerCase() != nft?.owner?.toLowerCase())
+    })).filter(data => data.signer?.toLowerCase() != nft?.owner?.toLowerCase() && data.status != 'VALID' && !data.signature)
   }, [nft, collection])
 
   const sortedBids = useMemo(() => {

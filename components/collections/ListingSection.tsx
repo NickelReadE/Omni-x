@@ -11,6 +11,7 @@ interface IListingSectionProps {
   priceLabel: string,
   nftChainId: number,
   price: number,
+  floorNft?: any,
   onChangePrice: (e: any) => void,
   currency: any,
   onChangeCurrency: (e: any) => void,
@@ -29,13 +30,16 @@ const ListingSection: React.FC<IListingSectionProps> = ({
   period,
   showDescription = true,
   onChangePeriod,
+  floorNft
 }) => {
   const validCurrencies = getValidCurrencies(nftChainId)
 
   const aboutPrice = useMemo(() => {
     return price
   }, [price])
-    
+
+  const floorMessage = floorNft ? 'if you want to buy an nft with floor price, please click buy floor.' : undefined
+
   return (
     <div>
       <p className="text-primary-light text-xg font-semibold">{priceLabel}</p>
@@ -53,6 +57,9 @@ const ListingSection: React.FC<IListingSectionProps> = ({
       </div>
       <p className="text-primary-light text-md w-[435px] mt-6">service fee: 1.50%<br />
           creator fee: 5.00%</p>
+      {!!floorMessage && (
+        <p className="text-[#ADB5BD] text-[14px] font-light italic leading-6 w-[435px]">{floorMessage}</p>
+      )}
       {
         showDescription &&
             <p className="text-secondary text-md font-light italic leading-6 w-[435px] mt-6">*sale funds are received on the blockchain the NFT is listed on, NOT on the blockchain of the buyer</p>

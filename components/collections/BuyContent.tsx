@@ -1,5 +1,6 @@
 import React from 'react'
 import { BuyStep } from '../../types/enum'
+import ListingFeeSection from './ListingFeeSection'
 import ApproveSection from './ApproveSection'
 import CongratsSection from './CongratsSection'
 import BuySection from './BuySection'
@@ -12,7 +13,8 @@ interface IBuyContentProps {
   approveTx?: string,
   tradingTx?: string,
   price: number,
-  currency: string,
+  srcCurrency?: string,
+  currency?: string,
   nftImage: string,
   nftTitle: string,
   nftTokenId: string,
@@ -26,6 +28,7 @@ const BuyContent: React.FC<IBuyContentProps> = ({
   approveTx,
   tradingTx,
   price,
+  srcCurrency,
   currency,
   nftImage,
   nftTokenId,
@@ -48,12 +51,13 @@ const BuyContent: React.FC<IBuyContentProps> = ({
           <div>
             <BuySection
               price={price}
+              srcCurrency={srcCurrency}
               currency={currency}
             />
           </div>
         ) : (
           <div>
-            <ApproveSection 
+            <ApproveSection
               processing={processing}
               active={buyStep == BuyStep.StepApprove}
               completed={buyStep > BuyStep.StepApprove}
@@ -64,7 +68,7 @@ const BuyContent: React.FC<IBuyContentProps> = ({
                 'Please confirm the transaction in your wallet to process the trade.'
               ]}
             />
-            <ConfirmSection 
+            <ConfirmSection
               processing={processing}
               active={buyStep == BuyStep.StepConfirm}
               completed={buyStep > BuyStep.StepConfirm}
@@ -73,7 +77,7 @@ const BuyContent: React.FC<IBuyContentProps> = ({
               title={'Complete Purchase'}
               description={'Please confirm this second transaction in your wallet to complete the purchase.'}
             />
-            <CompleteSection 
+            <CompleteSection
               processing={processing}
               active={buyStep == BuyStep.StepComplete}
               completed={buyStep > BuyStep.StepComplete}
@@ -105,7 +109,7 @@ const BuyContent: React.FC<IBuyContentProps> = ({
           <button
             className='bg-primary-gradient rounded-full text-black w-[95px] px-4 py-1.5 font-medium'
             onClick={onBuy}
-            disabled={processing}>
+            disabled={processing || !currency || !price}>
             confirm
           </button>
         )}

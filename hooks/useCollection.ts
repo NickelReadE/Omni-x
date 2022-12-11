@@ -27,6 +27,11 @@ export type CollectionType = {
     attrs: any,
     bid_datas: any[],
     bid_orders: IOrder[],
+    floorNft: {
+      eth?: any,
+      usd?: any,
+      omni?: any
+    },
     mint_start_timestamp: number,
     mint_end_timestamp: number,
     start_ids: any,

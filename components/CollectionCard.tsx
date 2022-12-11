@@ -6,6 +6,8 @@ import {useDraggable} from '@dnd-kit/core'
 import editStyle from '../styles/nftbox.module.scss'
 import classNames from '../helpers/classNames'
 import Loading from '../public/images/loading_f.gif'
+import { useModal } from '../hooks/useModal'
+import { ModalIDs } from '../contexts/modal'
 import { longNumberShortify, numberShortify } from '../utils/constants'
 import { BigNumber } from 'ethers'
 
@@ -15,7 +17,31 @@ const CollectionCard = (props:any) => {
   const [imageError, setImageError] = useState(false)
   ///only in the beta version
 
-  const { transform} = useDraggable({
+  const { openModal, closeModal } = useModal()
+  const collectionBid = {
+    collectionUrl: props.collection.col_url as string,
+    collectionAddressMap: props.collection.address
+  }
+
+  const onBuyFloor = (nft: any) => {
+    const tradingInput = {
+      collectionUrl: collectionBid.collectionUrl,
+      collectionAddressMap: collectionBid.collectionAddressMap,
+      tokenId: nft.token_id,
+      selectedNFTItem: nft
+    }
+
+    openModal(ModalIDs.MODAL_BUY, {
+      nftImage: nft.image,
+      nftTitle: nft.name,
+      order: nft.order_data,
+      tradingInput,
+      instantBuy: true,
+      handleBuyDlgClose: closeModal
+    })
+  }
+
+  const { transform } = useDraggable({
     id: `draggable-${1}`,
     data: {
       type: 'NFT',
@@ -45,7 +71,7 @@ const CollectionCard = (props:any) => {
     return 0
   }
   const volumeUp = props.collection ? calcVolumeUp(props.collection.volume24h, props.collection.volume48h) : 0
-  
+
   return (
     <div className={classNames(' border-[2px] border-[#F6F8FC] w-[340px] rounded-lg hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F6F8FC]', editStyle.nftContainer)}>
       <div className='relative'  style={style} >
@@ -58,7 +84,21 @@ const CollectionCard = (props:any) => {
               <div className='w-[230px] text-[18px] text-white text-extrabold text-center items-center bg-[#B444F9] rounded-lg mb-[24px]  py-[7px] hover:cursor-pointer'>view collection</div>
             </Link>
 
-            <div className='w-[230px] text-[18px] text-white text-extrabold text-center items-center bg-[#38B000] rounded-lg  py-[7px]'>make a collection bid</div>
+            <div
+              className='w-[230px] text-[18px] text-white text-extrabold text-center items-center bg-[#38B000] rounded-lg  py-[7px]'
+              onClick={() => {
+                openModal(ModalIDs.MODAL_BID, {
+                  nftImage: props.collection.profile_image,
+                  nftTitle: props.collection.name,
+                  collectionBid,
+                  collectionInfo: props.collection,
+                  onBuyFloor,
+                  handleBidDlgClose: closeModal
+                })
+              }}
+            >
+              make a collection bid
+            </div>
           </div>
 
         </div>

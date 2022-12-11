@@ -5,10 +5,11 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import BidContent from './BidContent'
-import { CURRENCIES_LIST, PERIOD_LIST } from '../../utils/constants'
+import { CURRENCY_OMNI, PERIOD_LIST } from '../../utils/constants'
 import { BidStep } from '../../types/enum'
 import useTrading, { TradingInput } from '../../hooks/useTrading'
 import { CollectionBidInput, useCollectionBid } from '../../hooks/useCollectionBid'
+import { CollectionType } from '../../hooks/useCollection'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -37,6 +38,8 @@ export interface IConfirmBidProps {
   collectionName: string,
   tradingInput?: TradingInput,
   collectionBid?: CollectionBidInput,
+  collectionInfo?: CollectionType,
+  onBuyFloor?: (nft: any) => void,
   handleBidDlgClose: () => void,
 }
 
@@ -47,11 +50,13 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
   collectionName,
   tradingInput,
   collectionBid,
+  collectionInfo,
+  onBuyFloor,
   handleBidDlgClose,
 }) => {
   const classes = useStyles()
   const [price, setPrice] = useState(0)
-  const [currency, setCurrency] = useState(CURRENCIES_LIST[0])
+  const [currency, setCurrency] = useState(CURRENCY_OMNI)
   const [period, setPeriod] = useState(PERIOD_LIST[2])
   const [bidStep, setStep] = useState<BidStep>(BidStep.StepBid)
   const [processing, setProcessing] = useState(false)
@@ -74,7 +79,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
     onBidConfirm = onTradingBidConfirm
     onBidDone = onTradingBidDone
   }
-  else if (collectionBid) {  
+  else if (collectionBid) {
     onBidApprove = onCollectionBidApprove
     onBidConfirm = onCollectionBidConfirm
     onBidDone = onCollectionBidDone
@@ -112,7 +117,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
         currencyName: currency.text,
         price
       })
-      
+
       setProcessing(true)
 
       if (txs.length > 0) {
@@ -153,7 +158,7 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
     <Dialog open={true} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
       <DialogTitle id="form-dialog-title" className={'py-6 px-10 m-0'}>
         <div className="mt-5">
-          <div className="text-primary-light text-xg2 font-bold">place bid</div>
+          <div className="text-primary-light text-xg2 font-bold">{isCollectionBid ? 'make a collection bid' : 'place bid'}</div>
         </div>
       </DialogTitle>
       <DialogContent className={classes.rootContent}>
@@ -173,6 +178,8 @@ const ConfirmBid: React.FC<IConfirmBidProps> = ({
           processing={processing}
           approveTx={approveTx}
           isCollectionBid={isCollectionBid}
+          collectionInfo={collectionInfo}
+          onBuyFloor={onBuyFloor}
         />
       </DialogContent>
     </Dialog>

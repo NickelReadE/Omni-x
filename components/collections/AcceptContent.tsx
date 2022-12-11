@@ -1,5 +1,6 @@
 import React from 'react'
 import { AcceptStep } from '../../types/enum'
+import ListingFeeSection from './ListingFeeSection'
 import ApproveSection from './ApproveSection'
 import CongratsSection from './CongratsSection'
 import BuySection from './BuySection'
@@ -53,7 +54,7 @@ const AcceptContent: React.FC<IAcceptContentProps> = ({
           </div>
         ) : (
           <div>
-            <ApproveSection 
+            <ApproveSection
               processing={processing}
               active={acceptStep == AcceptStep.StepApprove}
               completed={acceptStep > AcceptStep.StepApprove}
@@ -65,7 +66,7 @@ const AcceptContent: React.FC<IAcceptContentProps> = ({
                 'This confirmation allows you to sell or buy both this NFT and any future NFT from this collection.'
               ]}
             />
-            <ConfirmSection 
+            <ConfirmSection
               processing={processing}
               active={acceptStep == AcceptStep.StepConfirm}
               completed={acceptStep > AcceptStep.StepConfirm}
@@ -74,7 +75,7 @@ const AcceptContent: React.FC<IAcceptContentProps> = ({
               title={'Complete Sale'}
               description={'Please confirm this second transaction in your wallet to complete the sale.'}
             />
-            <CompleteSection 
+            <CompleteSection
               processing={processing}
               active={acceptStep == AcceptStep.StepComplete}
               completed={acceptStep > AcceptStep.StepComplete}
@@ -106,7 +107,7 @@ const AcceptContent: React.FC<IAcceptContentProps> = ({
           <button
             className='bg-primary-gradient rounded-full text-black w-[95px] px-4 py-1.5 font-medium'
             onClick={onAccept}
-            disabled={processing}>
+            disabled={processing || !currency || !price}>
             accept
           </button>
         )}

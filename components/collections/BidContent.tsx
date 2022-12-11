@@ -5,12 +5,14 @@ import ApproveSection from './ApproveSection'
 import CongratsSection from './CongratsSection'
 import CompleteSection from './CompleteSection'
 import useWallet from '../../hooks/useWallet'
+import { CollectionType } from '../../hooks/useCollection'
 
 interface IBidContentProps {
   bidStep: BidStep,
   processing: boolean,
   approveTx?: string,
   price: number,
+  collectionInfo?: CollectionType,
   isCollectionBid: boolean,
   onChangePrice: (e: any) => void,
   currency: any,
@@ -29,6 +31,7 @@ const BidContent: React.FC<IBidContentProps> = ({
   processing,
   approveTx,
   price,
+  collectionInfo,
   isCollectionBid,
   onChangePrice,
   currency,
@@ -38,9 +41,32 @@ const BidContent: React.FC<IBidContentProps> = ({
   nftImage,
   nftTokenId,
   collectionName,
-  onBid
+  onBid,
+  onBuyFloor
 }) => {
   const { chainId } = useWallet()
+  const [ floorNft, setFloorNft ] = useState<any>(null)
+
+  const updateFloorNft = (c?: string) => {
+    if (isCollectionBid && collectionInfo && c) {
+      const nft = (collectionInfo.floorNft as any)[c.toLowerCase()]
+      if (nft && nft.order_data) {
+        setFloorNft(nft)
+      }
+      else {
+        setFloorNft(null)
+      }
+    }
+  }
+  const onChangeCurrencyFloor = (v: any) => {
+    if (onChangeCurrency) onChangeCurrency(v)
+    updateFloorNft(v?.text)
+  }
+
+  useEffect(() => {
+    updateFloorNft(currency.text)
+  }, [])
+
   return (
     <>
       <div className='flex flex-col justify-between'>
@@ -57,14 +83,14 @@ const BidContent: React.FC<IBidContentProps> = ({
           {bidStep === BidStep.StepBid ? (
             <ListingSection
               nftChainId={chainId || 0}
-              priceLabel={'Price'}
+              priceLabel={'Bid Price'}
               price={price}
               onChangePrice={onChangePrice}
               currency={currency}
-              onChangeCurrency={onChangeCurrency}
+              onChangeCurrency={onChangeCurrencyFloor}
               period={period}
-              showDescription={false}
               onChangePeriod={onChangePeriod}
+              floorNft={floorNft}
             />
           ) : (
             <div>
@@ -114,6 +140,14 @@ const BidContent: React.FC<IBidContentProps> = ({
             onClick={onBid}
             disabled={processing}>
             bid
+          </button>
+        )}
+
+        {isCollectionBid && !!floorNft && onBuyFloor && (
+          <button
+            className='bg-[#38B000] rounded text-[#fff] w-[95px] h-[35px] ml-1'
+            onClick={() => onBuyFloor(floorNft)}>
+            buy floor
           </button>
         )}
       </div>
