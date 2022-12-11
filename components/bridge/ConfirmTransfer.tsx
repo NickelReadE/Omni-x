@@ -365,7 +365,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
                           <SpinLoader/>
                         )}
                       </div>
-                      <div className='tx-status-section mb-3'>
+                      <div className='text-[12px] leading-[16px] text-[#A0B3CC] mb-3'>
                         {status === ConfirmTransferStatus.TRANSFERRING && (<>
                           <div className="mt-3 text-primary-light text-[14px] leading-[17px]">
                             <p className="">Please confirm the transaction in your wallet to complete the transfer.</p>

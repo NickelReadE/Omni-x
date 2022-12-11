@@ -55,14 +55,14 @@ const Collections: NextPage = () => {
     <>
       <div className="pt-[90px]">
         <div className="flex items-center justify-center">
-          <div className="embla">
-            <div className="embla__viewport" ref={viewportRef}>
-              <div className="embla__container">
+          <div className="relative p-5 max-w-[90%] mx-auto">
+            <div className="embla__viewport overflow-hidden w-full" ref={viewportRef}>
+              <div className="flex select-none ml-[-10px]">
                 {
                   collections.map((item, index: number) => {
                     return (
-                      <div className="embla__slide" key={index}>
-                        <div className="embla__slide__inner">
+                      <div className="relative min-w-[100%]" key={index}>
+                        <div className="w-full relative overflow-hidden max-h-[333.33px]">
                           <Link href={`/collections/${item.col_url}`}>
                             <a>
                               <img

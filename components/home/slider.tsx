@@ -33,18 +33,18 @@ export default function HomeSlider() {
   return (
     <>
       <div className="py-5 relative">
-        <div className="embla__viewport" ref={viewportRef}>
-          <div className="embla__container">
-            <div className="embla__slide flex justify-center">
-              <div className="embla__slide__inner rounded-[20px] flex justify-center relative">
+        <div className="embla__viewport overflow-hidden w-full" ref={viewportRef}>
+          <div className="flex select-none ml-[-10px]">
+            <div className="relative min-w-[100%] flex justify-center">
+              <div className="w-full relative overflow-hidden max-h-[333.33px] rounded-[20px] flex justify-center relative">
                 <HomeIntro />
               </div>
             </div>
             {collections.map((collection, index) => (
-              <div className="embla__slide flex justify-center" key={index}>
-                <div className="embla__slide__inner rounded-[20px] aspect-[3/1] flex justify-center relative">
+              <div className="relative min-w-[100%] flex justify-center" key={index}>
+                <div className="w-full relative overflow-hidden max-h-[333.33px] rounded-[20px] aspect-[3/1] flex justify-center relative">
                   <img
-                    className="embla__slide__img"
+                    className="transform-center absolute block top-[50%] left-[50%] w-auto"
                     src={collection.banner_image}
                     alt={'banner - ' + index}
                   />
@@ -54,7 +54,7 @@ export default function HomeSlider() {
           </div>
         </div>
       </div>
-      <div className="embla__dots">
+      <div className="flex justify-center list-none pt-[10px]">
         {scrollSnaps.map((_, index) => (
           <DotButton
             key={index}
