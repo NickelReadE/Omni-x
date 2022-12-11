@@ -16,7 +16,7 @@ type WalletProviderProps = {
 export const WalletProvider = ({
   children,
 }: WalletProviderProps): JSX.Element => {
-  const { address: addressWagmi } = useAccount()
+  const { address } = useAccount()
   const { data: signerWagmi } = useSigner()
   const { chain } = useNetwork()
 
@@ -35,9 +35,6 @@ export const WalletProvider = ({
     }
   })
 
-  const address = useMemo(() => {
-    return addressWagmi
-  }, [addressWagmi])
   const chainId = useMemo(() => {
     return chain?.id
   }, [chain])

@@ -41,7 +41,7 @@ export const SelectNetworks = () => {
                           <div
                             className={`py-2 px-6 flex items-center cursor-pointer ${activeIndex === index ? 'bg-[#303030]' : ''}`}
                             onClick={() => switchNetwork?.(chainId)}>
-                            <img alt={'chainIcon'} src={getChainLogoById(chainId.toString())}/>
+                            <img alt={'chainIcon'} width={28} height={28} src={getChainLogoById(chainId.toString())}/>
                             <span
                               className={'text-primary-light text-lg pl-4'}>{getChainOfficialNameById(chainId)}</span>
                           </div>

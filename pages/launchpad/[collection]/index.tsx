@@ -58,8 +58,8 @@ const Mint: NextPage = () => {
   const getInfo = useCallback(async (): Promise<void> => {
     try {
       if (collectionInfo && signer && chainId) {
-        const tokenContract = getAdvancedInstance(collectionInfo.address[chainId ? chainId : 0], (chainId ? chainId : ChainIds.ETHEREUM), signer)
-        setStartId(Number(collectionInfo.start_ids[chainId ? chainId : 0]))
+        const tokenContract = getAdvancedInstance(collectionInfo.address[chainId], chainId, signer)
+        setStartId(Number(collectionInfo.start_ids[chainId]))
 
         let decimals = 18
         if (collectionInfo.is_gasless) {
@@ -85,15 +85,23 @@ const Mint: NextPage = () => {
     }
     const tokenContract = getAdvancedInstance(collectionInfo.address[chainId], chainId, signer)
 
-    let mintResult
+    let tx
     setIsMinting(true)
     try {
-      mintResult = await tokenContract.publicMint(quantity, {value: ethers.utils.parseEther((price * quantity).toString())})
-      const receipt = await mintResult.wait()
-      if (receipt != null) {
-        setIsMinting(false)
-        await getInfo()
+      if (collectionInfo && collectionInfo.is_gasless) {
+        const tokenAddress = await tokenContract.stableToken()
+        const tokenInstance = getCurrencyInstance(tokenAddress, chainId, signer)
+        if (tokenInstance) {
+          const decimals = Number(await tokenInstance?.decimals())
+          await tokenInstance.approve(collectionInfo.address[chainId], ethers.utils.parseUnits((price * quantity).toString(), decimals))
+          const tx = await tokenContract.publicMint(quantity)
+          await tx.wait()
+        }
+      } else {
+        tx = await tokenContract.publicMint(quantity, {value: ethers.utils.parseEther((price * quantity).toString())})
+        await tx.wait()
       }
+      await getInfo()
     } catch (e: any) {
       console.log(e)
       if (e && e.code && e.code === Logger.errors.ACTION_REJECTED) {
@@ -107,6 +115,7 @@ const Mint: NextPage = () => {
           errorToast('your address is not whitelisted on ' + provider?._network.name)
         }
       }
+    } finally {
       setIsMinting(false)
     }
   }

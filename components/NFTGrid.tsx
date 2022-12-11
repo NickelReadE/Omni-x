@@ -26,7 +26,7 @@ const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
     const namedNftItems = [...nfts].map((item) => {
       return {
         ...item,
-        newName: item.name.toLowerCase(),
+        newName: item.name?.toLowerCase(),
       }
     })
     const hasNameItems = [...namedNftItems].filter((item) => item.newName)
@@ -55,7 +55,7 @@ const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
       const namedNftItems = [...nfts].map((item) => {
         return {
           ...item,
-          newName: item.name.toLowerCase(),
+          newName: item.name?.toLowerCase(),
         }
       })
       const hasNameItems = [...namedNftItems].filter((item) => item.newName)
@@ -65,7 +65,7 @@ const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
       const namedNftItems = [...nfts].map((item) => {
         return {
           ...item,
-          newName: item.name.toLowerCase(),
+          newName: item.name?.toLowerCase(),
         }
       })
       const hasNameItems = [...namedNftItems].filter((item) => item.newName)

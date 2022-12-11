@@ -25,6 +25,7 @@ export const CHAIN_IDS = {
   [CHAIN_TYPE.OPT_TESTNET]: 420,
   [CHAIN_TYPE.ARB_TESTNET]: 421613,
   [CHAIN_TYPE.FANTOM_TESTNET]: 4002,
+  [CHAIN_TYPE.MOONBEAM_ALPHA]: 1287,
 
   [CHAIN_TYPE.ETHEREUM]: 1,
   [CHAIN_TYPE.BINANCE]: 56,
@@ -45,6 +46,7 @@ export const CHAIN_NAMES = {
   [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: CHAIN_TYPE.OPT_TESTNET,
   [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: CHAIN_TYPE.ARB_TESTNET,
   [CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET]]: CHAIN_TYPE.FANTOM_TESTNET,
+  [CHAIN_IDS[CHAIN_TYPE.MOONBEAM_ALPHA]]: CHAIN_TYPE.MOONBEAM_ALPHA,
 
   [CHAIN_IDS[CHAIN_TYPE.ETHEREUM]]: CHAIN_TYPE.ETHEREUM,
   [CHAIN_IDS[CHAIN_TYPE.BINANCE]]: CHAIN_TYPE.BINANCE,
@@ -72,7 +74,8 @@ export const RPC_PROVIDERS: { [key: number]: string } = {
   [CHAIN_IDS[CHAIN_TYPE.MUMBAI]]: 'https://rpc.ankr.com/polygon_mumbai',
   [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: 'https://arb-goerli.g.alchemy.com/v2/Agc4K6fFfxXQ1s3QG69kj1CB6nu',
   [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: 'https://opt-goerli.g.alchemy.com/v2/ngF3JRIxa7BQOqSHGASzPf-8BFW1yA0z',
-  [CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET]]: 'https://rpc.testnet.fantom.network'
+  [CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET]]: 'https://rpc.testnet.fantom.network',
+  [CHAIN_IDS[CHAIN_TYPE.MOONBEAM_ALPHA]]: 'https://rpc.testnet.moonbeam.network'
 }
 
 export const SUPPORTED_CHAIN_IDS = [
@@ -83,6 +86,7 @@ export const SUPPORTED_CHAIN_IDS = [
   CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET],
   CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET],
   CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET],
+  CHAIN_IDS[CHAIN_TYPE.MOONBEAM_ALPHA],
   // CHAIN_IDS[CHAIN_TYPE.APTOS],
 ]
 
@@ -234,6 +238,15 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
     darkIcon: '/images/chain/fantom_dark.svg',
     officialName: 'Fantom',
     currency: 'FTM'
+  },
+  [CHAIN_IDS[CHAIN_TYPE.MOONBEAM_ALPHA]]: {
+    name: 'moonbeam-alpha',
+    logo: '/svgs/fantom.svg',
+    roundedLogo: '/images/chain/moonbeam.png',
+    explorerLogo: '/images/fantomExplorer.png',
+    darkIcon: '/images/chain/fantom_dark.svg',
+    officialName: 'Moonbeam',
+    currency: 'DEV'
   },
   2222: {
     name: 'aptos-testnet',

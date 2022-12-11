@@ -21,6 +21,7 @@ export enum CHAIN_TYPE {
     OPT_TESTNET = 'optimism',
     ARB_TESTNET = 'arbitrum',
     FANTOM_TESTNET = 'fantom-testnet',
+    MOONBEAM_ALPHA = 'moonbeam-alpha',
 
     ETHEREUM = 'ethereum',
     BINANCE = 'binance',
