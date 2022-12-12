@@ -5,6 +5,7 @@ import CongratsSection from './CongratsSection'
 import BuySection from './BuySection'
 import ConfirmSection from './ConfirmSection'
 import CompleteSection from './CompleteSection'
+import {SecondaryButton} from '../common/buttons/SecondaryButton'
 
 interface IBuyContentProps {
   buyStep: BuyStep,
@@ -37,7 +38,7 @@ const BuyContent: React.FC<IBuyContentProps> = ({
   return (
     <>
       <div className='flex flex-col justify-between'>
-        <div className={'flex justify-center'}>
+        <div className={'flex justify-center mb-5'}>
           <div className={'flex flex-col'}>
             <div className={'bg-primary-gradient p-[1px] rounded'}>
               <img alt={'nftImage'} className='bg-primary rounded' width={190} height={190} src={nftImage} />
@@ -96,21 +97,11 @@ const BuyContent: React.FC<IBuyContentProps> = ({
         )}
       </div>
 
-      <div className="mt-20 flex justify-center">
+      <div className="mt-5 flex justify-center">
         {(buyStep === BuyStep.StepDone || buyStep === BuyStep.StepFail) ? (
-          <button
-            className='bg-primary-gradient rounded-full text-black w-[95px] px-4 py-1.5 font-medium'
-            onClick={onBuy}
-            disabled={processing}>
-            close
-          </button>
+          <SecondaryButton text={'close'} onClick={onBuy} disabled={processing}/>
         ) : (
-          <button
-            className='bg-primary-gradient rounded-full text-black w-[95px] px-4 py-1.5 font-medium'
-            onClick={onBuy}
-            disabled={processing || !currency || !price}>
-            confirm
-          </button>
+          <SecondaryButton text={'confirm'} onClick={onBuy} disabled={processing || !currency || !price} />
         )}
       </div>
     </>

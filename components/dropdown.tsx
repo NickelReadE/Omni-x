@@ -1,24 +1,30 @@
 import {Menu} from '@headlessui/react'
 import {Fragment, useEffect, useState} from 'react'
+import {twMerge} from 'tailwind-merge'
 
 type MenuItem = {
   text: string,
-  value: string
+  value: string | any
 }
 
 interface IDropdownProps {
   menus: MenuItem[],
+  defaultMenu?: MenuItem,
+  className?: string,
   onChange: (value: string) => void,
 }
 
-const Dropdown = ({ menus, onChange }: IDropdownProps) => {
+const Dropdown = ({ menus, defaultMenu, className, onChange }: IDropdownProps) => {
   const [selectedMenu, setSelectedMenu] = useState<string>('')
 
   useEffect(() => {
     if (menus.length > 0) {
       setSelectedMenu(menus[0].text)
     }
-  }, [menus])
+    if (defaultMenu) {
+      setSelectedMenu(defaultMenu.text)
+    }
+  }, [menus, defaultMenu])
 
   const onChangeMenu = (item: MenuItem) => {
     setSelectedMenu(item.text)
@@ -27,15 +33,15 @@ const Dropdown = ({ menus, onChange }: IDropdownProps) => {
 
   return (
     <div className={'relative'}>
-      <Menu>
+      <Menu as={'div'} className={`w-full min-w-[230px] ${className ?? ''}`}>
         <>
-          <Menu.Button className={'bg-[#303030] text-primary-light text-md flex items-center rounded-full justify-between py-3 px-5 font-medium cursor-pointer text-primary-light min-w-[230px] h-[32px] w-full'}>
+          <Menu.Button className={'bg-[#303030] text-primary-light text-md flex items-center rounded-full justify-between py-3 px-5 font-medium cursor-pointer text-primary-light h-[32px] w-full'}>
             <span>{selectedMenu}</span>
             <img src={'/images/icons/arrow_down.svg'} alt={'arrow'} />
           </Menu.Button>
           <Menu.Items className={'absolute z-10 top-0 bg-[#303030] rounded-[20px] right-0 left-0'}>
             <Menu.Item as={Fragment}>
-              <div className={'cursor-pointer text-primary-light flex items-center justify-between h-[32px] min-w-[230px] w-full px-5 font-medium text-md'}>
+              <div className={'cursor-pointer text-primary-light flex items-center justify-between h-[32px] w-full px-5 font-medium text-md'}>
                 <span>{selectedMenu}</span>
                 <img src={'/images/icons/arrow_down.svg'} alt={'arrow'} className={'rotate-180'} />
               </div>
@@ -46,7 +52,7 @@ const Dropdown = ({ menus, onChange }: IDropdownProps) => {
                   <Menu.Item key={index} as={Fragment}>
                     {({ active }) => (
                       <div
-                        className={`${active && 'bg-gray-50'} cursor-pointer text-secondary flex items-center h-[36px] min-w-[230px] w-full px-5 font-medium text-md`}
+                        className={`${active && 'bg-gray-50 rounded-[20px]'} cursor-pointer text-secondary flex items-center h-[36px] w-full px-5 font-medium text-md`}
                         onClick={() => onChangeMenu(item)}
                       >
                         {item.text}

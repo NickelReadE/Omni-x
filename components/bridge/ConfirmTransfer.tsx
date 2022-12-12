@@ -6,7 +6,14 @@ import {BigNumber, ethers} from 'ethers'
 import { Dialog } from '@headlessui/react'
 import {NFTItem} from '../../interface/interface'
 import SpinLoader from '../collections/SpinLoader'
-import {chainInfos, CHAIN_IDS, getBlockExplorer, getLayerzeroChainId, getProvider} from '../../utils/constants'
+import {
+  chainInfos,
+  CHAIN_IDS,
+  getBlockExplorer,
+  getLayerzeroChainId,
+  getProvider,
+  SUPPORTED_CHAIN_IDS, CHAIN_NAMES
+} from '../../utils/constants'
 import {CHAIN_TYPE} from '../../types/enum'
 import NetworkSelect from './NetworkSelect'
 import useBridge from '../../hooks/useBridge'
@@ -22,6 +29,7 @@ import {
 } from '../../utils/contracts'
 import {PendingTxType} from '../../contexts/contract'
 import {SecondaryButton} from '../common/buttons/SecondaryButton'
+import Dropdown from '../dropdown'
 
 export enum ConfirmTransferStatus {
   APPROVING,
@@ -37,6 +45,13 @@ interface IConfirmTransferProps {
   onClose: () => void,
   updateModal: (status: boolean) => void,
 }
+
+const networkList = SUPPORTED_CHAIN_IDS.map((chainId: number) => {
+  return {
+    text: CHAIN_NAMES[chainId],
+    value: chainId
+  }
+})
 
 const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
   nft,
@@ -64,7 +79,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
 
   const targetChainId = useMemo(() => {
     if (networkOption) {
-      return networkOption.value
+      return networkOption
     }
     return 0
   }, [networkOption])
@@ -311,7 +326,8 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
                             )
                           }
                           <div className={'mt-3'}>
-                            <NetworkSelect value={networkOption} onChange={(value: any) => setNetworkOption(value)}/>
+                            <Dropdown menus={networkList} className={'min-w-[140px]'} onChange={(value: any) => setNetworkOption(value)} />
+                            {/*<NetworkSelect value={networkOption} onChange={(value: any) => setNetworkOption(value)}/>*/}
                           </div>
                         </div>
                       </div>
@@ -384,7 +400,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
                 }
               </div>
               {/*footer*/}
-              <div className="mt-20 flex justify-center">
+              <div className="mt-5 flex justify-center">
                 {(status !== undefined) ? (
                   <SecondaryButton text={'close'} onClick={() => updateModal(false)}/>
                 ) : (

@@ -5,6 +5,7 @@ import CustomSelect from './CustomSelect'
 import Select from 'react-select'
 import { getValidCurrencies, PERIOD_LIST } from '../../utils/constants'
 import { SaleType } from '../../types/enum'
+import Dropdown from '../dropdown'
 
 interface IListingSectionProps {
   sellType?: SaleType,
@@ -40,14 +41,24 @@ const ListingSection: React.FC<IListingSectionProps> = ({
 
   const floorMessage = floorNft ? 'if you want to buy an nft with floor price, please click buy floor.' : undefined
 
+  const currencyList = useMemo(() => {
+    return validCurrencies.map((item) => {
+      return {
+        value: item,
+        text: item.text,
+      }
+    })
+  }, [validCurrencies])
+
   return (
     <div>
       <p className="text-primary-light text-xg font-semibold">{priceLabel}</p>
       <div className="flex justify-start items-center mt-5">
-        <CustomSelect optionData={validCurrencies} value={currency} onChange={onChangeCurrency} />
-        <div className={'relative ml-4 bg-primary-gradient p-[1px] rounded-lg h-[40px] w-[110px]'}>
-          <div className={'absolute top-[8px] left-1.5 h-full'}>
-            <img src={`/images/${currency.icon}`} alt={'currency'} width={25} height={25} />
+        <Dropdown menus={currencyList} className={'min-w-[140px]'} onChange={onChangeCurrency} />
+        {/*<CustomSelect optionData={validCurrencies} value={currency} onChange={onChangeCurrency} />*/}
+        <div className={'relative ml-4 bg-primary-gradient p-[1px] rounded-lg h-[32px] w-[110px]'}>
+          <div className={'absolute top-[6px] left-1.5 h-full'}>
+            <img src={`/images/${currency.icon}`} alt={'currency'} width={20} height={20} />
           </div>
           <input type="text" value={price} className="text-primary-light font-medium w-full h-full text-left pl-8 bg-primary rounded-lg" onChange={onChangePrice}/>
         </div>
@@ -66,7 +77,8 @@ const ListingSection: React.FC<IListingSectionProps> = ({
       }
       <p className="text-primary-light text-xg font-semibold mt-6">Duration</p>
       <div className="flex justify-start items-center mt-5">
-        <Select
+        <Dropdown menus={PERIOD_LIST} defaultMenu={PERIOD_LIST[2]} onChange={onChangePeriod} />
+        {/*<Select
           placeholder="Select"
           styles={{
             indicatorSeparator: (styles:any) => ({ ...styles,
@@ -96,7 +108,7 @@ const ListingSection: React.FC<IListingSectionProps> = ({
           getOptionValue={(e:any) => e?.value}
           value={period}
           onChange={onChangePeriod}
-        />
+        />*/}
         {/* <input type="text" value="60.00" className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg"/>
         <span className="px-4 text-[#ADB5BD] font-light">~ $60.00 USD</span> */}
       </div>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useMemo} from 'react'
 import CustomSelect from './CustomSelect'
 import { getAllCurrencies } from '../../utils/constants'
 
@@ -14,24 +14,27 @@ const BuySection: React.FC<IBuySectionProps> = ({
   currency
 }) => {
   const validCurrencies = getAllCurrencies()
-  const oldCurrency = validCurrencies?.find(v => v.text == srcCurrency) || {}
-  const selectedCurrency = validCurrencies?.find(v => v.text == currency) || oldCurrency
+  const oldCurrency = validCurrencies.find(v => v.text == srcCurrency)
+  const selectedCurrency = validCurrencies.find(v => v.text == currency) || oldCurrency
 
-  // const aboutPrice = useMemo(() => {
-  //   return price
-  // }, [price])
+  const aboutPrice = useMemo(() => {
+    return price
+  }, [price])
 
   return (
     <div>
       <p className="text-primary-light text-xg font-semibold">Price</p>
       <div className="flex justify-start items-center mt-5">
-        <CustomSelect optionData={validCurrencies} value={selectedCurrency} />
-        <input type="text" value={price} className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg" disabled={true}/>
-        {/*<img src={`/images/${selectedCurrency.icon}`} alt={'currency'} width={20} height={20} />
+        {
+          selectedCurrency &&
+            <img src={`/images/${selectedCurrency.icon}`} alt={'currency'} width={20} height={20} />
+        }
         <span className={'text-primary-light text-lg mx-2'}>{price}</span>
         <span className={'text-secondary text-lg ml-2'}>
           ~{aboutPrice}
-        </span>*/}
+        </span>
+        {/*<CustomSelect optionData={validCurrencies} value={selectedCurrency} />
+        <input type="text" value={price} className="text-[#000] font-semibold h-[40px] w-[110px] text-center mx-4 bg-[#F6F8FC] border-[2px] border-[#E9ECEF] rounded-lg" disabled={true}/>*/}
       </div>
       {
         currency ?

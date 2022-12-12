@@ -76,11 +76,9 @@ const ConfirmSell: React.FC<IConfirmSellProps> = ({
     if (listingStep === ListingStep.StepListing) {
       setProcessing(true)
       setStep(ListingStep.StepCheckNetwork)
-    }
-    else if (listingStep === ListingStep.StepApprove) {
+    } else if (listingStep === ListingStep.StepApprove) {
       setStep(ListingStep.StepConfirm)
-    }
-    else if (listingStep === ListingStep.StepDone || listingStep === ListingStep.StepFail) {
+    } else if (listingStep === ListingStep.StepDone || listingStep === ListingStep.StepFail) {
       onClose()
     }
   }

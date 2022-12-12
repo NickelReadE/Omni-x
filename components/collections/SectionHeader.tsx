@@ -19,8 +19,8 @@ const SectionHeader: React.FC<ISectionHeaderProps> = ({
   completed
 }) => {
   return (
-    <div className={classNames('section-header', active ? 'active' : '')}>
-      <p className={`${active ? 'bg-primary-gradient' : 'bg-secondary'} w-[18px] h-[18px] rounded-full text-black text-md`}>{sectionNo}</p>
+    <div className={classNames('section-header', active ? 'active' : '', 'flex items-center')}>
+      <p className={`${active ? 'bg-primary-gradient' : 'bg-secondary'} w-[18px] h-[18px] rounded-full text-black text-md flex items-center justify-center`}>{sectionNo}</p>
       <p className={`${active ? 'bg-primary-gradient bg-clip-text text-transparent' : 'text-secondary'} px-2 text-lg`}>{title}</p>
       {completed && (
         <Image src={'/images/icons/check.svg'} alt="completed" width={18} height={18}/>

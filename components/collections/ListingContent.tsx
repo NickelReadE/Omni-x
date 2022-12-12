@@ -101,7 +101,7 @@ const ListingContent: React.FC<IListingContentProps> = ({
         </div>
       </div>
 
-      <div className="mt-20 flex justify-center">
+      <div className="mt-5 flex justify-center">
         {(listingStep === ListingStep.StepDone || listingStep === ListingStep.StepFail) ? (
           <button
             className='bg-primary-gradient rounded-full text-black w-[95px] px-4 py-1.5 font-medium'

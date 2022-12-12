@@ -378,7 +378,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                     </div>
                     <span className={'text-primary-light text-md'}>copy link</span>
                   </div>
-                  <div className={`flex items-center px-2 ${!isOwner && !isListed ? 'cursor-pointer' : 'cursor-none'}`}
+                  <div className={`flex items-center px-2 ${!isOwner && !isListed ? 'cursor-pointer' : ''}`}
                     onClick={() => {
                       if (!isOwner && !isListed) {
                         openModal(ModalIDs.MODAL_BID, {

@@ -17,10 +17,10 @@ export const CURRENCIES_LIST = [
   {value: 2, text: 'USDT', decimals: 18, icon: 'payment/usdt.png'},
 ]
 
-export const CURRENCY_OMNI = {value: 0, text: 'OMNI', icon: 'payment/omni.png'}
-export const CURRENCY_USDC = {value: 1, text: 'USDC', icon: 'payment/usdc.png'}
-export const CURRENCY_USDT = {value: 2, text: 'USDT', icon: 'payment/usdt.png'}
-export const CURRENCY_WETH = {value: 3, text: 'ETH', icon: 'payment/eth2.png'}
+export const CURRENCY_OMNI = {value: 0, text: 'OMNI', icon: 'currency/omni.svg'}
+export const CURRENCY_USDC = {value: 1, text: 'USDC', icon: 'currency/usdc.svg'}
+export const CURRENCY_USDT = {value: 2, text: 'USDT', icon: 'currency/usdt.svg'}
+export const CURRENCY_WETH = {value: 3, text: 'ETH', icon: 'currency/ethereum.svg'}
 
 export const STABLECOIN_DECIMAL: any = {
   [ChainIDS.BINANCE]: {
