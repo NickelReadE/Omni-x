@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { BuyStep } from '../../types/enum'
 import ApproveSection from './ApproveSection'
 import CongratsSection from './CongratsSection'
@@ -6,6 +6,7 @@ import BuySection from './BuySection'
 import ConfirmSection from './ConfirmSection'
 import CompleteSection from './CompleteSection'
 import {SecondaryButton} from '../common/buttons/SecondaryButton'
+import LazyLoad from 'react-lazyload'
 
 interface IBuyContentProps {
   buyStep: BuyStep,
@@ -35,13 +36,25 @@ const BuyContent: React.FC<IBuyContentProps> = ({
   collectionName,
   onBuy
 }) => {
+  const [imageError, setImageError] = useState(false)
+
   return (
     <>
       <div className='flex flex-col justify-between'>
         <div className={'flex justify-center mb-5'}>
           <div className={'flex flex-col'}>
             <div className={'bg-primary-gradient p-[1px] rounded'}>
-              <img alt={'nftImage'} className='bg-primary rounded' width={190} height={190} src={nftImage} />
+              <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image"/>}>
+                <img
+                  className='bg-primary rounded'
+                  src={imageError ? '/images/omnix_logo_black_1.png' : nftImage}
+                  alt="nft-image"
+                  width={190}
+                  height={190}
+                  onError={() => { setImageError(true) }}
+                  data-src={nftImage}
+                />
+              </LazyLoad>
             </div>
             <p className={'text-primary-light mt-3'}>#{nftTokenId}</p>
             <p className='text-secondary font-medium'>{collectionName}</p>

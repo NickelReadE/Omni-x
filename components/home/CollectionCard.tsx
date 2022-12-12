@@ -8,6 +8,8 @@ import { numberShortify } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'
 import {SecondaryButton} from '../common/buttons/SecondaryButton'
 import {PrimaryButton} from '../common/buttons/PrimaryButton'
+import {ModalIDs} from '../../contexts/modal'
+import {useModal} from '../../hooks/useModal'
 
 type CollectionType = {
   profile_image: string
@@ -15,6 +17,8 @@ type CollectionType = {
   name: string
   itemsCnt: number
   ownerCnt: number
+  address: any
+  floorNft: any
   floorPrice: {
     omni: number
   }
@@ -26,8 +30,37 @@ interface ICollectionCardProps {
 
 const CollectionCard = ({ collection }: ICollectionCardProps) => {
   const { address } = useWallet()
+  const { openModal, closeModal } = useModal()
+
   const [hover, setHover] = useState<boolean>(false)
   const [imageError, setImageError] = useState(false)
+
+  const collectionBid = {
+    collectionUrl: collection.col_url as string,
+    collectionAddressMap: collection.address
+  }
+
+  const onBuyFloor = (nft: any) => {
+    const tradingInput = {
+      collectionUrl: collectionBid.collectionUrl,
+      collectionAddressMap: collectionBid.collectionAddressMap,
+      tokenId: nft.token_id,
+      selectedNFTItem: nft
+    }
+
+    console.log(nft.image)
+    console.log(nft.name)
+    openModal(ModalIDs.MODAL_BUY, {
+      nftImage: nft.image,
+      nftTitle: nft.name,
+      nftTokenId: nft.token_id,
+      collectionName: collection.name,
+      order: nft.order_data,
+      tradingInput,
+      instantBuy: true,
+      handleBuyDlgClose: closeModal
+    })
+  }
 
   return (
     <div
@@ -109,8 +142,21 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
 
       {/*button group at the bottom*/}
       <div className={`w-full flex items-center justify-between bg-[#202020] absolute h-[65px] right-0 left-0 bottom-2 rounded-br-[8px] rounded-bl-[8px] px-3 ${hover ? 'block' : 'hidden'}`}>
-        <SecondaryButton text={'bid collection'} />
-        <PrimaryButton text={'instant floor buy'} />
+        <SecondaryButton text={'bid collection'} onClick={() => {
+          openModal(ModalIDs.MODAL_BID, {
+            nftImage: collection.profile_image,
+            nftTitle: collection.name,
+            collectionBid,
+            collectionInfo: collection,
+            onBuyFloor,
+            handleBidDlgClose: closeModal
+          })
+        }} />
+        <PrimaryButton text={'instant floor buy'} onClick={() => {
+          if (collection.floorNft['omni']) {
+            onBuyFloor(collection.floorNft['omni'])
+          }
+        }} />
       </div>
     </div>
   )

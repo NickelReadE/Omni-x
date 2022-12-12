@@ -76,8 +76,13 @@ const BidContent: React.FC<IBidContentProps> = ({
             <div className={'bg-primary-gradient p-[1px] rounded'}>
               <img alt={'nftImage'} className='bg-primary rounded' width={190} height={190} src={nftImage} />
             </div>
-            <p className={'text-primary-light mt-3'}>#{nftTokenId}</p>
-            <p className='text-secondary font-medium'>{collectionName}</p>
+            {
+              !isCollectionBid &&
+                <>
+                  <p className={'text-primary-light mt-3'}>#{nftTokenId}</p>
+                  <p className='text-secondary font-medium'>{collectionName}</p>
+                </>
+            }
           </div>
         </div>
         <div className={'mt-4'}>
@@ -127,7 +132,7 @@ const BidContent: React.FC<IBidContentProps> = ({
         </div>
       </div>
 
-      <div className="mt-20 flex justify-center">
+      <div className="mt-5 flex justify-center">
         {(bidStep === BidStep.StepDone || bidStep === BidStep.StepFail) ? (
           <button
             className='bg-primary-gradient rounded-full text-black w-[95px] px-4 py-1.5 font-medium'
