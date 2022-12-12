@@ -63,7 +63,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
   const renderContent = (txInfo: PendingTxType) => {
     return (
       <div className='flex items-center justify-between'>
-        <span className="bg-repost-gradient bg-clip-text text-transparent w-[30px] truncate text-[14px] leading-[18px] font-bold">
+        <span className="bg-repost-gradient bg-clip-text text-transparent w-[35px] truncate text-[14px] leading-[18px] font-bold">
           {txInfo.type === 'bridge' && 'xfer:'}
           {txInfo.type === 'buy' && 'buy:'}
           {txInfo.type === 'accept' && 'sell:'}
@@ -104,7 +104,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
             alt="chain icon"
           />
         </>)}
-        <span className="text-md text-primary-light w-[120px] truncate">{txInfo?.itemName}</span>
+        <span className="text-md text-primary-light ml-1 w-[120px] truncate">{txInfo?.itemName}</span>
       </div>
     )
   }

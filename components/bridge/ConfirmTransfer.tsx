@@ -63,7 +63,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
   const { chainId, address, provider, signer } = useWallet()
   const { estimateGasFee, estimateGasFeeONFTCore, unwrapInfo, selectedUnwrapInfo, validateOwNFT, validateONFT } = useBridge()
   const { addTxToHistories } = useProgress()
-  const { listenONFTEvents } = useContract()
+  const { listenONFTEvents, errorHandler } = useContract()
 
   const [status, setStatus] = useState<ConfirmTransferStatus | undefined>(undefined)
   const [estimatingGasFee, setEstimatingGasFee] = useState<boolean>(false)
@@ -281,7 +281,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
         }
       }
     } catch (err) {
-      console.error(err)
+      errorHandler(err)
       setStatus(undefined)
     }
   }
@@ -418,7 +418,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
                 {(status !== undefined) ? (
                   <SecondaryButton text={'close'} onClick={() => updateModal(false)}/>
                 ) : (
-                  <SecondaryButton text={'send'} onClick={onTransfer}/>
+                  <SecondaryButton text={'send'} disabled={estimatingGasFee} onClick={onTransfer}/>
                 )}
               </div>
             </div>

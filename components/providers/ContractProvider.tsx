@@ -6,6 +6,8 @@ import useWallet from '../../hooks/useWallet'
 import useProgress from '../../hooks/useProgress'
 import { ethers } from 'ethers'
 import useData from '../../hooks/useData'
+import {Logger} from 'ethers/lib/utils'
+import {Slide, toast} from 'react-toastify'
 
 type ContractProviderProps = {
   children?: ReactNode
@@ -384,6 +386,20 @@ export const ContractProvider = ({
     }
   }
 
+  const errorToast = (error: string): void => {
+    toast.error(error, {
+      position: toast.POSITION.TOP_RIGHT,
+      autoClose: 3000,
+      transition: Slide
+    })
+  }
+
+  const errorHandler = (error: any) => {
+    if (error.code && error.code === Logger.errors.ACTION_REJECTED) {
+      errorToast('User denied transaction signature')
+    }
+  }
+
   useEffect(() => {
     (async () => {
       if (address && chainId) {
@@ -401,7 +417,8 @@ export const ContractProvider = ({
   return (
     <ContractContext.Provider
       value={{
-        listenONFTEvents
+        listenONFTEvents,
+        errorHandler
       }}
     >
       {children}
