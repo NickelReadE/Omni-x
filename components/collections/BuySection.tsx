@@ -1,5 +1,4 @@
 import React, {useMemo} from 'react'
-import CustomSelect from './CustomSelect'
 import { getAllCurrencies } from '../../utils/constants'
 
 interface IBuySectionProps {

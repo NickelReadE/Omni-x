@@ -1,6 +1,5 @@
 import {Menu} from '@headlessui/react'
 import {Fragment, useEffect, useState} from 'react'
-import {twMerge} from 'tailwind-merge'
 
 type MenuItem = {
   text: string,

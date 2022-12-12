@@ -6,6 +6,7 @@ import {BigNumber, ethers} from 'ethers'
 import { Dialog } from '@headlessui/react'
 import {NFTItem} from '../../interface/interface'
 import SpinLoader from '../collections/SpinLoader'
+import {SpinLoader as PrimarySpinLoader} from '../basic'
 import {
   chainInfos,
   CHAIN_IDS,
@@ -15,12 +16,10 @@ import {
   SUPPORTED_CHAIN_IDS, CHAIN_NAMES
 } from '../../utils/constants'
 import {CHAIN_TYPE} from '../../types/enum'
-import NetworkSelect from './NetworkSelect'
 import useBridge from '../../hooks/useBridge'
 import useWallet from '../../hooks/useWallet'
 import useProgress from '../../hooks/useProgress'
 import useContract from '../../hooks/useContract'
-import {openSnackBar} from '../../redux/reducers/snackBarReducer'
 import {
   decodeFromBytes, getERC1155Instance, getERC721Instance,
   getLayerZeroEndpointInstance, getOmnixBridge1155Instance, getOmnixBridgeInstance,
@@ -67,10 +66,11 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
   const { listenONFTEvents } = useContract()
 
   const [status, setStatus] = useState<ConfirmTransferStatus | undefined>(undefined)
+  const [estimatingGasFee, setEstimatingGasFee] = useState<boolean>(false)
   const [estimatedFee, setEstimatedFee] = useState<BigNumber>(BigNumber.from('0'))
   const [target, setTarget] = useState<string>('me')
   const [isONFTCore, setIsONFTCore] = useState(false)
-  const [networkOption, setNetworkOption] = useState<any>()
+  const [networkOption, setNetworkOption] = useState<any>(networkList[0].value)
   const [approveTxHash, setApproveTxHash] = useState<string>('')
 
   const explorer = getBlockExplorer(chainId || CHAIN_IDS[CHAIN_TYPE.GOERLI])
@@ -93,15 +93,22 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
       if (targetChainId === 0) return
       if (senderChainId === targetChainId) return
       if (senderChainId !== nft.chain_id) return
-      const isONFTCore = await validateONFT(nft)
-      setIsONFTCore(isONFTCore)
-      let gasFee
-      if (isONFTCore) {
-        gasFee = await estimateGasFeeONFTCore(nft, senderChainId, targetChainId)
-      } else {
-        gasFee = await estimateGasFee(nft, senderChainId, targetChainId)
+      setEstimatingGasFee(true)
+      try {
+        const isONFTCore = await validateONFT(nft)
+        setIsONFTCore(isONFTCore)
+        let gasFee
+        if (isONFTCore) {
+          gasFee = await estimateGasFeeONFTCore(nft, senderChainId, targetChainId)
+        } else {
+          gasFee = await estimateGasFee(nft, senderChainId, targetChainId)
+        }
+        setEstimatedFee(gasFee)
+      } catch (e) {
+        console.error(e)
+      } finally {
+        setEstimatingGasFee(false)
       }
-      setEstimatedFee(gasFee)
     })()
   }, [nft, targetChainId, senderChainId])
 
@@ -326,14 +333,21 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
                             )
                           }
                           <div className={'mt-3'}>
-                            <Dropdown menus={networkList} className={'min-w-[140px]'} onChange={(value: any) => setNetworkOption(value)} />
+                            <Dropdown menus={networkList} defaultMenu={networkList[0]} className={'min-w-[140px]'} onChange={(value: any) => setNetworkOption(value)} />
                             {/*<NetworkSelect value={networkOption} onChange={(value: any) => setNetworkOption(value)}/>*/}
                           </div>
                         </div>
                       </div>
                       <div className="flex items-center text-primary-light text-md font-medium mt-3">
                         <span className={'mr-3'}>gas cost:</span>
-                        <p>{estimatedFee != undefined && ethers.utils.formatEther(estimatedFee)}&nbsp;{chainInfos[senderChainId].currency}</p>
+                        {
+                          estimatingGasFee ?
+                            <div className={'w-5 h-5'}>
+                              <PrimarySpinLoader />
+                            </div>
+                            :
+                            <p>{estimatedFee != undefined && ethers.utils.formatEther(estimatedFee)}&nbsp;{chainInfos[senderChainId].currency}</p>
+                        }
                       </div>
                     </>
                   ) : (

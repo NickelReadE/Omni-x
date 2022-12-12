@@ -1,8 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import React, {useMemo} from 'react'
-import CustomSelect from './CustomSelect'
-import Select from 'react-select'
 import { getValidCurrencies, PERIOD_LIST } from '../../utils/constants'
 import { SaleType } from '../../types/enum'
 import Dropdown from '../dropdown'
@@ -28,7 +26,6 @@ const ListingSection: React.FC<IListingSectionProps> = ({
   onChangePrice,
   currency,
   onChangeCurrency,
-  period,
   showDescription = true,
   onChangePeriod,
   floorNft
