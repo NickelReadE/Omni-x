@@ -37,21 +37,25 @@ export const getERC20Balances = async (chainId: number, address: string) => {
         balances.usdc = parseFloat(ethers.utils.formatUnits(data[0].balance, data[0].decimals))
       }
     } catch (e) {
-      console.log(e)
+      console.error(e)
     }
   }
   if (USDT_ADDRESS[chainId]) {
-    const {data} = await axios.request({
-      method: 'GET',
-      url: `https://deep-index.moralis.io/api/v2/${address}/erc20`,
-      params: {
-        chain: `0x${(chainId).toString(16)}`,
-        token_addresses: USDT_ADDRESS[chainId],
-      },
-      headers: {accept: 'application/json', 'X-API-Key': MORALIS_API_KEY as string}
-    })
-    if (data && data.length > 0) {
-      balances.usdt = parseFloat(ethers.utils.formatUnits(data[0].balance, data[0].decimals))
+    try {
+      const {data} = await axios.request({
+        method: 'GET',
+        url: `https://deep-index.moralis.io/api/v2/${address}/erc20`,
+        params: {
+          chain: `0x${(chainId).toString(16)}`,
+          token_addresses: USDT_ADDRESS[chainId],
+        },
+        headers: {accept: 'application/json', 'X-API-Key': MORALIS_API_KEY as string}
+      })
+      if (data && data.length > 0) {
+        balances.usdt = parseFloat(ethers.utils.formatUnits(data[0].balance, data[0].decimals))
+      }
+    } catch (e) {
+      console.error(e)
     }
   }
   return balances

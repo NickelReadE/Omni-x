@@ -9,10 +9,15 @@ export type Balances = {
   usdt: number,
 }
 
+export type ChainBalanceType = {
+  chainId: number,
+  balance: number,
+}
+
 type BalancesType = {
   balances: Balances[],
-  usdcAvailableChainIds: number[],
-  usdtAvailableChainIds: number[],
+  usdcAvailableChainIds: ChainBalanceType[],
+  usdtAvailableChainIds: ChainBalanceType[],
   totalUSDCBalance: number,
   totalUSDTBalance: number,
   updateRefresh: () => void,
@@ -29,11 +34,21 @@ const useMultiChainBalances = (): BalancesType => {
   }
 
   const usdcAvailableChainIds = useMemo(() => {
-    return balances.filter(b => b.usdc > 0).map(b => b.chainId)
+    return balances.filter(b => b.usdc > 0).map(b => {
+      return {
+        chainId: b.chainId,
+        balance: b.usdc
+      }
+    })
   }, [balances])
 
   const usdtAvailableChainIds = useMemo(() => {
-    return balances.filter(b => b.usdt > 0).map(b => b.chainId)
+    return balances.filter(b => b.usdt > 0).map(b => {
+      return {
+        chainId: b.chainId,
+        balance: b.usdt
+      }
+    })
   }, [balances])
 
   const totalUSDCBalance = useMemo(() => {

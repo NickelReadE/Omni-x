@@ -3,7 +3,7 @@ import useBalances, {BalancesInformation} from '../../hooks/useBalances'
 import useCollections from '../../hooks/useCollections'
 import useProfile, {ProfileData} from '../../hooks/useProfile'
 import useWallet from '../../hooks/useWallet'
-import useMultiChainBalances from '../../hooks/useMultiChainBalances'
+import useMultiChainBalances, {ChainBalanceType} from '../../hooks/useMultiChainBalances'
 import {NFTItem} from '../../interface/interface'
 import {CollectionType} from '../../hooks/useCollection'
 
@@ -16,8 +16,8 @@ export type DataContextType = {
   isLoadingNfts: boolean,
   totalUSDCBalance: number,
   totalUSDTBalance: number,
-  usdcAvailableChainIds: number[],
-  usdtAvailableChainIds: number[],
+  usdcAvailableChainIds: ChainBalanceType[],
+  usdtAvailableChainIds: ChainBalanceType[],
   refreshBalance: () => void,
   refreshUserNfts: () => void,
   refreshProfile: () => void,

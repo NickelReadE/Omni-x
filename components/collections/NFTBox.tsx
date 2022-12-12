@@ -177,7 +177,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
       >
         <div className="w-full">
           <div
-            className="nft-image-container group relative flex justify-center text-center overflow-hidden rounded-tr-[8px] rounded-tl-[8px]"
+            className="nft-image-container w-full group relative flex justify-center text-center overflow-hidden rounded-tr-[8px] rounded-tl-[8px]"
             ref={isHomePage ? setNodeRef : null}
             style={isHomePage ? style : {}}
             {...(isHomePage ? listeners : {})}

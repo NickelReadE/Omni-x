@@ -8,6 +8,7 @@ import DropdownArrowUp from '../../../public/images/icons/dropdown_arrow_up.svg'
 import {getChainInfo, getChainLogoById, numberLocalize} from '../../../utils/constants'
 import {useBalance} from 'wagmi'
 import useData from '../../../hooks/useData'
+import {Tooltip} from '../../basic'
 
 interface IPfpMenuPros {
   avatarImage: string
@@ -28,7 +29,7 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
     <div className='w-9 h-9'>
       <div className="relative inline-block text-left" onMouseLeave={() => setHovered(false)}>
         <div className={'focus:outline-none'} onMouseEnter={() => setHovered(true)}>
-          <Link href={`/user/${address}`}>
+          <Link href={'/account'}>
             <div className={`w-9 h-9 ${hovered ? 'bg-primary-gradient' : ''} rounded-full cursor-pointer`}>
               <img
                 src={avatarImage}
@@ -78,9 +79,11 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
                             </div>
                             <div className={'flex w-full pb-2'}>
                               {
-                                usdcAvailableChainIds.map((chainId: number, index: number) => {
+                                usdcAvailableChainIds.map((balance, index: number) => {
                                   return (
-                                    <img key={index} src={getChainLogoById(chainId.toString())} className={'w-[18px] h-[18px] mr-1'} alt={'chainIcon'} />
+                                    <Tooltip tooltipContent={`${balance.balance.toLocaleString()} USDC`} key={index}>
+                                      <img src={getChainLogoById(balance.chainId.toString())} className={'w-[18px] h-[18px] mr-1'} alt={'chainIcon'} />
+                                    </Tooltip>
                                   )
                                 })
                               }
@@ -92,9 +95,11 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
                             </div>
                             <div className={'flex w-full pb-2'}>
                               {
-                                usdtAvailableChainIds.map((chainId: number, index: number) => {
+                                usdtAvailableChainIds.map((balance, index: number) => {
                                   return (
-                                    <img key={index} src={getChainLogoById(chainId.toString())} className={'w-[18px] h-[18px]'} alt={'chainIcon'} />
+                                    <Tooltip tooltipContent={`${balance.balance.toLocaleString()} USDT`} key={index}>
+                                      <img src={getChainLogoById(balance.chainId.toString())} className={'w-[18px] h-[18px]'} alt={'chainIcon'} />
+                                    </Tooltip>
                                   )
                                 })
                               }

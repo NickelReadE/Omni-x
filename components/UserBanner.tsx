@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useMemo, useState} from 'react'
-import { useRouter } from 'next/router'
 import useWallet from '../hooks/useWallet'
 import classNames from '../helpers/classNames'
 import { ProfileData } from '../hooks/useProfile'
@@ -29,9 +28,7 @@ const useStyles = makeStyles({
 
 const UserBanner = ({user}: UserBannerProps): JSX.Element => {
   const {address} = useWallet()
-  const router = useRouter()
   const classes = useStyles()
-  const userAddress = router.query.address as string
   const [settingModal, setSettingModal] = useState(false)
 
   const bannerImage = useMemo(() => {
@@ -95,9 +92,9 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
               </div>
               {/*Social links*/}
               <div className={'flex items-center space-x-3'}>
-                <div className={`flex flex-col h-[60px] items-end ${userAddress === address ? 'justify-between' : 'justify-center'} space-y-2`}>
+                <div className={`flex flex-col h-[60px] items-end ${user.address === address ? 'justify-between' : 'justify-center'} space-y-2`}>
                   {
-                    userAddress === address &&
+                    user.address === address &&
                       <GreyButton text={'settings'} className={'h-[26px]'} onClick={() => setSettingModal(true)} />
                   }
                   <div className={'flex items-center'}>
