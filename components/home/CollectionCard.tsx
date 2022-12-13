@@ -10,6 +10,8 @@ import {SecondaryButton} from '../common/buttons/SecondaryButton'
 import {PrimaryButton} from '../common/buttons/PrimaryButton'
 import {ModalIDs} from '../../contexts/modal'
 import {useModal} from '../../hooks/useModal'
+import useData from '../../hooks/useData'
+import { useBalance } from 'wagmi'
 
 type CollectionType = {
   profile_image: string
@@ -18,10 +20,8 @@ type CollectionType = {
   itemsCnt: number
   ownerCnt: number
   address: any
-  floorNft: any
-  floorPrice: {
-    omni: number
-  }
+  floorNft: any //{ omni: NFTItem, eth: NFTItem, usd: NFTItem }
+  floorPrice: any //{ omni: number, eth: number, usd: number }
 }
 
 interface ICollectionCardProps {
@@ -31,7 +31,10 @@ interface ICollectionCardProps {
 const CollectionCard = ({ collection }: ICollectionCardProps) => {
   const { address } = useWallet()
   const { openModal, closeModal } = useModal()
-
+  const { totalUSDCBalance, totalUSDTBalance } = useData()
+  const { data: nativeBalance } = useBalance({
+    addressOrName: address
+  })
   const [hover, setHover] = useState<boolean>(false)
   const [imageError, setImageError] = useState(false)
 
@@ -60,6 +63,24 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
       instantBuy: true,
       handleBuyDlgClose: closeModal
     })
+  }
+
+  const getValidFloorNFT = () => {
+    for (const kind in collection.floorPrice) {
+      const floorPrice = collection.floorPrice[kind]
+      if (floorPrice > 0) {
+        if (kind === 'omni') {
+          return collection.floorNft[kind]
+        } else if (kind === 'usd' || kind === 'usdc' || kind === 'usdt') {
+          if (floorPrice <= totalUSDCBalance || floorPrice <= totalUSDTBalance) {
+            return collection.floorNft[kind]
+          }
+        } else if (kind === 'eth' && nativeBalance?.formatted) {
+          if (floorPrice <= (+nativeBalance.formatted))
+          return collection.floorNft[kind]
+        }
+      }
+    }
   }
 
   return (
@@ -153,8 +174,11 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
           })
         }} />
         <PrimaryButton text={'instant floor buy'} onClick={() => {
-          if (collection.floorNft['omni']) {
-            onBuyFloor(collection.floorNft['omni'])
+          const floorNft = getValidFloorNFT()
+          if (floorNft) {
+            onBuyFloor(floorNft)
+          } else {
+            console.log('-no floor nft to buy-')
           }
         }} />
       </div>
