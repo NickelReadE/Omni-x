@@ -277,7 +277,7 @@ const Item: NextPage = () => {
                   <div className={'flex items-center justify-between'}>
                     <div className={'text-secondary text-xl'}>current price</div>
                     <div className={'flex items-center'}>
-                      <div className={'text-primary-blue text-xxxl'}>{currentNFT.price}</div>
+                      <div className={'text-primary-blue text-xxxl'}>{currentNFT.price > 0 ? currentNFT.price : '-'}</div>
                       <img alt='chainIcon' src={chainIcon} className="ml-2 w-[32px] h-[32px]" />
                     </div>
                   </div>
@@ -291,7 +291,7 @@ const Item: NextPage = () => {
                         })
                       }}
                     />
-                    <PrimaryButton text={'buy now'} className={'h-[30px]'} onClick={() => {
+                    <PrimaryButton text={'buy now'} className={'h-[30px]'} disabled={!currentNFT.price} onClick={() => {
                         openModal(ModalIDs.MODAL_BUY, {
                           nftImage: currentNFT.image,
                           nftTitle: currentNFT.name,

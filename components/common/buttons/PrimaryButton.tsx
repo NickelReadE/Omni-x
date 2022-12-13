@@ -8,14 +8,15 @@ interface IPrimaryButtonProps {
     background?: string,
     className?: string,
     parentClassName?: string,
+    disabled?: boolean,
     onClick?: () => void
 }
 
-export const PrimaryButton = ({ text, loading, className, parentClassName, background, onClick }: IPrimaryButtonProps) => {
+export const PrimaryButton = ({ text, loading, className, parentClassName, background, disabled, onClick }: IPrimaryButtonProps) => {
   const [hovered, setHovered] = useState(false)
 
   return (
-    <button className={`flex items-center bg-primary-gradient rounded-full p-[1px] ${parentClassName ?? ''}`} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onClick={onClick}>
+    <button className={`flex items-center bg-primary-gradient rounded-full p-[1px] ${parentClassName ?? ''}`} disabled={disabled} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onClick={onClick}>
       <div className={twMerge(`${hovered ? 'bg-transparent' : (background ?? 'bg-primary')} flex items-center justify-center rounded-full px-[15px] py-[7px] h-full ${className ?? ''}`)}>
         {
           loading && <SpinLoader />
