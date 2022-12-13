@@ -69,7 +69,7 @@ const Item: NextPage = () => {
 
   // statistics hook
   const {
-    // order,
+    order,
     // isListed,
     sortedBids,
     // highestBid,
@@ -114,7 +114,7 @@ const Item: NextPage = () => {
       {currentNFT && collection &&
         <div className="w-full py-8">
           <div className="w-full 2xl:px-[10%] xl:px-[5%] lg:px-[2%] md:px-[2%] ">
-            <div className="grid grid-cols-2 2xl:gap-12 lg:gap-1 xl:gap-4">
+            <div className="grid grid-cols-2 2xl:gap-16 md:gap-12">
               <div className="col-span-1 h-full">
                 <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image"/>}>
                   <img
@@ -282,8 +282,25 @@ const Item: NextPage = () => {
                     </div>
                   </div>
                   <div className={'flex items-center justify-around mt-5'}>
-                    <GreyButton text={'place bid'} className={'h-[32px]'} />
-                    <PrimaryButton text={'buy now'} className={'h-[30px]'} />
+                    <GreyButton text={'place bid'} className={'h-[32px]'} onClick={() => {
+                        openModal(ModalIDs.MODAL_BID, {
+                          nftImage: currentNFT.image,
+                          nftTitle: currentNFT.name,
+                          tradingInput,
+                          handleBidDlgClose: closeModal
+                        })
+                      }}
+                    />
+                    <PrimaryButton text={'buy now'} className={'h-[30px]'} onClick={() => {
+                        openModal(ModalIDs.MODAL_BUY, {
+                          nftImage: currentNFT.image,
+                          nftTitle: currentNFT.name,
+                          order,
+                          tradingInput,
+                          handleBuyDlgClose: closeModal
+                        })
+                      }}
+                    />
                   </div>
                 </div>
 
