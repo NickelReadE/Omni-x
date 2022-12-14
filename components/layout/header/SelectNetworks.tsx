@@ -28,7 +28,7 @@ export const SelectNetworks = () => {
           leaveTo="transform opacity-0 scale-95"
           show={hovered}
         >
-          <div className={'absolute right-0 w-[166px] origin-top-right pt-4'}>
+          <div className={`absolute right-0 w-[166px] origin-top-right pt-4 ${hovered ? 'block' : 'hidden'}`}>
             <div className={'rounded-md bg-primary-gradient p-[1px]'}>
               <div className={'bg-primary rounded-md'}>
                 <div

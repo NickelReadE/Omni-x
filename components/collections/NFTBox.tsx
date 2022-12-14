@@ -4,7 +4,6 @@ import {useDispatch} from 'react-redux'
 import {Transition} from '@headlessui/react'
 import Link from 'next/link'
 import Router, { useRouter } from 'next/router'
-import { useDraggable } from '@dnd-kit/core'
 import { useSwitchNetwork } from 'wagmi'
 import { IPropsNFTItem } from '../../interface/interface'
 import {
@@ -38,16 +37,6 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   const router = useRouter()
   const dispatch = useDispatch()
   const { collections } = useData()
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: `draggable-${nft.token_id}-${nft.collection_address}`,
-    data: {
-      type: 'NFT',
-    }
-  })
-  const style = transform ? {
-    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-    zIndex: 99
-  } : undefined
 
   const nft_collection = useMemo(() => {
     return collections.find((collection) => {
@@ -176,13 +165,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
         }}
       >
         <div className="w-full">
-          <div
-            className="nft-image-container w-full group relative flex justify-center text-center overflow-hidden rounded-tr-[8px] rounded-tl-[8px]"
-            ref={isHomePage ? setNodeRef : null}
-            style={isHomePage ? style : {}}
-            {...(isHomePage ? listeners : {})}
-            {...(isHomePage ? attributes : {})}
-          >
+          <div className="nft-image-container w-full group relative flex justify-center text-center overflow-hidden rounded-tr-[8px] rounded-tl-[8px]">
             <Link href={`/collections/${col_url}/${nft.token_id}`}>
               <div className="w-full h-full cursor-pointer">
                 <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
@@ -206,7 +189,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
               </span>
             </div>
             <div className={`absolute w-8 h-8 top-3 right-3 ${boxHovered ? 'block' : 'hidden'}`}>
-              <img src={'/images/icons/nftbox/plus_circle.svg'} alt={'circle'} />
+              <img src={'/images/icons/nftbox/plus_circle_default.svg'} alt={'circle'} />
             </div>
           </div>
           <div className={'flex flex-col justify-between min-h-[100px] p-3'}>
