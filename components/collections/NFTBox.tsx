@@ -4,7 +4,6 @@ import {useDispatch} from 'react-redux'
 import {Transition} from '@headlessui/react'
 import Link from 'next/link'
 import Router, { useRouter } from 'next/router'
-import { useDraggable } from '@dnd-kit/core'
 import { useSwitchNetwork } from 'wagmi'
 import { IPropsNFTItem } from '../../interface/interface'
 import {
@@ -38,16 +37,6 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   const router = useRouter()
   const dispatch = useDispatch()
   const { collections } = useData()
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: `draggable-${nft.token_id}-${nft.collection_address}`,
-    data: {
-      type: 'NFT',
-    }
-  })
-  const style = transform ? {
-    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-    zIndex: 99
-  } : undefined
 
   const nft_collection = useMemo(() => {
     return collections.find((collection) => {
@@ -176,13 +165,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
         }}
       >
         <div className="w-full">
-          <div
-            className="nft-image-container w-full group relative flex justify-center text-center overflow-hidden rounded-tr-[8px] rounded-tl-[8px]"
-            ref={isHomePage ? setNodeRef : null}
-            style={isHomePage ? style : {}}
-            {...(isHomePage ? listeners : {})}
-            {...(isHomePage ? attributes : {})}
-          >
+          <div className="nft-image-container w-full group relative flex justify-center text-center overflow-hidden rounded-tr-[8px] rounded-tl-[8px]">
             <Link href={`/collections/${col_url}/${nft.token_id}`}>
               <div className="w-full h-full cursor-pointer">
                 <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
@@ -198,14 +181,15 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
               </div>
             </Link>
             <div className={`flex absolute top-3 left-3 rounded-[20px] bg-primary opacity-80 items-center px-2 py-1.5 space-x-1 ${boxHovered ? 'block' : 'hidden'}`}>
-              <div>
-                <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M11.5023 2.75601L11.5024 2.75588C11.9009 2.35715 12.3741 2.04085 12.895 1.82505C13.4158 1.60924 13.974 1.49817 14.5378 1.49817C15.1015 1.49817 15.6598 1.60924 16.1806 1.82505C16.7014 2.04085 17.1746 2.35715 17.5732 2.75588L17.5734 2.75613C17.9721 3.15467 18.2884 3.62787 18.5042 4.14869C18.72 4.66951 18.8311 5.22775 18.8311 5.79151C18.8311 6.35527 18.72 6.9135 18.5042 7.43432C18.2884 7.95514 17.9721 8.42834 17.5734 8.82689L17.5733 8.82701L16.6016 9.79868L10.0003 16.4L3.39893 9.79868L2.42727 8.82701C1.6222 8.02195 1.16992 6.93004 1.16992 5.79151C1.16992 4.65297 1.6222 3.56107 2.42727 2.75601C3.23233 1.95094 4.32424 1.49866 5.46277 1.49866C6.60131 1.49866 7.69321 1.95094 8.49828 2.75601L9.46994 3.72767C9.76283 4.02057 10.2377 4.02057 10.5306 3.72767L11.5023 2.75601Z" stroke="#FF166A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
+              <div className={'relative w-5 h-5'}>
+                <img src={'/images/icons/nftbox/heart.svg'} alt={'heart'}/>
               </div>
-              <span className='text-md text-[#FF166A]'>
+              <span className='text-md text-like'>
               24
               </span>
+            </div>
+            <div className={`absolute w-8 h-8 top-3 right-3 ${boxHovered ? 'block' : 'hidden'}`}>
+              <img src={'/images/icons/nftbox/plus_circle_default.svg'} alt={'circle'} />
             </div>
           </div>
           <div className={'flex flex-col justify-between min-h-[100px] p-3'}>
@@ -231,7 +215,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                       })
                     }} />
                   )}
-                  {!isOwner && isCollectionPage && (
+                  {!isOwner && isListed && isCollectionPage && (
                     <GreenButton text={'buy'} className={'w-[120px]'} onClick={() => {
                       openModal(ModalIDs.MODAL_BUY, {
                         nftImage: image,
@@ -244,13 +228,31 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                       })
                     }} />
                   )}
+                  {!isOwner && !isListed && (
+                    <GreenButton text={'bid'} className={'w-[120px]'} onClick={() => {
+                      openModal(ModalIDs.MODAL_BID, {
+                        nftImage: image,
+                        nftTitle: nftName,
+                        nftTokenId: nft.token_id,
+                        collectionName: nft_collection?.name,
+                        tradingInput,
+                        handleBidDlgClose: closeModal
+                      })
+                    }} />
+                  )}
                   {
                     isOwner &&
                       <PrimaryButton text={'send'} className={'px-[23px]'} onClick={onTransfer} />
                   }
-                  <div className={'w-8 flex items-center justify-center cursor-pointer'}
+                  <div className={'w-8 h-8 flex items-center justify-center cursor-pointer'}
                     onClick={() => setDotHover(!dotHover)}>
-                    <img src={`/images/icons/${dotHover ? 'vertical' : 'horizontal'}-dots.png`} alt={'dots'}/>
+                    <div className={`${dotHover ? 'rotate-90' : ''} duration-300 flex items-center justify-center`}>
+                      <svg width="19" height="3" viewBox="0 0 19 3" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11 1.5C11 0.671573 10.3284 0 9.5 0C8.67157 0 8 0.671573 8 1.5C8 2.32843 8.67157 3 9.5 3C10.3284 3 11 2.32843 11 1.5Z" fill={dotHover ? '#00F0EC' : '#969696'}/>
+                        <path d="M4 1.5C4 0.671573 3.32843 0 2.5 0C1.67157 0 1 0.671573 1 1.5C1 2.32843 1.67157 3 2.5 3C3.32843 3 4 2.32843 4 1.5Z" fill={dotHover ? '#00F0EC' : '#969696'}/>
+                        <path d="M18 1.5C18 0.671573 17.3284 0 16.5 0C15.6716 0 15 0.671573 15 1.5C15 2.32843 15.6716 3 16.5 3C17.3284 3 18 2.32843 18 1.5Z" fill={dotHover ? '#00F0EC' : '#969696'}/>
+                      </svg>
+                    </div>
                   </div>
                 </div>
                 :
@@ -345,6 +347,12 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
             {
               (!isOwner && isWhitelisted) &&
                 <>
+                  <div className={'flex items-center justify-between px-4 pt-2'}>
+                    <div className={'text-md text-secondary font-bold'}>
+                      {nft.token_id}
+                    </div>
+                    <img src={chainIcon} alt={'chainicon'} width={18} height={18} />
+                  </div>
                   <div className={'flex items-center px-2'}>
                     <div className={'p-1 mr-2'}>
                       <img src={'/images/icons/nftbox/star.svg'} alt={'star'} width={24} height={24}/>
@@ -367,8 +375,8 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                     </div>
                   </a>
                   <div className={'flex items-center px-2'}>
-                    <div className={'mr-2'}>
-                      <img src={'/images/icons/nftbox/creator_follow.svg'} alt={'star'} width={32} height={32}/>
+                    <div className={'mr-2 p-1'}>
+                      <img src={'/images/icons/nftbox/creator_follow.svg'} alt={'star'} width={24} height={24}/>
                     </div>
                     <span className={'text-primary-light text-md'}>follow creator</span>
                   </div>
@@ -378,7 +386,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                     </div>
                     <span className={'text-primary-light text-md'}>copy link</span>
                   </div>
-                  <div className={`flex items-center px-2 ${!isOwner && !isListed ? 'cursor-pointer' : ''}`}
+                  {/*<div className={`flex items-center px-2 ${!isOwner && !isListed ? 'cursor-pointer' : ''}`}
                     onClick={() => {
                       if (!isOwner && !isListed) {
                         openModal(ModalIDs.MODAL_BID, {
@@ -396,7 +404,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                       <img src={'/images/icons/nftbox/place_bid.svg'} alt={'star'} width={24} height={24}/>
                     </div>
                     <span className={'text-primary-light text-md'}>place a bid</span>
-                  </div>
+                  </div>*/}
                 </>
             }
           </div>
