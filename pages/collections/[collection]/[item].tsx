@@ -267,24 +267,22 @@ const Item: NextPage = () => {
                   </div>
                   <div className={'flex items-center justify-around mt-5'}>
                     <GreyButton text={'place bid'} className={'h-[32px]'} onClick={() => {
-                        openModal(ModalIDs.MODAL_BID, {
-                          nftImage: currentNFT.image,
-                          nftTitle: currentNFT.name,
-                          tradingInput,
-                          handleBidDlgClose: closeModal
-                        })
-                      }}
-                    />
+                      openModal(ModalIDs.MODAL_BID, {
+                        nftImage: currentNFT.image,
+                        nftTitle: currentNFT.name,
+                        tradingInput,
+                        handleBidDlgClose: closeModal
+                      })
+                    }}/>
                     <PrimaryButton text={'buy now'} className={'h-[30px]'} disabled={!currentNFT.price} onClick={() => {
-                        openModal(ModalIDs.MODAL_BUY, {
-                          nftImage: currentNFT.image,
-                          nftTitle: currentNFT.name,
-                          order,
-                          tradingInput,
-                          handleBuyDlgClose: closeModal
-                        })
-                      }}
-                    />
+                      openModal(ModalIDs.MODAL_BUY, {
+                        nftImage: currentNFT.image,
+                        nftTitle: currentNFT.name,
+                        order,
+                        tradingInput,
+                        handleBuyDlgClose: closeModal
+                      })
+                    }}/>
                   </div>
                 </div>
 

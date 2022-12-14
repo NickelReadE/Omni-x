@@ -77,7 +77,7 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
           }
         } else if (kind === 'eth' && nativeBalance?.formatted) {
           if (floorPrice <= (+nativeBalance.formatted))
-          return collection.floorNft[kind]
+            return collection.floorNft[kind]
         }
       }
     }
