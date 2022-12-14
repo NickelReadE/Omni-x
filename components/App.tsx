@@ -27,6 +27,7 @@ import { ModalProvider } from './providers/ModalProvider'
 import {TransferProvider} from './providers/TransferProvider'
 import '@rainbow-me/rainbowkit/styles.css'
 import 'react-toastify/dist/ReactToastify.css'
+import {MessageProvider} from './providers/MessageProvider'
 
 const supportedChains = supportChains()
 
@@ -73,21 +74,23 @@ function App({children}: AppProps) {
           <ToastContainer />
           <WalletProvider>
             <BridgeProvider>
-              <DataProvider>
-                <TransferProvider>
-                  <ProgressProvider>
-                    <ContractProvider>
-                      <DndContext>
-                        <SwitchedNetworkProvider>
-                          <ModalProvider>
-                            <Layout>{children}</Layout>
-                          </ModalProvider>
-                        </SwitchedNetworkProvider>
-                      </DndContext>
-                    </ContractProvider>
-                  </ProgressProvider>
-                </TransferProvider>
-              </DataProvider>
+              <MessageProvider>
+                <DataProvider>
+                  <TransferProvider>
+                    <ProgressProvider>
+                      <ContractProvider>
+                        <DndContext>
+                          <SwitchedNetworkProvider>
+                            <ModalProvider>
+                              <Layout>{children}</Layout>
+                            </ModalProvider>
+                          </SwitchedNetworkProvider>
+                        </DndContext>
+                      </ContractProvider>
+                    </ProgressProvider>
+                  </TransferProvider>
+                </DataProvider>
+              </MessageProvider>
             </BridgeProvider>
           </WalletProvider>
         </RainbowKitProvider>
