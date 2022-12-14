@@ -2,7 +2,7 @@ import type {NextPage} from 'next'
 import {useRouter} from 'next/router'
 import {ethers} from 'ethers'
 import React, {useState, useEffect, useCallback} from 'react'
-import {getAdvancedInstance, getCurrencyInstance} from '../../../utils/contracts'
+import {getAdvancedInstance, getGaslessONFT721Instance, getCurrencyInstance} from '../../../utils/contracts'
 import {toast} from 'react-toastify'
 import {Slide} from 'react-toastify'
 import useWallet from '../../../hooks/useWallet'
@@ -15,12 +15,15 @@ import DiscordIcon from '../../../public/images/icons/discord.svg'
 import {SkeletonCard} from '../../../components/skeleton/card'
 import {WhitelistCard} from '../../../components/launchpad/WhitelistCard'
 import {Logger} from 'ethers/lib/utils'
+import { isSupportGelato } from '../../../utils/constants'
+import { useGaslessMint } from '../../../hooks/useGelato'
 
 const Mint: NextPage = () => {
   const { chainId, signer, provider, address } = useWallet()
   const router = useRouter()
   const col_url = router.query.collection as string
   const { collectionInfo } = useCollection(col_url)
+  const { gaslessMint, waitForRelayTask } = useGaslessMint()
 
   const [totalNFTCount, setTotalNFTCount] = useState<number>(0)
   // const [nextTokenId, setNextTokenId] = useState<number>(0)
@@ -74,21 +77,28 @@ const Mint: NextPage = () => {
     if (chainId === undefined || !provider || !collectionInfo) {
       return
     }
-    const tokenContract = getAdvancedInstance(collectionInfo.address[chainId], chainId, signer)
 
     let tx
     setIsMinting(true)
     try {
-      if (collectionInfo && collectionInfo.is_gasless) {
+      if (collectionInfo && collectionInfo.is_gasless && address) {
+        const tokenContract = getGaslessONFT721Instance(collectionInfo.address[chainId], chainId, signer)
         const tokenAddress = await tokenContract.stableToken()
         const tokenInstance = getCurrencyInstance(tokenAddress, chainId, signer)
         if (tokenInstance) {
           const decimals = Number(await tokenInstance?.decimals())
           await tokenInstance.approve(collectionInfo.address[chainId], ethers.utils.parseUnits((price * quantity).toString(), decimals))
-          const tx = await tokenContract.publicMint(quantity)
-          await tx.wait()
+
+          if (isSupportGelato(chainId)) {
+            const response = await gaslessMint(tokenContract, chainId, quantity, address)
+            await waitForRelayTask(response)
+          } else {
+            const tx = await tokenContract.publicMint(quantity)
+            await tx.wait()
+          }
         }
       } else {
+        const tokenContract = getAdvancedInstance(collectionInfo.address[chainId], chainId, signer)
         tx = await tokenContract.publicMint(quantity, {value: ethers.utils.parseEther((price * quantity).toString())})
         await tx.wait()
       }
