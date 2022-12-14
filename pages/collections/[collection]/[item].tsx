@@ -69,8 +69,7 @@ const Item: NextPage = () => {
 
   // statistics hook
   const {
-    // order,
-    // isListed,
+    order,
     sortedBids,
     // highestBid,
     // highestBidCoin,
@@ -114,7 +113,7 @@ const Item: NextPage = () => {
       {currentNFT && collection &&
         <div className="w-full py-8">
           <div className="w-full 2xl:px-[10%] xl:px-[5%] lg:px-[2%] md:px-[2%] ">
-            <div className="grid grid-cols-2 2xl:gap-12 lg:gap-1 xl:gap-4">
+            <div className="grid grid-cols-2 2xl:gap-16 md:gap-12">
               <div className="col-span-1 h-full">
                 <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image"/>}>
                   <img
@@ -211,21 +210,6 @@ const Item: NextPage = () => {
                         )
                       })
                     }
-                    {/*<div className="grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 gap-4">
-                    {
-                        currentNFT && currentNFT.attributes && Object.entries(currentNFT.attributes).map((item: any, idx: number) => {
-                          const attrs = collection.attrs
-                          const attr = attrs[item[0]].values
-                          const trait = attr[(item[1] as string)]
-                          return <div className="px-5 py-2 bg-[#b444f926] border-2 border-[#B444F9] rounded-lg" key={idx}>
-                            <p className="text-[#B444F9] text-sm font-bold">{item[0]}</p>
-                            <div className="flex justify-start items-center mt-2">
-                              <p className="text-[#1E1C21] text-xg font-bold">{item[1]}<span className="ml-3 font-normal">[{trait ? trait[1] : 0}%]</span></p>
-                            </div>
-                          </div>
-                        })
-                    }
-                    </div>*/}
                   </div>
                 </div>
               </div>
@@ -277,13 +261,28 @@ const Item: NextPage = () => {
                   <div className={'flex items-center justify-between'}>
                     <div className={'text-secondary text-xl'}>current price</div>
                     <div className={'flex items-center'}>
-                      <div className={'text-primary-blue text-xxxl'}>{currentNFT.price}</div>
+                      <div className={'text-primary-blue text-xxxl'}>{currentNFT.price > 0 ? currentNFT.price : '--'}</div>
                       <img alt='chainIcon' src={chainIcon} className="ml-2 w-[32px] h-[32px]" />
                     </div>
                   </div>
                   <div className={'flex items-center justify-around mt-5'}>
-                    <GreyButton text={'place bid'} className={'h-[32px]'} />
-                    <PrimaryButton text={'buy now'} className={'h-[30px]'} />
+                    <GreyButton text={'place bid'} className={'h-[32px]'} onClick={() => {
+                      openModal(ModalIDs.MODAL_BID, {
+                        nftImage: currentNFT.image,
+                        nftTitle: currentNFT.name,
+                        tradingInput,
+                        handleBidDlgClose: closeModal
+                      })
+                    }}/>
+                    <PrimaryButton text={'buy now'} className={'h-[30px]'} disabled={!currentNFT.price} onClick={() => {
+                      openModal(ModalIDs.MODAL_BUY, {
+                        nftImage: currentNFT.image,
+                        nftTitle: currentNFT.name,
+                        order,
+                        tradingInput,
+                        handleBuyDlgClose: closeModal
+                      })
+                    }}/>
                   </div>
                 </div>
 
@@ -344,256 +343,6 @@ const Item: NextPage = () => {
                   </div>
                 </Accordion>
               </div>
-              {/*<div className="col-span-1">
-                <div className="px-6 py-3 bg-[#F6F8FC]">
-                  <div className='flex items-center'>
-                    <h1 className="text-[#1E1C21] text-[32px] font-extrabold mr-8">{collection.name}</h1>
-                    <div className='h-[22px]'><Image src={PngCheck} alt="checkpng"/></div>
-                  </div>
-                  <div className="flex justify-between items-center mt-5">
-                    <div className="flex items-center">
-                      <h1 className="text-[#1E1C21] text-xg1 font-medium">{currentNFT.token_id}</h1>
-                      <img alt='chainIcon' src={chainIcon} className="ml-4 w-[32px] h-[32px]" />
-                    </div>
-                    <button>
-                      <Image src={PngSub} alt="shareButton" onClick={onCopyToClipboard} />
-                    </button>
-                  </div>
-                </div>
-                <div className="grid 2xl:grid-cols-3 lg:grid-cols-[200px_1fr_1fr] xl:grid-cols-[230px_1fr_1fr] px-6 pt-3 mt-6 bg-[#F6F8FC] rounded-[2px]">
-                  <div className="">
-                    <div className="flex justify-start items-center">
-                      <h1 className="text-[#1E1C21] text-xg font-bold">owner:</h1>
-                      {currentNFT && currentNFT.owner && (
-                        <h1 className="flex justify-start items-center text-[#B444F9] text-xl font-normal underline ml-4 break-all lg:ml-1">
-                          <Link href={`/user/${currentNFT.owner}`}>
-                            {truncateAddress(currentNFT.owner)}
-                          </Link>
-                        </h1>
-                      )}
-                      <span className="relative group">
-                        <span
-                          className={[
-                            'whitespace-nowrap',
-                            'rounded',
-                            'bg-black',
-                            'px-2',
-                            'py-1',
-                            'text-white',
-                            'absolute',
-                            '-top-12',
-                            'left-1/2',
-                            '-translate-x-1/2',
-                            "before:content-['']",
-                            'before:absolute',
-                            'before:-translate-x-1/2',
-                            'before:left-1/2',
-                            'before:top-full',
-                            'before:border-4',
-                            'before:border-transparent',
-                            'before:border-t-black',
-                            'opacity-0',
-                            'group-hover:opacity-100',
-                            'transition',
-                            'pointer-events-none',
-                          ].join(' ')}
-                        >
-                          Send a direct message to owner via Blockscan Chat
-                        </span>
-                        <a href={`https://chat.blockscan.com/index?a=${currentNFT.owner}`} target="_blank" rel="noreferrer">
-                          <div className='w-[24px] h-[24px] ml-2 cursor-pointer'>
-                            <svg viewBox="0 0 32 32" focusable="false" className="chakra-icon css-1sdtgly" aria-hidden="true">
-                              <path d="M24 10H8V12H24V10Z" fill="#000"></path>
-                              <path d="M18 16H8V18H18V16Z" fill="#000"></path>
-                              <path fillRule="evenodd" clipRule="evenodd" d="M17.74 30L21.16 24H26C28.2091 24 30 22.2091 30 20V8C30 5.79086 28.2091 4 26 4H6C3.79086 4 2 5.79086 2 8V20C2 22.2091 3.79086 24 6 24H14V30H17.74ZM16 28V22H6C4.89543 22 4 21.1046 4 20V8C4 6.89543 4.89543 6 6 6H26C27.1046 6 28 6.89543 28 8V20C28 21.1046 27.1046 22 26 22H20L16.5714 28H16Z" fill="#000"></path>
-                            </svg>
-                          </div>
-                        </a>
-                      </span>
-                    </div>
-                    <div className="mt-6">
-                      {currentNFT && currentNFT.price > 0 && (
-                        <>
-                          <div className="relative group flex justify-between items-center max-w-[100%]">
-                            <span
-                              className={[
-                                'whitespace-nowrap',
-                                'rounded',
-                                'bg-black',
-                                'px-2',
-                                'py-1',
-                                'text-white',
-                                'absolute',
-                                '-top-12',
-                                'left-1/2',
-                                '-translate-x-1/2',
-                                "before:content-['']",
-                                'before:absolute',
-                                'before:-translate-x-1/2',
-                                'before:left-1/2',
-                                'before:top-full',
-                                'before:border-4',
-                                'before:border-transparent',
-                                'before:border-t-black',
-                                'opacity-0',
-                                'group-hover:opacity-100',
-                                'transition',
-                                'pointer-events-none',
-                              ].join(' ')}
-                            >
-                              {numberLocalize(Number(formattedPrice))}
-                            </span>
-                            <h1 className="overflow-hidden text-ellipsis text-[#1E1C21] text-[60px] font-normal">
-                              {numberLocalize(Number(formattedPrice))}
-                            </h1>
-                            <div className="mr-5 w-[30px]">
-                              {currencyIcon &&
-                                <img
-                                  src={`${currencyIcon}`}
-                                  className='mr-[8px] w-[21px]'
-                                  alt="icon"
-                                />
-                              }
-                            </div>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                    <div className="mb-3">
-                      <span className='font-normal font-[16px]'>
-                        {formattedPrice && formattedPrice > 0 ? `$${numberLocalize(Number(formattedPrice))}` : ''}
-                      </span>
-                      <div className="flex justify-start items-center mt-5">
-                        <h1 className="mr-3 font-bold">
-                          Highest Bid: <span className="font-bold">{highestBid != 0 && numberLocalize(Number(highestBid))}</span>
-                        </h1>
-                        {highestBidCoin && <Image src={highestBidCoin} width={15} height={16} alt="chain  logo" />}
-                      </div>
-                      <div className="flex justify-start items-center">
-                        <h1 className="mr-3 font-bold">
-                          Last Sale: <span className="font-bold">{lastSale != 0 && numberLocalize(Number(lastSale))}</span>
-                        </h1>
-                        {lastSaleCoin && <Image src={lastSaleCoin} width={15} height={16} alt="chain logo" />}
-                      </div>
-                    </div>
-                  </div>
-                  <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD] h-[250px] overflow-y-auto'>
-                    <div className="overflow-x-hidden overflow-y-auto grid 2xl:grid-cols-[30%_25%_25%_20%] lg:grid-cols-[30%_18%_32%_20%] xl:grid-cols-[30%_18%_32%_20%]">
-                      <div className="font-bold text-xg text-[#000000]">account</div>
-                      <div className="font-bold text-xg text-[#000000]">chain</div>
-                      <div className="font-bold text-xg text-[#000000]">bid</div>
-                      <div></div>
-                      {
-                        sortedBids?.map((item: any, index: number) => {
-                          return (
-                            <Fragment key={index}>
-                              <div className='flex justify-start items-center break-all mt-3 text-lg font-bold'>{truncateAddress(item.signer)}</div>
-                              <div className="flex justify-start items-center text-center mt-3">
-                                <img
-                                  src={getChainIconById(item.chain_id.toString())}
-                                  className='mr-[8px] w-[21px]'
-                                  alt="icon"
-                                />
-                              </div>
-                              <div className='flex justify-start items-center mt-3'>
-                                <img
-                                  src={getCurrencyIconByAddress(item.currency)}
-                                  width={21}
-                                  height={21}
-                                  alt="icon"
-                                  className="mr-5"
-                                />
-                                <p className='ml-3'>${item && item.price}</p>
-                              </div>
-                              <div className='text-right mt-3'>
-                                {currentNFT?.owner?.toLowerCase() == address?.toLowerCase() &&
-                                  <button className='bg-[#ADB5BD] hover:bg-[#38B000] rounded-[4px] text-md text-[#fff] py-px px-2.5'
-                                    onClick={() => {
-                                      openModal(ModalIDs.MODAL_ACCEPT, {
-                                        nftImage: currentNFT.image,
-                                        nftTitle: currentNFT.name,
-                                        bidOrder: item.order_data,
-                                        tradingInput,
-                                        handleAcceptDlgClose: closeModal
-                                      })
-                                    }}>
-                                    accept
-                                  </button>
-                                }
-                              </div>
-                            </Fragment>
-                          )
-                        })
-                      }
-                    </div>
-                  </div>
-                </div>
-                <div className="grid 2xl:grid-cols-3 lg:grid-cols-[200px_1fr_1fr] xl:grid-cols-[230px_1fr_1fr] px-6 pb-3  bg-[#F6F8FC] rounded-[2px]">
-                  <div className="">
-                    <div className="mb-3">
-                      <div className="">
-                        {
-                          isListed && currentNFT?.owner?.toLowerCase() != address?.toLowerCase() &&
-                            <button
-                              className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular Std'] font-semibold text-xg rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]"
-                              onClick={() => {setOpenBuyDlg(true)}}
-                              className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]"
-                              onClick={() => {
-                                openModal(ModalIDs.MODAL_BUY, {
-                                  nftImage: currentNFT.image,
-                                  nftTitle: currentNFT.name,
-                                  order,
-                                  tradingInput,
-                                  handleBuyDlgClose: closeModal
-                                })
-                              }}
-                            >
-                              buy
-                            </button>
-                        }
-                        {
-                          currentNFT?.owner?.toLowerCase() == address?.toLowerCase() &&
-                            <button
-                              className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular Std'] font-semibold text-xg rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]"
-                              onClick={() => {setOpenSellDlg(true)}}
-                              className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#B00000] hover:border-[#B00000]"
-                              onClick={() => {
-                                openModal(ModalIDs.MODAL_LISTING, {
-                                  nftImage: currentNFT.image,
-                                  nftTitle: currentNFT.name,
-                                  tradingInput,
-                                  handleSellDlgClose: closeModal
-                                })
-                              }}
-                            >
-                              sell
-                            </button>
-                        }
-                      </div>
-                    </div>
-                  </div>
-                  <div className='2xl:pl-[58px] lg:pl-[10px] xl:pl-[30px] col-span-2 border-l-[1px] border-[#ADB5BD]'>
-                    {
-                      currentNFT?.owner && address && currentNFT?.owner.toLowerCase() != address.toLowerCase() &&
-                        <button
-                          className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-xg rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]"
-                          onClick={() => { setOpenBidDlg(true) }}
-                          className="w-[95px] h-[35px] mt-6 mr-5 px-5 bg-[#ADB5BD] text-[#FFFFFF] font-['Circular   Std'] font-semibold text-[18px] rounded-[4px] border-2 border-[#ADB5BD] hover:bg-[#38B000] hover:border-[#38B000]"
-                          onClick={() => {
-                            openModal(ModalIDs.MODAL_BID, {
-                              nftImage: currentNFT.image,
-                              nftTitle: currentNFT.name,
-                              tradingInput,
-                              handleBidDlgClose: closeModal
-                            })
-                          }}
-                        >
-                          bid
-                        </button>
-                    }
-                  </div>
-                </div>
-              </div>*/}
             </div>
           </div>
         </div>

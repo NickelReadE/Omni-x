@@ -467,3 +467,18 @@ export const supportChains = () => {
   })
   return allChains.filter((chain) => chain !== null) as Chain[]
 }
+
+export const GELATO_SUPPORT_CHAINS = {
+  [CHAIN_IDS[CHAIN_TYPE.GOERLI]]: true,
+  [CHAIN_IDS[CHAIN_TYPE.BSC_TESTNET]]: false,
+  [CHAIN_IDS[CHAIN_TYPE.MUMBAI]]: true,
+  [CHAIN_IDS[CHAIN_TYPE.FUJI_TESTNET]]: false,
+  [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: true,
+  [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: false,
+  [CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET]]: false,
+  [CHAIN_IDS[CHAIN_TYPE.MOONBEAM_ALPHA]]: false
+}
+
+export const isSupportGelato = (chainId: number) => {
+  return (GELATO_SUPPORT_CHAINS as any)[chainId] || false
+}
