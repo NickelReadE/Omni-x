@@ -3,7 +3,7 @@ import {Transition} from '@headlessui/react'
 import useMessage from '../../hooks/useMessage'
 
 export const MessageBar = () => {
-  const [query, setQuery] = useState('')
+  const [, setQuery] = useState('')
 
   const { opened, activeRoomId, openMessage, closeMessage } = useMessage()
 

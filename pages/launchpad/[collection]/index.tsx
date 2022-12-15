@@ -60,6 +60,7 @@ const Mint: NextPage = () => {
 
         let decimals = 18
         if (collectionInfo.is_gasless) {
+          const tokenContract = getGaslessONFT721Instance(collectionInfo.address[chainId], chainId, signer)
           const tokenAddress = await tokenContract.stableToken()
           const tokenInstance = getCurrencyInstance(tokenAddress, chainId, signer)
           decimals = Number(await tokenInstance?.decimals())
@@ -67,7 +68,7 @@ const Mint: NextPage = () => {
         const priceT = await tokenContract.price()
         setPrice(parseFloat(ethers.utils.formatUnits(priceT, decimals)))
         const max_mint = await tokenContract.maxMintId()
-        const nextId = await tokenContract.nextMintId()
+        // const nextId = await tokenContract.nextMintId()
         setTotalNFTCount(max_mint.toNumber())
         // setNextTokenId(nextId.toNumber())
       }
@@ -80,7 +81,6 @@ const Mint: NextPage = () => {
     if (chainId === undefined || !provider || !collectionInfo) {
       return
     }
-    const tokenContract = getAdvancedONFT721Instance(collectionInfo?.address[chainId], chainId, signer)
 
     let tx
     setIsMinting(true)

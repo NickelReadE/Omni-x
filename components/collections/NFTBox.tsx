@@ -245,7 +245,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                     <PrimaryButton text={'send'} className={'px-[23px]'} onClick={onTransfer} />
                   }
                   <div className={'w-8 h-8 flex items-center justify-center cursor-pointer'}
-                       onClick={() => setDotHover(!dotHover)}>
+                    onClick={() => setDotHover(!dotHover)}>
                     <div className={`${dotHover ? 'rotate-90' : ''} duration-300 flex items-center justify-center`}>
                       <svg width="19" height="3" viewBox="0 0 19 3" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M11 1.5C11 0.671573 10.3284 0 9.5 0C8.67157 0 8 0.671573 8 1.5C8 2.32843 8.67157 3 9.5 3C10.3284 3 11 2.32843 11 1.5Z" fill={dotHover ? '#00F0EC' : '#969696'}/>
@@ -301,8 +301,8 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           <div
             className={'absolute w-full left-0 right-0 top-0 bg-[#202020] rounded-tr rounded-tl grid grid-rows-6 grid-flow-col gap-1'}
             style={{height: 'calc(100% - 60px)'}} onMouseLeave={() => {
-            setDotHover(false)
-          }}>
+              setDotHover(false)
+            }}>
             {
               (isOwner && isWhitelisted) &&
               <>
@@ -366,7 +366,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                   <span className={'text-primary-light text-md'}>fullscreen view</span>
                 </div>
                 <a href={`https://chat.blockscan.com/index?a=${nft.owner}`} target="_blank" rel="noreferrer"
-                   className={'flex items-center px-2'}>
+                  className={'flex items-center px-2'}>
                   <div className={'flex items-center'}>
                     <div className={'p-1 mr-2'}>
                       <img src={'/images/icons/nftbox/chat.svg'} alt={'star'} width={24} height={24}/>
@@ -410,7 +410,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           </div>
         </Transition>
         <NFTBoxFullscreenDialog open={isFullscreenView} nftImage={image}
-                                closeModal={() => setIsFullscreenView(false)}/>
+          closeModal={() => setIsFullscreenView(false)}/>
       </div>
 
       <ConfirmTransfer
