@@ -2,8 +2,10 @@ import type {NextPage} from 'next'
 import {useRouter} from 'next/router'
 import {ethers} from 'ethers'
 import React, {useState, useEffect, useCallback} from 'react'
-import {getAdvancedInstance, getGaslessONFT721Instance, getCurrencyInstance} from '../../../utils/contracts'
-import {toast} from 'react-toastify'
+import {useDispatch, useSelector} from 'react-redux'
+import {getAdvancedONFT721Instance, getGaslessONFT721Instance, getUSDCInstance} from '../../../utils/contracts'
+import {ToastContainer, toast} from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import {Slide} from 'react-toastify'
 import useWallet from '../../../hooks/useWallet'
 import useCollection from '../../../hooks/useCollection'
@@ -22,17 +24,19 @@ const Mint: NextPage = () => {
   const { chainId, signer, provider, address } = useWallet()
   const router = useRouter()
   const col_url = router.query.collection as string
-  const { collectionInfo } = useCollection(col_url)
-  const { gaslessMint, waitForRelayTask } = useGaslessMint()
-
+  const dispatch = useDispatch()
+  const [toChain] = useState<string>('1')
+  const [mintNum, setMintNum] = useState<number>(1)
   const [totalNFTCount, setTotalNFTCount] = useState<number>(0)
-  // const [nextTokenId, setNextTokenId] = useState<number>(0)
+  const [nextTokenId, setNextTokenId] = useState<number>(0)
+  const [transferNFT] = useState<number>(0)
   const [isMinting, setIsMinting] = useState<boolean>(false)
+  const [isSwitchingNetwork] = useState<boolean>(false)
   const [price, setPrice] = useState(0)
   const [startId, setStartId] = useState(0)
   const [totalCnt, setTotalCnt] = useState(0)
-  // const [mintedCnt, setMintedCnt] = useState(0)
-  const [selectedTab, setSelectedTab] = useState(0)
+  const [mintedCnt, setMintedCnt] = useState(0)
+  const { gaslessMint, waitForRelayTask } = useGaslessMint()
 
   const activeClasses = (index: number) => {
     return index === selectedTab ? 'bg-primary-gradient': 'bg-secondary'
@@ -52,7 +56,7 @@ const Mint: NextPage = () => {
   const getInfo = useCallback(async (): Promise<void> => {
     try {
       if (collectionInfo && signer && chainId) {
-        const tokenContract = getAdvancedInstance(collectionInfo.address[chainId], chainId, signer)
+        const tokenContract = getAdvancedONFT721Instance(collectionInfo.address[chainId], (chainId), signer)
         setStartId(Number(collectionInfo.start_ids[chainId]))
 
         let decimals = 18
@@ -64,9 +68,9 @@ const Mint: NextPage = () => {
         const priceT = await tokenContract.price()
         setPrice(parseFloat(ethers.utils.formatUnits(priceT, decimals)))
         const max_mint = await tokenContract.maxMintId()
-        // const nextId = await tokenContract.nextMintId()
-        setTotalNFTCount(Number(max_mint))
-        // setNextTokenId(Number(nextId))
+        const nextId = await tokenContract.nextMintId()
+        setTotalNFTCount(max_mint.toNumber())
+        // setNextTokenId(nextId.toNumber())
       }
     } catch (error) {
       console.log(error)
@@ -77,6 +81,7 @@ const Mint: NextPage = () => {
     if (chainId === undefined || !provider || !collectionInfo) {
       return
     }
+    const tokenContract = getAdvancedONFT721Instance(collectionInfo?.address[chainId], chainId, signer)
 
     let tx
     setIsMinting(true)
@@ -116,7 +121,6 @@ const Mint: NextPage = () => {
           errorToast('your address is not whitelisted on ' + provider?._network.name)
         }
       }
-    } finally {
       setIsMinting(false)
     }
   }

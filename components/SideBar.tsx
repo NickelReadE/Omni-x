@@ -150,6 +150,9 @@ const SideBar: React.FC = () => {
               setImage('/images/omnix_logo_black_1.png')
             }
           }
+          else {
+            setImage(selectedItem && selectedItem.image ? selectedItem.image : '/images/omnix_logo_black_1.png')
+          }
         }
       }
       setDragEnd(true)
@@ -216,9 +219,11 @@ const SideBar: React.FC = () => {
       } else {
         gasFee = await estimateGasFee(selectedNFTItem, chainId, targetChain)
       }
+
       if (nativeBalance?.value.lt(gasFee)) {
         return dispatch(openSnackBar( { message: 'Insufficient balance', status: 'warning' }))
       }
+
       setEstimatedFee(gasFee)
       setConfirmTransfer(true)
     } catch (e) {

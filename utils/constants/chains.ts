@@ -25,7 +25,7 @@ export const CHAIN_IDS = {
   [CHAIN_TYPE.OPT_TESTNET]: 420,
   [CHAIN_TYPE.ARB_TESTNET]: 421613,
   [CHAIN_TYPE.FANTOM_TESTNET]: 4002,
-  [CHAIN_TYPE.MOONBEAM_ALPHA]: 1287,
+  [CHAIN_TYPE.MOONBEAM_TESTNET]: 1287,
 
   [CHAIN_TYPE.ETHEREUM]: 1,
   [CHAIN_TYPE.BINANCE]: 56,
@@ -36,6 +36,7 @@ export const CHAIN_IDS = {
   [CHAIN_TYPE.FANTOM]: 250,
 
   [CHAIN_TYPE.APTOS]: 2222,
+  [CHAIN_TYPE.MOONBEAM]: 1287,
 }
 
 export const CHAIN_NAMES = {
@@ -46,7 +47,7 @@ export const CHAIN_NAMES = {
   [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: CHAIN_TYPE.OPT_TESTNET,
   [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: CHAIN_TYPE.ARB_TESTNET,
   [CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET]]: CHAIN_TYPE.FANTOM_TESTNET,
-  [CHAIN_IDS[CHAIN_TYPE.MOONBEAM_ALPHA]]: CHAIN_TYPE.MOONBEAM_ALPHA,
+  [CHAIN_IDS[CHAIN_TYPE.MOONBEAM_TESTNET]]: CHAIN_TYPE.MOONBEAM_TESTNET,
 
   [CHAIN_IDS[CHAIN_TYPE.ETHEREUM]]: CHAIN_TYPE.ETHEREUM,
   [CHAIN_IDS[CHAIN_TYPE.BINANCE]]: CHAIN_TYPE.BINANCE,
@@ -75,7 +76,7 @@ export const RPC_PROVIDERS: { [key: number]: string } = {
   [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: 'https://arb-goerli.g.alchemy.com/v2/Agc4K6fFfxXQ1s3QG69kj1CB6nu',
   [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: 'https://rpc.ankr.com/optimism_testnet',
   [CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET]]: 'https://rpc.testnet.fantom.network',
-  [CHAIN_IDS[CHAIN_TYPE.MOONBEAM_ALPHA]]: 'https://rpc.testnet.moonbeam.network'
+  [CHAIN_IDS[CHAIN_TYPE.MOONBEAM_TESTNET]]: 'https://rpc.testnet.moonbeam.network'
 }
 
 export const SUPPORTED_CHAIN_IDS = [
@@ -86,8 +87,8 @@ export const SUPPORTED_CHAIN_IDS = [
   CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET],
   CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET],
   CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET],
-  CHAIN_IDS[CHAIN_TYPE.MOONBEAM_ALPHA],
-  // CHAIN_IDS[CHAIN_TYPE.APTOS],
+  CHAIN_IDS[CHAIN_TYPE.MOONBEAM_TESTNET],
+  CHAIN_IDS[CHAIN_TYPE.APTOS],
 ]
 
 export const GAS_SUPPORTED_CHAIN_IDS = [
@@ -239,11 +240,11 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
     officialName: 'Fantom',
     currency: 'FTM'
   },
-  [CHAIN_IDS[CHAIN_TYPE.MOONBEAM_ALPHA]]: {
-    name: 'moonbeam-alpha',
-    logo: '/svgs/fantom.svg',
-    roundedLogo: '/images/chain/moonbeam.png',
-    explorerLogo: '/images/fantomExplorer.png',
+  [CHAIN_IDS[CHAIN_TYPE.MOONBEAM_TESTNET]]: {
+    name: 'moonbeam-testnet',
+    logo: '/svgs/moonbeam.png',
+    roundedLogo: '/images/roundedColoMoonbeam.png',
+    explorerLogo: '/images/moonbeamExplorer.png',
     darkIcon: '/images/chain/fantom_dark.svg',
     officialName: 'Moonbeam',
     currency: 'DEV'
@@ -281,13 +282,14 @@ export const chain_list: { [key: string]: number } = {
   'optimism-kovan': 69,
   'optimism-goerli': 420,
   'fantom-testnet': 4002,
+  'moonbeam-testnet': 1287,
 }
 
 export const getChainIdFromName = (name: string): number => {
   return chain_list[name]
 }
 
-export const supportChainIDs = [5, 80001, 43113, 421613, 420, 4002, 97]
+export const supportChainIDs = [5, 80001, 43113, 421613, 420, 4002, 97, 1287]
 
 export const chain_list_: { [key: number]: string } = {
   1: 'eth ',
@@ -306,7 +308,8 @@ export const chain_list_: { [key: number]: string } = {
   69: 'optimism-kovan',
   4002: 'fantom-testnet',
   420: 'optimism-goerli',
-  421613: 'arbitrum-goerli'
+  421613: 'arbitrum-goerli',
+  1287: 'moonbeam-testnet'
 }
 
 

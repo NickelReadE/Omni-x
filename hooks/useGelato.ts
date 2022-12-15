@@ -65,7 +65,7 @@ export const useGelato = (): GelatoType => {
         }, 10000)
       })
     }
-    
+
     console.log('waiting relay task: ', relayTaskUrl)
     for (;;) {
       const taskState = await fetchTaskState()

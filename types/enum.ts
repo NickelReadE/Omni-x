@@ -11,6 +11,7 @@ export enum ChainIds {
     OPTIMISM = 420,
     FANTOM = 4002,
     APTOS = 2222,    // should be fixed later
+    MOONBEAM = 1287,
 }
 
 export enum CHAIN_TYPE {
@@ -21,7 +22,7 @@ export enum CHAIN_TYPE {
     OPT_TESTNET = 'optimism',
     ARB_TESTNET = 'arbitrum',
     FANTOM_TESTNET = 'fantom-testnet',
-    MOONBEAM_ALPHA = 'moonbeam-alpha',
+    MOONBEAM_TESTNET = 'moonbeam-testnet',
 
     ETHEREUM = 'ethereum',
     BINANCE = 'binance',
@@ -31,7 +32,8 @@ export enum CHAIN_TYPE {
     OPTIMISM = 'optimism-mainnet',
     FANTOM = 'fantom',
 
-    APTOS = 'aptos'
+    APTOS = 'aptos',
+    MOONBEAM = 'moonbeam',
 }
 
 export enum SaleType {
