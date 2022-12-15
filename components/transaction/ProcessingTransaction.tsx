@@ -72,7 +72,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
           onMouseEnter={() => onHover('sender')}
           onMouseLeave={() => onLeave('sender')}
           src={hovered ? getChainIcons(txInfo.senderChainId).explorer : getChainIcons(txInfo.senderChainId).icon}
-          style={{ cursor: (hovered) ? 'pointer' : 'auto' }}
+          style={{ cursor: (hovered) ? 'pointer' : 'auto', opacity: (txInfo && txInfo.txHash) ? 1 : 0.4 }}
           alt="chain icon"
           width={18}
           height={18}

@@ -104,7 +104,19 @@ export const MessageBar = () => {
 
             {/*Message contents*/}
             <div className={'pb-4 px-4'}>
-              <div className={'flex bg-[#202020] rounded-[30px] py-2 px-6 h-[40px] w-full items-center'}>
+              <div className={'flex flex-col space-y-3'}>
+                <div className={'flex justify-start'}>
+                  <div className={'bg-primary-gradient rounded-[30px] py-2 px-4'}>
+                    yo whats good my dude
+                  </div>
+                </div>
+                <div className={'flex justify-end'}>
+                  <div className={'bg-secondary rounded-[30px] py-2 px-4'}>
+                    not much, makin art
+                  </div>
+                </div>
+              </div>
+              <div className={'flex bg-[#202020] rounded-[30px] mt-3 py-2 px-6 h-[40px] w-full items-center'}>
                 <input
                   type="text"
                   placeholder='...'

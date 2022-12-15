@@ -1,13 +1,13 @@
-import {CollectionType} from '../../hooks/useCollection'
 import React, {useEffect, useMemo, useState} from 'react'
-import {truncateAddress} from '../../utils/utils'
+import {CollectionType} from '../../hooks/useCollection'
 import useWallet from '../../hooks/useWallet'
 import {ExternalLink} from '../basic'
+import {PrimaryButton} from '../common/buttons/PrimaryButton'
 import WebsiteIcon from '../../public/images/icons/website.svg'
 import TwitterIcon from '../../public/images/icons/twitter.svg'
 import DiscordIcon from '../../public/images/icons/discord.svg'
 import TelegramIcon from '../../public/images/icons/telegram.svg'
-import {PrimaryButton} from '../common/buttons/PrimaryButton'
+import {truncateAddress} from '../../utils/utils'
 import {getRoyalty} from '../../utils/helpers'
 
 interface CollectionBannerProps {

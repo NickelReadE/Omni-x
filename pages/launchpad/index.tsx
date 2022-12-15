@@ -5,6 +5,7 @@ import NftForLaunch from '../../components/NftForLaunch'
 import useLaunchPad, { LaunchPadType } from '../../hooks/useLaunchPad'
 import Loading from '../../public/images/loading_f.gif'
 import {FeaturedCard} from '../../components/launchpad/FeaturedCard'
+import {SkeletonCard} from '../../components/skeleton/card'
 
 const Launchpad: NextPage = () => {
   const { loading, collectionsForComing, collectionsFeatured } = useLaunchPad()
@@ -37,7 +38,7 @@ const Launchpad: NextPage = () => {
           Featured Launches
         </div>
       </div>
-        
+
       <div className={'mt-8 w-full'}>
         <div className={'flex space-x-8'}>
           {
@@ -49,13 +50,12 @@ const Launchpad: NextPage = () => {
           }
         </div>
       </div>
+      {loading &&
+        <SkeletonCard/>
+      }
       <div className="mt-12">
         {
-          loading &&
-          <Image src={Loading} alt="Loading..." width="80px" height="80px"/>
-        }
-        {
-          collectionsForComing.length > 0 &&
+          !loading && collectionsForComing.length > 0 &&
           <div className="">
             <p className="font-bold text-xl2 mb-[24px]">
               Upcoming Launches

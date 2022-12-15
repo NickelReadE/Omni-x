@@ -68,7 +68,7 @@ export const WhitelistCard = ({ title, price, maxLimit, limitPerWallet, startTim
                   }>-</span>
                   <span className={'text-primary-light text-xg1'}>{quantity}</span>
                   <span className={'bg-chain-80001 rounded-full w-6 h-6 flex items-center justify-center text-primary-light text-xxl cursor-pointer'} onClick={() => {
-                    if (quantity < 5) setQuantity(quantity + 1)}
+                    if (quantity < limitPerWallet) setQuantity(quantity + 1)}
                   }>+</span>
                 </div>
               }

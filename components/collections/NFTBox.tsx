@@ -184,9 +184,9 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
               <div className={'relative w-5 h-5'}>
                 <img src={'/images/icons/nftbox/heart.svg'} alt={'heart'}/>
               </div>
-              <span className='text-md text-like'>
-              24
-              </span>
+              {/*<span className='text-md text-like'>
+                24
+              </span>*/}
             </div>
             <div className={`absolute w-8 h-8 top-3 right-3 ${boxHovered ? 'block' : 'hidden'}`}>
               <img src={'/images/icons/nftbox/plus_circle_default.svg'} alt={'circle'} />
