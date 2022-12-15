@@ -247,33 +247,13 @@ const Mint: NextPage = () => {
                     <div className={'text-primary-light text-lg ml-2 text-shadow-sm2'}>{totalCnt}</div>
                   </div>
 
-                  <WhitelistCard title={'whitelist 1'} price={0.08} mintStatus={''} maxLimit={2000} limitPerWallet={1} active={false} isMinting={isMinting} mint={mint} gasless={collectionInfo.is_gasless} />
-                  <WhitelistCard title={'whitelist 2'} price={0.10} mintStatus={''} maxLimit={2000} limitPerWallet={1} active={false} isMinting={isMinting} mint={mint} gasless={collectionInfo.is_gasless} />
-                  <WhitelistCard title={'public mint'} price={price} mintStatus={'public'} maxLimit={0} limitPerWallet={5} active={true} isMinting={isMinting} mint={mint} gasless={collectionInfo.is_gasless} />
-                  {/*<div className={mintstyles.mintDataGrid}>
-              <div className={mintstyles.mintDataWrap}>
-                <h5>minted</h5>
-                <span>{mintedCnt > 0 ? mintedCnt : 0}/{totalCnt > 0 ? totalCnt : 0}</span>
-              </div>
-              <span className={mintstyles.line}></span>
-              <div className={mintstyles.mintDataWrap}>
-                <h5>price</h5>
-                <div className="flex flex-row space-x-2 items-center mt-[15px]">
-                  <div className="text-xg1 ">
-                    {(price * mintNum).toFixed(2)}
-                  </div>
-                </div>
-              </div>
-              <span className={mintstyles.line}></span>
-              <div className={mintstyles.mintDataWrap}>
-                <h5>quantity</h5>
-                <div className={mintstyles.counterWrap}>
-                  <button onClick={() => decrease()}><Image src={MinusSign} alt="minus"></Image></button>
-                  <span>{mintNum}</span>
-                  <button onClick={() => increase()}><Image src={PlusSign} alt="plus"></Image></button>
-                </div>
-              </div>
-            </div>*/}
+                  {
+                    collectionInfo.whitelist_infos.map((whitelistInfo, index) => {
+                      return (
+                        <WhitelistCard key={index} title={whitelistInfo.title} price={whitelistInfo.price} maxLimit={whitelistInfo.maxLimit} limitPerWallet={whitelistInfo.limitPerWallet} startTimestamp={whitelistInfo.startTimestamp} endTimestamp={whitelistInfo.endTimestamp} isMinting={isMinting} gasless={collectionInfo.is_gasless} mint={mint} />
+                      )
+                    })
+                  }
                 </div>
               </div>
             </div>

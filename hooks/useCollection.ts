@@ -27,6 +27,7 @@ export type CollectionType = {
     attrs: any,
     bid_datas: any[],
     bid_orders: IOrder[],
+    whitelist_infos: any[],
     floorNft: {
       eth?: any,
       usd?: any,

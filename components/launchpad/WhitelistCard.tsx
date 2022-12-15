@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useMemo, useState} from 'react'
 import {chainInfos, isSupportGelato} from '../../utils/constants'
 import {ChainIds} from '../../types/enum'
 import {PrimaryButton} from '../common/buttons/PrimaryButton'
@@ -8,18 +8,28 @@ import {GreyButton} from '../common/buttons/GreyButton'
 interface IWhitelistCardProps {
     title: string,
     price: number,
-    mintStatus: string,
     maxLimit: number,
     limitPerWallet: number,
-    active: boolean,
+    startTimestamp: number,
+    endTimestamp: number,
     isMinting: boolean,
     gasless: boolean,
     mint: (quantity: number) => void
 }
 
-export const WhitelistCard = ({ title, price, mintStatus, maxLimit, limitPerWallet, active, isMinting, gasless, mint }: IWhitelistCardProps) => {
+export const WhitelistCard = ({ title, price, maxLimit, limitPerWallet, startTimestamp, endTimestamp, isMinting, gasless, mint }: IWhitelistCardProps) => {
   const { chainId } = useWallet()
   const [quantity, setQuantity] = useState(1)
+
+  const active = useMemo(() => {
+    const now = new Date().getTime() / 1000
+    return now >= startTimestamp && now <= endTimestamp
+  }, [startTimestamp, endTimestamp])
+
+  const comingSoon = useMemo(() => {
+    const now = new Date().getTime() / 1000
+    return now < startTimestamp
+  }, [startTimestamp])
 
   return (
     <div className={'flex flex-col mt-4'}>
@@ -27,7 +37,7 @@ export const WhitelistCard = ({ title, price, mintStatus, maxLimit, limitPerWall
         <div className={'flex flex-col py-2 px-3 rounded-[8px] bg-primary'}>
           <div className={'flex justify-between'}>
             <div className={'text-secondary text-xl text-shadow-sm2'}>{title}</div>
-            <div className={`text-xl text-shadow-sm2 ${active ? 'bg-clip-text text-transparent bg-primary-gradient' : (mintStatus === 'public' ? 'text-dark-red' : 'text-secondary')} font-medium`}>
+            <div className={`text-xl text-shadow-sm2 ${active ? (comingSoon ? 'text-dark-red' : 'bg-clip-text text-transparent bg-primary-gradient') : 'text-secondary'} font-medium`}>
               {active ? 'live' : 'ENDED'}
             </div>
           </div>
@@ -68,7 +78,7 @@ export const WhitelistCard = ({ title, price, mintStatus, maxLimit, limitPerWall
                 ?
                 <PrimaryButton text={(gasless && chainId && isSupportGelato(chainId)) ? 'gasless mint' : 'mint'} className={'px-6'} loading={isMinting} parentClassName={'h-[32px]'} onClick={() => mint(quantity)}/>
                 :
-                <GreyButton text={'mint'} className={'px-6 h-[32px]'} />
+                <GreyButton text={'mint'} className={'px-6 h-[32px]'} disabled={true} />
             }
           </div>
           <div
