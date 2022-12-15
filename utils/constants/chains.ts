@@ -479,7 +479,7 @@ export const GELATO_SUPPORT_CHAINS = {
   [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: true,
   [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: false,
   [CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET]]: false,
-  [CHAIN_IDS[CHAIN_TYPE.MOONBEAM_ALPHA]]: false
+  [CHAIN_IDS[CHAIN_TYPE.MOONBEAM_TESTNET]]: false
 }
 
 export const isSupportGelato = (chainId: number) => {

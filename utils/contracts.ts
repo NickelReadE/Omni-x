@@ -56,10 +56,6 @@ export const getAdvancedONFT721Instance = (contractAddress: string, chainId: num
   return getContractInstanceByAddr(contractAddress, AdvancedONFT721, chainId, signer)
 }
 
-export const getGaslessONFT721Instance = (contractAddress: string, chainId: number, signer: any) => {
-  return getContractInstanceByAddr(contractAddress, AdvancedONFT721Gasless, chainId, signer)
-}
-
 export const getERC1155Instance = (contractAddress: string, chainId: number, signer: any) => {
   return getContractInstanceByAddr(contractAddress, ERC1155ABI, chainId, signer)
 }

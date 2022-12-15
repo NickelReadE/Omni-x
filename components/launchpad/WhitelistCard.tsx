@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {chainInfos} from '../../utils/constants'
+import {chainInfos, isSupportGelato} from '../../utils/constants'
 import {ChainIds} from '../../types/enum'
 import {PrimaryButton} from '../common/buttons/PrimaryButton'
 import useWallet from '../../hooks/useWallet'
@@ -66,7 +66,7 @@ export const WhitelistCard = ({ title, price, mintStatus, maxLimit, limitPerWall
             {
               active
                 ?
-                <PrimaryButton text={'mint'} className={'px-6'} loading={isMinting} parentClassName={'h-[32px]'} onClick={() => mint(quantity)}/>
+                <PrimaryButton text={(gasless && chainId && isSupportGelato(chainId)) ? 'gasless mint' : 'mint'} className={'px-6'} loading={isMinting} parentClassName={'h-[32px]'} onClick={() => mint(quantity)}/>
                 :
                 <GreyButton text={'mint'} className={'px-6 h-[32px]'} />
             }

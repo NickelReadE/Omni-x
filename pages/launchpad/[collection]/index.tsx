@@ -2,9 +2,12 @@ import type {NextPage} from 'next'
 import {useRouter} from 'next/router'
 import {ethers} from 'ethers'
 import React, {useState, useEffect, useCallback} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
-import {getAdvancedONFT721Instance, getGaslessONFT721Instance, getUSDCInstance} from '../../../utils/contracts'
-import {ToastContainer, toast} from 'react-toastify'
+import {
+  getAdvancedONFT721Instance,
+  getCurrencyInstance,
+  getGaslessONFT721Instance,
+} from '../../../utils/contracts'
+import {toast} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import {Slide} from 'react-toastify'
 import useWallet from '../../../hooks/useWallet'
@@ -24,18 +27,14 @@ const Mint: NextPage = () => {
   const { chainId, signer, provider, address } = useWallet()
   const router = useRouter()
   const col_url = router.query.collection as string
-  const dispatch = useDispatch()
-  const [toChain] = useState<string>('1')
-  const [mintNum, setMintNum] = useState<number>(1)
+  const { collectionInfo } = useCollection(col_url)
+
   const [totalNFTCount, setTotalNFTCount] = useState<number>(0)
-  const [nextTokenId, setNextTokenId] = useState<number>(0)
-  const [transferNFT] = useState<number>(0)
   const [isMinting, setIsMinting] = useState<boolean>(false)
-  const [isSwitchingNetwork] = useState<boolean>(false)
   const [price, setPrice] = useState(0)
   const [startId, setStartId] = useState(0)
   const [totalCnt, setTotalCnt] = useState(0)
-  const [mintedCnt, setMintedCnt] = useState(0)
+  const [selectedTab, setSelectedTab] = useState(0)
   const { gaslessMint, waitForRelayTask } = useGaslessMint()
 
   const activeClasses = (index: number) => {
@@ -89,10 +88,13 @@ const Mint: NextPage = () => {
       if (collectionInfo && collectionInfo.is_gasless && address) {
         const tokenContract = getGaslessONFT721Instance(collectionInfo.address[chainId], chainId, signer)
         const tokenAddress = await tokenContract.stableToken()
-        const tokenInstance = getCurrencyInstance(tokenAddress, chainId, signer)
-        if (tokenInstance) {
-          const decimals = Number(await tokenInstance?.decimals())
-          await tokenInstance.approve(collectionInfo.address[chainId], ethers.utils.parseUnits((price * quantity).toString(), decimals))
+        const currencyInstance = getCurrencyInstance(tokenAddress, chainId, signer)
+        if (currencyInstance) {
+          const decimals = Number(await currencyInstance.decimals())
+          const currencyAllowance = await currencyInstance.allowance(address, tokenContract.address)
+          if (currencyAllowance.lt(ethers.utils.parseUnits(price.toString(), decimals).mul(quantity))) {
+            await (await currencyInstance.approve(collectionInfo.address[chainId], ethers.utils.parseUnits((price * quantity).toString(), decimals))).wait()
+          }
 
           if (isSupportGelato(chainId)) {
             const response = await gaslessMint(tokenContract, chainId, quantity, address)
@@ -103,7 +105,7 @@ const Mint: NextPage = () => {
           }
         }
       } else {
-        const tokenContract = getAdvancedInstance(collectionInfo.address[chainId], chainId, signer)
+        const tokenContract = getAdvancedONFT721Instance(collectionInfo.address[chainId], chainId, signer)
         tx = await tokenContract.publicMint(quantity, {value: ethers.utils.parseEther((price * quantity).toString())})
         await tx.wait()
       }
