@@ -4,7 +4,7 @@ import {useRouter} from 'next/router'
 import {ethers} from 'ethers'
 import React, {useState, useEffect, useCallback} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {getAdvancedInstance} from '../../../utils/contracts'
+import {getAdvancedONFT721Instance, getGaslessONFT721Instance, getUSDCInstance} from '../../../utils/contracts'
 import {ToastContainer, toast} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import {Slide} from 'react-toastify'
@@ -15,8 +15,9 @@ import mintstyles from '../../../styles/mint.module.scss'
 import classNames from '../../../helpers/classNames'
 import useWallet from '../../../hooks/useWallet'
 import {ChainIds} from '../../../types/enum'
-import {SUPPORTED_CHAIN_IDS} from '../../../utils/constants'
+import {formatCurrency, getChainNameFromId, isGaslessCollection, isGaslessMintable, SUPPORTED_CHAIN_IDS} from '../../../utils/constants'
 import {chainInfos} from '../../../utils/constants'
+import { useGaslessMint } from '../../../hooks/useGelato'
 
 const Mint: NextPage = () => {
   const {
@@ -40,6 +41,8 @@ const Mint: NextPage = () => {
   const [startId, setStartId] = useState(0)
   const [totalCnt, setTotalCnt] = useState(0)
   const [mintedCnt, setMintedCnt] = useState(0)
+  const { gaslessMint, waitForRelayTask } = useGaslessMint()
+
   const decrease = (): void => {
     if (mintNum > 1) {
       setMintNum(mintNum - 1)
@@ -61,27 +64,33 @@ const Mint: NextPage = () => {
 
   const getInfo = useCallback(async (): Promise<void> => {
     try {
-      if (collectionInfo && signer) {
-        const tokenContract = getAdvancedInstance(collectionInfo.address[chainId ? chainId : 0], (chainId ? chainId : ChainIds.ETHEREUM), signer)
-        setStartId(Number(collectionInfo.start_ids[chainId ? chainId : 0]))
+      if (collectionInfo && signer && chainId) {
+        const tokenContract = getAdvancedONFT721Instance(collectionInfo.address[chainId], (chainId), signer)
+        setStartId(Number(collectionInfo.start_ids[chainId]))
 
         const priceT = await tokenContract.price()
-        setPrice(parseFloat(ethers.utils.formatEther(priceT)))
+        if (isGaslessCollection(col_url)) {
+          setPrice(parseFloat(formatCurrency(priceT, chainId, 'USDC')))
+        }
+        else {
+          setPrice(parseFloat(ethers.utils.formatEther(priceT)))
+        }
+
         const max_mint = await tokenContract.maxMintId()
         const nextId = await tokenContract.nextMintId()
-        setTotalNFTCount(Number(max_mint))
-        setNextTokenId(Number(nextId))
+        setTotalNFTCount(max_mint.toNumber())
+        setNextTokenId(nextId.toNumber())
       }
     } catch (error) {
       console.log(error)
     }
-  }, [chainId, collectionInfo, signer])
+  }, [chainId, collectionInfo, signer, col_url])
 
-  const mint = async (): Promise<void> => {
+  const nativeMint = async (): Promise<void> => {
     if (chainId === undefined || !provider || !collectionInfo) {
       return
     }
-    const tokenContract = getAdvancedInstance(collectionInfo?.address[chainId], chainId, signer)
+    const tokenContract = getAdvancedONFT721Instance(collectionInfo?.address[chainId], chainId, signer)
 
     let mintResult
     setIsMinting(true)
@@ -111,6 +120,8 @@ const Mint: NextPage = () => {
       setIsMinting(false)
     }
   }
+
+  const mintButtonName = isGaslessCollection(col_url) ? isGaslessMintable(col_url, getChainNameFromId(chainId || 0)) ? 'gasless mint' : 'mint' : 'mint'
   const mintButton = () => {
     // if(mintable){
     const tmp = 1
@@ -121,39 +132,82 @@ const Mint: NextPage = () => {
             <i className="fa fa-spinner fa-spin font-bold text-xl"
               style={{'letterSpacing': 'normal'}}
             />
-            mint now
+            {mintButtonName}
           </button>
         )
       } else {
         if (isSwitchingNetwork) {
           return (
-            <button type="button" disabled>mint now</button>
+            <button type="button" disabled>{mintButtonName}</button>
           )
         } else {
           return (
-            <button type="button" onClick={() => mint()}>mint now</button>
+            <>
+              <button type="button" onClick={() => mint()}>{mintButtonName}</button>
+            </>
+            
           )
         }
       }
     } else {
       return (
-        <button type="button" disabled>mint now</button>
+        <button type="button" disabled>{mintButtonName}</button>
       )
     }
   }
+
+  const stableMint = async (): Promise<void> => {
+    if (chainId === undefined || !provider || !collectionInfo || !address) {
+      return
+    }
+    const collectionAddr = collectionInfo?.address[chainId]
+    const tokenContract = getGaslessONFT721Instance(collectionAddr, chainId, signer)
+    const usdAddress = await tokenContract.stableToken()
+    const usdContract = getUSDCInstance(usdAddress, chainId, signer)
+
+    setIsMinting(true)
+    try {
+      const allowance = await usdContract?.allowance(address, tokenContract.address)
+      const stablePrice = await tokenContract.price()
+      const stablePrices = stablePrice.mul(mintNum)
+      if (allowance.lt(stablePrices)) {
+        await (await usdContract?.approve(tokenContract.address, stablePrices)).wait()
+      }
+
+      if (isGaslessMintable(col_url, getChainNameFromId(chainId))) {
+        const response = await gaslessMint(tokenContract, chainId, mintNum, address)
+        await waitForRelayTask(response)
+      }
+      else {
+        const mintResult = await tokenContract.publicMint(mintNum)
+        await mintResult.wait()
+      }
+
+      setIsMinting(false)
+      await getInfo()
+
+    } catch (e: any) {
+      console.log(e)
+      setIsMinting(false)
+    }
+  }
+
+  const mint = () => {
+    if (isGaslessCollection(col_url)) {
+      return stableMint()
+    }
+    else {
+      return nativeMint()
+    }
+  }
+
   useEffect(() => {
     const calculateFee = async (): Promise<void> => {
       try {
-        if (transferNFT) {
-          //const provider = new ethers.providers.Web3Provider(window.ethereum)
-          //const signer = provider.getSigner()
-          // const tokenContract =  new ethers.Contract(addresses[`${Number(chainId).toString(10)}`].address, AdvancedONT.abi, signer)
-          //const adapterParam = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 200000])
-          //const fee:any =[0.001] //await tokenContract.estimateSendFee(addresses[toChain].chainId, account,transferNFT,false,adapterParam)
-          // setEstimateFee('Estimate Fee :'+(Number(fee[0])/Math.pow(10,18)*1.1).toFixed(10)+addresses[chainId].unit)
-        } else {
-          //setEstimateFee('')
-        }
+        // if (transferNFT) {
+        // } else {
+        //   //setEstimateFee('')
+        // }
       } catch (error) {
         console.log(error)
         if (String(chainId) == toChain) {
@@ -187,6 +241,8 @@ const Mint: NextPage = () => {
       setTotalCnt(Number(totalNFTCount) - startId)
     }
   }, [totalNFTCount, startId])
+
+
   return (
     <>
       <ToastContainer/>
@@ -216,12 +272,15 @@ const Mint: NextPage = () => {
                 {/* <span>{chainId?addresses[`${Number(chainId)}`].price:0}<Image src={chainId?addresses[`${Number(chainId)}`].imageSVG:EthereumImageSVG} width={29.84} height={25.46} alt='ikon'></Image></span> */}
                 <div className="flex flex-row space-x-2 items-center mt-[15px]">
                   <div className="text-xg1 ">
+                    {isGaslessCollection(col_url) ? '$' : ''}
                     {(price * mintNum).toFixed(2)}
                   </div>
                   {
-                    chainId &&
+                    chainId && !isGaslessCollection(col_url) &&
                     SUPPORTED_CHAIN_IDS.map((networkId: ChainIds, index) => {
-                      return chainId === networkId && <img key={index} alt={'networkIcon'}
+                      return chainId === networkId && <img
+                        key={index}
+                        alt={'networkIcon'}
                         src={chainInfos[networkId].logo || chainInfos[ChainIds.ETHEREUM].logo}
                         className="m-auto h-[45px]"/>
                     })

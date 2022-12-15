@@ -116,7 +116,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           console.log('While fetching NFTBOX image:', err)
         }
       }
-      return '/images/omnix_logo_black_1.png'
+      return nft && nft.image ? nft.image : '/images/omnix_logo_black_1.png'
     }
     if (nft && nft.image) {
       return nft.image

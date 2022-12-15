@@ -4,12 +4,12 @@ import Link from 'next/link'
 import {ethers} from 'ethers'
 import {getCollectionInfo, selectCollectionInfo} from '../redux/reducers/collectionsReducer'
 import {useDispatch, useSelector} from 'react-redux'
-import AdvancedONT from '../constants/abis/AdvancedONT.json'
 import useWallet from '../hooks/useWallet'
 
 import editStyle from '../styles/nftbox.module.scss'
 import classNames from '../helpers/classNames'
 import {ChainIds} from '../types/enum'
+import { getAdvancedONFT721Instance } from '../utils/contracts'
 
 const NftForLaunch = (pro: ITypeNFT) => {
   const [price, setPrice] = useState(0)
@@ -25,7 +25,7 @@ const NftForLaunch = (pro: ITypeNFT) => {
       if (!collectionInfo || chainId === undefined || collectionInfo.address === undefined || !provider) {
         return
       }
-      const tokenContract = new ethers.Contract(collectionInfo.address[chainId ? chainId : ChainIds.ETHEREUM], AdvancedONT, provider)
+      const tokenContract = getAdvancedONFT721Instance(collectionInfo.address[chainId ? chainId : ChainIds.ETHEREUM], chainId, provider)
       const priceT = await tokenContract.price()
       setPrice(Number(ethers.utils.formatEther(priceT)))
     } catch (error) {
