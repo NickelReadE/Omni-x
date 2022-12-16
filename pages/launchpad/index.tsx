@@ -1,9 +1,7 @@
 import type {NextPage} from 'next'
 import React from 'react'
-import Image from 'next/image'
 import NftForLaunch from '../../components/NftForLaunch'
 import useLaunchPad, { LaunchPadType } from '../../hooks/useLaunchPad'
-import Loading from '../../public/images/loading_f.gif'
 import {FeaturedCard} from '../../components/launchpad/FeaturedCard'
 import {SkeletonCard} from '../../components/skeleton/card'
 
