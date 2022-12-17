@@ -7,7 +7,7 @@ import {useDispatch} from 'react-redux'
 import useWallet from '../../../hooks/useWallet'
 import {
   getBlockExplorer,
-  getChainIconById,
+  getChainLogoById,
   getCurrencyIconByAddress,
   getDarkChainIconById,
   numberLocalize
@@ -93,7 +93,7 @@ const Item: NextPage = () => {
   // const currencyIcon = getCurrencyIconByAddress(currentNFT?.currency)
   // const formattedPrice = currentNFT?.price
   const chainIcon = useMemo(() => {
-    return getChainIconById(currentNFT && currentNFT.chain_id ? currentNFT.chain_id.toString() : '5')
+    return getChainLogoById(currentNFT && currentNFT.chain_id ? currentNFT.chain_id.toString() : '5')
   }, [currentNFT])
 
   const onCopyToClipboard = async () => {

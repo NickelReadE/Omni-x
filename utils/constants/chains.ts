@@ -112,10 +112,9 @@ export const getChainIcons = (chainId: number) => {
   }
 }
 
-export const chainInfos: { [key: number]: { name: string; logo: string, roundedLogo: string, explorerLogo: string, darkIcon?: string, officialName: string, currency: string, comingSoon?: boolean } } = {
+export const chainInfos: { [key: number]: { name: string; roundedLogo: string, explorerLogo: string, darkIcon?: string, officialName: string, currency: string, comingSoon?: boolean } } = {
   1: {
     name: 'eth',
-    logo: '/svgs/ethereum.svg',
     roundedLogo: '/images/chain/ethereum.svg',
     explorerLogo: '/images/ethereumExplorer.png',
     darkIcon: '/images/chain/ethereum_dark.svg',
@@ -124,7 +123,6 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   56: {
     name: 'bsc',
-    logo: '/svgs/binance.svg',
     roundedLogo: '/images/chain/binance.svg',
     explorerLogo: '/images/binanceExplorer.png',
     darkIcon: '/images/chain/binance_dark.svg',
@@ -133,7 +131,6 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   137: {
     name: 'polygon',
-    logo: '/svgs/polygon.svg',
     roundedLogo: '/images/chain/polygon.svg',
     explorerLogo: '/images/polygonExplorer.png',
     darkIcon: '/images/chain/polygon_dark.svg',
@@ -142,7 +139,6 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   43114: {
     name: 'avalanche',
-    logo: '/svgs/avax.svg',
     roundedLogo: '/images/chain/avalanche.svg',
     explorerLogo: '/images/avalancheExplorer.png',
     darkIcon: '/images/chain/avalanche_dark.svg',
@@ -151,7 +147,6 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   250: {
     name: 'fantom',
-    logo: '/svgs/fantom.svg',
     roundedLogo: '/images/chain/fantom.svg',
     explorerLogo: '/images/fantomExplorer.png',
     darkIcon: '/images/chain/fantom_dark.svg',
@@ -160,7 +155,6 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   10: {
     name: 'optimism',
-    logo: '/svgs/optimism.svg',
     roundedLogo: '/images/chain/optimism.svg',
     explorerLogo: '/images/optimismExplorer.png',
     darkIcon: '/images/chain/optimism_dark.svg',
@@ -169,7 +163,6 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   42161: {
     name: 'arbitrum',
-    logo: '/svgs/arbitrum.svg',
     roundedLogo: '/images/chain/arbitrum.svg',
     explorerLogo: '/images/arbitrumExplorer.png',
     darkIcon: '/images/chain/arbitrum_dark.svg',
@@ -178,7 +171,6 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   [CHAIN_IDS[CHAIN_TYPE.GOERLI]]: {
     name: 'goerli',
-    logo: '/svgs/ethereum.svg',
     roundedLogo: '/images/chain/ethereum.svg',
     explorerLogo: '/images/ethereumExplorer.png',
     darkIcon: '/images/chain/ethereum_dark.svg',
@@ -187,7 +179,6 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   [CHAIN_IDS[CHAIN_TYPE.BSC_TESTNET]]: {
     name: 'bsc testnet',
-    logo: '/svgs/binance.svg',
     roundedLogo: '/images/chain/binance.svg',
     explorerLogo: '/images/binanceExplorer.png',
     darkIcon: '/images/chain/binance_dark.svg',
@@ -196,7 +187,6 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   [CHAIN_IDS[CHAIN_TYPE.FUJI_TESTNET]]: {
     name: 'fuji',
-    logo: '/svgs/avax.svg',
     roundedLogo: '/images/chain/avalanche.svg',
     explorerLogo: '/images/avalancheExplorer.png',
     darkIcon: '/images/chain/avalanche_dark.svg',
@@ -205,7 +195,6 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   [CHAIN_IDS[CHAIN_TYPE.MUMBAI]]: {
     name: 'mumbai',
-    logo: '/svgs/polygon.svg',
     roundedLogo: '/images/chain/polygon.svg',
     explorerLogo: '/images/polygonExplorer.png',
     darkIcon: '/images/chain/polygon_dark.svg',
@@ -214,7 +203,6 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: {
     name: 'arbitrum-goerli',
-    logo: '/svgs/arbitrum.svg',
     roundedLogo: '/images/chain/arbitrum.svg',
     explorerLogo: '/images/arbitrumExplorer.png',
     darkIcon: '/images/chain/arbitrum_dark.svg',
@@ -223,7 +211,6 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: {
     name: 'optimism-goerli',
-    logo: '/svgs/optimism.svg',
     roundedLogo: '/images/chain/optimism.svg',
     explorerLogo: '/images/optimismExplorer.png',
     darkIcon: '/images/chain/optimism_dark.svg',
@@ -232,7 +219,6 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   [CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET]]: {
     name: 'fantom-testnet',
-    logo: '/svgs/fantom.svg',
     roundedLogo: '/images/chain/fantom.svg',
     explorerLogo: '/images/fantomExplorer.png',
     darkIcon: '/images/chain/fantom_dark.svg',
@@ -241,16 +227,14 @@ export const chainInfos: { [key: number]: { name: string; logo: string, roundedL
   },
   [CHAIN_IDS[CHAIN_TYPE.MOONBEAM_TESTNET]]: {
     name: 'moonbeam-testnet',
-    logo: '/svgs/moonbeam.png',
-    roundedLogo: '/images/roundedColoMoonbeam.png',
+    roundedLogo: '/images/chain/moonbeam.svg',
     explorerLogo: '/images/moonbeamExplorer.png',
-    darkIcon: '/images/chain/fantom_dark.svg',
+    darkIcon: '/images/chain/moonbeam_dark.svg',
     officialName: 'Moonbeam',
     currency: 'DEV'
   },
   2222: {
     name: 'aptos-testnet',
-    logo: '/svgs/aptos.svg',
     roundedLogo: '/svgs/aptos.svg',
     explorerLogo: '/svgs/aptos.svg',
     officialName: 'Aptos',
@@ -394,10 +378,6 @@ export const getChainOfficialNameById = (chainId?: number) => {
 
 export const getChainLogoById = (chainId?: string) => {
   return chainId && chainInfos[Number(chainId)]?.roundedLogo
-}
-
-export const getChainIconById = (chainId?: string) => {
-  return chainId && chainInfos[Number(chainId)]?.logo
 }
 
 export const getDarkChainIconById = (chainId?: string) => {

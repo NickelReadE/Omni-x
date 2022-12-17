@@ -49,11 +49,11 @@ export const WhitelistCard = ({ title, price, maxLimit, limitPerWallet, startTim
                 </span>
                 {
                   !gasless && chainId &&
-                <img
-                  alt={'networkIcon'}
-                  src={chainInfos[chainId].logo || chainInfos[ChainIds.ETHEREUM].logo}
-                  className="'w-8 h-8"
-                />
+                    <img
+                      alt={'networkIcon'}
+                      src={chainInfos[chainId].roundedLogo || chainInfos[ChainIds.ETHEREUM].roundedLogo}
+                      className="'w-8 h-8"
+                    />
                 }
                 {
                   gasless &&

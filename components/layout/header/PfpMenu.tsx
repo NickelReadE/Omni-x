@@ -60,7 +60,7 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
                       {({ open }) => (
                         <>
                           <Disclosure.Button className={`flex items-center w-full ${open ? '' : 'pb-3'}`}>
-                            <span className={'flex-none text-left text-secondary w-14'}>USD</span>
+                            <span className={'flex-none text-left text-secondary w-14 italic font-bold'}>USD</span>
                             <span className={'grow text-left px-3 text-primary-light'}>${numberLocalize(totalUSDCBalance + totalUSDTBalance)}</span>
                             <span className={'flex-none w-6'}>
                               {
@@ -72,8 +72,8 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
                             </span>
                           </Disclosure.Button>
                           <Disclosure.Panel className="flex flex-col w-full py-2">
-                            <div className={'flex w-full'}>
-                              <span className={'flex-none text-left text-[14px] text-secondary w-14'}>USDC</span>
+                            <div className={'flex w-full items-center'}>
+                              <span className={'flex-none text-left text-[14px] text-secondary w-14 italic font-bold'}>USDC</span>
                               <span className={'grow text-left px-3 text-primary-light'}>${numberLocalize(totalUSDCBalance)}</span>
                               <span className={'flex-none w-6'} />
                             </div>
@@ -88,8 +88,8 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
                                 })
                               }
                             </div>
-                            <div className={'flex w-full'}>
-                              <span className={'flex-none text-left text-[14px] text-secondary w-14'}>USDT</span>
+                            <div className={'flex w-full items-center'}>
+                              <span className={'flex-none text-left text-[14px] text-secondary w-14 italic font-bold'}>USDT</span>
                               <span className={'grow text-left px-3 text-primary-light'}>${numberLocalize(totalUSDTBalance)}</span>
                               <span className={'flex-none w-6'} />
                             </div>
@@ -109,7 +109,7 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
                       )}
                     </Disclosure>
                     <div className={'flex items-center'}>
-                      <span className={'flex-none text-secondary w-14'}>{getChainInfo(chainId)?.nativeCurrency.symbol}</span>
+                      <span className={'flex-none text-secondary w-14 italic font-bold'}>{getChainInfo(chainId)?.nativeCurrency.symbol}</span>
                       <span className={'grow px-3 text-primary-light'}>{numberLocalize(parseFloat(nativeBalance?.formatted || '0'))}</span>
                       <span className={'flex-none w-6'}/>
                     </div>
