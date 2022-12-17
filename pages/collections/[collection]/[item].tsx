@@ -288,7 +288,7 @@ const Item: NextPage = () => {
 
                 {/*last sale*/}
                 {
-                  lastSale !== 0 &&
+                  lastSale && lastSale !== 0 &&
                     <div className={'flex flex-col mt-4 border-[1px] rounded-lg w-full border-[#383838] py-3 px-6'}>
                       <div className={'flex items-center justify-between'}>
                         <div className={'text-secondary text-xl'}>last sale</div>
