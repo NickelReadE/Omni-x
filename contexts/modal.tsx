@@ -16,6 +16,6 @@ export type ModalContextType = {
 
 export const ModalContext = createContext<ModalContextType>({
   modal: ModalIDs.MODAL_NONE,
-  openModal: (modal: ModalIDs, data: any) => {},
-  closeModal: () => {}
+  openModal: () => undefined,
+  closeModal: () => undefined
 })

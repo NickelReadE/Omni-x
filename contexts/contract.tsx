@@ -26,7 +26,7 @@ export type ContractContextType = {
 }
 
 export const ContractContext = createContext<ContractContextType>({
-  listenONFTEvents: async (txInfo: PendingTxType, historyIndex: number) => undefined,
-  errorHandler: (error: any) => undefined,
+  listenONFTEvents: async () => undefined,
+  errorHandler: () => undefined,
 })
 

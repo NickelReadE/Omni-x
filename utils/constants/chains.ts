@@ -391,38 +391,6 @@ export const getBlockExplorer = (chainId: number) => {
   }
   return null
 }
-export const APIkeysForAlchemy: { [key: number]: string } = {
-  420: 'sgvs6yc178bgz4WZLz1s1NQ5ZDDmHZKb',
-  421613: '1tOv1HhfJDGiv7p3dUMVvJGuRoyWm4ff',
-  5: '4k8yRytMmfl7bEmKCQXWYrb_bx3BZ0K3'
-}
-export const NetworksForAlchemy: { [key: number]: Network } = {
-  420: Network.OPT_GOERLI,
-  421613: Network.ARB_GOERLI,
-  5: Network.ETH_GOERLI
-}
-export const getAPIkeyForAlchemy = (key: number): string => {
-  return APIkeysForAlchemy[key]
-}
-export const getNetworForAlchemy = (key: number): Network => {
-  return NetworksForAlchemy[key]
-}
-export const supportedChainsOnMoralis: Array<number> = [
-  80001,
-  97,
-  43113
-]
-export const supportedChainsOnAlchemy: Array<number> = [
-  420,
-  5,
-  421613
-]
-
-export const findCollection = (addresses: any, nft: any, token_id: string) => {
-  const chain_id = nft.chain_id
-  const collection_address = addresses[chain_id]
-  return [collection_address, chain_id]
-}
 
 export const supportChains = () => {
   const allChains = supportChainIDs.map((chainId) => {

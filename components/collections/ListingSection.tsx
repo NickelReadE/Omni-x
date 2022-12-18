@@ -52,7 +52,6 @@ const ListingSection: React.FC<IListingSectionProps> = ({
       <p className="text-primary-light text-xg font-semibold">{priceLabel}</p>
       <div className="flex justify-start items-center mt-5">
         <Dropdown menus={currencyList} className={'min-w-[140px]'} onChange={onChangeCurrency} />
-        {/*<CustomSelect optionData={validCurrencies} value={currency} onChange={onChangeCurrency} />*/}
         <div className={'relative ml-4 bg-primary-gradient p-[1px] rounded-lg h-[32px] w-[110px]'}>
           <div className={'absolute top-[6px] left-1.5 h-full'}>
             <img src={`/images/${currency.icon}`} alt={'currency'} width={20} height={20} />

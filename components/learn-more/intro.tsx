@@ -1,15 +1,16 @@
 import Image from 'next/image'
+import { ReactNode } from 'react'
 import OmniChainImage from '../../public/images/learn-more/omnichain.png'
 
 interface IPropsIntroCard {
     title: string,
     titleColor?: string,
     className?: string,
-    children: React.ReactNode
+    children: ReactNode
 }
 
 interface IPropsIconBox {
-    children: React.ReactNode
+    children: ReactNode
 }
 
 export const IntroCard = ({ title, titleColor, children, className }: IPropsIntroCard) => {

@@ -28,11 +28,13 @@ const Banner = ({ blur }: BannerProps): JSX.Element => {
   }
 
   useEffect(() => {
-    if (address) {
-      chainsFroSTG.map((chain) => {
-        fetchToken(chain)
-      })
-    }
+    (async () => {
+      if (address) {
+        chainsFroSTG.map(async (chain) => {
+          await fetchToken(chain)
+        })
+      }
+    })()
   }, [address])
 
   useEffect(() => {

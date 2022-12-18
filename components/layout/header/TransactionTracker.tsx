@@ -6,7 +6,7 @@ import ProcessingTransaction from '../../transaction/ProcessingTransaction'
 import useProgress from '../../../hooks/useProgress'
 
 export const TransactionTracker = () => {
-  const { pending, histories, clearHistories } = useProgress()
+  const { histories, clearHistories } = useProgress()
 
   const onClear = () => {
     clearHistories()

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, {useState, useMemo, useCallback, useEffect} from 'react'
+import React, {useState, useMemo, useEffect} from 'react'
 import Image from 'next/image'
 import {BigNumber, ethers} from 'ethers'
 import { Dialog } from '@headlessui/react'
@@ -61,7 +61,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
   updateModal,
 }) => {
   const { chainId, address, provider, signer } = useWallet()
-  const { estimateGasFee, estimateGasFeeONFTCore, unwrapInfo, selectedUnwrapInfo, validateOwNFT, validateONFT } = useBridge()
+  const { estimateGasFee, estimateGasFeeONFTCore, validateONFT } = useBridge()
   const { addTxToHistories } = useProgress()
   const { listenONFTEvents, errorHandler } = useContract()
 

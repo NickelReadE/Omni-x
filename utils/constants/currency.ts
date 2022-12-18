@@ -11,40 +11,10 @@ export const usdc: any = USDC
 export const usdt: any = USDT
 export const weth: any = WETH
 
-export const CURRENCIES_LIST = [
-  {value: 0, text: 'OMNI', decimals: 18, icon: 'payment/omni.png'},
-  {value: 1, text: 'USDC', decimals: 6, icon: 'payment/usdc.png'},
-  {value: 2, text: 'USDT', decimals: 18, icon: 'payment/usdt.png'},
-]
-
 export const CURRENCY_OMNI = {value: 0, text: 'OMNI', icon: 'currency/omni.svg'}
 export const CURRENCY_USDC = {value: 1, text: 'USDC', icon: 'currency/usdc.svg'}
 export const CURRENCY_USDT = {value: 2, text: 'USDT', icon: 'currency/usdt.svg'}
 export const CURRENCY_WETH = {value: 3, text: 'ETH', icon: 'currency/ethereum.svg'}
-
-export const STABLECOIN_DECIMAL: any = {
-  [ChainIDS.BINANCE]: {
-    [USDT[ChainIDS.BINANCE]]: 18,
-  },
-  [ChainIDS.AVALANCHE]: {
-    [USDC[ChainIDS.AVALANCHE]]: 6,
-  },
-  [ChainIDS.POLYGON]: {
-    [USDC[ChainIDS.POLYGON]]: 6,
-  },
-  [ChainIDS.FANTOM]: {
-    [USDC[ChainIDS.FANTOM]]: 6,
-  },
-  [ChainIDS.ETHEREUM]: {
-    [USDC[ChainIDS.ETHEREUM]]: 6,
-  },
-  [ChainIDS.ARBITRUM]: {
-    [USDC[ChainIDS.ARBITRUM]]: 6,
-  },
-  [ChainIDS.OPTIMISM]: {
-    [USDC[ChainIDS.OPTIMISM]]: 6,
-  },
-}
 
 const getCurrency = (currency: any, address: string, decimals: number) => ({...currency, address, decimals})
 type CurrencyType = {value: number, text: string, icon: string, address: string, decimals: number}

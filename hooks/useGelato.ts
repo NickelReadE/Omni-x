@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { BigNumberish, BytesLike, ethers } from 'ethers'
-import { GelatoRelaySDK } from '@gelatonetwork/relay-sdk'
+import {BigNumberish, BytesLike, ethers} from 'ethers'
+import {GelatoRelaySDK} from '@gelatonetwork/relay-sdk'
 
 export interface SyncFeeRequest {
   chainId: BigNumberish;
@@ -37,18 +37,16 @@ export const useGelato = (): GelatoType => {
     const feeToken = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' // pay Gelato in native token
 
     // populate the relay SDK request body
-    const request: SyncFeeRequest = {
+    return {
       chainId,
       target: contractAddr,
       data: data as BytesLike,
       feeToken: feeToken,
-    }
-    return request
+    } as SyncFeeRequest
   }
 
   const sendRelayRequest = async (request: SyncFeeRequest): Promise<RelayResponse> => {
-    const relayResponse = await GelatoRelaySDK.relayWithSyncFee(request)
-    return relayResponse
+    return await GelatoRelaySDK.relayWithSyncFee(request)
   }
 
   const waitForRelayTask = async (relayResponse: RelayResponse): Promise<RelayTaskStatus> => {

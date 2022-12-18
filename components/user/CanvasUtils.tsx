@@ -7,10 +7,6 @@ export const createImage = (url : string) =>
     image.src = url
   })
 
-export function getRadianAngle(degreeValue : any) {
-  return (degreeValue * Math.PI) / 180
-}
-
 /**
  * This function was adapted from the one in the ReadMe of https://github.com/DominicTobias/react-image-crop
  */
