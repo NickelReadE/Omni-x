@@ -93,7 +93,7 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
     }
     else if (acceptStep === AcceptStep.StepConfirm && onAcceptConfirm) {
       const tx = await onAcceptConfirm(bidOrder, tradingInput.tokenId || '0')
-      
+
       if (tx) {
         setTradingTx(tx.hash)
         await tx.wait()
@@ -149,7 +149,7 @@ const ConfirmAccept: React.FC<IConfirmAcceptProps> = ({
       <DialogContent className={classes.rootContent}>
         <AcceptContent
           price={formattedPrice ? Number(formattedPrice) : 0}
-          currency={newCurrencyName}
+          currency={newCurrencyName || ''}
           onAccept={onAccept}
           nftImage={nftImage}
           nftTitle={nftTitle}

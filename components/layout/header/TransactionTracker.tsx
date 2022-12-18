@@ -34,7 +34,6 @@ export const TransactionTracker = () => {
               <Menu.Items className="bg-[#202020e6] rounded-md shadow-lg backdrop-blur-[10px] shadow-[0_0px_20px_rgba(231,237,245,0.25)] focus:outline-none py-2 px-4">
                 {
                   histories.length > 0 &&
-                  <>
                     <div className="overflow-y-auto overflow-x-hidden max-h-[280px]">
                       {histories.map((item, index) => {
                         return (
@@ -44,7 +43,6 @@ export const TransactionTracker = () => {
                         )
                       })}
                     </div>
-                  </>
                 }
               </Menu.Items>
             </div>
