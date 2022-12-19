@@ -1,5 +1,5 @@
 import React, {ReactNode} from 'react'
-import {twMerge} from "tailwind-merge";
+import {twMerge} from 'tailwind-merge'
 
 export const ExternalLink = ({ children, link }: { children: ReactNode, link: string | undefined }) => {
   if (link) {

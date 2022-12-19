@@ -1,9 +1,9 @@
 import React, {Fragment, useState} from 'react'
-import {getChainLogoById, getChainOfficialNameById, SUPPORTED_CHAIN_IDS} from '../../../utils/constants'
-import useWallet from '../../../hooks/useWallet'
 import {Transition} from '@headlessui/react'
 import {useSwitchNetwork} from 'wagmi'
-import {GradientBackground} from "../../basic";
+import {getChainLogoById, getChainOfficialNameById, SUPPORTED_CHAIN_IDS} from '../../../utils/constants'
+import useWallet from '../../../hooks/useWallet'
+import {GradientBackground} from '../../basic'
 
 export const SelectNetworks = () => {
   const { chainId } = useWallet()
