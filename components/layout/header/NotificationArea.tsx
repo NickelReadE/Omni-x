@@ -1,6 +1,7 @@
 import React, {Fragment, useState} from 'react'
 import {Transition} from '@headlessui/react'
 import Image from 'next/image'
+import {GradientBackground} from "../../basic";
 
 export const NotificationArea = () => {
   const [hovered, setHovered] = useState(false)
@@ -31,21 +32,16 @@ export const NotificationArea = () => {
           show={hovered}
         >
           <div className={'absolute right-0 w-[233px] origin-top-right pt-4'}>
-            <div className={'rounded-md bg-primary-gradient p-[1px]'}>
-              <div className={'bg-primary rounded-md'}>
-                <div
-                  className="bg-[#202020e6] rounded-md divide-y backdrop-filter backdrop-blur-[10px] shadow-[0_0px_250px_rgba(0,0,0,1)] focus:outline-none py-2 px-4">
-                  <div>
-                    <div className={'py-2 flex items-center cursor-pointer'}>
-                      <img src={'/images/icons/default_pfp.png'} alt={'notification icon'}
-                        className={'rounded-sm mr-4'} width={28} height={28}/>
-                      <span className={'text-lg text-primary-light'}>exakoss<span
-                        className={'text-secondary'}> followed you</span></span>
-                    </div>
-                  </div>
+            <GradientBackground className="shadow-[0_0px_250px_rgba(0,0,0,1)]">
+              <div>
+                <div className={'px-4 py-2 flex items-center cursor-pointer'}>
+                  <img src={'/images/icons/default_pfp.png'} alt={'notification icon'}
+                    className={'rounded-sm mr-4'} width={28} height={28}/>
+                  <span className={'text-lg text-primary-light'}>exakoss<span
+                    className={'text-secondary'}> followed you</span></span>
                 </div>
               </div>
-            </div>
+            </GradientBackground>
           </div>
         </Transition>
       </div>

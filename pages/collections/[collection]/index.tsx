@@ -264,140 +264,139 @@ const Collection: NextPage = () => {
         }
       </div>
 
-      <div className={`grid grid-cols-${filterVisible ? '6' : '5'} gap-4 pt-4`}>
+      <div className={`grid ${filterVisible ? 'grid-cols-6' : 'grid-cols-5'} gap-4 pt-4`}>
         {
-          filterVisible &&
-            <div>
-              <ul className="flex flex-col space-y-2">
-                <li className="w-full">
-                  <div
-                    className={`w-full px-4 py-2 text-left text-md text-secondary font-semibold  ${expandedMenu == 1 ? 'active' : ''}`}
+          <div className={`col-span-1 ${filterVisible ? 'block': 'hidden'}`}>
+            <ul className="flex flex-col space-y-2">
+              <li className="w-full">
+                <div
+                  className={`w-full px-4 py-2 text-left text-md text-secondary font-semibold ${expandedMenu == 1 ? 'active' : ''}`}
+                >
+                  Buy Now
+                  <Switch
+                    checked={enabled}
+                    onChange={setEnabled}
+                    onClick={() => setIsActiveBuyNow(!isActiveBuyNow)}
+                    className={'bg-transparent pull-right relative inline-flex h-[16px] w-[28px] shrink-0 cursor-pointer rounded-full border-[2px] border-[#969696] transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75 flex items-center'}
                   >
-                    Buy Now
-                    <Switch
-                      checked={enabled}
-                      onChange={setEnabled}
-                      onClick={() => setIsActiveBuyNow(!isActiveBuyNow)}
-                      className={'bg-transparent pull-right relative inline-flex h-[16px] w-[28px] shrink-0 cursor-pointer rounded-full border-[2px] border-[#969696] transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75 flex items-center'}
+                    <span className="sr-only">Use setting</span>
+                    <span
+                      aria-hidden="true"
+                      className={`${enabled ? 'translate-x-3' : 'translate-x-px'}
+                      pointer-events-none inline-block h-2 w-2 border-[2px] border-[#969696] transform rounded-full bg-transparent ring-0 transition duration-200 ease-in-out mt-px`}
+                    />
+                  </Switch>
+                </div>
+              </li>
+              {collectionInfo && collectionInfo.attrs && Object.keys(collectionInfo.attrs).map((key, idx) => {
+                const attrs = collectionInfo.attrs
+                return <li className="w-full" key={idx}>
+                  <Accordion className={classes.accordion}>
+                    <AccordionSummary
+                      expandIcon={<img src={'/images/icons/caret_down.png'} alt="caret-down" />}
+                      aria-controls="panel1a-content"
+                      id="panel1a-header"
                     >
-                      <span className="sr-only">Use setting</span>
-                      <span
-                        aria-hidden="true"
-                        className={`${enabled ? 'translate-x-3' : 'translate-x-px'}
-                        pointer-events-none inline-block h-2 w-2 border-[2px] border-[#969696] transform rounded-full bg-transparent ring-0 transition duration-200 ease-in-out mt-px`}
-                      />
-                    </Switch>
-                  </div>
-                </li>
-                {collectionInfo && collectionInfo.attrs && Object.keys(collectionInfo.attrs).map((key, idx) => {
-                  const attrs = collectionInfo.attrs
-                  return <li className="w-full" key={idx}>
-                    <Accordion className={classes.accordion}>
-                      <AccordionSummary
-                        expandIcon={<img src={'/images/icons/caret_down.png'} alt="caret-down" />}
-                        aria-controls="panel1a-content"
-                        id="panel1a-header"
-                      >
-                        <Typography className={classNames('text-secondary text-md')}>{key}</Typography>
-                      </AccordionSummary>
-                      <AccordionDetails>
-                        <div>
-                          <div className={classes.search}>
-                            <div className={classes.searchIcon}>
-                              <SearchIcon />
-                            </div>
-                            <InputBase
-                              placeholder="Search…"
-                              classes={{
-                                root: classes.inputRoot,
-                                input: classes.inputInput,
-                              }}
-                              inputProps={{ 'aria-label': 'search' }}
-                              onChange={(e) => {
-                                searchFilter(e.target.value, key)
-                              }}
-                            />
+                      <Typography className={classNames('text-secondary text-md')}>{key}</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <div>
+                        <div className={classes.search}>
+                          <div className={classes.searchIcon}>
+                            <SearchIcon />
                           </div>
-                          <FormGroup classes={{ root: classes.frmGroup }}>
-                            {
-                              attrs[key].values && Object.keys(attrs[key].values).map((valueKey, valueIndex) => {
-                                if (valueKey == 'none') {
-                                  return null
-                                }
-                                if (filterObj[key] && !valueKey.includes(filterObj[key].toLowerCase())) {
-                                  return null
-                                }
-                                return <FormControlLabel
-                                  key={valueIndex}
-                                  classes={{ label: classes.frmLabel, root: classes.frmLabel }}
-                                  control={<Checkbox
-                                    checked={Array.isArray(searchObj[key]) && searchObj[key].indexOf(attrs[key].values[valueKey][3], 0) > -1}
-                                    onChange={(e) => {
-                                      searchAttrsCheck(e.target.checked, key, attrs[key].values[valueKey][3])
-                                    }}
-                                    color="primary"
-                                    inputProps={{ 'aria-label': 'checkbox with default color' }} />
-                                  }
-                                  label={
-                                    <div className="flex items-center justify-between">
-                                      <span className="font-bold text-[#4d5358]">{attrs[key].values[valueKey][3]}</span>
-                                      <div className="text-right">
-                                        {/*<p className="font-bold text-[#697077]">{attrs[key].values[valueKey][4]}</p>*/}
-                                        {/*<p className="text-[11px] text-[#697077]">({attrs[key].values[valueKey][1]}%)</p>*/}
-                                      </div>
-                                    </div>
-                                  }
-                                />
-                              })
-                            }
-                          </FormGroup>
+                          <InputBase
+                            placeholder="Search…"
+                            classes={{
+                              root: classes.inputRoot,
+                              input: classes.inputInput,
+                            }}
+                            inputProps={{ 'aria-label': 'search' }}
+                            onChange={(e) => {
+                              searchFilter(e.target.value, key)
+                            }}
+                          />
                         </div>
-                      </AccordionDetails>
-                    </Accordion>
-                  </li>
-                })}
-                {/* <li className="w-full">
-                <button
-                  className={`w-full px-8 py-4 text-left text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`}
-                >
-                  Price
-                  <span className="pull-right">
-                    <i className={`${expandedMenu == 1 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
-                  </span>
-                </button>
-              </li>
-              <li className="w-full">
-                <button
-                  className={`w-full px-8 py-4 text-left text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`}
-                >
-                  Blockchain
-                  <span className="pull-right">
-                    <i className={`${expandedMenu == 1 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
-                  </span>
-                </button>
-              </li>
-              <li className="w-full">
-                <button
-                  className={`w-full px-8 py-4 text-left text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`}
-                >
-                  Rarity
-                  <span className="pull-right">
-                    <i className={`${expandedMenu == 1 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
-                  </span>
-                </button>
-              </li>
-              <li className="w-full">
-                <button
-                  className={`w-full px-8 py-4 text-left text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`}
-                >
-                  Attributes
-                  <span className="pull-right">
-                    <i className={`${expandedMenu == 1 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
-                  </span>
-                </button>
-              </li> */}
-              </ul>
-            </div>
+                        <FormGroup classes={{ root: classes.frmGroup }}>
+                          {
+                            attrs[key].values && Object.keys(attrs[key].values).map((valueKey, valueIndex) => {
+                              if (valueKey == 'none') {
+                                return null
+                              }
+                              if (filterObj[key] && !valueKey.includes(filterObj[key].toLowerCase())) {
+                                return null
+                              }
+                              return <FormControlLabel
+                                key={valueIndex}
+                                classes={{ label: classes.frmLabel, root: classes.frmLabel }}
+                                control={<Checkbox
+                                  checked={Array.isArray(searchObj[key]) && searchObj[key].indexOf(attrs[key].values[valueKey][3], 0) > -1}
+                                  onChange={(e) => {
+                                    searchAttrsCheck(e.target.checked, key, attrs[key].values[valueKey][3])
+                                  }}
+                                  color="primary"
+                                  inputProps={{ 'aria-label': 'checkbox with default color' }} />
+                                }
+                                label={
+                                  <div className="flex items-center justify-between">
+                                    <span className="font-bold text-[#4d5358]">{attrs[key].values[valueKey][3]}</span>
+                                    <div className="text-right">
+                                      {/*<p className="font-bold text-[#697077]">{attrs[key].values[valueKey][4]}</p>*/}
+                                      {/*<p className="text-[11px] text-[#697077]">({attrs[key].values[valueKey][1]}%)</p>*/}
+                                    </div>
+                                  </div>
+                                }
+                              />
+                            })
+                          }
+                        </FormGroup>
+                      </div>
+                    </AccordionDetails>
+                  </Accordion>
+                </li>
+              })}
+              {/* <li className="w-full">
+              <button
+                className={`w-full px-8 py-4 text-left text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`}
+              >
+                Price
+                <span className="pull-right">
+                  <i className={`${expandedMenu == 1 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
+                </span>
+              </button>
+            </li>
+            <li className="w-full">
+              <button
+                className={`w-full px-8 py-4 text-left text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`}
+              >
+                Blockchain
+                <span className="pull-right">
+                  <i className={`${expandedMenu == 1 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
+                </span>
+              </button>
+            </li>
+            <li className="w-full">
+              <button
+                className={`w-full px-8 py-4 text-left text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`}
+              >
+                Rarity
+                <span className="pull-right">
+                  <i className={`${expandedMenu == 1 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
+                </span>
+              </button>
+            </li>
+            <li className="w-full">
+              <button
+                className={`w-full px-8 py-4 text-left text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`}
+              >
+                Attributes
+                <span className="pull-right">
+                  <i className={`${expandedMenu == 1 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
+                </span>
+              </button>
+            </li> */}
+            </ul>
+          </div>
         }
         <div className={filterVisible ? 'col-span-4' : 'col-span-5'}>
           <div className={'flex items-center justify-between w-full'}>
@@ -465,7 +464,7 @@ const Collection: NextPage = () => {
                   <div></div>
                 }
               >
-                <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-${filterVisible ? '5' : '6'} 2xl:grid-cols-6 gap-4 p-1`}>
+                <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ${filterVisible ? 'xl:grid-cols-5 2xl:grid-cols-5' : 'xl:grid-cols-6 2xl:grid-cols-6'} gap-4 p-1`}>
                   {!isActiveBuyNow && nfts.map((item, index) => {
                     return (
                       <div key={index} className={'flex justify-center w-full'}>
@@ -481,7 +480,7 @@ const Collection: NextPage = () => {
         </div>
         {
           filterVisible &&
-              <div />
+              <div className={'col-span-1'} />
         }
       </div>
     </>

@@ -3,6 +3,7 @@ import {getChainLogoById, getChainOfficialNameById, SUPPORTED_CHAIN_IDS} from '.
 import useWallet from '../../../hooks/useWallet'
 import {Transition} from '@headlessui/react'
 import {useSwitchNetwork} from 'wagmi'
+import {GradientBackground} from "../../basic";
 
 export const SelectNetworks = () => {
   const { chainId } = useWallet()
@@ -29,29 +30,24 @@ export const SelectNetworks = () => {
           show={hovered}
         >
           <div className={`absolute right-0 w-[166px] origin-top-right pt-4 ${hovered ? 'block' : 'hidden'}`}>
-            <div className={'rounded-md bg-primary-gradient p-[1px]'}>
-              <div className={'bg-primary rounded-md'}>
-                <div
-                  className="bg-[#202020] opacity-90 rounded-md backdrop-filter backdrop-blur-[10px] shadow-[0_0px_250px_rgba(0,0,0,1)] focus:outline-none py-2">
-                  {
-                    SUPPORTED_CHAIN_IDS.map((chainId, index) => {
-                      return (
-                        <div key={index} onMouseEnter={() => setActiveIndex(index)}
-                          onMouseLeave={() => setActiveIndex(undefined)}>
-                          <div
-                            className={`py-2 px-6 flex items-center cursor-pointer ${activeIndex === index ? 'bg-[#303030]' : ''}`}
-                            onClick={() => switchNetwork?.(chainId)}>
-                            <img alt={'chainIcon'} width={28} height={28} src={getChainLogoById(chainId.toString())}/>
-                            <span
-                              className={'text-primary-light text-lg pl-4'}>{getChainOfficialNameById(chainId)}</span>
-                          </div>
-                        </div>
-                      )
-                    })
-                  }
-                </div>
-              </div>
-            </div>
+            <GradientBackground className="shadow-[0_0px_250px_rgba(0,0,0,1)]">
+              {
+                SUPPORTED_CHAIN_IDS.map((chainId, index) => {
+                  return (
+                    <div key={index} onMouseEnter={() => setActiveIndex(index)}
+                      onMouseLeave={() => setActiveIndex(undefined)}>
+                      <div
+                        className={`py-2 px-6 flex items-center cursor-pointer ${activeIndex === index ? 'bg-[#303030]' : ''}`}
+                        onClick={() => switchNetwork?.(chainId)}>
+                        <img alt={'chainIcon'} width={28} height={28} src={getChainLogoById(chainId.toString())}/>
+                        <span
+                          className={'text-primary-light text-lg pl-4'}>{getChainOfficialNameById(chainId)}</span>
+                      </div>
+                    </div>
+                  )
+                })
+              }
+            </GradientBackground>
           </div>
         </Transition>
       </div>

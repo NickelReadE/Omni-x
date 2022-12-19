@@ -3,6 +3,7 @@ import type { NextPage } from 'next'
 import {GreyButton} from '../components/common/buttons/GreyButton'
 import {PrimaryButton} from '../components/common/buttons/PrimaryButton'
 import {SecondaryButton} from '../components/common/buttons/SecondaryButton'
+import {GradientBackground} from '../components/basic'
 // import CollectionCard from '../components/home/CollectionCard'
 // import NFTBox from '../components/collections/NFTBox'
 //
@@ -54,6 +55,13 @@ const PlayGround: NextPage = () => {
         <GreyButton text={'button'} />
         <PrimaryButton text={'button'} />
         <SecondaryButton text={'button'} />
+      </div>
+      <div className={'mt-[50px]'}>
+        <GradientBackground>
+          <div>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent bibendum, lorem vel tincidunt imperdiet, nibh elit laoreet felis, a bibendum nisl tortor non orci. Donec pretium fermentum felis, quis aliquet est rutrum ut. Integer quis massa ut lacus viverra pharetra in eu lacus. Aliquam tempus odio adipiscing diam pellentesque rhoncus. Curabitur a bibendum est.
+          </div>
+        </GradientBackground>
       </div>
     </>
   )

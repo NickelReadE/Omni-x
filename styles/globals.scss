@@ -85,6 +85,27 @@
   }
 }
 
+.gradient-box {
+  position: relative;
+  padding: 8px 1px;
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 8px;
+    z-index: -1;
+    border: 1px solid transparent;
+    background: linear-gradient(103.58deg, #00F0EC 15.1%, #16FFC5 87.92%);
+    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+  }
+}
+
 ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
   color:    #969696;
 }

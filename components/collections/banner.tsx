@@ -48,7 +48,7 @@ export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
         <div className={'relative'}>
           <img
             src={collection.banner_image}
-            className="rounded-[10px] h-full w-full"
+            className="rounded-[10px] h-full w-full max-h-[500px]"
             alt={'banner'}
           />
           <div className="bottom-[-80px] left-6 h-[120px] absolute flex items-end">
