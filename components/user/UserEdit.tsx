@@ -13,10 +13,10 @@ import editStyle from '../../styles/useredit.module.scss'
 import UserSVG from '../../public/images/icons/user_circle.svg'
 import AlertSVG from '../../public/images/icons/bell.svg'
 import PaymentSVG from '../../public/images/icons/currency_circle_dollar.svg'
-import EthIMG from '../../public/images/payment/eth.png'
-import OmniIMG from '../../public/images/payment/omni.png'
-import UsdcIMG from '../../public/images/payment/usdc.png'
-import UsdtIMG from '../../public/images/payment/usdt.png'
+import EthIMG from '../../public/images/currency/ethereum.svg'
+import OmniIMG from '../../public/images/currency/omni.svg'
+import UsdcIMG from '../../public/images/currency/usdc.svg'
+import UsdtIMG from '../../public/images/currency/usdt.svg'
 import useData from '../../hooks/useData'
 
 interface IUserEditProps {
@@ -455,10 +455,10 @@ const UserEdit: FC<IUserEditProps> = ({ updateModal }) => {
                   <div className="w-[22px]"></div>
                   <div className={editStyle.tokenOption}>
                     <div className={editStyle.chainIcon}>
-                      {coinTokenID === '0' && <Image src={OmniIMG} alt="Omni logo" />}
-                      {coinTokenID === '1' && <Image src={UsdcIMG} alt="Usdc logo" />}
-                      {coinTokenID === '2' && <Image src={UsdtIMG} alt="Usdt logo" />}
-                      {coinTokenID === '3' && <Image src={EthIMG} alt="Eth logo" />}
+                      {coinTokenID === '0' && <img src={'/images/currency/omni.svg'} width={30} height={30} alt="Omni logo" />}
+                      {coinTokenID === '1' && <img src={'/images/currency/usdc.svg'} width={30} height={30} alt="Usdc logo" />}
+                      {coinTokenID === '2' && <img src={'/images/currency/usdt.svg'} width={30} height={30} alt="Usdt logo" />}
+                      {coinTokenID === '3' && <img src={'/images/currency/ethereum.svg'} width={30} height={30} alt="Eth logo" />}
                     </div>
                     <select disabled={true} onChange={(e) => {
                       handleTokenCoin(e.target.value)

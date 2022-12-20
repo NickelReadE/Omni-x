@@ -6,7 +6,7 @@ import ProcessingTransaction from '../../transaction/ProcessingTransaction'
 import useProgress from '../../../hooks/useProgress'
 
 export const TransactionTracker = () => {
-  const { histories, clearHistories } = useProgress()
+  const { histories, pending, clearHistories } = useProgress()
 
   const onClear = () => {
     clearHistories()
@@ -18,7 +18,13 @@ export const TransactionTracker = () => {
         <>
           <Menu.Button as="div" className={'focus:outline-none'}>
             <button className='flex items-center'>
-              <HomeLogo />
+              {
+                pending
+                  ?
+                  <img src={'/images/icons/home_animated_logo.gif'} width={40} height={40} />
+                  :
+                  <HomeLogo />
+              }
             </button>
           </Menu.Button>
           <Transition
