@@ -21,7 +21,9 @@ import {SkeletonCard} from '../../../components/skeleton/card'
 import {WhitelistCard} from '../../../components/launchpad/WhitelistCard'
 import {Logger} from 'ethers/lib/utils'
 import { isSupportGelato } from '../../../utils/constants'
-import { useGaslessMint } from '../../../hooks/useGelato'
+import { RelayTaskStatus, useGaslessMint } from '../../../hooks/useGelato'
+import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
+import { useDispatch } from 'react-redux'
 
 const Mint: NextPage = () => {
   const { chainId, signer, provider, address } = useWallet()
@@ -29,6 +31,7 @@ const Mint: NextPage = () => {
   const col_url = router.query.collection as string
   const { collectionInfo } = useCollection(col_url)
 
+  const dispatch = useDispatch()
   const [totalNFTCount, setTotalNFTCount] = useState<number>(0)
   const [isMinting, setIsMinting] = useState<boolean>(false)
   const [price, setPrice] = useState(0)
@@ -98,7 +101,13 @@ const Mint: NextPage = () => {
 
           if (isSupportGelato(chainId)) {
             const response = await gaslessMint(tokenContract, chainId, quantity, address)
-            await waitForRelayTask(response)
+            const status = await waitForRelayTask(response)
+            if (status === RelayTaskStatus.Executed) {
+              dispatch(openSnackBar({message: 'successfully gasless minted', status: 'success'}))
+            }
+            else {
+              dispatch(openSnackBar({message: 'failed gasless minted', status: 'warning'}))
+            }
           } else {
             const tx = await tokenContract.publicMint(quantity)
             await tx.wait()
