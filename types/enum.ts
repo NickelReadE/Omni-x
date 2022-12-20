@@ -1,6 +1,13 @@
 export enum SupportedChainId {
 }
 
+export enum ContractType {
+    ADVANCED_ONFT721,
+    ADVANCED_ONFT721_ENUMERABLE,
+    ADVANCED_ONFT721_GASLESS,
+    ADVANCED_ONFT721_GASLESS_CLAIMABLE,
+}
+
 export enum ChainIds {
     ETHEREUM = 5, // 1
     BINANCE = 97, // 56
