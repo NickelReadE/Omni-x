@@ -1,6 +1,6 @@
 import {useState} from 'react'
 
-export const UserLikes = () => {
+export const UserFavorites = () => {
   const [selectedItem, setSelectedItem] = useState<number>(0)
 
   const activeClasses = (index: number) => {

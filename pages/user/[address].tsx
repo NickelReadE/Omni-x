@@ -1,16 +1,19 @@
 import { useRouter } from 'next/router'
 import type { NextPage } from 'next'
-import useProfile from '../../hooks/useProfile'
 import React, { useState } from 'react'
 import UserBanner from '../../components/UserBanner'
 import NFTGrid from '../../components/NFTGrid'
-import {UserLikes} from '../../components/user/Likes'
+import {UserFavorites} from '../../components/user/Favorites'
 import {SkeletonCard} from '../../components/skeleton/card'
+import UserActivity from '../../components/user/UserActivity'
+import useActivities from '../../hooks/useActivities'
+import useProfile from '../../hooks/useProfile'
 
 const User: NextPage = () => {
   const router = useRouter()
   const userAddress = router.query.address as string
   const {profile, nfts, isLoading} = useProfile(userAddress)
+  const { activities } = useActivities(userAddress)
 
   const [selectedTab, setSelectedTab] = useState(0)
 
@@ -76,8 +79,8 @@ const User: NextPage = () => {
             <div className={'my-6'}>
               {selectedTab === 0 && <NFTGrid nfts={nfts} isLoading={isLoading} />}
               {selectedTab === 1 && <div/>}
-              {selectedTab === 2 && <UserLikes />}
-              {selectedTab === 3 && <div/>}
+              {selectedTab === 2 && <UserActivity activities={activities}/>}
+              {selectedTab === 3 && <UserFavorites />}
               {selectedTab === 4 && <div/>}
             </div>
           </>

@@ -2,12 +2,17 @@ import type { NextPage } from 'next'
 import React, { useState } from 'react'
 import UserBanner from '../components/UserBanner'
 import NFTGrid from '../components/NFTGrid'
-import {UserLikes} from '../components/user/Likes'
+import {UserFavorites} from '../components/user/Favorites'
 import {SkeletonCard} from '../components/skeleton/card'
+import UserActivity from '../components/user/UserActivity'
 import useData from '../hooks/useData'
+import useActivities from '../hooks/useActivities'
+import useWallet from '../hooks/useWallet'
 
 const Account: NextPage = () => {
+  const { address } = useWallet()
   const {profile, userNfts: nfts, isLoadingNfts: isLoading} = useData()
+  const { activities } = useActivities(address)
 
   const [selectedTab, setSelectedTab] = useState(0)
 
@@ -72,9 +77,9 @@ const Account: NextPage = () => {
 
             <div className={'my-6'}>
               {selectedTab === 0 && <NFTGrid nfts={nfts} isLoading={isLoading} />}
-              {selectedTab === 1 && <div/>}
-              {selectedTab === 2 && <UserLikes />}
-              {selectedTab === 3 && <div/>}
+              {selectedTab === 1 && <div />}
+              {selectedTab === 2 && <UserActivity activities={activities}/>}
+              {selectedTab === 3 && <UserFavorites />}
               {selectedTab === 4 && <div/>}
             </div>
           </>
