@@ -134,3 +134,7 @@ export const getUSDCInstance = (address: string, chainId: number, signer: any) =
 export const getGaslessONFT721Instance = (contractAddress: string, chainId: number, signer: any) => {
   return getContractInstanceByAddr(contractAddress, AdvancedONFT721Gasless, chainId, signer)
 }
+
+export const getGaslessClaimONFT721Instance = (contractAddress: string, chainId: number, signer: any) => {
+  return getContractInstanceByAddr(contractAddress, AdvancedONFT721Gasless, chainId, signer)
+}

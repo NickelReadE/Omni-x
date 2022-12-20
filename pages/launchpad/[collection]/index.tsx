@@ -5,6 +5,7 @@ import React, {useState, useEffect, useCallback} from 'react'
 import {
   getAdvancedONFT721Instance,
   getCurrencyInstance,
+  getGaslessClaimONFT721Instance,
   getGaslessONFT721Instance,
 } from '../../../utils/contracts'
 import {toast} from 'react-toastify'
@@ -24,12 +25,15 @@ import { isSupportGelato } from '../../../utils/constants'
 import { RelayTaskStatus, useGaslessMint } from '../../../hooks/useGelato'
 import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
 import { useDispatch } from 'react-redux'
+import { ContractType } from '../../../types/enum'
+import useProfile from '../../../hooks/useProfile'
 
 const Mint: NextPage = () => {
   const { chainId, signer, provider, address } = useWallet()
   const router = useRouter()
   const col_url = router.query.collection as string
   const { collectionInfo } = useCollection(col_url)
+  const { nfts } = useProfile(address)
 
   const dispatch = useDispatch()
   const [totalNFTCount, setTotalNFTCount] = useState<number>(0)
@@ -38,7 +42,7 @@ const Mint: NextPage = () => {
   const [startId, setStartId] = useState(0)
   const [totalCnt, setTotalCnt] = useState(0)
   const [selectedTab, setSelectedTab] = useState(0)
-  const { gaslessMint, waitForRelayTask } = useGaslessMint()
+  const { gaslessMint, gaslessClaim, waitForRelayTask } = useGaslessMint()
 
   const activeClasses = (index: number) => {
     return index === selectedTab ? 'bg-primary-gradient': 'bg-secondary'
@@ -81,43 +85,91 @@ const Mint: NextPage = () => {
   }, [chainId, collectionInfo, signer])
 
   const mint = async (quantity: number): Promise<void> => {
-    if (chainId === undefined || !provider || !collectionInfo) {
+    if (chainId === undefined || !provider || !collectionInfo || !address) {
       return
     }
 
     let tx
     setIsMinting(true)
     try {
-      if (collectionInfo && collectionInfo.is_gasless && address) {
-        const tokenContract = getGaslessONFT721Instance(collectionInfo.address[chainId], chainId, signer)
-        const tokenAddress = await tokenContract.stableToken()
-        const currencyInstance = getCurrencyInstance(tokenAddress, chainId, signer)
-        if (currencyInstance) {
-          const decimals = Number(await currencyInstance.decimals())
-          const currencyAllowance = await currencyInstance.allowance(address, tokenContract.address)
-          if (currencyAllowance.lt(ethers.utils.parseUnits(price.toString(), decimals).mul(quantity))) {
-            await (await currencyInstance.approve(collectionInfo.address[chainId], ethers.utils.parseUnits((price * quantity).toString(), decimals))).wait()
+      switch (collectionInfo.contract_type) {
+        case ContractType.ADVANCED_ONFT721:
+        case ContractType.ADVANCED_ONFT721_ENUMERABLE: {
+          const tokenContract = getAdvancedONFT721Instance(collectionInfo.address[chainId], chainId, signer)
+          tx = await tokenContract.publicMint(quantity, {value: ethers.utils.parseEther((price * quantity).toString())})
+          await tx.wait()
+
+          break;
+        }
+
+        case ContractType.ADVANCED_ONFT721_GASLESS: {
+          const tokenContract = getGaslessONFT721Instance(collectionInfo.address[chainId], chainId, signer)
+          const tokenAddress = await tokenContract.stableToken()
+          const currencyInstance = getCurrencyInstance(tokenAddress, chainId, signer)
+          if (currencyInstance) {
+            const decimals = Number(await currencyInstance.decimals())
+            const currencyAllowance = await currencyInstance.allowance(address, tokenContract.address)
+            if (currencyAllowance.lt(ethers.utils.parseUnits(price.toString(), decimals).mul(quantity))) {
+              await (await currencyInstance.approve(collectionInfo.address[chainId], ethers.utils.parseUnits((price * quantity).toString(), decimals))).wait()
+            }
+  
+            if (isSupportGelato(chainId)) {
+              const response = await gaslessMint(tokenContract, chainId, quantity, address)
+              const status = await waitForRelayTask(response)
+              if (status === RelayTaskStatus.Executed) {
+                dispatch(openSnackBar({message: 'successfully gasless minted', status: 'success'}))
+              }
+              else {
+                dispatch(openSnackBar({message: 'failed gasless minted', status: 'warning'}))
+              }
+            } else {
+              const tx = await tokenContract.publicMint(quantity)
+              await tx.wait()
+            }
+          }
+          break;
+        }
+
+        case ContractType.ADVANCED_ONFT721_GASLESS_CLAIMABLE: {
+          const tokenContract = getGaslessClaimONFT721Instance(collectionInfo.address[chainId], chainId, signer)
+          const isClaimable = await tokenContract._claimable()
+          const claimableCollectionAddress = await tokenContract._claimableCollection()
+          const holdTokens = nfts.filter(nft => nft.token_address === claimableCollectionAddress && nft.chain_id === chainId)
+          
+          if (!isClaimable || !isSupportGelato(chainId)) {
+            dispatch(openSnackBar({message: 'not support claim', status: 'warning'}))
+            break
           }
 
-          if (isSupportGelato(chainId)) {
-            const response = await gaslessMint(tokenContract, chainId, quantity, address)
-            const status = await waitForRelayTask(response)
-            if (status === RelayTaskStatus.Executed) {
-              dispatch(openSnackBar({message: 'successfully gasless minted', status: 'success'}))
-            }
-            else {
-              dispatch(openSnackBar({message: 'failed gasless minted', status: 'warning'}))
-            }
-          } else {
-            const tx = await tokenContract.publicMint(quantity)
-            await tx.wait()
+          if (holdTokens.length === 0) {
+            dispatch(openSnackBar({message: 'not a greg holder', status: 'warning'}))
+            break
           }
+
+          const claimableToken = await holdTokens.find(async (holdToken) => {
+            const holder = await tokenContract._claimedTokens(holdToken.token_id)
+            if (holder === ethers.constants.AddressZero) return true
+            return false
+          })
+          
+          if (!claimableToken) {
+            dispatch(openSnackBar({message: 'already claimed', status: 'warning'}))
+            break
+          }
+          
+          const response = await gaslessClaim(tokenContract, chainId, claimableToken.token_id, address)
+          const status = await waitForRelayTask(response)
+          if (status === RelayTaskStatus.Executed) {
+            dispatch(openSnackBar({message: 'successfully claimed', status: 'success'}))
+          }
+          else {
+            dispatch(openSnackBar({message: 'failed claim', status: 'warning'}))
+          }
+
+          break;
         }
-      } else {
-        const tokenContract = getAdvancedONFT721Instance(collectionInfo.address[chainId], chainId, signer)
-        tx = await tokenContract.publicMint(quantity, {value: ethers.utils.parseEther((price * quantity).toString())})
-        await tx.wait()
       }
+
       await getInfo()
     } catch (e: any) {
       console.log(e)

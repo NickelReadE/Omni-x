@@ -27,7 +27,8 @@ export type GelatoType = {
 }
 
 export type GaslessMintType = {
-  gaslessMint: (contract: ethers.Contract, chainId: number, mintNum: number) => Promise<RelayResponse>,
+  gaslessMint: (contract: ethers.Contract, chainId: number, mintNum: number, minter: string) => Promise<RelayResponse>,
+  gaslessClaim: (contract: ethers.Contract, chainId: number, holdTokenId: string, claimer: string) => Promise<RelayResponse>,
   waitForRelayTask: (response: RelayResponse) => Promise<RelayTaskStatus>
 }
 
@@ -91,8 +92,18 @@ export const useGaslessMint = () => {
     return sendRelayRequest(request)
   }
 
+  const gaslessClaim = async (contract: ethers.Contract, chainId: number, tokenId: string, claimer: string): Promise<RelayResponse> => {
+    const { data } = await contract.populateTransaction.claim(tokenId, claimer)
+
+    if (!data) throw new Error('useGaslessMint: Unable to encode gaslessMint function data')
+
+    const request = buildRelayRequest(contract.address, chainId, data)
+    return sendRelayRequest(request)
+  }
+
   return {
     gaslessMint,
+    gaslessClaim,
     waitForRelayTask
   }
 }
