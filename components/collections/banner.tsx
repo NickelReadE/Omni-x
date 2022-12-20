@@ -45,7 +45,7 @@ export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
     <div className={'w-full grid grid-cols-4 lg:grid-cols-6'}>
       <div className={'hidden lg:block'} />
       <div className={'col-span-4'}>
-        <div className={'relative'}>
+        <div className={'relative aspect-[3/1]'}>
           <img
             src={collection.banner_image}
             className="rounded-[10px] h-full w-full max-h-[500px]"
