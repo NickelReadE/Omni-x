@@ -1,10 +1,10 @@
 import React from 'react'
-import Link from 'next/link'
+import Router from 'next/router'
 import {PrimaryButton} from '../common/buttons/PrimaryButton'
 
 export default function HomeIntro () {
   return (
-    <div className={'bg-dark-gradient border-[1px] border-[#383838] rounded-[20px] backdrop-blur-[15px] shadow-[0_0_30px_rgba(255,255,255,0.06)] flex flex-col items-center justify-between aspect-[3/1] py-6'}>
+    <div className={'bg-dark-gradient border-[1px] border-[#383838] rounded-[20px] backdrop-blur-[15px] shadow-[0_0_30px_rgba(255,255,255,0.06)] flex flex-col items-center justify-between aspect-[3/1] px-[60px] md:px-[200px] py-6'}>
       <span className="bg-clip-text text-center text-transparent bg-rainbow-gradient text-extraxl font-bold text-shadow-sm">connect through art</span>
       <span className={'text-secondary text-xg1 text-shadow-sm'}>
         art for everyone, everywhere, all in one place
@@ -39,9 +39,11 @@ export default function HomeIntro () {
           </span>
         </div>
       </div>
-      <Link href={'/learn-more'} className={'mt-4'}>
-        <PrimaryButton text={'learn more'} background={'bg-[#242424]'} />
-      </Link>
+      <div className={'mt-4'}>
+        <PrimaryButton text={'learn more'} background={'bg-[#242424]'} onClick={() => {
+          Router.push('/learn-more')
+        }} />
+      </div>
     </div>
   )
 }
