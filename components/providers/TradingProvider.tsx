@@ -396,8 +396,9 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
     lastTxAvailable: orderChainId !== common_data.chainId && isONFTCore,
     colUrl: common_data.collectionUrl
   }
-  speical_data.addTxToHistories(pendingTx)
-  await speical_data.listenONFTEvents()
+
+  const txIdx = speical_data.addTxToHistories(pendingTx)
+  await speical_data.listenONFTEvents(pendingTx, txIdx)
 
   return tx
 }
@@ -633,8 +634,9 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
     colUrl: common_data.collectionUrl
   }
 
-  speical_data.addTxToHistories(pendingTx)
-  await speical_data.listenONFTEvents()
+  const txIdx = speical_data.addTxToHistories(pendingTx)
+  await speical_data.listenONFTEvents(pendingTx, txIdx)
+  
   return tx
 }
 
