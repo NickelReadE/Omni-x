@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import classNames from '../../helpers/classNames'
 import Loading from '../../public/images/loading_f.gif'
-import { numberShortify } from '../../utils/constants'
+import { numberShortify, longNumberShortify } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'
 import {SecondaryButton} from '../common/buttons/SecondaryButton'
 import {PrimaryButton} from '../common/buttons/PrimaryButton'
@@ -12,6 +12,7 @@ import {ModalIDs} from '../../contexts/modal'
 import {useModal} from '../../hooks/useModal'
 import useData from '../../hooks/useData'
 import { useBalance } from 'wagmi'
+import { calcVolumeUp } from '../../utils/utils'
 
 type CollectionType = {
   profile_image: string
@@ -22,6 +23,10 @@ type CollectionType = {
   address: any
   floorNft: any //{ omni: NFTItem, eth: NFTItem, usd: NFTItem }
   floorPrice: any //{ omni: number, eth: number, usd: number }
+  volume24h: string
+  volume48h: string
+  volume7d: string
+  volume14d: string
 }
 
 interface ICollectionCardProps {
@@ -81,6 +86,8 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
     }
   }
 
+  const volumeUp = collection ? calcVolumeUp(collection.volume7d, collection.volume14d) : 0
+
   return (
     <div
       className={classNames('relative bg-[#202020] rounded-lg hover:shadow-[0_0_12px_rgba(160,179,204,0.3)] max-w-[340px]')}
@@ -136,12 +143,12 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
             <div className='text-md flex flex-row justify-between space-x-3'>
               <div className='flex flex-row justify-between'>
                 <span className='font-medium mr-1 text-md text-primary-light'>
-                  {collection ? 0 /* numberShortify(collection.totalVolume) */ : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
+                  {collection ? longNumberShortify(collection.volume7d) : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
                 </span>
                 <img src='/images/chain/ethereum_solid.svg' className='' alt='asset img'></img>
               </div>
-              <span className='font-medium text-[#38B000] text-md'>
-                {collection ? '0%' /* numberShortify(collection.totalVolumeChange) */ : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
+              <span className={classNames('font-medium text-md', volumeUp >= 0 ? 'text-[#38B000]': 'text-[#B00000]')}>
+                {collection ? `${(numberShortify(volumeUp, 0))}%` : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
               </span>
             </div>
           </div>

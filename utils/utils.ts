@@ -1,5 +1,6 @@
 import {CHAIN_TYPE} from '../types/enum'
 import {CHAIN_IDS} from './constants'
+import { BigNumber } from 'ethers'
 
 interface ICrypto{
 	[key: number]: string
@@ -62,4 +63,26 @@ export const serializeMakeOrder = (order: any) => {
 
 export const serializeTakeOrder = (order: any) => {
   console.log(`["${order.isOrderAsk.toString()}","${order.taker}","${order.price.toString()}","${order.tokenId.toString()}","${order.minPercentageToAsk.toString()}","${order.params.toString()}"]`)
+}
+
+export const calcVolumeUp = (volume1x: string, volume2x: string) => {
+  const a = BigNumber.from(volume1x || '0')
+  const b = BigNumber.from(volume2x || '0')
+
+  if (a.gte(b)) {
+    if (b.gt(0)) {
+      return ~~(a.mul(100).div(b).toNumber() - 100)
+    }
+    else if (b.eq(0)) {
+      return 0
+    }
+    return 100
+  }
+  else if (a.gt(0)) {
+    return ~~(100 - b.mul(100).div(a).toNumber())
+  }
+  else if (b.eq(0)) {
+    return -100
+  }
+  return 0
 }
