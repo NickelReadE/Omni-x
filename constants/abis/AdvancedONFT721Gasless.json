@@ -45,6 +45,16 @@
         "internalType": "address",
         "name": "_stableToken",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tax",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_taxRecipient",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -267,25 +277,6 @@
     ],
     "name": "Transfer",
     "type": "event"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "_boughtCount",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
   },
   {
     "inputs": [],
@@ -1153,7 +1144,7 @@
         "type": "uint256"
       }
     ],
-    "name": "setMintRage",
+    "name": "setMintRange",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1226,6 +1217,32 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "_tax",
+        "type": "uint256"
+      }
+    ],
+    "name": "setTax",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address payable",
+        "name": "_taxRecipient",
+        "type": "address"
+      }
+    ],
+    "name": "setTaxRecipient",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint16",
         "name": "_srcChainId",
         "type": "uint16"
@@ -1287,38 +1304,8 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "index",
-        "type": "uint256"
-      }
-    ],
-    "name": "tokenByIndex",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "index",
-        "type": "uint256"
-      }
-    ],
-    "name": "tokenOfOwnerByIndex",
+    "inputs": [],
+    "name": "tax",
     "outputs": [
       {
         "internalType": "uint256",
@@ -1343,19 +1330,6 @@
         "internalType": "string",
         "name": "",
         "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "totalSupply",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -1400,6 +1374,13 @@
   {
     "inputs": [],
     "name": "withdraw",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdrawNative",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

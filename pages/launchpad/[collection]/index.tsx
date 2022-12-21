@@ -122,7 +122,7 @@ const Mint: NextPage = () => {
             const response = await gaslessMint(tokenContract, chainId, quantity, address)
             const status = await waitForRelayTask(response)
             if (status === RelayTaskStatus.Executed) {
-              throw new Error('successfully gasless minted')
+              okToast('successfully gasless minted')
             }
             else {
               throw new Error('failed gasless minted')

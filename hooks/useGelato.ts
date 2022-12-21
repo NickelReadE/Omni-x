@@ -47,6 +47,7 @@ export const useGelato = (): GelatoType => {
   }
 
   const sendRelayRequest = async (request: SyncFeeRequest): Promise<RelayResponse> => {
+    console.log('---', request)
     return await GelatoRelaySDK.relayWithSyncFee(request)
   }
 
