@@ -60,19 +60,15 @@ export const WhitelistCard = ({ title, price, maxLimit, limitPerWallet, startTim
                     <img src={'/images/currency/usdc.svg'} alt={'currency'} className={'w-7 h-7'} />
                 }
               </div>
-              {
-                limitPerWallet > 1 &&
-                <div className={'flex items-center w-full justify-between'}>
-                  <span className={'bg-chain-80001 rounded-full w-6 h-6 flex items-center justify-center text-primary-light text-xxl cursor-pointer'} onClick={() => {
-                    if (quantity > 1) setQuantity(quantity - 1)}
-                  }>-</span>
-                  <span className={'text-primary-light text-xg1'}>{quantity}</span>
-                  <span className={'bg-chain-80001 rounded-full w-6 h-6 flex items-center justify-center text-primary-light text-xxl cursor-pointer'} onClick={() => {
-                    if (quantity < limitPerWallet) setQuantity(quantity + 1)}
-                  }>+</span>
-                </div>
-              }
             </div>
+            {
+              limitPerWallet > 1 &&
+              <div className={'flex items-center justify-between bg-[#303030] rounded-[50px] space-x-2'}>
+                <img src={'/images/icons/minus_circle.svg'} alt={'minus'} className={'w-8 h-8 cursor-pointer'} onClick={() => setQuantity(Math.max(1, quantity - 1))} />
+                <span className={'text-primary-light text-xg1 font-bold'}>{quantity}</span>
+                <img src={'/images/icons/plus_circle.svg'} alt={'minus'} className={'w-8 h-8 cursor-pointer'} onClick={() => setQuantity(Math.min(limitPerWallet, quantity + 1))} />
+              </div>
+            }
             {
               active
                 ?
