@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import classNames from '../../helpers/classNames'
 import Loading from '../../public/images/loading_f.gif'
-import { numberShortify, longNumberShortify } from '../../utils/constants'
+import { numberShortify } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'
 import {SecondaryButton} from '../common/buttons/SecondaryButton'
 import {PrimaryButton} from '../common/buttons/PrimaryButton'
@@ -13,6 +13,7 @@ import {useModal} from '../../hooks/useModal'
 import useData from '../../hooks/useData'
 import { useBalance } from 'wagmi'
 import { calcVolumeUp } from '../../utils/utils'
+import {formatDollarAmount} from '../../utils/numbers'
 
 type CollectionType = {
   profile_image: string
@@ -143,9 +144,9 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
             <div className='text-md flex flex-row justify-between space-x-3'>
               <div className='flex flex-row justify-between'>
                 <span className='font-medium mr-1 text-md text-primary-light'>
-                  {collection ? longNumberShortify(collection.volume7d) : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
+                  {collection ? formatDollarAmount(Number(collection.volume7d)) : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
                 </span>
-                <img src='/images/chain/ethereum_solid.svg' className='' alt='asset img'></img>
+                {/*<img src='/images/chain/ethereum_solid.svg' className='' alt='asset img' />*/}
               </div>
               <span className={classNames('font-medium text-md', volumeUp >= 0 ? 'text-[#38B000]': 'text-[#B00000]')}>
                 {collection ? `${(numberShortify(volumeUp, 0))}%` : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}

@@ -21,7 +21,7 @@ export const TransactionTracker = () => {
               {
                 pending
                   ?
-                  <img src={'/images/icons/home_animated_logo.gif'} width={40} height={40} />
+                  <img src={'/images/icons/home_animated_logo.gif'} width={40} height={40} alt={'animated logo'} />
                   :
                   <HomeLogo />
               }
