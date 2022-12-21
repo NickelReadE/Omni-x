@@ -23,10 +23,24 @@ import {WhitelistCard} from '../../../components/launchpad/WhitelistCard'
 import {Logger} from 'ethers/lib/utils'
 import { isSupportGelato } from '../../../utils/constants'
 import { RelayTaskStatus, useGaslessMint } from '../../../hooks/useGelato'
-import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
-import { useDispatch } from 'react-redux'
 import { ContractType } from '../../../types/enum'
 import useProfile from '../../../hooks/useProfile'
+
+const errorToast = (error: string): void => {
+  toast.error(error, {
+    position: toast.POSITION.TOP_RIGHT,
+    autoClose: 3000,
+    transition: Slide
+  })
+}
+
+const okToast = (success: string): void => {
+  toast.success(success, {
+    position: toast.POSITION.TOP_RIGHT,
+    autoClose: 3000,
+    transition: Slide
+  })
+}
 
 const Mint: NextPage = () => {
   const { chainId, signer, provider, address } = useWallet()
@@ -35,7 +49,6 @@ const Mint: NextPage = () => {
   const { collectionInfo } = useCollection(col_url)
   const { nfts } = useProfile(address)
 
-  const dispatch = useDispatch()
   const [totalNFTCount, setTotalNFTCount] = useState<number>(0)
   const [isMinting, setIsMinting] = useState<boolean>(false)
   const [price, setPrice] = useState(0)
@@ -49,14 +62,6 @@ const Mint: NextPage = () => {
   }
   const activeTextClasses = (index: number) => {
     return index === selectedTab ? 'bg-primary-gradient bg-clip-text text-transparent': 'text-secondary'
-  }
-
-  const errorToast = (error: string): void => {
-    toast.error(error, {
-      position: toast.POSITION.TOP_RIGHT,
-      autoClose: 3000,
-      transition: Slide
-    })
   }
 
   const getInfo = useCallback(async (): Promise<void> => {
@@ -92,7 +97,7 @@ const Mint: NextPage = () => {
     let tx
     setIsMinting(true)
     try {
-      switch (collectionInfo.contract_type) {
+      switch (+collectionInfo.contract_type) {
       case ContractType.ADVANCED_ONFT721:
       case ContractType.ADVANCED_ONFT721_ENUMERABLE: {
         const tokenContract = getAdvancedONFT721Instance(collectionInfo.address[chainId], chainId, signer)
@@ -117,10 +122,10 @@ const Mint: NextPage = () => {
             const response = await gaslessMint(tokenContract, chainId, quantity, address)
             const status = await waitForRelayTask(response)
             if (status === RelayTaskStatus.Executed) {
-              dispatch(openSnackBar({message: 'successfully gasless minted', status: 'success'}))
+              throw new Error('successfully gasless minted')
             }
             else {
-              dispatch(openSnackBar({message: 'failed gasless minted', status: 'warning'}))
+              throw new Error('failed gasless minted')
             }
           } else {
             const tx = await tokenContract.publicMint(quantity)
@@ -137,13 +142,11 @@ const Mint: NextPage = () => {
         const holdTokens = nfts.filter(nft => nft.token_address === claimableCollectionAddress && nft.chain_id === chainId)
         
         if (!isClaimable || !isSupportGelato(chainId)) {
-          dispatch(openSnackBar({message: 'not support claim', status: 'warning'}))
-          break
+          throw new Error('not support claim')
         }
 
         if (holdTokens.length === 0) {
-          dispatch(openSnackBar({message: 'not a greg holder', status: 'warning'}))
-          break
+          throw new Error('not a greg holder')
         }
 
         const claimableToken = await holdTokens.find(async (holdToken) => {
@@ -153,17 +156,16 @@ const Mint: NextPage = () => {
         })
         
         if (!claimableToken) {
-          dispatch(openSnackBar({message: 'already claimed', status: 'warning'}))
-          break
+          throw new Error('already claimed')
         }
         
         const response = await gaslessClaim(tokenContract, chainId, claimableToken.token_id, address)
         const status = await waitForRelayTask(response)
         if (status === RelayTaskStatus.Executed) {
-          dispatch(openSnackBar({message: 'successfully claimed', status: 'success'}))
+          okToast('successfully claimed')
         }
         else {
-          dispatch(openSnackBar({message: 'failed claim', status: 'warning'}))
+          throw new Error('failed claim')
         }
 
         break
@@ -175,6 +177,8 @@ const Mint: NextPage = () => {
       console.log(e)
       if (e && e.code && e.code === Logger.errors.ACTION_REJECTED) {
         errorToast('user denied transaction signature')
+      } else if (e?.message) {
+        errorToast(e.message)
       } else {
         const currentBalance = await provider.getBalance(address ? address : '')
 
@@ -184,8 +188,8 @@ const Mint: NextPage = () => {
           errorToast('your address is not whitelisted on ' + provider?._network.name)
         }
       }
-      setIsMinting(false)
     }
+    setIsMinting(false)
   }
 
   useEffect(() => {

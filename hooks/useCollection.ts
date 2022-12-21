@@ -38,7 +38,7 @@ export type CollectionType = {
     start_ids: any,
     price: number,
     is_gasless: boolean,
-    contract_type: number
+    contract_type: string
 }
 
 export type CollectionTypeFunc = {
