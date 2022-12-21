@@ -93,7 +93,7 @@ export const useGaslessMint = () => {
   }
 
   const gaslessClaim = async (contract: ethers.Contract, chainId: number, tokenId: string, claimer: string): Promise<RelayResponse> => {
-    const { data } = await contract.populateTransaction.claim(tokenId, claimer)
+    const { data } = await contract.populateTransaction.claim(claimer, tokenId)
 
     if (!data) throw new Error('useGaslessMint: Unable to encode gaslessMint function data')
 
