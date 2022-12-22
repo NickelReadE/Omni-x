@@ -45,22 +45,24 @@ const Dropdown = ({ menus, defaultMenu, className, onChange }: IDropdownProps) =
                 <img src={'/images/icons/arrow_down.svg'} alt={'arrow'} className={'rotate-180'} />
               </div>
             </Menu.Item>
-            {
-              menus.map((item, index) => {
-                return (
-                  <Menu.Item key={index} as={Fragment}>
-                    {({ active }) => (
-                      <div
-                        className={`${active && 'bg-gray-50 rounded-[20px]'} cursor-pointer text-secondary flex items-center h-[36px] w-full px-5 font-medium text-md`}
-                        onClick={() => onChangeMenu(item)}
-                      >
-                        {item.text}
-                      </div>
-                    )}
-                  </Menu.Item>
-                )
-              })
-            }
+            <div className={'overflow-y-auto max-h-[180px]'}>
+              {
+                menus.map((item, index) => {
+                  return (
+                    <Menu.Item key={index} as={Fragment}>
+                      {({ active }) => (
+                        <div
+                          className={`${active && 'bg-gray-50 rounded-[20px]'} cursor-pointer text-secondary flex items-center h-[36px] w-full px-5 font-medium text-md`}
+                          onClick={() => onChangeMenu(item)}
+                        >
+                          {item.text}
+                        </div>
+                      )}
+                    </Menu.Item>
+                  )
+                })
+              }
+            </div>
           </Menu.Items>
         </>
       </Menu>
