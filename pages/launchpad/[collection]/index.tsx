@@ -145,21 +145,27 @@ const Mint: NextPage = () => {
           throw new Error('not support claim')
         }
 
-        if (holdTokens.length === 0) {
-          throw new Error('not a greg holder')
-        }
+        let claimableTokenId = (window as any).claimableTokenId
 
-        const claimableToken = await holdTokens.find(async (holdToken) => {
-          const holder = await tokenContract._claimedTokens(holdToken.token_id)
-          if (holder === ethers.constants.AddressZero) return true
-          return false
-        })
-        
-        if (!claimableToken) {
-          throw new Error('already claimed')
+        if (!claimableTokenId) {
+          if (holdTokens.length === 0) {
+            throw new Error('not a greg holder')
+          }
+  
+          const claimableToken = await holdTokens.find(async (holdToken) => {
+            const holder = await tokenContract._claimedTokens(holdToken.token_id)
+            if (holder === ethers.constants.AddressZero) return true
+            return false
+          })
+          
+          if (!claimableToken) {
+            throw new Error('already claimed')
+          }
+
+          claimableTokenId = claimableToken.token_id
         }
         
-        const response = await gaslessClaim(tokenContract, chainId, claimableToken.token_id, address)
+        const response = await gaslessClaim(tokenContract, chainId, claimableTokenId, address)
         const status = await waitForRelayTask(response)
         if (status === RelayTaskStatus.Executed) {
           okToast('successfully claimed')
