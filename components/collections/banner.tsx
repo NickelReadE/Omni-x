@@ -9,7 +9,7 @@ import DiscordIcon from '../../public/images/icons/discord.svg'
 import TelegramIcon from '../../public/images/icons/telegram.svg'
 import {truncateAddress} from '../../utils/utils'
 import {getRoyalty} from '../../utils/helpers'
-import {formatAmount, formatDollarAmount} from "../../utils/numbers";
+import {formatAmount, formatDollarAmount} from '../../utils/numbers'
 
 interface CollectionBannerProps {
     collection: CollectionType
