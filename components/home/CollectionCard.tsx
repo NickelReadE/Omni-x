@@ -135,7 +135,7 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
                 <span className='font-medium text-md mr-[px] text-primary-light'>
                   {collection ? numberShortify(collection.floorPrice.omni) : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
                 </span>
-                <img src='/svgs/omni_asset.svg' className='w-[16px]' alt='asset img' />
+                <img src='/images/currency/omni_asset.svg' className='w-[16px]' alt='asset img' />
               </div>
             </div>
           </div>

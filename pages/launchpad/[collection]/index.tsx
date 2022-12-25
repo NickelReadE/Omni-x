@@ -30,15 +30,17 @@ const Mint: NextPage = () => {
   const router = useRouter()
   const col_url = router.query.collection as string
   const { collectionInfo } = useCollection(col_url)
-
+  const { gaslessMint, waitForRelayTask } = useGaslessMint()
   const dispatch = useDispatch()
+
   const [totalNFTCount, setTotalNFTCount] = useState<number>(0)
   const [isMinting, setIsMinting] = useState<boolean>(false)
   const [price, setPrice] = useState(0)
   const [startId, setStartId] = useState(0)
   const [totalCnt, setTotalCnt] = useState(0)
   const [selectedTab, setSelectedTab] = useState(0)
-  const { gaslessMint, waitForRelayTask } = useGaslessMint()
+  const [nextTokenId, setNextTokenId] = useState(0)
+  const [mintedCnt, setMintedCnt] = useState(0)
 
   const activeClasses = (index: number) => {
     return index === selectedTab ? 'bg-primary-gradient': 'bg-secondary'
@@ -71,9 +73,9 @@ const Mint: NextPage = () => {
         const priceT = await tokenContract.price()
         setPrice(parseFloat(ethers.utils.formatUnits(priceT, decimals)))
         const max_mint = await tokenContract.maxMintId()
-        // const nextId = await tokenContract.nextMintId()
+        const nextId = await tokenContract.nextMintId()
         setTotalNFTCount(max_mint.toNumber())
-        // setNextTokenId(nextId.toNumber())
+        setNextTokenId(nextId.toNumber())
       }
     } catch (error) {
       console.log(error)
@@ -144,11 +146,11 @@ const Mint: NextPage = () => {
     })()
   }, [signer, collectionInfo, chainId, getInfo])
 
-  /*useEffect(() => {
+  useEffect(() => {
     if (Number(nextTokenId) >= 0 && startId >= 0) {
       setMintedCnt(Number(nextTokenId) - startId)
     }
-  }, [nextTokenId, startId])*/
+  }, [nextTokenId, startId])
 
   useEffect(() => {
     if (Number(totalNFTCount) >= 0 && startId >= 0) {
@@ -253,7 +255,7 @@ const Mint: NextPage = () => {
                   {/*items*/}
                   <div className={'flex mt-4'}>
                     <div className={'text-secondary text-lg'}>items</div>
-                    <div className={'text-primary-light text-lg ml-2 text-shadow-sm2'}>{totalCnt}</div>
+                    <div className={'text-primary-light text-lg ml-2 text-shadow-sm2'}>{mintedCnt}/{totalCnt}</div>
                   </div>
 
                   {

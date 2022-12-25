@@ -88,9 +88,6 @@ module.exports = {
       gridTemplateColumns: {
         '13': 'repeat(13, minmax(0, 1fr))',
       },
-      rotate: {
-        '52': '52deg',
-      },
       boxShadow:{
         'ml':'0 0 10px rgba(0,0,0,0.25)'
       },

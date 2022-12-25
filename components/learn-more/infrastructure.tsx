@@ -8,9 +8,8 @@ export default function LearnMoreInfrastructure() {
   return (
     <div className="pt-[150px]">
       <div className="flex justify-center w-full space-x-2">
-        <span className="text-[40px] leading-[48px] font-semibold text-primary-light shadow-[0_4_6px_rgba(0,0,0,0.25)]">truly</span>
-        <span className="text-[40px] leading-[48px] font-semibold text-primary-blue italic shadow-[0_4_6px_rgba(0,0,0,0.25)]">omnichain</span>
-        <span className="text-[40px] leading-[48px] font-semibold text-primary-light shadow-[0_4_6px_rgba(0,0,0,0.25)]">infrastructure</span>
+        <span className="text-[40px] leading-[48px] font-semibold text-primary-light shadow-[0_4_6px_rgba(0,0,0,0.25)]">about</span>
+        <span className="text-[40px] leading-[48px] font-semibold text-primary-blue italic shadow-[0_4_6px_rgba(0,0,0,0.25)]">omni x</span>
       </div>
       <div className="flex w-full mt-12 space-x-4">
         <div className="flex flex-1 justify-center items-center flex-col">

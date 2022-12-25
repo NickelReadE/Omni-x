@@ -260,7 +260,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                   <div className="flex flex-col-1 flex-row justify-between items-center">
                     <div className="flex items-center">
                       {isListed && <>
-                        <img src={currencyIcon || '/svgs/ethereum.svg'} className="w-[18px] h-[18px]" alt='icon'/>
+                        <img src={currencyIcon || '/images/currency/ethereum.svg'} className="w-[18px] h-[18px]" alt='icon'/>
                         <span className="text-primary-light text-md font-extrabold ml-2">
                           {numberLocalize(Number(nft?.price || 0))}
                         </span>
