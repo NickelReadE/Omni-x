@@ -38,7 +38,7 @@ const Dropdown = ({ menus, defaultMenu, className, onChange }: IDropdownProps) =
             <span>{selectedMenu}</span>
             <img src={'/images/icons/arrow_down.svg'} alt={'arrow'} />
           </Menu.Button>
-          <Menu.Items className={'absolute z-10 top-0 bg-[#303030] rounded-[20px] right-0 left-0 max-h-[200px] overflow-y-auto'}>
+          <Menu.Items className={'absolute z-10 top-0 bg-[#303030] rounded-[20px] right-0 left-0 max-h-[230px] overflow-y-auto'}>
             <Menu.Item as={Fragment}>
               <div className={'cursor-pointer text-primary-light flex items-center justify-between h-[32px] w-full px-5 font-medium text-md'}>
                 <span>{selectedMenu}</span>
