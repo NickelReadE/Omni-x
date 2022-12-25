@@ -42,7 +42,7 @@ const BuySection: React.FC<IBuySectionProps> = ({
             creator fee: 5.00%
           </p>
           :
-          <p className="text-warning text-[14px] font-light italic leading-6 w-[435px] mt-10">the chosen currency is not supported on the current chain</p>
+          <p className="text-primary-light text-[14px] font-light italic leading-6 w-[435px] mt-10">the chosen currency is not supported on the current chain</p>
       }
     </div>
   )

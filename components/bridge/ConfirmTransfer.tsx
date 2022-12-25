@@ -291,7 +291,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <div className={'max-w-[400px] shadow-[0_0_250px_rgba(0,0,0,1)] w-full bg-primary-gradient backdrop-blur-[10px] rounded-lg p-[1px]'}>
           <Dialog.Panel
-            className={'w-full bg-[#161616] backdrop-blur-[10px] rounded-lg p-8'}>
+            className={'w-full bg-[#161616] backdrop-blur-[10px] rounded-lg p-8 relative'}>
             <Dialog.Title>
               <div className="text-primary-light text-xg2 font-bold">send item</div>
             </Dialog.Title>
