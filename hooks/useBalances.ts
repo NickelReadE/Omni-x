@@ -38,13 +38,13 @@ const useBalances = (): BalancesType => {
           usdt: 0,
         }
 
-        try {
+        /*try {
           const omniContract = getCurrencyInstance(getAddressByName('OMNI', chainId), chainId, signer)
           const balance = await omniContract?.balanceOf(address)
           newBalances.omni = Number(ethers.utils.formatUnits(balance, 18))
         } catch (error) {
           console.error('Error while fetching OMNI balance', error)
-        }
+        }*/
 
         try {
           {
@@ -112,7 +112,7 @@ const useBalances = (): BalancesType => {
         const decimal = getDecimalsByAddress(chainId, currencyAddr)
         const tx = await usdc.mint(await signer.getAddress(), ethers.utils.parseUnits('25000', decimal), { gasLimit: '300000' })
         await tx.wait()
-  
+
         dispatch(openSnackBar({ message: `Received 1,000 $${currencyName}`, status: 'success' }))
       }
       else {

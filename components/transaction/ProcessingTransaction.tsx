@@ -68,22 +68,22 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
           {txInfo.type === 'buy' && 'buy:'}
           {txInfo.type === 'accept' && 'sell:'}
         </span>
-        <Image
+        <img
           onMouseEnter={() => onHover('sender')}
           onMouseLeave={() => onLeave('sender')}
           src={hovered ? getChainIcons(txInfo.senderChainId).explorer : getChainIcons(txInfo.senderChainId).icon}
           style={{ cursor: (hovered) ? 'pointer' : 'auto', opacity: (txInfo && txInfo.txHash) ? 1 : 0.4 }}
           alt="chain icon"
-          width={18}
-          height={18}
+          width={20}
+          height={20}
           onClick={onViewExplorer}
         />
         <div className={'w-4 h-4 flex items-center justify-center'}>
           <img src={'/images/icons/arrow_right.svg'} alt="arrowRight" />
         </div>
-        <Image
-          width={18}
-          height={18}
+        <img
+          width={20}
+          height={20}
           onMouseEnter={() => onHover('target')}
           onMouseLeave={() => onLeave('target')}
           src={(targetHovered && txInfo.destTxHash) ? getChainIcons(txInfo.targetChainId).explorer : getChainIcons(txInfo.targetChainId).icon}
@@ -93,9 +93,9 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
         />
         {txInfo.lastTxAvailable && (<>
           <Image src={arrowRight} alt="arrowRight" />
-          <Image
-            width={18}
-            height={18}
+          <img
+            width={20}
+            height={20}
             onMouseEnter={() => onHover('last')}
             onMouseLeave={() => onLeave('last')}
             src={(lastHovered && txInfo.lastTxHash) ? getChainIcons(txInfo.targetChainId).explorer : getChainIcons(txInfo.targetChainId).icon}
