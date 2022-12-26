@@ -235,8 +235,8 @@ export const chainInfos: { [key: number]: { name: string; roundedLogo: string, e
   },
   2222: {
     name: 'aptos-testnet',
-    roundedLogo: '/svgs/aptos.svg',
-    explorerLogo: '/svgs/aptos.svg',
+    roundedLogo: '/images/chain/aptos.svg',
+    explorerLogo: '/images/chain/aptos.svg',
     officialName: 'Aptos',
     currency: 'APT',
     comingSoon: true

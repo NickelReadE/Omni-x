@@ -1,5 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useMemo, useState} from 'react'
+import Dialog from '@material-ui/core/Dialog'
+import {makeStyles} from '@material-ui/core/styles'
 import useWallet from '../hooks/useWallet'
 import classNames from '../helpers/classNames'
 import { ProfileData } from '../hooks/useProfile'
@@ -9,10 +11,9 @@ import WebsiteIcon from '../public/images/icons/website.svg'
 import InstagramIcon from '../public/images/icons/instagram.svg'
 import TwitterIcon from '../public/images/icons/twitter.svg'
 import UserEdit from './user/UserEdit'
-import Dialog from '@material-ui/core/Dialog'
-import {makeStyles} from '@material-ui/core/styles'
 import {PrimaryButton} from './common/buttons/PrimaryButton'
 import {GreyButton} from './common/buttons/GreyButton'
+import {formatAmount} from '../utils/numbers'
 
 type UserBannerProps = {
     user: ProfileData,
@@ -86,8 +87,8 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
                   <PrimaryButton text={'following'} className={'h-[24px] text-md font-medium'} />
                 </div>
                 <div className={'flex items-center'}>
-                  <span className={'text-md text-primary-light'}>1.65k followers</span>
-                  <span className={'text-md text-primary-light ml-2'}>1.65k following</span>
+                  <span className={'text-md text-primary-light'}>{formatAmount(16800)} followers</span>
+                  <span className={'text-md text-primary-light ml-2'}>{formatAmount(16500)} following</span>
                 </div>
               </div>
               {/*Social links*/}

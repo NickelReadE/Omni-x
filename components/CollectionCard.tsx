@@ -9,7 +9,7 @@ import Loading from '../public/images/loading_f.gif'
 import { useModal } from '../hooks/useModal'
 import { ModalIDs } from '../contexts/modal'
 import { longNumberShortify, numberShortify } from '../utils/constants'
-import { BigNumber } from 'ethers'
+import { calcVolumeUp } from '../utils/utils'
 
 const CollectionCard = (props:any) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -52,24 +52,6 @@ const CollectionCard = (props:any) => {
     zIndex: 99
   } : undefined
 
-  const calcVolumeUp = (volume24h: string, volume48h: string) => {
-    const a = BigNumber.from(volume24h)
-    const b = BigNumber.from(volume48h)
-
-    if (a.gte(b)) {
-      if (b.gt(0)) {
-        return ~~(a.mul(100).div(b).toNumber() - 100)
-      }
-      return 100
-    }
-    else if (a.gt(0)) {
-      return ~~(100 - b.mul(100).div(a).toNumber())
-    }
-    else if (b.eq(0)) {
-      return -100
-    }
-    return 0
-  }
   const volumeUp = props.collection ? calcVolumeUp(props.collection.volume24h, props.collection.volume48h) : 0
 
   return (
@@ -128,7 +110,7 @@ const CollectionCard = (props:any) => {
               <div className='text-[14px] font-extrabold  mb-1 text-center'>Floor</div>
               <div className='flex flex-row space-x-1 justify-center' >
                 <span className='font-medium text-[12px]'>{props.collection?numberShortify(props.collection.floorPrice.omni):<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
-                <img src='/svgs/omni_asset.svg' className='w-[16px]' alt='asset img'></img>
+                <img src='/images/currency/omni_asset.svg' className='w-[16px]' alt='asset img'></img>
               </div>
             </div>
           </div>

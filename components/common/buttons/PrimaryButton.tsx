@@ -17,7 +17,7 @@ export const PrimaryButton = ({ text, loading, className, parentClassName, backg
 
   return (
     <button className={`flex items-center bg-primary-gradient rounded-full p-[1px] ${parentClassName ?? ''}`} disabled={disabled} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onClick={onClick}>
-      <div className={twMerge(`${hovered ? 'bg-transparent' : (background ?? 'bg-primary')} flex items-center justify-center rounded-full px-[15px] py-[7px] h-full ${className ?? ''}`)}>
+      <div className={twMerge(`${hovered ? 'bg-transparent' : (background ?? 'bg-primary')} flex items-center justify-center rounded-full px-[15px] py-[7px] h-full w-full ${className ?? ''}`)}>
         {
           loading && <SpinLoader />
         }

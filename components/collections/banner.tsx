@@ -9,6 +9,7 @@ import DiscordIcon from '../../public/images/icons/discord.svg'
 import TelegramIcon from '../../public/images/icons/telegram.svg'
 import {truncateAddress} from '../../utils/utils'
 import {getRoyalty} from '../../utils/helpers'
+import {formatAmount, formatDollarAmount} from '../../utils/numbers'
 
 interface CollectionBannerProps {
     collection: CollectionType
@@ -86,17 +87,17 @@ export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
               <span className={'text-md text-secondary'}>total&nbsp;vol</span>
             </div>
             <div className={'2xl:flex flex-col items-center space-y-2 hidden'}>
-              <span className={'text-xg text-primary-light'}>{collection.itemsCnt}</span>
+              <span className={'text-xg text-primary-light'}>{formatDollarAmount(Number(collection.volume7d))}</span>
               <span className={'text-md text-secondary'}>7d&nbsp;vol</span>
             </div>
             <div className={'2xl:flex flex-col items-center space-y-2 hidden'}>
-              <span className={'text-xg text-primary-light'}>{collection.itemsCnt}</span>
+              <span className={'text-xg text-primary-light'}>{collection.orderCnt}</span>
               <span className={'text-md text-secondary'}>listed</span>
             </div>
           </div>
           <div className={'flex flex-col space-y-2'}>
             <PrimaryButton text={'following'} className={'h-[26px] text-md font-medium'} />
-            <span className={'text-md text-primary-light'}>1.65k followers</span>
+            <span className={'text-md text-primary-light'}>{formatAmount(16500)} followers</span>
           </div>
           {/*Social buttons section*/}
           <div className={'flex items-center space-x-3'}>
