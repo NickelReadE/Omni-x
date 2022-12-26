@@ -45,7 +45,7 @@ export default function LearnMoreIntro() {
         </div>
       </div>
       <div className='flex justify-between space-x-12 pt-[150px]'>
-        <IntroCard title="omnichain interoperability">
+        <IntroCard title="ONFTs">
           <Image src={OmniChainImage} alt="omnichain" />
         </IntroCard>
         <IntroCard title="web3 social">

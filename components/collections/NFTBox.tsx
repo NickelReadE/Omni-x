@@ -194,7 +194,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           </div>
           <div className={'flex flex-col justify-between min-h-[100px] p-3'}>
             <div className="flex flex-col-1 flex-row justify-between items-center">
-              <div className="text-md text-secondary font-bold">
+              <div className="text-sm2 text-secondary font-bold">
                 {nft.token_id}
               </div>
               <img src={chainIcon} alt={'chainicon'} width={18} height={18} />
@@ -261,7 +261,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                     <div className="flex items-center">
                       {isListed && <>
                         <img src={currencyIcon || '/images/currency/ethereum.svg'} className="w-[18px] h-[18px]" alt='icon'/>
-                        <span className="text-primary-light text-md font-extrabold ml-2">
+                        <span className="text-primary-light text-lg font-extrabold ml-2">
                           {numberLocalize(Number(nft?.price || 0))}
                         </span>
                       </>}
@@ -270,16 +270,16 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                   <div className="flex flex-col-1 items-center justify-between w-full">
                     <div>
                       {(!!lastSale && lastSale > 0) && <div className={'flex items-center'}>
-                        <span className="text-secondary text-sm font-bold">last sale: &nbsp;</span>
+                        <span className="text-secondary text-sm2 font-bold">last sale: &nbsp;</span>
                         <img alt={'saleIcon'} src={lastSaleCoin} className="w-[18px] h-[18px]"/>&nbsp;
                         <span
-                          className="text-secondary text-sm font-bold">{numberLocalize(Number(lastSale))}</span>
+                          className="text-secondary text-sm2 font-bold">{numberLocalize(Number(lastSale))}</span>
                       </div>}
                       {(!lastSale && !!highestBid && highestBid > 0) && <div className={'flex items-center'}>
-                        <span className="text-[#6C757D] text-md font-bold">highest offer: &nbsp;</span>
+                        <span className="text-[#6C757D] text-sm2 font-bold">highest offer: &nbsp;</span>
                         <img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;
                         <span
-                          className="text-secondary text-sm font-bold">{numberLocalize(Number(highestBid))}</span>
+                          className="text-secondary text-sm2 font-bold">{numberLocalize(Number(highestBid))}</span>
                       </div>}
                     </div>
                   </div>
