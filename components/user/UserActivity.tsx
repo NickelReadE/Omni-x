@@ -45,18 +45,18 @@ const ActivitySend = ({activity}: {activity: ActivityType}) => {
   }
 
   return (
-    <div className="flex items-center justify-between mt-4">
+    <div className="flex items-center justify-between space-x-4 text-primary-light mt-4">
       <Link href={`/collections/${activity.col_url}/${activity.tokenId}`}>
-        <div className="flex flex-1 items-center rounded-lg cursor-pointer">
-          <img src={activity.tokenData?.image} width={50} height={50} alt={'token Image'} />
-          <div className={'flex flex-col ml-2'}>
-            <span>{activity.tokenData?.name}</span>
-            <span>{activity.tokenId}</span>
+        <div className="flex flex-1 items-center cursor-pointer bg-dark-gradient rounded-[8px] border-[1px] border-[#383838] backdrop-filter backdrop-blur-[15px] p-2">
+          <img src={activity.tokenData?.image} alt={'token Image'} className={'max-h-[50px] w-[50px] object-contain'} />
+          <div className={'flex flex-col space-y-2 ml-2'}>
+            <span className={'text-primary-light text-lg'}>{activity.tokenData?.name}</span>
+            <span className={'text-primary-light text-lg'}>{activity.tokenId}</span>
           </div>
         </div>
       </Link>
 
-      <div className={'flex flex-1'}>{USER_ACTIVITY_TYPE_NAMES[activity.activity]}</div>
+      <div className={'flex flex-1 text-primary-light text-md'}>{USER_ACTIVITY_TYPE_NAMES[activity.activity]}</div>
 
       <div className={'flex flex-1 items-center'}>
         {
@@ -85,7 +85,7 @@ const ActivitySend = ({activity}: {activity: ActivityType}) => {
             className={`mr-2 h-[20px] ${activity.senderTransactionHash ? 'cursor-pointer opacity-1' : 'opacity-40'}`}
           />
         }
-        {truncateAddress(activity.from)}
+        <span className={'text-md'}>{truncateAddress(activity.from)}</span>
       </div>
       <div className={'flex flex-1 items-center'}>
         <img
@@ -98,9 +98,13 @@ const ActivitySend = ({activity}: {activity: ActivityType}) => {
           }}
           className={`mr-2 h-[20px] ${activity.transactionHash ? 'cursor-pointer opacity-1' : 'opacity-40'}`}
         />
-        {truncateAddress(activity.to)}
+        <span className={'text-md'}>{truncateAddress(activity.to)}</span>
       </div>
-      <div className={'flex flex-1'}>{new Date(activity.createdAt).toLocaleString()}</div>
+      <div className={'flex flex-1 justify-end text-md'}>{new Date(activity.createdAt).toLocaleDateString('en-US', {
+        year: 'numeric',
+        day: 'numeric',
+        month: 'short',
+      })}</div>
     </div>
   )
 }
@@ -108,15 +112,19 @@ const ActivitySend = ({activity}: {activity: ActivityType}) => {
 const UserActivity = ({ activities }: { activities: ActivityType[] }) => {
   return (
     <>
-      <div className="w-full">
-        <div>
-          {
-            activities.map((activity, index) => {
-              return (
-                <ActivitySend key={index} activity={activity} />
-              )
-            })
-          }
+      <div className={'grid grid-cols-4 lg:grid-cols-6'}>
+        <div className={'hidden lg:block'} />
+        <div className="col-span-4 inline-flex flex flex-col rounded-md shadow-sm" role="group">
+          {/*Content section*/}
+          <div className="w-full">
+            {
+              activities.map((activity, index) => {
+                return (
+                  <ActivitySend key={index} activity={activity} />
+                )
+              })
+            }
+          </div>
         </div>
       </div>
     </>

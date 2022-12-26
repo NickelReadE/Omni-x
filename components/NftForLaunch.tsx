@@ -1,70 +1,21 @@
-import React, {useCallback, useEffect, useState} from 'react'
+import React from 'react'
 import {ITypeNFT} from '../interface/interface'
 import Link from 'next/link'
-import {ethers} from 'ethers'
-import {getCollectionInfo, selectCollectionInfo} from '../redux/reducers/collectionsReducer'
-import {useDispatch, useSelector} from 'react-redux'
-import useWallet from '../hooks/useWallet'
 
-import editStyle from '../styles/nftbox.module.scss'
-import classNames from '../helpers/classNames'
-import {ChainIds} from '../types/enum'
-import { getAdvancedONFT721Instance } from '../utils/contracts'
-
-const NftForLaunch = (pro: ITypeNFT) => {
-  const [price, setPrice] = useState(0)
-  const [time, setTime] = useState('0')
-  const {
-    chainId,
-    provider,
-  } = useWallet()
-  const dispatch = useDispatch()
-  const collectionInfo = useSelector(selectCollectionInfo)
-  const getPrice = useCallback(async () => {
-    try {
-      if (!collectionInfo || chainId === undefined || collectionInfo.address === undefined || !provider) {
-        return
-      }
-      const tokenContract = getAdvancedONFT721Instance(collectionInfo.address[chainId ? chainId : ChainIds.ETHEREUM], chainId, provider)
-      const priceT = await tokenContract.price()
-      setPrice(Number(ethers.utils.formatEther(priceT)))
-    } catch (error) {
-      console.log(error)
-    }
-  }, [collectionInfo, chainId, provider])
-
-  useEffect(() => {
-    dispatch(getCollectionInfo(pro.col_url) as any)
-  }, [dispatch, pro.col_url])
-
-  useEffect(() => {
-    (async() => {
-      if (collectionInfo) {
-        await getPrice()
-      }
-    })()
-  }, [getPrice, collectionInfo])
-  useEffect(() => {
-    if (collectionInfo) {
-      if (Object.prototype.hasOwnProperty.call(collectionInfo, 'mintFinish')) {
-        setTime(collectionInfo.mintFinish)
-      }
-    }
-  }, [collectionInfo])
-
+const NftForLaunch = ({ items, img, name, col_url, price }: ITypeNFT) => {
   return (
-    <div className=" border-[#F8F9FA]  rounded-[8px] hover:cursor-pointer">
-      <div className={classNames(' flex flex-col bg-l-50 ')}>
-        <div className={classNames('relative', editStyle.nftContainer)}>
-          <div className={classNames('group relative flex justify-center text-center overflow-hidden rounded-md')}>
-            <img className="w-[300px] rounded-md " src={pro.img ? pro.img : '/images/nft.png'} alt="nft-image"/>
+    <div className=" border-[#F8F9FA]  rounded-lg hover:cursor-pointer">
+      <div className={' flex flex-col bg-l-50'}>
+        <div className={'relative'}>
+          <div className={'group relative flex justify-center text-center overflow-hidden rounded-md'}>
+            <img className="w-[300px] rounded-md " src={img ?? '/images/nft.png'} alt="nft-image"/>
           </div>
           <div
-            className={classNames('absolute w-full h-full  flex items-center justify-center  ', editStyle.actionBtn)}>
+            className={'absolute w-full h-full  flex items-center justify-center'}>
             <div>
-              <Link href={`/launchpad/${pro.col_url}`}>
+              <Link href={`/launchpad/${col_url}`}>
                 <div
-                  className="w-[230px] text-[18px] text-white	 text-extrabold text-center items-center bg-[#B444F9] rounded-lg  py-[7px] hover:cursor-pointer">view
+                  className="w-[230px] text-xg text-white	 text-extrabold text-center items-center bg-[#B444F9] rounded-lg  py-[7px] hover:cursor-pointer">view
                   collection
                 </div>
               </Link>
@@ -74,8 +25,8 @@ const NftForLaunch = (pro: ITypeNFT) => {
         </div>
 
         <div className="flex flex-row justify-between  px-3 mt-[12px] align-middle  font-['RetniSans']">
-          <div className=" text-[#000000] text-[14px] font-bold">
-            {pro.name.toUpperCase()}
+          <div className=" text-[#000000] text-md font-bold">
+            {name.toUpperCase()}
           </div>
         </div>
         <div className="flex px-3 justify-between">
@@ -85,7 +36,7 @@ const NftForLaunch = (pro: ITypeNFT) => {
                 items
               </div>
               <div className="flex items-center ">
-                {pro.items}
+                {items}
               </div>
             </div>
             <div className="flex flex-col mt-2.5 mb-3.5 justify-between align-middle text-[#A0B3CC]">
@@ -105,16 +56,12 @@ const NftForLaunch = (pro: ITypeNFT) => {
               {typeNFT==='Live'?'23hrs 10min':'5 Sep'}
             </div> */}
             <div className="flex items-center  text-[#B00000] ">
-              {time === '0' ? '' : time}
+              {'0'}
             </div>
           </div>
         </div>
       </div>
-
-
     </div>
-
-
   )
 }
 export default NftForLaunch

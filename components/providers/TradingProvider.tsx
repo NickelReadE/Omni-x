@@ -1,14 +1,38 @@
-import { addDays } from 'date-fns'
-import { BigNumber, BigNumberish, ethers } from 'ethers'
-import { PendingTxType } from '../../contexts/contract'
-import { IBidData, IListingData, IOrder, NFTItem, OrderStatus } from '../../interface/interface'
-import { openSnackBar } from '../../redux/reducers/snackBarReducer'
-import { collectionsService } from '../../services/collections'
-import { MakerOrderWithSignature, TakerOrderWithEncodedParams } from '../../types'
-import { ContractName, CREATOR_FEE, formatCurrency, getAddressByName, getChainNameFromId, getConversionRate, getCurrencyNameAddress, getLayerzeroChainId, getProvider, isUsdcOrUsdt, isWeth, parseCurrency, PROTOCAL_FEE, validateCurrencyName } from '../../utils/constants'
-import { decodeFromBytes, getCurrencyInstance, getCurrencyManagerInstance, getERC721Instance, getFundManagerInstance, getOmnixExchangeInstance, getONFTCore721Instance, getTransferSelectorNftInstance } from '../../utils/contracts'
-import { acceptOrder, postMakerOrder } from '../../utils/makeOrder'
-import { serializeMakeOrder, serializeTakeOrder } from '../../utils/utils'
+import {addDays} from 'date-fns'
+import {BigNumber, BigNumberish, ethers} from 'ethers'
+import {PendingTxType} from '../../contexts/contract'
+import {IBidData, IListingData, IOrder, NFTItem, OrderStatus} from '../../interface/interface'
+import {openSnackBar} from '../../redux/reducers/snackBarReducer'
+import {collectionsService} from '../../services/collections'
+import {MakerOrderWithSignature, TakerOrderWithEncodedParams} from '../../types'
+import {
+  ContractName,
+  CREATOR_FEE,
+  formatCurrency,
+  getAddressByName,
+  getChainNameFromId,
+  getConversionRate,
+  getCurrencyNameAddress,
+  getLayerzeroChainId,
+  getProvider,
+  isUsdcOrUsdt,
+  isWeth,
+  parseCurrency,
+  PROTOCAL_FEE,
+  validateCurrencyName
+} from '../../utils/constants'
+import {
+  decodeFromBytes,
+  getCurrencyInstance,
+  getCurrencyManagerInstance,
+  getERC721Instance,
+  getFundManagerInstance,
+  getOmnixExchangeInstance,
+  getONFTCore721Instance,
+  getTransferSelectorNftInstance
+} from '../../utils/contracts'
+import {acceptOrder, postMakerOrder} from '../../utils/makeOrder'
+import {serializeMakeOrder, serializeTakeOrder} from '../../utils/utils'
 
 export type TradingCommonData = {
   provider?: any,
@@ -123,8 +147,7 @@ export const doListingApprove = async (
   const transferSelector = getTransferSelectorNftInstance(common_data.chainId, common_data.signer)
   const transferManagerAddr = await transferSelector.checkTransferManagerForToken(common_data.collectionAddress)
   const nftContract = getERC721Instance(common_data.collectionAddress, common_data.chainId, common_data.signer)
-  const tx = await approveNft(nftContract, common_data.address, transferManagerAddr, common_data.tokenId)
-  return tx
+  return await approveNft(nftContract, common_data.address, transferManagerAddr, common_data.tokenId)
 }
 
 export const doListingConfirm = async (listing_data: IListingData, common_data: TradingCommonData) => {
@@ -205,7 +228,7 @@ export const doBuyApprove = async (order: IOrder, common_data: TradingCommonData
     if (!omni) {
       throw new Error('Could not find the currency')
     }
-  
+
     {
       const balance = await omni.balanceOf(common_data.address)
       if (balance.lt(parsedPrice)) {
@@ -214,13 +237,13 @@ export const doBuyApprove = async (order: IOrder, common_data: TradingCommonData
         throw new Error(errMessage)
       }
     }
-  
+
     const buy_price = parsedPrice
     approveTxs.push(await approve(omni, common_data.address, getAddressByName('FundManager', common_data.chainId), buy_price))
-  
+
     if (isUsdcOrUsdt(order?.currencyAddress)) {
       approveTxs.push(await approve(omni, common_data.address, getAddressByName('StargatePoolManager', common_data.chainId), buy_price))
-    }  
+    }
   }
 
   return approveTxs.filter(Boolean)
@@ -294,10 +317,10 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
     ])
   }
 
-  
+
   serializeMakeOrder(makerAsk)
   serializeTakeOrder(takerBid)
-  
+
   const [omnixFee, currencyFee, nftFee] = await omnixExchange.getLzFeesForTrading(takerBid, makerAsk, 0)
   const lzFee = omnixFee.add(currencyFee).add(nftFee)
 
@@ -329,7 +352,7 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
         throw new Error(errMessage)
       }
     }
-    
+
     {
       const balance = await omni.balanceOf(common_data.address)
       if (balance.lt(takerBid.price)) {
@@ -338,7 +361,7 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
         throw new Error(errMessage)
       }
     }
-  
+
     tx = await omnixExchange.connect(common_data.signer).matchAskWithTakerBid(0, takerBid, makerAsk, { value: lzFee })
   }
 
@@ -373,8 +396,9 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
     lastTxAvailable: orderChainId !== common_data.chainId && isONFTCore,
     colUrl: common_data.collectionUrl
   }
-  const historyIndex = speical_data.addTxToHistories(pendingTx)
-  await speical_data.listenONFTEvents(pendingTx, historyIndex)
+
+  const txIdx = speical_data.addTxToHistories(pendingTx)
+  await speical_data.listenONFTEvents(pendingTx, txIdx)
 
   return tx
 }
@@ -487,9 +511,7 @@ export const doAcceptApprove = async (check_network: boolean, common_data: Tradi
   const transferSelector = getTransferSelectorNftInstance(common_data.chainId, common_data.signer)
   const transferManagerAddr = await transferSelector.checkTransferManagerForToken(common_data.collectionAddress)
   const nftContract = getERC721Instance(common_data.collectionAddress, common_data.chainId, common_data.signer)
-  const txApprove = await approveNft(nftContract, common_data.address, transferManagerAddr, common_data.tokenId)
-
-  return txApprove
+  return await approveNft(nftContract, common_data.address, transferManagerAddr, common_data.tokenId)
 }
 
 export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCommonData, speical_data: TradingSpecialData) => {
@@ -612,14 +634,15 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
     colUrl: common_data.collectionUrl
   }
 
-  const historyIndex = speical_data.addTxToHistories(pendingTx)
-  await speical_data.listenONFTEvents(pendingTx, historyIndex)
+  const txIdx = speical_data.addTxToHistories(pendingTx)
+  await speical_data.listenONFTEvents(pendingTx, txIdx)
+  
   return tx
 }
 
 export const doAcceptComplete = async (bid_order: IOrder, common_data: TradingCommonData) => {
   if (!common_data.collectionUrl) throw new Error('Invalid collection')
-  
+
   await updateOrderStatus(bid_order, 'EXECUTED')
   await collectionsService.updateCollectionNFTChainID(common_data.collectionUrl, Number(common_data.tokenId), Number(common_data.chainId))
 }

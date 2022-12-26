@@ -1,44 +1,36 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect, useMemo, useState} from 'react'
-import Image from 'next/image'
+import React, {useMemo, useState} from 'react'
+import Dialog from '@material-ui/core/Dialog'
+import {makeStyles} from '@material-ui/core/styles'
 import useWallet from '../hooks/useWallet'
 import classNames from '../helpers/classNames'
-import Twitter from '../public/images/twitter.png'
-import Web from '../public/images/web.png'
-import {getVeSTGInstance} from '../utils/contracts'
-import Hgreg from '../public/images/gregs/logo.png'
-import Stg from '../public/images/stg/stg.png'
 import { ProfileData } from '../hooks/useProfile'
-import { chainsFroSTG, veSTGContractAddress } from '../utils/constants/addresses'
+import { truncateAddress } from '../utils/utils'
+import {ExternalLink} from './basic'
+import WebsiteIcon from '../public/images/icons/website.svg'
+import InstagramIcon from '../public/images/icons/instagram.svg'
+import TwitterIcon from '../public/images/icons/twitter.svg'
+import UserEdit from './user/UserEdit'
+import {PrimaryButton} from './common/buttons/PrimaryButton'
+import {GreyButton} from './common/buttons/GreyButton'
+import {formatAmount} from '../utils/numbers'
 
 type UserBannerProps = {
     user: ProfileData,
 }
 
+const useStyles = makeStyles({
+  paper: {
+    padding: 0,
+    width: '90%',
+    maxWidth: '960px',
+  },
+})
+
 const UserBanner = ({user}: UserBannerProps): JSX.Element => {
   const {address} = useWallet()
-  const [avatarError, setAvatarError] = useState(false)
-  const [isStgStacker, setIsStgStacker] = useState(false)
-  const [balances, setBalanceSTG] = useState(0)
-
-  const fetchToken = async (chain: number) => {
-    const veSTGInstance = getVeSTGInstance(veSTGContractAddress[chain], chain, null)
-    setBalanceSTG(await veSTGInstance.balanceOf(address))
-  }
-
-  useEffect(() => {
-    if (address) {
-      chainsFroSTG.map((chain) => {
-        fetchToken(chain)
-      })
-    }
-  }, [address])
-
-  useEffect(() => {
-    if (balances > 0) {
-      setIsStgStacker(true)
-    }
-  }, [balances])
+  const classes = useStyles()
+  const [settingModal, setSettingModal] = useState(false)
 
   const bannerImage = useMemo(() => {
     if (user && user.banner) {
@@ -48,7 +40,13 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
   }, [user])
 
   const avatarImage = useMemo(() => {
-    if (!avatarError && user && user.avatar) {
+    if (user && user.avatar) {
+      if (user.avatar.startsWith('https://ipfs.io')) {
+        return user.avatar
+      }
+      if (user.avatar.startsWith('ipfs')) {
+        return `https://ipfs.io/${user.avatar}`
+      }
       return process.env.API_URL + user.avatar
     }
     return '/images/default_avatar.png'
@@ -56,71 +54,77 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
 
   return (
     <>
-      <div
-        className={classNames(
-          'w-full',
-          'mt-[134px]',
-          'h-[500px]',
-        )}
-      >
-        <div>
-          <div className={'flex justify-center h-[540px]'}>
-            <img
-              src={bannerImage}
-              className="banner-slider"
-              alt={'banner'}
-            />
-          </div>
-        </div>
-        <div className="flex justify-center w-full ">
-          <div className="flex justify-between justify-center fw-60 mt-5 relative">
-            <div className="bottom-[0rem] left-[4rem]  absolute">
-              <Image
-                src={avatarImage}
-                alt="avatar"
-                onError={() => {
-                  user.avatar && setAvatarError(true)
-                }}
-                width={200}
-                height={200}
-                className={'rounded-[8px]'}
+      <div className={'grid grid-cols-4 lg:grid-cols-6 pt-5'}>
+        <div className={'hidden lg:block'} />
+        <div className={classNames( 'col-span-4')}>
+          <div className={'relative'}>
+            <div className={'overflow-hidden aspect-[3/1]'}>
+              <img
+                src={bannerImage}
+                className="rounded-md w-full object-cover"
+                alt={'banner'}
               />
             </div>
-                      
-            <div className="flex flex-col ml-[20rem] mt-[10px]">
-              <div className="flex flex-row h-8">
-                <div className="flex items-center text-[26px] text-slate-800 font-semibold mr-[16px]">
-                  {user.username ? user.username : 'username'}
-                </div>
-                {
-                  user.isGregHolder &&
-                <div className="mr-2"><Image src={Hgreg} alt="avatar" width="30px" height="30px"/></div>
-                }
-                {
-                  isStgStacker && <Image src={Stg} alt="avatar" width="30px" height="30px"/>
-                }
-              </div>
+            <div className="bottom-[-80px] left-6 w-[120px] h-[120px] absolute flex items-end">
+              <img
+                src={avatarImage}
+                alt="avatar"
+                className={'w-full h-full rounded-lg'}
+              />
+            </div>
+          </div>
 
-              <div className="text-[#6C757D] text-[16px] text-slate-800">
-                {user && user.bio ? user.bio : 'You can see the short description about your account'}
+          <div className={'flex items-center justify-between w-full pl-[160px] pt-5'}>
+            <div className={'flex items-center'}>
+              <div className={'flex flex-col space-y-2'}>
+                <span className={'text-xg1 text-primary-light'}>{user.username || 'username'}</span>
+                <span className={'text-md text-secondary'}>{user && user.address ? truncateAddress(user.address) : truncateAddress(address || '')}</span>
               </div>
             </div>
-            
-            <div className="flex ml-[]">
-              <a href={(user && user.twitter) ? user.twitter : '#'} target="_blank" rel="noreferrer">
-                <div className="mr-6">
-                  <Image src={Twitter} alt="twitter"/>
+            <div className={'flex items-center'}>
+              <div className={'flex flex-col h-[60px] items-end justify-between space-y-2 mr-4'}>
+                <div className={'w-[90px]'}>
+                  <PrimaryButton text={'following'} className={'h-[24px] text-md font-medium'} />
                 </div>
-              </a>
-              <a href={(user && user.website) ? user.website : '#'} target="_blank" rel="noreferrer">
-                <div className="mr-6">
-                  <Image src={Web} alt="website"/>
+                <div className={'flex items-center'}>
+                  <span className={'text-md text-primary-light'}>{formatAmount(16800)} followers</span>
+                  <span className={'text-md text-primary-light ml-2'}>{formatAmount(16500)} following</span>
                 </div>
-              </a>
+              </div>
+              {/*Social links*/}
+              <div className={'flex items-center space-x-3'}>
+                <div className={`flex flex-col h-[60px] items-end ${user.address === address ? 'justify-between' : 'justify-center'} space-y-2`}>
+                  {
+                    user.address === address &&
+                      <GreyButton text={'settings'} className={'h-[26px]'} onClick={() => setSettingModal(true)} />
+                  }
+                  <div className={'flex items-center'}>
+                    <div className={'w-8 h-8 p-1'}>
+                      <ExternalLink link={user.website}>
+                        <WebsiteIcon />
+                      </ExternalLink>
+                    </div>
+                    <div className={'w-8 h-8 p-1'}>
+                      <ExternalLink link={user.twitter}>
+                        <TwitterIcon />
+                      </ExternalLink>
+                    </div>
+                    <div className={'w-8 h-8 p-1'}>
+                      <ExternalLink link={user.instagram}>
+                        <InstagramIcon />
+                      </ExternalLink>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+        <div className={'hidden lg:block'} />
       </div>
+      <Dialog open={settingModal} onClose={() => setSettingModal(false)} aria-labelledby='simple-dialog-title' maxWidth={'xl'} classes={{ paper: classes.paper }}>
+        <UserEdit updateModal={() => setSettingModal(false)} />
+      </Dialog>
     </>
   )
 }

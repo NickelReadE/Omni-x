@@ -1,7 +1,7 @@
 import { createContext } from 'react'
 
 export enum ModalIDs {
-  MODAL_NONE = 0,
+  MODAL_NONE,
   MODAL_LISTING,
   MODAL_BUY,
   MODAL_BID,
@@ -16,6 +16,6 @@ export type ModalContextType = {
 
 export const ModalContext = createContext<ModalContextType>({
   modal: ModalIDs.MODAL_NONE,
-  openModal: (modal: ModalIDs, data: any) => {},
-  closeModal: () => {}
+  openModal: () => undefined,
+  closeModal: () => undefined
 })

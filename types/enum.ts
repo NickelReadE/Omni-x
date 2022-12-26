@@ -1,5 +1,11 @@
 export enum SupportedChainId {
-    RINKEBY = 10001
+}
+
+export enum ContractType {
+    ADVANCED_ONFT721,
+    ADVANCED_ONFT721_ENUMERABLE,
+    ADVANCED_ONFT721_GASLESS,
+    ADVANCED_ONFT721_GASLESS_CLAIMABLE,
 }
 
 export enum ChainIds {

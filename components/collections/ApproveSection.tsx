@@ -22,13 +22,13 @@ const ApproveSection: React.FC<IApproveSectionProps> = ({
   descriptions
 }) => {
   return (
-    <div className="section-container">
+    <div className="">
       <SectionHeader sectionNo={sectionNo} title={title} active={active} processing={processing} completed={completed}/>
 
       {active && (
-        <div className="section-content">
+        <div className="mt-4 mb-4 ml-6 max-w-[450px]">
           {descriptions.map((desc, idx) => (
-            <p className="section-description" key={idx}>
+            <p className={`text-secondary text-md ${idx !== 0 ? 'pt-2' : 'pt-0'}`} key={idx}>
               {desc}
             </p>
           ))}

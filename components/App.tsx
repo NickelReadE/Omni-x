@@ -1,11 +1,11 @@
 import React from 'react'
 import {DndContext} from '@dnd-kit/core'
-import {WalletProvider} from './WalletProvider'
+import {ToastContainer} from 'react-toastify'
+import {WalletProvider} from './providers/WalletProvider'
 import {BridgeProvider} from './providers/BridgeProvider'
 import {DataProvider} from './providers/DataProvider'
 import {ProgressProvider} from './providers/ProgressProvider'
 import {ContractProvider} from './providers/ContractProvider'
-import { MoralisProvider } from 'react-moralis'
 import {
   getDefaultWallets,
   RainbowKitProvider,
@@ -19,15 +19,15 @@ import {
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { infuraProvider } from 'wagmi/providers/infura'
 import { publicProvider } from 'wagmi/providers/public'
-import Layout from './Layout'
+import Layout from './layout/Layout'
 import {supportChains} from '../utils/constants'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import { SwitchedNetworkProvider } from './SwitchedNetworkProvider'
 import { ModalProvider } from './providers/ModalProvider'
-
-const MORALIS_SERVER_URL = process.env.MORALIS_SERVER_URL || ''
-const MORALIS_APP_ID = process.env.MORALIS_APP_ID || ''
-const MORALIS_SECRET = process.env.MORALIS_SECRET || ''
+import {TransferProvider} from './providers/TransferProvider'
+import '@rainbow-me/rainbowkit/styles.css'
+import 'react-toastify/dist/ReactToastify.css'
+import {MessageProvider} from './providers/MessageProvider'
 
 const supportedChains = supportChains()
 
@@ -63,35 +63,38 @@ type AppProps = {
 function App({children}: AppProps) {
   return (
     <React.StrictMode>
-      <MoralisProvider serverUrl={MORALIS_SERVER_URL} appId={MORALIS_APP_ID} jsKey={MORALIS_SECRET}>
-        <WagmiConfig client={wagmiClient}>
-          <RainbowKitProvider chains={chains} theme={darkTheme({
-            accentColor: '#623485', //color of wallet  try #703844
-            accentColorForeground: 'black',
-            borderRadius: 'large',
-            fontStack: 'system',
-          })}
-          >
-            <WalletProvider>
-              <BridgeProvider>
+      <WagmiConfig client={wagmiClient}>
+        <RainbowKitProvider chains={chains} theme={darkTheme({
+          accentColor: '#623485',
+          accentColorForeground: 'black',
+          borderRadius: 'large',
+          fontStack: 'system',
+        })}
+        >
+          <ToastContainer />
+          <WalletProvider>
+            <BridgeProvider>
+              <MessageProvider>
                 <DataProvider>
-                  <ProgressProvider>
-                    <ContractProvider>
-                      <DndContext>
-                        <SwitchedNetworkProvider>
-                          <ModalProvider>
-                            <Layout>{children}</Layout>
-                          </ModalProvider>
-                        </SwitchedNetworkProvider>
-                      </DndContext>
-                    </ContractProvider>
-                  </ProgressProvider>
+                  <TransferProvider>
+                    <ProgressProvider>
+                      <ContractProvider>
+                        <DndContext>
+                          <SwitchedNetworkProvider>
+                            <ModalProvider>
+                              <Layout>{children}</Layout>
+                            </ModalProvider>
+                          </SwitchedNetworkProvider>
+                        </DndContext>
+                      </ContractProvider>
+                    </ProgressProvider>
+                  </TransferProvider>
                 </DataProvider>
-              </BridgeProvider>
-            </WalletProvider>
-          </RainbowKitProvider>
-        </WagmiConfig>
-      </MoralisProvider>
+              </MessageProvider>
+            </BridgeProvider>
+          </WalletProvider>
+        </RainbowKitProvider>
+      </WagmiConfig>
     </React.StrictMode>
 
   )

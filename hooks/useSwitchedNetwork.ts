@@ -8,7 +8,7 @@ export const useSwitchedNetwork = (callback?: any): SwitchedNetworkContextType =
     if (switched && callback) {
       setTimeout(callback, 1000)
     }
-  }, [switched])
+  }, [callback, switched])
 
   return {
     switched,

@@ -14,9 +14,11 @@ export type CollectionType = {
     name: string,
     discord: string,
     twitter: string,
+    telegram: string,
     website: string,
     symbol: string,
     col_url: string,
+    description: string,
     floorPrice: {
         eth: number,
         usd: number,
@@ -25,11 +27,19 @@ export type CollectionType = {
     attrs: any,
     bid_datas: any[],
     bid_orders: IOrder[],
+    whitelist_infos: any[],
     floorNft: {
       eth?: any,
       usd?: any,
       omni?: any
-    }
+    },
+    mint_start_timestamp: number,
+    mint_end_timestamp: number,
+    start_ids: any,
+    price: number,
+    is_gasless: boolean,
+    contract_type: string
+    volume7d: string,
 }
 
 export type CollectionTypeFunc = {

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useDispatch } from 'react-redux'
-import { doAcceptApprove, doAcceptComplete, doAcceptConfirm, doAcceptDone, doBidApprove, doBidConfirm, doBidDone, doBuyApprove, doBuyComplete, doBuyConfirm, doBuyDone, doListingApprove, doListingConfirm, doListingDone, TradingCommonData, TradingSpecialData } from '../components/providers/TradingProvider'
+import { doAcceptApprove, doAcceptComplete, doAcceptConfirm, doAcceptDone, doBidApprove, doBidConfirm, doBidDone, doBuyApprove, doBuyComplete, doBuyConfirm, doBuyDone, doListingApprove, doListingConfirm, doListingDone } from '../components/providers/TradingProvider'
 import { IBidData, IListingData, IOrder, NFTItem } from '../interface/interface'
 import useContract from './useContract'
 import useProgress from './useProgress'
@@ -41,20 +41,20 @@ export const useTrading = (data?: TradingInput): TradingFunction => {
 
   if (!data) {
     return {
-      onListingApprove: async() => {},
-      onListingConfirm: async() => {},
-      onListingDone: () => {},
-      onBuyApprove: async() => {},
-      onBuyConfirm: async() => {},
-      onBuyComplete: async() => {},
-      onBuyDone: () => {},
-      onBidApprove: async() => {},
-      onBidConfirm: async() => {},
-      onBidDone: () => {},
-      onAcceptApprove: async() => {},
-      onAcceptConfirm: async() => {},
-      onAcceptComplete: async() => {},
-      onAcceptDone: () => {}
+      onListingApprove: async() => undefined,
+      onListingConfirm: async() => undefined,
+      onListingDone: () => undefined,
+      onBuyApprove: async() => undefined,
+      onBuyConfirm: async() => undefined,
+      onBuyComplete: async() => undefined,
+      onBuyDone: () => undefined,
+      onBidApprove: async() => undefined,
+      onBidConfirm: async() => undefined,
+      onBidDone: () => undefined,
+      onAcceptApprove: async() => undefined,
+      onAcceptConfirm: async() => undefined,
+      onAcceptComplete: async() => undefined,
+      onAcceptDone: () => undefined
     }
   }
 

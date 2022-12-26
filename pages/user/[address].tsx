@@ -1,11 +1,13 @@
 import { useRouter } from 'next/router'
 import type { NextPage } from 'next'
-import useProfile from '../../hooks/useProfile'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import UserBanner from '../../components/UserBanner'
 import NFTGrid from '../../components/NFTGrid'
-import useActivities from '../../hooks/useActivities'
+import {UserFavorites} from '../../components/user/Favorites'
+import {SkeletonCard} from '../../components/skeleton/card'
 import UserActivity from '../../components/user/UserActivity'
+import useActivities from '../../hooks/useActivities'
+import useProfile from '../../hooks/useProfile'
 
 const User: NextPage = () => {
   const router = useRouter()
@@ -13,40 +15,77 @@ const User: NextPage = () => {
   const {profile, nfts, isLoading} = useProfile(userAddress)
   const { activities } = useActivities(userAddress)
 
-  const [currentTab, setCurrentTab] = useState<string>('NFTs')
+  const [selectedTab, setSelectedTab] = useState(0)
+
+  const activeClasses = (index: number) => {
+    return index === selectedTab ? 'bg-primary-gradient': 'bg-secondary'
+  }
+  const activeTextClasses = (index: number) => {
+    return index === selectedTab ? 'bg-primary-gradient bg-clip-text text-transparent': 'text-secondary'
+  }
 
   return (
     <div>
       {
-        profile &&
-        <>
-          <UserBanner user={profile} />
-          <div className="flex justify-center">
-            <div className={'flex justify-center mt-36 w-[90%] mb-20'}>
-              <div className="w-[90%]">
-                <ul
-                  className="flex relative justify-item-stretch text-[16px] font-medium text-center border-b-2 border-[#E9ECEF]">
-                  <li
-                    className={`select-none inline-block p-4 w-36 cursor-pointer z-30 ${currentTab === 'NFTs' ? 'text-[#1E1C21] border-black border-b-2' : ' text-[#ADB5BD] '} `}
-                    onClick={() => setCurrentTab('NFTs')}>
-                    NFTs
-                  </li>
-                  <li
-                    className={`select-none inline-block p-4  w-36 cursor-pointer  z-0  ${currentTab === 'activity' ? 'text-[#1E1C21] border-black border-b-2' : ' text-[#ADB5BD] '}`}
-                    onClick={() => setCurrentTab('activity')}>
-                    activity
-                  </li>
-                  <li className={'select-none inline-block p-4  w-36 cursor-pointer  z-0  text-[#ADB5BD]'}>feed</li>
-                  <li className={'select-none inline-block p-4  w-36 cursor-pointer  z-0  text-[#ADB5BD]'}>stats</li>
-                </ul>
-                {currentTab === 'NFTs' && <NFTGrid nfts={nfts} isLoading={isLoading} />}
-                {currentTab === 'activity' && <UserActivity activities={activities} />}
-                {currentTab === 'feed' && <div/>}
-                {currentTab === 'stats' && <div/>}
+        profile ?
+          <>
+            <UserBanner user={profile} />
+            <div className={'grid grid-cols-4 lg:grid-cols-6'}>
+              <div className={'hidden lg:block'} />
+              {/*Tabs section*/}
+              <div className={'col-span-4 flex items-center mt-6'}>
+                <div className="text-xl font-medium text-center text-secondary">
+                  <ul className="flex flex-wrap -mb-px">
+                    <li onClick={() => setSelectedTab(0)}>
+                      <div className={`${activeClasses(0)} pb-[2px] cursor-pointer`}>
+                        <div className={'flex flex-col justify-between h-full bg-primary text-white p-4 pb-1'}>
+                          <span className={`${activeTextClasses(0)}`}>collected</span>
+                        </div>
+                      </div>
+                    </li>
+                    <li onClick={() => setSelectedTab(1)}>
+                      <div className={`${activeClasses(1)} pb-[2px] cursor-pointer`}>
+                        <div className={'flex flex-col justify-between h-full bg-primary text-white p-4 pb-1'}>
+                          <span className={`${activeTextClasses(1)}`}>created</span>
+                        </div>
+                      </div>
+                    </li>
+                    <li onClick={() => setSelectedTab(2)}>
+                      <div className={`${activeClasses(2)} pb-[2px] cursor-pointer`}>
+                        <div className={'flex flex-col justify-between h-full bg-primary text-white p-4 pb-1'}>
+                          <span className={`${activeTextClasses(2)}`}>activity</span>
+                        </div>
+                      </div>
+                    </li>
+                    <li onClick={() => setSelectedTab(3)}>
+                      <div className={`${activeClasses(3)} pb-[2px] cursor-pointer`}>
+                        <div className={'flex flex-col justify-between h-full bg-primary text-white p-4 pb-1'}>
+                          <span className={`${activeTextClasses(3)}`}>favorites</span>
+                        </div>
+                      </div>
+                    </li>
+                    <li onClick={() => setSelectedTab(4)}>
+                      <div className={`${activeClasses(4)} pb-[2px] cursor-pointer`}>
+                        <div className={'flex flex-col justify-between h-full bg-primary text-white p-4 pb-1'}>
+                          <span className={`${activeTextClasses(4)}`}>hidden</span>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
-        </>
+
+            <div className={'my-6'}>
+              {selectedTab === 0 && <NFTGrid nfts={nfts} isLoading={isLoading} />}
+              {selectedTab === 1 && <div/>}
+              {selectedTab === 2 && <UserActivity activities={activities}/>}
+              {selectedTab === 3 && <UserFavorites />}
+              {selectedTab === 4 && <div/>}
+            </div>
+          </>
+          :
+          <SkeletonCard />
       }
     </div>
   )

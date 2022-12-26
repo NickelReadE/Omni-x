@@ -22,9 +22,9 @@ export const useCollectionBid = (data?: CollectionBidInput): CollectionBidFuncti
 
   if (!data) {
     return {
-      onCollectionBidApprove: async() => {},
-      onCollectionBidConfirm: async() => {},
-      onCollectionBidDone: () => {},
+      onCollectionBidApprove: async() => undefined,
+      onCollectionBidConfirm: async() => undefined,
+      onCollectionBidDone: () => undefined,
     }
   }
 

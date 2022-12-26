@@ -48,7 +48,7 @@ export const CHAIN_NAMES = {
   [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: CHAIN_TYPE.ARB_TESTNET,
   [CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET]]: CHAIN_TYPE.FANTOM_TESTNET,
   [CHAIN_IDS[CHAIN_TYPE.MOONBEAM_TESTNET]]: CHAIN_TYPE.MOONBEAM_TESTNET,
-  
+
   [CHAIN_IDS[CHAIN_TYPE.ETHEREUM]]: CHAIN_TYPE.ETHEREUM,
   [CHAIN_IDS[CHAIN_TYPE.BINANCE]]: CHAIN_TYPE.BINANCE,
   [CHAIN_IDS[CHAIN_TYPE.POLYGON]]: CHAIN_TYPE.POLYGON,
@@ -60,7 +60,7 @@ export const CHAIN_NAMES = {
 
 export const RPC_PROVIDERS: { [key: number]: string } = {
   // MAINNET RPC
-  [CHAIN_IDS[CHAIN_TYPE.ETHEREUM]]: 'https://mainnet.infura.io/v3/94915ad2755844d2854ea9f99d5c30c7',
+  [CHAIN_IDS[CHAIN_TYPE.ETHEREUM]]: 'https://rpc.ankr.com/eth',
   [CHAIN_IDS[CHAIN_TYPE.BINANCE]]: 'https://bsc-dataseed.binance.org/',
   [CHAIN_IDS[CHAIN_TYPE.POLYGON]]: 'https://polygon-rpc.com',
   [CHAIN_IDS[CHAIN_TYPE.AVALANCHE]]: 'https://api.avax.network/ext/bc/C/rpc',
@@ -88,7 +88,15 @@ export const SUPPORTED_CHAIN_IDS = [
   CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET],
   CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET],
   CHAIN_IDS[CHAIN_TYPE.MOONBEAM_TESTNET],
-  CHAIN_IDS[CHAIN_TYPE.APTOS],
+]
+
+export const GAS_SUPPORTED_CHAIN_IDS = [
+  CHAIN_IDS[CHAIN_TYPE.ETHEREUM],
+  CHAIN_IDS[CHAIN_TYPE.BINANCE],
+  CHAIN_IDS[CHAIN_TYPE.AVALANCHE],
+  CHAIN_IDS[CHAIN_TYPE.POLYGON],
+  CHAIN_IDS[CHAIN_TYPE.OPTIMISM],
+  CHAIN_IDS[CHAIN_TYPE.FANTOM],
 ]
 
 export const getChainIcons = (chainId: number) => {
@@ -104,132 +112,131 @@ export const getChainIcons = (chainId: number) => {
   }
 }
 
-export const chainInfos: { [key: number]: { name: string; logo: string, roundedLogo: string, explorerLogo: string, officialName: string, currency: string, comingSoon?: boolean } } = {
+export const chainInfos: { [key: number]: { name: string; roundedLogo: string, explorerLogo: string, darkIcon?: string, officialName: string, currency: string, comingSoon?: boolean } } = {
   1: {
     name: 'eth',
-    logo: '/svgs/ethereum.svg',
-    roundedLogo: '/images/roundedColorEthereum.png',
+    roundedLogo: '/images/chain/ethereum.svg',
     explorerLogo: '/images/ethereumExplorer.png',
+    darkIcon: '/images/chain/ethereum_dark.svg',
     officialName: 'Ethereum',
     currency: 'ETH'
   },
   56: {
     name: 'bsc',
-    logo: '/svgs/binance.svg',
-    roundedLogo: '/images/roundedColorBinance.png',
+    roundedLogo: '/images/chain/binance.svg',
     explorerLogo: '/images/binanceExplorer.png',
-    officialName: 'Fantom',
+    darkIcon: '/images/chain/binance_dark.svg',
+    officialName: 'Binance',
     currency: 'FTM'
   },
   137: {
     name: 'polygon',
-    logo: '/svgs/polygon.svg',
-    roundedLogo: '/images/roundedColorPolygon.png',
+    roundedLogo: '/images/chain/polygon.svg',
     explorerLogo: '/images/polygonExplorer.png',
-    officialName: 'Fantom',
+    darkIcon: '/images/chain/polygon_dark.svg',
+    officialName: 'Polygon',
     currency: 'FTM'
   },
   43114: {
     name: 'avalanche',
-    logo: '/svgs/avax.svg',
-    roundedLogo: '/images/roundedColorAvalanche.png',
+    roundedLogo: '/images/chain/avalanche.svg',
     explorerLogo: '/images/avalancheExplorer.png',
-    officialName: 'Fantom',
+    darkIcon: '/images/chain/avalanche_dark.svg',
+    officialName: 'Avalanche',
     currency: 'FTM'
   },
   250: {
     name: 'fantom',
-    logo: '/svgs/fantom.svg',
-    roundedLogo: '/images/roundedColorFantom.png',
+    roundedLogo: '/images/chain/fantom.svg',
     explorerLogo: '/images/fantomExplorer.png',
+    darkIcon: '/images/chain/fantom_dark.svg',
     officialName: 'Fantom',
     currency: 'FTM'
   },
   10: {
     name: 'optimism',
-    logo: '/svgs/optimism.svg',
-    roundedLogo: '/images/roundedColorOptimism.png',
+    roundedLogo: '/images/chain/optimism.svg',
     explorerLogo: '/images/optimismExplorer.png',
-    officialName: 'Fantom',
+    darkIcon: '/images/chain/optimism_dark.svg',
+    officialName: 'Optimism',
     currency: 'FTM'
   },
   42161: {
     name: 'arbitrum',
-    logo: '/svgs/arbitrum.svg',
-    roundedLogo: '/images/roundedColorArbitrum.png',
+    roundedLogo: '/images/chain/arbitrum.svg',
     explorerLogo: '/images/arbitrumExplorer.png',
-    officialName: 'Fantom',
+    darkIcon: '/images/chain/arbitrum_dark.svg',
+    officialName: 'Arbitrum',
     currency: 'FTM'
   },
   [CHAIN_IDS[CHAIN_TYPE.GOERLI]]: {
     name: 'goerli',
-    logo: '/svgs/ethereum.svg',
-    roundedLogo: '/images/roundedColorEthereum.png',
+    roundedLogo: '/images/chain/ethereum.svg',
     explorerLogo: '/images/ethereumExplorer.png',
+    darkIcon: '/images/chain/ethereum_dark.svg',
     officialName: 'Goerli',
     currency: 'GoerliETH'
   },
   [CHAIN_IDS[CHAIN_TYPE.BSC_TESTNET]]: {
     name: 'bsc testnet',
-    logo: '/svgs/binance.svg',
-    roundedLogo: '/images/roundedColorBinance.png',
+    roundedLogo: '/images/chain/binance.svg',
     explorerLogo: '/images/binanceExplorer.png',
+    darkIcon: '/images/chain/binance_dark.svg',
     officialName: 'BSC',
     currency: 'BNB'
   },
   [CHAIN_IDS[CHAIN_TYPE.FUJI_TESTNET]]: {
     name: 'fuji',
-    logo: '/svgs/avax.svg',
-    roundedLogo: '/images/roundedColorAvalanche.png',
+    roundedLogo: '/images/chain/avalanche.svg',
     explorerLogo: '/images/avalancheExplorer.png',
+    darkIcon: '/images/chain/avalanche_dark.svg',
     officialName: 'Fuji',
     currency: 'AVAX'
   },
   [CHAIN_IDS[CHAIN_TYPE.MUMBAI]]: {
     name: 'mumbai',
-    logo: '/svgs/polygon.svg',
-    roundedLogo: '/images/roundedColorPolygon.png',
+    roundedLogo: '/images/chain/polygon.svg',
     explorerLogo: '/images/polygonExplorer.png',
+    darkIcon: '/images/chain/polygon_dark.svg',
     officialName: 'Mumbai',
     currency: 'MATIC'
   },
   [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: {
     name: 'arbitrum-goerli',
-    logo: '/svgs/arbitrum.svg',
-    roundedLogo: '/images/roundedColorArbitrum.png',
+    roundedLogo: '/images/chain/arbitrum.svg',
     explorerLogo: '/images/arbitrumExplorer.png',
+    darkIcon: '/images/chain/arbitrum_dark.svg',
     officialName: 'Arbitrum',
     currency: 'ArbETH'
   },
   [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: {
     name: 'optimism-goerli',
-    logo: '/svgs/optimism.svg',
-    roundedLogo: '/images/roundedColorOptimism.png',
+    roundedLogo: '/images/chain/optimism.svg',
     explorerLogo: '/images/optimismExplorer.png',
+    darkIcon: '/images/chain/optimism_dark.svg',
     officialName: 'Optimism',
     currency: 'ETH'
   },
   [CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET]]: {
     name: 'fantom-testnet',
-    logo: '/svgs/fantom.svg',
-    roundedLogo: '/images/roundedColorFantom.png',
+    roundedLogo: '/images/chain/fantom.svg',
     explorerLogo: '/images/fantomExplorer.png',
+    darkIcon: '/images/chain/fantom_dark.svg',
     officialName: 'Fantom',
     currency: 'FTM'
   },
   [CHAIN_IDS[CHAIN_TYPE.MOONBEAM_TESTNET]]: {
     name: 'moonbeam-testnet',
-    logo: '/svgs/moonbeam.png',
-    roundedLogo: '/images/roundedColoMoonbeam.png',
+    roundedLogo: '/images/chain/moonbeam.svg',
     explorerLogo: '/images/moonbeamExplorer.png',
+    darkIcon: '/images/chain/moonbeam_dark.svg',
     officialName: 'Moonbeam',
     currency: 'DEV'
   },
   2222: {
     name: 'aptos-testnet',
-    logo: '/svgs/aptos.svg',
-    roundedLogo: '/svgs/aptos.svg',
-    explorerLogo: '/svgs/aptos.svg',
+    roundedLogo: '/images/chain/aptos.svg',
+    explorerLogo: '/images/chain/aptos.svg',
     officialName: 'Aptos',
     currency: 'APT',
     comingSoon: true
@@ -365,8 +372,16 @@ export const getProfileLink = (chain_id: number, owner: string) => {
   return (explorer_link + '/address/' + owner)
 }
 
-export const getChainIconById = (chainId?: string) => {
-  return chainId && chainInfos[Number(chainId)]?.logo
+export const getChainOfficialNameById = (chainId?: number) => {
+  return chainId && chainInfos[chainId]?.officialName
+}
+
+export const getChainLogoById = (chainId?: string) => {
+  return chainId && chainInfos[Number(chainId)]?.roundedLogo
+}
+
+export const getDarkChainIconById = (chainId?: string) => {
+  return chainId && chainInfos[Number(chainId)]?.darkIcon
 }
 
 export const getBlockExplorer = (chainId: number) => {
@@ -375,44 +390,6 @@ export const getBlockExplorer = (chainId: number) => {
     return chainInfo.explorers?.[0]?.url
   }
   return null
-}
-export const isSupportedOnMoralis = (chainId: number): boolean => {
-  return supportedChainsOnMoralis.includes(chainId)
-}
-export const isSupportedOnAlchemy = (chainId: number): boolean => {
-  return supportedChainsOnAlchemy.includes(chainId)
-}
-export const APIkeysForAlchemy: { [key: number]: string } = {
-  420: 'sgvs6yc178bgz4WZLz1s1NQ5ZDDmHZKb',
-  421613: '1tOv1HhfJDGiv7p3dUMVvJGuRoyWm4ff',
-  5: '4k8yRytMmfl7bEmKCQXWYrb_bx3BZ0K3'
-}
-export const NetworksForAlchemy: { [key: number]: Network } = {
-  420: Network.OPT_GOERLI,
-  421613: Network.ARB_GOERLI,
-  5: Network.ETH_GOERLI
-}
-export const getAPIkeyForAlchemy = (key: number): string => {
-  return APIkeysForAlchemy[key]
-}
-export const getNetworForAlchemy = (key: number): Network => {
-  return NetworksForAlchemy[key]
-}
-export const supportedChainsOnMoralis: Array<number> = [
-  80001,
-  97,
-  43113
-]
-export const supportedChainsOnAlchemy: Array<number> = [
-  420,
-  5,
-  421613
-]
-
-export const findCollection = (addresses: any, nft: any, token_id: string) => {
-  const chain_id = nft.chain_id
-  const collection_address = addresses[chain_id]
-  return [collection_address, chain_id]
 }
 
 export const supportChains = () => {
@@ -439,4 +416,19 @@ export const supportChains = () => {
     return null
   })
   return allChains.filter((chain) => chain !== null) as Chain[]
+}
+
+export const GELATO_SUPPORT_CHAINS = {
+  [CHAIN_IDS[CHAIN_TYPE.GOERLI]]: true,
+  [CHAIN_IDS[CHAIN_TYPE.BSC_TESTNET]]: false,
+  [CHAIN_IDS[CHAIN_TYPE.MUMBAI]]: true,
+  [CHAIN_IDS[CHAIN_TYPE.FUJI_TESTNET]]: false,
+  [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: true,
+  [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: false,
+  [CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET]]: false,
+  [CHAIN_IDS[CHAIN_TYPE.MOONBEAM_TESTNET]]: false
+}
+
+export const isSupportGelato = (chainId: number) => {
+  return (GELATO_SUPPORT_CHAINS as any)[chainId] || false
 }

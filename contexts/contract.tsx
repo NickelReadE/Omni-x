@@ -22,9 +22,11 @@ export type PendingTxType = {
 
 export type ContractContextType = {
   listenONFTEvents: (txInfo: PendingTxType, historyIndex: number) => Promise<void>,
+  errorHandler: (error: any) => void,
 }
 
 export const ContractContext = createContext<ContractContextType>({
-  listenONFTEvents: async (txInfo: PendingTxType, historyIndex: number) => {},
+  listenONFTEvents: async () => undefined,
+  errorHandler: () => undefined,
 })
 

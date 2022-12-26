@@ -1,11 +1,12 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { BuyStep } from '../../types/enum'
-import ListingFeeSection from './ListingFeeSection'
 import ApproveSection from './ApproveSection'
 import CongratsSection from './CongratsSection'
 import BuySection from './BuySection'
 import ConfirmSection from './ConfirmSection'
 import CompleteSection from './CompleteSection'
+import {SecondaryButton} from '../common/buttons/SecondaryButton'
+import LazyLoad from 'react-lazyload'
 
 interface IBuyContentProps {
   buyStep: BuyStep,
@@ -17,6 +18,8 @@ interface IBuyContentProps {
   currency?: string,
   nftImage: string,
   nftTitle: string,
+  nftTokenId: string,
+  collectionName: string,
   onBuy?: () => void
 }
 
@@ -29,12 +32,34 @@ const BuyContent: React.FC<IBuyContentProps> = ({
   srcCurrency,
   currency,
   nftImage,
-  nftTitle,
+  nftTokenId,
+  collectionName,
   onBuy
 }) => {
+  const [imageError, setImageError] = useState(false)
+
   return (
     <>
-      <div className='flex justify-between'>
+      <div className='flex flex-col justify-between'>
+        <div className={'flex justify-center mb-5'}>
+          <div className={'flex flex-col'}>
+            <div className={'bg-primary-gradient p-[1px] rounded'}>
+              <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image"/>}>
+                <img
+                  className='bg-primary rounded'
+                  src={imageError ? '/images/omnix_logo_black_1.png' : nftImage}
+                  alt="nft-image"
+                  width={190}
+                  height={190}
+                  onError={() => { setImageError(true) }}
+                  data-src={nftImage}
+                />
+              </LazyLoad>
+            </div>
+            <p className={'text-primary-light mt-3'}>#{nftTokenId}</p>
+            <p className='text-secondary font-medium'>{collectionName}</p>
+          </div>
+        </div>
         {buyStep === BuyStep.StepBuy ? (
           <div>
             <BuySection
@@ -42,12 +67,10 @@ const BuyContent: React.FC<IBuyContentProps> = ({
               srcCurrency={srcCurrency}
               currency={currency}
             />
-
-            <ListingFeeSection/>
           </div>
         ) : (
           <div>
-            <ApproveSection 
+            <ApproveSection
               processing={processing}
               active={buyStep == BuyStep.StepApprove}
               completed={buyStep > BuyStep.StepApprove}
@@ -58,7 +81,7 @@ const BuyContent: React.FC<IBuyContentProps> = ({
                 'Please confirm the transaction in your wallet to process the trade.'
               ]}
             />
-            <ConfirmSection 
+            <ConfirmSection
               processing={processing}
               active={buyStep == BuyStep.StepConfirm}
               completed={buyStep > BuyStep.StepConfirm}
@@ -67,7 +90,7 @@ const BuyContent: React.FC<IBuyContentProps> = ({
               title={'Complete Purchase'}
               description={'Please confirm this second transaction in your wallet to complete the purchase.'}
             />
-            <CompleteSection 
+            <CompleteSection
               processing={processing}
               active={buyStep == BuyStep.StepComplete}
               completed={buyStep > BuyStep.StepComplete}
@@ -85,31 +108,14 @@ const BuyContent: React.FC<IBuyContentProps> = ({
             )}
           </div>
         )}
-        
-        <div>
-          <img alt={'nftImage'} className='rounded-[8px] max-w-[250px]' src={nftImage} />
-          <p className='mt-2 text-center text-[#6C757D] font-medium'>{nftTitle}</p>
-        </div>
       </div>
 
-      <div className="grid grid-cols-4 mt-20 flex items-end">
-        <div className="col-span-1">
-          {(buyStep === BuyStep.StepDone || buyStep === BuyStep.StepFail) ? (
-            <button
-              className='bg-[#B444F9] rounded text-[#fff] w-[95px] h-[35px]'
-              onClick={onBuy}
-              disabled={processing}>
-              close
-            </button>
-          ) : (
-            <button
-              className='bg-[#38B000] rounded text-[#fff] w-[95px] h-[35px]'
-              onClick={onBuy}
-              disabled={processing || !currency || !price}>
-              buy
-            </button>
-          )}
-        </div>
+      <div className="mt-5 flex justify-center">
+        {(buyStep === BuyStep.StepDone || buyStep === BuyStep.StepFail) ? (
+          <SecondaryButton text={'close'} onClick={onBuy} disabled={processing}/>
+        ) : (
+          <SecondaryButton text={'confirm'} onClick={onBuy} disabled={processing || !currency || !price} />
+        )}
       </div>
     </>
   )

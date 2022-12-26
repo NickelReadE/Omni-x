@@ -3,6 +3,7 @@ import { collectionsService } from '../services/collections'
 import { CollectionType } from './useCollection'
 
 export type CollectionsTypeFunc = {
+    loading: boolean,
     collections: CollectionType[],
     refreshCollections: () => void
 }
@@ -15,6 +16,7 @@ const getAllCollections = async () => {
 const useCollections = (): CollectionsTypeFunc => {
   const [collections, setCollections] = useState<CollectionType[]>([])
   const [refresh, setRefresh] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const refreshCollections = () => {
     setRefresh(!refresh)
@@ -22,11 +24,20 @@ const useCollections = (): CollectionsTypeFunc => {
 
   useEffect(() => {
     (async () => {
-      setCollections(await getAllCollections())
+      try {
+        setIsLoading(true)
+        const _collections = await getAllCollections()
+        setCollections(_collections)
+      } catch (e) {
+        console.error(e)
+      } finally {
+        setIsLoading(false)
+      }
     })()
   }, [refresh])
 
   return {
+    loading: isLoading,
     collections,
     refreshCollections
   }

@@ -2,7 +2,6 @@ import React from 'react'
 import Image from 'next/image'
 import SpinLoader from './SpinLoader'
 import classNames from '../../helpers/classNames'
-import PngCheck from '../../public/images/check.png'
 
 interface ISectionHeaderProps {
   sectionNo: number,
@@ -20,11 +19,11 @@ const SectionHeader: React.FC<ISectionHeaderProps> = ({
   completed
 }) => {
   return (
-    <div className={classNames('section-header', active ? 'active' : '')}>
-      <p className="section-no">{sectionNo}</p>
-      <p className="section-title">{title}</p>
+    <div className={classNames('section-header', active ? 'active' : '', 'flex items-center')}>
+      <p className={`${active ? 'bg-primary-gradient' : 'bg-secondary'} w-[18px] h-[18px] rounded-full text-black text-md flex items-center justify-center`}>{sectionNo}</p>
+      <p className={`${active ? 'bg-primary-gradient bg-clip-text text-transparent' : 'text-secondary'} px-2 text-lg`}>{title}</p>
       {completed && (
-        <Image src={PngCheck} alt="completed" width={18} height={18}/>
+        <Image src={'/images/icons/check.svg'} alt="completed" width={18} height={18}/>
       )}
       {!completed && active && processing && (
         <SpinLoader />

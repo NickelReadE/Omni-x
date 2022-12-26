@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { BigNumberish, BytesLike, ethers } from "ethers";
-import { GelatoRelaySDK } from "@gelatonetwork/relay-sdk";
+import {BigNumberish, BytesLike, ethers} from 'ethers'
+import {GelatoRelaySDK} from '@gelatonetwork/relay-sdk'
 
 export interface SyncFeeRequest {
   chainId: BigNumberish;
@@ -27,28 +27,28 @@ export type GelatoType = {
 }
 
 export type GaslessMintType = {
-  gaslessMint: (contract: ethers.Contract, chainId: number, mintNum: number) => Promise<RelayResponse>,
+  gaslessMint: (contract: ethers.Contract, chainId: number, mintNum: number, minter: string) => Promise<RelayResponse>,
+  gaslessClaim: (contract: ethers.Contract, chainId: number, holdTokenId: string, claimer: string) => Promise<RelayResponse>,
   waitForRelayTask: (response: RelayResponse) => Promise<RelayTaskStatus>
 }
 
 export const useGelato = (): GelatoType => {
   const buildRelayRequest = (contractAddr: string, chainId: number, dataSignature: string): SyncFeeRequest => {
     const data = dataSignature
-    const feeToken = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"; // pay Gelato in native token
+    const feeToken = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' // pay Gelato in native token
 
     // populate the relay SDK request body
-    const request: SyncFeeRequest = {
+    return {
       chainId,
       target: contractAddr,
       data: data as BytesLike,
       feeToken: feeToken,
-    };
-    return request;
+    } as SyncFeeRequest
   }
 
   const sendRelayRequest = async (request: SyncFeeRequest): Promise<RelayResponse> => {
-    const relayResponse = await GelatoRelaySDK.relayWithSyncFee(request)
-    return relayResponse
+    console.log('---', request)
+    return await GelatoRelaySDK.relayWithSyncFee(request)
   }
 
   const waitForRelayTask = async (relayResponse: RelayResponse): Promise<RelayTaskStatus> => {
@@ -57,15 +57,15 @@ export const useGelato = (): GelatoType => {
       return new Promise<RelayTaskStatus>((res, rej) => {
         setTimeout(() => {
           axios.get(relayTaskUrl)
-          .then((data: any) => {
-            console.log(data.data)
-            res(data.data.task.taskState as RelayTaskStatus)
-          })
-          .catch(e => rej(e))
+            .then((data: any) => {
+              console.log(data.data)
+              res(data.data.task.taskState as RelayTaskStatus)
+            })
+            .catch(e => rej(e))
         }, 10000)
       })
     }
-    
+
     console.log('waiting relay task: ', relayTaskUrl)
     for (;;) {
       const taskState = await fetchTaskState()
@@ -93,8 +93,18 @@ export const useGaslessMint = () => {
     return sendRelayRequest(request)
   }
 
+  const gaslessClaim = async (contract: ethers.Contract, chainId: number, tokenId: string, claimer: string): Promise<RelayResponse> => {
+    const { data } = await contract.populateTransaction.claim(claimer, tokenId)
+
+    if (!data) throw new Error('useGaslessMint: Unable to encode gaslessMint function data')
+
+    const request = buildRelayRequest(contract.address, chainId, data)
+    return sendRelayRequest(request)
+  }
+
   return {
     gaslessMint,
+    gaslessClaim,
     waitForRelayTask
   }
 }
