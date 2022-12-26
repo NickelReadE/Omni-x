@@ -36,7 +36,7 @@ const PriceFeed = () => {
             })
           }
         </div>
-        <Link href={'/about'}>
+        <Link href={'/learn-more'}>
           <div className='flex mr-[6px] items-center h-full cursor-pointer'>
             <div className='w-[20px] h-[20px] mr-1'>
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

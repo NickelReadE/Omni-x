@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 export default function HomeIntro () {
   return (
-    <Link href={'/about'}>
+    <Link href={'/learn-more'}>
       <div className={'bg-dark-gradient border-[1px] border-[#383838] rounded-[20px] backdrop-blur-[15px] shadow-[0_0_30px_rgba(255,255,255,0.06)] flex flex-col items-center justify-between aspect-[3/1] px-[60px] md:px-[200px] cursor-pointer py-6'}>
         <span className="bg-clip-text text-center text-transparent bg-rainbow-gradient text-extraxl font-bold text-shadow-sm">connect through art</span>
         <span className={'text-secondary text-xg1 text-shadow-sm'}>
