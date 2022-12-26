@@ -5,6 +5,7 @@ import React, {useState, useEffect, useCallback} from 'react'
 import {
   getAdvancedONFT721Instance,
   getCurrencyInstance,
+  getGaslessClaimONFT721Instance,
   getGaslessONFT721Instance,
 } from '../../../utils/contracts'
 import {toast} from 'react-toastify'
@@ -22,16 +23,31 @@ import {WhitelistCard} from '../../../components/launchpad/WhitelistCard'
 import {Logger} from 'ethers/lib/utils'
 import { isSupportGelato } from '../../../utils/constants'
 import { RelayTaskStatus, useGaslessMint } from '../../../hooks/useGelato'
-import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
-import { useDispatch } from 'react-redux'
+import { ContractType } from '../../../types/enum'
+import useProfile from '../../../hooks/useProfile'
+
+const errorToast = (error: string): void => {
+  toast.error(error, {
+    position: toast.POSITION.TOP_RIGHT,
+    autoClose: 3000,
+    transition: Slide
+  })
+}
+
+const okToast = (success: string): void => {
+  toast.success(success, {
+    position: toast.POSITION.TOP_RIGHT,
+    autoClose: 3000,
+    transition: Slide
+  })
+}
 
 const Mint: NextPage = () => {
   const { chainId, signer, provider, address } = useWallet()
   const router = useRouter()
   const col_url = router.query.collection as string
   const { collectionInfo } = useCollection(col_url)
-  const { gaslessMint, waitForRelayTask } = useGaslessMint()
-  const dispatch = useDispatch()
+  const { nfts } = useProfile(address)
 
   const [totalNFTCount, setTotalNFTCount] = useState<number>(0)
   const [isMinting, setIsMinting] = useState<boolean>(false)
@@ -39,6 +55,7 @@ const Mint: NextPage = () => {
   const [startId, setStartId] = useState(0)
   const [totalCnt, setTotalCnt] = useState(0)
   const [selectedTab, setSelectedTab] = useState(0)
+  const { gaslessMint, gaslessClaim, waitForRelayTask } = useGaslessMint()
   const [nextTokenId, setNextTokenId] = useState(0)
   const [mintedCnt, setMintedCnt] = useState(0)
 
@@ -47,14 +64,6 @@ const Mint: NextPage = () => {
   }
   const activeTextClasses = (index: number) => {
     return index === selectedTab ? 'bg-primary-gradient bg-clip-text text-transparent': 'text-secondary'
-  }
-
-  const errorToast = (error: string): void => {
-    toast.error(error, {
-      position: toast.POSITION.TOP_RIGHT,
-      autoClose: 3000,
-      transition: Slide
-    })
   }
 
   const getInfo = useCallback(async (): Promise<void> => {
@@ -83,14 +92,24 @@ const Mint: NextPage = () => {
   }, [chainId, collectionInfo, signer])
 
   const mint = async (quantity: number): Promise<void> => {
-    if (chainId === undefined || !provider || !collectionInfo) {
+    if (chainId === undefined || !provider || !collectionInfo || !address) {
       return
     }
 
     let tx
     setIsMinting(true)
     try {
-      if (collectionInfo && collectionInfo.is_gasless && address) {
+      switch (+collectionInfo.contract_type) {
+      case ContractType.ADVANCED_ONFT721:
+      case ContractType.ADVANCED_ONFT721_ENUMERABLE: {
+        const tokenContract = getAdvancedONFT721Instance(collectionInfo.address[chainId], chainId, signer)
+        tx = await tokenContract.publicMint(quantity, {value: ethers.utils.parseEther((price * quantity).toString())})
+        await tx.wait()
+
+        break
+      }
+
+      case ContractType.ADVANCED_ONFT721_GASLESS: {
         const tokenContract = getGaslessONFT721Instance(collectionInfo.address[chainId], chainId, signer)
         const tokenAddress = await tokenContract.stableToken()
         const currencyInstance = getCurrencyInstance(tokenAddress, chainId, signer)
@@ -105,26 +124,69 @@ const Mint: NextPage = () => {
             const response = await gaslessMint(tokenContract, chainId, quantity, address)
             const status = await waitForRelayTask(response)
             if (status === RelayTaskStatus.Executed) {
-              dispatch(openSnackBar({message: 'successfully gasless minted', status: 'success'}))
+              okToast('successfully gasless minted')
             }
             else {
-              dispatch(openSnackBar({message: 'failed gasless minted', status: 'warning'}))
+              throw new Error('failed gasless minted')
             }
           } else {
             const tx = await tokenContract.publicMint(quantity)
             await tx.wait()
           }
         }
-      } else {
-        const tokenContract = getAdvancedONFT721Instance(collectionInfo.address[chainId], chainId, signer)
-        tx = await tokenContract.publicMint(quantity, {value: ethers.utils.parseEther((price * quantity).toString())})
-        await tx.wait()
+        break
       }
+
+      case ContractType.ADVANCED_ONFT721_GASLESS_CLAIMABLE: {
+        const tokenContract = getGaslessClaimONFT721Instance(collectionInfo.address[chainId], chainId, signer)
+        const isClaimable = await tokenContract._claimable()
+        const claimableCollectionAddress = await tokenContract._claimableCollection()
+        const holdTokens = nfts.filter(nft => nft.token_address === claimableCollectionAddress && nft.chain_id === chainId)
+        
+        if (!isClaimable || !isSupportGelato(chainId)) {
+          throw new Error('not support claim')
+        }
+
+        let claimableTokenId = (window as any).claimableTokenId
+
+        if (!claimableTokenId) {
+          if (holdTokens.length === 0) {
+            throw new Error('not a greg holder')
+          }
+  
+          const claimableToken = await holdTokens.find(async (holdToken) => {
+            const holder = await tokenContract._claimedTokens(holdToken.token_id)
+            if (holder === ethers.constants.AddressZero) return true
+            return false
+          })
+          
+          if (!claimableToken) {
+            throw new Error('already claimed')
+          }
+
+          claimableTokenId = claimableToken.token_id
+        }
+        
+        const response = await gaslessClaim(tokenContract, chainId, claimableTokenId, address)
+        const status = await waitForRelayTask(response)
+        if (status === RelayTaskStatus.Executed) {
+          okToast('successfully claimed')
+        }
+        else {
+          throw new Error('failed claim')
+        }
+
+        break
+      }
+      }
+
       await getInfo()
     } catch (e: any) {
       console.log(e)
       if (e && e.code && e.code === Logger.errors.ACTION_REJECTED) {
         errorToast('user denied transaction signature')
+      } else if (e?.message) {
+        errorToast(e.message)
       } else {
         const currentBalance = await provider.getBalance(address ? address : '')
 
@@ -134,8 +196,8 @@ const Mint: NextPage = () => {
           errorToast('your address is not whitelisted on ' + provider?._network.name)
         }
       }
-      setIsMinting(false)
     }
+    setIsMinting(false)
   }
 
   useEffect(() => {

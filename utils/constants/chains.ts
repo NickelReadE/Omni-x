@@ -73,7 +73,7 @@ export const RPC_PROVIDERS: { [key: number]: string } = {
   [CHAIN_IDS[CHAIN_TYPE.BSC_TESTNET]]: 'https://rpc.ankr.com/bsc_testnet_chapel',
   [CHAIN_IDS[CHAIN_TYPE.FUJI_TESTNET]]: 'https://rpc.ankr.com/avalanche_fuji',
   [CHAIN_IDS[CHAIN_TYPE.MUMBAI]]: 'https://rpc.ankr.com/polygon_mumbai',
-  [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: 'https://arb-goerli.g.alchemy.com/v2/Agc4K6fFfxXQ1s3QG69kj1CB6nu',
+  [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: 'https://convincing-clean-reel.arbitrum-goerli.discover.quiknode.pro/a7679fef301ca865c612a70bf2c98bc17c37135f/',
   [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: 'https://rpc.ankr.com/optimism_testnet',
   [CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET]]: 'https://rpc.testnet.fantom.network',
   [CHAIN_IDS[CHAIN_TYPE.MOONBEAM_TESTNET]]: 'https://rpc.testnet.moonbeam.network'

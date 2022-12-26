@@ -18,6 +18,7 @@ import veSTG from '../constants/abis/veSTG.json'
 import RoyaltyFeeManagerABI from '../constants/abis/RoyaltyFeeManager.json'
 import AdvancedONFT721 from '../constants/abis/AdvancedONFT721.json'
 import AdvancedONFT721Gasless from '../constants/abis/AdvancedONFT721Gasless.json'
+import AdvancedONFT721GaslessClaim from '../constants/abis/AdvancedONFT721GaslessClaim.json'
 
 export const getContractInstanceByAddr = (address: string, abi: any, chainId: number, signer: any) => {
   if (signer === null) {
@@ -133,4 +134,8 @@ export const getUSDCInstance = (address: string, chainId: number, signer: any) =
 
 export const getGaslessONFT721Instance = (contractAddress: string, chainId: number, signer: any) => {
   return getContractInstanceByAddr(contractAddress, AdvancedONFT721Gasless, chainId, signer)
+}
+
+export const getGaslessClaimONFT721Instance = (contractAddress: string, chainId: number, signer: any) => {
+  return getContractInstanceByAddr(contractAddress, AdvancedONFT721GaslessClaim, chainId, signer)
 }

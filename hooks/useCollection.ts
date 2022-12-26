@@ -38,6 +38,7 @@ export type CollectionType = {
     start_ids: any,
     price: number,
     is_gasless: boolean,
+    contract_type: string
     volume7d: string,
 }
 
