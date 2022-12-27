@@ -24,7 +24,7 @@ import {Logger} from 'ethers/lib/utils'
 import { isSupportGelato } from '../../../utils/constants'
 import { RelayTaskStatus, useGaslessMint } from '../../../hooks/useGelato'
 import { ContractType } from '../../../types/enum'
-import useProfile from '../../../hooks/useProfile'
+import useData from '../../../hooks/useData'
 
 const errorToast = (error: string): void => {
   toast.error(error, {
@@ -47,7 +47,7 @@ const Mint: NextPage = () => {
   const router = useRouter()
   const col_url = router.query.collection as string
   const { collectionInfo } = useCollection(col_url)
-  const { nfts } = useProfile(address)
+  const { userNfts: nfts } = useData()
 
   const [totalNFTCount, setTotalNFTCount] = useState<number>(0)
   const [isMinting, setIsMinting] = useState<boolean>(false)
@@ -154,11 +154,14 @@ const Mint: NextPage = () => {
             throw new Error('not a greg holder')
           }
   
-          const claimableToken = await holdTokens.find(async (holdToken) => {
+          let claimableToken = undefined
+          for (const holdToken of holdTokens) {
             const holder = await tokenContract._claimedTokens(holdToken.token_id)
-            if (holder === ethers.constants.AddressZero) return true
-            return false
-          })
+            if (holder == ethers.constants.AddressZero) {
+              claimableToken = holdToken
+              break
+            }
+          }
           
           if (!claimableToken) {
             throw new Error('already claimed')
