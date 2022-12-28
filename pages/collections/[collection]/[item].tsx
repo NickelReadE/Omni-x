@@ -330,6 +330,8 @@ const Item: NextPage = () => {
                     {
                       currentNFT && currentNFT.attributes && Object.entries(currentNFT.attributes).map((item: any, idx: number) => {
                         const attrs = collection.attrs
+                        if (!attrs) return null
+                        
                         const attr = attrs[item[0]].values
                         const trait = attr[(item[1] as string)]
                         return <div className="px-5 py-2 rounded-lg" key={idx}>

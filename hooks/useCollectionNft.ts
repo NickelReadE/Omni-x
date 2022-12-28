@@ -32,7 +32,7 @@ const useCollectionNft = (col_url: string, token_id: string): CollectionNftTypeF
       const { info } = await getNftInfo(col_url, token_id)
       setNft(info)
     })()
-  }, [col_url, token_id, refresh, refreshCollection])
+  }, [col_url, token_id, refresh])
 
   return {
     nft,
