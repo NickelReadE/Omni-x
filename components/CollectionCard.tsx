@@ -2,7 +2,6 @@ import React from 'react'
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import {useDraggable} from '@dnd-kit/core'
 import editStyle from '../styles/nftbox.module.scss'
 import classNames from '../helpers/classNames'
 import Loading from '../public/images/loading_f.gif'
@@ -12,10 +11,7 @@ import { longNumberShortify, numberShortify } from '../utils/constants'
 import { calcVolumeUp } from '../utils/utils'
 
 const CollectionCard = (props:any) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [image] = useState(props.collection.profile_image)
   const [imageError, setImageError] = useState(false)
-  ///only in the beta version
 
   const { openModal, closeModal } = useModal()
   const collectionBid = {
@@ -41,24 +37,13 @@ const CollectionCard = (props:any) => {
     })
   }
 
-  const { transform } = useDraggable({
-    id: `draggable-${1}`,
-    data: {
-      type: 'NFT',
-    }
-  })
-  const style = transform ? {
-    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-    zIndex: 99
-  } : undefined
-
   const volumeUp = props.collection ? calcVolumeUp(props.collection.volume24h, props.collection.volume48h) : 0
 
   return (
     <div className={classNames(' border-[2px] border-[#F6F8FC] w-[340px] rounded-lg hover:shadow-[0_0_8px_rgba(0,0,0,0.25)] hover:bg-[#F6F8FC]', editStyle.nftContainer)}>
-      <div className='relative' style={style} >
+      <div className='relative'>
         <div >
-          <img className='nft-image w-[340px] background-fill' src={imageError?'/images/omnix_logo_black_1.png':image} alt="nft-image" onError={()=>{setImageError(true)}} data-src={image} />
+          <img className='nft-image w-[340px] background-fill' src={imageError?'/images/omnix_logo_black_1.png':props.collection.profile_image} alt="nft-image" onError={()=>{setImageError(true)}} data-src={props.collection.profile_image} />
         </div>
         <div className={classNames('absolute w-full h-full  flex items-center justify-center  ', editStyle.actionBtn)}>
           <div>

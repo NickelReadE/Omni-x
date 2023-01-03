@@ -10,7 +10,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "@dnd-kit/core": "^6.0.5-next-2022514174911",
     "@gelatonetwork/relay-sdk": "^2.1.0",
     "@headlessui/react": "^1.6.5",
     "@looksrare/sdk": "^0.5.0",
@@ -36,7 +35,6 @@
     "framer-motion": "^6.3.10",
     "imagemin-svgo": "^9.0.0",
     "jest": "^28.1.0",
-    "jquery": "^3.6.0",
     "keccak256": "^1.0.6",
     "magic-sdk": "7.0.0",
     "merkletreejs": "^0.2.32",
@@ -48,22 +46,17 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-easy-crop": "^4.4.0",
-    "react-icons": "^4.4.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-lazyload": "^3.2.0",
     "react-moralis": "1.3.5",
     "react-redux": "^8.0.2",
-    "react-select": "^5.4.0",
-    "react-swipeable": "^6.2.2",
     "react-toastify": "^9.0.8",
     "redux": "^4.2.0",
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.4.1",
-    "swiper": "^8.2.2",
     "tailwind-merge": "^1.8.0",
     "tailwindcss-textshadow": "^2.1.3",
-    "wagmi": "^0.7.2",
-    "walletlink": "^2.5.0"
+    "wagmi": "^0.7.2"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.2",
