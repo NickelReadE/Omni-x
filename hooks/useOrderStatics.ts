@@ -77,7 +77,7 @@ const useOrderStatics = ({
     sortedBids,
     highestBid,
     highestBidCoin,
-    lastSale: nft?.last_sale,
+    lastSale: nft?.last_sale || 0,
     lastSaleCoin
   }
 }

@@ -27,31 +27,6 @@ module.exports = {
         'alert-gradient': 'linear-gradient(224.6deg, #BF1212 0.01%, #FF1616 100.09%)'
       },
       colors: {
-        chain: {
-          5: '#8C8C8C',
-          97: '#F0B90B',
-          80001: '#8247E5',
-          43113: '#E84142',
-          420: '#FF0420',
-          421613: '#28A0F0',
-          4002: '#13B5EC',
-          1: '#8C8C8C',
-          56: '#F0B90B',
-          137: '#8247E5',
-          43114: '#E84142',
-          42161: '#FF0420',
-          10: '#28A0F0',
-          250: '#13B5EC',
-        },
-        l: {
-          50:  '#F6F8FC',
-          100: '#ffaa85',
-          200: '#ff7658',
-          300: '#FC4F37',
-          400: '#c91812',
-          500: '#990101',
-          600: '#690000',
-        },
         primary: '#161616',
         'primary-light': '#F5F5F5',
         secondary: '#969696',
@@ -64,7 +39,7 @@ module.exports = {
       fontFamily: {
         sans: ['Inter', ...fontFamily.sans],
         mono: ['Inconsolata', ...fontFamily.mono],
-        RetniSans:['RetniSans']
+        RetniSans: ['RetniSans']
       },
       fontSize: {
         xs: ['10px', '12px'],
@@ -74,8 +49,8 @@ module.exports = {
         lg: ['16px', '19px'],
         xg: ['18px', '22px'],
         xl: ['20px', '24px'],
-        xg1:['24px', '29px'],
-        xg2:['28px', '34px'],
+        xg1: ['24px', '29px'],
+        xg2: ['28px', '34px'],
         xxl: ['30px', '36px'],
         xxxl: ['32px', '38px'],
         xl2: ['40px', '48px'],

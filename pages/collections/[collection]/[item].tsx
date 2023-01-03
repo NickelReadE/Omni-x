@@ -288,7 +288,7 @@ const Item: NextPage = () => {
 
                 {/*last sale*/}
                 {
-                  lastSale && lastSale !== 0 &&
+                  Number(lastSale) > 0 &&
                     <div className={'flex flex-col mt-4 border-[1px] rounded-lg w-full border-[#383838] py-3 px-6'}>
                       <div className={'flex items-center justify-between'}>
                         <div className={'text-secondary text-xl'}>last sale</div>
@@ -331,7 +331,7 @@ const Item: NextPage = () => {
                       currentNFT && currentNFT.attributes && Object.entries(currentNFT.attributes).map((item: any, idx: number) => {
                         const attrs = collection.attrs
                         if (!attrs) return null
-                        
+
                         const attr = attrs[item[0]].values
                         const trait = attr[(item[1] as string)]
                         return <div className="px-5 py-2 rounded-lg" key={idx}>

@@ -4,8 +4,8 @@ import Link from 'next/link'
 
 const NftForLaunch = ({ items, img, name, col_url, price }: ITypeNFT) => {
   return (
-    <div className=" border-[#F8F9FA]  rounded-lg hover:cursor-pointer">
-      <div className={' flex flex-col bg-l-50'}>
+    <div className="border-[#F8F9FA] rounded-lg hover:cursor-pointer">
+      <div className={'flex flex-col bg-[#F6F8FC]'}>
         <div className={'relative'}>
           <div className={'group relative flex justify-center text-center overflow-hidden rounded-md'}>
             <img className="w-[300px] rounded-md " src={img ?? '/images/nft.png'} alt="nft-image"/>
