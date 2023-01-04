@@ -68,7 +68,7 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
       handleBuyDlgClose: closeModal
     })
   }
-
+  // REWRITE THIS FUNCTION!!! It only captures NFTs listed in OMNI
   const getValidFloorNFT = () => {
     for (const kind in collection.floorPrice) {
       const floorPrice = collection.floorPrice[kind]
