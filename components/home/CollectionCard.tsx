@@ -80,8 +80,8 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
             return collection.floorNft[kind]
           }
         } else if (kind === 'eth' && nativeBalance?.formatted) {
-          if (floorPrice <= (+nativeBalance.formatted))
-            return collection.floorNft[kind]
+          // if (floorPrice <= (+nativeBalance.formatted))
+          return collection.floorNft[kind]
         }
       }
     }
@@ -110,27 +110,14 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
         </Link>
       </div>
 
-      <div className={'flex flex-col justify-between h-[115px] pt-[14px] px-3 pb-3'}>
-        <div className="text-primary-light text-xg leading-[22px]">
+      <div className={'flex flex-col justify-between h-[115px] pt-[18px] px-3 pb-3'}>
+        <div className="text-primary-light text-xl leading-[22px]">
           {collection.name}
         </div>
 
-        <div className="flex justify-between">
-          <div className={classNames('col-span-2 flex p-2 rounded-lg')}>
-            <div className='text-md flex flex-col space-y-2 justify-between'>
-              <span className='mr-[1px] text-center text-secondary'>Items</span>
-              <span className='font-medium text-md text-center text-primary-light'>{collection?collection.itemsCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
-            </div>
-          </div>
+        <div className="flex justify-left">
           <div className={classNames('col-span-2 flex p-2 rounded-lg')} >
             <div className='text-md flex flex-col space-y-2 justify-between'>
-              <span className='mr-[1px] text-center text-secondary'>Owners</span>
-              <span className='font-medium text-md text-center text-primary-light'>{collection?collection.ownerCnt:<Image src={Loading} alt='Loading...' width='20px' height='20px'/>}</span>
-            </div>
-          </div>
-          <div className={classNames('col-span-2 flex p-2 rounded-lg')} >
-            <div className='text-md flex flex-col space-y-2 justify-between'>
-              <div className='text-md mb-1 text-center text-secondary'>Floor</div>
               <div className='flex flex-row space-x-1 justify-center' >
                 <span className='font-medium text-md mr-[px] text-primary-light'>
                   {collection ? numberShortify(collection.floorPrice.omni) : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
@@ -140,13 +127,11 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
             </div>
           </div>
           <div className={classNames('col-span-3 flex flex-col space-y-2 p-2 rounded-lg')} >
-            <div className='text-md mb-1 text-center text-secondary'>7d Volume</div>
             <div className='text-md flex flex-row justify-between space-x-3'>
               <div className='flex flex-row justify-between'>
                 <span className='font-medium mr-1 text-md text-primary-light'>
                   {collection ? formatDollarAmount(Number(collection.volume7d)) : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
                 </span>
-                {/*<img src='/images/chain/ethereum_solid.svg' className='' alt='asset img' />*/}
               </div>
               <span className={classNames('font-medium text-md', volumeUp >= 0 ? 'text-[#38B000]': 'text-[#B00000]')}>
                 {collection ? `${(numberShortify(volumeUp, 0))}%` : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
@@ -162,32 +147,22 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
             <path d="M11.5023 2.75601L11.5024 2.75588C11.9009 2.35715 12.3741 2.04085 12.895 1.82505C13.4158 1.60924 13.974 1.49817 14.5378 1.49817C15.1015 1.49817 15.6598 1.60924 16.1806 1.82505C16.7014 2.04085 17.1746 2.35715 17.5732 2.75588L17.5734 2.75613C17.9721 3.15467 18.2884 3.62787 18.5042 4.14869C18.72 4.66951 18.8311 5.22775 18.8311 5.79151C18.8311 6.35527 18.72 6.9135 18.5042 7.43432C18.2884 7.95514 17.9721 8.42834 17.5734 8.82689L17.5733 8.82701L16.6016 9.79868L10.0003 16.4L3.39893 9.79868L2.42727 8.82701C1.6222 8.02195 1.16992 6.93004 1.16992 5.79151C1.16992 4.65297 1.6222 3.56107 2.42727 2.75601C3.23233 1.95094 4.32424 1.49866 5.46277 1.49866C6.60131 1.49866 7.69321 1.95094 8.49828 2.75601L9.46994 3.72767C9.76283 4.02057 10.2377 4.02057 10.5306 3.72767L11.5023 2.75601Z" stroke="#FF166A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
-        {/*<span className='text-md text-like'>
-          24
-        </span>*/}
       </div>
 
-      {/*button group at the bottom*/}
-      <div className={`w-full flex items-center justify-between bg-[#202020] absolute h-[65px] right-0 left-0 bottom-2 rounded-br-[8px] rounded-bl-[8px] px-3 ${hover ? 'block' : 'hidden'}`}>
-        <SecondaryButton text={'bid collection'} onClick={() => {
-          openModal(ModalIDs.MODAL_BID, {
-            nftImage: collection.profile_image,
-            nftTitle: collection.name,
-            collectionBid,
-            collectionInfo: collection,
-            onBuyFloor,
-            handleBidDlgClose: closeModal
-          })
-        }} />
-        <PrimaryButton text={'instant floor buy'} onClick={() => {
+      {/* <div className={`w-full flex items-center bg-[#202020] absolute right-0 left-0 bottom-3 rounded-br-[8px] rounded-bl-[8px] px-3 ${hover ? 'block' : 'hidden'}`}> */}
+      <button 
+        className={`bg-primary-green absolute bottom-0 w-full py-2 px-4 text-black rounded-b-lg text-xl ${hover ? 'block' : 'hidden'}`}
+        onClick={ () => {
           const floorNft = getValidFloorNFT()
           if (floorNft) {
             onBuyFloor(floorNft)
           } else {
             console.log('-no floor nft to buy-')
           }
-        }} />
-      </div>
+        }}>
+            buy floor nft
+      </button>
+      {/* </div> */}
     </div>
   )
 }
