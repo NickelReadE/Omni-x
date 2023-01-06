@@ -1,15 +1,16 @@
 import React, {useState, Fragment} from 'react'
+import {Menu, Transition} from '@headlessui/react'
 import {
   GAS_SUPPORTED_CHAIN_IDS,
   getChainLogoById,
   getChainOfficialNameById,
 } from '../../../utils/constants'
-import {Menu, Transition} from '@headlessui/react'
+import {GradientBackground} from '../../basic'
 
 export const SelectNetworks = ({ gasSupportChainIds, updateGasChainId }: {gasSupportChainIds: number[], updateGasChainId: (chainId: number) => void }) => {
 
   const [hover, setHover] = useState(false)
-    
+
   return (
     <div>
       <Menu as="div" className="relative inline-block align-middle flex items-center">
@@ -34,22 +35,23 @@ export const SelectNetworks = ({ gasSupportChainIds, updateGasChainId }: {gasSup
               leaveTo="transform opacity-0 scale-95"
             >
               <div
-                className={'absolute bottom-10 left-[-12px] w-[166px] origin-bottom-left rounded-md bg-primary-gradient p-[1px]'}>
-                <Menu.Items
-                  className="bg-[#202020e6] rounded-md shadow-lg backdrop-blur-[10px] shadow-[0_0px_20px_rgba(231,237,245,0.25)] focus:outline-none py-1">
-                  {
-                    GAS_SUPPORTED_CHAIN_IDS.map((chainId, index) => {
-                      return (
-                        <Menu.Item key={index} as={Fragment}>
-                          <div className={`py-2 px-6 flex items-center cursor-pointer ${gasSupportChainIds.includes(chainId) ? '' : 'bg-[#303030]'}`} onClick={() => updateGasChainId(chainId)}>
-                            <img alt={'chainIcon'} src={getChainLogoById(chainId.toString())}/>
-                            <span className={'text-primary-light text-lg pl-4'}>{getChainOfficialNameById(chainId)}</span>
-                          </div>
-                        </Menu.Item>
-                      )
-                    })
-                  }
-                </Menu.Items>
+                className={'absolute bottom-10 left-[-12px] w-[166px] origin-bottom-left rounded-md'}>
+                <GradientBackground className="shadow-[0_0px_20px_rgba(231,237,245,0.25)]">
+                  <Menu.Items className="focus:outline-none py-1">
+                    {
+                      GAS_SUPPORTED_CHAIN_IDS.map((chainId, index) => {
+                        return (
+                          <Menu.Item key={index} as={Fragment}>
+                            <div className={`py-2 px-6 flex items-center cursor-pointer ${gasSupportChainIds.includes(chainId) ? '' : 'bg-[#303030]'}`} onClick={() => updateGasChainId(chainId)}>
+                              <img alt={'chainIcon'} src={getChainLogoById(chainId.toString())}/>
+                              <span className={'text-primary-light text-lg pl-4'}>{getChainOfficialNameById(chainId)}</span>
+                            </div>
+                          </Menu.Item>
+                        )
+                      })
+                    }
+                  </Menu.Items>
+                </GradientBackground>
               </div>
             </Transition>
           </>

@@ -69,12 +69,12 @@ export const RPC_PROVIDERS: { [key: number]: string } = {
   [CHAIN_IDS[CHAIN_TYPE.FANTOM]]: 'https://rpcapi.fantom.network',
 
   // TESTNET RPC
-  [CHAIN_IDS[CHAIN_TYPE.GOERLI]]: 'https://rpc.ankr.com/eth_goerli',
-  [CHAIN_IDS[CHAIN_TYPE.BSC_TESTNET]]: 'https://rpc.ankr.com/bsc_testnet_chapel',
-  [CHAIN_IDS[CHAIN_TYPE.FUJI_TESTNET]]: 'https://rpc.ankr.com/avalanche_fuji',
-  [CHAIN_IDS[CHAIN_TYPE.MUMBAI]]: 'https://rpc.ankr.com/polygon_mumbai',
-  [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: 'https://convincing-clean-reel.arbitrum-goerli.discover.quiknode.pro/a7679fef301ca865c612a70bf2c98bc17c37135f/',
-  [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: 'https://rpc.ankr.com/optimism_testnet',
+  [CHAIN_IDS[CHAIN_TYPE.GOERLI]]: 'https://eth-goerli.g.alchemy.com/v2/4c2ZRS_s2UJUS1qDUf8tdHk1fiRhPZ6p',
+  [CHAIN_IDS[CHAIN_TYPE.BSC_TESTNET]]: 'https://nd-485-970-289.p2pify.com/29814d9c562019c13b798b1302572c20',
+  [CHAIN_IDS[CHAIN_TYPE.FUJI_TESTNET]]: 'https://nd-216-698-118.p2pify.com/90a04d7161f01ea02d399d52a4b6128a/ext/bc/C/rpc',
+  [CHAIN_IDS[CHAIN_TYPE.MUMBAI]]: 'https://polygon-mumbai.g.alchemy.com/v2/02MXkyOyWIK3ZxlnTbMaRMgbsFdvmthv',
+  [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: 'https://arb-goerli.g.alchemy.com/v2/f4BBpxxxWEVDtsmrk2N-B8WAGVZAMLpb',
+  [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: 'https://opt-goerli.g.alchemy.com/v2/o_ikS1EqcWS_gz-vnqtDZuqI41BB7zIO',
   [CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET]]: 'https://rpc.testnet.fantom.network',
   [CHAIN_IDS[CHAIN_TYPE.MOONBEAM_TESTNET]]: 'https://rpc.testnet.moonbeam.network'
 }
