@@ -456,7 +456,8 @@ export const doBidConfirm = async (bid_data: IBidData, common_data: TradingCommo
   const lzChainId = getLayerzeroChainId(common_data.chainId)
 
   const currency = getAddressByName(bid_data.currencyName as ContractName, common_data.chainId)
-  const price = ethers.utils.parseEther(bid_data.price.toString())
+  const decimal = getDecimals(common_data.chainId, bid_data.currencyName)
+  const price = ethers.utils.parseUnits(bid_data.price.toString(), decimal)
   const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
   const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
   const isCollectionOffer = !common_data.tokenId

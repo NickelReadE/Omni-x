@@ -203,7 +203,7 @@ const Item: NextPage = () => {
                                   alt="icon"
                                   className="mr-5"
                                 />
-                                <p className='ml-3 text-primary-light'>${item && item.price}</p>
+                                <p className='ml-3 text-primary-light'>${item.price}</p>
                               </div>
                             </div>
                           </div>
