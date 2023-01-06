@@ -12,7 +12,7 @@ import {
   getAddressByName,
   getChainNameFromId,
   getConversionRate,
-  getCurrencyNameAddress,
+  getCurrencyNameAddress, getDecimals,
   getLayerzeroChainId,
   getProvider,
   isUsdcOrUsdt,
@@ -420,7 +420,8 @@ export const doBidApprove = async (bid_data: IBidData, common_data: TradingCommo
   }
 
   const currency = getAddressByName(bid_data.currencyName as ContractName, common_data.chainId)
-  const price = ethers.utils.parseEther(bid_data.price.toString())
+  const decimal = getDecimals(common_data.chainId, bid_data.currencyName)
+  const price = ethers.utils.parseUnits(bid_data.price.toString(), decimal)
 
   await checkValid(currency, price.toString(), common_data.chainId, common_data.signer)
 
@@ -636,7 +637,7 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
 
   const txIdx = speical_data.addTxToHistories(pendingTx)
   await speical_data.listenONFTEvents(pendingTx, txIdx)
-  
+
   return tx
 }
 
