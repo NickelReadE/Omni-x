@@ -26,11 +26,11 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined)
 
   return (
-    <div className='w-9 h-9'>
+    <div className='w-11 h-11'>
       <div className="relative inline-block text-left" onMouseLeave={() => setHovered(false)}>
         <div className={'focus:outline-none'} onMouseEnter={() => setHovered(true)}>
           <Link href={'/account'}>
-            <div className={`w-9 h-9 ${hovered ? 'bg-primary-gradient' : ''} rounded-full cursor-pointer`}>
+            <div className={`w-11 h-11 ${hovered ? 'bg-primary-gradient' : ''} rounded-full cursor-pointer`}>
               <img
                 src={avatarImage}
                 alt="avatar"

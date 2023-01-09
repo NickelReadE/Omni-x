@@ -8,15 +8,15 @@ export const NotificationArea = () => {
   const [iconHovered, setIconHovered] = useState(false)
 
   return (
-    <div className='w-9 h-9'>
+    <div className='w-11 h-11'>
       <div className="relative inline-block text-left" onMouseLeave={() => setHovered(false)}>
         <div className={'focus:outline-none'} onMouseEnter={() => setHovered(true)}>
-          <div className={'w-9 h-9 rounded-full'} onMouseEnter={() => setIconHovered(true)} onMouseLeave={() => setIconHovered(false)}>
+          <div className={'w-11 h-11 rounded-full'} onMouseEnter={() => setIconHovered(true)} onMouseLeave={() => setIconHovered(false)}>
             <Image
               src={hovered ? '/images/icons/notification-active.svg' : (iconHovered ? '/images/icons/notification-hover.svg' : '/images/icons/notification.svg')}
               alt="avatar"
-              width={36}
-              height={36}
+              width={44}
+              height={44}
               className="rounded-full"
             />
           </div>
