@@ -31,7 +31,7 @@ export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, ad
       >
         <img alt={'listing'}
           src={getDarkChainIconById(chainId.toString())}
-          className="w-[28px] h-[28px] "/>
+          className="w-8 h-8"/>
       </div>
     )
   }

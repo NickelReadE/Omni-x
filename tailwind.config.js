@@ -24,7 +24,8 @@ module.exports = {
         'comment-gradient': 'linear-gradient(103.58deg, #00B6F0 15.1%, #1673FF 87.92%)',
         'harmony-gradient': 'linear-gradient(47.44deg, #00AEE9 12.22%, #69FABD 85.54%)',
         'star-gradient': 'linear-gradient(103.58deg, #F0D800 15.1%, #FFE816 87.92%)',
-        'alert-gradient': 'linear-gradient(224.6deg, #BF1212 0.01%, #FF1616 100.09%)'
+        'alert-gradient': 'linear-gradient(224.6deg, #BF1212 0.01%, #FF1616 100.09%)',
+        'frame-gradient': 'linear-gradient(180deg, rgba(0, 0, 0, 0) 66.15%, rgba(0, 0, 0, 0.5) 100%)'
       },
       colors: {
         chain: {
@@ -94,6 +95,7 @@ module.exports = {
       },
       aspectRatio: {
         '3/1': '3 / 1',
+        '3/2': '3 / 2',
       },
     },
   },

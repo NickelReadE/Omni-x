@@ -76,7 +76,23 @@ export const Tooltip = ({ tooltipContent, children }: { tooltipContent: string, 
 
 export const TextH1 = ({ children, className }: { children: ReactNode, className?: string }) => {
   return (
-    <div className={twMerge(`text-[60px] leading-[140%] font-bold text-black ${className ?? ''}`)}>
+    <div className={`text-[60px] leading-[140%] font-bold ${className ?? ''}`}>
+      {children}
+    </div>
+  )
+}
+
+export const TextSH2 = ({ children, className }: { children: ReactNode, className?: string }) => {
+  return (
+    <div className={`text-[20px] leading-[140%] ${className ?? ''}`}>
+      {children}
+    </div>
+  )
+}
+
+export const TextH2 = ({ children, className }: { children: ReactNode, className?: string }) => {
+  return (
+    <div className={`text-[32px] leading-[140%] font-bold ${className ?? ''}`}>
       {children}
     </div>
   )
