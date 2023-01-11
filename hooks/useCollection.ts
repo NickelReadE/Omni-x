@@ -40,6 +40,9 @@ export type CollectionType = {
     is_gasless: boolean,
     contract_type: string
     volume7d: string,
+    volume24h: string,
+    volume48h: string,
+    volume14d: string
 }
 
 export type CollectionTypeFunc = {

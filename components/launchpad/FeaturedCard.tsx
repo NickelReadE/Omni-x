@@ -1,10 +1,11 @@
 import React from 'react'
 import Link from 'next/link'
 import {LaunchPadType} from '../../hooks/useLaunchPad'
+import {TextBody, TextH3, TextSH2} from '../basic'
 
 export const FeaturedCard = ({collection}: { collection: LaunchPadType }) => {
   return (
-    <div className={'w-[600px]'}>
+    <div className={'w-[450px] rounded-[12px] bg-[#202020]'}>
       <Link href={`/launchpad/${collection.col_url}`}>
         <img
           className="w-[600px] hover:cursor-pointer"
@@ -12,14 +13,12 @@ export const FeaturedCard = ({collection}: { collection: LaunchPadType }) => {
           alt="NFT">
         </img>
       </Link>
-      <div className="flex flex-col pt-4">
-        <span className={'text-xl3 text-primary-light'}>{collection.name}</span>
-        <Link href={`/launchpad/${collection.col_url}`}>
-          <span className={'bg-clip-text text-transparent bg-primary-gradient text-xg font-medium cursor-pointer mt-4'}>
-            view launchpad page
-          </span>
-        </Link>
-        <span className={'text-secondary font-["CircularXX TT"] text-xg1 mt-4'}>{collection.description}</span>
+      <div className="flex flex-col py-4 px-3">
+        <div className={'flex items-center justify-between'}>
+          <TextH3 className={'text-primary-light'}>{collection.name}</TextH3>
+          <TextSH2 className={'text-primary-light'}>1d 8hrs</TextSH2>
+        </div>
+        <TextBody className={'text-secondary mt-4'}>{collection.description}</TextBody>
       </div>
     </div>
   )

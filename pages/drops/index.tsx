@@ -4,78 +4,111 @@ import NftForLaunch from '../../components/NftForLaunch'
 import useLaunchPad, { LaunchPadType } from '../../hooks/useLaunchPad'
 import {FeaturedCard} from '../../components/launchpad/FeaturedCard'
 import {SkeletonCard} from '../../components/skeleton/card'
+import {TextBodyemphasis, TextH1, TextH2, TextSH2} from '../../components/basic'
+import Router from 'next/router'
+import {PrimaryButton} from '../../components/common/buttons/PrimaryButton'
 
 const Launchpad: NextPage = () => {
-  const { loading, collectionsForComing, collectionsFeatured } = useLaunchPad()
+  const { loading, collectionsForComing, collectionsFeatured, collectionsForPast } = useLaunchPad()
 
   return (
-    <div className="pt-[20px] w-full">
+    <div className="w-full">
       <div className="flex w-full justify-center">
-        <div className={'aspect-[3/1] flex justify-center'}>
-          <div className={'bg-dark-gradient border-[1px] border-[#383838] rounded-[20px] backdrop-blur-[15px] w-[1000px] flex flex-col items-center py-6'}>
-            <span className="bg-clip-text text-center text-transparent bg-rainbow-gradient text-extraxl font-bold text-shadow-sm">connect through art</span>
-            <span className={'text-secondary text-xg1 text-shadow-sm'}>
+        <div className={'flex flex-col items-center py-8'}>
+          <TextH1 className="bg-clip-text text-transparent bg-rainbow-gradient text-shadow-sm">connect through art</TextH1>
+          <TextSH2 className={'text-secondary text-shadow-sm'}>
             the best place to launch your next NFT collection
-            </span>
-            <a href={'https://omni-x.gitbook.io/omni-x-nft-marketplace/marketplace-features/launchpad'} target={'_blank'} rel="noreferrer" className={'my-8'}>
-              <span className={'bg-clip-text text-center text-transparent bg-primary-gradient text-xg1 font-medium'}>
-                learn why
-              </span>
-            </a>
+          </TextSH2>
+          <div className={'flex items-center space-x-4 mt-4'}>
+            <PrimaryButton text={'learn more'} background={'bg-primary'} onClick={() => {
+              Router.push('/learn-more')
+            }} />
             <a
               href={'https://docs.google.com/forms/d/e/1FAIpQLSf6VCJyF1uf9SZ9BJwbGuP7bMla7JzOXMg6ctXN6SlSgNgFlw/viewform?usp=pp_url'} target={'_blank'} rel="noreferrer">
-              <div className={'flex items-center justify-center bg-primary-gradient rounded-full py-2 px-8 text-xxxl font-medium hover:shadow-[0_0_6px_rgba(0,240,236,1)]'}>
-                creators apply here!
+              <div className={'flex items-center justify-center bg-primary-gradient rounded-full py-2 px-4 hover:shadow-[0_0_6px_rgba(0,240,236,1)]'}>
+                <TextBodyemphasis>creators apply here!</TextBodyemphasis>
               </div>
             </a>
           </div>
         </div>
       </div>
-      <div className="flex mt-12">
-        <div className="text-primary-light text-xxxl pl-8">
-          Featured Launches
-        </div>
-      </div>
 
-      <div className={'mt-8 w-full'}>
-        <div className={'flex space-x-8'}>
-          {
-            collectionsFeatured.map((collection: LaunchPadType, index: number) => {
-              return (
-                <FeaturedCard key={index} collection={collection} />
-              )
-            })
-          }
-        </div>
-      </div>
-      {loading &&
+      {loading ?
         <SkeletonCard/>
-      }
-      <div className="mt-12">
-        {
-          !loading && collectionsForComing.length > 0 &&
-          <div className="">
-            <p className="font-bold text-xl2 mb-[24px]">
-              Upcoming Launches
-            </p>
-            <div className="flex flex-wrap space-x-12">
+        :
+        <>
+          <div className="flex flex-col mt-8">
+            <TextH2 className="text-primary-light">
+              Live Drops
+            </TextH2>
+            <TextSH2 className={'text-secondary'}>
+              minting is live on these awesome projects!
+            </TextSH2>
+          </div>
+
+          <div className={'mt-6 w-full'}>
+            <div className={'flex space-x-8'}>
               {
-                collectionsForComing.map((collection: LaunchPadType, index: any) => {
-                  return <NftForLaunch
-                    key={index}
-                    typeNFT={collection.mint_status}
-                    items={collection.itemsCnt}
-                    col_url={collection.col_url}
-                    name={collection.name}
-                    img={collection.profile_image}
-                    price={collection.price}
-                  />
+                collectionsFeatured.map((collection: LaunchPadType, index: number) => {
+                  return (
+                    <FeaturedCard key={index} collection={collection}/>
+                  )
                 })
               }
             </div>
           </div>
-        }
-      </div>
+          {
+            collectionsForComing.length > 0 &&
+            <div className="mt-12">
+              <TextH2 className="text-primary-light">
+                Upcoming Drops
+              </TextH2>
+              <TextSH2 className={'text-secondary'}>
+                explore Omni X vetted projects with incredible promise
+              </TextSH2>
+              <div className="flex flex-wrap space-x-12">
+                {
+                  collectionsForComing.map((collection: LaunchPadType, index: any) => {
+                    return <NftForLaunch
+                      key={index}
+                      typeNFT={collection.mint_status}
+                      items={collection.itemsCnt}
+                      col_url={collection.col_url}
+                      name={collection.name}
+                      img={collection.profile_image}
+                      price={collection.price}
+                    />
+                  })
+                }
+              </div>
+            </div>
+          }
+
+          {
+            collectionsForPast.length > 0 &&
+            <div className="mt-12">
+              <TextH2 className="text-primary-light">
+                Past Drops
+              </TextH2>
+              <div className="flex flex-wrap space-x-12">
+                {
+                  collectionsForPast.map((collection: LaunchPadType, index: any) => {
+                    return <NftForLaunch
+                      key={index}
+                      typeNFT={collection.mint_status}
+                      items={collection.itemsCnt}
+                      col_url={collection.col_url}
+                      name={collection.name}
+                      img={collection.profile_image}
+                      price={collection.price}
+                    />
+                  })
+                }
+              </div>
+            </div>
+          }
+        </>
+      }
     </div>
   )
 }

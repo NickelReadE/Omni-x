@@ -12,6 +12,7 @@ import useData from '../../hooks/useData'
 import { useBalance } from 'wagmi'
 import { calcVolumeUp } from '../../utils/utils'
 import {formatDollarAmount} from '../../utils/numbers'
+import {TextBodyemphasis, TextH3} from '../basic'
 
 type CollectionType = {
   profile_image: string
@@ -108,13 +109,16 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
         </Link>
       </div>
 
-      <div className={'flex flex-col justify-between h-[115px] pt-[18px] px-3 pb-3'}>
-        <div className="text-primary-light text-xl leading-[22px]">
+      <div className={'flex flex-col justify-between h-[90px] pt-3 px-3 pb-4'}>
+        <TextH3 className={'text-primary-light'}>
           {collection.name}
-        </div>
+        </TextH3>
 
         <div className="flex justify-left">
-          <div className={classNames('col-span-2 flex p-2 rounded-lg')} >
+          <TextBodyemphasis className={'text-transparent bg-primary-gradient bg-clip-text'}>
+            $1.2k - $14.9k
+          </TextBodyemphasis>
+          {/*<div className={classNames('col-span-2 flex p-2 rounded-lg')} >
             <div className='text-md flex flex-col space-y-2 justify-between'>
               <div className='flex flex-row space-x-1 justify-center' >
                 <span className='font-medium text-md mr-[px] text-primary-light'>
@@ -135,7 +139,7 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
                 {collection ? `${(numberShortify(volumeUp, 0))}%` : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
               </span>
             </div>
-          </div>
+          </div>*/}
         </div>
       </div>
 
@@ -149,7 +153,7 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
 
       {/* <div className={`w-full flex items-center bg-[#202020] absolute right-0 left-0 bottom-3 rounded-br-[8px] rounded-bl-[8px] px-3 ${hover ? 'block' : 'hidden'}`}> */}
       <button 
-        className={`bg-primary-green absolute bottom-0 w-full py-2 px-4 text-black rounded-b-lg text-xl ${hover ? 'block' : 'hidden'}`}
+        className={`bg-primary-green absolute bottom-0 w-full py-2 px-4 rounded-b-lg h-[38px] ${hover ? 'block' : 'hidden'}`}
         onClick={ () => {
           const floorNft = getValidFloorNFT()
           if (floorNft) {
@@ -158,7 +162,7 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
             console.log('-no floor nft to buy-')
           }
         }}>
-            buy floor nft
+        <TextBodyemphasis className={'text-primary'}>buy floor now</TextBodyemphasis>
       </button>
       {/* </div> */}
     </div>

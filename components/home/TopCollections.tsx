@@ -1,4 +1,4 @@
-import {TextBodyemphasis, TextH2} from '../basic'
+import {TextBody, TextBodyemphasis, TextH2, TextH3} from '../basic'
 import {ChainSelection} from '../common/ChainSelection'
 import {useState} from 'react'
 import {SUPPORTED_CHAIN_IDS} from '../../utils/constants'
@@ -43,6 +43,99 @@ export const HomeTopCollections = () => {
           </div>
           <div className={'flex items-center rounded-tr-[8px] rounded-br-[8px] justify-center py-2 px-4'}>
             <TextBodyemphasis className={'text-secondary'}>all</TextBodyemphasis>
+          </div>
+        </div>
+      </div>
+
+      <div className={'flex items-center mt-6 space-x-[120px]'}>
+        <div className={'flex-1'}>
+          <div className={'grid grid-cols-6'}>
+            <div className={''}></div>
+            <div className={'col-span-2'}></div>
+            <div className={''}>
+              <TextBodyemphasis className={'text-white text-center'}>volume</TextBodyemphasis>
+            </div>
+            <div className={''}>
+              <TextBodyemphasis className={'text-white text-center'}>%change</TextBodyemphasis>
+            </div>
+            <div className={''}>
+              <TextBodyemphasis className={'text-white text-center'}>floor</TextBodyemphasis>
+            </div>
+          </div>
+          <div className={'grid grid-cols-6 gap-x-12 h-[64px] flex items-center mt-4'}>
+            <TextBody className={'col-span-1 text-secondary'}>1</TextBody>
+            <div className={'col-span-2 bg-[#202020] rounded-[8px] w-full p-2 flex items-center space-x-3'}>
+              <img src={'/images/home/collectionIcon.png'} alt={'collection icon'} />
+              <TextH3 className={'text-white'}>Kanpai Pandas</TextH3>
+            </div>
+            <TextBody className={'col-span-1 text-white text-center'}>$26,545</TextBody>
+            <TextBody className={'col-span-1 text-transparent bg-primary-gradient bg-clip-text'}>30%</TextBody>
+            <TextBody className={'col-span-1 text-secondary text-center'}>$1250</TextBody>
+          </div>
+          <div className={'grid grid-cols-6 gap-x-12 h-[64px] flex items-center mt-4'}>
+            <TextBody className={'col-span-1 text-secondary'}>1</TextBody>
+            <div className={'col-span-2 bg-[#202020] rounded-[8px] w-full p-2 flex items-center space-x-3'}>
+              <img src={'/images/home/collectionIcon.png'} alt={'collection icon'} />
+              <TextH3 className={'text-white'}>Kanpai Pandas</TextH3>
+            </div>
+            <TextBody className={'col-span-1 text-white text-center'}>$26,545</TextBody>
+            <TextBody className={'col-span-1 text-transparent bg-primary-gradient bg-clip-text'}>30%</TextBody>
+            <TextBody className={'col-span-1 text-secondary text-center'}>$1250</TextBody>
+          </div>
+          <div className={'grid grid-cols-6 gap-x-12 h-[64px] flex items-center mt-4'}>
+            <TextBody className={'col-span-1 text-secondary'}>1</TextBody>
+            <div className={'col-span-2 bg-[#202020] rounded-[8px] w-full p-2 flex items-center space-x-3'}>
+              <img src={'/images/home/collectionIcon.png'} alt={'collection icon'} />
+              <TextH3 className={'text-white'}>Kanpai Pandas</TextH3>
+            </div>
+            <TextBody className={'col-span-1 text-white text-center'}>$26,545</TextBody>
+            <TextBody className={'col-span-1 text-transparent bg-primary-gradient bg-clip-text'}>30%</TextBody>
+            <TextBody className={'col-span-1 text-secondary text-center'}>$1250</TextBody>
+          </div>
+        </div>
+        <div className={'flex-1'}>
+          <div className={'grid grid-cols-6'}>
+            <div className={''}></div>
+            <div className={'col-span-2'}></div>
+            <div className={''}>
+              <TextBodyemphasis className={'text-white text-center'}>volume</TextBodyemphasis>
+            </div>
+            <div className={''}>
+              <TextBodyemphasis className={'text-white text-center'}>%change</TextBodyemphasis>
+            </div>
+            <div className={''}>
+              <TextBodyemphasis className={'text-white text-center'}>floor</TextBodyemphasis>
+            </div>
+          </div>
+          <div className={'grid grid-cols-6 gap-x-12 h-[64px] flex items-center mt-4'}>
+            <TextBody className={'col-span-1 text-secondary'}>1</TextBody>
+            <div className={'col-span-2 bg-[#202020] rounded-[8px] w-full p-2 flex items-center space-x-3'}>
+              <img src={'/images/home/collectionIcon.png'} alt={'collection icon'} />
+              <TextH3 className={'text-white'}>Kanpai Pandas</TextH3>
+            </div>
+            <TextBody className={'col-span-1 text-white text-center'}>$26,545</TextBody>
+            <TextBody className={'col-span-1 text-transparent bg-primary-gradient bg-clip-text'}>30%</TextBody>
+            <TextBody className={'col-span-1 text-secondary text-center'}>$1250</TextBody>
+          </div>
+          <div className={'grid grid-cols-6 gap-x-12 h-[64px] flex items-center mt-4'}>
+            <TextBody className={'col-span-1 text-secondary'}>1</TextBody>
+            <div className={'col-span-2 bg-[#202020] rounded-[8px] w-full p-2 flex items-center space-x-3'}>
+              <img src={'/images/home/collectionIcon.png'} alt={'collection icon'} />
+              <TextH3 className={'text-white'}>Kanpai Pandas</TextH3>
+            </div>
+            <TextBody className={'col-span-1 text-white text-center'}>$26,545</TextBody>
+            <TextBody className={'col-span-1 text-transparent bg-primary-gradient bg-clip-text'}>30%</TextBody>
+            <TextBody className={'col-span-1 text-secondary text-center'}>$1250</TextBody>
+          </div>
+          <div className={'grid grid-cols-6 gap-x-12 h-[64px] flex items-center mt-4'}>
+            <TextBody className={'col-span-1 text-secondary'}>1</TextBody>
+            <div className={'col-span-2 bg-[#202020] rounded-[8px] w-full p-2 flex items-center space-x-3'}>
+              <img src={'/images/home/collectionIcon.png'} alt={'collection icon'} />
+              <TextH3 className={'text-white'}>Kanpai Pandas</TextH3>
+            </div>
+            <TextBody className={'col-span-1 text-white text-center'}>$26,545</TextBody>
+            <TextBody className={'col-span-1 text-transparent bg-primary-gradient bg-clip-text'}>30%</TextBody>
+            <TextBody className={'col-span-1 text-secondary text-center'}>$1250</TextBody>
           </div>
         </div>
       </div>

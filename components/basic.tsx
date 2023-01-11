@@ -106,6 +106,13 @@ export const TextH3 = ({ children, className }: { children: ReactNode, className
   )
 }
 
+export const TextBody = ({ children, className }: { children: ReactNode, className?: string }) => {
+  return (
+    <div className={twMerge(`text-[16px] leading-[140%] ${className ?? ''}`)}>
+      {children}
+    </div>
+  )
+}
 export const TextBodyemphasis = ({ children, className }: { children: ReactNode, className?: string }) => {
   return (
     <div className={twMerge(`text-[16px] leading-[140%] font-medium text-black ${className ?? ''}`)}>
