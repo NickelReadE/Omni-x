@@ -31,6 +31,8 @@ import { useModal } from '../../../hooks/useModal'
 import { ModalIDs } from '../../../contexts/modal'
 import {SkeletonCard} from '../../../components/skeleton/card'
 import {PrimaryButton} from '../../../components/common/buttons/PrimaryButton'
+import {ChainSelection} from '../../../components/common/ChainSelection'
+import {SUPPORTED_CHAIN_IDS} from '../../../utils/constants'
 
 const sort_fields = [
   { text: 'price: low to high', value: 'price' },
@@ -134,6 +136,7 @@ const Collection: NextPage = () => {
   const [isActiveBuyNow, setIsActiveBuyNow] = useState<boolean>(false)
   const [listNFTs, setListNFTs] = useState<any>([])
   const [filterVisible, setFilterVisible] = useState<boolean>(false)
+  const [selectedChainIds, setSelectedChainIds] = useState<number[]>(SUPPORTED_CHAIN_IDS)
 
   const router = useRouter()
   const col_url = router.query.collection as string
@@ -252,6 +255,18 @@ const Collection: NextPage = () => {
     return temp
   }
 
+  const addSelectedChainId = (chainId: number) => {
+    setSelectedChainIds([...selectedChainIds, chainId])
+  }
+
+  const addAllChainIds = () => {
+    setSelectedChainIds(SUPPORTED_CHAIN_IDS)
+  }
+
+  const removeSelectedChainId = (chainId: number) => {
+    setSelectedChainIds(selectedChainIds.filter((id) => id !== chainId))
+  }
+
   return (
     <>
       <div className={classNames('w-full', 'pt-6 pb-4 px-0', 'relative', editStyle.collection)}>
@@ -264,7 +279,7 @@ const Collection: NextPage = () => {
         }
       </div>
 
-      <div className={`grid ${filterVisible ? 'grid-cols-6' : 'grid-cols-5'} gap-4 pt-4`}>
+      <div className={`grid ${filterVisible ? 'grid-cols-6' : 'grid-cols-5'} gap-4 mt-6`}>
         {
           <div className={`col-span-1 ${filterVisible ? 'block': 'hidden'}`}>
             <ul className="flex flex-col space-y-2">
@@ -399,37 +414,26 @@ const Collection: NextPage = () => {
           </div>
         }
         <div className={filterVisible ? 'col-span-4' : 'col-span-5'}>
-          <div className={'flex items-center justify-between w-full'}>
-            <div className={'flex items-center'}>
-              {
-                filterVisible
-                  ?
-                  <div className={'cursor-pointer'} onClick={() => setFilterVisible(false)}>
-                    <FilterActive />
-                  </div>
-                  :
-                  <div className={'cursor-pointer'} onClick={() => setFilterVisible(true)}>
-                    <FilterInactive />
-                  </div>
-              }
-            </div>
+          <div className={'flex items-center justify-between'}>
             <div className={'flex items-center space-x-4'}>
-              <PrimaryButton
-                text={'make a collection bid'}
-                className={'h-[32px] text-md font-medium'}
-                onClick={() => {
-                  openModal(ModalIDs.MODAL_BID, {
-                    nftImage: collectionInfo?.profile_image,
-                    nftTitle: collectionInfo?.name,
-                    collectionBid,
-                    collectionInfo: collectionInfo,
-                    onBuyFloor,
-                    handleBidDlgClose: closeModal
-                  })
-                }}
-              />
+              <Image src={`/images/icons/filter${filterVisible ? '_active' : ''}.svg`} width={38} height={38} alt={'filter'} onClick={() => setFilterVisible(!filterVisible)} />
               <Dropdown menus={sort_fields} onChange={onChangeSort} />
+              <ChainSelection selectedChainIds={selectedChainIds} addChainId={addSelectedChainId} removeChainId={removeSelectedChainId} addAllChainIds={addAllChainIds} setChainId={(chainId) => setSelectedChainIds([chainId])} />
             </div>
+            <PrimaryButton
+              text={'make a collection bid'}
+              className={'h-[32px] text-md font-medium'}
+              onClick={() => {
+                openModal(ModalIDs.MODAL_BID, {
+                  nftImage: collectionInfo?.profile_image,
+                  nftTitle: collectionInfo?.name,
+                  collectionBid,
+                  collectionInfo: collectionInfo,
+                  onBuyFloor,
+                  handleBidDlgClose: closeModal
+                })
+              }}
+            />
           </div>
           <div className="mt-5">
             {
