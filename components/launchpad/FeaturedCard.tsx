@@ -6,12 +6,12 @@ import {TextBody, TextH3, TextSH2} from '../basic'
 export const FeaturedCard = ({collection}: { collection: LaunchPadType }) => {
   return (
     <div className={'w-[450px] rounded-[12px] bg-[#202020]'}>
-      <Link href={`/launchpad/${collection.col_url}`}>
+      <Link href={`/drops/${collection.col_url}`}>
         <img
-          className="w-[600px] hover:cursor-pointer"
+          className="w-full hover:cursor-pointer rounded-t-[12px]"
           src={collection.profile_image}
-          alt="NFT">
-        </img>
+          alt="NFT"
+        />
       </Link>
       <div className="flex flex-col py-4 px-3">
         <div className={'flex items-center justify-between'}>

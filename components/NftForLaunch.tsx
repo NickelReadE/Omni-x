@@ -13,7 +13,7 @@ const NftForLaunch = ({ items, img, name, col_url, price }: ITypeNFT) => {
           <div
             className={'absolute w-full h-full  flex items-center justify-center'}>
             <div>
-              <Link href={`/launchpad/${col_url}`}>
+              <Link href={`/drops/${col_url}`}>
                 <div
                   className="w-[230px] text-xg text-white	 text-extrabold text-center items-center bg-[#B444F9] rounded-lg  py-[7px] hover:cursor-pointer">view
                   collection
