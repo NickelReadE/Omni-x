@@ -1,17 +1,13 @@
 import React from 'react'
 import { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import classNames from '../../helpers/classNames'
-import Loading from '../../public/images/loading_f.gif'
-import { numberShortify } from '../../utils/constants'
 import useWallet from '../../hooks/useWallet'
 import {ModalIDs} from '../../contexts/modal'
 import {useModal} from '../../hooks/useModal'
 import useData from '../../hooks/useData'
 import { useBalance } from 'wagmi'
-import { calcVolumeUp } from '../../utils/utils'
-import {formatDollarAmount} from '../../utils/numbers'
+// import { calcVolumeUp } from '../../utils/utils'
 import {TextBodyemphasis, TextH3} from '../basic'
 
 type CollectionType = {
@@ -86,7 +82,7 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
     }
   }
 
-  const volumeUp = collection ? calcVolumeUp(collection.volume7d, collection.volume14d) : 0
+  // const volumeUp = collection ? calcVolumeUp(collection.volume7d, collection.volume14d) : 0
 
   return (
     <div
