@@ -22,7 +22,7 @@ export const AnalyticsTopCollections = () => {
       <div className={'text-primary-light font-medium text-md mb-4'}>
         Top Collections
       </div>
-      <ChainSelection selectedChainIds={selectedChainIds} addChainId={addSelectedChainId} removeChainId={removeSelectedChainId} addAllChainIds={addAllChainIds} />
+      <ChainSelection selectedChainIds={selectedChainIds} addChainId={addSelectedChainId} removeChainId={removeSelectedChainId} addAllChainIds={addAllChainIds} setChainId={(chainId) => setSelectedChainIds([chainId])} />
       <div className={'mt-6'}>
       </div>
     </div>

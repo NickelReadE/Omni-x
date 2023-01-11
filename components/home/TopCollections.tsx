@@ -23,7 +23,7 @@ export const HomeTopCollections = () => {
       <div className={'flex items-center justify-between'}>
         <div className={'flex items-center space-x-8'}>
           <TextH2 className={'text-white'}>Top Collections</TextH2>
-          <ChainSelection selectedChainIds={selectedChainIds} addChainId={addSelectedChainId} removeChainId={removeSelectedChainId} addAllChainIds={addAllChainIds} />
+          <ChainSelection selectedChainIds={selectedChainIds} addChainId={addSelectedChainId} removeChainId={removeSelectedChainId} addAllChainIds={addAllChainIds} setChainId={(chainId) => setSelectedChainIds([chainId])} />
         </div>
         <div className={'bg-[#202020] rounded-[8px] h-[38px] flex items-center'}>
           <div className={'flex bg-[#303030] rounded-tl-[8px] rounded-bl-[8px] items-center justify-center py-2 px-4'}>

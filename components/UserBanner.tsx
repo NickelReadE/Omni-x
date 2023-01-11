@@ -6,7 +6,7 @@ import useWallet from '../hooks/useWallet'
 import classNames from '../helpers/classNames'
 import { ProfileData } from '../hooks/useProfile'
 import { truncateAddress } from '../utils/utils'
-import {ExternalLink, TextBody, TextH3} from './basic'
+import {ExternalLink, TextBody, TextBodyemphasis, TextH3} from './basic'
 import UserEdit from './user/UserEdit'
 import {PrimaryButton} from './common/buttons/PrimaryButton'
 import {GreyButton} from './common/buttons/GreyButton'
@@ -94,7 +94,9 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
               </div>
             </div>
             <div className={'flex items-center space-x-4'}>
-              <PrimaryButton text={'following'} className={'py-2 px-4 text-md font-medium'} />
+              <div className={'bg-primary-gradient py-2 px-4 flex items-center justify-center rounded-full cursor-pointer'}>
+                <TextBodyemphasis className={'text-primary'}>following</TextBodyemphasis>
+              </div>
               {
                 user.address === address &&
                 <GreyButton text={'settings'} className={'py-2 px-4'} onClick={() => setSettingModal(true)} />

@@ -16,7 +16,7 @@ const FeaturedCard = () => {
 
 export const HomeFeatured = () => {
   return (
-    <div className={'flex items-center justify-between space-x-10 mt-8'}>
+    <div className={'flex items-center justify-between space-x-10 mt-8 overflow-auto'}>
       <FeaturedCard />
       <FeaturedCard />
       <FeaturedCard />

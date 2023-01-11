@@ -8,9 +8,10 @@ interface IChainSelectionProps {
     addChainId: (chainId: number) => void,
     removeChainId: (chainId: number) => void,
     addAllChainIds: () => void,
+    setChainId: (chainId: number) => void,
 }
 
-export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, addAllChainIds }: IChainSelectionProps) => {
+export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, addAllChainIds, setChainId }: IChainSelectionProps) => {
   const [isShow, setIsShow] = useState(false)
     
   const activeChainIds = useMemo(() => {
@@ -78,7 +79,7 @@ export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, ad
                   ?
                   SUPPORTED_CHAIN_IDS.map((chainId: ChainIds, index) => {
                     return (
-                      <DarkChainIcon key={index} chainId={chainId} onClick={() => removeFromList(chainId)} />
+                      <DarkChainIcon key={index} chainId={chainId} onClick={() => setChainId(chainId)} />
                     )
                   })
                   :activeChainIds.map((chainId: ChainIds, index) => {
