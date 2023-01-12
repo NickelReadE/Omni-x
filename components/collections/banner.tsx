@@ -52,7 +52,7 @@ export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
             alt="avatar"
             width={200}
             height={200}
-            className={''}
+            className={'rounded'}
           />
         </div>
 
@@ -151,40 +151,8 @@ export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
             </div>
           </div>
         </div>
-
-        {/*<div className={'flex items-center justify-between w-full pt-5'}>
-        <div className={'flex items-center space-x-6'}>
-          <div className={'flex flex-col items-center space-y-2'}>
-            <span className={'text-xg text-primary-light'}>{collection.itemsCnt}</span>
-            <span className={'text-md text-secondary'}>items</span>
-          </div>
-          <div className={'md:flex flex-col items-center space-y-2 hidden'}>
-            <span className={'text-xg text-primary-light'}>{collection.ownerCnt}</span>
-            <span className={'text-md text-secondary'}>owners</span>
-          </div>
-          <div className={'lg:flex flex-col items-center space-y-2 hidden'}>
-            <span className={'text-xg text-primary-light'}>{royalty}%</span>
-            <span className={'text-md text-secondary'}>creator&nbsp;fee</span>
-          </div>
-          <div className={'xl:flex flex-col items-center space-y-2 hidden'}>
-            <span className={'text-xg text-primary-light'}>{collection.itemsCnt}</span>
-            <span className={'text-md text-secondary'}>total&nbsp;vol</span>
-          </div>
-          <div className={'2xl:flex flex-col items-center space-y-2 hidden'}>
-            <span className={'text-xg text-primary-light'}>{formatDollarAmount(Number(collection.volume7d))}</span>
-            <span className={'text-md text-secondary'}>7d&nbsp;vol</span>
-          </div>
-          <div className={'2xl:flex flex-col items-center space-y-2 hidden'}>
-            <span className={'text-xg text-primary-light'}>{collection.orderCnt}</span>
-            <span className={'text-md text-secondary'}>listed</span>
-          </div>
-        </div>
-        <div className={'flex flex-col space-y-2'}>
-          <PrimaryButton text={'following'} className={'h-[26px] text-md font-medium'} />
-          <span className={'text-md text-primary-light'}>{formatAmount(16500)} followers</span>
-        </div>
-      </div>*/}
       </div>
+
       {/*items & activity Tabs section*/}
       <div className={'flex items-center mt-10'}>
         <div className="text-xl font-medium text-center text-secondary">
@@ -192,17 +160,17 @@ export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
             <li onClick={() => setSelectedTab(0)}>
               <div className={`${activeClasses(0)} pb-[2px] cursor-pointer`}>
                 <div className={'flex flex-col justify-between h-full bg-primary text-white py-1 px-4'}>
-                  <span className={`${activeTextClasses(0)}`}>collected</span>
+                  <span className={`${activeTextClasses(0)}`}>items</span>
                 </div>
               </div>
             </li>
-            <li onClick={() => setSelectedTab(1)}>
+            {/*<li onClick={() => setSelectedTab(1)}>
               <div className={`${activeClasses(1)} pb-[2px] cursor-pointer`}>
                 <div className={'flex flex-col justify-between h-full bg-primary text-white py-1 px-4'}>
                   <span className={`${activeTextClasses(1)}`}>created</span>
                 </div>
               </div>
-            </li>
+            </li>*/}
             <li onClick={() => setSelectedTab(2)}>
               <div className={`${activeClasses(2)} pb-[2px] cursor-pointer`}>
                 <div className={'flex flex-col justify-between h-full bg-primary text-white py-1 px-4'}>
@@ -213,17 +181,17 @@ export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
             <li onClick={() => setSelectedTab(3)}>
               <div className={`${activeClasses(3)} pb-[2px] cursor-pointer`}>
                 <div className={'flex flex-col justify-between h-full bg-primary text-white py-1 px-4'}>
-                  <span className={`${activeTextClasses(3)}`}>favorites</span>
+                  <span className={`${activeTextClasses(3)}`}>posts</span>
                 </div>
               </div>
             </li>
-            <li onClick={() => setSelectedTab(4)}>
+            {/*<li onClick={() => setSelectedTab(4)}>
               <div className={`${activeClasses(4)} pb-[2px] cursor-pointer`}>
                 <div className={'flex flex-col justify-between h-full bg-primary text-white py-1 px-4'}>
                   <span className={`${activeTextClasses(4)}`}>hidden</span>
                 </div>
               </div>
-            </li>
+            </li>*/}
           </ul>
         </div>
       </div>

@@ -41,8 +41,7 @@ const Header = (): JSX.Element => {
         classNames(
           'bg-[#161616]',
           'h-[64px]',
-          'px-4',
-          'sm:px-6',
+          'px-8',
           'z-50',
           'fixed',
           'w-full',
