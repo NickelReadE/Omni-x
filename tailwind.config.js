@@ -60,7 +60,8 @@ module.exports = {
         'dark-red': '#E84142',
         'primary-blue': '#00F0EC',
         'primary-green': '#16FFC5',
-        'like': '#FF166A'
+        'like': '#FF166A',
+        'comment': '#007DF0'
       },
       fontFamily: {
         sans: ['Inter', ...fontFamily.sans],

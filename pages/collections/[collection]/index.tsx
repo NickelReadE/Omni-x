@@ -33,6 +33,8 @@ import {SkeletonCard} from '../../../components/skeleton/card'
 import {PrimaryButton} from '../../../components/common/buttons/PrimaryButton'
 import {ChainSelection} from '../../../components/common/ChainSelection'
 import {SUPPORTED_CHAIN_IDS} from '../../../utils/constants'
+import {TextBodyemphasis} from '../../../components/basic'
+import {CollectionPostCard} from '../../../components/collections/PostCard'
 
 const sort_fields = [
   { text: 'price: low to high', value: 'price' },
@@ -137,6 +139,8 @@ const Collection: NextPage = () => {
   const [listNFTs, setListNFTs] = useState<any>([])
   const [filterVisible, setFilterVisible] = useState<boolean>(false)
   const [selectedChainIds, setSelectedChainIds] = useState<number[]>(SUPPORTED_CHAIN_IDS)
+  const [tab, setTab] = useState<number>(0)
+  const [postIndex, setPostIndex] = useState<number>(0)
 
   const router = useRouter()
   const col_url = router.query.collection as string
@@ -273,7 +277,7 @@ const Collection: NextPage = () => {
         {
           collectionInfo
             ?
-            <CollectionBanner collection={collectionInfo} />
+            <CollectionBanner collection={collectionInfo} setSelectedTabIndex={setTab} />
             :
             <SkeletonCard />
         }
@@ -281,7 +285,7 @@ const Collection: NextPage = () => {
 
       <div className={`grid ${filterVisible ? 'grid-cols-6' : 'grid-cols-5'} gap-4 mt-6`}>
         {
-          <div className={`col-span-1 ${filterVisible ? 'block': 'hidden'}`}>
+          /*<div className={`col-span-1 ${filterVisible ? 'block': 'hidden'}`}>
             <ul className="flex flex-col space-y-2">
               <li className="w-full">
                 <div
@@ -356,8 +360,8 @@ const Collection: NextPage = () => {
                                   <div className="flex items-center justify-between">
                                     <span className="font-bold text-[#4d5358]">{attrs[key].values[valueKey][3]}</span>
                                     <div className="text-right">
-                                      {/*<p className="font-bold text-[#697077]">{attrs[key].values[valueKey][4]}</p>*/}
-                                      {/*<p className="text-[11px] text-[#697077]">({attrs[key].values[valueKey][1]}%)</p>*/}
+                                      {/!*<p className="font-bold text-[#697077]">{attrs[key].values[valueKey][4]}</p>*!/}
+                                      {/!*<p className="text-[11px] text-[#697077]">({attrs[key].values[valueKey][1]}%)</p>*!/}
                                     </div>
                                   </div>
                                 }
@@ -370,89 +374,51 @@ const Collection: NextPage = () => {
                   </Accordion>
                 </li>
               })}
-              {/* <li className="w-full">
-              <button
-                className={`w-full px-8 py-4 text-left text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`}
-              >
-                Price
-                <span className="pull-right">
-                  <i className={`${expandedMenu == 1 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
-                </span>
-              </button>
-            </li>
-            <li className="w-full">
-              <button
-                className={`w-full px-8 py-4 text-left text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`}
-              >
-                Blockchain
-                <span className="pull-right">
-                  <i className={`${expandedMenu == 1 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
-                </span>
-              </button>
-            </li>
-            <li className="w-full">
-              <button
-                className={`w-full px-8 py-4 text-left text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`}
-              >
-                Rarity
-                <span className="pull-right">
-                  <i className={`${expandedMenu == 1 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
-                </span>
-              </button>
-            </li>
-            <li className="w-full">
-              <button
-                className={`w-full px-8 py-4 text-left text-g-600 hover:bg-p-700 hover:bg-opacity-20 font-semibold hover:shadow-xl ${expandedMenu==1?'active':''}`}
-              >
-                Attributes
-                <span className="pull-right">
-                  <i className={`${expandedMenu == 1 ? 'fa fa-chevron-up' : 'fa fa-chevron-down'}`}></i>
-                </span>
-              </button>
-            </li> */}
             </ul>
-          </div>
+          </div>*/
         }
-        <div className={filterVisible ? 'col-span-4' : 'col-span-5'}>
-          <div className={'flex items-center justify-between'}>
-            <div className={'flex items-center space-x-4'}>
-              <Image src={`/images/icons/filter${filterVisible ? '_active' : ''}.svg`} width={38} height={38} alt={'filter'} onClick={() => setFilterVisible(!filterVisible)} />
-              <Dropdown menus={sort_fields} onChange={onChangeSort} />
-              <ChainSelection selectedChainIds={selectedChainIds} addChainId={addSelectedChainId} removeChainId={removeSelectedChainId} addAllChainIds={addAllChainIds} setChainId={(chainId) => setSelectedChainIds([chainId])} />
+        {
+          tab === 0 && <div className={filterVisible ? 'col-span-4' : 'col-span-5'}>
+            <div className={'flex items-center justify-between'}>
+              <div className={'flex items-center space-x-4'}>
+                <Image src={`/images/icons/filter${filterVisible ? '_active' : ''}.svg`} width={38} height={38}
+                  alt={'filter'} onClick={() => setFilterVisible(!filterVisible)}/>
+                <Dropdown menus={sort_fields} onChange={onChangeSort}/>
+                <ChainSelection selectedChainIds={selectedChainIds} addChainId={addSelectedChainId}
+                  removeChainId={removeSelectedChainId} addAllChainIds={addAllChainIds}
+                  setChainId={(chainId) => setSelectedChainIds([chainId])}/>
+              </div>
+              <PrimaryButton
+                text={'bid collection'}
+                className={'h-[38px] text-md font-medium'}
+                onClick={() => {
+                  openModal(ModalIDs.MODAL_BID, {
+                    nftImage: collectionInfo?.profile_image,
+                    nftTitle: collectionInfo?.name,
+                    collectionBid,
+                    collectionInfo: collectionInfo,
+                    onBuyFloor,
+                    handleBidDlgClose: closeModal
+                  })
+                }}
+              />
             </div>
-            <PrimaryButton
-              text={'make a collection bid'}
-              className={'h-[32px] text-md font-medium'}
-              onClick={() => {
-                openModal(ModalIDs.MODAL_BID, {
-                  nftImage: collectionInfo?.profile_image,
-                  nftTitle: collectionInfo?.name,
-                  collectionBid,
-                  collectionInfo: collectionInfo,
-                  onBuyFloor,
-                  handleBidDlgClose: closeModal
+            <div className="mt-5">
+              {
+                Object.keys(searchObj).map((attrKey) => {
+                  return searchObj[attrKey].map((item: any, index: any) => {
+                    return <Chip
+                      label={item}
+                      onClick={() => handleFilterBtn(attrKey, item)}
+                      onDelete={() => handleFilterBtn(attrKey, item)}
+                      key={index}
+                      classes={{root: classes.chipRoot}}
+                    />
+                  })
                 })
-              }}
-            />
-          </div>
-          <div className="mt-5">
-            {
-              Object.keys(searchObj).map((attrKey) => {
-                return searchObj[attrKey].map((item: any, index: any) => {
-                  return <Chip
-                    label={item}
-                    onClick={() => handleFilterBtn(attrKey, item)}
-                    onDelete={() => handleFilterBtn(attrKey, item)}
-                    key={index}
-                    classes={{ root: classes.chipRoot }}
-                  />
-                })
-              })
-            }
-          </div>
-          {/*<div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 p-1 gap-4 mt-10 mb-5 w-full">*/}
-          <div className="mt-6 mb-5 w-full">
-            {
+              }
+            </div>
+            <div className="mt-6 mb-5 w-full">
               <InfiniteScroll
                 dataLength={nfts.length}
                 next={fetchMoreData}
@@ -460,7 +426,7 @@ const Collection: NextPage = () => {
                 loader={
                   <div className="flex justify-center items-center">
                     <div className="flex justify-center items-center w-[90%] h-[100px]">
-                      {!isActiveBuyNow && <Image src={Loading} alt="Loading..." width="80px" height="80px" />}
+                      {!isActiveBuyNow && <Image src={Loading} alt="Loading..." width="80px" height="80px"/>}
                     </div>
                   </div>
                 }
@@ -468,25 +434,67 @@ const Collection: NextPage = () => {
                   <div></div>
                 }
               >
-                <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ${filterVisible ? 'xl:grid-cols-5 2xl:grid-cols-5' : 'xl:grid-cols-6 2xl:grid-cols-6'} gap-4 p-1`}>
+                <div
+                  className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ${filterVisible ? 'xl:grid-cols-5 2xl:grid-cols-5' : 'xl:grid-cols-6 2xl:grid-cols-6'} gap-4 p-1`}>
                   {!isActiveBuyNow && nfts.map((item, index) => {
                     return (
                       <div key={index} className={'flex justify-center w-full'}>
-                        <NFTBox nft={item} col_url={col_url} onRefresh={onRefresh} />
+                        <NFTBox nft={item} col_url={col_url} onRefresh={onRefresh}/>
                       </div>
                     )
                   })}
                   {isActiveBuyNow && listNFTs && buyComponent()}
                 </div>
               </InfiniteScroll>
-            }
+            </div>
           </div>
-        </div>
+        }
         {
           filterVisible &&
               <div className={'col-span-1'} />
         }
       </div>
+      {
+        tab === 3 &&
+          <div className={'flex flex-col'}>
+            <div className={'flex items-center justify-between w-full'}>
+              {/*Button Group section*/}
+              <div className={'flex'}>
+                <div
+                  className={`${postIndex === 0 ? 'text-primary' : 'text-secondary'} text-center bg-primary-gradient rounded-l-lg p-[1px]`}>
+                  <button
+                    type="button"
+                    className={`${postIndex === 0 ? 'bg-transparent' : 'bg-primary'} w-full py-2 px-4 text-md font-medium rounded-l-lg focus:z-10 focus:ring-0`}
+                    onClick={() => setPostIndex(0)}
+                  >
+                    events
+                  </button>
+                </div>
+                <div
+                  className={`${postIndex === 1 ? 'text-primary' : 'text-secondary'} text-center bg-primary-gradient rounded-r-md p-[1px]`}>
+                  <button
+                    type="button"
+                    className={`${postIndex === 1 ? 'bg-transparent' : 'bg-primary'} w-full py-2 px-4 text-md font-medium rounded-r-md focus:z-10 focus:ring-0`}
+                    onClick={() => setPostIndex(1)}
+                  >
+                    announcements
+                  </button>
+                </div>
+              </div>
+
+              <div className={'bg-primary-gradient text-primary rounded-full py-2 px-4'}>
+                <TextBodyemphasis>create a post</TextBodyemphasis>
+              </div>
+            </div>
+
+            {/*Post section*/}
+            <div className={'flex space-x-[30px] overflow-hidden mt-5'}>
+              <CollectionPostCard />
+              <CollectionPostCard />
+              <CollectionPostCard />
+            </div>
+          </div>
+      }
     </>
   )
 }

@@ -14,10 +14,11 @@ import {formatAmount, formatDollarAmount} from '../../utils/numbers'
 import {GreyButton} from '../common/buttons/GreyButton'
 
 interface CollectionBannerProps {
-    collection: CollectionType
+    collection: CollectionType,
+    setSelectedTabIndex: (index: number) => void,
 }
 
-export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
+export const CollectionBanner = ({ collection, setSelectedTabIndex }: CollectionBannerProps) => {
   const { chainId } = useWallet()
 
   const [royalty, setRoyalty] = useState<number>(0)
@@ -65,7 +66,7 @@ export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
                 <div className={'flex items-center space-x-2 bg-[#202020] py-1 px-2 rounded-[12px]'}>
                   <TextBody
                     className={'text-[#4D94FF] leading-[16px]'}>{collectionAddress ? truncateAddress(collectionAddress) : ''}</TextBody>
-                  <img 
+                  <img
                     src={'/images/icons/copy.svg'}
                     alt={'copy'}
                     className={'cursor-pointer'}
@@ -157,28 +158,39 @@ export const CollectionBanner = ({ collection }: CollectionBannerProps) => {
       <div className={'flex items-center mt-10'}>
         <div className="text-xl font-medium text-center text-secondary">
           <ul className="flex flex-wrap -mb-px">
-            <li onClick={() => setSelectedTab(0)}>
+            <li onClick={() => {
+              setSelectedTab(0)
+              setSelectedTabIndex(0)
+            }}>
               <div className={`${activeClasses(0)} pb-[2px] cursor-pointer`}>
                 <div className={'flex flex-col justify-between h-full bg-primary text-white py-1 px-4'}>
                   <span className={`${activeTextClasses(0)}`}>items</span>
                 </div>
               </div>
             </li>
-            {/*<li onClick={() => setSelectedTab(1)}>
+            {/*<li onClick={() => {
+            setSelectedTab(1)
+            setSelectedTabIndex(1}}>
               <div className={`${activeClasses(1)} pb-[2px] cursor-pointer`}>
                 <div className={'flex flex-col justify-between h-full bg-primary text-white py-1 px-4'}>
                   <span className={`${activeTextClasses(1)}`}>created</span>
                 </div>
               </div>
             </li>*/}
-            <li onClick={() => setSelectedTab(2)}>
+            <li onClick={() => {
+              setSelectedTab(2)
+              setSelectedTabIndex(2)
+            }}>
               <div className={`${activeClasses(2)} pb-[2px] cursor-pointer`}>
                 <div className={'flex flex-col justify-between h-full bg-primary text-white py-1 px-4'}>
                   <span className={`${activeTextClasses(2)}`}>activity</span>
                 </div>
               </div>
             </li>
-            <li onClick={() => setSelectedTab(3)}>
+            <li onClick={() => {
+              setSelectedTab(3)
+              setSelectedTabIndex(3)
+            }}>
               <div className={`${activeClasses(3)} pb-[2px] cursor-pointer`}>
                 <div className={'flex flex-col justify-between h-full bg-primary text-white py-1 px-4'}>
                   <span className={`${activeTextClasses(3)}`}>posts</span>
