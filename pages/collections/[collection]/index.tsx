@@ -25,8 +25,6 @@ import useCollectionNfts from '../../../hooks/useCollectionNfts'
 import useData from '../../../hooks/useData'
 import Dropdown from '../../../components/dropdown'
 import {CollectionBanner} from '../../../components/collections/banner'
-import FilterActive from '../../../public/images/icons/filter_active.svg'
-import FilterInactive from '../../../public/images/icons/filter_inactive.svg'
 import { useModal } from '../../../hooks/useModal'
 import { ModalIDs } from '../../../contexts/modal'
 import {SkeletonCard} from '../../../components/skeleton/card'
@@ -285,7 +283,7 @@ const Collection: NextPage = () => {
 
       <div className={`grid ${filterVisible ? 'grid-cols-6' : 'grid-cols-5'} gap-4 mt-6`}>
         {
-          /*<div className={`col-span-1 ${filterVisible ? 'block': 'hidden'}`}>
+          <div className={`col-span-1 ${filterVisible ? 'block': 'hidden'}`}>
             <ul className="flex flex-col space-y-2">
               <li className="w-full">
                 <div
@@ -360,8 +358,8 @@ const Collection: NextPage = () => {
                                   <div className="flex items-center justify-between">
                                     <span className="font-bold text-[#4d5358]">{attrs[key].values[valueKey][3]}</span>
                                     <div className="text-right">
-                                      {/!*<p className="font-bold text-[#697077]">{attrs[key].values[valueKey][4]}</p>*!/}
-                                      {/!*<p className="text-[11px] text-[#697077]">({attrs[key].values[valueKey][1]}%)</p>*!/}
+                                      {/*<p className="font-bold text-[#697077]">{attrs[key].values[valueKey][4]}</p>*/}
+                                      {/*<p className="text-[11px] text-[#697077]">({attrs[key].values[valueKey][1]}%)</p>*/}
                                     </div>
                                   </div>
                                 }
@@ -375,7 +373,7 @@ const Collection: NextPage = () => {
                 </li>
               })}
             </ul>
-          </div>*/
+          </div>
         }
         {
           tab === 0 && <div className={filterVisible ? 'col-span-4' : 'col-span-5'}>

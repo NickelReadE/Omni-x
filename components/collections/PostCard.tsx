@@ -25,9 +25,9 @@ export const CollectionPostCard = () => {
       <div className={'flex flex-col space-y-3 p-3'}>
         <TextH3 className={'text-primary-light'}>NFT NYC Kanpai Pandas Party</TextH3>
         <div className={'flex items-center'}>
-          <Image src={'/images/icons/calendar_small.svg'} width={18} height={18} />
+          <Image src={'/images/icons/calendar_small.svg'} alt={'small icon'} width={18} height={18} />
           <TextBody className={'text-primary-light'}>Monday, April 14th</TextBody>
-          <Image src={'/images/icons/clock.svg'} className={'ml-6'} width={18} height={18} />
+          <Image src={'/images/icons/clock.svg'} alt={'small icon'} className={'ml-6'} width={18} height={18} />
           <TextBody className={'text-primary-light'}>9:30pm - 12:30am</TextBody>
         </div>
         <TextBody className={'text-secondary'}>
@@ -35,7 +35,7 @@ export const CollectionPostCard = () => {
         </TextBody>
         <TextSubtext className={'text-comment'}>https://partiful.com/e/9D3kOT9HgdWI4gChETpX</TextSubtext>
         <div className={'flex'}>
-          <Image src={'/images/icons/map_pin.svg'} width={18} height={18} />
+          <Image src={'/images/icons/map_pin.svg'} alt={'small icon'} width={18} height={18} />
           <TextBody className={'text-primary-light'}>191 Christie St</TextBody>
         </div>
         <div className={'flex items-center justify-between'}>

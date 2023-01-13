@@ -57,7 +57,7 @@ export const StatsUserLeaderboard = () => {
           <TextBodyemphasis className={'text-secondary'}>volume</TextBodyemphasis>
         </div>
         <div className={'col-span-1 flex items-center'}>
-          <TextBodyemphasis className={'text-primary-light'}>rank change</TextBodyemphasis>
+          <TextBodyemphasis className={'text-secondary'}>rank change</TextBodyemphasis>
         </div>
         <div className={'col-span-1 flex items-center'}>
           <TextBodyemphasis className={'text-primary-light'}>points</TextBodyemphasis>
@@ -77,7 +77,7 @@ export const StatsUserLeaderboard = () => {
           <TextBodyemphasis className={'text-secondary'}>$24.83mm</TextBodyemphasis>
         </div>
         <div className={'col-span-1 flex items-center justify-center'}>
-          <TextBodyemphasis className={'text-primary-light'}>-</TextBodyemphasis>
+          <TextBodyemphasis className={'text-secondary'}>-</TextBodyemphasis>
         </div>
         <div className={'col-span-1 flex items-center'}>
           <TextBodyemphasis className={'text-primary-light'}>101,545</TextBodyemphasis>

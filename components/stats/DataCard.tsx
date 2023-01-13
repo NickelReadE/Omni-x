@@ -1,6 +1,6 @@
 import {chainInfos} from '../../utils/constants'
 import {twMerge} from 'tailwind-merge'
-import {TextBody, TextH2} from "../basic";
+import {TextBody, TextH2} from '../basic'
 
 export type AnalyticsData = {
     chainId: number,

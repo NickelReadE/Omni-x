@@ -1,6 +1,6 @@
 import {chainInfos} from '../../utils/constants'
 import {AnalyticsData} from './DataCard'
-import {TextBody, TextH3} from "../basic";
+import {TextBody, TextH3} from '../basic'
 
 const mockData = [
   { chainId: 5, value: 10000 },
