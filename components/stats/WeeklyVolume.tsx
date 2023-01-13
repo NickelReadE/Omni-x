@@ -1,5 +1,6 @@
 import {chainInfos} from '../../utils/constants'
 import {AnalyticsData} from './DataCard'
+import {TextBody, TextH3} from "../basic";
 
 const mockData = [
   { chainId: 5, value: 10000 },
@@ -14,12 +15,12 @@ export const AnalyticsWeeklyVolume = () => {
   return (
     <div className={'bg-[#202020] p-6 mt-[30px] rounded-lg'}>
       <div className={'flex items-center justify-between'}>
-        <div className={'text-primary-light font-medium text-md'}>
+        <TextH3 className={'text-primary-light'}>
             Weekly Volume
-        </div>
-        <div className={'text-primary-light font-medium text-md'}>
+        </TextH3>
+        <TextBody className={'bg-primary-gradient bg-clip-text text-transparent'}>
             Sep 12-19
-        </div>
+        </TextBody>
       </div>
       <div className={'flex justify-between mt-2'}>
         <div>Chart data</div>

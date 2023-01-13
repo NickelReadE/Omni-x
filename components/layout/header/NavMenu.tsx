@@ -16,8 +16,8 @@ export default function NavMenu() {
       return 'collections'
     } else if (router.pathname === '/drops') {
       return 'drops'
-    } else if (router.pathname === '/analytics') {
-      return 'analytics'
+    } else if (router.pathname === '/stats') {
+      return 'stats'
     } else if (router.pathname === '/' || router.pathname === '/learn-more') {
       return 'home'
     } else {
@@ -33,7 +33,7 @@ export default function NavMenu() {
             <a className='relative flex items-center h-full'>
               <div className={`h-[40px] ${menu === 'home' && 'bg-white'} ${activeClass(0)}`} onMouseEnter={() => setHoveredId(0)} onMouseLeave={() => setHoveredId(undefined)}>
                 <div className={`bg-primary w-full flex items-center justify-center ${(menu === 'home' || hoveredId === 0) ? 'h-[38px]' : 'h-[40px]'}`}>
-                  <TextH3 className='text-white'>Home</TextH3>
+                  <TextH3 className={menu === 'home' ? 'text-white' : 'text-secondary'}>Home</TextH3>
                 </div>
               </div>
             </a>
@@ -51,11 +51,11 @@ export default function NavMenu() {
           </Link>
         </li>
         <li className="flex">
-          <Link href='/analytics'>
+          <Link href='/stats'>
             <a className='relative flex items-center h-full'>
-              <div className={`h-[40px] ${menu === 'analytics' && 'bg-white'} ${activeClass(2)}`} onMouseEnter={() => setHoveredId(2)} onMouseLeave={() => setHoveredId(undefined)}>
-                <div className={`bg-primary w-full flex items-center justify-center ${(menu === 'analytics' || hoveredId === 2) ? 'h-[38px]' : 'h-[40px]'}`}>
-                  <TextH3 className={menu === 'analytics' ? 'text-white' : 'text-secondary'}>Stats</TextH3>
+              <div className={`h-[40px] ${menu === 'stats' && 'bg-white'} ${activeClass(2)}`} onMouseEnter={() => setHoveredId(2)} onMouseLeave={() => setHoveredId(undefined)}>
+                <div className={`bg-primary w-full flex items-center justify-center ${(menu === 'stats' || hoveredId === 2) ? 'h-[38px]' : 'h-[40px]'}`}>
+                  <TextH3 className={menu === 'stats' ? 'text-white' : 'text-secondary'}>Stats</TextH3>
                 </div>
               </div>
             </a>
