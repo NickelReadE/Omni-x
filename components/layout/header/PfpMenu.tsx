@@ -14,7 +14,7 @@ interface IPfpMenuPros {
   avatarImage: string
 }
 
-const menuItems = ['messages', 'events', 'settings', 'wallet']
+const menuItems = [/*'messages', 'events', */'settings', 'wallet']
 
 export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
   const { address, chainId } = useWallet()
@@ -57,7 +57,7 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
                   {({ open }) => (
                     <>
                       <Disclosure.Button className={`flex items-center w-full ${open ? '' : 'pb-3'}`}>
-                        <span className={'flex-none text-left text-secondary w-14 italic font-bold'}>USD</span>
+                        <span className={'flex-none text-left text-primary-light w-14 italic font-bold'}>USD</span>
                         <span className={'grow text-left px-3 text-primary-light'}>${numberLocalize(totalUSDCBalance + totalUSDTBalance)}</span>
                         <span className={'flex-none w-6'}>
                           {
@@ -106,7 +106,7 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
                   )}
                 </Disclosure>
                 <div className={'flex items-center'}>
-                  <span className={'flex-none text-secondary w-14 italic font-bold'}>{getChainInfo(chainId)?.nativeCurrency.symbol}</span>
+                  <span className={'flex-none text-primary-light w-14 italic font-bold'}>{getChainInfo(chainId)?.nativeCurrency.symbol}</span>
                   <span className={'grow px-3 text-primary-light'}>{numberLocalize(parseFloat(nativeBalance?.formatted || '0'))}</span>
                   <span className={'flex-none w-6'}/>
                 </div>
@@ -116,7 +116,7 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
                 menuItems.map((menu, index) => {
                   return (
                     <div key={index} onMouseEnter={() => setActiveIndex(index)} onMouseLeave={() => setActiveIndex(undefined)}>
-                      <div className={`py-2 px-6 flex items-center cursor-pointer ${activeIndex === index ? 'bg-[#303030]' : ''}`}>
+                      <div className={`mx-[1px] py-2 px-6 flex items-center cursor-pointer ${activeIndex === index ? 'bg-[#303030]' : ''}`}>
                         <img src={`/images/icons/${menu}${activeIndex === index ? '-active' : ''}.svg`} alt={'menu icon'}/>
                         <span className={`text-${activeIndex === index ? 'primary-light' : 'secondary'} text-lg pl-4`}>{menu}</span>
                       </div>

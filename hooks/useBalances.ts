@@ -87,16 +87,16 @@ const useBalances = (): BalancesType => {
     if (!signer || !chainId) return
 
     // faucet omni
-    try {
-      const omni = getOmniInstance(chainId, signer)
-
-      const tx = await omni.mint({ gasLimit: '300000' })
-      await tx.wait()
-
-      dispatch(openSnackBar({ message: 'Received 10,000 OMNI', status: 'success' }))
-    } catch (e) {
-      console.error('While fauceting OMNI token', e)
-    }
+    // try {
+    //   const omni = getOmniInstance(chainId, signer)
+    //
+    //   const tx = await omni.mint({ gasLimit: '300000' })
+    //   await tx.wait()
+    //
+    //   dispatch(openSnackBar({ message: 'Received 10,000 OMNI', status: 'success' }))
+    // } catch (e) {
+    //   console.error('While fauceting OMNI token', e)
+    // }
 
     // faucet usdc/usdt
     try {
