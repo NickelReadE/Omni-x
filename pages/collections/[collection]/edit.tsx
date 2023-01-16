@@ -14,7 +14,7 @@ const Tag = ({active, label}: {active: boolean, label: string}) => {
 const CollectionEdit: NextPage = () => {
   return (
     <div className={'flex justify-center'}>
-      <div className={'flex flex-col space-y-8 w-[450px]'}>
+      <div className={'flex flex-col space-y-8 w-[450px] pt-8'}>
         <TextH2 className={'font-bold text-primary-light'}>edit collection</TextH2>
 
         <div className={'flex flex-col space-y-2'}>
@@ -29,8 +29,8 @@ const CollectionEdit: NextPage = () => {
             <Image src={'/images/default_collection.png'} alt={'user'} width={200} height={200} />
           </div>
           <div className={'flex flex-1 flex-col space-y-2'}>
-            <TextBodyemphasis className={'text-primary-light'}>logo image</TextBodyemphasis>
-            <TextBodyemphasis className={'text-secondary'}>320 x 320 recommended</TextBodyemphasis>
+            <TextBodyemphasis className={'text-primary-light'}>featured image</TextBodyemphasis>
+            <TextBodyemphasis className={'text-secondary'}>1000 x 334 recommended</TextBodyemphasis>
             <Image src={'/images/default_collection.png'} alt={'user'} width={200} height={200} />
           </div>
         </div>
