@@ -11,7 +11,7 @@ export const usdc: any = USDC
 export const usdt: any = USDT
 export const weth: any = WETH
 
-export const CURRENCY_OMNI = {value: 0, text: 'OMNI', icon: 'currency/omni.svg'}
+// export const CURRENCY_OMNI = {value: 0, text: 'OMNI', icon: 'currency/omni.svg'}
 export const CURRENCY_USDC = {value: 1, text: 'USDC', icon: 'currency/usdc.svg'}
 export const CURRENCY_USDT = {value: 2, text: 'USDT', icon: 'currency/usdt.svg'}
 export const CURRENCY_WETH = {value: 3, text: 'ETH', icon: 'currency/ethereum.svg'}
@@ -19,36 +19,29 @@ export const CURRENCY_WETH = {value: 3, text: 'ETH', icon: 'currency/ethereum.sv
 const getCurrency = (currency: any, address: string, decimals: number) => ({...currency, address, decimals})
 type CurrencyType = {value: number, text: string, icon: string, address: string, decimals: number}
 
-export const ALL_CURRENCIES = [CURRENCY_OMNI, CURRENCY_USDC, CURRENCY_USDT, CURRENCY_WETH]
+export const ALL_CURRENCIES = [CURRENCY_USDC, CURRENCY_USDT, CURRENCY_WETH]
 export const VALID_CURRENCIES: {[chain: number | string]: CurrencyType[]} = {
   [ChainIDS.BINANCE]: [
-    getCurrency(CURRENCY_OMNI, oft[ChainIDS.BINANCE], 18),
     getCurrency(CURRENCY_USDT, oft[ChainIDS.BINANCE], 18),
   ],
   [ChainIDS.AVALANCHE]: [
-    getCurrency(CURRENCY_OMNI, oft[ChainIDS.AVALANCHE], 18),
     getCurrency(CURRENCY_USDC, usdc[ChainIDS.AVALANCHE], 6),
   ],
   [ChainIDS.POLYGON]: [
-    getCurrency(CURRENCY_OMNI, oft[ChainIDS.POLYGON], 18),
     getCurrency(CURRENCY_USDC, usdc[ChainIDS.POLYGON], 6),
   ],
   [ChainIDS.FANTOM]: [
-    getCurrency(CURRENCY_OMNI, oft[ChainIDS.FANTOM], 18),
     getCurrency(CURRENCY_USDC, usdc[ChainIDS.FANTOM], 6),
   ],
   [ChainIDS.ETHEREUM]: [
-    getCurrency(CURRENCY_OMNI, oft[ChainIDS.ETHEREUM], 18),
     getCurrency(CURRENCY_USDC, usdc[ChainIDS.ETHEREUM], 6),
     getCurrency(CURRENCY_WETH, weth[ChainIDS.ETHEREUM], 18),
   ],
   [ChainIDS.ARBITRUM]: [
-    getCurrency(CURRENCY_OMNI, oft[ChainIDS.ARBITRUM], 18),
     getCurrency(CURRENCY_USDC, usdc[ChainIDS.ARBITRUM], 6),
     getCurrency(CURRENCY_WETH, weth[ChainIDS.ARBITRUM], 18),
   ],
   [ChainIDS.OPTIMISM]: [
-    getCurrency(CURRENCY_OMNI, oft[ChainIDS.OPTIMISM], 18),
     getCurrency(CURRENCY_USDC, usdc[ChainIDS.OPTIMISM], 6),
     getCurrency(CURRENCY_WETH, weth[ChainIDS.OPTIMISM], 18),
   ],
@@ -67,7 +60,7 @@ export const getCurrencyIconByAddress = (address?: string) => {
     }
   }
 
-  return `/images/${CURRENCY_OMNI.icon}`
+  return `/images/${CURRENCY_USDC.icon}`
 }
 
 
@@ -79,7 +72,7 @@ export const getCurrencyNameAddress = (address?: string) => {
     }
   }
 
-  return CURRENCY_OMNI.text
+  return CURRENCY_USDC.text
 }
 
 export const getDecimals = (chainId: number, currencyName: string) => {

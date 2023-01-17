@@ -32,7 +32,6 @@ export type ContractName =
     'OmnixExchange' |
     'Strategy' |
     'StrategyForCollection' |
-    'OMNI' |
     'USDC' |
     'USDT' |
     'ETH' |
@@ -56,8 +55,8 @@ export const getAddressByName = (name: ContractName, chainId: number) => {
     return strategy[chainInfos[chainId].name]
   } else if (name === 'StrategyForCollection') {
     return strategyForCollection[chainInfos[chainId].name]
-  } else if (name === 'OMNI') {
-    return oft[chainId.toString()]
+  // } else if (name === 'OMNI') {
+  //   return oft[chainId.toString()]
   } else if (name === 'USDC') {
     return usdc[chainId.toString()]
   } else if (name === 'USDT') {

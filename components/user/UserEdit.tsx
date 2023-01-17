@@ -463,7 +463,7 @@ const UserEdit: FC<IUserEditProps> = ({ updateModal }) => {
                     <select disabled={true} onChange={(e) => {
                       handleTokenCoin(e.target.value)
                     }}>
-                      <option value={'0'}>OMNI</option>
+                      {/* <option value={'0'}>OMNI</option> */}
                       <option value={'1'}>USDC</option>
                       <option value={'2'}>USDT</option>
                       <option value={'3'}>ETH</option>
@@ -493,7 +493,7 @@ const UserEdit: FC<IUserEditProps> = ({ updateModal }) => {
                     <select disabled={true} onChange={(e) => {
                       handleNFTCoin(e.target.value)
                     }}>
-                      <option value={'0'}>OMNI</option>
+                      {/* <option value={'0'}>OMNI</option> */}
                       <option value={'1'}>USDC</option>
                       <option value={'2'}>USDT</option>
                       <option value={'3'}>ETH</option>
