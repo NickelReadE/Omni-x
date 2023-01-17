@@ -271,7 +271,7 @@ const Collection: NextPage = () => {
 
   return (
     <>
-      <div className={classNames('w-full', 'pt-6 pb-4 px-0', 'relative', editStyle.collection)}>
+      <div className={classNames('w-full', 'pt-6 px-0', 'relative', editStyle.collection)}>
         {
           collectionInfo
             ?
@@ -281,109 +281,23 @@ const Collection: NextPage = () => {
         }
       </div>
 
-      <div className={`grid ${filterVisible ? 'grid-cols-6' : 'grid-cols-5'} gap-4 mt-6`}>
-        {
-          <div className={`col-span-1 ${filterVisible ? 'block': 'hidden'}`}>
-            <ul className="flex flex-col space-y-2">
-              <li className="w-full">
-                <div
-                  className={`w-full px-4 py-2 text-left text-md text-secondary font-semibold ${expandedMenu == 1 ? 'active' : ''}`}
-                >
-                  Buy Now
-                  <Switch
-                    checked={enabled}
-                    onChange={setEnabled}
-                    onClick={() => setIsActiveBuyNow(!isActiveBuyNow)}
-                    className={'bg-transparent pull-right relative inline-flex h-[16px] w-[28px] shrink-0 cursor-pointer rounded-full border-[2px] border-[#969696] transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75 flex items-center'}
-                  >
-                    <span className="sr-only">Use setting</span>
-                    <span
-                      aria-hidden="true"
-                      className={`${enabled ? 'translate-x-3' : 'translate-x-px'}
-                      pointer-events-none inline-block h-2 w-2 border-[2px] border-[#969696] transform rounded-full bg-transparent ring-0 transition duration-200 ease-in-out mt-px`}
-                    />
-                  </Switch>
-                </div>
-              </li>
-              {collectionInfo && collectionInfo.attrs && Object.keys(collectionInfo.attrs).map((key, idx) => {
-                const attrs = collectionInfo.attrs
-                return <li className="w-full" key={idx}>
-                  <Accordion className={classes.accordion}>
-                    <AccordionSummary
-                      expandIcon={<img src={'/images/icons/caret_down.png'} alt="caret-down" />}
-                      aria-controls="panel1a-content"
-                      id="panel1a-header"
-                    >
-                      <Typography className={classNames('text-secondary text-md')}>{key}</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <div>
-                        <div className={classes.search}>
-                          <div className={classes.searchIcon}>
-                            <SearchIcon />
-                          </div>
-                          <InputBase
-                            placeholder="Search…"
-                            classes={{
-                              root: classes.inputRoot,
-                              input: classes.inputInput,
-                            }}
-                            inputProps={{ 'aria-label': 'search' }}
-                            onChange={(e) => {
-                              searchFilter(e.target.value, key)
-                            }}
-                          />
-                        </div>
-                        <FormGroup classes={{ root: classes.frmGroup }}>
-                          {
-                            attrs[key].values && Object.keys(attrs[key].values).map((valueKey, valueIndex) => {
-                              if (valueKey == 'none') {
-                                return null
-                              }
-                              if (filterObj[key] && !valueKey.includes(filterObj[key].toLowerCase())) {
-                                return null
-                              }
-                              return <FormControlLabel
-                                key={valueIndex}
-                                classes={{ label: classes.frmLabel, root: classes.frmLabel }}
-                                control={<Checkbox
-                                  checked={Array.isArray(searchObj[key]) && searchObj[key].indexOf(attrs[key].values[valueKey][3], 0) > -1}
-                                  onChange={(e) => {
-                                    searchAttrsCheck(e.target.checked, key, attrs[key].values[valueKey][3])
-                                  }}
-                                  color="primary"
-                                  inputProps={{ 'aria-label': 'checkbox with default color' }} />
-                                }
-                                label={
-                                  <div className="flex items-center justify-between">
-                                    <span className="font-bold text-[#4d5358]">{attrs[key].values[valueKey][3]}</span>
-                                    <div className="text-right">
-                                      {/*<p className="font-bold text-[#697077]">{attrs[key].values[valueKey][4]}</p>*/}
-                                      {/*<p className="text-[11px] text-[#697077]">({attrs[key].values[valueKey][1]}%)</p>*/}
-                                    </div>
-                                  </div>
-                                }
-                              />
-                            })
-                          }
-                        </FormGroup>
-                      </div>
-                    </AccordionDetails>
-                  </Accordion>
-                </li>
-              })}
-            </ul>
-          </div>
-        }
-        {
-          tab === 0 && <div className={filterVisible ? 'col-span-4' : 'col-span-5'}>
-            <div className={'flex items-center justify-between'}>
+      {
+        tab === 0 &&
+          <>
+            <div className={'flex items-center justify-between mt-6'}>
               <div className={'flex items-center space-x-4'}>
-                <Image src={`/images/icons/filter${filterVisible ? '_active' : ''}.svg`} width={38} height={38}
-                  alt={'filter'} onClick={() => setFilterVisible(!filterVisible)}/>
+                <Image
+                  src={`/images/icons/filter${filterVisible ? '_active' : ''}.svg`} width={38}
+                  height={38}
+                  alt={'filter'}
+                  className={'cursor-pointer'}
+                  onClick={() => setFilterVisible(!filterVisible)}/>
                 <Dropdown menus={sort_fields} onChange={onChangeSort}/>
-                <ChainSelection selectedChainIds={selectedChainIds} addChainId={addSelectedChainId}
-                  removeChainId={removeSelectedChainId} addAllChainIds={addAllChainIds}
+                <ChainSelection
+                  selectedChainIds={selectedChainIds}
+                  addChainId={addSelectedChainId}
+                  removeChainId={removeSelectedChainId}
+                  addAllChainIds={addAllChainIds}
                   setChainId={(chainId) => setSelectedChainIds([chainId])}/>
               </div>
               <PrimaryButton
@@ -401,7 +315,102 @@ const Collection: NextPage = () => {
                 }}
               />
             </div>
-            <div className="mt-5">
+            <div className={`grid ${filterVisible ? 'grid-cols-6' : 'grid-cols-5'} gap-4 mt-6`}>
+              <div className={`col-span-1 ${filterVisible ? 'block' : 'hidden'}`}>
+                <ul className="flex flex-col space-y-2">
+                  <li className="w-full">
+                    <div
+                      className={`w-full px-4 py-2 text-left text-md text-secondary font-semibold ${expandedMenu == 1 ? 'active' : ''}`}
+                    >
+                      Buy Now
+                      <Switch
+                        checked={enabled}
+                        onChange={setEnabled}
+                        onClick={() => setIsActiveBuyNow(!isActiveBuyNow)}
+                        className={'bg-transparent pull-right relative inline-flex h-[16px] w-[28px] shrink-0 cursor-pointer rounded-full border-[2px] border-[#969696] transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75 flex items-center'}
+                      >
+                        <span className="sr-only">Use setting</span>
+                        <span
+                          aria-hidden="true"
+                          className={`${enabled ? 'translate-x-3' : 'translate-x-px'}
+                    pointer-events-none inline-block h-2 w-2 border-[2px] border-[#969696] transform rounded-full bg-transparent ring-0 transition duration-200 ease-in-out mt-px`}
+                        />
+                      </Switch>
+                    </div>
+                  </li>
+                  {collectionInfo && collectionInfo.attrs && Object.keys(collectionInfo.attrs).map((key, idx) => {
+                    const attrs = collectionInfo.attrs
+                    return <li className="w-full" key={idx}>
+                      <Accordion className={classes.accordion}>
+                        <AccordionSummary
+                          expandIcon={<img src={'/images/icons/caret_down.png'} alt="caret-down"/>}
+                          aria-controls="panel1a-content"
+                          id="panel1a-header"
+                        >
+                          <Typography className={classNames('text-secondary text-md')}>{key}</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <div>
+                            <div className={classes.search}>
+                              <div className={classes.searchIcon}>
+                                <SearchIcon/>
+                              </div>
+                              <InputBase
+                                placeholder="Search…"
+                                classes={{
+                                  root: classes.inputRoot,
+                                  input: classes.inputInput,
+                                }}
+                                inputProps={{'aria-label': 'search'}}
+                                onChange={(e) => {
+                                  searchFilter(e.target.value, key)
+                                }}
+                              />
+                            </div>
+                            <FormGroup classes={{root: classes.frmGroup}}>
+                              {
+                                attrs[key].values && Object.keys(attrs[key].values).map((valueKey, valueIndex) => {
+                                  if (valueKey == 'none') {
+                                    return null
+                                  }
+                                  if (filterObj[key] && !valueKey.includes(filterObj[key].toLowerCase())) {
+                                    return null
+                                  }
+                                  return <FormControlLabel
+                                    key={valueIndex}
+                                    classes={{label: classes.frmLabel, root: classes.frmLabel}}
+                                    control={<Checkbox
+                                      checked={Array.isArray(searchObj[key]) && searchObj[key].indexOf(attrs[key].values[valueKey][3], 0) > -1}
+                                      onChange={(e) => {
+                                        searchAttrsCheck(e.target.checked, key, attrs[key].values[valueKey][3])
+                                      }}
+                                      color="primary"
+                                      inputProps={{'aria-label': 'checkbox with default color'}}/>
+                                    }
+                                    label={
+                                      <div className="flex items-center justify-between">
+                                        <span
+                                          className="font-bold text-[#4d5358]">{attrs[key].values[valueKey][3]}</span>
+                                        <div className="text-right">
+                                          {/*<p className="font-bold text-[#697077]">{attrs[key].values[valueKey][4]}</p>*/}
+                                          {/*<p className="text-[11px] text-[#697077]">({attrs[key].values[valueKey][1]}%)</p>*/}
+                                        </div>
+                                      </div>
+                                    }
+                                  />
+                                })
+                              }
+                            </FormGroup>
+                          </div>
+                        </AccordionDetails>
+                      </Accordion>
+                    </li>
+                  })}
+                </ul>
+              </div>
+              {
+                <div className={'col-span-5'}>
+                  {/*<div className="">
               {
                 Object.keys(searchObj).map((attrKey) => {
                   return searchObj[attrKey].map((item: any, index: any) => {
@@ -415,46 +424,45 @@ const Collection: NextPage = () => {
                   })
                 })
               }
-            </div>
-            <div className="mt-6 mb-5 w-full">
-              <InfiniteScroll
-                dataLength={nfts.length}
-                next={fetchMoreData}
-                hasMore={hasMoreNFTs}
-                loader={
-                  <div className="flex justify-center items-center">
-                    <div className="flex justify-center items-center w-[90%] h-[100px]">
-                      {!isActiveBuyNow && <Image src={Loading} alt="Loading..." width="80px" height="80px"/>}
-                    </div>
-                  </div>
-                }
-                endMessage={
-                  <div></div>
-                }
-              >
-                <div
-                  className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ${filterVisible ? 'xl:grid-cols-5 2xl:grid-cols-5' : 'xl:grid-cols-6 2xl:grid-cols-6'} gap-4 p-1`}>
-                  {!isActiveBuyNow && nfts.map((item, index) => {
-                    return (
-                      <div key={index} className={'flex justify-center w-full'}>
-                        <NFTBox nft={item} col_url={col_url} onRefresh={onRefresh}/>
+            </div>*/}
+                  <div className="mb-5 w-full">
+                    <InfiniteScroll
+                      dataLength={nfts.length}
+                      next={fetchMoreData}
+                      hasMore={hasMoreNFTs}
+                      loader={
+                        <div className="flex justify-center items-center">
+                          <div className="flex justify-center items-center w-[90%] h-[100px]">
+                            {!isActiveBuyNow && <Image src={Loading} alt="Loading..." width="80px" height="80px"/>}
+                          </div>
+                        </div>
+                      }
+                      endMessage={
+                        <div></div>
+                      }
+                    >
+                      <div
+                        className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ${filterVisible ? 'xl:grid-cols-5 2xl:grid-cols-5' : 'xl:grid-cols-6 2xl:grid-cols-6'} gap-4 p-1`}>
+                        {!isActiveBuyNow && nfts.map((item, index) => {
+                          return (
+                            <div key={index} className={'flex justify-center w-full'}>
+                              <NFTBox nft={item} col_url={col_url} onRefresh={onRefresh}/>
+                            </div>
+                          )
+                        })}
+                        {isActiveBuyNow && listNFTs && buyComponent()}
                       </div>
-                    )
-                  })}
-                  {isActiveBuyNow && listNFTs && buyComponent()}
+                    </InfiniteScroll>
+                  </div>
                 </div>
-              </InfiniteScroll>
+              }
             </div>
-          </div>
-        }
-        {
-          filterVisible &&
-              <div className={'col-span-1'} />
-        }
-      </div>
+          </>
+      }
+
       {
         tab === 3 &&
-          <div className={'flex flex-col'}>
+          <div className={'flex flex-col mt-6'}>
             <div className={'flex items-center justify-between w-full'}>
               {/*Button Group section*/}
               <div className={'flex'}>
