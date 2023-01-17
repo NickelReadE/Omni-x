@@ -410,21 +410,21 @@ const Collection: NextPage = () => {
               </div>
               {
                 <div className={'col-span-5'}>
-                  {/*<div className="">
-              {
-                Object.keys(searchObj).map((attrKey) => {
-                  return searchObj[attrKey].map((item: any, index: any) => {
-                    return <Chip
-                      label={item}
-                      onClick={() => handleFilterBtn(attrKey, item)}
-                      onDelete={() => handleFilterBtn(attrKey, item)}
-                      key={index}
-                      classes={{root: classes.chipRoot}}
-                    />
-                  })
-                })
-              }
-            </div>*/}
+                  <div className="">
+                    {
+                      Object.keys(searchObj).map((attrKey) => {
+                        return searchObj[attrKey].map((item: any, index: any) => {
+                          return <Chip
+                            label={item}
+                            onClick={() => handleFilterBtn(attrKey, item)}
+                            onDelete={() => handleFilterBtn(attrKey, item)}
+                            key={index}
+                            classes={{root: classes.chipRoot}}
+                          />
+                        })
+                      })
+                    }
+                  </div>
                   <div className="mb-5 w-full">
                     <InfiniteScroll
                       dataLength={nfts.length}
