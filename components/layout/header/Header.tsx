@@ -11,6 +11,8 @@ import {NotificationArea} from './NotificationArea'
 import {TransactionTracker} from './TransactionTracker'
 import {MessageArea} from './MessageArea'
 
+const S3_BUCKET_URL = process.env.S3_BUCKET_URL || ''
+
 const Header = (): JSX.Element => {
   const { address } = useWallet()
   const { profile, onFaucet } = useData()
@@ -30,7 +32,7 @@ const Header = (): JSX.Element => {
       if (profile.avatar.startsWith('ipfs')) {
         return `https://ipfs.io/${profile.avatar}`
       }
-      return process.env.API_URL + profile.avatar
+      return S3_BUCKET_URL + profile.avatar
     }
     return '/images/default_avatar.png'
   }, [profile])

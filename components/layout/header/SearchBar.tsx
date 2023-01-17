@@ -4,7 +4,7 @@ import useComponentVisible from '../../../hooks/useComponentVisible'
 import useSearch from '../../../hooks/useSearch'
 import {truncateAddress} from '../../../utils/utils'
 
-const S3_BUCKET_URL = process.env.API_URL || ''
+const S3_BUCKET_URL = process.env.S3_BUCKET_URL || ''
 
 export default function SearchBar() {
   const [query, setQuery] = useState('')

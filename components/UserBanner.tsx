@@ -2,15 +2,14 @@
 import React, {useMemo, useState} from 'react'
 import Dialog from '@material-ui/core/Dialog'
 import {makeStyles} from '@material-ui/core/styles'
+import Image from 'next/image'
 import useWallet from '../hooks/useWallet'
 import classNames from '../helpers/classNames'
 import { ProfileData } from '../hooks/useProfile'
 import { truncateAddress } from '../utils/utils'
 import {ExternalLink, TextBody, TextBodyemphasis, TextH3} from './basic'
 import UserEdit from './user/UserEdit'
-import {GreyButton} from './common/buttons/GreyButton'
 import {formatAmount} from '../utils/numbers'
-import Image from 'next/image'
 
 type UserBannerProps = {
     user: ProfileData,
@@ -24,6 +23,8 @@ const useStyles = makeStyles({
   },
 })
 
+const S3_BUCKET_URL = process.env.S3_BUCKET_URL || ''
+
 const UserBanner = ({user}: UserBannerProps): JSX.Element => {
   const {address} = useWallet()
   const classes = useStyles()
@@ -31,7 +32,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
 
   const bannerImage = useMemo(() => {
     if (user && user.banner) {
-      return process.env.API_URL + user.banner
+      return S3_BUCKET_URL + user.banner
     }
     return '/images/default_banner.png'
   }, [user])
@@ -44,7 +45,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
       if (user.avatar.startsWith('ipfs')) {
         return `https://ipfs.io/${user.avatar}`
       }
-      return process.env.API_URL + user.avatar
+      return S3_BUCKET_URL + user.avatar
     }
     return '/images/default_avatar.png'
   }, [user])
@@ -96,21 +97,21 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
               <div className={'bg-primary-gradient py-2 px-4 flex items-center justify-center rounded-full cursor-pointer'}>
                 <TextBodyemphasis className={'text-primary'}>following</TextBodyemphasis>
               </div>
-              {
+              {/*{
                 user.address === address &&
                 <GreyButton text={'settings'} className={'py-2 px-4'} onClick={() => setSettingModal(true)} />
-              }
+              }*/}
               <div className={'w-11 h-11'}>
                 <Image src={'/images/icons/chat.svg'} alt={'chat'} width={44} height={44} />
               </div>
-              <div className={'w-11 h-11'}>
+              <div className={'w-8 h-8'}>
                 <ExternalLink link={user.website}>
-                  <Image src={'/images/icons/website.svg'} alt={'website'} width={44} height={44} />
+                  <Image src={'/images/icons/website.svg'} alt={'website'} width={32} height={32} />
                 </ExternalLink>
               </div>
-              <div className={'w-11 h-11'}>
+              <div className={'w-8 h-8'}>
                 <ExternalLink link={user.twitter}>
-                  <Image src={'/images/icons/twitter.svg'} alt={'website'} width={44} height={44} />
+                  <Image src={'/images/icons/twitter.svg'} alt={'website'} width={32} height={32} />
                 </ExternalLink>
               </div>
             </div>
