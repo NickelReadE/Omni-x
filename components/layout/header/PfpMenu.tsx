@@ -48,7 +48,7 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
   const classes = useStyles()
   const { totalUSDCBalance, totalUSDTBalance, usdcAvailableChainIds, usdtAvailableChainIds } = useData()
   const { data: nativeBalance } = useBalance({
-    addressOrName: address
+    address: `0x${address?.substring(2)}`
   })
   const [hovered, setHovered] = useState(false)
   const [settingModal, setSettingModal] = useState(false)

@@ -7,7 +7,6 @@ import {ModalIDs} from '../../contexts/modal'
 import {useModal} from '../../hooks/useModal'
 import useData from '../../hooks/useData'
 import { useBalance } from 'wagmi'
-// import { calcVolumeUp } from '../../utils/utils'
 import {TextBodyemphasis, TextH3} from '../basic'
 
 type CollectionType = {
@@ -34,7 +33,7 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
   const { openModal, closeModal } = useModal()
   const { totalUSDCBalance, totalUSDTBalance } = useData()
   const { data: nativeBalance } = useBalance({
-    addressOrName: address
+    address: `0x${address?.substring(2)}`,
   })
   const [hover, setHover] = useState<boolean>(false)
   const [imageError, setImageError] = useState(false)
@@ -148,7 +147,7 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
       </div>
 
       {/* <div className={`w-full flex items-center bg-[#202020] absolute right-0 left-0 bottom-3 rounded-br-[8px] rounded-bl-[8px] px-3 ${hover ? 'block' : 'hidden'}`}> */}
-      <button 
+      <button
         className={`bg-primary-green absolute bottom-0 w-full py-2 px-4 rounded-b-lg h-[38px] ${hover ? 'block' : 'hidden'}`}
         onClick={ () => {
           const floorNft = getValidFloorNFT()
