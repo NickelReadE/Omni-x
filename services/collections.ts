@@ -42,6 +42,10 @@ const getCollectionAllNFTs = async (col_url: string, sort: string, searchObj: an
   return res.data
 }
 
+const getFeaturedCollections = async () => {
+  const res = await API.get('collections/featured')
+  return res.data
+}
 
 const getCollectionInfo = async (col_url: string) => {
   const res = await API.get(`collections/${col_url}`)
@@ -93,4 +97,5 @@ export const collectionsService = {
   getCollectionAllNFTs,
   updateCollectionNFTSalePrice,
   updateCollectionNFTChainID,
+  getFeaturedCollections,
 }

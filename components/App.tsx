@@ -39,7 +39,6 @@ const { chains, provider } = configureChains(
     publicProvider(),
     jsonRpcProvider({
       rpc: (chain) => {
-        console.log(RPC_PROVIDERS[chain.id])
         return { http: RPC_PROVIDERS[chain.id] }
       },
     }),

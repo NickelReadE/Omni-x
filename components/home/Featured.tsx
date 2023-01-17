@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react'
 import {TextH3, TextSH2} from '../basic'
 import {formatDollarAmount} from '../../utils/numbers'
+import { collectionsService } from '../../services/collections'
 
 type FeaturedCollection = {
     image: string,
@@ -23,26 +25,24 @@ const FeaturedCard = ({ collection }: { collection: FeaturedCollection }) => {
 }
 
 export const HomeFeatured = () => {
+  const [collections, setCollections] = useState<FeaturedCollection[]>([])
+
+  useEffect(() => {
+    (async () => {
+      const _collections = await collectionsService.getFeaturedCollections()
+      setCollections(_collections.data)
+    })()
+  }, [])
+
   return (
     <div className={'flex items-center justify-between space-x-10 mt-8 overflow-auto'}>
-      <FeaturedCard collection={{
-        image: '/images/home/featuredImage.png',
-        name: 'Kanpai Pandas',
-        floorPrice: 1200,
-        ceilPrice: 15000,
-      }} />
-      <FeaturedCard collection={{
-        image: '/images/home/featuredImage.png',
-        name: 'Kanpai Pandas',
-        floorPrice: 1200,
-        ceilPrice: 15000,
-      }} />
-      <FeaturedCard collection={{
-        image: '/images/home/featuredImage.png',
-        name: 'Kanpai Pandas',
-        floorPrice: 1200,
-        ceilPrice: 15000,
-      }} />
+      {
+        collections.map((collection, index) => {
+          return (
+            <FeaturedCard key={index} collection={collection} />
+          )
+        })
+      }
     </div>
   )
 }
