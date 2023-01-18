@@ -24,6 +24,8 @@ export type CollectionType = {
         usd: number,
         omni: number
     },
+    floor_price: number,
+    ceil_price: number,
     attrs: any,
     bid_datas: any[],
     bid_orders: IOrder[],
@@ -42,7 +44,8 @@ export type CollectionType = {
     volume7d: string,
     volume24h: string,
     volume48h: string,
-    volume14d: string
+    volume14d: string,
+    total_volume: string,
 }
 
 export type CollectionTypeFunc = {

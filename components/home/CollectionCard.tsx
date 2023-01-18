@@ -8,6 +8,7 @@ import {useModal} from '../../hooks/useModal'
 import useData from '../../hooks/useData'
 import { useBalance } from 'wagmi'
 import {TextBodyemphasis, TextH3} from '../basic'
+import {formatDollarAmount} from '../../utils/numbers'
 
 type CollectionType = {
   profile_image: string
@@ -22,6 +23,9 @@ type CollectionType = {
   volume48h: string
   volume7d: string
   volume14d: string
+  total_volume: string
+  floor_price: number
+  ceil_price: number
 }
 
 interface ICollectionCardProps {
@@ -111,30 +115,8 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
 
         <div className="flex justify-left">
           <TextBodyemphasis className={'text-transparent bg-primary-gradient bg-clip-text'}>
-            $1.2k - $14.9k
+            {formatDollarAmount(collection.floor_price)} - {formatDollarAmount(collection.ceil_price)}
           </TextBodyemphasis>
-          {/*<div className={classNames('col-span-2 flex p-2 rounded-lg')} >
-            <div className='text-md flex flex-col space-y-2 justify-between'>
-              <div className='flex flex-row space-x-1 justify-center' >
-                <span className='font-medium text-md mr-[px] text-primary-light'>
-                  {collection ? numberShortify(collection.floorPrice.omni) : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
-                </span>
-                <img src='/images/currency/omni_asset.svg' className='w-[16px]' alt='asset img' />
-              </div>
-            </div>
-          </div>
-          <div className={classNames('col-span-3 flex flex-col space-y-2 p-2 rounded-lg')} >
-            <div className='text-md flex flex-row justify-between space-x-3'>
-              <div className='flex flex-row justify-between'>
-                <span className='font-medium mr-1 text-md text-primary-light'>
-                  {collection ? formatDollarAmount(Number(collection.volume7d)) : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
-                </span>
-              </div>
-              <span className={classNames('font-medium text-md', volumeUp >= 0 ? 'text-[#38B000]': 'text-[#B00000]')}>
-                {collection ? `${(numberShortify(volumeUp, 0))}%` : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
-              </span>
-            </div>
-          </div>*/}
         </div>
       </div>
 
