@@ -140,7 +140,7 @@ export const CollectionBanner = ({ collection, setSelectedTabIndex }: Collection
             </div>
             <div className={'xl:flex flex-col items-center space-y-2 hidden'}>
               <span className={'text-md text-secondary'}>total&nbsp;vol</span>
-              <span className={'text-xg text-primary-light'}>{collection.itemsCnt}</span>
+              <span className={'text-xg text-primary-light'}>{formatDollarAmount(Number(collection.total_volume))}</span>
             </div>
             <div className={'2xl:flex flex-col items-center space-y-2 hidden'}>
               <span className={'text-md text-secondary'}>7d&nbsp;vol</span>
