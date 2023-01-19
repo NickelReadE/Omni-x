@@ -9,7 +9,7 @@ export type CollectionType = {
     orderCnt: number,
     totalVolume: number,
     count: number,
-    banner_image: string,
+    featured_image: string,
     profile_image: string,
     name: string,
     discord: string,

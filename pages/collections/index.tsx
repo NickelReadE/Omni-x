@@ -66,7 +66,7 @@ const Collections: NextPage = () => {
                           <Link href={`/collections/${item.col_url}`}>
                             <a>
                               <img
-                                src={item.banner_image}
+                                src={item.featured_image}
                                 alt="banner - 4"
                                 className={'rounded-[10px]'}
                               />
