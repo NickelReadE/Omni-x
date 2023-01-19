@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
-import {LaunchPadType} from '../../hooks/useLaunchPad'
 import {TextBody, TextH3, TextSH2} from '../basic'
+import {LaunchPadType} from '../../types/collections'
 
 export const FeaturedCard = ({collection}: { collection: LaunchPadType }) => {
   return (

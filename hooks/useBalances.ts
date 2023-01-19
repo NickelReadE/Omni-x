@@ -3,7 +3,7 @@ import { useEffect,useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { openSnackBar } from '../redux/reducers/snackBarReducer'
 import { ContractName, getAddressByName, getDecimalsByAddress } from '../utils/constants'
-import { getCurrencyInstance, getOmniInstance, getUSDCInstance } from '../utils/contracts'
+import { getCurrencyInstance, getUSDCInstance } from '../utils/contracts'
 import useWallet from './useWallet'
 
 export type BalancesInformation = {

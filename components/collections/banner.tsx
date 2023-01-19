@@ -1,6 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react'
 import Image from 'next/image'
-import {CollectionType} from '../../hooks/useCollection'
 import useWallet from '../../hooks/useWallet'
 import {ExternalLink, TextBody, TextBodyemphasis, TextH2} from '../basic'
 import {PrimaryButton} from '../common/buttons/PrimaryButton'
@@ -12,9 +11,10 @@ import {truncateAddress} from '../../utils/utils'
 import {getRoyalty} from '../../utils/helpers'
 import {formatAmount, formatDollarAmount} from '../../utils/numbers'
 import {GreyButton} from '../common/buttons/GreyButton'
+import {FullCollectionType} from '../../types/collections'
 
 interface CollectionBannerProps {
-    collection: CollectionType,
+    collection: FullCollectionType,
     setSelectedTabIndex: (index: number) => void,
 }
 

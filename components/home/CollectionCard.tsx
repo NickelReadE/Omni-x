@@ -1,38 +1,17 @@
 import React from 'react'
 import { useState } from 'react'
 import Link from 'next/link'
+import { useBalance } from 'wagmi'
 import classNames from '../../helpers/classNames'
 import useWallet from '../../hooks/useWallet'
 import {ModalIDs} from '../../contexts/modal'
 import {useModal} from '../../hooks/useModal'
 import useData from '../../hooks/useData'
-import { useBalance } from 'wagmi'
 import {TextBodyemphasis, TextH3} from '../basic'
 import {formatDollarAmount} from '../../utils/numbers'
+import {FullCollectionType} from '../../types/collections'
 
-type CollectionType = {
-  profile_image: string
-  col_url: string
-  name: string
-  itemsCnt: number
-  ownerCnt: number
-  address: any
-  floorNft: any //{ omni: NFTItem, eth: NFTItem, usd: NFTItem }
-  floorPrice: any //{ omni: number, eth: number, usd: number }
-  volume24h: string
-  volume48h: string
-  volume7d: string
-  volume14d: string
-  total_volume: string
-  floor_price: number
-  ceil_price: number
-}
-
-interface ICollectionCardProps {
-  collection: CollectionType
-}
-
-const CollectionCard = ({ collection }: ICollectionCardProps) => {
+const CollectionCard = ({ collection }: { collection: FullCollectionType }) => {
   const { address } = useWallet()
   const { openModal, closeModal } = useModal()
   const { totalUSDCBalance, totalUSDTBalance } = useData()

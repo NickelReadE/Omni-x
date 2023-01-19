@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { NFTItem } from '../interface/interface'
 import { collectionsService } from '../services/collections'
-import { CollectionType } from './useCollection'
+import {FullCollectionType} from '../types/collections'
 
 export type CollectionTypeFunc = {
   nfts: NFTItem[],
@@ -24,7 +24,7 @@ const useCollectionNfts = (
   display_per_page: number,
   sort: string,
   searchObj: any,
-  collectionInfo: CollectionType | undefined,
+  collectionInfo: FullCollectionType | undefined,
   chainIds: number[],
 ): CollectionTypeFunc => {
   const [nfts, setNfts] = useState<NFTItem[]>([])
