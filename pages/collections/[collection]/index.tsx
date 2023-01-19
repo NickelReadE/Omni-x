@@ -147,7 +147,7 @@ const Collection: NextPage = () => {
   const classes = useStyles()
   const { collectionInfo, refreshCollection } = useCollection(col_url)
   const { refreshUserNfts } = useData()
-  const { nfts, hasMoreNFTs, fetchMoreData, refreshNfts } = useCollectionNfts(col_url, display_per_page, selected, searchObj, collectionInfo)
+  const { nfts, hasMoreNFTs, fetchMoreData, refreshNfts } = useCollectionNfts(col_url, display_per_page, selected, searchObj, collectionInfo, selectedChainIds)
 
   useEffect(() => {
     if (isActiveBuyNow && nfts.length > 0) {

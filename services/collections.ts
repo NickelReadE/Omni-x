@@ -1,12 +1,13 @@
 import API from './api'
 
-const getCollectionNFTs = async (col_url: string, page: number, display_per_page: number, sort: string, searchObj: any) => {
+const getCollectionNFTs = async (col_url: string, page: number, display_per_page: number, sort: string, searchObj: any, chainIds: number[]) => {
   const option = {
     col_url,
     page,
     display_per_page,
     sort,
-    searchObj
+    searchObj,
+    chainIds,
   }
   const res = await API.post('collections/nfts', option)
   return res.data

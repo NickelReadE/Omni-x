@@ -20,7 +20,7 @@ const CollectionRow = ({ collection }: { collection: TopCollection }) => {
       <div className={'col-span-2 flex items-center space-x-4'}>
         <TextBody className={'text-secondary'}>{collection.rank}</TextBody>
         <div className={'bg-[#202020] rounded-[8px] w-full p-2 flex items-center space-x-3'}>
-          <img src={collection.profile_image} alt={'collection icon'} width={50} height={50} />
+          <img src={collection.profile_image} alt={'collection icon'} width={50} height={50} className={'rounded'} />
           <TextH3 className={'text-white'}>{collection.name}</TextH3>
         </div>
       </div>

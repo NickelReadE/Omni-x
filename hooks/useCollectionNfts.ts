@@ -10,8 +10,8 @@ export type CollectionTypeFunc = {
   fetchMoreData: () => void
 }
 
-const getCollectionNfts = async (col_url: string, page: number, display_per_page: number, sort: string, searchObj: any) => {
-  const {data: nfts, totalCount, finished} = await collectionsService.getCollectionNFTs(col_url, page, display_per_page, sort, searchObj)
+const getCollectionNfts = async (col_url: string, page: number, display_per_page: number, sort: string, searchObj: any, chainIds: number[]) => {
+  const {data: nfts, totalCount, finished} = await collectionsService.getCollectionNFTs(col_url, page, display_per_page, sort, searchObj, chainIds)
   return {
     nfts: nfts as NFTItem[],
     totalCount,
@@ -24,7 +24,8 @@ const useCollectionNfts = (
   display_per_page: number,
   sort: string,
   searchObj: any,
-  collectionInfo: CollectionType | undefined
+  collectionInfo: CollectionType | undefined,
+  chainIds: number[],
 ): CollectionTypeFunc => {
   const [nfts, setNfts] = useState<NFTItem[]>([])
   const [hasMoreNFTs, setHasMoreNFTs] = useState<boolean>(true)
@@ -34,13 +35,13 @@ const useCollectionNfts = (
   useEffect(() => {
     (async () => {
       if (collectionInfo) {
-        const responseNfts = await getCollectionNfts(col_url, 0, display_per_page, sort, searchObj)
+        const responseNfts = await getCollectionNfts(col_url, 0, display_per_page, sort, searchObj, chainIds)
         setNfts(responseNfts.nfts)
         setPage(0)
         setTotalNftCount(responseNfts.totalCount)
       }
     })()
-  }, [col_url, display_per_page, sort, searchObj, collectionInfo])
+  }, [col_url, display_per_page, sort, searchObj, collectionInfo, chainIds])
 
   useEffect(() => {
     if (collectionInfo) {
@@ -64,7 +65,7 @@ const useCollectionNfts = (
     setTimeout(async () => {
       if (col_url) {
         setPage(page + 1)
-        const responseNfts = await getCollectionNfts(col_url, (page + 1), display_per_page, sort, searchObj)
+        const responseNfts = await getCollectionNfts(col_url, (page + 1), display_per_page, sort, searchObj, chainIds)
         setNfts(prevNfts => [...prevNfts, ...responseNfts.nfts])
         setHasMoreNFTs(!responseNfts.finished)
       }
