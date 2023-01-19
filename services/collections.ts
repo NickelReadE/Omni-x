@@ -46,6 +46,10 @@ const getFeaturedCollections = async () => {
   const res = await API.get('collections/featured')
   return res.data
 }
+const getTopCollections = async () => {
+  const res = await API.get('collections/top')
+  return res.data
+}
 
 const getCollectionInfo = async (col_url: string) => {
   const res = await API.get(`collections/${col_url}`)
@@ -98,4 +102,5 @@ export const collectionsService = {
   updateCollectionNFTSalePrice,
   updateCollectionNFTChainID,
   getFeaturedCollections,
+  getTopCollections,
 }

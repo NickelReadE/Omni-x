@@ -1,27 +1,51 @@
+import {useEffect, useState} from 'react'
 import {TextBody, TextBodyemphasis, TextH2, TextH3} from '../basic'
 import {ChainSelection} from '../common/ChainSelection'
-import {useState} from 'react'
 import {SUPPORTED_CHAIN_IDS} from '../../utils/constants'
+import {collectionsService} from '../../services/collections'
+import {formatDollarAmount} from '../../utils/numbers'
 
-const CollectionRow = () => {
+type TopCollection = {
+  rank: number,
+  name: string,
+  profile_image: string,
+  total_volume: string,
+  floor: number,
+  change: number,
+}
+
+const CollectionRow = ({ collection }: { collection: TopCollection }) => {
   return (
     <div className={'grid grid-cols-5 gap-x-12 h-[64px] flex items-center mt-4'}>
       <div className={'col-span-2 flex items-center space-x-4'}>
-        <TextBody className={'text-secondary'}>1</TextBody>
+        <TextBody className={'text-secondary'}>{collection.rank}</TextBody>
         <div className={'bg-[#202020] rounded-[8px] w-full p-2 flex items-center space-x-3'}>
-          <img src={'/images/home/collectionIcon.png'} alt={'collection icon'} />
-          <TextH3 className={'text-white'}>Kanpai Pandas</TextH3>
+          <img src={collection.profile_image} alt={'collection icon'} width={50} height={50} />
+          <TextH3 className={'text-white'}>{collection.name}</TextH3>
         </div>
       </div>
-      <TextBody className={'col-span-1 text-white text-center'}>$26,545</TextBody>
-      <TextBody className={'col-span-1 text-transparent bg-primary-gradient bg-clip-text'}>30%</TextBody>
-      <TextBody className={'col-span-1 text-secondary text-center'}>$1250</TextBody>
+      <TextBody className={'col-span-1 text-white text-center'}>{formatDollarAmount(Number(collection.total_volume))}</TextBody>
+      <TextBody className={'col-span-1 text-transparent bg-primary-gradient bg-clip-text'}>{collection.change}%</TextBody>
+      <TextBody className={'col-span-1 text-secondary text-center'}>{formatDollarAmount(collection.floor)}</TextBody>
     </div>
   )
 }
 
 export const HomeTopCollections = () => {
   const [selectedChainIds, setSelectedChainIds] = useState<number[]>([5])
+  const [collections, setCollections] = useState<TopCollection[]>([])
+
+  useEffect(() => {
+    (async () => {
+      const _collections = await collectionsService.getTopCollections()
+      setCollections(_collections.data.map((item: any, index: number) => {
+        return {
+          ...item,
+          rank: index + 1,
+        }
+      }))
+    })()
+  }, [])
 
   const addSelectedChainId = (chainId: number) => {
     setSelectedChainIds([...selectedChainIds, chainId])
@@ -64,7 +88,7 @@ export const HomeTopCollections = () => {
         </div>
       </div>
 
-      <div className={'flex items-center mt-6 space-x-[120px]'}>
+      <div className={'flex mt-6 space-x-[120px]'}>
         <div className={'flex-1'}>
           <div className={'grid grid-cols-5'}>
             <div className={'col-span-2'}></div>
@@ -78,9 +102,11 @@ export const HomeTopCollections = () => {
               <TextBodyemphasis className={'text-white text-center'}>floor</TextBodyemphasis>
             </div>
           </div>
-          <CollectionRow />
-          <CollectionRow />
-          <CollectionRow />
+          {
+            collections.filter((item, index) => index % 2 === 0).map((collection, index) => {
+              return <CollectionRow key={index} collection={collection} />
+            })
+          }
         </div>
         <div className={'flex-1'}>
           <div className={'grid grid-cols-5'}>
@@ -92,12 +118,15 @@ export const HomeTopCollections = () => {
               <TextBodyemphasis className={'text-white text-center'}>%change</TextBodyemphasis>
             </div>
             <div className={''}>
-              <TextBodyemphasis className={'text-white text-center'}>floor</TextBodyemphasis>
+              <TextBodyemphasis className={'text-whit' +
+                'e text-center'}>floor</TextBodyemphasis>
             </div>
           </div>
-          <CollectionRow />
-          <CollectionRow />
-          <CollectionRow />
+          {
+            collections.filter((item, index) => index % 2 === 1).map((collection, index) => {
+              return <CollectionRow key={index} collection={collection} />
+            })
+          }
         </div>
       </div>
     </div>
