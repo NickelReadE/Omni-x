@@ -46,8 +46,11 @@ const getFeaturedCollections = async () => {
   const res = await API.get('collections/featured')
   return res.data
 }
-const getTopCollections = async () => {
-  const res = await API.get('collections/top')
+const getTopCollections = async (selectedChainIds: number[], dayRange: number) => {
+  const res = await API.post('collections/top', {
+    chainIds: selectedChainIds,
+    dayRange,
+  })
   return res.data
 }
 
