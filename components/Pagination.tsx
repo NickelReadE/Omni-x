@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {TextBodyemphasis} from './basic'
 
 function Pagination({ totalItems, itemsPerPage, currentPage, setCurrentPage }: { totalItems: number, itemsPerPage: number, currentPage: number, setCurrentPage: (page: number) => void }) {
