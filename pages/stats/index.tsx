@@ -1,9 +1,11 @@
 import {NextPage} from 'next'
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import {AnalyticsCard} from '../../components/stats/DataCard'
 import {AnalyticsWeeklyVolume} from '../../components/stats/WeeklyVolume'
 import {TextH3} from '../../components/basic'
 import {StatsUserLeaderboard} from '../../components/stats/UserLeaderboard'
+import {LeaderboardData} from '../../types/stats'
+import {statsService} from '../../services/statsService'
 
 const mockData = [
   { chainId: 5, value: 10000 },
@@ -17,6 +19,14 @@ const mockData = [
 
 const Stats: NextPage = () => {
   const [tab, setTab] = useState(0)
+  const [leaderboard, setLeaderboard] = useState<LeaderboardData[]>([])
+
+  useEffect(() => {
+    (async () => {
+      const _data = await statsService.getUserLeaderboard()
+      setLeaderboard(_data.data)
+    })()
+  }, [])
 
   return (
     <div className={'pt-8'}>
@@ -47,7 +57,7 @@ const Stats: NextPage = () => {
       }
       {
         tab === 2 &&
-          <StatsUserLeaderboard />
+          <StatsUserLeaderboard leaderboard={leaderboard} />
       }
     </div>
   )
