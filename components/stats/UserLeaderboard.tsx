@@ -5,10 +5,12 @@ import {LeaderboardData} from '../../types/stats'
 import {SUPPORTED_CHAIN_IDS} from '../../utils/constants'
 import {truncateAddress} from '../../utils/utils'
 import {formatDollarAmount} from '../../utils/numbers'
+import Pagination from '../Pagination'
 
 export const StatsUserLeaderboard = ({ leaderboard }: { leaderboard: LeaderboardData[] }) => {
   const [selectedChainIds, setSelectedChainIds] = useState<number[]>(SUPPORTED_CHAIN_IDS)
   const [dayRange, setDayRange] = useState(1)
+  const [page, setPage] = useState(1)
 
   const addSelectedChainId = (chainId: number) => {
     setSelectedChainIds([...selectedChainIds, chainId])
@@ -116,9 +118,12 @@ export const StatsUserLeaderboard = ({ leaderboard }: { leaderboard: Leaderboard
 
       {/* Pagination */}
       <div className={'flex justify-center mt-10'}>
-        <div className={'px-4 h-[38px] bg-[#202020] rounded-[20px]'}>
-
-        </div>
+        <Pagination
+          totalItems={100}
+          itemsPerPage={10}
+          currentPage={page}
+          setCurrentPage={(page) => setPage(page)}
+        />
       </div>
     </div>
   )
