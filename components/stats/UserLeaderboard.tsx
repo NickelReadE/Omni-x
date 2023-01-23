@@ -1,28 +1,15 @@
 import {useMemo, useState} from 'react'
 import {TextBodyemphasis, TextH2, TextH3} from '../basic'
-import {ChainSelection} from '../common/ChainSelection'
 import {LeaderboardData} from '../../types/stats'
-import {SUPPORTED_CHAIN_IDS} from '../../utils/constants'
 import {truncateAddress} from '../../utils/utils'
 import {formatDollarAmount} from '../../utils/numbers'
 import Pagination from '../Pagination'
 
+const S3_BUCKET_URL = process.env.S3_BUCKET_URL || ''
+
 export const StatsUserLeaderboard = ({ leaderboard }: { leaderboard: LeaderboardData[] }) => {
-  const [selectedChainIds, setSelectedChainIds] = useState<number[]>(SUPPORTED_CHAIN_IDS)
   const [dayRange, setDayRange] = useState(1)
   const [page, setPage] = useState(1)
-
-  const addSelectedChainId = (chainId: number) => {
-    setSelectedChainIds([...selectedChainIds, chainId])
-  }
-
-  const addAllChainIds = () => {
-    setSelectedChainIds(SUPPORTED_CHAIN_IDS)
-  }
-
-  const removeSelectedChainId = (chainId: number) => {
-    setSelectedChainIds(selectedChainIds.filter((id) => id !== chainId))
-  }
 
   const mappedLeaderboard = useMemo(() => {
     const dayRangeMap: any = {
@@ -33,12 +20,23 @@ export const StatsUserLeaderboard = ({ leaderboard }: { leaderboard: Leaderboard
       90: 'rank_in_90d',
       365: 'rank_in_1yr',
     }
-    return leaderboard.map((item: any) => ({
-      ...item,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      rank: item[dayRangeMap[dayRange]],
-    }))
+    return leaderboard.map((item: any) => {
+      let avatar = '/images/default_user.png'
+      if (item.avatar.startsWith('https://ipfs.io')) {
+        avatar = item.avatar
+      } else if (item.avatar.startsWith('ipfs')) {
+        avatar = `https://ipfs.io/${item.avatar}`
+      } else if (item.avatar.startsWith('upload')) {
+        avatar = S3_BUCKET_URL + item.avatar
+      }
+      return {
+        ...item,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        rank: item[dayRangeMap[dayRange]],
+        avatar: avatar,
+      }
+    })
   }, [leaderboard, dayRange])
 
   return (
@@ -46,9 +44,6 @@ export const StatsUserLeaderboard = ({ leaderboard }: { leaderboard: Leaderboard
       <div className={'flex items-center justify-between'}>
         <div className={'flex items-center space-x-8'}>
           <TextH2 className={'text-primary-light'}>User Leaderboard</TextH2>
-          <ChainSelection selectedChainIds={selectedChainIds} addChainId={addSelectedChainId}
-            removeChainId={removeSelectedChainId} addAllChainIds={addAllChainIds}
-            setChainId={(chainId) => setSelectedChainIds([chainId])}/>
         </div>
 
         <div className={'bg-[#202020] rounded-[8px] h-[38px] flex items-center'}>
@@ -96,7 +91,7 @@ export const StatsUserLeaderboard = ({ leaderboard }: { leaderboard: Leaderboard
             <div key={index} className={'grid grid-cols-6 gap-4 w-full mt-8'}>
               <div className={'col-span-2 flex items-center space-x-2'}>
                 <span className={'text-secondary text-[15px] leading-[18px] mr-2'}>{index + 1}</span>
-                <img src={'/images/default_user.png'} alt={'user'} />
+                <img src={user.avatar || '/images/default_user.png'} alt={'user'} width={36} height={36} className={'rounded-full h-9 w-9'} />
                 <TextH3 className={'text-primary-light'}>{truncateAddress(user.address)}</TextH3>
               </div>
               <div className={'col-span-1 flex items-center'}>

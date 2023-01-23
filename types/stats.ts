@@ -1,6 +1,7 @@
 export type LeaderboardData = {
   id: number;
   address: string;
+  avatar: string;
   volume: number;
   points: number;
   total_points: number;
