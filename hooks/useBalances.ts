@@ -3,7 +3,7 @@ import { useEffect,useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { openSnackBar } from '../redux/reducers/snackBarReducer'
 import { ContractName, getAddressByName, getDecimalsByAddress } from '../utils/constants'
-import { getCurrencyInstance, getOmniInstance, getUSDCInstance } from '../utils/contracts'
+import { getCurrencyInstance, getUSDCInstance } from '../utils/contracts'
 import useWallet from './useWallet'
 
 export type BalancesInformation = {
@@ -87,16 +87,16 @@ const useBalances = (): BalancesType => {
     if (!signer || !chainId) return
 
     // faucet omni
-    try {
-      const omni = getOmniInstance(chainId, signer)
-
-      const tx = await omni.mint({ gasLimit: '300000' })
-      await tx.wait()
-
-      dispatch(openSnackBar({ message: 'Received 10,000 OMNI', status: 'success' }))
-    } catch (e) {
-      console.error('While fauceting OMNI token', e)
-    }
+    // try {
+    //   const omni = getOmniInstance(chainId, signer)
+    //
+    //   const tx = await omni.mint({ gasLimit: '300000' })
+    //   await tx.wait()
+    //
+    //   dispatch(openSnackBar({ message: 'Received 10,000 OMNI', status: 'success' }))
+    // } catch (e) {
+    //   console.error('While fauceting OMNI token', e)
+    // }
 
     // faucet usdc/usdt
     try {

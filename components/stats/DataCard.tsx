@@ -1,5 +1,6 @@
 import {chainInfos} from '../../utils/constants'
 import {twMerge} from 'tailwind-merge'
+import {TextBody, TextH2} from '../basic'
 
 export type AnalyticsData = {
     chainId: number,
@@ -15,12 +16,12 @@ interface IAnalyticsCardProps {
 export const AnalyticsCard = ({ header, amount, chainData }: IAnalyticsCardProps) => {
   return (
     <div className={'flex flex-col p-6 rounded-lg bg-[#202020]'}>
-      <div className={'text-primary-light font-medium text-md'}>
+      <TextBody className={'text-primary-light'}>
         {header}
-      </div>
-      <div className={'text-primary-light font-medium text-xxxl my-2'}>
+      </TextBody>
+      <TextH2 className={'text-primary-light my-2'}>
         {amount}
-      </div>
+      </TextH2>
       {
         chainData.map((data: AnalyticsData, index) => {
           return (

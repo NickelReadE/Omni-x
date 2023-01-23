@@ -4,7 +4,7 @@ import useComponentVisible from '../../../hooks/useComponentVisible'
 import useSearch from '../../../hooks/useSearch'
 import {truncateAddress} from '../../../utils/utils'
 
-const S3_BUCKET_URL = process.env.API_URL || ''
+const S3_BUCKET_URL = process.env.S3_BUCKET_URL || ''
 
 export default function SearchBar() {
   const [query, setQuery] = useState('')
@@ -30,11 +30,11 @@ export default function SearchBar() {
   }
 
   return (
-    <div ref={ref} className={'h-[64px] flex items-center'}>
+    <div ref={ref} className={'h-[64px] flex items-center w-full'}>
       <div className={'relative'}>
         {
-          <div className={`${(query !== '' && isComponentVisible) ? 'absolute bg-[#303030]' : ''} w-[140px] lg:w-[250px]`} style={(query !== '' && isComponentVisible) ? { borderRadius: '20px', top: -20 } : {}}>
-            <div className={'h-[40px] bg-[#303030] w-[140px] lg:w-[250px] px-[18px] flex items-center justify-between'} style={(query !== '' && isComponentVisible) ? { borderTopLeftRadius: '20px', borderTopRightRadius: '20px' } : { borderRadius: '20px' }}>
+          <div className={`${(query !== '' && isComponentVisible) ? 'absolute bg-[#303030]' : ''} w-[140px] lg:w-[500px]`} style={(query !== '' && isComponentVisible) ? { borderRadius: '20px', top: -20 } : {}}>
+            <div className={'h-[40px] bg-[#303030] w-[140px] lg:w-[500px] px-[18px] flex items-center justify-between'} style={(query !== '' && isComponentVisible) ? { borderTopLeftRadius: '20px', borderTopRightRadius: '20px' } : { borderRadius: '20px' }}>
               <div className={'w-6 h-6'}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M10.875 18.75C15.2242 18.75 18.75 15.2242 18.75 10.875C18.75 6.52576 15.2242 3 10.875 3C6.52576 3 3 6.52576 3 10.875C3 15.2242 6.52576 18.75 10.875 18.75Z" stroke="#969696" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -44,8 +44,8 @@ export default function SearchBar() {
               <input
                 autoFocus
                 type="text"
-                placeholder='search'
-                className="flex items-center text-white bg-transparent w-[140px] lg:w-[250px] h-[40px] border-0 focus:outline-0 focus:shadow-none focus:ring-offset-0 focus:ring-0"
+                placeholder='find art, community, and friends'
+                className="flex items-center text-white bg-transparent w-[140px] lg:w-[500px] h-[40px] border-0 focus:outline-0 focus:shadow-none focus:ring-offset-0 focus:ring-0"
                 onChange={debounce((e: any) => {
                   setQuery(e.target.value)
                 }, 500)}

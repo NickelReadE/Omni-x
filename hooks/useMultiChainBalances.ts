@@ -2,6 +2,7 @@ import {useEffect, useMemo, useState} from 'react'
 import useWallet from './useWallet'
 import {getUserBalances} from '../services/moralis'
 import {getERC20Balances} from '../services/alchemy'
+import {getERC20BalanceFromDirectCall} from "../services/erc20";
 
 export type Balances = {
   chainId: number,
@@ -64,7 +65,8 @@ const useMultiChainBalances = (): BalancesType => {
       if (address) {
         const moralisBalances = await getUserBalances(address)
         const alchemyBalances = await getERC20Balances(address)
-        setBalances([...moralisBalances, ...alchemyBalances])
+        const directBalances = await getERC20BalanceFromDirectCall(address)
+        setBalances([...moralisBalances, ...alchemyBalances, ...directBalances])
       }
     })()
   }, [address, refresh])

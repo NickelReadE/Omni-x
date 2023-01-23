@@ -8,8 +8,9 @@ export default function LearnMoreInfrastructure() {
   return (
     <div className="pt-[150px]">
       <div className="flex justify-center w-full space-x-2">
-        <span className="text-[40px] leading-[48px] font-semibold text-primary-light shadow-[0_4_6px_rgba(0,0,0,0.25)]">about</span>
-        <span className="text-[40px] leading-[48px] font-semibold text-primary-blue italic shadow-[0_4_6px_rgba(0,0,0,0.25)]">omni x</span>
+        <span className="text-[40px] leading-[48px] font-semibold text-primary-light shadow-[0_4_6px_rgba(0,0,0,0.25)]">truly</span>
+        <span className="text-[40px] leading-[48px] font-semibold text-primary-blue italic shadow-[0_4_6px_rgba(0,0,0,0.25)]">omnichain</span>
+        <span className="text-[40px] leading-[48px] font-semibold text-primary-light shadow-[0_4_6px_rgba(0,0,0,0.25)]">infrastructure</span>
       </div>
       <div className="flex w-full mt-12 space-x-4">
         <div className="flex flex-1 justify-center items-center flex-col">
@@ -21,13 +22,13 @@ export default function LearnMoreInfrastructure() {
           </div>
         </div>
         <div className="flex flex-1 flex-col space-y-8 pl-8">
-          <IntroCard title="NFT interpoerability" className='flex justify-center'>
+          <IntroCard title="NFT interoperability" className='flex justify-center'>
             <div className='flex flex-col items-center'>
               <span className='text-xl text-secondary text-center'>
                 <span className='text-[#16FFC5] mr-1'>bridge</span>
                 any pre-existing NFT to any chain using our wrapped asset bridge, or
                 <span className='text-[#16FFC5]'>&nbsp;mint omnichain NFTs&nbsp;</span>
-                (ONFTs) to enable seameless transfer of assets (and metadata) across blockchains
+                (ONFTs) to enable seamless transfer of assets (and metadata) across blockchains
               </span>
               <span className='text-xl text-secondary text-center mt-6 mb-2'>
                 10+ blockchains (and counting) powered by

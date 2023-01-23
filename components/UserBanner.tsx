@@ -2,17 +2,13 @@
 import React, {useMemo, useState} from 'react'
 import Dialog from '@material-ui/core/Dialog'
 import {makeStyles} from '@material-ui/core/styles'
+import Image from 'next/image'
 import useWallet from '../hooks/useWallet'
 import classNames from '../helpers/classNames'
 import { ProfileData } from '../hooks/useProfile'
 import { truncateAddress } from '../utils/utils'
-import {ExternalLink} from './basic'
-import WebsiteIcon from '../public/images/icons/website.svg'
-import InstagramIcon from '../public/images/icons/instagram.svg'
-import TwitterIcon from '../public/images/icons/twitter.svg'
+import {ExternalLink, TextBody, TextBodyemphasis, TextH3} from './basic'
 import UserEdit from './user/UserEdit'
-import {PrimaryButton} from './common/buttons/PrimaryButton'
-import {GreyButton} from './common/buttons/GreyButton'
 import {formatAmount} from '../utils/numbers'
 
 type UserBannerProps = {
@@ -27,6 +23,8 @@ const useStyles = makeStyles({
   },
 })
 
+const S3_BUCKET_URL = process.env.S3_BUCKET_URL || ''
+
 const UserBanner = ({user}: UserBannerProps): JSX.Element => {
   const {address} = useWallet()
   const classes = useStyles()
@@ -34,7 +32,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
 
   const bannerImage = useMemo(() => {
     if (user && user.banner) {
-      return process.env.API_URL + user.banner
+      return S3_BUCKET_URL + user.banner
     }
     return '/images/default_banner.png'
   }, [user])
@@ -47,7 +45,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
       if (user.avatar.startsWith('ipfs')) {
         return `https://ipfs.io/${user.avatar}`
       }
-      return process.env.API_URL + user.avatar
+      return S3_BUCKET_URL + user.avatar
     }
     return '/images/default_avatar.png'
   }, [user])
@@ -75,47 +73,46 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
           </div>
 
           <div className={'flex items-center justify-between w-full pl-[160px] pt-5'}>
-            <div className={'flex items-center'}>
-              <div className={'flex flex-col space-y-2'}>
-                <span className={'text-xg1 text-primary-light'}>{user.username || 'username'}</span>
-                <span className={'text-md text-secondary'}>{user && user.address ? truncateAddress(user.address) : truncateAddress(address || '')}</span>
+            <div className={'flex flex-col justify-between h-full'}>
+              <div className={'flex space-x-2'}>
+                <TextH3 className={'text-primary-light'}>{user.username || 'username'}</TextH3>
+                <div className={'flex items-center space-x-2 bg-[#202020] py-1 px-2 rounded-[12px]'}>
+                  <TextBody className={'text-[#4D94FF] leading-[16px]'}>{user && user.address ? truncateAddress(user.address) : truncateAddress(address || '')}</TextBody>
+                  <img src={'/images/icons/copy.svg'} alt={'copy'} className={'cursor-pointer'} onClick={() => navigator.clipboard.writeText(user.address)} />
+                </div>
+              </div>
+
+              <div className={'flex items-center space-x-3 mt-1'}>
+                <div className={'flex items-center space-x-1'}>
+                  <TextBody className={'text-primary-light'}>{formatAmount(16800)}</TextBody>
+                  <TextBody className={'text-secondary'}>followers</TextBody>
+                </div>
+                <div className={'flex items-center space-x-1'}>
+                  <TextBody className={'text-primary-light'}>{formatAmount(16500)}</TextBody>
+                  <TextBody className={'text-secondary'}>following</TextBody>
+                </div>
               </div>
             </div>
-            <div className={'flex items-center'}>
-              <div className={'flex flex-col h-[60px] items-end justify-between space-y-2 mr-4'}>
-                <div className={'w-[90px]'}>
-                  <PrimaryButton text={'following'} className={'h-[24px] text-md font-medium'} />
-                </div>
-                <div className={'flex items-center'}>
-                  <span className={'text-md text-primary-light'}>{formatAmount(16800)} followers</span>
-                  <span className={'text-md text-primary-light ml-2'}>{formatAmount(16500)} following</span>
-                </div>
+            <div className={'flex items-center space-x-4'}>
+              <div className={'bg-primary-gradient py-2 px-4 flex items-center justify-center rounded-full cursor-pointer'}>
+                <TextBodyemphasis className={'text-primary'}>following</TextBodyemphasis>
               </div>
-              {/*Social links*/}
-              <div className={'flex items-center space-x-3'}>
-                <div className={`flex flex-col h-[60px] items-end ${user.address === address ? 'justify-between' : 'justify-center'} space-y-2`}>
-                  {
-                    user.address === address &&
-                      <GreyButton text={'settings'} className={'h-[26px]'} onClick={() => setSettingModal(true)} />
-                  }
-                  <div className={'flex items-center'}>
-                    <div className={'w-8 h-8 p-1'}>
-                      <ExternalLink link={user.website}>
-                        <WebsiteIcon />
-                      </ExternalLink>
-                    </div>
-                    <div className={'w-8 h-8 p-1'}>
-                      <ExternalLink link={user.twitter}>
-                        <TwitterIcon />
-                      </ExternalLink>
-                    </div>
-                    <div className={'w-8 h-8 p-1'}>
-                      <ExternalLink link={user.instagram}>
-                        <InstagramIcon />
-                      </ExternalLink>
-                    </div>
-                  </div>
-                </div>
+              {/*{
+                user.address === address &&
+                <GreyButton text={'settings'} className={'py-2 px-4'} onClick={() => setSettingModal(true)} />
+              }*/}
+              <div className={'w-11 h-11'}>
+                <Image src={'/images/icons/chat.svg'} alt={'chat'} width={44} height={44} />
+              </div>
+              <div className={'w-8 h-8'}>
+                <ExternalLink link={user.website}>
+                  <Image src={'/images/icons/website.svg'} alt={'website'} width={32} height={32} />
+                </ExternalLink>
+              </div>
+              <div className={'w-8 h-8'}>
+                <ExternalLink link={user.twitter}>
+                  <Image src={'/images/icons/twitter.svg'} alt={'website'} width={32} height={32} />
+                </ExternalLink>
               </div>
             </div>
           </div>

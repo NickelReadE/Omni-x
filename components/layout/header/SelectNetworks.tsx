@@ -3,7 +3,8 @@ import {Transition} from '@headlessui/react'
 import {useSwitchNetwork} from 'wagmi'
 import {getChainLogoById, getChainOfficialNameById, SUPPORTED_CHAIN_IDS} from '../../../utils/constants'
 import useWallet from '../../../hooks/useWallet'
-import {GradientBackground} from '../../basic'
+import {GradientBackground, TextBodyemphasis} from '../../basic'
+import Image from 'next/image'
 
 export const SelectNetworks = () => {
   const { chainId } = useWallet()
@@ -12,13 +13,17 @@ export const SelectNetworks = () => {
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined)
 
   return (
-    <div className='w-9 h-9'>
-      <div className="relative inline-block text-left" onMouseLeave={() => setHovered(false)}>
-        <div className={'focus:outline-none'} onMouseEnter={() => setHovered(true)}>
-          <div className={`w-9 h-9 ${hovered ? 'bg-primary-gradient' : ''} rounded-full`}>
-            <img alt={'networkIcon'} src={getChainLogoById(chainId ? chainId.toString() : '5')} width={36} height={36} />
-          </div>
-        </div>
+    <div className={'h-11'}>
+      <div className={`relative inline-block text-left w-[140px] h-11 py-2 px-2 rounded-[8px] ${hovered ? 'bg-[#303030]' : 'bg-[#202020]'}`} onMouseLeave={() => setHovered(false)}>
+        {
+          chainId &&
+            <div className={'focus:outline-none w-full h-full'} onMouseEnter={() => setHovered(true)}>
+              <div className={'flex items-center space-x-2'}>
+                <img alt={'networkIcon'} src={getChainLogoById(chainId.toString())} width={28} height={28} />
+                <TextBodyemphasis className={'text-secondary'}>{getChainOfficialNameById(chainId)}</TextBodyemphasis>
+              </div>
+            </div>
+        }
         <Transition
           as={Fragment}
           enter="transition ease-out duration-100"
@@ -29,24 +34,26 @@ export const SelectNetworks = () => {
           leaveTo="transform opacity-0 scale-95"
           show={hovered}
         >
-          <div className={`absolute right-0 w-[166px] origin-top-right pt-4 ${hovered ? 'block' : 'hidden'}`}>
+          <div className={`absolute top-0 left-0 origin-top-left w-[140px] ${hovered ? 'block' : 'hidden'}`}>
             <GradientBackground className="shadow-[0_0px_250px_rgba(0,0,0,1)]">
-              {
-                SUPPORTED_CHAIN_IDS.map((chainId, index) => {
-                  return (
-                    <div key={index} onMouseEnter={() => setActiveIndex(index)}
-                      onMouseLeave={() => setActiveIndex(undefined)}>
+              <div className={'rounded-[8px] mx-[1px] p-[1px]'}>
+                {
+                  SUPPORTED_CHAIN_IDS.map((chainId, index) => {
+                    return (
                       <div
-                        className={`py-2 px-6 flex items-center cursor-pointer ${activeIndex === index ? 'bg-[#303030]' : ''}`}
-                        onClick={() => switchNetwork?.(chainId)}>
-                        <img alt={'chainIcon'} width={28} height={28} src={getChainLogoById(chainId.toString())}/>
-                        <span
-                          className={'text-primary-light text-lg pl-4'}>{getChainOfficialNameById(chainId)}</span>
+                        key={index}
+                        className={`p-2 flex items-center space-x-2 cursor-pointer overflow-hidden ${activeIndex === index ? 'bg-[#303030]' : ''} ${index === 0 ? 'rounded-t-[8px]' : ''} ${index === SUPPORTED_CHAIN_IDS.length - 1 ? 'rounded-b-[8px]' : ''}`}
+                        onMouseEnter={() => setActiveIndex(index)}
+                        onMouseLeave={() => setActiveIndex(undefined)}
+                        onClick={() => switchNetwork?.(chainId)}
+                      >
+                        <Image alt={'chainIcon'} width={28} height={28} src={getChainLogoById(chainId.toString()) || ''}/>
+                        <TextBodyemphasis className={`${activeIndex === index ? 'text-white' : 'text-secondary'} leading-none`}>{getChainOfficialNameById(chainId)}</TextBodyemphasis>
                       </div>
-                    </div>
-                  )
-                })
-              }
+                    )
+                  })
+                }
+              </div>
             </GradientBackground>
           </div>
         </Transition>

@@ -24,6 +24,7 @@ import ConfirmTransfer from '../bridge/ConfirmTransfer'
 import {DangerButton} from '../common/buttons/DangerButton'
 import {PrimaryButton} from '../common/buttons/PrimaryButton'
 import {GreenButton} from '../common/buttons/GreenButton'
+import {TextBodyemphasis, TextH3, TextSubtext} from '../basic'
 
 const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
@@ -194,9 +195,9 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           </div>
           <div className={'flex flex-col justify-between min-h-[100px] p-3'}>
             <div className="flex flex-col-1 flex-row justify-between items-center">
-              <div className="text-sm2 text-secondary font-bold">
+              <TextBodyemphasis className="text-secondary">
                 {nft.token_id}
-              </div>
+              </TextBodyemphasis>
               <img src={chainIcon} alt={'chainicon'} width={18} height={18} />
             </div>
             {
@@ -261,25 +262,23 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                     <div className="flex items-center">
                       {isListed && <>
                         <img src={currencyIcon || '/images/currency/ethereum.svg'} className="w-[18px] h-[18px]" alt='icon'/>
-                        <span className="text-primary-light text-lg font-extrabold ml-2">
+                        <TextH3 className="text-primary-light ml-2">
                           {numberLocalize(Number(nft?.price || 0))}
-                        </span>
+                        </TextH3>
                       </>}
                     </div>
                   </div>
                   <div className="flex flex-col-1 items-center justify-between w-full">
                     <div>
                       {(!!lastSale && lastSale > 0) && <div className={'flex items-center'}>
-                        <span className="text-secondary text-sm2 font-bold">last sale: &nbsp;</span>
+                        <TextSubtext className="text-secondary">last sale: &nbsp;</TextSubtext>
                         <img alt={'saleIcon'} src={lastSaleCoin} className="w-[18px] h-[18px]"/>&nbsp;
-                        <span
-                          className="text-secondary text-sm2 font-bold">{numberLocalize(Number(lastSale))}</span>
+                        <TextSubtext className="text-secondary">{numberLocalize(Number(lastSale))}</TextSubtext>
                       </div>}
                       {(!lastSale && !!highestBid && highestBid > 0) && <div className={'flex items-center'}>
-                        <span className="text-[#6C757D] text-sm2 font-bold">highest offer: &nbsp;</span>
+                        <TextSubtext className="text-secondary">highest offer: &nbsp;</TextSubtext>
                         <img src={highestBidCoin} className="w-[18px] h-[18px]" alt="logo"/>&nbsp;
-                        <span
-                          className="text-secondary text-sm2 font-bold">{numberLocalize(Number(highestBid))}</span>
+                        <TextSubtext className="text-secondary">{numberLocalize(Number(highestBid))}</TextSubtext>
                       </div>}
                     </div>
                   </div>

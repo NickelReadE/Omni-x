@@ -5,14 +5,14 @@ import useProfile, {ProfileData} from '../../hooks/useProfile'
 import useWallet from '../../hooks/useWallet'
 import useMultiChainBalances, {ChainBalanceType} from '../../hooks/useMultiChainBalances'
 import {NFTItem} from '../../interface/interface'
-import {CollectionType} from '../../hooks/useCollection'
+import {FullCollectionType} from '../../types/collections'
 
 export type DataContextType = {
   balances: BalancesInformation,
   profile: ProfileData | undefined,
   userNfts: Array<NFTItem>,
   isCollectionLoading: boolean,
-  collections: CollectionType[],
+  collections: FullCollectionType[],
   isLoadingNfts: boolean,
   totalUSDCBalance: number,
   totalUSDTBalance: number,

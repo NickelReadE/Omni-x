@@ -73,3 +73,59 @@ export const Tooltip = ({ tooltipContent, children }: { tooltipContent: string, 
     </span>
   )
 }
+
+export const TextH1 = ({ children, className }: { children: ReactNode, className?: string }) => {
+  return (
+    <div className={`text-[60px] leading-[140%] font-bold ${className ?? ''}`}>
+      {children}
+    </div>
+  )
+}
+
+export const TextSH2 = ({ children, className }: { children: ReactNode, className?: string }) => {
+  return (
+    <div className={`text-[20px] leading-[140%] ${className ?? ''}`}>
+      {children}
+    </div>
+  )
+}
+
+export const TextH2 = ({ children, className }: { children: ReactNode, className?: string }) => {
+  return (
+    <div className={`text-[32px] leading-[140%] font-bold ${className ?? ''}`}>
+      {children}
+    </div>
+  )
+}
+
+export const TextH3 = ({ children, className }: { children: ReactNode, className?: string }) => {
+  return (
+    <div className={twMerge(`text-[20px] leading-[140%] font-medium text-black ${className ?? ''}`)}>
+      {children}
+    </div>
+  )
+}
+
+export const TextBody = ({ children, className }: { children: ReactNode, className?: string }) => {
+  return (
+    <div className={twMerge(`text-[16px] leading-[140%] ${className ?? ''}`)}>
+      {children}
+    </div>
+  )
+}
+
+export const TextBodyemphasis = ({ children, className }: { children: ReactNode, className?: string }) => {
+  return (
+    <div className={`text-[16px] leading-[140%] font-medium ${className ?? ''}`}>
+      {children}
+    </div>
+  )
+}
+
+export const TextSubtext = ({ children, className }: { children: ReactNode, className?: string }) => {
+  return (
+    <div className={`text-[14px] leading-[140%] font-medium ${className ?? ''}`}>
+      {children}
+    </div>
+  )
+}

@@ -13,7 +13,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import {Slide} from 'react-toastify'
 import useWallet from '../../../hooks/useWallet'
 import useCollection from '../../../hooks/useCollection'
-import {ExternalLink} from '../../../components/basic'
+import {ExternalLink, TextBody, TextH2} from '../../../components/basic'
 import WebsiteIcon from '../../../public/images/icons/website.svg'
 import TwitterIcon from '../../../public/images/icons/twitter.svg'
 import TelegramIcon from '../../../public/images/icons/telegram.svg'
@@ -231,10 +231,10 @@ const Mint: NextPage = () => {
             <div className={'flex space-x-[64px]'}>
               <div className={'flex flex-1 justify-center mr-2'}>
                 <div className={'max-w-[600px]'}>
-                  <img className="w-[600px] rounded-md" src={collectionInfo && collectionInfo.profile_image ? collectionInfo.profile_image : '/images/nft.png'}
+                  <img className="w-[600px]" src={collectionInfo && collectionInfo.profile_image ? collectionInfo.profile_image : '/images/nft.png'}
                     alt="nft-image"/>
 
-                  <div className="mt-10">
+                  <div className="mt-6">
                     <div className="text-xl font-medium text-center text-secondary">
                       <ul className="flex flex-wrap -mb-px">
                         <li onClick={() => setSelectedTab(0)}>
@@ -270,12 +270,12 @@ const Mint: NextPage = () => {
                     <div className="py-4">
                       {
                         selectedTab === 0 &&
-                            <div className="text-primary-light text-[16px] leading-[19px]">{collectionInfo && collectionInfo.description ? collectionInfo.description : 'Description here'}</div>
+                          <TextBody className="text-primary-light">{(collectionInfo && collectionInfo.description) ? collectionInfo.description : ''}</TextBody>
                       }
                       {
                         selectedTab === 1 &&
-                            <div className={''}>
-                            </div>
+                          <div className={''}>
+                          </div>
                       }
                     </div>
                   </div>
@@ -283,9 +283,9 @@ const Mint: NextPage = () => {
               </div>
               <div className={'w-full flex flex-1'}>
                 <div className={'flex flex-col w-full'}>
-                  <span className="font-medium text-primary-light text-xxl">
+                  <TextH2 className="text-primary-light">
                     {collectionInfo.name}
-                  </span>
+                  </TextH2>
 
                   {/*Icon group*/}
                   <div className={'flex items-center mt-4'}>
@@ -312,15 +312,15 @@ const Mint: NextPage = () => {
                   </div>
 
                   {/*creator*/}
-                  <div className={'flex flex-col mt-4'}>
-                    <div className={'text-secondary text-lg'}>creator</div>
-                    <div className={'text-primary-light text-lg mt-2'}>@{collectionInfo.col_url.toLowerCase()}</div>
+                  <div className={'flex items-center space-x-3 mt-4'}>
+                    <TextBody className={'text-secondary'}>creator</TextBody>
+                    <TextBody className={'text-primary-light'}>@{collectionInfo.col_url.toLowerCase()}</TextBody>
                   </div>
 
                   {/*items*/}
-                  <div className={'flex mt-4'}>
-                    <div className={'text-secondary text-lg'}>items</div>
-                    <div className={'text-primary-light text-lg ml-2 text-shadow-sm2'}>{mintedCnt}/{totalCnt}</div>
+                  <div className={'flex items-center space-x-3 mt-4'}>
+                    <TextBody className={'text-secondary'}>items</TextBody>
+                    <TextBody className={'text-primary-light'}>{mintedCnt} / {totalCnt} minted</TextBody>
                   </div>
 
                   {

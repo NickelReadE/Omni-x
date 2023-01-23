@@ -8,11 +8,12 @@ interface IChainSelectionProps {
     addChainId: (chainId: number) => void,
     removeChainId: (chainId: number) => void,
     addAllChainIds: () => void,
+    setChainId: (chainId: number) => void,
 }
 
-export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, addAllChainIds }: IChainSelectionProps) => {
+export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, addAllChainIds, setChainId }: IChainSelectionProps) => {
   const [isShow, setIsShow] = useState(false)
-    
+
   const activeChainIds = useMemo(() => {
     return SUPPORTED_CHAIN_IDS.filter((chainId) => !selectedChainIds.includes(chainId))
   }, [selectedChainIds])
@@ -22,7 +23,7 @@ export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, ad
       removeChainId(chainId)
     }
   }
-  
+
   const DarkChainIcon = ({chainId, onClick}: {chainId: number, onClick: () => void}) => {
     return (
       <div
@@ -31,18 +32,18 @@ export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, ad
       >
         <img alt={'listing'}
           src={getDarkChainIconById(chainId.toString())}
-          className="w-[28px] h-[28px] "/>
+          className="w-[38px] h-[38px]"/>
       </div>
     )
   }
-    
+
   return (
     <>
       {
         <div className="flex flex-row justify-items-center" onMouseLeave={() => setIsShow(false)}>
           <div className={'flex items-center space-x-2'} onMouseEnter={() => setIsShow(true)}>
             {
-              selectedChainIds.length !== SUPPORTED_CHAIN_IDS.length 
+              selectedChainIds.length !== SUPPORTED_CHAIN_IDS.length
                 ?
                 selectedChainIds.map((chainId: number, index) => {
                   return (
@@ -53,7 +54,7 @@ export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, ad
                 <span className={'text-primary-light text-md'}>all networks</span>
             }
           </div>
-          <Transition 
+          <Transition
             as={Fragment}
             enter="transition origin-left ease-out duration-150"
             enterFrom="transform opacity-0 scale-95"
@@ -78,7 +79,7 @@ export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, ad
                   ?
                   SUPPORTED_CHAIN_IDS.map((chainId: ChainIds, index) => {
                     return (
-                      <DarkChainIcon key={index} chainId={chainId} onClick={() => removeFromList(chainId)} />
+                      <DarkChainIcon key={index} chainId={chainId} onClick={() => setChainId(chainId)} />
                     )
                   })
                   :activeChainIds.map((chainId: ChainIds, index) => {

@@ -16,7 +16,7 @@ interface IPropsIconBox {
 export const IntroCard = ({ title, titleColor, children, className }: IPropsIntroCard) => {
   return (
     <div className={className ? className : 'flex flex-1 justify-center h-[214px]'}>
-      <div className="flex flex-col w-full items-center bg-drak-gradient border-[1px] border-solid border-[#383838] shadow-[0_0_30px_rgba(255,255,255,0.06)] rounded-lg backdrop-blur-sm p-8">
+      <div className="flex flex-col w-full items-center bg-dark-gradient border-[1px] border-solid border-[#383838] shadow-[0_0_30px_rgba(255,255,255,0.06)] rounded-lg backdrop-blur-sm p-8">
         <span className={`text-xl ${titleColor ? titleColor : 'text-primary-light'}`}>{title}</span>
         <div className='flex items-center justify-center w-full h-full'>
           {children}
@@ -45,10 +45,10 @@ export default function LearnMoreIntro() {
         </div>
       </div>
       <div className='flex justify-between space-x-12 pt-[150px]'>
-        <IntroCard title="ONFTs">
+        <IntroCard title="ONFTs" className={'flex flex-1 justify-center h-[214px] hover:shadow-[0_0_30px_#FFE817] rounded-[8px]'}>
           <Image src={OmniChainImage} alt="omnichain" />
         </IntroCard>
-        <IntroCard title="web3 social">
+        <IntroCard title="web3 social" className={'flex flex-1 justify-center h-[214px] hover:shadow-[0_0_30px_#FFE817] rounded-[8px]'}>
           <div className='flex w-full justify-around'>
             <IconBox>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -106,7 +106,7 @@ export default function LearnMoreIntro() {
             </IconBox>
           </div>
         </IntroCard>
-        <IntroCard title="curated content">
+        <IntroCard title="curated content" className={'flex flex-1 justify-center h-[214px] hover:shadow-[0_0_30px_#FFE817] rounded-[8px]'}>
           <svg width="101" height="100" viewBox="0 0 101 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M64.0457 64.2262L63.0912 65.1741L63.3556 66.4891L63.3558 66.4903L63.3559 66.4911L63.356 66.4914L63.3563 66.4929L63.3599 66.5117C63.3639 66.5329 63.3706 66.5687 63.3794 66.6185C63.3971 66.7182 63.4235 66.8736 63.4547 67.0795C63.5171 67.4915 63.5987 68.1037 63.6693 68.8736C63.8108 70.4174 63.9057 72.5719 63.7207 75.0032C63.4006 79.2112 62.262 84.0229 59.2993 87.9937L12.0491 40.6278C15.9664 37.6836 20.7488 36.57 24.951 36.2753C27.3781 36.1051 29.533 36.2145 31.0788 36.367C31.8494 36.443 32.4628 36.5292 32.8758 36.5947C33.0821 36.6275 33.2379 36.655 33.3379 36.6735C33.3879 36.6827 33.4238 36.6897 33.4451 36.6939L33.4641 36.6976L33.4656 36.6979L33.4659 36.698L33.4667 36.6982L33.4678 36.6984L34.8173 36.9795L35.7756 35.9834L35.7757 35.9833L35.7764 35.9825L35.7796 35.9793L35.7928 35.9656L35.8465 35.9099L36.0614 35.6876C36.2517 35.4909 36.5353 35.1986 36.9063 34.8179C37.6485 34.0563 38.7405 32.9409 40.1369 31.5289C42.9299 28.7048 46.9397 24.695 51.802 19.9574L51.8239 19.936L51.8453 19.9141C57.3701 14.2604 66.0285 12.6667 73.8089 12.6616C77.6333 12.6591 81.0956 13.0409 83.6047 13.4251C84.5931 13.5765 85.4293 13.7276 86.0763 13.8543C86.2034 14.5056 86.3551 15.3486 86.5071 16.3457C86.8914 18.8669 87.2733 22.3454 87.2708 26.186C87.2657 34.0012 85.6707 42.6887 80.0184 48.2121L79.9944 48.2355L79.9711 48.2595C77.9669 50.3257 73.9924 54.3108 70.5044 57.7936C68.7635 59.5319 67.1487 61.1402 65.9691 62.3139C65.3793 62.9008 64.8983 63.379 64.5649 63.7104L64.1802 64.0927L64.0799 64.1923L64.0543 64.2177L64.0479 64.2241L64.0463 64.2257L64.0459 64.2261C64.0458 64.2262 64.0457 64.2262 65.8073 66.0002L64.0457 64.2262ZM61.3046 24.3819C59.9895 24.9271 58.7947 25.7261 57.7885 26.7334C56.2747 28.2489 55.2441 30.1793 54.8271 32.2804C54.41 34.3815 54.6253 36.5591 55.4456 38.538C56.2659 40.5168 57.6544 42.208 59.4357 43.3979C61.217 44.5877 63.311 45.2228 65.4531 45.2228C67.5952 45.2228 69.6893 44.5877 71.4706 43.3979C73.2518 42.208 74.6404 40.5168 75.4607 38.538C76.281 36.5591 76.4962 34.3815 76.0792 32.2804C75.6621 30.1793 74.6316 28.2489 73.1177 26.7334C72.1116 25.7261 70.9168 24.9271 69.6016 24.3819C68.2865 23.8367 66.8768 23.5561 65.4531 23.5561C64.0295 23.5561 62.6197 23.8367 61.3046 24.3819ZM20.5687 69.8805L29.6766 78.9884C25.4468 82.167 20.4511 84.1722 15.1985 84.8007C15.3281 83.2765 15.5745 81.2804 16.0394 79.1883C16.531 76.9763 17.2473 74.7477 18.2677 72.877C18.9386 71.6469 19.7041 70.6377 20.5687 69.8805Z" stroke="url(#paint0_linear_185_437)" strokeWidth="5"/>
             <defs>

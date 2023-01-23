@@ -5,14 +5,14 @@ import ApproveSection from './ApproveSection'
 import CongratsSection from './CongratsSection'
 import CompleteSection from './CompleteSection'
 import useWallet from '../../hooks/useWallet'
-import { CollectionType } from '../../hooks/useCollection'
+import {FullCollectionType} from '../../types/collections'
 
 interface IBidContentProps {
   bidStep: BidStep,
   processing: boolean,
   approveTx?: string,
   price: number,
-  collectionInfo?: CollectionType,
+  collectionInfo?: FullCollectionType,
   isCollectionBid: boolean,
   onChangePrice: (e: any) => void,
   currency: any,

@@ -88,9 +88,9 @@ const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
   return (
     <>
       <div className="w-full">
-        <div className="flex items-center justify-between w-full">
-          <ChainSelection selectedChainIds={selectedChainIds} addChainId={addSelectedChainId} removeChainId={removeSelectedChainId} addAllChainIds={addAllChainIds} />
+        <div className="flex items-center space-x-8 w-full">
           <Dropdown menus={sortMenu} onChange={onChangeSort} />
+          <ChainSelection selectedChainIds={selectedChainIds} addChainId={addSelectedChainId} removeChainId={removeSelectedChainId} addAllChainIds={addAllChainIds} setChainId={(chainId) => setSelectedChainIds([chainId])} />
         </div>
         {
           isLoading &&

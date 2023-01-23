@@ -11,6 +11,8 @@ import {NotificationArea} from './NotificationArea'
 import {TransactionTracker} from './TransactionTracker'
 import {MessageArea} from './MessageArea'
 
+const S3_BUCKET_URL = process.env.S3_BUCKET_URL || ''
+
 const Header = (): JSX.Element => {
   const { address } = useWallet()
   const { profile, onFaucet } = useData()
@@ -30,7 +32,7 @@ const Header = (): JSX.Element => {
       if (profile.avatar.startsWith('ipfs')) {
         return `https://ipfs.io/${profile.avatar}`
       }
-      return process.env.API_URL + profile.avatar
+      return S3_BUCKET_URL + profile.avatar
     }
     return '/images/default_avatar.png'
   }, [profile])
@@ -39,32 +41,32 @@ const Header = (): JSX.Element => {
     <>
       <nav className={
         classNames(
-          'dark:bg-[#161616]',
-          'bg-[#F6F8FC]',
+          'bg-[#161616]',
           'h-[64px]',
-          'px-4',
-          'sm:px-6',
+          'px-8',
           'z-50',
           'fixed',
           'w-full',
         )}
       >
         <div className='flex items-center'>
-          <div className='flex flex-1 items-center mr-auto space-x-[24px]'>
+          <div className={'flex items-center flex-1 space-x-[50px] md:w-auto mx-auto'}>
             <TransactionTracker />
-            <SearchBar />
+            <NavMenu />
           </div>
 
-          <NavMenu />
+          <div className='flex flex-1 items-center justify-center mr-auto'>
+            <SearchBar />
+          </div>
 
           <div className='flex flex-1 items-center justify-end ml-auto space-x-[20px]'>
             {
               address ?
                 <>
                   <div className={'h-9 bg-primary-gradient text-primary px-4 py-[9px] flex items-center justify-center rounded-md cursor-pointer'} onClick={onFaucet}>$USD</div>
+                  <SelectNetworks />
                   <MessageArea />
                   <NotificationArea />
-                  <SelectNetworks />
                   <PfpMenu avatarImage={avatarImage} />
                 </>
                 :

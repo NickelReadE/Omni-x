@@ -2,9 +2,11 @@ import React, {useState, useEffect} from 'react'
 import type { NextPage } from 'next'
 import useWallet from '../hooks/useWallet'
 import MetaMaskConnect from '../components/layout/header/MetaMaskConnect'
-import HomeSlider from '../components/home/slider'
 import HomeCollections from '../components/home/collections'
+import HomeIntro from '../components/home/intro'
 import { supportChainIDs } from '../utils/constants'
+import {HomeFeatured} from '../components/home/Featured'
+import {HomeTopCollections} from '../components/home/TopCollections'
 
 const Home: NextPage = () => {
   const {chainId, address} = useWallet()
@@ -27,8 +29,9 @@ const Home: NextPage = () => {
       {isBlur &&
         <MetaMaskConnect />
       }
-      {/* <Tabs blur={isBlur} /> */}
-      <HomeSlider />
+      <HomeIntro />
+      <HomeFeatured />
+      <HomeTopCollections />
       <HomeCollections />
     </>
   )

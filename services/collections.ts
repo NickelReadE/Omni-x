@@ -1,12 +1,13 @@
 import API from './api'
 
-const getCollectionNFTs = async (col_url: string, page: number, display_per_page: number, sort: string, searchObj: any) => {
+const getCollectionNFTs = async (col_url: string, page: number, display_per_page: number, sort: string, searchObj: any, chainIds: number[]) => {
   const option = {
     col_url,
     page,
     display_per_page,
     sort,
-    searchObj
+    searchObj,
+    chainIds,
   }
   const res = await API.post('collections/nfts', option)
   return res.data
@@ -42,6 +43,17 @@ const getCollectionAllNFTs = async (col_url: string, sort: string, searchObj: an
   return res.data
 }
 
+const getFeaturedCollections = async () => {
+  const res = await API.get('collections/featured')
+  return res.data
+}
+const getTopCollections = async (selectedChainIds: number[], dayRange: number) => {
+  const res = await API.post('collections/top', {
+    chainIds: selectedChainIds,
+    dayRange,
+  })
+  return res.data
+}
 
 const getCollectionInfo = async (col_url: string) => {
   const res = await API.get(`collections/${col_url}`)
@@ -93,4 +105,6 @@ export const collectionsService = {
   getCollectionAllNFTs,
   updateCollectionNFTSalePrice,
   updateCollectionNFTChainID,
+  getFeaturedCollections,
+  getTopCollections,
 }

@@ -88,7 +88,6 @@
 
 .gradient-box {
   position: relative;
-  padding: 8px 1px;
 
   &:before {
     content: "";
@@ -125,8 +124,16 @@
   color:    #969696;
 }
 
-::placeholder { /* Most modern browsers support this now. */
+input::placeholder { /* Most modern browsers support this now. */
   color:    #969696;
+}
+
+input::-webkit-input-placeholder {
+  color: #969696;
+}
+
+input:-moz-placeholder {
+  color: #969696;
 }
 
 [type='text'] {
