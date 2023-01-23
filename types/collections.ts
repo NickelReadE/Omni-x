@@ -37,6 +37,18 @@ export type FullCollectionType = BaseCollectionType & {
   volume24h: string,
   volume48h: string,
   volume14d: string,
+  is_gasless: boolean,
+}
+
+export type MintingSchedule = {
+  title: string,
+  start_timestamp: number;
+  end_timestamp: number;
+  max_limit: number,
+  limit_per_wallet: number,
+  currency: string; // in case native currency, should be 0x0
+  price: number;
+  wl?: string; // merkle root
 }
 
 export type LaunchPadType = BaseCollectionType & {
@@ -45,6 +57,7 @@ export type LaunchPadType = BaseCollectionType & {
   price: string,
   description: string,
   itemsCnt: string,
+  whitelist_infos: MintingSchedule[],
   mint_start_timestamp: number,
   mint_end_timestamp: number
 }
