@@ -1,5 +1,4 @@
 import { IntroCard } from './intro'
-import LensLogo from '../../public/images/learn-more/lens_logo.png'
 import CommunityLogo from '../../public/images/learn-more/community.png'
 import Image from 'next/image'
 
@@ -21,7 +20,7 @@ export default function LearnMoreSocial() {
           <IntroCard title="token gating" className="flex justify-center w-full mt-6">
             <div className='flex flex-col items-center space-y-6 mt-6'>
               <span className={'text-secondary text-lg text-center'}>
-                choose who can chat, view, attend, and share your content with our auto-refreshing list of community holders 
+                choose who can chat, view, attend, and share your content with our auto-refreshing list of community holders
               </span>
               <span className={'text-secondary text-lg text-center'}>
                 this allows you to own and share content -<span className={'text-primary-green'}>&nbsp;without giving up any personal information</span>
