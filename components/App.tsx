@@ -1,5 +1,4 @@
 import React from 'react'
-import {DndContext} from '@dnd-kit/core'
 import {ToastContainer} from 'react-toastify'
 import {WalletProvider} from './providers/WalletProvider'
 import {BridgeProvider} from './providers/BridgeProvider'
@@ -79,13 +78,11 @@ function App({children}: AppProps) {
                   <TransferProvider>
                     <ProgressProvider>
                       <ContractProvider>
-                        <DndContext>
-                          <SwitchedNetworkProvider>
-                            <ModalProvider>
-                              <Layout>{children}</Layout>
-                            </ModalProvider>
-                          </SwitchedNetworkProvider>
-                        </DndContext>
+                        <SwitchedNetworkProvider>
+                          <ModalProvider>
+                            <Layout>{children}</Layout>
+                          </ModalProvider>
+                        </SwitchedNetworkProvider>
                       </ContractProvider>
                     </ProgressProvider>
                   </TransferProvider>
