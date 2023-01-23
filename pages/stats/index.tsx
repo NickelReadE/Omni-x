@@ -1,13 +1,11 @@
 import {NextPage} from 'next'
 import {useEffect, useState} from 'react'
-import {AnalyticsCard} from '../../components/stats/DataCard'
-import {AnalyticsWeeklyVolume} from '../../components/stats/WeeklyVolume'
 import {TextH2, TextH3} from '../../components/basic'
 import {StatsUserLeaderboard} from '../../components/stats/UserLeaderboard'
 import {LeaderboardData} from '../../types/stats'
 import {statsService} from '../../services/statsService'
 
-const mockData = [
+/*const mockData = [
   { chainId: 5, value: 10000 },
   { chainId: 97, value: 9000 },
   { chainId: 80001, value: 6000 },
@@ -15,7 +13,7 @@ const mockData = [
   { chainId: 420, value: 3000 },
   { chainId: 421613, value: 2000 },
   { chainId: 4002, value: 1000 },
-]
+]*/
 
 const Stats: NextPage = () => {
   const [tab, setTab] = useState(2)
