@@ -14,27 +14,24 @@ export default function LearnMoreSocial() {
       <div className="flex w-full mt-12 space-x-4">
         <div className="flex flex-1 justify-center items-center flex-col">
           <IntroCard title="personal feeds" className="flex justify-center w-full">
-            <span className={'text-secondary text-lg mt-6'}>
-              <span className={'text-primary-green'}>follow your favorite projects </span> and artists to create a personal feed of art and important activity alerts
+            <span className={'text-secondary text-lg mt-6 text-center'}>
+              <span className={'text-primary-green'}>follow your favorite projects and artists </span> to sign up for IRL events, collection activity notifications, and more!
             </span>
           </IntroCard>
-          <IntroCard title="Lens Protocol" className="flex justify-center w-full mt-6" titleColor={'text-[#BDFC5A]'}>
+          <IntroCard title="token gating" className="flex justify-center w-full mt-6">
             <div className='flex flex-col items-center space-y-6 mt-6'>
-              <span className={'text-secondary text-lg'}>
-                fully decentralized social accounts that plug-and-play with any app that integrates Lens
+              <span className={'text-secondary text-lg text-center'}>
+                choose who can chat, view, attend, and share your content with our auto-refreshing list of community holders 
               </span>
-              <span className={'text-secondary text-lg'}>
+              <span className={'text-secondary text-lg text-center'}>
                 this allows you to own and share content -<span className={'text-primary-green'}>&nbsp;without giving up any personal information</span>
               </span>
-              <div>
-                <Image src={LensLogo} width={60} height={80} alt='lens logo' />
-              </div>
             </div>
           </IntroCard>
         </div>
         <div className="flex flex-1 flex-col items-center pl-8">
           <span className='text-secondary'>
-                most marketplaces only care about trading - by integrating Lens Protocol, we are building <span className='text-primary-green'> your new home for creating, sharing, and connecting </span> with your web3 community
+                most marketplaces only care about trading - we are building <span className='text-primary-green'> a new home for creators </span> with their <span className='text-primary-green'>community</span>
           </span>
           <div>
             <Image src={CommunityLogo} width={440} height={600} alt='community logo' />
