@@ -14,6 +14,9 @@ export type ProfileData = {
   avatar: string,
   banner: string | undefined,
   isGregHolder: boolean,
+  followers: number,
+  following: number,
+  points: number,
 }
 
 export type UserInformation = {
@@ -38,6 +41,9 @@ const getUserInformation = async (user_address: string): Promise<ProfileData | u
       instagram: user_info.instagram,
       avatar: user_info.avatar,
       banner: user_info.banner,
+      followers: user_info.followers,
+      following: user_info.following,
+      points: user_info.points,
       isGregHolder: user_info.isGregHolder,
     }
   }

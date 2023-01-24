@@ -62,7 +62,7 @@ export const CollectionBanner = ({ collection, setSelectedTabIndex }: Collection
             <div className={'flex flex-col space-y-2'}>
               <TextH2 className={'text-primary-light'}>{collection.name}</TextH2>
               <div className={'flex space-x-4'}>
-                <TextBody className={'text-primary-light'}>by Kanpai Pandas</TextBody>
+                <TextBody className={'text-primary-light'}>by {collection.name}</TextBody>
                 <div className={'flex items-center space-x-2 bg-[#202020] py-1 px-2 rounded-[12px]'}>
                   <TextBody
                     className={'text-[#4D94FF] leading-[16px]'}>{collectionAddress ? truncateAddress(collectionAddress) : ''}</TextBody>
