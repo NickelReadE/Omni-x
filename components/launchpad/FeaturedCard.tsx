@@ -5,7 +5,7 @@ import {LaunchPadType} from '../../types/collections'
 
 export const FeaturedCard = ({collection}: { collection: LaunchPadType }) => {
   const timeTillToMintStartTimestamp = useMemo(() => {
-    const deltaTime = (new Date().getTime() / 1000) - collection.mint_start_timestamp
+    const deltaTime = collection.mint_end_timestamp - (new Date().getTime() / 1000)
     const dayInMilliseconds = 60 * 60 * 24
     return deltaTime / dayInMilliseconds > 1 ? `${Math.floor(deltaTime / dayInMilliseconds)} days` : `${Math.floor(deltaTime / 60 / 60)} hours`
   }, [collection])
