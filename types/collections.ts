@@ -5,8 +5,14 @@ export type BaseCollectionType = {
   col_url: string,
   featured_image: string,
   profile_image: string,
-  floorPrice: number,
-  ceilPrice: number,
+  floor_price: number,
+  ceil_price: number,
+}
+
+export type TopCollection = BaseCollectionType &{
+  rank: number,
+  total_volume: string,
+  change: number,
 }
 
 export type FullCollectionType = BaseCollectionType & {

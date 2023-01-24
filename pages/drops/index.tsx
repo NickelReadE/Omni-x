@@ -1,11 +1,11 @@
-import type {NextPage} from 'next'
 import React from 'react'
+import type {NextPage} from 'next'
+import Router from 'next/router'
 import NftForLaunch from '../../components/NftForLaunch'
 import useLaunchPad from '../../hooks/useLaunchPad'
 import {FeaturedCard} from '../../components/launchpad/FeaturedCard'
 import {SkeletonCard} from '../../components/skeleton/card'
 import {TextBodyemphasis, TextH1, TextH2, TextSH2} from '../../components/basic'
-import Router from 'next/router'
 import {PrimaryButton} from '../../components/common/buttons/PrimaryButton'
 import {LaunchPadType} from '../../types/collections'
 

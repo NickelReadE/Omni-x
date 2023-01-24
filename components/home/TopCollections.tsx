@@ -1,32 +1,27 @@
 import {useEffect, useState} from 'react'
+import Link from 'next/link'
 import {TextBody, TextBodyemphasis, TextH2, TextH3} from '../basic'
 import {ChainSelection} from '../common/ChainSelection'
 import {SUPPORTED_CHAIN_IDS} from '../../utils/constants'
 import {collectionsService} from '../../services/collections'
 import {formatDollarAmount} from '../../utils/numbers'
-
-type TopCollection = {
-  rank: number,
-  name: string,
-  profile_image: string,
-  total_volume: string,
-  floor: number,
-  change: number,
-}
+import {TopCollection} from '../../types/collections'
 
 const CollectionRow = ({ collection }: { collection: TopCollection }) => {
   return (
     <div className={'grid grid-cols-5 gap-x-12 h-[64px] flex items-center mt-4'}>
-      <div className={'col-span-2 flex items-center space-x-4'}>
-        <TextBody className={'text-secondary'}>{collection.rank}</TextBody>
-        <div className={'bg-[#202020] rounded-[8px] w-full p-2 flex items-center space-x-3'}>
-          <img src={collection.profile_image} alt={'collection icon'} width={50} height={50} className={'rounded'} />
-          <TextH3 className={'text-white'}>{collection.name}</TextH3>
+      <Link href={'/collections/' + collection.col_url}>
+        <div className={'col-span-2 flex items-center space-x-4 cursor-pointer'}>
+          <TextBody className={'text-secondary'}>{collection.rank}</TextBody>
+          <div className={'bg-[#202020] rounded-[8px] w-full p-2 flex items-center space-x-3'}>
+            <img src={collection.profile_image} alt={'collection icon'} width={50} height={50} className={'rounded'} />
+            <TextH3 className={'text-white'}>{collection.name}</TextH3>
+          </div>
         </div>
-      </div>
+      </Link>
       <TextBody className={'col-span-1 text-white text-center'}>{formatDollarAmount(Number(collection.total_volume))}</TextBody>
       <TextBody className={'col-span-1 text-transparent bg-primary-gradient bg-clip-text'}>{collection.change}%</TextBody>
-      <TextBody className={'col-span-1 text-secondary text-center'}>{formatDollarAmount(collection.floor)}</TextBody>
+      <TextBody className={'col-span-1 text-secondary text-center'}>{formatDollarAmount(collection.floor_price)}</TextBody>
     </div>
   )
 }
