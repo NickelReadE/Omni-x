@@ -1,6 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react'
 import Image from 'next/image'
-import {CollectionType} from '../../hooks/useCollection'
 import useWallet from '../../hooks/useWallet'
 import {ExternalLink, TextBody, TextBodyemphasis, TextH2} from '../basic'
 import {PrimaryButton} from '../common/buttons/PrimaryButton'
@@ -12,9 +11,10 @@ import {truncateAddress} from '../../utils/utils'
 import {getRoyalty} from '../../utils/helpers'
 import {formatAmount, formatDollarAmount} from '../../utils/numbers'
 import {GreyButton} from '../common/buttons/GreyButton'
+import {FullCollectionType} from '../../types/collections'
 
 interface CollectionBannerProps {
-    collection: CollectionType,
+    collection: FullCollectionType,
     setSelectedTabIndex: (index: number) => void,
 }
 
@@ -62,7 +62,7 @@ export const CollectionBanner = ({ collection, setSelectedTabIndex }: Collection
             <div className={'flex flex-col space-y-2'}>
               <TextH2 className={'text-primary-light'}>{collection.name}</TextH2>
               <div className={'flex space-x-4'}>
-                <TextBody className={'text-primary-light'}>by Kanpai Pandas</TextBody>
+                <TextBody className={'text-primary-light'}>by {collection.name}</TextBody>
                 <div className={'flex items-center space-x-2 bg-[#202020] py-1 px-2 rounded-[12px]'}>
                   <TextBody
                     className={'text-[#4D94FF] leading-[16px]'}>{collectionAddress ? truncateAddress(collectionAddress) : ''}</TextBody>
@@ -140,7 +140,7 @@ export const CollectionBanner = ({ collection, setSelectedTabIndex }: Collection
             </div>
             <div className={'xl:flex flex-col items-center space-y-2 hidden'}>
               <span className={'text-md text-secondary'}>total&nbsp;vol</span>
-              <span className={'text-xg text-primary-light'}>{collection.itemsCnt}</span>
+              <span className={'text-xg text-primary-light'}>{formatDollarAmount(Number(collection.total_volume))}</span>
             </div>
             <div className={'2xl:flex flex-col items-center space-y-2 hidden'}>
               <span className={'text-md text-secondary'}>7d&nbsp;vol</span>

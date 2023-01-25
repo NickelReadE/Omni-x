@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { collectionsService } from '../services/collections'
-import { CollectionType } from './useCollection'
+import {FullCollectionType} from '../types/collections'
 
 export type CollectionsTypeFunc = {
     loading: boolean,
-    collections: CollectionType[],
+    collections: FullCollectionType[],
     refreshCollections: () => void
 }
 
@@ -14,7 +14,7 @@ const getAllCollections = async () => {
 }
 
 const useCollections = (): CollectionsTypeFunc => {
-  const [collections, setCollections] = useState<CollectionType[]>([])
+  const [collections, setCollections] = useState<FullCollectionType[]>([])
   const [refresh, setRefresh] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 

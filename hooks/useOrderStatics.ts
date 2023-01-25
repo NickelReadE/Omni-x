@@ -1,7 +1,7 @@
 import {useMemo} from 'react'
 import {IOrder, NFTItem} from '../interface/interface'
 import {getCurrencyIconByAddress} from '../utils/constants'
-import { CollectionType } from './useCollection'
+import {FullCollectionType} from '../types/collections'
 
 export type OrderStatics = {
   order: IOrder,
@@ -15,7 +15,7 @@ export type OrderStatics = {
 
 export type OrderStaticsInput = {
   nft?: NFTItem,
-  collection?: CollectionType
+  collection?: FullCollectionType
 }
 const useOrderStatics = ({
   nft,
@@ -77,7 +77,7 @@ const useOrderStatics = ({
     sortedBids,
     highestBid,
     highestBidCoin,
-    lastSale: nft?.last_sale,
+    lastSale: nft?.last_sale || 0,
     lastSaleCoin
   }
 }

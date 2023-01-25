@@ -9,7 +9,7 @@ import { CURRENCY_USDC, PERIOD_LIST } from '../../utils/constants'
 import { BidStep } from '../../types/enum'
 import useTrading, { TradingInput } from '../../hooks/useTrading'
 import { CollectionBidInput, useCollectionBid } from '../../hooks/useCollectionBid'
-import { CollectionType } from '../../hooks/useCollection'
+import {FullCollectionType} from '../../types/collections'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -38,7 +38,7 @@ export interface IConfirmBidProps {
   collectionName: string,
   tradingInput?: TradingInput,
   collectionBid?: CollectionBidInput,
-  collectionInfo?: CollectionType,
+  collectionInfo?: FullCollectionType,
   onBuyFloor?: (nft: any) => void,
   handleBidDlgClose: () => void,
 }

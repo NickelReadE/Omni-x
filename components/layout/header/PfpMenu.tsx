@@ -2,6 +2,9 @@ import React, {Fragment, useState} from 'react'
 import { Disclosure } from '@headlessui/react'
 import Link from 'next/link'
 import {Transition} from '@headlessui/react'
+import {disconnect} from '@wagmi/core'
+import Dialog from '@material-ui/core/Dialog'
+import {makeStyles} from '@material-ui/core/styles'
 import useWallet from '../../../hooks/useWallet'
 import DropdownArrow from '../../../public/images/icons/dropdown_arrow.svg'
 import DropdownArrowUp from '../../../public/images/icons/dropdown_arrow_up.svg'
@@ -9,20 +12,46 @@ import {getChainInfo, getChainLogoById, numberLocalize} from '../../../utils/con
 import {useBalance} from 'wagmi'
 import useData from '../../../hooks/useData'
 import {GradientBackground, Tooltip} from '../../basic'
+import UserEdit from '../../user/UserEdit'
 
 interface IPfpMenuPros {
   avatarImage: string
 }
 
-const menuItems = ['messages', 'events', 'settings', 'wallet']
+const useStyles = makeStyles({
+  paper: {
+    padding: 0,
+    width: '90%',
+    maxWidth: '960px',
+  },
+})
 
 export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
+  const onSettingClick = () => {
+    setSettingModal(true)
+  }
+  const onLogoutClick = async () => {
+    await disconnect()
+  }
+
+  const menuItems = [{
+    label: 'settings',
+    icon: 'settings',
+    onClick: onSettingClick
+  }, {
+    label: 'log out',
+    icon: 'wallet',
+    onClick: onLogoutClick
+  }]
+
   const { address, chainId } = useWallet()
+  const classes = useStyles()
   const { totalUSDCBalance, totalUSDTBalance, usdcAvailableChainIds, usdtAvailableChainIds } = useData()
   const { data: nativeBalance } = useBalance({
-    addressOrName: address
+    address: `0x${address?.substring(2)}`
   })
   const [hovered, setHovered] = useState(false)
+  const [settingModal, setSettingModal] = useState(false)
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined)
 
   return (
@@ -57,7 +86,7 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
                   {({ open }) => (
                     <>
                       <Disclosure.Button className={`flex items-center w-full ${open ? '' : 'pb-3'}`}>
-                        <span className={'flex-none text-left text-secondary w-14 italic font-bold'}>USD</span>
+                        <span className={'flex-none text-left text-primary-light w-14 italic font-bold'}>USD</span>
                         <span className={'grow text-left px-3 text-primary-light'}>${numberLocalize(totalUSDCBalance + totalUSDTBalance)}</span>
                         <span className={'flex-none w-6'}>
                           {
@@ -106,7 +135,7 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
                   )}
                 </Disclosure>
                 <div className={'flex items-center'}>
-                  <span className={'flex-none text-secondary w-14 italic font-bold'}>{getChainInfo(chainId)?.nativeCurrency.symbol}</span>
+                  <span className={'flex-none text-primary-light w-14 italic font-bold'}>{getChainInfo(chainId)?.nativeCurrency.symbol}</span>
                   <span className={'grow px-3 text-primary-light'}>{numberLocalize(parseFloat(nativeBalance?.formatted || '0'))}</span>
                   <span className={'flex-none w-6'}/>
                 </div>
@@ -115,10 +144,10 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
               {
                 menuItems.map((menu, index) => {
                   return (
-                    <div key={index} onMouseEnter={() => setActiveIndex(index)} onMouseLeave={() => setActiveIndex(undefined)}>
-                      <div className={`py-2 px-6 flex items-center cursor-pointer ${activeIndex === index ? 'bg-[#303030]' : ''}`}>
-                        <img src={`/images/icons/${menu}${activeIndex === index ? '-active' : ''}.svg`} alt={'menu icon'}/>
-                        <span className={`text-${activeIndex === index ? 'primary-light' : 'secondary'} text-lg pl-4`}>{menu}</span>
+                    <div key={index} onMouseEnter={() => setActiveIndex(index)} onMouseLeave={() => setActiveIndex(undefined)} onClick={menu.onClick}>
+                      <div className={`mx-[1px] py-2 px-6 flex items-center cursor-pointer ${activeIndex === index ? 'bg-[#303030]' : ''}`}>
+                        <img src={`/images/icons/${menu.icon}${activeIndex === index ? '-active' : ''}.svg`} alt={'menu icon'}/>
+                        <span className={`text-${activeIndex === index ? 'primary-light' : 'secondary'} text-lg pl-4`}>{menu.label}</span>
                       </div>
                     </div>
                   )
@@ -128,6 +157,9 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
           </div>
         </Transition>
       </div>
+      <Dialog open={settingModal} onClose={() => setSettingModal(false)} aria-labelledby='simple-dialog-title' maxWidth={'xl'} classes={{ paper: classes.paper }}>
+        <UserEdit updateModal={() => setSettingModal(false)} />
+      </Dialog>
     </div>
   )
 }

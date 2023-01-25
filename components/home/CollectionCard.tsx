@@ -1,40 +1,22 @@
 import React from 'react'
 import { useState } from 'react'
 import Link from 'next/link'
+import { useBalance } from 'wagmi'
 import classNames from '../../helpers/classNames'
 import useWallet from '../../hooks/useWallet'
 import {ModalIDs} from '../../contexts/modal'
 import {useModal} from '../../hooks/useModal'
 import useData from '../../hooks/useData'
-import { useBalance } from 'wagmi'
-// import { calcVolumeUp } from '../../utils/utils'
 import {TextBodyemphasis, TextH3} from '../basic'
+import {formatDollarAmount} from '../../utils/numbers'
+import {FullCollectionType} from '../../types/collections'
 
-type CollectionType = {
-  profile_image: string
-  col_url: string
-  name: string
-  itemsCnt: number
-  ownerCnt: number
-  address: any
-  floorNft: any //{ omni: NFTItem, eth: NFTItem, usd: NFTItem }
-  floorPrice: any //{ omni: number, eth: number, usd: number }
-  volume24h: string
-  volume48h: string
-  volume7d: string
-  volume14d: string
-}
-
-interface ICollectionCardProps {
-  collection: CollectionType
-}
-
-const CollectionCard = ({ collection }: ICollectionCardProps) => {
+const CollectionCard = ({ collection }: { collection: FullCollectionType }) => {
   const { address } = useWallet()
   const { openModal, closeModal } = useModal()
   const { totalUSDCBalance, totalUSDTBalance } = useData()
   const { data: nativeBalance } = useBalance({
-    addressOrName: address
+    address: `0x${address?.substring(2)}`,
   })
   const [hover, setHover] = useState<boolean>(false)
   const [imageError, setImageError] = useState(false)
@@ -112,30 +94,8 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
 
         <div className="flex justify-left">
           <TextBodyemphasis className={'text-transparent bg-primary-gradient bg-clip-text'}>
-            $1.2k - $14.9k
+            {formatDollarAmount(collection.floor_price)} - {formatDollarAmount(collection.ceil_price)}
           </TextBodyemphasis>
-          {/*<div className={classNames('col-span-2 flex p-2 rounded-lg')} >
-            <div className='text-md flex flex-col space-y-2 justify-between'>
-              <div className='flex flex-row space-x-1 justify-center' >
-                <span className='font-medium text-md mr-[px] text-primary-light'>
-                  {collection ? numberShortify(collection.floorPrice.omni) : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
-                </span>
-                <img src='/images/currency/omni_asset.svg' className='w-[16px]' alt='asset img' />
-              </div>
-            </div>
-          </div>
-          <div className={classNames('col-span-3 flex flex-col space-y-2 p-2 rounded-lg')} >
-            <div className='text-md flex flex-row justify-between space-x-3'>
-              <div className='flex flex-row justify-between'>
-                <span className='font-medium mr-1 text-md text-primary-light'>
-                  {collection ? formatDollarAmount(Number(collection.volume7d)) : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
-                </span>
-              </div>
-              <span className={classNames('font-medium text-md', volumeUp >= 0 ? 'text-[#38B000]': 'text-[#B00000]')}>
-                {collection ? `${(numberShortify(volumeUp, 0))}%` : <Image src={Loading} alt='Loading...' width='20px' height='20px' />}
-              </span>
-            </div>
-          </div>*/}
         </div>
       </div>
 
@@ -148,7 +108,7 @@ const CollectionCard = ({ collection }: ICollectionCardProps) => {
       </div>
 
       {/* <div className={`w-full flex items-center bg-[#202020] absolute right-0 left-0 bottom-3 rounded-br-[8px] rounded-bl-[8px] px-3 ${hover ? 'block' : 'hidden'}`}> */}
-      <button 
+      <button
         className={`bg-primary-green absolute bottom-0 w-full py-2 px-4 rounded-b-lg h-[38px] ${hover ? 'block' : 'hidden'}`}
         onClick={ () => {
           const floorNft = getValidFloorNFT()

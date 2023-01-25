@@ -1,5 +1,4 @@
 import React from 'react'
-import {DndContext} from '@dnd-kit/core'
 import {ToastContainer} from 'react-toastify'
 import {WalletProvider} from './providers/WalletProvider'
 import {BridgeProvider} from './providers/BridgeProvider'
@@ -20,7 +19,7 @@ import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { infuraProvider } from 'wagmi/providers/infura'
 import { publicProvider } from 'wagmi/providers/public'
 import Layout from './layout/Layout'
-import {supportChains} from '../utils/constants'
+import {RPC_PROVIDERS, supportChains} from '../utils/constants'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import { SwitchedNetworkProvider } from './SwitchedNetworkProvider'
 import { ModalProvider } from './providers/ModalProvider'
@@ -34,12 +33,12 @@ const supportedChains = supportChains()
 const { chains, provider } = configureChains(
   supportedChains,
   [
-    infuraProvider({ apiKey: process.env.INFURA_API_KEY }),
-    alchemyProvider({ apiKey: process.env.ALCHEMY_ID }),
+    infuraProvider({ apiKey: process.env.INFURA_API_KEY as string }),
+    alchemyProvider({ apiKey: process.env.ALCHEMY_ID as string }),
     publicProvider(),
     jsonRpcProvider({
       rpc: (chain) => {
-        return { http: chain.rpcUrls.default }
+        return { http: RPC_PROVIDERS[chain.id] }
       },
     }),
   ]
@@ -79,13 +78,11 @@ function App({children}: AppProps) {
                   <TransferProvider>
                     <ProgressProvider>
                       <ContractProvider>
-                        <DndContext>
-                          <SwitchedNetworkProvider>
-                            <ModalProvider>
-                              <Layout>{children}</Layout>
-                            </ModalProvider>
-                          </SwitchedNetworkProvider>
-                        </DndContext>
+                        <SwitchedNetworkProvider>
+                          <ModalProvider>
+                            <Layout>{children}</Layout>
+                          </ModalProvider>
+                        </SwitchedNetworkProvider>
                       </ContractProvider>
                     </ProgressProvider>
                   </TransferProvider>

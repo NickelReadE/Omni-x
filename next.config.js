@@ -1,7 +1,7 @@
 module.exports = {
   env: {
     API_BASE_URL: process.env.NEXT_API_BASE_URL,
-    API_URL: 'https://bucket-26n19n.s3.amazonaws.com/',
+    S3_BUCKET_URL: 'https://bucket-26n19n.s3.amazonaws.com/',
     MORALIS_API_KEY: process.env.NEXT_MORALIS_API_KEY,
     INFURA_API_KEY: process.env.NEXT_INFURA_API_KEY,
     GOERLI_ALCHEMY_API_KEY: process.env.NEXT_GOERLI_ALCHEMY_API_KEY,

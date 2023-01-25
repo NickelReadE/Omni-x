@@ -34,7 +34,7 @@ const Dropdown = ({ menus, defaultMenu, className, onChange }: IDropdownProps) =
     <div className={'relative'}>
       <Menu as={'div'} className={`w-full min-w-[230px] ${className ?? ''}`}>
         <>
-          <Menu.Button className={'bg-[#303030] text-primary-light text-md flex items-center rounded-full justify-between py-3 px-5 font-medium cursor-pointer text-primary-light h-[38px] w-full'}>
+          <Menu.Button className={'bg-[#303030] text-primary-light text-md flex items-center rounded-full justify-between py-3 px-5 font-medium cursor-pointer h-[38px] w-full'}>
             <span>{selectedMenu}</span>
             <img src={'/images/icons/arrow_down.svg'} alt={'arrow'} />
           </Menu.Button>

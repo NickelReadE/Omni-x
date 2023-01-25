@@ -1,20 +1,8 @@
 import { useEffect, useState } from 'react'
 import { collectionsService } from '../services/collections'
+import {LaunchPadType} from '../types/collections'
 
-export type LaunchPadType = {
-    mint_status: string,
-    totalCnt: string,
-    col_url: string,
-    name: string,
-    profile_image: string,
-    price: string,
-    description: string,
-    itemsCnt: string,
-    mint_start_timestamp: number,
-    mint_end_timestamp: number
-}
-
-export type LaunchPadTypeFunc = {
+type LaunchPadTypeFunc = {
     loading: boolean,
     collectionsForPast: LaunchPadType[],
     collectionsForComing: LaunchPadType[],

@@ -142,7 +142,7 @@ const Mint: NextPage = () => {
         const isClaimable = await tokenContract._claimable()
         const claimableCollectionAddress = await tokenContract._claimableCollection()
         const holdTokens = nfts.filter(nft => nft.token_address === claimableCollectionAddress && nft.chain_id === chainId)
-        
+
         if (!isClaimable || !isSupportGelato(chainId)) {
           throw new Error('not support claim')
         }
@@ -153,7 +153,7 @@ const Mint: NextPage = () => {
           if (holdTokens.length === 0) {
             throw new Error('not a greg holder')
           }
-  
+
           let claimableToken = undefined
           for (const holdToken of holdTokens) {
             const holder = await tokenContract._claimedTokens(holdToken.token_id)
@@ -162,14 +162,14 @@ const Mint: NextPage = () => {
               break
             }
           }
-          
+
           if (!claimableToken) {
             throw new Error('already claimed')
           }
 
           claimableTokenId = claimableToken.token_id
         }
-        
+
         const response = await gaslessClaim(tokenContract, chainId, claimableTokenId, address)
         const status = await waitForRelayTask(response)
         if (status === RelayTaskStatus.Executed) {
@@ -326,7 +326,7 @@ const Mint: NextPage = () => {
                   {
                     collectionInfo.whitelist_infos.map((whitelistInfo, index) => {
                       return (
-                        <WhitelistCard key={index} title={whitelistInfo.title} price={whitelistInfo.price} maxLimit={whitelistInfo.maxLimit} limitPerWallet={whitelistInfo.limitPerWallet} startTimestamp={whitelistInfo.startTimestamp} endTimestamp={whitelistInfo.endTimestamp} isMinting={isMinting} gasless={collectionInfo.is_gasless} mint={mint} />
+                        <WhitelistCard key={index} title={whitelistInfo.title} price={whitelistInfo.price} maxLimit={whitelistInfo.max_limit} limitPerWallet={whitelistInfo.limit_per_wallet} startTimestamp={whitelistInfo.start_timestamp} endTimestamp={whitelistInfo.end_timestamp} isMinting={isMinting} gasless={collectionInfo.is_gasless} mint={mint} />
                       )
                     })
                   }

@@ -85,7 +85,7 @@ const ActivitySend = ({activity}: {activity: ActivityType}) => {
             className={`mr-2 h-[20px] ${activity.senderTransactionHash ? 'cursor-pointer opacity-1' : 'opacity-40'}`}
           />
         }
-        <span className={'text-md'}>{truncateAddress(activity.from)}</span>
+        <span className={'text-md'}>{activity.from ? truncateAddress(activity.from) : ''}</span>
       </div>
       <div className={'flex flex-1 items-center'}>
         <img
@@ -98,7 +98,7 @@ const ActivitySend = ({activity}: {activity: ActivityType}) => {
           }}
           className={`mr-2 h-[20px] ${activity.transactionHash ? 'cursor-pointer opacity-1' : 'opacity-40'}`}
         />
-        <span className={'text-md'}>{truncateAddress(activity.to)}</span>
+        <span className={'text-md'}>{activity.to ? truncateAddress(activity.to) : ''}</span>
       </div>
       <div className={'flex flex-1 justify-end text-md'}>{new Date(activity.createdAt).toLocaleDateString('en-US', {
         year: 'numeric',

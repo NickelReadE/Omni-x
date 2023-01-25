@@ -23,7 +23,7 @@ interface IUserEditProps {
   updateModal: (arg: string) => void
 }
 
-const S3_BUCKET_URL = process.env.API_URL || ''
+const S3_BUCKET_URL = process.env.S3_BUCKET_URL || ''
 
 const UserEdit: FC<IUserEditProps> = ({ updateModal }) => {
   const updateProfileFormRef = useRef<HTMLFormElement>(null)

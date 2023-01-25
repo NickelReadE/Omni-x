@@ -45,7 +45,7 @@ export default function HomeSlider() {
                 <div className="w-full relative overflow-hidden max-h-[333.33px] rounded-[20px] aspect-[3/1] flex justify-center relative">
                   <img
                     className="transform-center absolute block top-[50%] left-[50%] w-auto"
-                    src={collection.banner_image}
+                    src={collection.featured_image}
                     alt={'banner - ' + index}
                   />
                 </div>
