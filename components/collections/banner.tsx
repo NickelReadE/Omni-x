@@ -101,19 +101,19 @@ export const CollectionBanner = ({ collection, setSelectedTabIndex }: Collection
                   <Image src={'/images/icons/heart.svg'} width={20} height={20} alt={'heart'}/>
                   <TextBodyemphasis className={'text-primary-light'}>250</TextBodyemphasis>
                 </div>
-                <GreyButton text={'join chat'}/>
-                <PrimaryButton text={'follow'}/>
+                {/* <GreyButton text={'join chat'}/>
+                <PrimaryButton text={'follow'}/> */}
               </div>
 
               <div className={'flex space-x-4'}>
-                <div className={'flex items-center space-x-1'}>
+                {/* <div className={'flex items-center space-x-1'}>
                   <TextBody className={'text-primary-light'}>{formatAmount(16800)}</TextBody>
                   <TextBody className={'text-secondary'}>followers</TextBody>
                 </div>
                 <div className={'flex items-center space-x-1'}>
                   <TextBody className={'text-primary-light'}>{formatAmount(16500)}</TextBody>
                   <TextBody className={'text-secondary'}>following</TextBody>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

@@ -65,8 +65,8 @@ const Header = (): JSX.Element => {
                 <>
                   <div className={'h-9 bg-primary-gradient text-primary px-4 py-[9px] flex items-center justify-center rounded-md cursor-pointer'} onClick={onFaucet}>$USD</div>
                   <SelectNetworks />
-                  <MessageArea />
-                  <NotificationArea />
+                  {/* <MessageArea /> */}
+                  {/* <NotificationArea /> */}
                   <PfpMenu avatarImage={avatarImage} />
                 </>
                 :
