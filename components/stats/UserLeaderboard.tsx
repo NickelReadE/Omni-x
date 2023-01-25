@@ -22,11 +22,11 @@ export const StatsUserLeaderboard = ({ leaderboard }: { leaderboard: Leaderboard
     }
     return leaderboard.map((item: any) => {
       let avatar = '/images/default_user.png'
-      if (item.avatar.startsWith('https://ipfs.io')) {
+      if (item.avatar && item.avatar.startsWith('https://ipfs.io')) {
         avatar = item.avatar
-      } else if (item.avatar.startsWith('ipfs')) {
+      } else if (item.avatar && item.avatar.startsWith('ipfs')) {
         avatar = `https://ipfs.io/${item.avatar}`
-      } else if (item.avatar.startsWith('upload')) {
+      } else if (item.avatar && item.avatar.startsWith('upload')) {
         avatar = S3_BUCKET_URL + item.avatar
       }
       return {
