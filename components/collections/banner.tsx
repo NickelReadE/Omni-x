@@ -2,15 +2,16 @@ import React, {useEffect, useMemo, useState} from 'react'
 import Image from 'next/image'
 import useWallet from '../../hooks/useWallet'
 import {ExternalLink, TextBody, TextBodyemphasis, TextH2} from '../basic'
-import {PrimaryButton} from '../common/buttons/PrimaryButton'
+// import {PrimaryButton} from '../common/buttons/PrimaryButton'
 import WebsiteIcon from '../../public/images/icons/website.svg'
 import TwitterIcon from '../../public/images/icons/twitter.svg'
 import DiscordIcon from '../../public/images/icons/discord.svg'
 import TelegramIcon from '../../public/images/icons/telegram.svg'
 import {truncateAddress} from '../../utils/utils'
 import {getRoyalty} from '../../utils/helpers'
-import {formatAmount, formatDollarAmount} from '../../utils/numbers'
-import {GreyButton} from '../common/buttons/GreyButton'
+// import {formatAmount, formatDollarAmount} from '../../utils/numbers'
+import {formatDollarAmount} from '../../utils/numbers'
+// import {GreyButton} from '../common/buttons/GreyButton'
 import {FullCollectionType} from '../../types/collections'
 
 interface CollectionBannerProps {
@@ -101,19 +102,19 @@ export const CollectionBanner = ({ collection, setSelectedTabIndex }: Collection
                   <Image src={'/images/icons/heart.svg'} width={20} height={20} alt={'heart'}/>
                   <TextBodyemphasis className={'text-primary-light'}>250</TextBodyemphasis>
                 </div>
-                <GreyButton text={'join chat'}/>
-                <PrimaryButton text={'follow'}/>
+                {/* <GreyButton text={'join chat'}/>
+                <PrimaryButton text={'follow'}/> */}
               </div>
 
               <div className={'flex space-x-4'}>
-                <div className={'flex items-center space-x-1'}>
+                {/* <div className={'flex items-center space-x-1'}>
                   <TextBody className={'text-primary-light'}>{formatAmount(16800)}</TextBody>
                   <TextBody className={'text-secondary'}>followers</TextBody>
                 </div>
                 <div className={'flex items-center space-x-1'}>
                   <TextBody className={'text-primary-light'}>{formatAmount(16500)}</TextBody>
                   <TextBody className={'text-secondary'}>following</TextBody>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

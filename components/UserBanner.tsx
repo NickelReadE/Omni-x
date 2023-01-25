@@ -7,7 +7,8 @@ import useWallet from '../hooks/useWallet'
 import classNames from '../helpers/classNames'
 import { ProfileData } from '../hooks/useProfile'
 import { truncateAddress } from '../utils/utils'
-import {ExternalLink, TextBody, TextBodyemphasis, TextH3} from './basic'
+// import {ExternalLink, TextBody, TextBodyemphasis, TextH3} from './basic'
+import {ExternalLink, TextBody, TextH3} from './basic'
 import UserEdit from './user/UserEdit'
 import {formatAmount} from '../utils/numbers'
 
@@ -83,14 +84,14 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
               </div>
 
               <div className={'flex items-center space-x-3 mt-1'}>
-                <div className={'flex items-center space-x-1'}>
+                {/* <div className={'flex items-center space-x-1'}>
                   <TextBody className={'text-primary-light'}>{formatAmount(user.followers)}</TextBody>
                   <TextBody className={'text-secondary'}>followers</TextBody>
                 </div>
                 <div className={'flex items-center space-x-1'}>
                   <TextBody className={'text-primary-light'}>{formatAmount(user.following)}</TextBody>
                   <TextBody className={'text-secondary'}>following</TextBody>
-                </div>
+                </div> */}
                 <div className={'flex items-center space-x-1'}>
                   <TextBody className={'text-primary-light'}>{formatAmount(user.points)}</TextBody>
                   <TextBody className={'bg-primary-gradient text-transparent bg-clip-text'}>points</TextBody>
@@ -98,16 +99,16 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
               </div>
             </div>
             <div className={'flex items-center space-x-4'}>
-              <div className={'bg-primary-gradient py-2 px-4 flex items-center justify-center rounded-full cursor-pointer'}>
+              {/* <div className={'bg-primary-gradient py-2 px-4 flex items-center justify-center rounded-full cursor-pointer'}>
                 <TextBodyemphasis className={'text-primary'}>following</TextBodyemphasis>
-              </div>
+              </div> */}
               {/*{
                 user.address === address &&
                 <GreyButton text={'settings'} className={'py-2 px-4'} onClick={() => setSettingModal(true)} />
               }*/}
-              <div className={'w-11 h-11'}>
+              {/* <div className={'w-11 h-11'}>
                 <Image src={'/images/icons/chat.svg'} alt={'chat'} width={44} height={44} />
-              </div>
+              </div> */}
               <div className={'w-8 h-8'}>
                 <ExternalLink link={user.website}>
                   <Image src={'/images/icons/website.svg'} alt={'website'} width={32} height={32} />

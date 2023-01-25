@@ -7,9 +7,9 @@ import useWallet from '../../../hooks/useWallet'
 import classNames from '../../../helpers/classNames'
 import {SelectNetworks} from './SelectNetworks'
 import {PfpMenu} from './PfpMenu'
-import {NotificationArea} from './NotificationArea'
+// import {NotificationArea} from './NotificationArea'
 import {TransactionTracker} from './TransactionTracker'
-import {MessageArea} from './MessageArea'
+// import {MessageArea} from './MessageArea'
 
 const S3_BUCKET_URL = process.env.S3_BUCKET_URL || ''
 
@@ -65,8 +65,8 @@ const Header = (): JSX.Element => {
                 <>
                   <div className={'h-9 bg-primary-gradient text-primary px-4 py-[9px] flex items-center justify-center rounded-md cursor-pointer'} onClick={onFaucet}>$USD</div>
                   <SelectNetworks />
-                  <MessageArea />
-                  <NotificationArea />
+                  {/* <MessageArea /> */}
+                  {/* <NotificationArea /> */}
                   <PfpMenu avatarImage={avatarImage} />
                 </>
                 :
