@@ -7,9 +7,9 @@ import useWallet from '../../../hooks/useWallet'
 import classNames from '../../../helpers/classNames'
 import {SelectNetworks} from './SelectNetworks'
 import {PfpMenu} from './PfpMenu'
-import {NotificationArea} from './NotificationArea'
+// import {NotificationArea} from './NotificationArea'
 import {TransactionTracker} from './TransactionTracker'
-import {MessageArea} from './MessageArea'
+// import {MessageArea} from './MessageArea'
 
 const S3_BUCKET_URL = process.env.S3_BUCKET_URL || ''
 
