@@ -77,9 +77,9 @@ export const getFundManagerInstance = (chainId: number) => {
   return getContractInstance('FundManager', FundManagerABI, chainId, null)
 }
 
-export const getOmniInstance = (chainId: number, signer: any) => {
-  return getContractInstance('OMNI', OmniABI, chainId, signer)
-}
+// export const getOmniInstance = (chainId: number, signer: any) => {
+//   return getContractInstance('OMNI', OmniABI, chainId, signer)
+// }
 
 export const getTransferSelectorNftInstance = (chainId: number, signer: any) => {
   return getContractInstance('TransferSelectorNFT', TransferSelectorNFTABI, chainId, signer)

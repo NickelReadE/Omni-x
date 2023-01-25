@@ -11,9 +11,9 @@ const ListingFeeSection: React.FC = () => {
         <p className='text-sm text-[#6C757D] font-semibold mr-6'>creator fee:</p>
         <p className='text-sm w-[60px] text-[#ADB5BD] font-light'>2.00%</p>
       </div>
-      <div className='flex justify-end'>
+      {/* <div className='flex justify-end'>
         <p className='text-sm mt-1.5 text-[#ADB5BD] font-light italic text-right'>*purchases using $OMNI reduce buyer’s<br/>platform tax from 2% to 1.5%</p>
-      </div>
+      </div> */}
     </div>
   )
 }
