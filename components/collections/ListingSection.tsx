@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import React, {useMemo} from 'react'
+import React, {useEffect, useMemo} from 'react'
 import { getValidCurrencies, PERIOD_LIST } from '../../utils/constants'
 import { SaleType } from '../../types/enum'
 import Dropdown from '../dropdown'
@@ -31,6 +31,12 @@ const ListingSection: React.FC<IListingSectionProps> = ({
   floorNft
 }) => {
   const validCurrencies = getValidCurrencies(nftChainId)
+
+  useEffect(() => {
+    if (validCurrencies?.length > 0 && validCurrencies[0].text != currency?.text) {
+      onChangeCurrency(validCurrencies[0])
+    }
+  }, [])
 
   const aboutPrice = useMemo(() => {
     return price

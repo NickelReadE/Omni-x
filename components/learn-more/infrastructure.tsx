@@ -45,7 +45,7 @@ export default function LearnMoreInfrastructure() {
                 a new paradigm that <span className='text-[#16FFC5]'>exponentially increases available liquidity</span> for artists and traders
               </span>
               <span className='text-xl italic text-secondary text-center'>
-                *fully multichain assets $USDC, $USDT, $ETH, and $OMNI powered by
+                *fully multichain assets $USDC, $USDT and $ETH powered by
               </span>
               <div>
                 <Image src={StargateLogo} className="mt-2" width={160} height={40} alt='layerzero logo' />
