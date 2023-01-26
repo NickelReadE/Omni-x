@@ -1,7 +1,7 @@
 import type {NextPage} from 'next'
 import {useRouter} from 'next/router'
 import {ethers} from 'ethers'
-import React, {useState, useEffect, useCallback} from 'react'
+import React, {useState, useEffect, useCallback, useMemo} from 'react'
 import {
   getAdvancedONFT721Instance,
   getCurrencyInstance,
@@ -52,11 +52,9 @@ const Mint: NextPage = () => {
   const [totalNFTCount, setTotalNFTCount] = useState<number>(0)
   const [isMinting, setIsMinting] = useState<boolean>(false)
   const [startId, setStartId] = useState(0)
-  const [totalCnt, setTotalCnt] = useState(0)
   const [selectedTab, setSelectedTab] = useState(0)
   const {gaslessMint, gaslessClaim, waitForRelayTask} = useGaslessMint()
   const [nextTokenId, setNextTokenId] = useState(0)
-  const [mintedCnt, setMintedCnt] = useState(0)
 
   const activeClasses = (index: number) => {
     return index === selectedTab ? 'bg-primary-gradient' : 'bg-secondary'
@@ -197,16 +195,18 @@ const Mint: NextPage = () => {
     })()
   }, [signer, collectionInfo, chainId, getInfo])
 
-  useEffect(() => {
+  const mintedCount = useMemo(() => {
     if (Number(nextTokenId) >= 0 && startId >= 0) {
-      setMintedCnt(Number(nextTokenId) - startId)
+      return Number(nextTokenId) - startId
     }
+    return 0
   }, [nextTokenId, startId])
 
-  useEffect(() => {
+  const totalCount = useMemo(() => {
     if (Number(totalNFTCount) >= 0 && startId >= 0) {
-      setTotalCnt(Number(totalNFTCount) - startId)
+      return Number(totalNFTCount) - startId
     }
+    return 0
   }, [totalNFTCount, startId])
 
   return (
@@ -310,7 +310,7 @@ const Mint: NextPage = () => {
                   {/*items*/}
                   <div className={'flex items-center space-x-3 mt-4'}>
                     <TextBody className={'text-secondary'}>items</TextBody>
-                    <TextBody className={'text-primary-light'}>{mintedCnt} / {totalCnt} minted</TextBody>
+                    <TextBody className={'text-primary-light'}>{mintedCount} / {totalCount} minted</TextBody>
                   </div>
 
                   {
