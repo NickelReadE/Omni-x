@@ -69,9 +69,9 @@ export const RPC_PROVIDERS: { [key: number]: string } = {
   [CHAIN_IDS[CHAIN_TYPE.FANTOM]]: 'https://rpcapi.fantom.network',
 
   // TESTNET RPC
-  [CHAIN_IDS[CHAIN_TYPE.GOERLI]]: 'https://nd-510-291-773.p2pify.com/195d63055d9fd514fdd2de06f2ac4ce1',
+  [CHAIN_IDS[CHAIN_TYPE.GOERLI]]: 'https://rpc.ankr.com/eth_goerli',
   [CHAIN_IDS[CHAIN_TYPE.BSC_TESTNET]]: 'https://nd-018-909-554.p2pify.com/3fc24d27a5441c18c45d56a82df3e515',
-  [CHAIN_IDS[CHAIN_TYPE.FUJI_TESTNET]]: 'https://nd-216-698-118.p2pify.com/90a04d7161f01ea02d399d52a4b6128a/ext/bc/C/rpc',
+  [CHAIN_IDS[CHAIN_TYPE.FUJI_TESTNET]]: 'https://rpc.ankr.com/avalanche-c',
   [CHAIN_IDS[CHAIN_TYPE.MUMBAI]]: 'https://nd-887-934-654.p2pify.com/4caff699e2f0daa9d3af087933e7e78e',
   [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: 'https://convincing-clean-reel.arbitrum-goerli.discover.quiknode.pro/a7679fef301ca865c612a70bf2c98bc17c37135f/',
   [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: 'https://rpc.ankr.com/optimism_testnet',

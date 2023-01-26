@@ -1,16 +1,14 @@
 import type {NextPage} from 'next'
 import {useRouter} from 'next/router'
 import {ethers} from 'ethers'
-import React, {useState, useEffect, useCallback} from 'react'
+import React, {useState, useEffect, useCallback, useMemo} from 'react'
 import {
   getAdvancedONFT721Instance,
   getCurrencyInstance,
   getGaslessClaimONFT721Instance,
   getGaslessONFT721Instance,
 } from '../../../utils/contracts'
-import {toast} from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import {Slide} from 'react-toastify'
+import {toast, Slide} from 'react-toastify'
 import useWallet from '../../../hooks/useWallet'
 import useCollection from '../../../hooks/useCollection'
 import {ExternalLink, TextBody, TextH2} from '../../../components/basic'
@@ -21,9 +19,9 @@ import DiscordIcon from '../../../public/images/icons/discord.svg'
 import {SkeletonCard} from '../../../components/skeleton/card'
 import {WhitelistCard} from '../../../components/launchpad/WhitelistCard'
 import {Logger} from 'ethers/lib/utils'
-import { isSupportGelato } from '../../../utils/constants'
-import { RelayTaskStatus, useGaslessMint } from '../../../hooks/useGelato'
-import { ContractType } from '../../../types/enum'
+import {isSupportGelato} from '../../../utils/constants'
+import {RelayTaskStatus, useGaslessMint} from '../../../hooks/useGelato'
+import {ContractType} from '../../../types/enum'
 import useData from '../../../hooks/useData'
 
 const errorToast = (error: string): void => {
@@ -43,27 +41,24 @@ const okToast = (success: string): void => {
 }
 
 const Mint: NextPage = () => {
-  const { chainId, signer, provider, address } = useWallet()
+  const {chainId, signer, provider, address} = useWallet()
   const router = useRouter()
   const col_url = router.query.collection as string
-  const { collectionInfo } = useCollection(col_url)
-  const { userNfts: nfts } = useData()
+  const {collectionInfo} = useCollection(col_url)
+  const {userNfts: nfts} = useData()
 
   const [totalNFTCount, setTotalNFTCount] = useState<number>(0)
   const [isMinting, setIsMinting] = useState<boolean>(false)
-  const [price, setPrice] = useState(0)
   const [startId, setStartId] = useState(0)
-  const [totalCnt, setTotalCnt] = useState(0)
   const [selectedTab, setSelectedTab] = useState(0)
-  const { gaslessMint, gaslessClaim, waitForRelayTask } = useGaslessMint()
+  const {gaslessMint, gaslessClaim, waitForRelayTask} = useGaslessMint()
   const [nextTokenId, setNextTokenId] = useState(0)
-  const [mintedCnt, setMintedCnt] = useState(0)
 
   const activeClasses = (index: number) => {
-    return index === selectedTab ? 'bg-primary-gradient': 'bg-secondary'
+    return index === selectedTab ? 'bg-primary-gradient' : 'bg-secondary'
   }
   const activeTextClasses = (index: number) => {
-    return index === selectedTab ? 'bg-primary-gradient bg-clip-text text-transparent': 'text-secondary'
+    return index === selectedTab ? 'bg-primary-gradient bg-clip-text text-transparent' : 'text-secondary'
   }
 
   const getInfo = useCallback(async (): Promise<void> => {
@@ -72,15 +67,6 @@ const Mint: NextPage = () => {
         const tokenContract = getAdvancedONFT721Instance(collectionInfo.address[chainId], (chainId), signer)
         setStartId(Number(collectionInfo.start_ids[chainId]))
 
-        let decimals = 18
-        if (collectionInfo.is_gasless) {
-          const tokenContract = getGaslessONFT721Instance(collectionInfo.address[chainId], chainId, signer)
-          const tokenAddress = await tokenContract.stableToken()
-          const tokenInstance = getCurrencyInstance(tokenAddress, chainId, signer)
-          decimals = Number(await tokenInstance?.decimals())
-        }
-        const priceT = await tokenContract.price()
-        setPrice(parseFloat(ethers.utils.formatUnits(priceT, decimals)))
         const max_mint = await tokenContract.maxMintId()
         const nextId = await tokenContract.nextMintId()
         setTotalNFTCount(max_mint.toNumber())
@@ -91,7 +77,7 @@ const Mint: NextPage = () => {
     }
   }, [chainId, collectionInfo, signer])
 
-  const mint = async (quantity: number): Promise<void> => {
+  const mint = async (price: string, quantity: number): Promise<void> => {
     if (chainId === undefined || !provider || !collectionInfo || !address) {
       return
     }
@@ -103,7 +89,7 @@ const Mint: NextPage = () => {
       case ContractType.ADVANCED_ONFT721:
       case ContractType.ADVANCED_ONFT721_ENUMERABLE: {
         const tokenContract = getAdvancedONFT721Instance(collectionInfo.address[chainId], chainId, signer)
-        tx = await tokenContract.publicMint(quantity, {value: ethers.utils.parseEther((price * quantity).toString())})
+        tx = await tokenContract.publicMint(quantity, {value: ethers.utils.parseEther((Number(price) * quantity).toString())})
         await tx.wait()
 
         break
@@ -117,7 +103,7 @@ const Mint: NextPage = () => {
           const decimals = Number(await currencyInstance.decimals())
           const currencyAllowance = await currencyInstance.allowance(address, tokenContract.address)
           if (currencyAllowance.lt(ethers.utils.parseUnits(price.toString(), decimals).mul(quantity))) {
-            await (await currencyInstance.approve(collectionInfo.address[chainId], ethers.utils.parseUnits((price * quantity).toString(), decimals))).wait()
+            await (await currencyInstance.approve(collectionInfo.address[chainId], ethers.utils.parseUnits(price.toString(), decimals).mul(quantity))).wait()
           }
 
           if (isSupportGelato(chainId)) {
@@ -125,8 +111,7 @@ const Mint: NextPage = () => {
             const status = await waitForRelayTask(response)
             if (status === RelayTaskStatus.Executed) {
               okToast('successfully gasless minted')
-            }
-            else {
+            } else {
               throw new Error('failed gasless minted')
             }
           } else {
@@ -174,15 +159,12 @@ const Mint: NextPage = () => {
         const status = await waitForRelayTask(response)
         if (status === RelayTaskStatus.Executed) {
           okToast('successfully claimed')
-        }
-        else {
+        } else {
           throw new Error('failed claim')
         }
-
         break
       }
       }
-
       await getInfo()
     } catch (e: any) {
       console.log(e)
@@ -211,16 +193,18 @@ const Mint: NextPage = () => {
     })()
   }, [signer, collectionInfo, chainId, getInfo])
 
-  useEffect(() => {
+  const mintedCount = useMemo(() => {
     if (Number(nextTokenId) >= 0 && startId >= 0) {
-      setMintedCnt(Number(nextTokenId) - startId)
+      return Number(nextTokenId) - startId
     }
+    return 0
   }, [nextTokenId, startId])
 
-  useEffect(() => {
+  const totalCount = useMemo(() => {
     if (Number(totalNFTCount) >= 0 && startId >= 0) {
-      setTotalCnt(Number(totalNFTCount) - startId)
+      return Number(totalNFTCount) - startId
     }
+    return 0
   }, [totalNFTCount, startId])
 
   return (
@@ -231,8 +215,11 @@ const Mint: NextPage = () => {
             <div className={'flex space-x-[64px]'}>
               <div className={'flex flex-1 justify-center mr-2'}>
                 <div className={'max-w-[600px]'}>
-                  <img className="w-[600px]" src={collectionInfo && collectionInfo.profile_image ? collectionInfo.profile_image : '/images/nft.png'}
-                    alt="nft-image"/>
+                  <img
+                    className="w-[600px]"
+                    src={collectionInfo && collectionInfo.profile_image ? collectionInfo.profile_image : '/images/nft.png'}
+                    alt="nft-image"
+                  />
 
                   <div className="mt-6">
                     <div className="text-xl font-medium text-center text-secondary">
@@ -270,12 +257,13 @@ const Mint: NextPage = () => {
                     <div className="py-4">
                       {
                         selectedTab === 0 &&
-                          <TextBody className="text-primary-light">{(collectionInfo && collectionInfo.description) ? collectionInfo.description : ''}</TextBody>
+                        <TextBody
+                          className="text-primary-light">{(collectionInfo && collectionInfo.description) ? collectionInfo.description : ''}</TextBody>
                       }
                       {
                         selectedTab === 1 &&
-                          <div className={''}>
-                          </div>
+                        <div className={''}>
+                        </div>
                       }
                     </div>
                   </div>
@@ -320,13 +308,14 @@ const Mint: NextPage = () => {
                   {/*items*/}
                   <div className={'flex items-center space-x-3 mt-4'}>
                     <TextBody className={'text-secondary'}>items</TextBody>
-                    <TextBody className={'text-primary-light'}>{mintedCnt} / {totalCnt} minted</TextBody>
+                    <TextBody className={'text-primary-light'}>{mintedCount} / {totalCount} minted</TextBody>
                   </div>
 
                   {
                     collectionInfo.whitelist_infos.map((whitelistInfo, index) => {
                       return (
-                        <WhitelistCard key={index} title={whitelistInfo.title} price={whitelistInfo.price} maxLimit={whitelistInfo.max_limit} limitPerWallet={whitelistInfo.limit_per_wallet} startTimestamp={whitelistInfo.start_timestamp} endTimestamp={whitelistInfo.end_timestamp} isMinting={isMinting} gasless={collectionInfo.is_gasless} mint={mint} />
+                        <WhitelistCard key={index} whitelist_info={whitelistInfo} isMinting={isMinting}
+                          gasless={collectionInfo.is_gasless} mint={mint}/>
                       )
                     })
                   }
@@ -334,7 +323,7 @@ const Mint: NextPage = () => {
               </div>
             </div>
             :
-            <SkeletonCard />
+            <SkeletonCard/>
         }
       </div>
     </>

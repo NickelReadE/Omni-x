@@ -1,10 +1,10 @@
-import useData from '../../hooks/useData'
+import useCollections from '../../hooks/useCollections'
 import CollectionCard from './CollectionCard'
 import {SkeletonCard} from '../skeleton/card'
 import {TextH2, TextSH2} from '../basic'
 
 export default function HomeCollections() {
-  const { isCollectionLoading, collections } = useData()
+  const { loading: isCollectionLoading, collections } = useCollections()
 
   return (
     <div className="mt-12">
