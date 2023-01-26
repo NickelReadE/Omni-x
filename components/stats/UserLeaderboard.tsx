@@ -4,6 +4,7 @@ import {LeaderboardData} from '../../types/stats'
 import {truncateAddress} from '../../utils/utils'
 import {formatDollarAmount} from '../../utils/numbers'
 import Pagination from '../Pagination'
+import Link from 'next/link'
 
 const S3_BUCKET_URL = process.env.S3_BUCKET_URL || ''
 
@@ -21,7 +22,7 @@ export const StatsUserLeaderboard = ({ leaderboard }: { leaderboard: Leaderboard
       365: 'rank_in_1yr',
     }
     return leaderboard.map((item: any) => {
-      let avatar = '/images/default_user.png'
+      let avatar = '/images/default_avatar.png'
       if (item.avatar && item.avatar.startsWith('https://ipfs.io')) {
         avatar = item.avatar
       } else if (item.avatar && item.avatar.startsWith('ipfs')) {
@@ -89,11 +90,13 @@ export const StatsUserLeaderboard = ({ leaderboard }: { leaderboard: Leaderboard
         mappedLeaderboard.map((user, index) => {
           return (
             <div key={index} className={'grid grid-cols-6 gap-4 w-full mt-8'}>
-              <div className={'col-span-2 flex items-center space-x-2'}>
-                <span className={'text-secondary text-[15px] leading-[18px] mr-2'}>{index + 1}</span>
-                <img src={user.avatar || '/images/default_user.png'} alt={'user'} width={36} height={36} className={'rounded-full h-9 w-9'} />
-                <TextH3 className={'text-primary-light'}>{truncateAddress(user.address)}</TextH3>
-              </div>
+              <Link href={`/user/${user.address}`}>
+                <div className={'col-span-2 flex items-center space-x-2 cursor-pointer'}>
+                  <span className={'text-secondary text-[15px] leading-[18px] mr-2'}>{index + 1}</span>
+                  <img src={user.avatar || '/images/default_avatar.png'} alt={'user'} width={36} height={36} className={'rounded-full h-9 w-9'} />
+                  <TextH3 className={'text-primary-light'}>{truncateAddress(user.address)}</TextH3>
+                </div>
+              </Link>
               <div className={'col-span-1 flex items-center'}>
                 <TextBodyemphasis className={'text-secondary'}>{formatDollarAmount(user.volume)}</TextBodyemphasis>
               </div>

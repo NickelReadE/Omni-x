@@ -402,7 +402,9 @@ export const supportChains = () => {
         network: chainInfo.shortName,
         nativeCurrency: chainInfo.nativeCurrency,
         rpcUrls: {
-          default: chainInfo.rpc.length > 0 ? chainInfo.rpc[0] : ''
+          default: {
+            http: [chainInfo.rpc.length > 0 ? chainInfo.rpc[0] : '']
+          }
         },
         blockExplorers: chainInfo.explorers?.length ? {
           default: {

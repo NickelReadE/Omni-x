@@ -8,9 +8,7 @@ import {
   getGaslessClaimONFT721Instance,
   getGaslessONFT721Instance,
 } from '../../../utils/contracts'
-import {toast} from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import {Slide} from 'react-toastify'
+import {toast, Slide} from 'react-toastify'
 import useWallet from '../../../hooks/useWallet'
 import useCollection from '../../../hooks/useCollection'
 import {ExternalLink, TextBody, TextH2} from '../../../components/basic'
