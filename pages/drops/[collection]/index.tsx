@@ -51,7 +51,6 @@ const Mint: NextPage = () => {
 
   const [totalNFTCount, setTotalNFTCount] = useState<number>(0)
   const [isMinting, setIsMinting] = useState<boolean>(false)
-  const [price, setPrice] = useState(0)
   const [startId, setStartId] = useState(0)
   const [totalCnt, setTotalCnt] = useState(0)
   const [selectedTab, setSelectedTab] = useState(0)
@@ -72,15 +71,6 @@ const Mint: NextPage = () => {
         const tokenContract = getAdvancedONFT721Instance(collectionInfo.address[chainId], (chainId), signer)
         setStartId(Number(collectionInfo.start_ids[chainId]))
 
-        let decimals = 18
-        if (collectionInfo.is_gasless) {
-          const tokenContract = getGaslessONFT721Instance(collectionInfo.address[chainId], chainId, signer)
-          const tokenAddress = await tokenContract.stableToken()
-          const tokenInstance = getCurrencyInstance(tokenAddress, chainId, signer)
-          decimals = Number(await tokenInstance?.decimals())
-        }
-        const priceT = await tokenContract.price()
-        setPrice(parseFloat(ethers.utils.formatUnits(priceT, decimals)))
         const max_mint = await tokenContract.maxMintId()
         const nextId = await tokenContract.nextMintId()
         setTotalNFTCount(max_mint.toNumber())
@@ -91,7 +81,7 @@ const Mint: NextPage = () => {
     }
   }, [chainId, collectionInfo, signer])
 
-  const mint = async (quantity: number): Promise<void> => {
+  const mint = async (price: string, quantity: number): Promise<void> => {
     if (chainId === undefined || !provider || !collectionInfo || !address) {
       return
     }
@@ -103,7 +93,7 @@ const Mint: NextPage = () => {
       case ContractType.ADVANCED_ONFT721:
       case ContractType.ADVANCED_ONFT721_ENUMERABLE: {
         const tokenContract = getAdvancedONFT721Instance(collectionInfo.address[chainId], chainId, signer)
-        tx = await tokenContract.publicMint(quantity, {value: ethers.utils.parseEther((price * quantity).toString())})
+        tx = await tokenContract.publicMint(quantity, {value: ethers.utils.parseEther((Number(price) * quantity).toString())})
         await tx.wait()
 
         break
@@ -117,7 +107,7 @@ const Mint: NextPage = () => {
           const decimals = Number(await currencyInstance.decimals())
           const currencyAllowance = await currencyInstance.allowance(address, tokenContract.address)
           if (currencyAllowance.lt(ethers.utils.parseUnits(price.toString(), decimals).mul(quantity))) {
-            await (await currencyInstance.approve(collectionInfo.address[chainId], ethers.utils.parseUnits((price * quantity).toString(), decimals))).wait()
+            await (await currencyInstance.approve(collectionInfo.address[chainId], ethers.utils.parseUnits(price.toString(), decimals).mul(quantity))).wait()
           }
 
           if (isSupportGelato(chainId)) {

@@ -12,7 +12,7 @@ interface IWhitelistCardProps {
     whitelist_info: MintingSchedule,
     gasless: boolean,
     isMinting: boolean,
-    mint: (quantity: number) => void
+    mint: (price: string, quantity: number) => void
 }
 
 export const WhitelistCard = ({ whitelist_info, gasless, isMinting, mint }: IWhitelistCardProps) => {
@@ -70,7 +70,7 @@ export const WhitelistCard = ({ whitelist_info, gasless, isMinting, mint }: IWhi
             {
               active
                 ?
-                <PrimaryButton text={(gasless && chainId && isSupportGelato(chainId)) ? 'gasless mint' : 'mint'} className={'px-6'} loading={isMinting} parentClassName={'h-[32px]'} onClick={() => mint(quantity)}/>
+                <PrimaryButton text={(gasless && chainId && isSupportGelato(chainId)) ? 'gasless mint' : 'mint'} className={'px-6'} loading={isMinting} parentClassName={'h-[32px]'} onClick={() => mint(whitelist_info.price.toString(), quantity)}/>
                 :
                 <GreyButton text={'mint'} className={'px-6 h-[32px]'} disabled={true} />
             }
