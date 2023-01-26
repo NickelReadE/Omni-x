@@ -17,7 +17,7 @@ class AppDocument extends Document {
       <Html className="h-full bg-primary dark">
         <Head>
           <meta name="description" content="Omni-X Marketplace" />
-          <link rel="icon" href="/favicon.png" />
+          <link rel="icon" href="/favicon.jpg" />
           <link
             href="https://fonts.googleapis.com/css?family=Inter:400,500,600,700|Inconsolata:400,600,700&display=swap"
             rel="stylesheet"
