@@ -21,9 +21,9 @@ import DiscordIcon from '../../../public/images/icons/discord.svg'
 import {SkeletonCard} from '../../../components/skeleton/card'
 import {WhitelistCard} from '../../../components/launchpad/WhitelistCard'
 import {Logger} from 'ethers/lib/utils'
-import { isSupportGelato } from '../../../utils/constants'
-import { RelayTaskStatus, useGaslessMint } from '../../../hooks/useGelato'
-import { ContractType } from '../../../types/enum'
+import {isSupportGelato} from '../../../utils/constants'
+import {RelayTaskStatus, useGaslessMint} from '../../../hooks/useGelato'
+import {ContractType} from '../../../types/enum'
 import useData from '../../../hooks/useData'
 
 const errorToast = (error: string): void => {
@@ -43,11 +43,11 @@ const okToast = (success: string): void => {
 }
 
 const Mint: NextPage = () => {
-  const { chainId, signer, provider, address } = useWallet()
+  const {chainId, signer, provider, address} = useWallet()
   const router = useRouter()
   const col_url = router.query.collection as string
-  const { collectionInfo } = useCollection(col_url)
-  const { userNfts: nfts } = useData()
+  const {collectionInfo} = useCollection(col_url)
+  const {userNfts: nfts} = useData()
 
   const [totalNFTCount, setTotalNFTCount] = useState<number>(0)
   const [isMinting, setIsMinting] = useState<boolean>(false)
@@ -55,15 +55,15 @@ const Mint: NextPage = () => {
   const [startId, setStartId] = useState(0)
   const [totalCnt, setTotalCnt] = useState(0)
   const [selectedTab, setSelectedTab] = useState(0)
-  const { gaslessMint, gaslessClaim, waitForRelayTask } = useGaslessMint()
+  const {gaslessMint, gaslessClaim, waitForRelayTask} = useGaslessMint()
   const [nextTokenId, setNextTokenId] = useState(0)
   const [mintedCnt, setMintedCnt] = useState(0)
 
   const activeClasses = (index: number) => {
-    return index === selectedTab ? 'bg-primary-gradient': 'bg-secondary'
+    return index === selectedTab ? 'bg-primary-gradient' : 'bg-secondary'
   }
   const activeTextClasses = (index: number) => {
-    return index === selectedTab ? 'bg-primary-gradient bg-clip-text text-transparent': 'text-secondary'
+    return index === selectedTab ? 'bg-primary-gradient bg-clip-text text-transparent' : 'text-secondary'
   }
 
   const getInfo = useCallback(async (): Promise<void> => {
@@ -125,8 +125,7 @@ const Mint: NextPage = () => {
             const status = await waitForRelayTask(response)
             if (status === RelayTaskStatus.Executed) {
               okToast('successfully gasless minted')
-            }
-            else {
+            } else {
               throw new Error('failed gasless minted')
             }
           } else {
@@ -174,15 +173,12 @@ const Mint: NextPage = () => {
         const status = await waitForRelayTask(response)
         if (status === RelayTaskStatus.Executed) {
           okToast('successfully claimed')
-        }
-        else {
+        } else {
           throw new Error('failed claim')
         }
-
         break
       }
       }
-
       await getInfo()
     } catch (e: any) {
       console.log(e)
@@ -231,8 +227,11 @@ const Mint: NextPage = () => {
             <div className={'flex space-x-[64px]'}>
               <div className={'flex flex-1 justify-center mr-2'}>
                 <div className={'max-w-[600px]'}>
-                  <img className="w-[600px]" src={collectionInfo && collectionInfo.profile_image ? collectionInfo.profile_image : '/images/nft.png'}
-                    alt="nft-image"/>
+                  <img
+                    className="w-[600px]"
+                    src={collectionInfo && collectionInfo.profile_image ? collectionInfo.profile_image : '/images/nft.png'}
+                    alt="nft-image"
+                  />
 
                   <div className="mt-6">
                     <div className="text-xl font-medium text-center text-secondary">
@@ -270,12 +269,13 @@ const Mint: NextPage = () => {
                     <div className="py-4">
                       {
                         selectedTab === 0 &&
-                          <TextBody className="text-primary-light">{(collectionInfo && collectionInfo.description) ? collectionInfo.description : ''}</TextBody>
+                        <TextBody
+                          className="text-primary-light">{(collectionInfo && collectionInfo.description) ? collectionInfo.description : ''}</TextBody>
                       }
                       {
                         selectedTab === 1 &&
-                          <div className={''}>
-                          </div>
+                        <div className={''}>
+                        </div>
                       }
                     </div>
                   </div>
@@ -326,7 +326,8 @@ const Mint: NextPage = () => {
                   {
                     collectionInfo.whitelist_infos.map((whitelistInfo, index) => {
                       return (
-                        <WhitelistCard key={index} title={whitelistInfo.title} price={whitelistInfo.price} maxLimit={whitelistInfo.max_limit} limitPerWallet={whitelistInfo.limit_per_wallet} startTimestamp={whitelistInfo.start_timestamp} endTimestamp={whitelistInfo.end_timestamp} isMinting={isMinting} gasless={collectionInfo.is_gasless} mint={mint} />
+                        <WhitelistCard key={index} whitelist_info={whitelistInfo} isMinting={isMinting}
+                          gasless={collectionInfo.is_gasless} mint={mint}/>
                       )
                     })
                   }
@@ -334,7 +335,7 @@ const Mint: NextPage = () => {
               </div>
             </div>
             :
-            <SkeletonCard />
+            <SkeletonCard/>
         }
       </div>
     </>
