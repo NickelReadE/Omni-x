@@ -13,6 +13,7 @@ import {getRoyalty} from '../../utils/helpers'
 import {formatDollarAmount} from '../../utils/numbers'
 // import {GreyButton} from '../common/buttons/GreyButton'
 import {FullCollectionType} from '../../types/collections'
+import { CopyAddressButton } from '../common/buttons/CopyAddressButton'
 
 interface CollectionBannerProps {
     collection: FullCollectionType,
@@ -64,15 +65,7 @@ export const CollectionBanner = ({ collection, setSelectedTabIndex }: Collection
               <TextH2 className={'text-primary-light'}>{collection.name}</TextH2>
               <div className={'flex space-x-4'}>
                 <TextBody className={'text-primary-light'}>by {collection.name}</TextBody>
-                <div className={'flex items-center space-x-2 bg-[#202020] py-1 px-2 rounded-[12px]'}>
-                  <TextBody
-                    className={'text-[#4D94FF] leading-[16px]'}>{collectionAddress ? truncateAddress(collectionAddress) : ''}</TextBody>
-                  <img
-                    src={'/images/icons/copy.svg'}
-                    alt={'copy'}
-                    className={'cursor-pointer'}
-                    onClick={() => navigator.clipboard.writeText(collectionAddress)}/>
-                </div>
+                <CopyAddressButton address={collectionAddress ? collectionAddress : ''} />
                 <div className={'w-5 h-5'}>
                   <ExternalLink link={collection.website}>
                     <WebsiteIcon/>

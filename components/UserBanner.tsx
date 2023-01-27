@@ -6,11 +6,11 @@ import Image from 'next/image'
 import useWallet from '../hooks/useWallet'
 import classNames from '../helpers/classNames'
 import { ProfileData } from '../hooks/useProfile'
-import { truncateAddress } from '../utils/utils'
 // import {ExternalLink, TextBody, TextBodyemphasis, TextH3} from './basic'
 import {ExternalLink, TextBody, TextH3} from './basic'
 import UserEdit from './user/UserEdit'
 import {formatAmount} from '../utils/numbers'
+import { CopyAddressButton } from './common/buttons/CopyAddressButton'
 
 type UserBannerProps = {
     user: ProfileData,
@@ -77,10 +77,8 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
             <div className={'flex flex-col justify-between h-full'}>
               <div className={'flex space-x-2'}>
                 <TextH3 className={'text-primary-light'}>{user.username || 'username'}</TextH3>
-                <div className={'flex items-center space-x-2 bg-[#202020] py-1 px-2 rounded-[12px]'}>
-                  <TextBody className={'text-[#4D94FF] leading-[16px]'}>{user && user.address ? truncateAddress(user.address) : truncateAddress(address || '')}</TextBody>
-                  <img src={'/images/icons/copy.svg'} alt={'copy'} className={'cursor-pointer'} onClick={() => navigator.clipboard.writeText(user.address)} />
-                </div>
+                {/* why are there 2 addresses here? is it not enough just passing user.address??*/}
+                <CopyAddressButton address={user && user.address ? user.address : (address || '')} />
               </div>
 
               <div className={'flex items-center space-x-3 mt-1'}>
