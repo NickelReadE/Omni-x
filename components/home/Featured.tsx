@@ -8,9 +8,9 @@ import Link from 'next/link'
 const FeaturedCard = ({ collection }: { collection: BaseCollectionType }) => {
   return (
     <Link href={'/collections/' + collection.col_url}>
-      <div className={'relative bg-[#00807D] rounded-[12px] aspect-[3/2] h-[300px] cursor-pointer'}>
-        <div className={'flex items-center justify-center bg-frame-gradient rounded-[12px] w-full h-full'}>
-          <img src={collection.featured_image} alt={'featured'} className={'w-full h-full object-cover'} />
+      <div className={'relative bg-[#00807D] rounded-[12px] aspect-[3/2] h-[300px] cursor-pointer m-7'}>
+        <div className={'flex items-center justify-center bg-frame-gradient rounded-[12px] w-full h-full hover:shadow-[0_0_30px_#FFE817]'}>
+          <img src={collection.featured_image} alt={'featured'} className={'w-full h-full object-contain'} />
         </div>
         <div className={'flex justify-between items-center absolute bottom-0 left-0 w-full h-[60px] px-4'}>
           <TextH3 className={'text-white'}>{collection.name}</TextH3>
