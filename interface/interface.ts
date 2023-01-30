@@ -94,7 +94,7 @@ export interface IAcceptOrderRequest {
 
 export interface ITypeNFT{
   typeNFT:string,
-  items:string,
+  items:number,
   col_url:string,
   name:string,
   img:string,

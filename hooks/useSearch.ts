@@ -10,7 +10,7 @@ type CollectionResult = {
       usd: number,
       omni: number
     },
-    itemsCnt: number,
+    items_count: number,
     col_url: string,
 }
 

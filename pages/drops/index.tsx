@@ -73,7 +73,7 @@ const Launchpad: NextPage = () => {
                     return <NftForLaunch
                       key={index}
                       typeNFT={collection.mint_status}
-                      items={collection.itemsCnt}
+                      items={collection.items_count}
                       col_url={collection.col_url}
                       name={collection.name}
                       img={collection.profile_image}
@@ -97,7 +97,7 @@ const Launchpad: NextPage = () => {
                     return <NftForLaunch
                       key={index}
                       typeNFT={collection.mint_status}
-                      items={collection.itemsCnt}
+                      items={collection.items_count}
                       col_url={collection.col_url}
                       name={collection.name}
                       img={collection.profile_image}

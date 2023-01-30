@@ -17,9 +17,9 @@ export type TopCollection = BaseCollectionType &{
 
 export type FullCollectionType = BaseCollectionType & {
   address: any,
-  itemsCnt: number,
-  ownerCnt: number,
-  orderCnt: number,
+  items_count: number,
+  owner_count: number,
+  listed_count: number,
   total_volume: number,
   discord: string,
   twitter: string,
@@ -62,7 +62,7 @@ export type LaunchPadType = BaseCollectionType & {
   totalCnt: string,
   price: string,
   description: string,
-  itemsCnt: string,
+  items_count: number,
   whitelist_infos: MintingSchedule[],
   mint_start_timestamp: number,
   mint_end_timestamp: number

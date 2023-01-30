@@ -7,13 +7,6 @@ const createOrder = async (data: MakerOrderWithSignature) => {
   return res.data.data
 }
 
-const getOrders = async (request: IGetOrderRequest) => {
-  const res = await API.get('orders', {
-    params: request
-  })
-  return res.data
-}
-
 const acceptOrder = async (request: IAcceptOrderRequest) => {
   const res = await API.post('orders/changeOrderStatus', {
     params: request
@@ -23,6 +16,5 @@ const acceptOrder = async (request: IAcceptOrderRequest) => {
 
 export const orderService = {
   createOrder,
-  getOrders,
   acceptOrder
 }

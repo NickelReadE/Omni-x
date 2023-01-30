@@ -122,11 +122,11 @@ export const CollectionBanner = ({ collection, setSelectedTabIndex }: Collection
           <div className={'flex items-center space-x-6 mt-4'}>
             <div className={'flex flex-col items-center space-y-2'}>
               <span className={'text-md text-secondary'}>items</span>
-              <span className={'text-xg text-primary-light'}>{collection.itemsCnt}</span>
+              <span className={'text-xg text-primary-light'}>{collection.items_count}</span>
             </div>
             <div className={'md:flex flex-col items-center space-y-2 hidden'}>
               <span className={'text-md text-secondary'}>owners</span>
-              <span className={'text-xg text-primary-light'}>{collection.ownerCnt}</span>
+              <span className={'text-xg text-primary-light'}>{collection.owner_count}</span>
             </div>
             <div className={'lg:flex flex-col items-center space-y-2 hidden'}>
               <span className={'text-md text-secondary'}>creator&nbsp;fee</span>
@@ -142,7 +142,7 @@ export const CollectionBanner = ({ collection, setSelectedTabIndex }: Collection
             </div>
             <div className={'2xl:flex flex-col items-center space-y-2 hidden'}>
               <span className={'text-md text-secondary'}>listed</span>
-              <span className={'text-xg text-primary-light'}>{collection.orderCnt}</span>
+              <span className={'text-xg text-primary-light'}>{collection.listed_count}</span>
             </div>
           </div>
         </div>
