@@ -92,15 +92,6 @@ export interface IAcceptOrderRequest {
   status: OrderStatus
 }
 
-export interface ITypeNFT{
-  typeNFT:string,
-  items:number,
-  col_url:string,
-  name:string,
-  img:string,
-  price:string
-}
-
 export interface IListingData {
   price: number,
   currencyName: string,

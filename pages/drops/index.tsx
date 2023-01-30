@@ -1,7 +1,7 @@
 import React from 'react'
 import type {NextPage} from 'next'
 import Router from 'next/router'
-import NftForLaunch from '../../components/drops/NftForLaunch'
+import DropCard from '../../components/drops/DropCard'
 import useLaunchPad from '../../hooks/useLaunchPad'
 import {FeaturedCard} from '../../components/drops/FeaturedCard'
 import {SkeletonCard} from '../../components/common/skeleton/Card'
@@ -70,14 +70,9 @@ const Launchpad: NextPage = () => {
               <div className="flex flex-wrap space-x-12">
                 {
                   collectionsForComing.map((collection: LaunchPadType, index: any) => {
-                    return <NftForLaunch
+                    return <DropCard
                       key={index}
-                      typeNFT={collection.mint_status}
-                      items={collection.items_count}
-                      col_url={collection.col_url}
-                      name={collection.name}
-                      img={collection.profile_image}
-                      price={collection.price}
+                      collection={collection}
                     />
                   })
                 }
@@ -91,17 +86,12 @@ const Launchpad: NextPage = () => {
               <TextH2 className="text-primary-light">
                 Past Drops
               </TextH2>
-              <div className="flex flex-wrap space-x-12">
+              <div className="flex flex-wrap mt-6 space-x-12">
                 {
                   collectionsForPast.map((collection: LaunchPadType, index: any) => {
-                    return <NftForLaunch
+                    return <DropCard
                       key={index}
-                      typeNFT={collection.mint_status}
-                      items={collection.items_count}
-                      col_url={collection.col_url}
-                      name={collection.name}
-                      img={collection.profile_image}
-                      price={collection.price}
+                      collection={collection}
                     />
                   })
                 }
