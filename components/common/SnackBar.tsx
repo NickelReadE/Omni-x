@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Snackbar from '@material-ui/core/Snackbar'
 import { useSelector, useDispatch } from 'react-redux'
-import { selectSnackState, selectSnackMessage, closeSnackBar, selectSnackStatus } from '../redux/reducers/snackBarReducer'
+import { selectSnackState, selectSnackMessage, closeSnackBar, selectSnackStatus } from '../../redux/reducers/snackBarReducer'
 import MuiAlert from '@material-ui/lab/Alert'
 
 const Alert = (props: any) => {

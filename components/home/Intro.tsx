@@ -1,7 +1,7 @@
 import React from 'react'
 import Router from 'next/router'
 import {PrimaryButton} from '../common/buttons/PrimaryButton'
-import {TextH1, TextSH2} from '../basic'
+import {TextH1, TextSH2} from '../common/Basic'
 
 export default function HomeIntro () {
   return (

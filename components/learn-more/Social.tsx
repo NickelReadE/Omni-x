@@ -1,4 +1,4 @@
-import { IntroCard } from './intro'
+import { IntroCard } from './Intro'
 import CommunityLogo from '../../public/images/learn-more/community.png'
 import Image from 'next/image'
 

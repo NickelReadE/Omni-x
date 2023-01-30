@@ -1,6 +1,6 @@
 import {useState} from 'react'
 import {twMerge} from 'tailwind-merge'
-import {SpinLoader} from '../../basic'
+import {SpinLoader} from '../Basic'
 
 interface IPrimaryButtonProps {
     text: string,

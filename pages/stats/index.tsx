@@ -1,6 +1,6 @@
 import {NextPage} from 'next'
 import {useEffect, useState} from 'react'
-import {TextH2, TextH3} from '../../components/basic'
+import {TextH2, TextH3} from '../../components/common/Basic'
 import {StatsUserLeaderboard} from '../../components/stats/UserLeaderboard'
 import {LeaderboardData} from '../../types/stats'
 import {statsService} from '../../services/statsService'

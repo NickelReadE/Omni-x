@@ -1,10 +1,10 @@
 import React from 'react'
 import type { NextPage } from 'next'
-import LearnMoreIntro from '../components/learn-more/intro'
-import LearnMoreInfrastructure from '../components/learn-more/infrastructure'
-import LearnMoreSocial from '../components/learn-more/social'
-import LearnMoreLaunchWithUs from '../components/learn-more/launchWithUs'
-import LearnMorePartners from '../components/learn-more/partners'
+import LearnMoreIntro from '../components/learn-more/Intro'
+import LearnMoreInfrastructure from '../components/learn-more/Infrastructure'
+import LearnMoreSocial from '../components/learn-more/Social'
+import LearnMoreLaunchWithUs from '../components/learn-more/LaunchWithUs'
+import LearnMorePartners from '../components/learn-more/Partners'
 
 const LearnMore: NextPage = () => {
 

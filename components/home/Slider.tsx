@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
 import Autoplay from 'embla-carousel-autoplay'
-import { DotButton } from './carouselButtons'
-import HomeIntro from './intro'
+import { DotButton } from './CarouselButtons'
+import HomeIntro from './Intro'
 import useData from '../../hooks/useData'
 
 export default function HomeSlider() {

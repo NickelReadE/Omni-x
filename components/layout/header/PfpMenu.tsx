@@ -11,7 +11,7 @@ import DropdownArrowUp from '../../../public/images/icons/dropdown_arrow_up.svg'
 import {getChainInfo, getChainLogoById, numberLocalize} from '../../../utils/constants'
 import {useBalance} from 'wagmi'
 import useData from '../../../hooks/useData'
-import {GradientBackground, Tooltip} from '../../basic'
+import {GradientBackground, Tooltip} from '../../common/Basic'
 import UserEdit from '../../user/UserEdit'
 
 interface IPfpMenuPros {

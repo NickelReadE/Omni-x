@@ -3,7 +3,7 @@ import type { NextPage } from 'next'
 import {GreyButton} from '../components/common/buttons/GreyButton'
 import {PrimaryButton} from '../components/common/buttons/PrimaryButton'
 import {SecondaryButton} from '../components/common/buttons/SecondaryButton'
-import {GradientBackground} from '../components/basic'
+import {GradientBackground} from '../components/common/Basic'
 // import CollectionCard from '../components/home/CollectionCard'
 // import NFTBox from '../components/collections/NFTBox'
 //

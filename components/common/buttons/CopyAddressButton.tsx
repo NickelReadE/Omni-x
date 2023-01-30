@@ -1,4 +1,4 @@
-import { TextBody } from '../../basic'
+import { TextBody } from '../Basic'
 import { toast, Slide } from 'react-toastify'
 import { truncateAddress } from '../../../utils/utils'
 

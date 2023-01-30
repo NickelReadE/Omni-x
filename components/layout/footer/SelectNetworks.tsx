@@ -5,7 +5,7 @@ import {
   getChainLogoById,
   getChainOfficialNameById,
 } from '../../../utils/constants'
-import {GradientBackground} from '../../basic'
+import {GradientBackground} from '../../common/Basic'
 
 export const SelectNetworks = ({ gasSupportChainIds, updateGasChainId }: {gasSupportChainIds: number[], updateGasChainId: (chainId: number) => void }) => {
 

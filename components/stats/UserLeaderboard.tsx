@@ -1,9 +1,9 @@
 import {useMemo, useState} from 'react'
-import {TextBodyemphasis, TextH2, TextH3} from '../basic'
+import {TextBodyemphasis, TextH2, TextH3} from '../common/Basic'
 import {LeaderboardData} from '../../types/stats'
 import {truncateAddress} from '../../utils/utils'
 import {formatDollarAmount} from '../../utils/numbers'
-import Pagination from '../Pagination'
+import Pagination from '../common/Pagination'
 import Link from 'next/link'
 
 const S3_BUCKET_URL = process.env.S3_BUCKET_URL || ''

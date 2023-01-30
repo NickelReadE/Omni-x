@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import React from 'react'
-import LoadingImage from '../public/images/loading_f.gif'
+import LoadingImage from '../../public/images/loading_f.gif'
 
 const Loading = () => {
   return (

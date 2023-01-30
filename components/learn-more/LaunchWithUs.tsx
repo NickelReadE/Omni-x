@@ -1,4 +1,4 @@
-import {IntroCard} from './intro'
+import {IntroCard} from './Intro'
 import Image from 'next/image'
 import {PrimaryButton} from '../common/buttons/PrimaryButton'
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import {TextH3, TextSH2} from '../basic'
+import {TextH3, TextSH2} from '../common/Basic'
 import {formatDollarAmount} from '../../utils/numbers'
 import { collectionsService } from '../../services/collections'
 import {BaseCollectionType} from '../../types/collections'

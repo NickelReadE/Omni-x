@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSwitchNetwork } from 'wagmi'
-import { SwitchedNetworkContext } from '../contexts/network'
-import useWallet from '../hooks/useWallet'
+import { SwitchedNetworkContext } from '../../contexts/network'
+import useWallet from '../../hooks/useWallet'
 
 type SwitchedNetworkProviderProps = {
   children?: React.ReactNode

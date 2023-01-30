@@ -3,7 +3,7 @@ import {Transition} from '@headlessui/react'
 import {useSwitchNetwork} from 'wagmi'
 import {getChainLogoById, getChainOfficialNameById, SUPPORTED_CHAIN_IDS} from '../../../utils/constants'
 import useWallet from '../../../hooks/useWallet'
-import {GradientBackground, TextBodyemphasis} from '../../basic'
+import {GradientBackground, TextBodyemphasis} from '../../common/Basic'
 import Image from 'next/image'
 
 export const SelectNetworks = () => {

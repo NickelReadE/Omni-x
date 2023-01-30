@@ -5,7 +5,7 @@ import {Transition} from '@headlessui/react'
 import HomeLogo from '../../../public/images/icons/home_logo.svg'
 import ProcessingTransaction from '../../transaction/ProcessingTransaction'
 import useProgress from '../../../hooks/useProgress'
-import {GradientBackground} from '../../basic'
+import {GradientBackground} from '../../common/Basic'
 
 export const TransactionTracker = () => {
   const { histories, pending, clearHistories } = useProgress()

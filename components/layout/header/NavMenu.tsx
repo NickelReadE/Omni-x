@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useMemo } from 'react'
-import {TextH3} from '../../basic'
+import {TextH3} from '../../common/Basic'
 
 export default function NavMenu() {
   const router = useRouter()

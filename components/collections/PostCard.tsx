@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import {TextBody, TextBodyemphasis, TextH3, TextSubtext} from '../basic'
+import {TextBody, TextBodyemphasis, TextH3, TextSubtext} from '../common/Basic'
 
 export const CollectionPostCard = () => {
   return (

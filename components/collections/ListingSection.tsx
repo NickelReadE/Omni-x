@@ -3,7 +3,7 @@
 import React, {useEffect, useMemo} from 'react'
 import { getValidCurrencies, PERIOD_LIST } from '../../utils/constants'
 import { SaleType } from '../../types/enum'
-import Dropdown from '../dropdown'
+import Dropdown from '../common/Dropdown'
 
 interface IListingSectionProps {
   sellType?: SaleType,

@@ -7,7 +7,7 @@ import useWallet from '../../hooks/useWallet'
 import {ModalIDs} from '../../contexts/modal'
 import {useModal} from '../../hooks/useModal'
 import useData from '../../hooks/useData'
-import {TextBodyemphasis, TextH3} from '../basic'
+import {TextBodyemphasis, TextH3} from '../common/Basic'
 import {formatDollarAmount} from '../../utils/numbers'
 import {FullCollectionType} from '../../types/collections'
 

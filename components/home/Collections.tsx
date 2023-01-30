@@ -1,7 +1,7 @@
 import useCollections from '../../hooks/useCollections'
 import CollectionCard from './CollectionCard'
-import {SkeletonCard} from '../skeleton/card'
-import {TextH2, TextSH2} from '../basic'
+import {SkeletonCard} from '../common/skeleton/Card'
+import {TextH2, TextSH2} from '../common/Basic'
 
 export default function HomeCollections() {
   const { loading: isCollectionLoading, collections } = useCollections()

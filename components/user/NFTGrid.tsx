@@ -1,11 +1,11 @@
 import {useEffect, useState} from 'react'
-import NFTBox from './collections/NFTBox'
-import {IPropsImage, NFTItem} from '../interface/interface'
-import useData from '../hooks/useData'
-import Loading from './Loading'
-import Dropdown from './dropdown'
-import {ChainSelection} from './common/ChainSelection'
-import {SUPPORTED_CHAIN_IDS} from '../utils/constants'
+import NFTBox from '../collections/NFTBox'
+import {IPropsImage, NFTItem} from '../../interface/interface'
+import useData from '../../hooks/useData'
+import Loading from '../common/Loading'
+import Dropdown from '../common/Dropdown'
+import {ChainSelection} from '../common/ChainSelection'
+import {SUPPORTED_CHAIN_IDS} from '../../utils/constants'
 
 const sortMenu = [
   { text: 'A - Z', value: 'name' },

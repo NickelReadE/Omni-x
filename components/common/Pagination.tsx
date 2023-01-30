@@ -1,5 +1,5 @@
 import React from 'react'
-import {TextBodyemphasis} from './basic'
+import {TextBodyemphasis} from './Basic'
 
 function Pagination({ totalItems, itemsPerPage, currentPage, setCurrentPage }: { totalItems: number, itemsPerPage: number, currentPage: number, setCurrentPage: (page: number) => void }) {
   const updateCurrentPage = (page: number) => {

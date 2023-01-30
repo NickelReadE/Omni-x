@@ -1,5 +1,5 @@
 import React from 'react'
-import {ITypeNFT} from '../interface/interface'
+import {ITypeNFT} from '../../interface/interface'
 import Link from 'next/link'
 
 const NftForLaunch = ({ items, img, name, col_url, price }: ITypeNFT) => {

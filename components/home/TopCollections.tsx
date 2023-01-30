@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react'
 import Link from 'next/link'
-import {TextBody, TextBodyemphasis, TextH2, TextH3} from '../basic'
+import {TextBody, TextBodyemphasis, TextH2, TextH3} from '../common/Basic'
 import {ChainSelection} from '../common/ChainSelection'
 import {SUPPORTED_CHAIN_IDS} from '../../utils/constants'
 import {collectionsService} from '../../services/collections'

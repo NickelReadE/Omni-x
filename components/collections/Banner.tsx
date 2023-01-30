@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useState} from 'react'
 import Image from 'next/image'
 import useWallet from '../../hooks/useWallet'
-import {ExternalLink, TextBody, TextBodyemphasis, TextH2} from '../basic'
+import {ExternalLink, TextBody, TextBodyemphasis, TextH2} from '../common/Basic'
 // import {PrimaryButton} from '../common/buttons/PrimaryButton'
 import WebsiteIcon from '../../public/images/icons/website.svg'
 import TwitterIcon from '../../public/images/icons/twitter.svg'

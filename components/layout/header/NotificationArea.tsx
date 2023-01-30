@@ -1,7 +1,7 @@
 import React, {Fragment, useState} from 'react'
 import {Transition} from '@headlessui/react'
 import Image from 'next/image'
-import {GradientBackground} from '../../basic'
+import {GradientBackground} from '../../common/Basic'
 
 export const NotificationArea = () => {
   const [hovered, setHovered] = useState(false)

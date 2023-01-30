@@ -5,7 +5,7 @@ import {ChainIds} from '../../types/enum'
 import {PrimaryButton} from '../common/buttons/PrimaryButton'
 import useWallet from '../../hooks/useWallet'
 import {GreyButton} from '../common/buttons/GreyButton'
-import {TextBodyemphasis, TextH2, TextSubtext} from '../basic'
+import {TextBodyemphasis, TextH2, TextSubtext} from '../common/Basic'
 import {MintingSchedule} from '../../types/collections'
 
 interface IWhitelistCardProps {

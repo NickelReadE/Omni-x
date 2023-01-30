@@ -2,7 +2,7 @@ import Image from 'next/image'
 import InfrastructureImage1 from '../../public/images/learn-more/infrastructure_1.png'
 import LayerzeroLogo from '../../public/images/learn-more/layerzero_logo.png'
 import StargateLogo from '../../public/images/learn-more/stargate_logo.png'
-import { IntroCard } from './intro'
+import { IntroCard } from './Intro'
 
 export default function LearnMoreInfrastructure() {
   return (

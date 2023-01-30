@@ -1,6 +1,6 @@
 import {NextPage} from 'next'
 import Image from 'next/image'
-import {TextBodyemphasis, TextH2} from '../../../components/basic'
+import {TextBodyemphasis, TextH2} from '../../../components/common/Basic'
 import {PrimaryButton} from '../../../components/common/buttons/PrimaryButton'
 
 const Tag = ({active, label}: {active: boolean, label: string}) => {

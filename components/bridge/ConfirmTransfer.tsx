@@ -6,7 +6,7 @@ import {BigNumber, ethers} from 'ethers'
 import { Dialog } from '@headlessui/react'
 import {NFTItem} from '../../interface/interface'
 import SpinLoader from '../collections/SpinLoader'
-import {SpinLoader as PrimarySpinLoader} from '../basic'
+import {SpinLoader as PrimarySpinLoader} from '../common/Basic'
 import {
   chainInfos,
   CHAIN_IDS,
@@ -28,7 +28,7 @@ import {
 } from '../../utils/contracts'
 import {PendingTxType} from '../../contexts/contract'
 import {SecondaryButton} from '../common/buttons/SecondaryButton'
-import Dropdown from '../dropdown'
+import Dropdown from '../common/Dropdown'
 
 export enum ConfirmTransferStatus {
   APPROVING,

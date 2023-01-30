@@ -1,6 +1,6 @@
 import React, {useMemo} from 'react'
 import Link from 'next/link'
-import {TextBody, TextH3, TextSH2} from '../basic'
+import {TextBody, TextH3, TextSH2} from '../common/Basic'
 import {LaunchPadType} from '../../types/collections'
 
 export const FeaturedCard = ({collection}: { collection: LaunchPadType }) => {
