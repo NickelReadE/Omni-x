@@ -21,9 +21,7 @@ const Launchpad: NextPage = () => {
             the best place to launch your next NFT collection
           </TextSH2>
           <div className={'flex items-center space-x-4 mt-4'}>
-            <PrimaryButton text={'learn more'} background={'bg-primary'} onClick={() => {
-              Router.push('/learn-more')
-            }} />
+            <PrimaryButton text={'learn more'} background={'bg-primary'} onClick={() => Router.push('/learn-more')} />
             <a
               href={'https://docs.google.com/forms/d/e/1FAIpQLSf6VCJyF1uf9SZ9BJwbGuP7bMla7JzOXMg6ctXN6SlSgNgFlw/viewform?usp=pp_url'} target={'_blank'} rel="noreferrer">
               <div className={'flex items-center justify-center bg-primary-gradient rounded-full py-2 px-4 hover:shadow-[0_0_6px_rgba(0,240,236,1)]'}>
@@ -70,10 +68,7 @@ const Launchpad: NextPage = () => {
               <div className="flex flex-wrap space-x-12">
                 {
                   collectionsForComing.map((collection: LaunchPadType, index: any) => {
-                    return <DropCard
-                      key={index}
-                      collection={collection}
-                    />
+                    return <FeaturedCard key={index} collection={collection}/>
                   })
                 }
               </div>
