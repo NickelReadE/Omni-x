@@ -1,7 +1,7 @@
 import API from './api'
 
 const updateProfile = async (profile: FormData) => {
-  const res = await API.post('users/profile', profile)
+  const res = await API.post('users/update-profile', profile)
   return res.data
 }
 
@@ -33,7 +33,7 @@ const getActivity = async (address: string) => {
 }
 
 const getUserNonce = async (address: string) => {
-  const res = await API.get(`users/getUserNonce/${address.toLowerCase()}`)
+  const res = await API.get(`users/get-nonce/${address.toLowerCase()}`)
   return res.data
 }
 

@@ -18,7 +18,7 @@ const updateCollectionNFTSalePrice = async (col_url: string, token_id: number, p
     token_id,
     price
   }
-  return await API.post('collections/nfts/updateSalePrice', option)
+  return await API.post('collections/nfts/update-sale-price', option)
 }
 
 const updateCollectionNFTChainID = async (col_url: string, token_id: number, chain_id: number) => {
@@ -27,16 +27,7 @@ const updateCollectionNFTChainID = async (col_url: string, token_id: number, cha
     token_id,
     chain_id
   }
-  return await API.post('collections/nfts/updateChainID', option)
-}
-
-const getCollectionAllNFTs = async (col_url: string, sort: string, searchObj: any) => {
-  const option = {
-    col_url,
-    sort,
-    searchObj
-  }
-  return await API.post('collections/allNfts', option)
+  return await API.post('collections/nfts/update-chain-id', option)
 }
 
 const getFeaturedCollections = async () => {
@@ -79,7 +70,6 @@ export const collectionsService = {
   getCollections,
   getCollectionsWithoutMetadata,
   refreshMetadata,
-  getCollectionAllNFTs,
   updateCollectionNFTSalePrice,
   updateCollectionNFTChainID,
   getFeaturedCollections,
