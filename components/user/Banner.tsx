@@ -40,7 +40,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
 
   const avatarImage = useMemo(() => {
     if (user && user.avatar) {
-      if (user.avatar.startsWith('https://ipfs.io')) {
+      if (user.avatar.startsWith('https://')) {
         return user.avatar
       }
       if (user.avatar.startsWith('ipfs')) {
