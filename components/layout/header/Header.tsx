@@ -26,7 +26,7 @@ const Header = (): JSX.Element => {
 
   const avatarImage = useMemo(() => {
     if (profile && profile.avatar) {
-      if (profile.avatar.startsWith('https://ipfs.io')) {
+      if (profile.avatar.startsWith('https://')) {
         return profile.avatar
       }
       if (profile.avatar.startsWith('ipfs')) {

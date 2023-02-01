@@ -23,7 +23,7 @@ export const StatsUserLeaderboard = ({ leaderboard }: { leaderboard: Leaderboard
     }
     return leaderboard.map((item: any) => {
       let avatar = '/images/default_avatar.png'
-      if (item.avatar && item.avatar.startsWith('https://ipfs.io')) {
+      if (item.avatar && item.avatar.startsWith('https://')) {
         avatar = item.avatar
       } else if (item.avatar && item.avatar.startsWith('ipfs')) {
         avatar = `https://ipfs.io/${item.avatar}`
