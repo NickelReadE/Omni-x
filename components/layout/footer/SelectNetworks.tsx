@@ -37,20 +37,22 @@ export const SelectNetworks = ({ gasSupportChainIds, updateGasChainId }: {gasSup
               <div
                 className={'absolute bottom-10 left-[-12px] w-[166px] origin-bottom-left rounded-md'}>
                 <GradientBackground className="shadow-[0_0px_20px_rgba(231,237,245,0.25)]">
-                  <Menu.Items className="focus:outline-none py-1">
-                    {
-                      GAS_SUPPORTED_CHAIN_IDS.map((chainId, index) => {
-                        return (
-                          <Menu.Item key={index} as={Fragment}>
-                            <div className={`py-2 px-6 flex items-center cursor-pointer ${gasSupportChainIds.includes(chainId) ? '' : 'bg-[#303030]'}`} onClick={() => updateGasChainId(chainId)}>
-                              <img alt={'chainIcon'} src={getChainLogoById(chainId.toString())}/>
-                              <span className={'text-primary-light text-lg pl-4'}>{getChainOfficialNameById(chainId)}</span>
-                            </div>
-                          </Menu.Item>
-                        )
-                      })
-                    }
-                  </Menu.Items>
+                  <div className={'rounded-[8px] mx-[1px] p-[1px]'}>
+                    <Menu.Items className="focus:outline-none py-1">
+                      {
+                        GAS_SUPPORTED_CHAIN_IDS.map((chainId, index) => {
+                          return (
+                            <Menu.Item key={index} as={Fragment}>
+                              <div className={`py-2 px-6 flex items-center cursor-pointer ${gasSupportChainIds.includes(chainId) ? '' : 'bg-[#303030]'}`} onClick={() => updateGasChainId(chainId)}>
+                                <img alt={'chainIcon'} src={getChainLogoById(chainId.toString())}/>
+                                <span className={'text-primary-light text-lg pl-4'}>{getChainOfficialNameById(chainId)}</span>
+                              </div>
+                            </Menu.Item>
+                          )
+                        })
+                      }
+                    </Menu.Items>
+                  </div>
                 </GradientBackground>
               </div>
             </Transition>

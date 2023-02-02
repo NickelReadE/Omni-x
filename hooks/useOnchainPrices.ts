@@ -20,7 +20,7 @@ const useOnchainPrices = (): OnChainInformation => {
   const [chainInfos, setChainInfos] = useState<any[]>([])
 
   const getOnchainInfos = async () => {
-    const _gasSupportChainIds = JSON.parse(localStorage.getItem('gasSupportChainIds') || '[]')
+    const _gasSupportChainIds = JSON.parse(localStorage.getItem('gasSupportChainIds') || JSON.stringify(gasSupportChainIds))
     const _assetsPrices = await getPriceFeeddata()
     const _gasPrices = await getGasOnChains(_gasSupportChainIds)
     const _chainInfos = _gasSupportChainIds.map((chainId: number) => {
