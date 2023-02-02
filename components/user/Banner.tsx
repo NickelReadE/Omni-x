@@ -11,6 +11,7 @@ import {ExternalLink, TextBody, TextH3} from '../common/Basic'
 import UserEdit from './UserEdit'
 import {formatAmount} from '../../utils/numbers'
 import { CopyAddressButton } from '../common/buttons/CopyAddressButton'
+import {getImageProperLink} from '../../utils/helpers'
 
 type UserBannerProps = {
     user: ProfileData,
@@ -40,13 +41,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
 
   const avatarImage = useMemo(() => {
     if (user && user.avatar) {
-      if (user.avatar.startsWith('https://')) {
-        return user.avatar
-      }
-      if (user.avatar.startsWith('ipfs')) {
-        return `https://ipfs.io/${user.avatar}`
-      }
-      return S3_BUCKET_URL + user.avatar
+      return getImageProperLink(user.avatar)
     }
     return '/images/default_avatar.png'
   }, [user])

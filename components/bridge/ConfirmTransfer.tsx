@@ -93,13 +93,11 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
 
   useEffect(() => {
     (async () => {
-      console.log(targetChainId)
       if (targetChainId === 0) return
       if (senderChainId === targetChainId) return
       if (senderChainId !== nft.chain_id) return
       setEstimatingGasFee(true)
       try {
-        console.log(nft)
         const isONFTCore = await validateONFT(nft)
         setIsONFTCore(isONFTCore)
         let gasFee
@@ -108,7 +106,6 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
         } else {
           gasFee = await estimateGasFee(nft, senderChainId, targetChainId)
         }
-        console.log(gasFee)
         setEstimatedFee(gasFee)
       } catch (e) {
         console.error(e)

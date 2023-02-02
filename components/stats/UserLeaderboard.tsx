@@ -5,6 +5,7 @@ import {truncateAddress} from '../../utils/utils'
 import {formatDollarAmount} from '../../utils/numbers'
 import Pagination from '../common/Pagination'
 import Link from 'next/link'
+import {getImageProperLink} from '../../utils/helpers'
 
 const S3_BUCKET_URL = process.env.S3_BUCKET_URL || ''
 
@@ -23,12 +24,8 @@ export const StatsUserLeaderboard = ({ leaderboard }: { leaderboard: Leaderboard
     }
     return leaderboard.map((item: any) => {
       let avatar = '/images/default_avatar.png'
-      if (item.avatar && item.avatar.startsWith('https://')) {
-        avatar = item.avatar
-      } else if (item.avatar && item.avatar.startsWith('ipfs')) {
-        avatar = `https://ipfs.io/${item.avatar}`
-      } else if (item.avatar && item.avatar.startsWith('upload')) {
-        avatar = S3_BUCKET_URL + item.avatar
+      if (item.avatar && item.avatar) {
+        avatar = getImageProperLink(item.avatar)
       }
       return {
         ...item,

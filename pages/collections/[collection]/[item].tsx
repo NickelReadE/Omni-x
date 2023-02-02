@@ -23,6 +23,7 @@ import BridgeIcon from '../../../public/images/icons/bluegreen_linear.svg'
 import Accordion from '../../../components/collections/Accordion'
 import {PrimaryButton} from '../../../components/common/buttons/PrimaryButton'
 import {GreyButton} from '../../../components/common/buttons/GreyButton'
+import {getImageProperLink} from '../../../utils/helpers'
 
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
@@ -103,7 +104,7 @@ const Item: NextPage = () => {
 
   const nftImage = useMemo(() => {
     if (currentNFT && currentNFT.image) {
-      return currentNFT.image
+      return getImageProperLink(currentNFT.image)
     }
     return '/images/omnix_logo_black_1.png'
   }, [currentNFT])

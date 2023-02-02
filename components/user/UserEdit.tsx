@@ -18,6 +18,7 @@ import OmniIMG from '../../public/images/currency/omni.svg'
 import UsdcIMG from '../../public/images/currency/usdc.svg'
 import UsdtIMG from '../../public/images/currency/usdt.svg'
 import useData from '../../hooks/useData'
+import {getImageProperLink} from '../../utils/helpers'
 
 interface IUserEditProps {
   updateModal: (arg: string) => void
@@ -53,14 +54,10 @@ const UserEdit: FC<IUserEditProps> = ({ updateModal }) => {
   useEffect(() => {
     if (profile) {
       if (profile.avatar) {
-        if (profile.avatar.startsWith('https://')) {
-          setAvatar(profile.avatar)
-        } else {
-          setAvatar(S3_BUCKET_URL + profile.avatar)
-        }
+        setAvatar(getImageProperLink(profile.avatar))
       }
       if (profile.banner) {
-        setBanner(S3_BUCKET_URL + profile.banner)
+        setBanner(getImageProperLink(profile.banner))
       }
       setUserName(profile.username)
       setTwitter(profile.twitter)
