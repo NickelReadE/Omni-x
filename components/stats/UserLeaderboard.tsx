@@ -1,13 +1,11 @@
 import {useMemo, useState} from 'react'
+import Link from 'next/link'
 import {TextBodyemphasis, TextH2, TextH3} from '../common/Basic'
 import {LeaderboardData} from '../../types/stats'
 import {truncateAddress} from '../../utils/utils'
 import {formatDollarAmount} from '../../utils/numbers'
 import Pagination from '../common/Pagination'
-import Link from 'next/link'
 import {getImageProperLink} from '../../utils/helpers'
-
-const S3_BUCKET_URL = process.env.S3_BUCKET_URL || ''
 
 export const StatsUserLeaderboard = ({ leaderboard }: { leaderboard: LeaderboardData[] }) => {
   const [dayRange, setDayRange] = useState(1)

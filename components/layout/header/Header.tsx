@@ -7,12 +7,8 @@ import useWallet from '../../../hooks/useWallet'
 import classNames from '../../../helpers/classNames'
 import {SelectNetworks} from './SelectNetworks'
 import {PfpMenu} from './PfpMenu'
-// import {NotificationArea} from './NotificationArea'
 import {TransactionTracker} from './TransactionTracker'
 import {getImageProperLink} from '../../../utils/helpers'
-// import {MessageArea} from './MessageArea'
-
-const S3_BUCKET_URL = process.env.S3_BUCKET_URL || ''
 
 const Header = (): JSX.Element => {
   const { address } = useWallet()

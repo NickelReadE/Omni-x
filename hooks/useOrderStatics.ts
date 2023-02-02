@@ -25,9 +25,9 @@ const useOrderStatics = ({
     const bidDatas = []
     const bidOrderDatas: any[] = []
 
-    if (nft && nft.bidDatas && nft.bidOrderData) {
-      bidDatas.push(...nft.bidDatas)
-      bidOrderDatas.push(...nft.bidOrderData)
+    if (nft && nft.bid_datas && nft.bid_order_data) {
+      bidDatas.push(...nft.bid_datas)
+      bidOrderDatas.push(...nft.bid_order_data)
     }
 
     if (collection && collection.bid_datas && collection.bid_orders) {
@@ -77,7 +77,7 @@ const useOrderStatics = ({
     sortedBids,
     highestBid,
     highestBidCoin,
-    lastSale: nft?.last_sale || 0,
+    lastSale: nft?.last_sale_price || 0,
     lastSaleCoin
   }
 }

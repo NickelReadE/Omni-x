@@ -271,6 +271,7 @@ const Item: NextPage = () => {
                       openModal(ModalIDs.MODAL_BID, {
                         nftImage: currentNFT.image,
                         nftTitle: currentNFT.name,
+                        nftTokenId: currentNFT.token_id,
                         tradingInput,
                         handleBidDlgClose: closeModal
                       })
@@ -279,6 +280,7 @@ const Item: NextPage = () => {
                       openModal(ModalIDs.MODAL_BUY, {
                         nftImage: currentNFT.image,
                         nftTitle: currentNFT.name,
+                        nftTokenId: currentNFT.token_id,
                         order,
                         tradingInput,
                         handleBuyDlgClose: closeModal

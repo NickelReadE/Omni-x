@@ -32,8 +32,8 @@ export interface NFTItem {
   collection_address: string,
   currency: string,
   order_data: any,
-  bidDatas: any[],
-  bidOrderData: any[],
+  bid_datas: any[],
+  bid_order_data: any[],
 }
 
 export interface IGetOrderRequest {
