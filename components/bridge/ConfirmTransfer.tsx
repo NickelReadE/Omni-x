@@ -45,12 +45,15 @@ interface IConfirmTransferProps {
   updateModal: (status: boolean) => void,
 }
 
-const networkList = SUPPORTED_CHAIN_IDS.map((chainId: number) => {
+const networkList = [{
+  text: 'Select a network',
+  value: 0
+}].concat(SUPPORTED_CHAIN_IDS.map((chainId: number) => {
   return {
     text: CHAIN_NAMES[chainId],
     value: chainId
   }
-})
+}))
 
 const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
   nft,
@@ -90,11 +93,13 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
 
   useEffect(() => {
     (async () => {
+      console.log(targetChainId)
       if (targetChainId === 0) return
       if (senderChainId === targetChainId) return
       if (senderChainId !== nft.chain_id) return
       setEstimatingGasFee(true)
       try {
+        console.log(nft)
         const isONFTCore = await validateONFT(nft)
         setIsONFTCore(isONFTCore)
         let gasFee
@@ -103,6 +108,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
         } else {
           gasFee = await estimateGasFee(nft, senderChainId, targetChainId)
         }
+        console.log(gasFee)
         setEstimatedFee(gasFee)
       } catch (e) {
         console.error(e)
@@ -126,7 +132,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
     try {
       if (isONFTCore) {
         if (nft.contract_type === 'ERC721') {
-          const onftCoreInstance = getONFTCore721Instance(nft.token_address, chainId, signer)
+          const onftCoreInstance = getONFTCore721Instance(nft.collection_address, chainId, signer)
           const remoteAddresses = await onftCoreInstance.getTrustedRemote(lzTargetChainId)
           const targetONFTCoreAddress = decodeFromBytes(remoteAddresses)
           const tx = await onftCoreInstance.sendFrom(
@@ -158,7 +164,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
           await tx.wait()
           setStatus(ConfirmTransferStatus.DONE)
         } else if (nft.contract_type === 'ERC1155') {
-          const onft1155CoreInstance = getONFTCore1155Instance(nft.token_address, chainId, signer)
+          const onft1155CoreInstance = getONFTCore1155Instance(nft.collection_address, chainId, signer)
           const remoteAddresses = await onft1155CoreInstance.getTrustedRemote(lzTargetChainId)
           const targetONFT1155CoreAddress = decodeFromBytes(remoteAddresses)
           const blockNumber = await targetProvider.getBlockNumber()
@@ -195,9 +201,9 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
       } else {
         if (nft.contract_type === 'ERC721') {
           const contractInstance = getOmnixBridgeInstance(chainId, signer)
-          const erc721Instance = getERC721Instance(nft.token_address, 0, signer)
+          const erc721Instance = getERC721Instance(nft.collection_address, 0, signer)
           const noSignerOmniXInstance = getOmnixBridgeInstance(targetChainId, null)
-          const dstAddress = await noSignerOmniXInstance.persistentAddresses(nft.token_address)
+          const dstAddress = await noSignerOmniXInstance.persistentAddresses(nft.collection_address)
           const blockNumber = await targetProvider.getBlockNumber()
 
           let adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 3500000])
@@ -213,7 +219,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
           }
 
           setStatus(ConfirmTransferStatus.TRANSFERRING)
-          const tx = await contractInstance.wrap(lzTargetChainId, nft.token_address, BigNumber.from(nft.token_id), adapterParams, {
+          const tx = await contractInstance.wrap(lzTargetChainId, nft.collection_address, BigNumber.from(nft.token_id), adapterParams, {
             value: estimatedFee
           })
           const pendingTx: PendingTxType = {
@@ -235,8 +241,8 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
         } else if (nft.contract_type === 'ERC1155') {
           const contractInstance = getOmnixBridge1155Instance(chainId, signer)
           const noSignerOmniX1155Instance = getOmnixBridge1155Instance(targetChainId, null)
-          const erc1155Instance = getERC1155Instance(nft.token_address, 0, signer)
-          const dstAddress = await noSignerOmniX1155Instance.persistentAddresses(nft.token_address)
+          const erc1155Instance = getERC1155Instance(nft.collection_address, 0, signer)
+          const dstAddress = await noSignerOmniX1155Instance.persistentAddresses(nft.collection_address)
           const blockNumber = await targetProvider.getBlockNumber()
 
           let adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 3500000])
@@ -254,12 +260,12 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
           const _tokenURI = await erc1155Instance.uri(nft.token_id)
           const _payload = ethers.utils.defaultAbiCoder.encode(
             ['address', 'address', 'string', 'uint256', 'uint256'],
-            [nft.token_address, _signerAddress, _tokenURI, nft.token_id, nft.amount]
+            [nft.collection_address, _signerAddress, _tokenURI, nft.token_id, nft.amount]
           )
           const estimatedFee = await lzEndpointInstance.estimateFees(lzTargetChainId, contractInstance.address, _payload, false, adapterParams)
 
           setStatus(ConfirmTransferStatus.TRANSFERRING)
-          const tx = await contractInstance.wrap(lzTargetChainId, nft.token_address, BigNumber.from(nft.token_id), BigNumber.from(nft.amount), adapterParams, {
+          const tx = await contractInstance.wrap(lzTargetChainId, nft.collection_address, BigNumber.from(nft.token_id), BigNumber.from(nft.amount), adapterParams, {
             value: estimatedFee.nativeFee
           })
           const pendingTx: PendingTxType = {

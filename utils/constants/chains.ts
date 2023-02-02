@@ -268,10 +268,6 @@ export const chain_list: { [key: string]: number } = {
   'moonbeam-testnet': 1287,
 }
 
-export const getChainIdFromName = (name: string): number => {
-  return chain_list[name]
-}
-
 export const supportChainIDs = [5, 80001, 43113, 421613, 420, 4002, 97, 1287]
 
 export const chain_list_: { [key: number]: string } = {

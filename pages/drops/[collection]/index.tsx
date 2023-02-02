@@ -126,7 +126,7 @@ const Mint: NextPage = () => {
         const tokenContract = getGaslessClaimONFT721Instance(collectionInfo.address[chainId], chainId, signer)
         const isClaimable = await tokenContract._claimable()
         const claimableCollectionAddress = await tokenContract._claimableCollection()
-        const holdTokens = nfts.filter(nft => nft.token_address === claimableCollectionAddress && nft.chain_id === chainId)
+        const holdTokens = nfts.filter(nft => nft.collection_address === claimableCollectionAddress && nft.chain_id === chainId)
 
         if (!isClaimable || !isSupportGelato(chainId)) {
           throw new Error('not support claim')
