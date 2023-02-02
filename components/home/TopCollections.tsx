@@ -1,11 +1,15 @@
-import {useEffect, useState} from 'react'
+import {useEffect, useMemo, useState} from 'react'
 import Link from 'next/link'
 import {TextBody, TextBodyemphasis, TextH2, TextH3} from '../common/Basic'
 import {collectionsService} from '../../services/collections'
 import {formatDollarAmount} from '../../utils/numbers'
 import {TopCollection} from '../../types/collections'
 
-const CollectionRow = ({ collection }: { collection: TopCollection }) => {
+const CollectionRow = ({ collection, ethPrice }: { collection: TopCollection, ethPrice: number }) => {
+  const floor_price = useMemo(() => {
+    return Math.min(collection.floor_prices.ethereum * ethPrice, collection.floor_prices.stable)
+  }, [collection, ethPrice])
+
   return (
     <div className={'grid grid-cols-5 gap-x-12 h-[64px] flex items-center mt-4'}>
       <Link href={'/collections/' + collection.col_url}>
@@ -19,12 +23,12 @@ const CollectionRow = ({ collection }: { collection: TopCollection }) => {
       </Link>
       <TextBody className={'col-span-1 text-white text-center'}>{formatDollarAmount(Number(collection.total_volume))}</TextBody>
       <TextBody className={'col-span-1 text-transparent bg-primary-gradient bg-clip-text'}>{collection.change}%</TextBody>
-      <TextBody className={'col-span-1 text-secondary text-center'}>{formatDollarAmount(collection.floor_price)}</TextBody>
+      <TextBody className={'col-span-1 text-secondary text-center'}>{formatDollarAmount(floor_price)}</TextBody>
     </div>
   )
 }
 
-export const HomeTopCollections = () => {
+export const HomeTopCollections = ({ ethPrice }: {ethPrice: number}) => {
   const [collections, setCollections] = useState<TopCollection[]>([])
   const [dayRange, setDayRange] = useState(1)
 
@@ -84,7 +88,7 @@ export const HomeTopCollections = () => {
           </div>
           {
             collections.filter((item, index) => index % 2 === 0).map((collection, index) => {
-              return <CollectionRow key={index} collection={collection} />
+              return <CollectionRow key={index} collection={collection} ethPrice={ethPrice} />
             })
           }
         </div>
@@ -104,7 +108,7 @@ export const HomeTopCollections = () => {
           </div>
           {
             collections.filter((item, index) => index % 2 === 1).map((collection, index) => {
-              return <CollectionRow key={index} collection={collection} />
+              return <CollectionRow key={index} collection={collection} ethPrice={ethPrice} />
             })
           }
         </div>

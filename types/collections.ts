@@ -1,12 +1,17 @@
 import {IOrder} from '../interface/interface'
 
+type CollectionPrice = {
+  ethereum: number
+  stable: number
+}
+
 export type BaseCollectionType = {
   name: string,
   col_url: string,
   featured_image: string,
   profile_image: string,
-  floor_price: number,
-  ceil_price: number,
+  floor_prices: CollectionPrice,
+  ceil_prices: CollectionPrice,
 }
 
 export type TopCollection = BaseCollectionType &{
