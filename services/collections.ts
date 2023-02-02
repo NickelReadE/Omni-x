@@ -57,7 +57,7 @@ const getCollectionsWithoutMetadata = async () => {
 }
 
 const refreshMetadata = async (col_url: string, token_id: string) => {
-  return await API.post('collections/refresh_metadata', {
+  return await API.post('collections/refresh-metadata', {
     col_url,
     token_id,
   })

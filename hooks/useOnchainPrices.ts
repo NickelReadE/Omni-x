@@ -21,7 +21,7 @@ const useOnchainPrices = (): OnChainInformation => {
 
   const getOnchainInfos = async () => {
     const _gasSupportChainIds = JSON.parse(localStorage.getItem('gasSupportChainIds') || '[]')
-    const _assetsPrices = await getPriceFeeddata(_gasSupportChainIds)
+    const _assetsPrices = await getPriceFeeddata()
     const _gasPrices = await getGasOnChains(_gasSupportChainIds)
     const _chainInfos = _gasSupportChainIds.map((chainId: number) => {
       return {
@@ -50,7 +50,7 @@ const useOnchainPrices = (): OnChainInformation => {
   useEffect(() => {
     const interval = setInterval(async () => {
       await getOnchainInfos()
-    }, 30000)
+    }, 50000)
     getOnchainInfos().then(r => r)
     return () => clearInterval(interval)
   }, [])

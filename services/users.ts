@@ -33,8 +33,8 @@ const getActivity = async (address: string) => {
 }
 
 const getUserNonce = async (address: string) => {
-  const res = await API.get(`users/get-nonce/${address.toLowerCase()}`)
-  return res.data
+  const { data } = await API.get(`users/get-nonce/${address.toLowerCase()}`)
+  return data.nonce
 }
 
 export const userService = {

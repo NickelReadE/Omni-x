@@ -53,7 +53,7 @@ const UserEdit: FC<IUserEditProps> = ({ updateModal }) => {
   useEffect(() => {
     if (profile) {
       if (profile.avatar) {
-        if (profile.avatar.startsWith('https://ipfs.io')) {
+        if (profile.avatar.startsWith('https://')) {
           setAvatar(profile.avatar)
         } else {
           setAvatar(S3_BUCKET_URL + profile.avatar)
@@ -65,7 +65,7 @@ const UserEdit: FC<IUserEditProps> = ({ updateModal }) => {
       setUserName(profile.username)
       setTwitter(profile.twitter)
       setWebsite(profile.website)
-      setWebsite(profile.instagram)
+      setInstagram(profile.instagram)
     }
   }, [profile])
 
