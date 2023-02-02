@@ -1,8 +1,6 @@
 import {useEffect, useState} from 'react'
 import Link from 'next/link'
 import {TextBody, TextBodyemphasis, TextH2, TextH3} from '../common/Basic'
-import {ChainSelection} from '../common/ChainSelection'
-import {SUPPORTED_CHAIN_IDS} from '../../utils/constants'
 import {collectionsService} from '../../services/collections'
 import {formatDollarAmount} from '../../utils/numbers'
 import {TopCollection} from '../../types/collections'
@@ -27,13 +25,12 @@ const CollectionRow = ({ collection }: { collection: TopCollection }) => {
 }
 
 export const HomeTopCollections = () => {
-  const [selectedChainIds, setSelectedChainIds] = useState<number[]>([5])
   const [collections, setCollections] = useState<TopCollection[]>([])
   const [dayRange, setDayRange] = useState(1)
 
   useEffect(() => {
     (async () => {
-      const _collections = await collectionsService.getTopCollections(selectedChainIds, dayRange)
+      const _collections = await collectionsService.getTopCollections(dayRange)
       setCollections(_collections.data.map((item: any, index: number) => {
         return {
           ...item,
@@ -41,26 +38,13 @@ export const HomeTopCollections = () => {
         }
       }))
     })()
-  }, [selectedChainIds, dayRange])
-
-  const addSelectedChainId = (chainId: number) => {
-    setSelectedChainIds([...selectedChainIds, chainId])
-  }
-
-  const addAllChainIds = () => {
-    setSelectedChainIds(SUPPORTED_CHAIN_IDS)
-  }
-
-  const removeSelectedChainId = (chainId: number) => {
-    setSelectedChainIds(selectedChainIds.filter((id) => id !== chainId))
-  }
+  }, [dayRange])
 
   return (
     <div className={'mt-12'}>
       <div className={'flex items-center justify-between'}>
         <div className={'flex items-center space-x-8'}>
           <TextH2 className={'text-white'}>Top Collections</TextH2>
-          <ChainSelection selectedChainIds={selectedChainIds} addChainId={addSelectedChainId} removeChainId={removeSelectedChainId} addAllChainIds={addAllChainIds} setChainId={(chainId) => setSelectedChainIds([chainId])} />
         </div>
         <div className={'bg-[#202020] rounded-[8px] h-[38px] flex items-center'}>
           <div className={`${dayRange === 1 ? 'bg-[#303030]' : ''} flex rounded-tl-[8px] rounded-bl-[8px] items-center justify-center py-2 px-4 cursor-pointer`} onClick={() => setDayRange(1)}>
