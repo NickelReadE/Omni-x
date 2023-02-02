@@ -33,9 +33,8 @@ const updateCollectionNFTChainID = async (col_url: string, token_id: number, cha
 const getFeaturedCollections = async () => {
   return await API.get('collections/featured')
 }
-const getTopCollections = async (selectedChainIds: number[], dayRange: number) => {
+const getTopCollections = async (dayRange: number) => {
   return await API.post('collections/top', {
-    chainIds: selectedChainIds,
     dayRange,
   })
 }
