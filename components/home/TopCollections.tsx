@@ -7,6 +7,12 @@ import {TopCollection} from '../../types/collections'
 
 const CollectionRow = ({ collection, ethPrice }: { collection: TopCollection, ethPrice: number }) => {
   const floor_price = useMemo(() => {
+    if (collection.floor_prices.ethereum === 0) {
+      return collection.floor_prices.stable
+    }
+    if (collection.floor_prices.stable === 0) {
+      return collection.floor_prices.ethereum * ethPrice
+    }
     return Math.min(collection.floor_prices.ethereum * ethPrice, collection.floor_prices.stable)
   }, [collection, ethPrice])
 

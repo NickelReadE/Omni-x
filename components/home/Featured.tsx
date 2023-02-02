@@ -7,10 +7,22 @@ import {BaseCollectionType} from '../../types/collections'
 
 const FeaturedCard = ({ collection, ethPrice }: { collection: BaseCollectionType, ethPrice: number }) => {
   const floor_price = useMemo(() => {
+    if (collection.floor_prices.ethereum === 0) {
+      return collection.floor_prices.stable
+    }
+    if (collection.floor_prices.stable === 0) {
+      return collection.floor_prices.ethereum * ethPrice
+    }
     return Math.min(collection.floor_prices.ethereum * ethPrice, collection.floor_prices.stable)
   }, [collection, ethPrice])
 
   const ceil_price = useMemo(() => {
+    if (collection.ceil_prices.ethereum === 0) {
+      return collection.ceil_prices.stable
+    }
+    if (collection.ceil_prices.stable === 0) {
+      return collection.ceil_prices.ethereum * ethPrice
+    }
     return Math.max(collection.ceil_prices.ethereum * ethPrice, collection.ceil_prices.stable)
   }, [collection, ethPrice])
 

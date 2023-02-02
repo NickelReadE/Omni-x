@@ -65,13 +65,24 @@ const CollectionCard = ({ collection, ethPrice }: { collection: FullCollectionTy
   }
 
   const floor_price = useMemo(() => {
+    if (collection.floor_prices.ethereum === 0) {
+      return collection.floor_prices.stable
+    }
+    if (collection.floor_prices.stable === 0) {
+      return collection.floor_prices.ethereum * ethPrice
+    }
     return Math.min(collection.floor_prices.ethereum * ethPrice, collection.floor_prices.stable)
   }, [collection, ethPrice])
 
   const ceil_price = useMemo(() => {
+    if (collection.ceil_prices.ethereum === 0) {
+      return collection.ceil_prices.stable
+    }
+    if (collection.ceil_prices.stable === 0) {
+      return collection.ceil_prices.ethereum * ethPrice
+    }
     return Math.max(collection.ceil_prices.ethereum * ethPrice, collection.ceil_prices.stable)
   }, [collection, ethPrice])
-
   return (
     <div
       className={classNames('relative bg-[#202020] rounded-lg hover:shadow-[0_0_12px_rgba(160,179,204,0.3)] max-w-[340px]')}
