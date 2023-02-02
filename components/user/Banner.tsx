@@ -100,10 +100,6 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
               {/* <div className={'bg-primary-gradient py-2 px-4 flex items-center justify-center rounded-full cursor-pointer'}>
                 <TextBodyemphasis className={'text-primary'}>following</TextBodyemphasis>
               </div> */}
-              {/*{
-                user.address === address &&
-                <GreyButton text={'settings'} className={'py-2 px-4'} onClick={() => setSettingModal(true)} />
-              }*/}
               {/* <div className={'w-11 h-11'}>
                 <Image src={'/images/icons/chat.svg'} alt={'chat'} width={44} height={44} />
               </div> */}
@@ -115,6 +111,11 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
               <div className={'w-8 h-8'}>
                 <ExternalLink link={user.twitter}>
                   <Image src={'/images/icons/twitter.svg'} alt={'website'} width={32} height={32} />
+                </ExternalLink>
+              </div>
+              <div className={'w-8 h-8'}>
+                <ExternalLink link={user.instagram}>
+                  <Image src={'/images/icons/instagram.svg'} alt={'instagram'} width={32} height={32} />
                 </ExternalLink>
               </div>
             </div>
