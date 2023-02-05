@@ -39,7 +39,7 @@ const CollectionCard = ({ collection, ethPrice }: { collection: FullCollectionTy
       nftTitle: nft.name,
       nftTokenId: nft.token_id,
       collectionName: collection.name,
-      order: nft.order_data,
+      order: nft.order,
       tradingInput,
       instantBuy: true,
       handleBuyDlgClose: closeModal

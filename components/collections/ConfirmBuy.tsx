@@ -91,7 +91,7 @@ const ConfirmBuy: React.FC<IConfirmBuyProps> = ({
       setStep(BuyStep.StepConfirm)
     } else if (buyStep === BuyStep.StepConfirm && onBuyConfirm) {
       const tx = await onBuyConfirm(order)
-      
+
       if (tx) {
         setTradingTx(tx.hash)
         await tx.wait()

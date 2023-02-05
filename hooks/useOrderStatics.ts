@@ -72,7 +72,7 @@ const useOrderStatics = ({
 
   const isListed = (!!nft?.price && nft.price > 0)
   return {
-    order: nft?.order_data,
+    order: nft?.order,
     isListed,
     sortedBids,
     highestBid,

@@ -31,7 +31,7 @@ export interface NFTItem {
   owner: string,
   collection_address: string,
   currency: string,
-  order_data: any,
+  order: any,
   bid_datas: any[],
   bid_order_data: any[],
 }

@@ -54,7 +54,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     }
   }, [nft_collection])
 
-  const order = nft.order_data
+  const order = nft.order
 
   const {
     isListed,
