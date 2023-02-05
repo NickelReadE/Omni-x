@@ -67,6 +67,37 @@
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "collection",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "royaltyRecipient",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "RoyaltyPaymentETH",
+    "type": "event"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -124,6 +155,11 @@
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "royaltyInfo",
+        "type": "bytes"
       }
     ],
     "name": "getFeesAndFunds",
@@ -218,6 +254,68 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "proxyDataId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint8",
+        "name": "resp",
+        "type": "uint8"
+      }
+    ],
+    "name": "processFunds",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "royaltyInfo",
+        "type": "bytes"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address[2]",
+        "name": "operators",
+        "type": "address[2]"
+      },
+      {
+        "internalType": "address[3]",
+        "name": "addresses",
+        "type": "address[3]"
+      },
+      {
+        "internalType": "uint16[2]",
+        "name": "chainIds",
+        "type": "uint16[2]"
+      }
+    ],
+    "name": "proxyTransfer",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "renounceOwnership",
     "outputs": [],
@@ -246,6 +344,24 @@
       }
     ],
     "name": "setOmnixExchange",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint16",
+        "name": "chainId",
+        "type": "uint16"
+      },
+      {
+        "internalType": "address",
+        "name": "_remoteAddress",
+        "type": "address"
+      }
+    ],
+    "name": "setTrustedRemoteAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -288,11 +404,6 @@
         "type": "uint256"
       },
       {
-        "internalType": "uint256",
-        "name": "minPercentageToAsk",
-        "type": "uint256"
-      },
-      {
         "internalType": "uint16",
         "name": "fromChainId",
         "type": "uint16"
@@ -301,6 +412,11 @@
         "internalType": "uint16",
         "name": "toChainId",
         "type": "uint16"
+      },
+      {
+        "internalType": "bytes",
+        "name": "royaltyInfo",
+        "type": "bytes"
       }
     ],
     "name": "transferFeesAndFunds",
@@ -327,17 +443,17 @@
       },
       {
         "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
         "name": "to",
         "type": "address"
       },
       {
         "internalType": "uint256",
         "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "minPercentageToAsk",
         "type": "uint256"
       },
       {
@@ -349,11 +465,16 @@
         "internalType": "uint16",
         "name": "toChainId",
         "type": "uint16"
+      },
+      {
+        "internalType": "bytes",
+        "name": "royaltyInfo",
+        "type": "bytes"
       }
     ],
     "name": "transferFeesAndFundsWithWETH",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
