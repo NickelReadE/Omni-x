@@ -122,9 +122,9 @@ const ConfirmBuy: React.FC<IConfirmBuyProps> = ({
     })
   }, [buyStep, order, setStep])
 
-  const currencyName = getCurrencyNameAddress(order?.currencyAddress) as ContractName
+  const currencyName = getCurrencyNameAddress(order?.currency) as ContractName
   const newCurrencyName = validateCurrencyName(currencyName, chainId || 0)
-  const formattedPrice = formatCurrency(order?.price || 0, order?.chain_id || 0, getCurrencyNameAddress(order?.currencyAddress))
+  const formattedPrice = formatCurrency(order?.price || 0, order?.chain_id || 0, getCurrencyNameAddress(order?.currency))
 
   return (
     <Dialog open={true} onClose={onClose} aria-labelledby="form-dialog-title" classes={{paper: classes.dlgWidth}}>
