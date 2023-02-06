@@ -67,6 +67,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
           {txInfo.type === 'bridge' && 'xfer:'}
           {txInfo.type === 'buy' && 'buy:'}
           {txInfo.type === 'accept' && 'sell:'}
+          {txInfo.type === 'gaslessMint' && 'gasless:'}
         </span>
         <img
           onMouseEnter={() => onHover('sender')}
@@ -78,19 +79,21 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
           height={20}
           onClick={onViewExplorer}
         />
-        <div className={'w-4 h-4 flex items-center justify-center'}>
-          <img src={'/images/icons/arrow_right.svg'} alt="arrowRight" />
-        </div>
-        <img
-          width={20}
-          height={20}
-          onMouseEnter={() => onHover('target')}
-          onMouseLeave={() => onLeave('target')}
-          src={(targetHovered && txInfo.destTxHash) ? getChainIcons(txInfo.targetChainId).explorer : getChainIcons(txInfo.targetChainId).icon}
-          style={{ cursor: (txInfo && txInfo.destTxHash) ? 'pointer' : 'auto', opacity: (txInfo && txInfo.destTxHash) ? 1 : 0.4 }}
-          onClick={onViewExplorerOnDest}
-          alt="chain icon"
-        />
+        {txInfo.type != 'gaslessMint' && (<>
+          <div className={'w-4 h-4 flex items-center justify-center'}>
+            <img src={'/images/icons/arrow_right.svg'} alt="arrowRight" />
+          </div>
+          <img
+            width={20}
+            height={20}
+            onMouseEnter={() => onHover('target')}
+            onMouseLeave={() => onLeave('target')}
+            src={(targetHovered && txInfo.destTxHash) ? getChainIcons(txInfo.targetChainId).explorer : getChainIcons(txInfo.targetChainId).icon}
+            style={{ cursor: (txInfo && txInfo.destTxHash) ? 'pointer' : 'auto', opacity: (txInfo && txInfo.destTxHash) ? 1 : 0.4 }}
+            onClick={onViewExplorerOnDest}
+            alt="chain icon"
+          />
+        </>)}
         {txInfo.lastTxAvailable && (<>
           <Image src={arrowRight} alt="arrowRight" />
           <img
@@ -115,6 +118,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
         { txInfo.type === 'bridge' && renderContent(txInfo) }
         { txInfo.type === 'buy' && renderContent(txInfo) }
         { txInfo.type === 'accept' && renderContent(txInfo) }
+        { txInfo.type === 'gaslessMint' && renderContent(txInfo) }
       </div>
     </>
   )

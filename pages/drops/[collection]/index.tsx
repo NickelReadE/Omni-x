@@ -25,6 +25,7 @@ import {ContractType} from '../../../types/enum'
 import useData from '../../../hooks/useData'
 import useContract from '../../../hooks/useContract'
 import { PendingTxType } from '../../../contexts/contract'
+import useProgress from '../../../hooks/useProgress'
 
 const errorToast = (error: string): void => {
   toast.error(error, {
@@ -55,6 +56,7 @@ const Mint: NextPage = () => {
   const [selectedTab, setSelectedTab] = useState(0)
   const {gaslessMint, gaslessClaim, waitForRelayTask} = useGaslessMint()
   const [nextTokenId, setNextTokenId] = useState(0)
+  const { addTxToHistories } = useProgress()
   const { listenONFTEvents } = useContract()
 
   const activeClasses = (index: number) => {
@@ -124,7 +126,8 @@ const Mint: NextPage = () => {
               targetBlockNumber: 0
             }
 
-            // await listenONFTEvents(pendingTx, )
+            const txIdx = addTxToHistories(pendingTx)
+            await listenONFTEvents(pendingTx, txIdx)
 
             const status = await waitForRelayTask(response)
             if (status === RelayTaskStatus.Executed) {
