@@ -328,7 +328,7 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
     omnixExchange.address,
     ethers.utils.defaultAbiCoder.encode(['uint8', 'uint256', 'uint8'], [0, 0, 0]),
     false,
-    ethers.utils.solidityPack(["uint16", "uint256", "uint256", "address"], [2, 250000, 0, getAddressByName('OmnixExchange', orderChainId)])
+    ethers.utils.solidityPack(['uint16', 'uint256', 'uint256', 'address'], [2, 250000, 0, getAddressByName('OmnixExchange', orderChainId)])
   )
 
   const [omnixFee, currencyFee, nftFee] = await omnixExchange.getLzFeesForTrading(takerBid, makerAsk, destCrossFee)
@@ -602,7 +602,7 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
     omnixExchange.address,
     ethers.utils.defaultAbiCoder.encode(['uint8', 'uint256', 'uint8'], [0, 0, 0]),
     false,
-    ethers.utils.solidityPack(["uint16", "uint256", "uint256", "address"], [2, 250000, 0, getAddressByName('OmnixExchange', orderChainId)])
+    ethers.utils.solidityPack(['uint16', 'uint256', 'uint256', 'address'], [2, 250000, 0, getAddressByName('OmnixExchange', orderChainId)])
   )
 
   const destFee = destAirdrop.add(destCrossFee)
