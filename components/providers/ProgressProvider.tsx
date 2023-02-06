@@ -50,7 +50,7 @@ export const ProgressProvider = ({
       (history) => history.lastTxAvailable
         ? (!history.txHash || !history.destTxHash || !history.lastTxHash)
         : history.type === 'gaslessMint' ? !history.txHash
-        : (!history.txHash || !history.destTxHash)
+          : (!history.txHash || !history.destTxHash)
     ).length > 0)
   }, [histories])
 
