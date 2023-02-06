@@ -118,6 +118,7 @@ const Mint: NextPage = () => {
               type: 'gaslessMint',
               senderChainId: chainId,
               contractType: 'ERC721',
+              senderAddress: tokenContract.address,
               senderBlockNumber: blockNumber,
               itemName: collectionInfo.name,
               isONFTCore: false,
@@ -177,6 +178,23 @@ const Mint: NextPage = () => {
         }
 
         const response = await gaslessClaim(tokenContract, chainId, claimableTokenId, address)
+        const blockNumber = await signer?.provider?.getBlockNumber()
+        const pendingTx: PendingTxType = {
+          type: 'gaslessMint',
+          senderChainId: chainId,
+          contractType: 'ERC721',
+          senderAddress: tokenContract.address,
+          senderBlockNumber: blockNumber,
+          itemName: collectionInfo.name,
+          isONFTCore: false,
+          targetChainId: 0,
+          targetAddress: '',
+          targetBlockNumber: 0
+        }
+
+        const txIdx = addTxToHistories(pendingTx)
+        await listenONFTEvents(pendingTx, txIdx)
+
         const status = await waitForRelayTask(response)
         if (status === RelayTaskStatus.Executed) {
           okToast('successfully claimed')
