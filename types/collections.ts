@@ -49,6 +49,8 @@ export type FullCollectionType = BaseCollectionType & {
   volume48h: string,
   volume14d: string,
   is_gasless: boolean,
+  creator_name: string,
+  creator_address: string,
 }
 
 export type MintingSchedule = {

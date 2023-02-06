@@ -2,7 +2,7 @@ import {useEffect, useMemo, useState} from 'react'
 import useWallet from './useWallet'
 import {getUserBalances} from '../services/moralis'
 import {getERC20Balances} from '../services/alchemy'
-import {getERC20BalanceFromDirectCall} from "../services/erc20";
+import {getERC20BalanceFromDirectCall} from '../services/erc20'
 
 export type Balances = {
   chainId: number,

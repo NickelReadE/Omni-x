@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
+import useCollection from './useCollection'
 import { NFTItem } from '../interface/interface'
 import { collectionsService } from '../services/collections'
-import useCollection from './useCollection'
+import {FullCollectionType} from '../types/collections'
 
 export type CollectionNftTypeFunc = {
     nft: NFTItem | undefined,
-    collection: any,
+    collection: FullCollectionType | undefined,
     refreshNft: () => void
 }
 
