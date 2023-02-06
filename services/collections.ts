@@ -18,7 +18,7 @@ const updateCollectionNFTSalePrice = async (col_url: string, token_id: number, p
     token_id,
     price
   }
-  return await API.post('collections/nfts/update-sale-price', option)
+  return await API.post('collections/update-sale-price', option)
 }
 
 const updateCollectionNFTChainID = async (col_url: string, token_id: number, chain_id: number) => {
@@ -27,7 +27,7 @@ const updateCollectionNFTChainID = async (col_url: string, token_id: number, cha
     token_id,
     chain_id
   }
-  return await API.post('collections/nfts/update-chain-id', option)
+  return await API.post('collections/update-chain-id', option)
 }
 
 const getFeaturedCollections = async () => {

@@ -117,7 +117,7 @@ const checkValid = async (currency: string, price: string, chainId: number, sign
 const updateOrderStatus = async (order: IOrder, status: OrderStatus) => {
   await acceptOrder(
     order.hash,
-    Number(order.tokenId),
+    Number(order.token_id),
     status
   )
 }
@@ -125,14 +125,14 @@ const updateOrderStatus = async (order: IOrder, status: OrderStatus) => {
 export const doListingApprove = async (
   check_network: boolean,
   common_data: TradingCommonData,
-  speical_data: TradingSpecialData,
+  special_data: TradingSpecialData,
 ) => {
   if (!common_data.selectedNFTItem?.chain_id) throw new Error('Invalid NFT chain')
   if (!common_data.chainId) throw new Error('Please connect to your wallet')
   if (!common_data.collectionAddress) throw new Error('Invalid collection')
   if (common_data.selectedNFTItem?.chain_id != common_data.chainId) {
-    if (speical_data.switchNetworkAsync) {
-      await speical_data.switchNetworkAsync(common_data.selectedNFTItem?.chain_id)
+    if (special_data.switchNetworkAsync) {
+      await special_data.switchNetworkAsync(common_data.selectedNFTItem?.chain_id)
       throw new Error('Network changed')
     }
     else {
@@ -195,13 +195,13 @@ export const doListingDone = (common_data: TradingCommonData) => {
   if (common_data.onRefresh) common_data.onRefresh()
 }
 
-export const doBuyApprove = async (order: IOrder, common_data: TradingCommonData, speical_data: TradingSpecialData) => {
+export const doBuyApprove = async (order: IOrder, common_data: TradingCommonData, special_data: TradingSpecialData) => {
   if (!order) throw new Error('Not listed')
   if (!common_data.chainId) throw new Error('Please connect to your wallet')
 
   const approveTxs = []
 
-  const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
+  const currencyName = getCurrencyNameAddress(order.currency) as ContractName
   const newCurrencyName = validateCurrencyName(currencyName, common_data.chainId)
 
   if (!newCurrencyName) {
@@ -218,7 +218,7 @@ export const doBuyApprove = async (order: IOrder, common_data: TradingCommonData
     const balance = await common_data.signer.getBalance()
     if (balance.lt(parsedPrice)) {
       const errMessage = 'Not enough balance'
-      speical_data.dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
+      special_data.dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
       throw new Error(errMessage)
     }
   }
@@ -233,7 +233,7 @@ export const doBuyApprove = async (order: IOrder, common_data: TradingCommonData
       const balance = await omni.balanceOf(common_data.address)
       if (balance.lt(parsedPrice)) {
         const errMessage = 'Not enough balance'
-        speical_data.dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
+        special_data.dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
         throw new Error(errMessage)
       }
     }
@@ -241,7 +241,7 @@ export const doBuyApprove = async (order: IOrder, common_data: TradingCommonData
     const buy_price = parsedPrice
     approveTxs.push(await approve(omni, common_data.address, getAddressByName('FundManager', common_data.chainId), buy_price))
 
-    if (isUsdcOrUsdt(order?.currencyAddress)) {
+    if (isUsdcOrUsdt(order?.currency)) {
       approveTxs.push(await approve(omni, common_data.address, getAddressByName('StargatePoolManager', common_data.chainId), buy_price))
     }
   }
@@ -249,18 +249,20 @@ export const doBuyApprove = async (order: IOrder, common_data: TradingCommonData
   return approveTxs.filter(Boolean)
 }
 
-export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData, speical_data: TradingSpecialData) => {
+export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData, special_data: TradingSpecialData) => {
   if (!common_data.selectedNFTItem) throw new Error('Invalid NFT data')
   if (!common_data.chainId) throw new Error('Not connected to the wallet')
+
+  console.log(order, common_data, special_data)
 
   const isONFTCore = false // await validateONFT(order?.collectionAddress, common_data.selectedNFTItem.contract_type || 'ERC721', order.chain_id)
   const orderChainId = order.chain_id
   const blockNumber = await common_data.provider.getBlockNumber()
-  const targetProvier = getProvider(orderChainId)
-  const targetBlockNumber = await targetProvier.getBlockNumber()
+  const targetProvider = getProvider(orderChainId)
+  const targetBlockNumber = await targetProvider.getBlockNumber()
 
   const lzChainId = getLayerzeroChainId(common_data.chainId)
-  const currencyName = getCurrencyNameAddress(order.currencyAddress) as ContractName
+  const currencyName = getCurrencyNameAddress(order.currency) as ContractName
   const newCurrencyName = validateCurrencyName(currencyName, common_data.chainId)
 
   if (!newCurrencyName) {
@@ -280,28 +282,29 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
 
   const omnixExchange = getOmnixExchangeInstance(common_data.chainId, common_data.signer)
   const makerAsk : MakerOrderWithSignature = {
-    isOrderAsk: order.isOrderAsk,
+    isOrderAsk: order.is_order_ask,
     signer: order?.signer,
-    collection: order?.collectionAddress,
+    collection: order?.collection_address,
     price: order?.price,
-    tokenId: order?.tokenId,
+    tokenId: order?.token_id,
     amount: order?.amount,
     strategy: order?.strategy,
-    currency: order?.currencyAddress,
+    currency: order?.currency,
     nonce: order?.nonce,
-    startTime: order?.startTime,
-    endTime: order?.endTime,
-    minPercentageToAsk: order?.minPercentageToAsk,
+    startTime: order?.start_time,
+    endTime: order?.end_time,
+    minPercentageToAsk: order?.min_percentage_to_ask,
     params: ethers.utils.defaultAbiCoder.encode(['uint16'], order?.params),
     signature: order?.signature
   }
+  console.log(makerAsk)
 
   const takerBid : TakerOrderWithEncodedParams = {
     isOrderAsk: false,
     taker: common_data.address || '0x',
     price: parsedPrice,
-    tokenId: order?.tokenId || '0',
-    minPercentageToAsk: order?.minPercentageToAsk || '0',
+    tokenId: order?.token_id || '0',
+    minPercentageToAsk: order?.min_percentage_to_ask || '0',
     params: ethers.utils.defaultAbiCoder.encode([
       'uint16',
       'address',
@@ -337,7 +340,7 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
     const payPrice = lzFee.add(takerBid.price)
     if (balance.lt(payPrice)) {
       const errMessage = `Not enough native balance ${ethers.utils.formatEther(payPrice)}`
-      speical_data.dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
+      special_data.dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
       throw new Error(errMessage)
     }
 
@@ -348,7 +351,7 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
       const balance = await common_data.provider?.getBalance(common_data.address)
       if (balance.lt(lzFee)) {
         const errMessage = `Not enough native balance ${ethers.utils.formatEther(lzFee)}`
-        speical_data.dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
+        special_data.dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
         throw new Error(errMessage)
       }
     }
@@ -357,7 +360,7 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
       const balance = await omni.balanceOf(common_data.address)
       if (balance.lt(takerBid.price)) {
         const errMessage = 'Not enough balance'
-        speical_data.dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
+        special_data.dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
         throw new Error(errMessage)
       }
     }
@@ -367,7 +370,7 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
 
   let targetCollectionAddress = ''
   if (isONFTCore) {
-    const onftCoreInstance = getONFTCore721Instance(order.collectionAddress, orderChainId, null)
+    const onftCoreInstance = getONFTCore721Instance(order.collection_address, orderChainId, null)
     const remoteAddresses = await onftCoreInstance.getTrustedRemote(getLayerzeroChainId(common_data.chainId))
     targetCollectionAddress = decodeFromBytes(remoteAddresses)
   }
@@ -383,7 +386,7 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
   const pendingTx: PendingTxType = {
     type: 'buy',
     senderChainId: orderChainId,
-    senderAddress: order.collectionAddress,
+    senderAddress: order.collection_address,
     senderBlockNumber: targetBlockNumber,
     destTxHash: tx.hash,
     targetChainId: common_data.chainId,
@@ -397,8 +400,8 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
     colUrl: common_data.collectionUrl
   }
 
-  const txIdx = speical_data.addTxToHistories(pendingTx)
-  await speical_data.listenONFTEvents(pendingTx, txIdx)
+  const txIdx = special_data.addTxToHistories(pendingTx)
+  await special_data.listenONFTEvents(pendingTx, txIdx)
 
   return tx
 }
@@ -414,7 +417,7 @@ export const doBuyDone = (common_data: TradingCommonData) => {
   if (common_data.onRefresh) common_data.onRefresh()
 }
 
-export const doBidApprove = async (bid_data: IBidData, common_data: TradingCommonData, speical_data: TradingSpecialData) => {
+export const doBidApprove = async (bid_data: IBidData, common_data: TradingCommonData, special_data: TradingSpecialData) => {
   if (!common_data.chainId) {
     throw new Error('Please connect to your wallet')
   }
@@ -435,7 +438,7 @@ export const doBidApprove = async (bid_data: IBidData, common_data: TradingCommo
     const balance = await omni.balanceOf(common_data.address)
     if (balance.lt(price)) {
       const errMessage = 'Not enough balance'
-      speical_data.dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
+      special_data.dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
       throw new Error(errMessage)
     }
   }
@@ -492,13 +495,13 @@ export const doBidDone = (common_data: TradingCommonData) => {
   if (common_data.onRefresh) common_data.onRefresh()
 }
 
-export const doAcceptApprove = async (check_network: boolean, common_data: TradingCommonData, speical_data: TradingSpecialData) => {
+export const doAcceptApprove = async (check_network: boolean, common_data: TradingCommonData, special_data: TradingSpecialData) => {
   if (!common_data.selectedNFTItem?.chain_id) throw new Error('Invalid NFT chain')
   if (!common_data.chainId) throw new Error('Please connect to your wallet')
   if (!common_data.collectionAddress) throw new Error('Invalid collection')
   if (common_data.selectedNFTItem?.chain_id != common_data.chainId) {
-    if (speical_data.switchNetworkAsync) {
-      await speical_data.switchNetworkAsync(common_data.selectedNFTItem?.chain_id)
+    if (special_data.switchNetworkAsync) {
+      await special_data.switchNetworkAsync(common_data.selectedNFTItem?.chain_id)
       throw new Error('Network changed')
     }
     else {
@@ -516,7 +519,7 @@ export const doAcceptApprove = async (check_network: boolean, common_data: Tradi
   return await approveNft(nftContract, common_data.address, transferManagerAddr, common_data.tokenId)
 }
 
-export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCommonData, speical_data: TradingSpecialData) => {
+export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCommonData, special_data: TradingSpecialData) => {
   if (!common_data.selectedNFTItem?.chain_id) throw new Error('Invalid NFT chain')
   if (!common_data.chainId) throw new Error('Please connect to your wallet')
   if (!common_data.collectionAddress) throw new Error('Invalid collection')
@@ -527,29 +530,29 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
   const isONFTCore = false // await validateONFT(bid_order.collectionAddress, common_data.selectedNFTItem.contract_type || 'ERC721', bid_order.chain_id)
   const orderChainId = bid_order.chain_id
   const blockNumber = await common_data.provider.getBlockNumber()
-  const targetProvier = getProvider(orderChainId)
-  const targetBlockNumber = await targetProvier.getBlockNumber()
+  const targetProvider = getProvider(orderChainId)
+  const targetBlockNumber = await targetProvider.getBlockNumber()
 
   const lzChainId = getLayerzeroChainId(common_data.chainId)
   const omnixExchange = getOmnixExchangeInstance(common_data.chainId, common_data.signer)
   const makerBid : MakerOrderWithSignature = {
     isOrderAsk: false,
     signer: bid_order.signer,
-    collection: bid_order.collectionAddress,
+    collection: bid_order.collection_address,
     price: bid_order.price,
-    tokenId: bid_order.tokenId,
+    tokenId: bid_order.token_id,
     amount: bid_order.amount,
     strategy: bid_order.strategy,
-    currency: bid_order.currencyAddress,
+    currency: bid_order.currency,
     nonce: bid_order.nonce,
-    startTime: bid_order.startTime,
-    endTime: bid_order.endTime,
-    minPercentageToAsk: bid_order.minPercentageToAsk,
+    startTime: bid_order.start_time,
+    endTime: bid_order.end_time,
+    minPercentageToAsk: bid_order.min_percentage_to_ask,
     params: ethers.utils.defaultAbiCoder.encode(['uint16'], bid_order.params),
     signature: bid_order.signature
   }
 
-  const currencyName = getCurrencyNameAddress(bid_order.currencyAddress) as ContractName
+  const currencyName = getCurrencyNameAddress(bid_order.currency) as ContractName
   const newCurrencyName = validateCurrencyName(currencyName, common_data.chainId)
 
   if (!newCurrencyName) {
@@ -560,13 +563,13 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
   const formattedPrice = formatCurrency(bid_order.price, bid_order.chain_id, currencyName)
   const parsedPrice = parseCurrency(formattedPrice, common_data.chainId, newCurrencyName)
 
-  const isCollectionOffer = !bid_order.tokenId || Number(bid_order.tokenId) === 0
+  const isCollectionOffer = !bid_order.token_id || Number(bid_order.token_id) === 0
   const takerAsk : TakerOrderWithEncodedParams = {
     isOrderAsk: true,
     taker: common_data.address || '0x',
     price: parsedPrice,
     tokenId: common_data.tokenId || '0',
-    minPercentageToAsk: bid_order.minPercentageToAsk || '0',
+    minPercentageToAsk: bid_order.min_percentage_to_ask || '0',
     params: ethers.utils.defaultAbiCoder.encode([
       'uint16',
       'address',
@@ -604,7 +607,7 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
     const balance = await common_data.provider?.getBalance(common_data.address)
     if (balance.lt(lzFee)) {
       const errMessage = `Not enough native balance ${ethers.utils.formatEther(lzFee)}`
-      speical_data.dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
+      special_data.dispatch(openSnackBar({ message: errMessage, status: 'warning' }))
       throw new Error(errMessage)
     }
   }
@@ -626,7 +629,7 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
     senderAddress: currencyAddress,
     senderBlockNumber: blockNumber,
     targetChainId: orderChainId,
-    targetAddress: bid_order.currencyAddress,
+    targetAddress: bid_order.currency,
     targetBlockNumber: targetBlockNumber,
     isONFTCore,
     contractType: common_data.selectedNFTItem.contract_type || 'ERC721',
@@ -636,8 +639,8 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
     colUrl: common_data.collectionUrl
   }
 
-  const txIdx = speical_data.addTxToHistories(pendingTx)
-  await speical_data.listenONFTEvents(pendingTx, txIdx)
+  const txIdx = special_data.addTxToHistories(pendingTx)
+  await special_data.listenONFTEvents(pendingTx, txIdx)
 
   return tx
 }

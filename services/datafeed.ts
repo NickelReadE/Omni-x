@@ -1,9 +1,9 @@
 import {ethers} from 'ethers'
 import axios from 'axios'
-import {crypto_list, rpcDatafeedProvider, rpcGasProvider} from '../utils/utils'
+import {crypto_list, rpcDatafeedProvider} from '../utils/utils'
 import Aggregator from '../constants/abis/AggregatvorV3.json'
 import {CHAIN_TYPE} from '../types/enum'
-import {CHAIN_IDS} from '../utils/constants'
+import {CHAIN_IDS, getProvider} from '../utils/constants'
 
 const ASSETS_CHAIN_ID = {
   [CHAIN_IDS[CHAIN_TYPE.ETHEREUM]]: CHAIN_IDS[CHAIN_TYPE.ETHEREUM],
@@ -30,7 +30,7 @@ export const getPriceForUSD = async (rpcChainId: number, chainId: number) => {
 const getGasOnChain = async (chainId: number) => {
   let gasPrice = '0'
   try {
-    const provider = new ethers.providers.JsonRpcProvider(rpcGasProvider[chainId])
+    const provider = getProvider(chainId)
     const _gasPrice = await provider.getGasPrice()
     gasPrice = ethers.utils.formatUnits(_gasPrice, 'gwei')
   } catch (e) {

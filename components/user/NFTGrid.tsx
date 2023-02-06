@@ -71,9 +71,9 @@ const NFTGrid = ({nfts, isLoading}: IPropsImage) => {
       const hasNoNameItems = [...namedNftItems].filter((item) => !item.newName)
       setSortedItems(hasNameItems.sort((a, b) => b.newName.localeCompare(a.newName)).concat(hasNoNameItems))
     } else if (value === 'lastSale') {
-      const hasLastSaleItems = [...nfts].filter((item) => item.last_sale)
-      const hasNoLastSaleItems = [...nfts].filter((item) => !item.last_sale)
-      setSortedItems(hasLastSaleItems.sort((a, b) => b.last_sale - a.last_sale).concat(hasNoLastSaleItems))
+      const hasLastSaleItems = [...nfts].filter((item) => item.last_sale_price)
+      const hasNoLastSaleItems = [...nfts].filter((item) => !item.last_sale_price)
+      setSortedItems(hasLastSaleItems.sort((a, b) => b.last_sale_price - a.last_sale_price).concat(hasNoLastSaleItems))
     } else if (value === 'price') {
       const hasPriceItems = [...nfts].filter((item) => item.price)
       const hasNoPriceItems = [...nfts].filter((item) => !item.price)
