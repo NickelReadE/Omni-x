@@ -83,10 +83,10 @@ export const HomeTopCollections = () => {
               <TextBodyemphasis className={'text-white text-center'}>volume</TextBodyemphasis>
             </div>
             <div className={''}>
-              <TextBodyemphasis className={'text-white text-center'}>% change</TextBodyemphasis>
+              <TextBodyemphasis className={'text-secondary text-center'}>% change</TextBodyemphasis>
             </div>
             <div className={''}>
-              <TextBodyemphasis className={'text-white text-center'}>floor</TextBodyemphasis>
+              <TextBodyemphasis className={'text-secondary text-center'}>floor</TextBodyemphasis>
             </div>
           </div>
           {
@@ -102,11 +102,10 @@ export const HomeTopCollections = () => {
               <TextBodyemphasis className={'text-white text-center'}>volume</TextBodyemphasis>
             </div>
             <div className={''}>
-              <TextBodyemphasis className={'text-white text-center'}>% change</TextBodyemphasis>
+              <TextBodyemphasis className={'text-secondary text-center'}>% change</TextBodyemphasis>
             </div>
             <div className={''}>
-              <TextBodyemphasis className={'text-whit' +
-                'e text-center'}>floor</TextBodyemphasis>
+              <TextBodyemphasis className={'text-secondary text-center'}>floor</TextBodyemphasis>
             </div>
           </div>
           {
