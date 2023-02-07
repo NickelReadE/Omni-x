@@ -47,11 +47,11 @@ export default function NavMenu() {
     <div className='h-full'>
       <ul className="flex flex-col space-x-8 justify-between md:flex-row md:text-sm md:font-medium h-full">
         {MENU_ITEMS.map((item, idx) => (
-          <li className="flex" key={idx}>
+          <li className='flex' key={idx}>
             <Link href={item.url}>
               <a className='relative flex items-center h-full'>
                 <div className={`h-[40px] ${menu === item.name ? 'bg-white' : ''} ${activeClass(idx)}`} onMouseEnter={() => setHoveredId(idx)} onMouseLeave={() => setHoveredId(undefined)}>
-                  <div className={`bg-primary w-full flex items-center justify-center h-[38px]`}>
+                  <div className={'bg-primary w-full flex items-center justify-center h-[38px]'}>
                     <TextH3 className={menu === item.name ? 'text-white' : 'text-secondary'}>{item.displayName}</TextH3>
                   </div>
                 </div>
