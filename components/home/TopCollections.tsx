@@ -24,6 +24,26 @@ const CollectionRow = ({ collection }: { collection: TopCollection }) => {
   )
 }
 
+const DAY_RANGES = [{
+  day: 1,
+  displayName: '24hr'
+}, {
+  day: 7,
+  displayName: '7d'
+}, {
+  day: 30,
+  displayName: '30d'
+}, {
+  day: 90,
+  displayName: '90d'
+}, {
+  day: 365,
+  displayName: '1yr'
+}, {
+  day: 0,
+  displayName: 'all'
+}]
+
 export const HomeTopCollections = () => {
   const [collections, setCollections] = useState<TopCollection[]>([])
   const [dayRange, setDayRange] = useState(1)
@@ -46,25 +66,12 @@ export const HomeTopCollections = () => {
         <div className={'flex items-center space-x-8'}>
           <TextH2 className={'text-white'}>Top Collections</TextH2>
         </div>
-        <div className={'bg-[#202020] rounded-[8px] h-[38px] flex items-center'}>
-          <div className={`${dayRange === 1 ? 'bg-[#303030]' : ''} flex rounded-tl-[8px] rounded-bl-[8px] items-center justify-center py-2 px-4 cursor-pointer`} onClick={() => setDayRange(1)}>
-            <TextBodyemphasis className={`${dayRange === 1 ? 'bg-clip-text text-transparent bg-primary-gradient' : 'text-secondary'}`}>24hr</TextBodyemphasis>
-          </div>
-          <div className={`${dayRange === 7 ? 'bg-[#303030]' : ''} flex items-center justify-center py-2 px-4 cursor-pointer`} onClick={() => setDayRange(7)}>
-            <TextBodyemphasis className={`${dayRange === 7 ? 'bg-clip-text text-transparent bg-primary-gradient' : 'text-secondary'}`}>7d</TextBodyemphasis>
-          </div>
-          <div className={`${dayRange === 30 ? 'bg-[#303030]' : ''} flex items-center justify-center py-2 px-4 cursor-pointer`} onClick={() => setDayRange(30)}>
-            <TextBodyemphasis className={`${dayRange === 30 ? 'bg-clip-text text-transparent bg-primary-gradient' : 'text-secondary'}`}>30d</TextBodyemphasis>
-          </div>
-          <div className={`${dayRange === 90 ? 'bg-[#303030]' : ''} flex items-center justify-center py-2 px-4 cursor-pointer`} onClick={() => setDayRange(90)}>
-            <TextBodyemphasis className={`${dayRange === 90 ? 'bg-clip-text text-transparent bg-primary-gradient' : 'text-secondary'}`}>90d</TextBodyemphasis>
-          </div>
-          <div className={`${dayRange === 365 ? 'bg-[#303030]' : ''} flex items-center justify-center py-2 px-4 cursor-pointer`} onClick={() => setDayRange(365)}>
-            <TextBodyemphasis className={`${dayRange === 365 ? 'bg-clip-text text-transparent bg-primary-gradient' : 'text-secondary'}`}>1yr</TextBodyemphasis>
-          </div>
-          <div className={`${dayRange === 0 ? 'bg-[#303030]' : ''} flex items-center rounded-tr-[8px] rounded-br-[8px] justify-center py-2 px-4 cursor-pointer`} onClick={() => setDayRange(0)}>
-            <TextBodyemphasis className={`${dayRange === 0 ? 'bg-clip-text text-transparent bg-primary-gradient' : 'text-secondary'}`}>all</TextBodyemphasis>
-          </div>
+        <div className={'bg-[#202020] rounded-[8px] h-[38px] flex items-center rounded-bar'}>
+          {DAY_RANGES.map((item, idx) => (
+            <div key={idx} className={`${dayRange === item.day ? 'bg-[#303030]' : ''} flex items-center justify-center py-2 px-4 cursor-pointer`} onClick={() => setDayRange(item.day)}>
+              <TextBodyemphasis className={`${dayRange === item.day ? 'bg-clip-text text-transparent bg-primary-gradient' : ''}`}>{item.displayName}</TextBodyemphasis>
+            </div>
+          ))}
         </div>
       </div>
 
