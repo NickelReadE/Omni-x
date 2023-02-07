@@ -7,9 +7,9 @@ import {TopCollection} from '../../types/collections'
 
 const CollectionRow = ({ collection }: { collection: TopCollection }) => {
   return (
-    <div className={'grid grid-cols-5 gap-x-12 h-[64px] flex items-center mt-4'}>
+    <div className={'grid grid-cols-6 gap-x-6 flex items-center mt-4'}>
       <Link href={'/collections/' + collection.col_url}>
-        <div className={'col-span-2 flex items-center space-x-4 cursor-pointer'}>
+        <div className={'col-span-3 flex items-center space-x-4 cursor-pointer'}>
           <TextBody className={'text-secondary'}>{collection.rank}</TextBody>
           <div className={'bg-[#202020] rounded-[8px] w-full p-2 flex items-center space-x-3 top-collection-card'}>
             <img src={collection.profile_image} alt={'collection icon'} width={50} height={50} className={'rounded'} />
@@ -18,7 +18,7 @@ const CollectionRow = ({ collection }: { collection: TopCollection }) => {
         </div>
       </Link>
       <TextBody className={'col-span-1 text-white text-center'}>{formatDollarAmount(Number(collection.total_volume))}</TextBody>
-      <TextBody className={'col-span-1 text-transparent bg-primary-gradient bg-clip-text'}>{collection.change}%</TextBody>
+      <TextBody className={'col-span-1 text-transparent bg-primary-gradient bg-clip-text text-center'}>{collection.change}%</TextBody>
       <TextBody className={'col-span-1 text-secondary text-center'}>{formatDollarAmount(collection.floor_price)}</TextBody>
     </div>
   )
@@ -77,8 +77,8 @@ export const HomeTopCollections = () => {
 
       <div className={'flex mt-6 space-x-[120px]'}>
         <div className={'flex-1'}>
-          <div className={'grid grid-cols-5'}>
-            <div className={'col-span-2'}></div>
+          <div className={'grid grid-cols-6 gap-x-6'}>
+            <div className={'col-span-3'}></div>
             <div className={''}>
               <TextBodyemphasis className={'text-white text-center'}>volume</TextBodyemphasis>
             </div>
@@ -96,8 +96,8 @@ export const HomeTopCollections = () => {
           }
         </div>
         <div className={'flex-1'}>
-          <div className={'grid grid-cols-5'}>
-            <div className={'col-span-2'}></div>
+          <div className={'grid grid-cols-6 gap-x-6'}>
+            <div className={'col-span-3'}></div>
             <div className={''}>
               <TextBodyemphasis className={'text-white text-center'}>volume</TextBodyemphasis>
             </div>
