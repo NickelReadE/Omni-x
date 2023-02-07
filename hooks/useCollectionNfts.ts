@@ -11,11 +11,11 @@ export type CollectionTypeFunc = {
 }
 
 const getCollectionNfts = async (col_url: string, page: number, display_per_page: number, sort: string, searchObj: any, chainIds: number[]) => {
-  const {data: nfts, totalCount, finished} = await collectionsService.getCollectionNFTs(col_url, page, display_per_page, sort, searchObj, chainIds)
+  const { data } = await collectionsService.getCollectionNFTs(col_url, page, display_per_page, sort, searchObj, chainIds)
   return {
-    nfts: nfts as NFTItem[],
-    totalCount,
-    finished
+    nfts: data.nfts as NFTItem[],
+    totalCount: data.total_count,
+    finished: data.finished
   }
 }
 

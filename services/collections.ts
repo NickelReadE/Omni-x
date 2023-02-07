@@ -6,7 +6,7 @@ const getCollectionNFTs = async (col_url: string, page: number, display_per_page
     page,
     display_per_page,
     sort,
-    searchObj,
+    search: searchObj,
     chainIds,
   }
   return await API.post('collections/nfts', option)

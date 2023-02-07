@@ -65,7 +65,6 @@ export type MintingSchedule = {
 }
 
 export type LaunchPadType = BaseCollectionType & {
-  mint_status: string,
   totalCnt: string,
   price: string,
   description: string,

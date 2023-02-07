@@ -369,7 +369,7 @@ const Collection: NextPage = () => {
                             </div>
                             <FormGroup classes={{root: classes.frmGroup}}>
                               {
-                                attrs[key].values && Object.keys(attrs[key].values).map((valueKey, valueIndex) => {
+                                Object.keys(attrs[key]).map((valueKey, valueIndex) => {
                                   if (valueKey == 'none') {
                                     return null
                                   }
@@ -380,9 +380,9 @@ const Collection: NextPage = () => {
                                     key={valueIndex}
                                     classes={{label: classes.frmLabel, root: classes.frmLabel}}
                                     control={<Checkbox
-                                      checked={Array.isArray(searchObj[key]) && searchObj[key].indexOf(attrs[key].values[valueKey][3], 0) > -1}
+                                      checked={Array.isArray(searchObj[key]) && searchObj[key].indexOf(valueKey, 0) > -1}
                                       onChange={(e) => {
-                                        searchAttrsCheck(e.target.checked, key, attrs[key].values[valueKey][3])
+                                        searchAttrsCheck(e.target.checked, key, valueKey)
                                       }}
                                       color="primary"
                                       inputProps={{'aria-label': 'checkbox with default color'}}/>
@@ -390,7 +390,7 @@ const Collection: NextPage = () => {
                                     label={
                                       <div className="flex items-center justify-between">
                                         <span
-                                          className="font-bold text-[#4d5358]">{attrs[key].values[valueKey][3]}</span>
+                                          className="font-bold text-[#4d5358]">{valueKey}</span>
                                         <div className="text-right">
                                           {/*<p className="font-bold text-[#697077]">{attrs[key].values[valueKey][4]}</p>*/}
                                           {/*<p className="text-[11px] text-[#697077]">({attrs[key].values[valueKey][1]}%)</p>*/}
