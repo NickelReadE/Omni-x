@@ -45,3 +45,10 @@
     }
   }
 }
+
+.top-collection-card {
+  &:hover {
+    transition: all 100ms ease-out;
+    box-shadow: 0px 0px 10px rgba(245, 245, 245, 0.2);
+  }
+}

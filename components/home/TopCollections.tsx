@@ -11,7 +11,7 @@ const CollectionRow = ({ collection }: { collection: TopCollection }) => {
       <Link href={'/collections/' + collection.col_url}>
         <div className={'col-span-2 flex items-center space-x-4 cursor-pointer'}>
           <TextBody className={'text-secondary'}>{collection.rank}</TextBody>
-          <div className={'bg-[#202020] rounded-[8px] w-full p-2 flex items-center space-x-3'}>
+          <div className={'bg-[#202020] rounded-[8px] w-full p-2 flex items-center space-x-3 top-collection-card'}>
             <img src={collection.profile_image} alt={'collection icon'} width={50} height={50} className={'rounded'} />
             <TextH3 className={'text-white'}>{collection.name}</TextH3>
           </div>
@@ -83,7 +83,7 @@ export const HomeTopCollections = () => {
               <TextBodyemphasis className={'text-white text-center'}>volume</TextBodyemphasis>
             </div>
             <div className={''}>
-              <TextBodyemphasis className={'text-white text-center'}>%change</TextBodyemphasis>
+              <TextBodyemphasis className={'text-white text-center'}>% change</TextBodyemphasis>
             </div>
             <div className={''}>
               <TextBodyemphasis className={'text-white text-center'}>floor</TextBodyemphasis>
@@ -102,7 +102,7 @@ export const HomeTopCollections = () => {
               <TextBodyemphasis className={'text-white text-center'}>volume</TextBodyemphasis>
             </div>
             <div className={''}>
-              <TextBodyemphasis className={'text-white text-center'}>%change</TextBodyemphasis>
+              <TextBodyemphasis className={'text-white text-center'}>% change</TextBodyemphasis>
             </div>
             <div className={''}>
               <TextBodyemphasis className={'text-whit' +
