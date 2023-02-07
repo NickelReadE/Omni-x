@@ -90,7 +90,7 @@ export const HomeTopCollections = () => {
             </div>
           </div>
           {
-            collections.filter((item, index) => index % 2 === 0).map((collection, index) => {
+            collections.slice(0, (collections.length + 1) / 2).map((collection, index) => {
               return <CollectionRow key={index} collection={collection} />
             })
           }
@@ -110,7 +110,7 @@ export const HomeTopCollections = () => {
             </div>
           </div>
           {
-            collections.filter((item, index) => index % 2 === 1).map((collection, index) => {
+            collections.slice((collections.length + 1) / 2).map((collection, index) => {
               return <CollectionRow key={index} collection={collection} />
             })
           }
