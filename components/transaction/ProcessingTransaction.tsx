@@ -67,7 +67,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
           {txInfo.type === 'bridge' && 'xfer:'}
           {txInfo.type === 'buy' && 'buy:'}
           {txInfo.type === 'accept' && 'sell:'}
-          {txInfo.type === 'gaslessMint' && 'gasless:'}
+          {txInfo.type === 'gaslessMint' && 'mint:'}
         </span>
         <img
           onMouseEnter={() => onHover('sender')}
@@ -118,7 +118,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
         { txInfo.type === 'bridge' && renderContent(txInfo) }
         { txInfo.type === 'buy' && renderContent(txInfo) }
         { txInfo.type === 'accept' && renderContent(txInfo) }
-        { txInfo.type === 'mint' && renderContent(txInfo) }
+        { txInfo.type === 'gaslessMint' && renderContent(txInfo) }
       </div>
     </>
   )
