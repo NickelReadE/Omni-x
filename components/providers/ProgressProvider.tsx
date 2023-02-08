@@ -4,8 +4,8 @@ import useWallet from '../../hooks/useWallet'
 import { PendingTxType}  from '../../contexts/contract'
 import { createClient } from '@layerzerolabs/scan-client'
 
-const LZ_ENV = process ? (process.env as any)['LZ_ENV'] : 'testnet'
-const client = createClient(LZ_ENV)
+// const LZ_ENV = process ? (process.env as any)['LZ_ENV'] : 'testnet'
+const client = createClient('testnet')
 
 type ProgressProviderProps = {
   children?: ReactNode
