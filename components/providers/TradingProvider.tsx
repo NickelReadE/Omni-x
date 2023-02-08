@@ -378,7 +378,7 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
 
   let targetCollectionAddress = ''
   if (isONFTCore) {
-    const onftCoreInstance = getONFTCore721Instance(order.collectionAddress, orderChainId, null)
+    const onftCoreInstance = getONFTCore721Instance(order.collection_address, orderChainId, null)
     const remoteAddresses = await onftCoreInstance.getTrustedRemote(getLayerzeroChainId(common_data.chainId))
     targetCollectionAddress = decodeFromBytes(remoteAddresses)
   }
