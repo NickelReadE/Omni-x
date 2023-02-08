@@ -97,7 +97,7 @@ export const BridgeProvider = ({
 
       if (selectedNFTItem.contract_type === 'ERC721') {
         const onftCoreInstance = getONFTCore721Instance(selectedNFTItem.collection_address, 0, signer)
-        console.log('---', onftCoreInstance.address, selectedNFTItem.token_id, lzTargetChainId)
+        console.log('---', lzTargetChainId, _signerAddress, selectedNFTItem.token_id, false, '0x', selectedNFTItem.token_address)
         const estimatedFee = await onftCoreInstance.estimateSendFee(lzTargetChainId, _signerAddress, selectedNFTItem.token_id, false, '0x')
         return estimatedFee.nativeFee
       } else if (selectedNFTItem.contract_type === 'ERC1155') {

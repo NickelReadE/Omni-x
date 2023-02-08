@@ -254,8 +254,6 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
   if (!common_data.selectedNFTItem) throw new Error('Invalid NFT data')
   if (!common_data.chainId) throw new Error('Not connected to the wallet')
 
-  console.log(order, common_data, special_data)
-
   const isONFTCore = false // await validateONFT(order?.collectionAddress, common_data.selectedNFTItem.contract_type || 'ERC721', order.chain_id)
   const orderChainId = order.chain_id
   const blockNumber = await common_data.provider.getBlockNumber()
@@ -380,7 +378,7 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
 
   let targetCollectionAddress = ''
   if (isONFTCore) {
-    const onftCoreInstance = getONFTCore721Instance(order.collection_address, orderChainId, null)
+    const onftCoreInstance = getONFTCore721Instance(order.collectionAddress, orderChainId, null)
     const remoteAddresses = await onftCoreInstance.getTrustedRemote(getLayerzeroChainId(common_data.chainId))
     targetCollectionAddress = decodeFromBytes(remoteAddresses)
   }
@@ -410,7 +408,7 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
     colUrl: common_data.collectionUrl
   }
 
-  const txIdx = special_data.addTxToHistories(pendingTx)
+  const txIdx = await special_data.addTxToHistories(pendingTx)
   await special_data.listenONFTEvents(pendingTx, txIdx)
 
   return tx
@@ -656,7 +654,7 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
     colUrl: common_data.collectionUrl
   }
 
-  const txIdx = special_data.addTxToHistories(pendingTx)
+  const txIdx = await special_data.addTxToHistories(pendingTx)
   await special_data.listenONFTEvents(pendingTx, txIdx)
 
   return tx

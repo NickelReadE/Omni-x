@@ -8,6 +8,7 @@ module.exports = {
     ARBITRUM_ALCHEMY_API_KEY: process.env.NEXT_ARBITRUM_ALCHEMY_API_KEY,
     OPTIMISM_ALCHEMY_API_KEY: process.env.NEXT_OPTIMISM_ALCHEMY_API_KEY,
     MUMBAI_ALCHEMY_API_KEY: process.env.NEXT_MUMBAI_ALCHEMY_API_KEY,
+    LZ_ENV: process.env.NEXT_LZ_ENV,
   },
   images: {
     domains: ['localhost', 'bucket-26n19n.s3.amazonaws.com']

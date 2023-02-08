@@ -23,6 +23,9 @@ import {isSupportGelato} from '../../../utils/constants'
 import {RelayTaskStatus, useGaslessMint} from '../../../hooks/useGelato'
 import {ContractType} from '../../../types/enum'
 import useData from '../../../hooks/useData'
+import useContract from '../../../hooks/useContract'
+import { PendingTxType } from '../../../contexts/contract'
+import useProgress from '../../../hooks/useProgress'
 
 const errorToast = (error: string): void => {
   toast.error(error, {
@@ -53,6 +56,8 @@ const Mint: NextPage = () => {
   const [selectedTab, setSelectedTab] = useState(0)
   const {gaslessMint, gaslessClaim, waitForRelayTask} = useGaslessMint()
   const [nextTokenId, setNextTokenId] = useState(0)
+  const { addTxToHistories } = useProgress()
+  const { listenONFTEvents } = useContract()
 
   const activeClasses = (index: number) => {
     return index === selectedTab ? 'bg-primary-gradient' : 'bg-secondary'
@@ -108,6 +113,23 @@ const Mint: NextPage = () => {
 
           if (isSupportGelato(chainId)) {
             const response = await gaslessMint(tokenContract, chainId, quantity, address)
+            const blockNumber = await signer?.provider?.getBlockNumber()
+            const pendingTx: PendingTxType = {
+              type: 'gaslessMint',
+              senderChainId: chainId,
+              contractType: 'ERC721',
+              senderAddress: tokenContract.address,
+              senderBlockNumber: blockNumber,
+              itemName: collectionInfo.name,
+              isONFTCore: false,
+              targetChainId: 0,
+              targetAddress: '',
+              targetBlockNumber: 0
+            }
+
+            const txIdx = await addTxToHistories(pendingTx)
+            await listenONFTEvents(pendingTx, txIdx)
+
             const status = await waitForRelayTask(response)
             if (status === RelayTaskStatus.Executed) {
               okToast('successfully gasless minted')
@@ -156,6 +178,23 @@ const Mint: NextPage = () => {
         }
 
         const response = await gaslessClaim(tokenContract, chainId, claimableTokenId, address)
+        const blockNumber = await signer?.provider?.getBlockNumber()
+        const pendingTx: PendingTxType = {
+          type: 'gaslessMint',
+          senderChainId: chainId,
+          contractType: 'ERC721',
+          senderAddress: tokenContract.address,
+          senderBlockNumber: blockNumber,
+          itemName: collectionInfo.name,
+          isONFTCore: false,
+          targetChainId: 0,
+          targetAddress: '',
+          targetBlockNumber: 0
+        }
+
+        const txIdx = await addTxToHistories(pendingTx)
+        await listenONFTEvents(pendingTx, txIdx)
+
         const status = await waitForRelayTask(response)
         if (status === RelayTaskStatus.Executed) {
           okToast('successfully claimed')
