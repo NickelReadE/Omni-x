@@ -40,7 +40,7 @@ const Header = (): JSX.Element => {
           'w-full',
         )}
       >
-        <div className='flex items-center'>
+        <div className='flex items-center text-[16px] font-medium'>
           <div className={'flex items-center flex-1 space-x-[50px] md:w-auto mx-auto'}>
             <TransactionTracker />
             <NavMenu />
@@ -50,7 +50,7 @@ const Header = (): JSX.Element => {
             <SearchBar />
           </div>
 
-          <div className='flex flex-1 items-center justify-end ml-auto space-x-[20px]'>
+          <div className='flex flex-1 items-center justify-end ml-2 space-x-[20px]'>
             {
               address ?
                 <>
