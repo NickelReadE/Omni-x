@@ -23,7 +23,7 @@ export const ProgressProvider = ({
       const lzTxInfo = await client.getMessagesBySrcTxHash(txInfo.txHash || txInfo.destTxHash || '')
       if (lzTxInfo.messages.length > 0) {
         const lzMsg = lzTxInfo.messages[0]
-        txInfo.lzPath = `https://testnet.layerzeroscan.com/${lzMsg.senderChainId}/address/${lzMsg.srcUaAddress}/message/${lzMsg.dstChainId}/address/${lzMsg.dstUaAddress}/nonce/${lzMsg.srcUaNonce}`
+        txInfo.lzPath = `https://testnet.layerzeroscan.com/${lzMsg.srcChainId}/address/${lzMsg.srcUaAddress}\/message/${lzMsg.dstChainId}/address/${lzMsg.dstUaAddress}/nonce/${lzMsg.srcUaNonce}`
       }
     }
 
