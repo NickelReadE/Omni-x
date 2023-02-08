@@ -3,12 +3,30 @@ import { useRouter } from 'next/router'
 import React, { useMemo } from 'react'
 import {TextH3} from '../../common/Basic'
 
+const MENU_ITEMS = [
+  {
+    name: 'home',
+    url: '/',
+    displayName: 'Home',
+  },
+  {
+    name: 'drops',
+    url: '/drops',
+    displayName: 'Drops',
+  },
+  {
+    name: 'stats',
+    url: '/stats',
+    displayName: 'Stats',
+  }
+]
+
 export default function NavMenu() {
   const router = useRouter()
   const [hoveredId, setHoveredId] = React.useState<number | undefined>()
 
   const activeClass = (index: number) => {
-    return index === hoveredId ? 'bg-secondary' : 'bg-white'
+    return index === hoveredId ? 'bg-secondary' : ''
   }
 
   const menu = useMemo(() => {
@@ -28,39 +46,19 @@ export default function NavMenu() {
   return (
     <div className='h-full'>
       <ul className="flex flex-col space-x-8 justify-between md:flex-row md:text-sm md:font-medium h-full">
-        <li className="flex">
-          <Link href='/'>
-            <a className='relative flex items-center h-full'>
-              <div className={`h-[40px] ${menu === 'home' && 'bg-white'} ${activeClass(0)}`} onMouseEnter={() => setHoveredId(0)} onMouseLeave={() => setHoveredId(undefined)}>
-                <div className={`bg-primary w-full flex items-center justify-center ${(menu === 'home' || hoveredId === 0) ? 'h-[38px]' : 'h-[40px]'}`}>
-                  <TextH3 className={menu === 'home' ? 'text-white' : 'text-secondary'}>Home</TextH3>
+        {MENU_ITEMS.map((item, idx) => (
+          <li className='flex' key={idx}>
+            <Link href={item.url}>
+              <a className='relative flex items-center h-full'>
+                <div className={`h-[40px] ${menu === item.name ? 'bg-white' : ''} ${activeClass(idx)}`} onMouseEnter={() => setHoveredId(idx)} onMouseLeave={() => setHoveredId(undefined)}>
+                  <div className={'bg-primary w-full flex items-center justify-center h-[38px]'}>
+                    <TextH3 className={menu === item.name ? 'text-white' : 'text-secondary'}>{item.displayName}</TextH3>
+                  </div>
                 </div>
-              </div>
-            </a>
-          </Link>
-        </li>
-        <li className="flex">
-          <Link href='/drops'>
-            <a className='relative flex items-center h-full'>
-              <div className={`h-[40px] ${menu === 'drops' && 'bg-white'} ${activeClass(1)}`} onMouseEnter={() => setHoveredId(1)} onMouseLeave={() => setHoveredId(undefined)}>
-                <div className={`bg-primary w-full flex items-center justify-center ${(menu === 'drops' || hoveredId === 1) ? 'h-[38px]' : 'h-[40px]'}`}>
-                  <TextH3 className={menu === 'drops' ? 'text-white' : 'text-secondary'}>Drops</TextH3>
-                </div>
-              </div>
-            </a>
-          </Link>
-        </li>
-        <li className="flex">
-          <Link href='/stats'>
-            <a className='relative flex items-center h-full'>
-              <div className={`h-[40px] ${menu === 'stats' && 'bg-white'} ${activeClass(2)}`} onMouseEnter={() => setHoveredId(2)} onMouseLeave={() => setHoveredId(undefined)}>
-                <div className={`bg-primary w-full flex items-center justify-center ${(menu === 'stats' || hoveredId === 2) ? 'h-[38px]' : 'h-[40px]'}`}>
-                  <TextH3 className={menu === 'stats' ? 'text-white' : 'text-secondary'}>Stats</TextH3>
-                </div>
-              </div>
-            </a>
-          </Link>
-        </li>
+              </a>
+            </Link>
+          </li>
+        ))}
       </ul>
     </div>
   )

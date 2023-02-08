@@ -29,7 +29,8 @@ import {
   getFundManagerInstance,
   getOmnixExchangeInstance,
   getONFTCore721Instance,
-  getTransferSelectorNftInstance
+  getTransferSelectorNftInstance,
+  getLayerZeroEndpointInstance
 } from '../../utils/contracts'
 import {acceptOrder, postMakerOrder} from '../../utils/makeOrder'
 import {serializeMakeOrder, serializeTakeOrder} from '../../utils/utils'
@@ -164,7 +165,7 @@ export const doListingConfirm = async (listing_data: IListingData, common_data: 
   const lzChainId = getLayerzeroChainId(common_data.chainId)
   const price = parseCurrency(listing_data.price.toString(), common_data.chainId, listing_data.currencyName) // ethers.utils.parseEther(listing_data.price.toString())
   const startTime = Date.now()
-
+  const royaltyInfo = ethers.utils.defaultAbiCoder.encode(['address', 'uint256'], [ethers.constants.AddressZero, 0])
   await postMakerOrder(
     common_data.signer,
     true,
@@ -180,8 +181,8 @@ export const doListingConfirm = async (listing_data: IListingData, common_data: 
       startTime,
       endTime: addDays(startTime, listing_data.period).getTime(),
       params: {
-        values: [lzChainId],
-        types: ['uint16'],
+        values: [lzChainId, royaltyInfo],
+        types: ['uint16', 'bytes'],
       },
     },
     getChainNameFromId(common_data.chainId),
@@ -292,7 +293,7 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
     startTime: order?.startTime,
     endTime: order?.endTime,
     minPercentageToAsk: order?.minPercentageToAsk,
-    params: ethers.utils.defaultAbiCoder.encode(['uint16'], order?.params),
+    params: ethers.utils.defaultAbiCoder.encode(['uint16', 'bytes'], order?.params),
     signature: order?.signature
   }
 
@@ -321,14 +322,24 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
   serializeMakeOrder(makerAsk)
   serializeTakeOrder(takerBid)
 
-  const [omnixFee, currencyFee, nftFee] = await omnixExchange.getLzFeesForTrading(takerBid, makerAsk, 0)
+  const targetLzEndpoint = getLayerZeroEndpointInstance(orderChainId, targetProvier)
+  const [destCrossFee,] = await targetLzEndpoint.estimateFees(
+    lzChainId,
+    omnixExchange.address,
+    ethers.utils.defaultAbiCoder.encode(['uint8', 'uint256', 'uint8'], [0, 0, 0]),
+    false,
+    ethers.utils.solidityPack(['uint16', 'uint256', 'uint256', 'address'], [2, 250000, 0, getAddressByName('OmnixExchange', orderChainId)])
+  )
+
+  const [omnixFee, currencyFee, nftFee] = await omnixExchange.getLzFeesForTrading(takerBid, makerAsk, destCrossFee)
   const lzFee = omnixFee.add(currencyFee).add(nftFee)
 
   console.log('---lzFee---',
     ethers.utils.formatEther(omnixFee),
     ethers.utils.formatEther(currencyFee),
     ethers.utils.formatEther(nftFee),
-    ethers.utils.formatEther(lzFee)
+    ethers.utils.formatEther(lzFee),
+    ethers.utils.formatEther(destCrossFee)
   )
 
   let tx = null
@@ -341,7 +352,7 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
       throw new Error(errMessage)
     }
 
-    tx = await omnixExchange.connect(common_data.signer).matchAskWithTakerBidUsingETHAndWETH(0, takerBid, makerAsk, { value: payPrice })
+    tx = await omnixExchange.connect(common_data.signer).matchAskWithTakerBidUsingETHAndWETH(destCrossFee, takerBid, makerAsk, { value: payPrice })
   }
   else {
     {
@@ -362,7 +373,7 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
       }
     }
 
-    tx = await omnixExchange.connect(common_data.signer).matchAskWithTakerBid(0, takerBid, makerAsk, { value: lzFee })
+    tx = await omnixExchange.connect(common_data.signer).matchAskWithTakerBid(destCrossFee, takerBid, makerAsk, { value: lzFee })
   }
 
   let targetCollectionAddress = ''
@@ -461,6 +472,7 @@ export const doBidConfirm = async (bid_data: IBidData, common_data: TradingCommo
   const protocalFees = ethers.utils.parseUnits(PROTOCAL_FEE.toString(), 2)
   const creatorFees = ethers.utils.parseUnits(CREATOR_FEE.toString(), 2)
   const isCollectionOffer = !common_data.tokenId
+  const royaltyInfo = ethers.utils.defaultAbiCoder.encode(['address', 'uint256'], [ethers.constants.AddressZero, 0])
 
   await checkValid(currency, price.toString(), common_data.chainId, common_data.signer)
 
@@ -477,8 +489,8 @@ export const doBidConfirm = async (bid_data: IBidData, common_data: TradingCommo
     {
       tokenId: common_data.tokenId,
       params: {
-        values: [lzChainId],
-        types: ['uint16'],
+        values: [lzChainId, royaltyInfo],
+        types: ['uint16', 'bytes'],
       },
     },
     getChainNameFromId(common_data.chainId),
@@ -545,7 +557,7 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
     startTime: bid_order.startTime,
     endTime: bid_order.endTime,
     minPercentageToAsk: bid_order.minPercentageToAsk,
-    params: ethers.utils.defaultAbiCoder.encode(['uint16'], bid_order.params),
+    params: ethers.utils.defaultAbiCoder.encode(['uint16', 'bytes'], bid_order.params),
     signature: bid_order.signature
   }
 
@@ -582,10 +594,18 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
     ])
   }
 
-  const fundManager = getFundManagerInstance(orderChainId)
-  const destAirdrop = await fundManager.lzFeeTransferCurrency(makerBid.currency, takerAsk.taker, takerAsk.price, getLayerzeroChainId(orderChainId), lzChainId)
+  const targetFundManager = getFundManagerInstance(orderChainId)
+  const targetLzEndpoint = getLayerZeroEndpointInstance(orderChainId, targetProvier)
+  const destAirdrop = await targetFundManager.lzFeeTransferCurrency(makerBid.currency, takerAsk.taker, takerAsk.price, getLayerzeroChainId(orderChainId), lzChainId)
+  const [destCrossFee,] = await targetLzEndpoint.estimateFees(
+    lzChainId,
+    omnixExchange.address,
+    ethers.utils.defaultAbiCoder.encode(['uint8', 'uint256', 'uint8'], [0, 0, 0]),
+    false,
+    ethers.utils.solidityPack(['uint16', 'uint256', 'uint256', 'address'], [2, 250000, 0, getAddressByName('OmnixExchange', orderChainId)])
+  )
 
-  const destFee = destAirdrop
+  const destFee = destAirdrop.add(destCrossFee)
   console.log('-airdrop-', ethers.utils.formatEther(destAirdrop))
   const [omnixFee, currencyFee, nftFee] = await omnixExchange.getLzFeesForTrading(takerAsk, makerBid, destFee)
   const lzFee = omnixFee.add(currencyFee).add(nftFee)
@@ -595,9 +615,7 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
     ethers.utils.formatEther(currencyFee),
     ethers.utils.formatEther(nftFee),
     ethers.utils.formatEther(lzFee),
-    ethers.utils.formatEther(destAirdrop),
-    takerAsk.taker,
-    common_data.signer,
+    ethers.utils.formatEther(destAirdrop)
   )
 
   {
