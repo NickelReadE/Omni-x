@@ -127,7 +127,7 @@ const Mint: NextPage = () => {
               targetBlockNumber: 0
             }
 
-            const txIdx = addTxToHistories(pendingTx)
+            const txIdx = await addTxToHistories(pendingTx)
             await listenONFTEvents(pendingTx, txIdx)
 
             const status = await waitForRelayTask(response)
@@ -192,7 +192,7 @@ const Mint: NextPage = () => {
           targetBlockNumber: 0
         }
 
-        const txIdx = addTxToHistories(pendingTx)
+        const txIdx = await addTxToHistories(pendingTx)
         await listenONFTEvents(pendingTx, txIdx)
 
         const status = await waitForRelayTask(response)

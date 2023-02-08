@@ -152,7 +152,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
             targetBlockNumber: blockNumber,
             itemName: nft.name
           }
-          const historyIndex = addTxToHistories(pendingTx)
+          const historyIndex = await addTxToHistories(pendingTx)
           await listenONFTEvents(pendingTx, historyIndex)
           setStatus(ConfirmTransferStatus.TRANSFERRING)
           await tx.wait()
@@ -187,7 +187,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
             nftItem: nft,
             itemName: nft.name
           }
-          const historyIndex = addTxToHistories(pendingTx)
+          const historyIndex = await addTxToHistories(pendingTx)
           await listenONFTEvents(pendingTx, historyIndex)
           await tx.wait()
           setStatus(ConfirmTransferStatus.DONE)
@@ -228,7 +228,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
             targetBlockNumber: blockNumber,
             itemName: nft.name
           }
-          const historyIndex = addTxToHistories(pendingTx)
+          const historyIndex = await addTxToHistories(pendingTx)
           await listenONFTEvents(pendingTx, historyIndex)
           await tx.wait()
           setStatus(ConfirmTransferStatus.DONE)
@@ -274,7 +274,7 @@ const ConfirmTransfer: React.FC<IConfirmTransferProps> = ({
             targetBlockNumber: blockNumber,
             itemName: nft.name
           }
-          const historyIndex = addTxToHistories(pendingTx)
+          const historyIndex = await addTxToHistories(pendingTx)
           await listenONFTEvents(pendingTx, historyIndex)
           await tx.wait()
           setStatus(ConfirmTransferStatus.DONE)

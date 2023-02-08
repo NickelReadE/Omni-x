@@ -1,7 +1,11 @@
 import { useState, ReactNode, useEffect } from 'react'
 import { ProgressContext } from '../../contexts/progress'
 import useWallet from '../../hooks/useWallet'
-import {PendingTxType} from '../../contexts/contract'
+import { PendingTxType}  from '../../contexts/contract'
+import { createClient } from '@layerzerolabs/scan-client'
+
+const LZ_ENV = process ? (process.env as any)['LZ_ENV'] : 'testnet'
+const client = createClient(LZ_ENV)
 
 type ProgressProviderProps = {
   children?: ReactNode
@@ -14,21 +18,30 @@ export const ProgressProvider = ({
   const [pending, setPending] = useState<boolean>(false)
   const { address, provider } = useWallet()
 
-  const addTxToHistories = (txInfo: PendingTxType): number => {
+  const addTxToHistories = async (txInfo: PendingTxType): Promise<number> => {
+    if (txInfo.senderChainId && txInfo.targetChainId && txInfo.senderChainId != txInfo.targetChainId) {
+      const lzTxInfo = await client.getMessagesBySrcTxHash(txInfo.txHash || txInfo.destTxHash || '')
+      if (lzTxInfo.messages.length > 0) {
+        const lzMsg = lzTxInfo.messages[0]
+        txInfo.lzPath = `https://testnet.layerzeroscan.com/${lzMsg.senderChainId}/address/${lzMsg.srcUaAddress}/message/${lzMsg.dstChainId}/address/${lzMsg.dstUaAddress}/nonce/${lzMsg.srcUaNonce}`
+      }
+    }
+
     const newHistories = [...histories, txInfo]
+    
     setHistories(newHistories)
     localStorage.setItem('txHistories', JSON.stringify(newHistories))
     return newHistories.length - 1
   }
 
-  const updateHistory = (historyIndex: number, txInfo: PendingTxType) => {
+  const updateHistory = async (historyIndex: number, txInfo: PendingTxType) => {
     if (histories.length > historyIndex) {
       const newHistories = [...histories]
       newHistories[historyIndex] = txInfo
       setHistories(newHistories)
       localStorage.setItem('txHistories', JSON.stringify(newHistories))
     } else {
-      addTxToHistories(txInfo)
+      await addTxToHistories(txInfo)
     }
   }
 

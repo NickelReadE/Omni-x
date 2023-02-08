@@ -39,7 +39,7 @@ export const ContractProvider = ({
                 && parseInt(ev.args?._tokenId) === parseInt(txInfo.nftItem?.token_id || '0')
             })
             if (eventExist.length > 0) {
-              updateHistory(historyIndex, {
+              await updateHistory(historyIndex, {
                 ...txInfo,
                 ...{
                   destTxHash: eventExist[0].transactionHash
@@ -51,7 +51,7 @@ export const ContractProvider = ({
             }, UPDATE_TIMESTAMP)
           })
         } else {
-          updateHistory(historyIndex, {
+          await updateHistory(historyIndex, {
             ...txInfo, ...{
               destTxHash: eventExist[0].transactionHash
             }
@@ -74,7 +74,7 @@ export const ContractProvider = ({
                 && ev.args?._amount === txInfo.nftItem?.amount
             })
             if (eventExist.length > 0) {
-              updateHistory(historyIndex,{
+              await updateHistory(historyIndex,{
                 ...txInfo,
                 ...{
                   destTxHash: eventExist[0].transactionHash
@@ -86,7 +86,7 @@ export const ContractProvider = ({
             }, UPDATE_TIMESTAMP)
           })
         } else {
-          updateHistory(historyIndex, {
+          await updateHistory(historyIndex, {
             ...txInfo, ...{
               destTxHash: eventExist[0].transactionHash
             }
@@ -114,7 +114,7 @@ export const ContractProvider = ({
                 && ev.args?.tokenId.toString() === txInfo.nftItem?.token_id
             })
             if (eventExist.length > 0) {
-              updateHistory(historyIndex,{
+              await updateHistory(historyIndex,{
                 ...txInfo,
                 ...{
                   destTxHash: eventExist[0].transactionHash
@@ -126,7 +126,7 @@ export const ContractProvider = ({
             }, UPDATE_TIMESTAMP)
           })
         } else {
-          updateHistory(historyIndex,{
+          await updateHistory(historyIndex,{
             ...txInfo, ...{
               destTxHash: eventExist[0].transactionHash
             }
@@ -150,7 +150,7 @@ export const ContractProvider = ({
                 // && ev.args?.amount.toString() === txInfo.nftItem.amount
             })
             if (eventExist.length > 0) {
-              updateHistory(historyIndex, {
+              await updateHistory(historyIndex, {
                 ...txInfo,
                 ...{
                   destTxHash: eventExist[0].transactionHash
@@ -164,7 +164,7 @@ export const ContractProvider = ({
             }
           })
         } else {
-          updateHistory(historyIndex,{
+          await updateHistory(historyIndex,{
             ...txInfo, ...{
               destTxHash: eventExist[0].transactionHash
             }
@@ -199,7 +199,7 @@ export const ContractProvider = ({
                 && parseInt(ev.args?._tokenId) === parseInt(txInfo.nftItem?.token_id || '0')
             })
             if (eventExist.length > 0) {
-              updateHistory(historyIndex, {
+              await updateHistory(historyIndex, {
                 ...txInfo,
                 ...txObj(eventExist[0])
               })
@@ -209,7 +209,7 @@ export const ContractProvider = ({
             }, UPDATE_TIMESTAMP)
           })
         } else {
-          updateHistory(historyIndex, {
+          await updateHistory(historyIndex, {
             ...txInfo,
             ...txObj(eventExist[0])
           })
@@ -231,7 +231,7 @@ export const ContractProvider = ({
                 && ev.args?._amount === txInfo.nftItem?.amount
             })
             if (eventExist.length > 0) {
-              updateHistory(historyIndex,{
+              await updateHistory(historyIndex,{
                 ...txInfo,
                 ...txObj(eventExist[0])
               })
@@ -241,7 +241,7 @@ export const ContractProvider = ({
             }, UPDATE_TIMESTAMP)
           })
         } else {
-          updateHistory(historyIndex, {
+          await updateHistory(historyIndex, {
             ...txInfo,
             ...txObj(eventExist[0])
           })
@@ -282,7 +282,7 @@ export const ContractProvider = ({
             if (eventExist.length > 0) {
               txInfo.txHash = txInfo.txHash || eventExist[0].transactionHash
               txInfo.destTxHash = txInfo.destTxHash || eventExist[0].transactionHash
-              updateHistory(historyIndex, {
+              await updateHistory(historyIndex, {
                 ...txInfo
               })
             }
@@ -293,7 +293,7 @@ export const ContractProvider = ({
         } else {
           txInfo.txHash = txInfo.txHash || eventExist[0].transactionHash
           txInfo.destTxHash = txInfo.destTxHash || eventExist[0].transactionHash
-          updateHistory(historyIndex, {
+          await updateHistory(historyIndex, {
             ...txInfo
           })
         }
@@ -308,7 +308,7 @@ export const ContractProvider = ({
             if (eventExist.length > 0) {
               txInfo.txHash = txInfo.txHash || eventExist[0].transactionHash
               txInfo.destTxHash = txInfo.destTxHash || eventExist[0].transactionHash
-              updateHistory(historyIndex,{
+              await updateHistory(historyIndex,{
                 ...txInfo
               })
             }
@@ -319,7 +319,7 @@ export const ContractProvider = ({
         } else {
           txInfo.txHash = txInfo.txHash || eventExist[0].transactionHash
           txInfo.destTxHash = txInfo.destTxHash || eventExist[0].transactionHash
-          updateHistory(historyIndex, {
+          await updateHistory(historyIndex, {
             ...txInfo,
           })
         }
@@ -346,7 +346,7 @@ export const ContractProvider = ({
             if (eventExist.length > 0) {
               txInfo.txHash = txInfo.txHash || eventExist[0].transactionHash
               txInfo.destTxHash = txInfo.destTxHash || eventExist[0].transactionHash
-              updateHistory(historyIndex, {
+              await updateHistory(historyIndex, {
                 ...txInfo
               })
             }
@@ -357,7 +357,7 @@ export const ContractProvider = ({
         } else {
           txInfo.txHash = txInfo.txHash || eventExist[0].transactionHash
           txInfo.destTxHash = txInfo.destTxHash || eventExist[0].transactionHash
-          updateHistory(historyIndex, {
+          await updateHistory(historyIndex, {
             ...txInfo
           })
         }
@@ -387,7 +387,7 @@ export const ContractProvider = ({
             const eventExist = events.filter((ev) => isMintEvent721(ev))
             if (eventExist.length > 0) {
               txInfo.txHash = eventExist[0].transactionHash
-              updateHistory(historyIndex, {
+              await updateHistory(historyIndex, {
                 ...txInfo
               })
             }
@@ -397,7 +397,7 @@ export const ContractProvider = ({
           })
         } else {
           txInfo.txHash = eventExist[0].transactionHash
-          updateHistory(historyIndex, {
+          await updateHistory(historyIndex, {
             ...txInfo
           })
         }
@@ -411,7 +411,7 @@ export const ContractProvider = ({
             const eventExist = events.filter((ev) => isMintEvent1155(ev))
             if (eventExist.length > 0) {
               txInfo.txHash = eventExist[0].transactionHash
-              updateHistory(historyIndex,{
+              await updateHistory(historyIndex,{
                 ...txInfo
               })
             }
@@ -421,7 +421,7 @@ export const ContractProvider = ({
           })
         } else {
           txInfo.txHash = eventExist[0].transactionHash
-          updateHistory(historyIndex, {
+          await updateHistory(historyIndex, {
             ...txInfo,
           })
         }
