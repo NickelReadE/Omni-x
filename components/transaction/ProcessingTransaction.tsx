@@ -122,7 +122,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
           />
         </>)} */}
         <span className="text-md text-primary-light ml-1 w-[120px] truncate">{txInfo?.itemName}</span>
-        {txDone && <img src='images/tx_check.svg' alt='tx check'/>}
+        {txDone ?<img src='images/tx_check.svg' alt='tx check'/> : <span className='w-[16px] h-[16px]'/>}
       </div>
     )
   }
