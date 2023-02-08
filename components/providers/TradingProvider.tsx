@@ -324,7 +324,7 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
   serializeMakeOrder(makerAsk)
   serializeTakeOrder(takerBid)
 
-  const targetLzEndpoint = getLayerZeroEndpointInstance(orderChainId, targetProvier)
+  const targetLzEndpoint = getLayerZeroEndpointInstance(orderChainId, targetProvider)
   const [destCrossFee,] = await targetLzEndpoint.estimateFees(
     lzChainId,
     omnixExchange.address,
@@ -597,7 +597,7 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
   }
 
   const targetFundManager = getFundManagerInstance(orderChainId)
-  const targetLzEndpoint = getLayerZeroEndpointInstance(orderChainId, targetProvier)
+  const targetLzEndpoint = getLayerZeroEndpointInstance(orderChainId, targetProvider)
   const destAirdrop = await targetFundManager.lzFeeTransferCurrency(makerBid.currency, takerAsk.taker, takerAsk.price, getLayerzeroChainId(orderChainId), lzChainId)
   const [destCrossFee,] = await targetLzEndpoint.estimateFees(
     lzChainId,
