@@ -83,6 +83,7 @@ export type OrderStatus = 'EXECUTED' | 'EXPIRED'
 
 export interface IAcceptOrderRequest {
   hash: string,
+  token_id: string,
   status: OrderStatus
 }
 

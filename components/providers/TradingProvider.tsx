@@ -118,7 +118,7 @@ const checkValid = async (currency: string, price: string, chainId: number, sign
 const updateOrderStatus = async (order: IOrder, status: OrderStatus) => {
   await acceptOrder(
     order.hash,
-    Number(order.token_id),
+    order.token_id,
     status
   )
 }
