@@ -118,7 +118,7 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
         { txInfo.type === 'bridge' && renderContent(txInfo) }
         { txInfo.type === 'buy' && renderContent(txInfo) }
         { txInfo.type === 'accept' && renderContent(txInfo) }
-        { txInfo.type === 'gaslessMint' && renderContent(txInfo) }
+        { txInfo.type === 'mint' && renderContent(txInfo) }
       </div>
     </>
   )
