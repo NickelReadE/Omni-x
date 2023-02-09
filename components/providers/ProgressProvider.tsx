@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import { useState, ReactNode, useEffect } from 'react'
 import { ProgressContext } from '../../contexts/progress'
 import useWallet from '../../hooks/useWallet'
@@ -20,11 +22,7 @@ export const ProgressProvider = ({
 
   const addTxToHistories = async (txInfo: PendingTxType): Promise<number> => {
     if (txInfo.senderChainId && txInfo.targetChainId && txInfo.senderChainId != txInfo.targetChainId) {
-      const lzTxInfo = await client.getMessagesBySrcTxHash(txInfo.txHash || txInfo.destTxHash || '')
-      if (lzTxInfo.messages.length > 0) {
-        const lzMsg = lzTxInfo.messages[0]
-        txInfo.lzPath = `https://testnet.layerzeroscan.com/${lzMsg.srcChainId}/address/${lzMsg.srcUaAddress}/message/${lzMsg.dstChainId}/address/${lzMsg.dstUaAddress}/nonce/${lzMsg.srcUaNonce}`
-      }
+      txInfo.lzPath = 'https://testnet.layerzeroscan.com'
     }
 
     const newHistories = [...histories, txInfo]
@@ -32,6 +30,24 @@ export const ProgressProvider = ({
     setHistories(newHistories)
     localStorage.setItem('txHistories', JSON.stringify(newHistories))
     return newHistories.length - 1
+  }
+
+  const updateLzScanStatus = () => {
+    const isTxDone = (txInfo: PendingTxType) => (txInfo.type === 'gaslessMint' ? !!txInfo.txHash : (txInfo.txHash && txInfo.destTxHash))
+    const isTxCross = (txInfo: PendingTxType) => (txInfo.senderChainId && txInfo.targetChainId && txInfo.senderChainId != txInfo.targetChainId)
+
+    histories.filter(txInfo => !isTxDone(txInfo) && isTxCross(txInfo) && (txInfo.lzPath === 'https://testnet.layerzeroscan.com'))
+      .forEach(async (txInfo) => {
+        const lzTxInfo = await client.getMessagesBySrcTxHash(txInfo.txHash || txInfo.destTxHash || '')
+        console.log('--add tx--', lzTxInfo)
+
+        if (lzTxInfo.messages.length > 0) {
+          const lzMsg = lzTxInfo.messages[0]
+          txInfo.lzPath = `https://testnet.layerzeroscan.com/${lzMsg.srcChainId}/address/${lzMsg.srcUaAddress}/message/${lzMsg.dstChainId}/address/${lzMsg.dstUaAddress}/nonce/${lzMsg.srcUaNonce}`
+
+          updateHistory(histories.indexOf(txInfo), txInfo)
+        }
+      })
   }
 
   const updateHistory = async (historyIndex: number, txInfo: PendingTxType) => {
@@ -65,6 +81,12 @@ export const ProgressProvider = ({
         : history.type === 'gaslessMint' ? !history.txHash
           : (!history.txHash || !history.destTxHash)
     ).length > 0)
+
+    const timerId = setInterval(() => updateLzScanStatus, 2000)
+
+    return () => {
+      clearInterval(timerId)
+    }
   }, [histories])
 
   return (
