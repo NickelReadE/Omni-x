@@ -88,7 +88,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   }, [router.pathname])
 
   const isCollectionPage = useMemo(() => {
-    return router.pathname === '/collections/[collection]' || router.pathname === '/playground'
+    return router.pathname === '/collections/[collection]' || router.pathname === '/user/[address]' || router.pathname === '/playground'
   }, [router.pathname])
 
   const isWhitelisted = useMemo(() => {
