@@ -91,7 +91,7 @@ export const BridgeProvider = ({
 
   const estimateGasFeeONFTCore = async (selectedNFTItem: NFTItem, senderChainId: number, targetChainId: number) => {
     try {
-      const lzEndpointInstance = getLayerZeroEndpointInstance(senderChainId, provider)
+      const lzEndpointInstance = getLayerZeroEndpointInstance(senderChainId, signer)
       const lzTargetChainId = getLayerzeroChainId(targetChainId)
       const _signerAddress = address
 
@@ -188,12 +188,12 @@ export const BridgeProvider = ({
     const chainId = nft.chain_id
     try {
       if (nft.contract_type === 'ERC721') {
-        const ERC721Instance = getERC721Instance(nft.collection_address, chainId, null)
+        const ERC721Instance = getERC721Instance(nft.collection_address, chainId, signer)
         const isERC721 = await ERC721Instance.supportsInterface(ERC721_INTERFACE_ID)
         const isONFTERC721 = await ERC721Instance.supportsInterface(ONFT_CORE_INTERFACE_ID)
         return !!(isERC721 && isONFTERC721)
       } else if (nft.contract_type === 'ERC1155') {
-        const ERC1155Instance = getERC1155Instance(nft.collection_address, chainId, null)
+        const ERC1155Instance = getERC1155Instance(nft.collection_address, chainId, signer)
         const isERC1155 = await ERC1155Instance.supportsInterface(ERC1155_INTERFACE_ID)
         const isONFTERC1155 = await ERC1155Instance.supportsInterface(ONFT1155_CORE_INTERFACE_ID)
         return !!(isERC1155 && isONFTERC1155)
