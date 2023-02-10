@@ -192,11 +192,11 @@ export const updateMakerOrder = async (
 }
 
 export const acceptOrder = async (
-  hash: string, tokeId: number,status: OrderStatus
+  hash: string, tokeId: string, status: OrderStatus
 ) => {
   const data  = {
     hash: hash,
-    tokenId:tokeId,
+    token_id: tokeId,
     status
   }
   try{

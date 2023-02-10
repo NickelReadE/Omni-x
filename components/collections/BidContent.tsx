@@ -6,6 +6,7 @@ import CongratsSection from './CongratsSection'
 import CompleteSection from './CompleteSection'
 import useWallet from '../../hooks/useWallet'
 import {FullCollectionType} from '../../types/collections'
+import {getImageProperLink} from '../../utils/helpers'
 
 interface IBidContentProps {
   bidStep: BidStep,
@@ -74,7 +75,7 @@ const BidContent: React.FC<IBidContentProps> = ({
         <div className={'flex justify-center'}>
           <div className={'flex flex-col'}>
             <div className={'bg-primary-gradient p-[1px] rounded'}>
-              <img alt={'nftImage'} className='bg-primary rounded' width={190} height={190} src={nftImage} />
+              <img alt={'nftImage'} className='bg-primary rounded' width={190} height={190} src={getImageProperLink(nftImage)} />
             </div>
             {
               !isCollectionBid &&

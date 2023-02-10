@@ -3,7 +3,7 @@ import CollectionCard from './CollectionCard'
 import {SkeletonCard} from '../common/skeleton/Card'
 import {TextH2, TextSH2} from '../common/Basic'
 
-export default function HomeCollections() {
+export default function HomeCollections({ ethPrice }: {ethPrice: number}) {
   const { loading: isCollectionLoading, collections } = useCollections()
 
   return (
@@ -22,7 +22,7 @@ export default function HomeCollections() {
         {
           !isCollectionLoading && collections.map((item, index) => (
             <div className='w-[340px] rounded-lg' key={index} >
-              <CollectionCard collection={item} />
+              <CollectionCard collection={item} ethPrice={ethPrice} />
             </div>
           ))
         }

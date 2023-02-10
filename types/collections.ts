@@ -1,12 +1,17 @@
 import {IOrder} from '../interface/interface'
 
+type CollectionPrice = {
+  ethereum: number
+  stable: number
+}
+
 export type BaseCollectionType = {
   name: string,
   col_url: string,
   featured_image: string,
   profile_image: string,
-  floor_price: number,
-  ceil_price: number,
+  floor_prices: CollectionPrice,
+  ceil_prices: CollectionPrice,
 }
 
 export type TopCollection = BaseCollectionType &{
@@ -17,9 +22,9 @@ export type TopCollection = BaseCollectionType &{
 
 export type FullCollectionType = BaseCollectionType & {
   address: any,
-  itemsCnt: number,
-  ownerCnt: number,
-  orderCnt: number,
+  items_count: number,
+  owner_count: number,
+  listed_count: number,
   total_volume: number,
   discord: string,
   twitter: string,
@@ -44,6 +49,8 @@ export type FullCollectionType = BaseCollectionType & {
   volume48h: string,
   volume14d: string,
   is_gasless: boolean,
+  creator_name: string,
+  creator_address: string,
 }
 
 export type MintingSchedule = {
@@ -58,11 +65,10 @@ export type MintingSchedule = {
 }
 
 export type LaunchPadType = BaseCollectionType & {
-  mint_status: string,
   totalCnt: string,
   price: string,
   description: string,
-  itemsCnt: string,
+  items_count: number,
   whitelist_infos: MintingSchedule[],
   mint_start_timestamp: number,
   mint_end_timestamp: number

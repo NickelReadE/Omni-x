@@ -25,6 +25,7 @@ import {DangerButton} from '../common/buttons/DangerButton'
 import {PrimaryButton} from '../common/buttons/PrimaryButton'
 import {GreenButton} from '../common/buttons/GreenButton'
 import {TextBodyemphasis, TextH3, TextSubtext} from '../common/Basic'
+import {getImageProperLink} from '../../utils/helpers'
 
 const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
@@ -53,7 +54,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     }
   }, [nft_collection])
 
-  const order = nft.order_data
+  const order = nft.order
 
   const {
     isListed,
@@ -106,7 +107,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
 
   const image = useMemo(() => {
     if (nft && nft.image) {
-      return nft.image
+      return getImageProperLink(nft.image)
     }
     return '/images/omnix_logo_black_1.png'
   }, [nft])

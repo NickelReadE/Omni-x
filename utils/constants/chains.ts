@@ -4,6 +4,7 @@ import CHAINS from '../../constants/chains.json'
 import {CHAIN_TYPE} from '../../types/enum'
 import {Network} from 'alchemy-sdk'
 import {Chain} from 'wagmi'
+import {FallbackProvider} from '@ethersproject/providers'
 
 const chainIds: any = ChainIds
 
@@ -77,6 +78,40 @@ export const RPC_PROVIDERS: { [key: number]: string } = {
   [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: 'https://rpc.ankr.com/optimism_testnet',
   [CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET]]: 'https://nd-448-597-476.p2pify.com/33e5615fa247ab10f8f59ceded9136aa',
   [CHAIN_IDS[CHAIN_TYPE.MOONBEAM_TESTNET]]: 'https://rpc.testnet.moonbeam.network'
+}
+
+export const RPC_LINKS: { [key: number]: string[] } = {
+  // MAINNET RPC
+  [CHAIN_IDS[CHAIN_TYPE.ETHEREUM]]: ['https://rpc.ankr.com/eth', 'https://eth-mainnet.public.blastapi.io', 'https://ethereum.publicnode.com', 'https://eth.llamarpc.com'],
+  [CHAIN_IDS[CHAIN_TYPE.BINANCE]]: [
+    'https://bsc-dataseed1.binance.org',
+    'https://bsc-dataseed2.binance.org',
+    'https://bsc-dataseed3.binance.org',
+    'https://bsc-dataseed4.binance.org',
+    'https://bsc-dataseed1.defibit.io',
+    'https://bsc-dataseed2.defibit.io',
+    'https://bsc-dataseed3.defibit.io',
+    'https://bsc-dataseed4.defibit.io',
+    'https://bsc-dataseed1.ninicoin.io',
+    'https://bsc-dataseed2.ninicoin.io',
+    'https://bsc-dataseed3.ninicoin.io',
+    'https://bsc-dataseed4.ninicoin.io',
+  ],
+  [CHAIN_IDS[CHAIN_TYPE.POLYGON]]: ['https://polygon-rpc.com', 'https://polygon.llamarpc.com', 'https://matic-mainnet.chainstacklabs.com'],
+  [CHAIN_IDS[CHAIN_TYPE.AVALANCHE]]: ['https://api.avax.network/ext/bc/C/rpc', 'https://avalanche-evm.publicnode.com'],
+  [CHAIN_IDS[CHAIN_TYPE.ARBITRUM]]: ['https://arb1.arbitrum.io/rpc', 'https://endpoints.omniatech.io/v1/arbitrum/one/public'],
+  [CHAIN_IDS[CHAIN_TYPE.OPTIMISM]]: ['https://mainnet.optimism.io', 'https://optimism-mainnet.public.blastapi.io'],
+  [CHAIN_IDS[CHAIN_TYPE.FANTOM]]: ['https://rpcapi.fantom.network'],
+
+  // TESTNET RPC
+  [CHAIN_IDS[CHAIN_TYPE.GOERLI]]: ['https://rpc.ankr.com/eth_goerli', 'https://goerli.blockpi.network/v1/rpc/public', 'https://eth-goerli.public.blastapi.io'],
+  [CHAIN_IDS[CHAIN_TYPE.BSC_TESTNET]]: ['https://nd-018-909-554.p2pify.com/3fc24d27a5441c18c45d56a82df3e515', 'https://data-seed-prebsc-1-s3.binance.org:8545', 'https://data-seed-prebsc-1-s3.binance.org:8545', 'https://bsc-testnet.public.blastapi.io'],
+  [CHAIN_IDS[CHAIN_TYPE.FUJI_TESTNET]]: ['https://api.avax-test.network/ext/bc/C/rpc', 'https://ava-testnet.public.blastapi.io/ext/bc/C/rpc', 'https://rpc.ankr.com/avalanche_fuji-c'],
+  [CHAIN_IDS[CHAIN_TYPE.MUMBAI]]: ['https://nd-887-934-654.p2pify.com/4caff699e2f0daa9d3af087933e7e78e'],
+  [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: ['https://convincing-clean-reel.arbitrum-goerli.discover.quiknode.pro/a7679fef301ca865c612a70bf2c98bc17c37135f/'],
+  [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: ['https://rpc.ankr.com/optimism_testnet', 'https://endpoints.omniatech.io/v1/op/goerli/public', 'https://goerli.optimism.io'],
+  [CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET]]: ['https://nd-448-597-476.p2pify.com/33e5615fa247ab10f8f59ceded9136aa'],
+  [CHAIN_IDS[CHAIN_TYPE.MOONBEAM_TESTNET]]: ['https://rpc.testnet.moonbeam.network']
 }
 
 export const SUPPORTED_CHAIN_IDS = [
@@ -268,10 +303,6 @@ export const chain_list: { [key: string]: number } = {
   'moonbeam-testnet': 1287,
 }
 
-export const getChainIdFromName = (name: string): number => {
-  return chain_list[name]
-}
-
 export const supportChainIDs = [5, 80001, 43113, 421613, 420, 4002, 97, 1287]
 
 export const chain_list_: { [key: number]: string } = {
@@ -301,14 +332,14 @@ export const getChainNameFromId = (id: number): string => {
 }
 
 export const getProvider = (chainId: number) => {
-  const rpcURL = RPC_PROVIDERS[chainId]
-  return new ethers.providers.JsonRpcProvider(
-    rpcURL,
-    {
-      name: chainInfos[chainId].name,
-      chainId: chainId,
+  const providers = []
+  for (const rpc of RPC_LINKS[chainId]) {
+    try {
+      providers.push(new ethers.providers.JsonRpcProvider(rpc))
+    } catch (e) {
     }
-  )
+  }
+  return new FallbackProvider(providers)
 }
 
 export const getChainInfo = (chainId: number | undefined) => {
@@ -320,46 +351,6 @@ export const getChainInfo = (chainId: number | undefined) => {
     return filter[0]
   }
   return null
-}
-
-
-export const numberShortify = (price: string | number | undefined, decimal?: number) => {
-  if (!price) return '0'
-  const decimalized = Number(price)
-
-  if (decimal === 0) {
-    if (Math.abs(decimalized) / 1e12 >= 1) return `${(~~(decimalized / 1e12))}T`
-    if (Math.abs(decimalized) / 1e9 >= 1) return `${(~~(decimalized / 1e9))}B`
-    if (Math.abs(decimalized) / 1e6 >= 1) return `${(~~(decimalized / 1e6))}M`
-    if (Math.abs(decimalized) / 1000 >= 1) return `${(~~(decimalized / 1e3)).toLocaleString()}`
-
-    return ~~decimalized
-  }
-  else {
-    if (decimalized / 1e12 >= 1) return `${(~~(decimalized / 1e9) / 1e3)}T`
-    if (decimalized / 1e9 >= 1) return `${(~~(decimalized / 1e6) / 1e3)}B`
-    if (decimalized / 1e6 >= 1) return `${(~~(decimalized / 1e3) / 1e3)}M`
-    if (decimalized / 1000 >= 1) return `${(~~decimalized / 1000).toLocaleString()}`
-
-    return decimalized
-  }
-}
-
-export const longNumberShortify = (price: string | number | undefined) => {
-  if (!price) return '0'
-  const e12 = ethers.utils.parseUnits('1', 12)
-  const e9 = ethers.utils.parseUnits('1', 9)
-  const e6 = ethers.utils.parseUnits('1', 6)
-  const e3 = ethers.utils.parseUnits('1', 3)
-
-  const decimalized = BigNumber.from(price)
-
-  if (decimalized.div(e12).gte(1)) return `${(~~(decimalized.div(e9).toNumber()) / 1e3)}T`
-  if (decimalized.div(e9).gte(1)) return `${(~~(decimalized.div(e6).toNumber()) / 1e3)}B`
-  if (decimalized.div(e6).gte(1)) return `${(~~(decimalized.div(e3).toNumber()) / 1e3)}M`
-  if (decimalized.div(e3).gte(1)) return `${((~~decimalized.toNumber()).toLocaleString())}`
-
-  return decimalized.toLocaleString()
 }
 
 export const numberLocalize = (price: number) => {

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useMemo} from 'react'
 import { useState } from 'react'
 import Link from 'next/link'
 import { useBalance } from 'wagmi'
@@ -11,7 +11,7 @@ import {TextBodyemphasis, TextH3} from '../common/Basic'
 import {formatDollarAmount} from '../../utils/numbers'
 import {FullCollectionType} from '../../types/collections'
 
-const CollectionCard = ({ collection }: { collection: FullCollectionType }) => {
+const CollectionCard = ({ collection, ethPrice }: { collection: FullCollectionType, ethPrice: number }) => {
   const { address } = useWallet()
   const { openModal, closeModal } = useModal()
   const { totalUSDCBalance, totalUSDTBalance } = useData()
@@ -39,7 +39,7 @@ const CollectionCard = ({ collection }: { collection: FullCollectionType }) => {
       nftTitle: nft.name,
       nftTokenId: nft.token_id,
       collectionName: collection.name,
-      order: nft.order_data,
+      order: nft.order,
       tradingInput,
       instantBuy: true,
       handleBuyDlgClose: closeModal
@@ -64,8 +64,25 @@ const CollectionCard = ({ collection }: { collection: FullCollectionType }) => {
     }
   }
 
-  // const volumeUp = collection ? calcVolumeUp(collection.volume7d, collection.volume14d) : 0
+  const floor_price = useMemo(() => {
+    if (collection.floor_prices.ethereum === 0) {
+      return collection.floor_prices.stable
+    }
+    if (collection.floor_prices.stable === 0) {
+      return collection.floor_prices.ethereum * ethPrice
+    }
+    return Math.min(collection.floor_prices.ethereum * ethPrice, collection.floor_prices.stable)
+  }, [collection, ethPrice])
 
+  const ceil_price = useMemo(() => {
+    if (collection.ceil_prices.ethereum === 0) {
+      return collection.ceil_prices.stable
+    }
+    if (collection.ceil_prices.stable === 0) {
+      return collection.ceil_prices.ethereum * ethPrice
+    }
+    return Math.max(collection.ceil_prices.ethereum * ethPrice, collection.ceil_prices.stable)
+  }, [collection, ethPrice])
   return (
     <div
       className={classNames('relative bg-[#202020] rounded-lg hover:shadow-[0_0_12px_rgba(160,179,204,0.3)] max-w-[340px]')}
@@ -94,7 +111,7 @@ const CollectionCard = ({ collection }: { collection: FullCollectionType }) => {
 
         <div className="flex justify-left">
           <TextBodyemphasis className={'text-transparent bg-primary-gradient bg-clip-text'}>
-            {formatDollarAmount(collection.floor_price)} - {formatDollarAmount(collection.ceil_price)}
+            {formatDollarAmount(floor_price)} - {formatDollarAmount(ceil_price)}
           </TextBodyemphasis>
         </div>
       </div>

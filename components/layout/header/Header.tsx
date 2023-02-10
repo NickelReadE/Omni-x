@@ -7,11 +7,8 @@ import useWallet from '../../../hooks/useWallet'
 import classNames from '../../../helpers/classNames'
 import {SelectNetworks} from './SelectNetworks'
 import {PfpMenu} from './PfpMenu'
-// import {NotificationArea} from './NotificationArea'
 import {TransactionTracker} from './TransactionTracker'
-// import {MessageArea} from './MessageArea'
-
-const S3_BUCKET_URL = process.env.S3_BUCKET_URL || ''
+import {getImageProperLink} from '../../../utils/helpers'
 
 const Header = (): JSX.Element => {
   const { address } = useWallet()
@@ -26,13 +23,7 @@ const Header = (): JSX.Element => {
 
   const avatarImage = useMemo(() => {
     if (profile && profile.avatar) {
-      if (profile.avatar.startsWith('https://')) {
-        return profile.avatar
-      }
-      if (profile.avatar.startsWith('ipfs')) {
-        return `https://ipfs.io/${profile.avatar}`
-      }
-      return S3_BUCKET_URL + profile.avatar
+      return getImageProperLink(profile.avatar)
     }
     return '/images/default_avatar.png'
   }, [profile])

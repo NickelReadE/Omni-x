@@ -1,5 +1,5 @@
 import {ethers} from 'ethers'
-import {CHAIN_IDS, RPC_PROVIDERS} from '../utils/constants'
+import {CHAIN_IDS, getProvider} from '../utils/constants'
 import {CHAIN_TYPE} from '../types/enum'
 import {USDC_ADDRESS} from '../utils/constants/addresses'
 import ERC20Abi from '../constants/abis/ERC20.json'
@@ -11,7 +11,7 @@ const chainIds = [
 export const getERC20BalanceFromDirectCall = async (address: string) => {
   const balances = []
   for (const chainId of chainIds) {
-    const provider = new ethers.providers.JsonRpcProvider(RPC_PROVIDERS[chainId])
+    const provider = getProvider(chainId)
     const usdcInstance = new ethers.Contract(USDC_ADDRESS[chainId], ERC20Abi, provider)
     const decimal = await usdcInstance.decimals()
     const balance = await usdcInstance.balanceOf(address)

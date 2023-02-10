@@ -15,14 +15,12 @@ export interface NFTItem {
   name: string,
   attributes: any,
   image: string,
-  custom_id: number,
   token: string,
   score: number,
   rank: number,
   token_id: string,
-  name1: string,
   price: number,
-  last_sale:number,
+  last_sale_price:number,
   last_sale_currency:string,
   chain_id:number,
   col_url: string,
@@ -30,16 +28,12 @@ export interface NFTItem {
   token_uri: string,
   amount: string,
   contract_type: string,
-  chain: string,
-  token_address: string,
   owner: string,
   collection_address: string,
   currency: string,
-  uri: string,
-  symbol: string,
-  order_data: any,
-  bidDatas: any[],
-  bidOrderData: any[],
+  order: any,
+  bid_datas: any[],
+  bid_order_data: any[],
 }
 
 export interface IGetOrderRequest {
@@ -63,18 +57,18 @@ export interface IGetOrderRequest {
 export interface IOrder {
   chain: string,
   chain_id: number,
-  collectionAddress: string,
-  tokenId: string,
-  isOrderAsk: boolean,
+  collection_address: string,
+  token_id: string,
+  is_order_ask: boolean,
   signer: string,
   strategy: string,
-  currencyAddress: string,
+  currency: string,
   amount: number,
   price: string,
   nonce: string,
-  startTime: number,
-  endTime: number,
-  minPercentageToAsk: number,
+  start_time: number,
+  end_time: number,
+  min_percentage_to_ask: number,
   params: any[],
   signature: string,
   v: number,
@@ -89,16 +83,8 @@ export type OrderStatus = 'EXECUTED' | 'EXPIRED'
 
 export interface IAcceptOrderRequest {
   hash: string,
+  token_id: string,
   status: OrderStatus
-}
-
-export interface ITypeNFT{
-  typeNFT:string,
-  items:string,
-  col_url:string,
-  name:string,
-  img:string,
-  price:string
 }
 
 export interface IListingData {

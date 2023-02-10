@@ -11,6 +11,7 @@ import {ExternalLink, TextBody, TextH3} from '../common/Basic'
 import UserEdit from './UserEdit'
 import {formatAmount} from '../../utils/numbers'
 import { CopyAddressButton } from '../common/buttons/CopyAddressButton'
+import {getImageProperLink} from '../../utils/helpers'
 
 type UserBannerProps = {
     user: ProfileData,
@@ -40,13 +41,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
 
   const avatarImage = useMemo(() => {
     if (user && user.avatar) {
-      if (user.avatar.startsWith('https://')) {
-        return user.avatar
-      }
-      if (user.avatar.startsWith('ipfs')) {
-        return `https://ipfs.io/${user.avatar}`
-      }
-      return S3_BUCKET_URL + user.avatar
+      return getImageProperLink(user.avatar)
     }
     return '/images/default_avatar.png'
   }, [user])
@@ -100,10 +95,6 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
               {/* <div className={'bg-primary-gradient py-2 px-4 flex items-center justify-center rounded-full cursor-pointer'}>
                 <TextBodyemphasis className={'text-primary'}>following</TextBodyemphasis>
               </div> */}
-              {/*{
-                user.address === address &&
-                <GreyButton text={'settings'} className={'py-2 px-4'} onClick={() => setSettingModal(true)} />
-              }*/}
               {/* <div className={'w-11 h-11'}>
                 <Image src={'/images/icons/chat.svg'} alt={'chat'} width={44} height={44} />
               </div> */}
@@ -115,6 +106,11 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
               <div className={'w-8 h-8'}>
                 <ExternalLink link={user.twitter}>
                   <Image src={'/images/icons/twitter.svg'} alt={'website'} width={32} height={32} />
+                </ExternalLink>
+              </div>
+              <div className={'w-8 h-8'}>
+                <ExternalLink link={user.instagram}>
+                  <Image src={'/images/icons/instagram.svg'} alt={'instagram'} width={32} height={32} />
                 </ExternalLink>
               </div>
             </div>
