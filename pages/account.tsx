@@ -8,6 +8,7 @@ import UserActivity from '../components/user/UserActivity'
 import useData from '../hooks/useData'
 import useActivities from '../hooks/useActivities'
 import useWallet from '../hooks/useWallet'
+import UserCollections from '../components/user/UserCollections'
 
 const Account: NextPage = () => {
   const { address } = useWallet()
@@ -77,7 +78,7 @@ const Account: NextPage = () => {
 
             <div className={'my-6'}>
               {selectedTab === 0 && <NFTGrid nfts={nfts} isLoading={isLoading} />}
-              {selectedTab === 1 && <div />}
+              {selectedTab === 1 && <UserCollections />}
               {selectedTab === 2 && <UserActivity activities={activities}/>}
               {selectedTab === 3 && <UserFavorites />}
               {selectedTab === 4 && <div/>}

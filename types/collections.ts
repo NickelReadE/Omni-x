@@ -73,3 +73,9 @@ export type LaunchPadType = BaseCollectionType & {
   mint_start_timestamp: number,
   mint_end_timestamp: number
 }
+
+export type UserCollectionType = BaseCollectionType & {
+  items_count: number,
+  owners_count: number,
+  revenue: number,
+}

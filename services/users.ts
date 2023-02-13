@@ -32,6 +32,11 @@ const getActivity = async (address: string) => {
   return res.data
 }
 
+const getUserCollections = async (address: string) => {
+  const { data } = await API.get(`users/collections/${address.toLowerCase()}`)
+  return data
+}
+
 const getUserNonce = async (address: string) => {
   const { data } = await API.get(`users/get-nonce/${address.toLowerCase()}`)
   return data.nonce
@@ -44,5 +49,6 @@ export const userService = {
   searchByKeyword,
   getUserNFTs,
   getActivity,
-  getUserNonce
+  getUserNonce,
+  getUserCollections
 }
