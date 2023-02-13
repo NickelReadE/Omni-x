@@ -23,6 +23,8 @@ import BridgeIcon from '../../../public/images/icons/bluegreen_linear.svg'
 import Accordion from '../../../components/collections/Accordion'
 import {PrimaryButton} from '../../../components/common/buttons/PrimaryButton'
 import {GreyButton} from '../../../components/common/buttons/GreyButton'
+import {getImageProperLink} from '../../../utils/helpers'
+import Link from 'next/link'
 
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
@@ -103,7 +105,7 @@ const Item: NextPage = () => {
 
   const nftImage = useMemo(() => {
     if (currentNFT && currentNFT.image) {
-      return currentNFT.image
+      return getImageProperLink(currentNFT.image)
     }
     return '/images/omnix_logo_black_1.png'
   }, [currentNFT])
@@ -247,13 +249,17 @@ const Item: NextPage = () => {
                 {/*creator*/}
                 <div className={'flex flex-col mt-4'}>
                   <div className={'text-secondary text-lg'}>creator</div>
-                  <div className={'text-primary-light text-lg mt-2'}>@{collection.name.toLowerCase()}</div>
+                  <Link href={`/user/${collection.creator_address}`}>
+                    <div className={'text-primary-light text-lg mt-2 underline hover:text-blue-400 cursor-pointer'}>@{collection.creator_name}</div>
+                  </Link>
                 </div>
 
                 {/*collector*/}
                 <div className={'flex flex-col mt-4'}>
                   <div className={'text-secondary text-lg'}>collector</div>
-                  <div className={'text-primary-light text-lg mt-2'}>{truncateAddress(currentNFT.owner)}</div>
+                  <Link href={`/user/${currentNFT.owner}`}>
+                    <div className={'text-primary-light text-lg mt-2 underline hover:text-blue-400 cursor-pointer'}>{truncateAddress(currentNFT.owner)}</div>
+                  </Link>
                 </div>
 
                 {/*current price*/}
@@ -270,6 +276,7 @@ const Item: NextPage = () => {
                       openModal(ModalIDs.MODAL_BID, {
                         nftImage: currentNFT.image,
                         nftTitle: currentNFT.name,
+                        nftTokenId: currentNFT.token_id,
                         tradingInput,
                         handleBidDlgClose: closeModal
                       })
@@ -278,6 +285,7 @@ const Item: NextPage = () => {
                       openModal(ModalIDs.MODAL_BUY, {
                         nftImage: currentNFT.image,
                         nftTitle: currentNFT.name,
+                        nftTokenId: currentNFT.token_id,
                         order,
                         tradingInput,
                         handleBuyDlgClose: closeModal

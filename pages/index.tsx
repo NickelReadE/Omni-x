@@ -7,10 +7,12 @@ import HomeIntro from '../components/home/Intro'
 import { supportChainIDs } from '../utils/constants'
 import {HomeFeatured} from '../components/home/Featured'
 import {HomeTopCollections} from '../components/home/TopCollections'
+import {getETHPrice} from '../utils/helpers'
 
 const Home: NextPage = () => {
   const {chainId, address} = useWallet()
   const [isBlur, setIsBlur] = useState<boolean>(false)
+  const [ethPrice, setEthPrice] = useState<number>(0)
 
   useEffect(() => {
     if(address){
@@ -24,15 +26,22 @@ const Home: NextPage = () => {
     } else setIsBlur(true)
   },[chainId])
 
+  useEffect(() => {
+    (async () => {
+      const ethPrice = await getETHPrice()
+      setEthPrice(ethPrice)
+    })()
+  }, [])
+
   return (
     <>
       {isBlur &&
         <MetaMaskConnect />
       }
       <HomeIntro />
-      <HomeFeatured />
-      <HomeTopCollections />
-      <HomeCollections />
+      <HomeFeatured ethPrice={ethPrice} />
+      <HomeTopCollections ethPrice={ethPrice} />
+      <HomeCollections ethPrice={ethPrice} />
     </>
   )
 }

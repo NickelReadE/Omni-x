@@ -1,11 +1,21 @@
-import {useEffect, useState} from 'react'
+import {useEffect, useMemo, useState} from 'react'
 import Link from 'next/link'
 import {TextBody, TextHeader400, TextBodyemphasis, TextH2, TextH3} from '../common/Basic'
 import {collectionsService} from '../../services/collections'
 import {formatDollarAmount} from '../../utils/numbers'
 import {TopCollection} from '../../types/collections'
 
-const CollectionRow = ({ collection }: { collection: TopCollection }) => {
+const CollectionRow = ({ collection, ethPrice }: { collection: TopCollection, ethPrice: number }) => {
+  const floor_price = useMemo(() => {
+    if (collection.floor_prices.ethereum === 0) {
+      return collection.floor_prices.stable
+    }
+    if (collection.floor_prices.stable === 0) {
+      return collection.floor_prices.ethereum * ethPrice
+    }
+    return Math.min(collection.floor_prices.ethereum * ethPrice, collection.floor_prices.stable)
+  }, [collection, ethPrice])
+
   return (
     <div className={'grid grid-cols-6 gap-x-6 flex items-center mt-4'}>
       <Link href={'/collections/' + collection.col_url}>
@@ -19,7 +29,7 @@ const CollectionRow = ({ collection }: { collection: TopCollection }) => {
       </Link>
       <TextBodyemphasis className={'col-span-1 text-white text-center'}>{formatDollarAmount(Number(collection.total_volume))}</TextBodyemphasis>
       <TextBodyemphasis className={'col-span-1 text-transparent bg-primary-gradient bg-clip-text text-center'}>{collection.change}%</TextBodyemphasis>
-      <TextBodyemphasis className={'col-span-1 text-secondary text-center'}>{formatDollarAmount(collection.floor_price)}</TextBodyemphasis>
+      <TextBodyemphasis className={'col-span-1 text-secondary text-center'}>{formatDollarAmount(floor_price)}</TextBodyemphasis>
     </div>
   )
 }
@@ -44,7 +54,7 @@ const DAY_RANGES = [{
   displayName: 'all'
 }]
 
-export const HomeTopCollections = () => {
+export const HomeTopCollections = ({ ethPrice }: {ethPrice: number}) => {
   const [collections, setCollections] = useState<TopCollection[]>([])
   const [dayRange, setDayRange] = useState(1)
 
@@ -91,7 +101,7 @@ export const HomeTopCollections = () => {
           </div>
           {
             collections.slice(0, (collections.length + 1) / 2).map((collection, index) => {
-              return <CollectionRow key={index} collection={collection} />
+              return <CollectionRow key={index} collection={collection} ethPrice={ethPrice} />
             })
           }
         </div>
@@ -110,7 +120,7 @@ export const HomeTopCollections = () => {
           </div>
           {
             collections.slice((collections.length + 1) / 2).map((collection, index) => {
-              return <CollectionRow key={index} collection={collection} />
+              return <CollectionRow key={index} collection={collection} ethPrice={ethPrice} />
             })
           }
         </div>

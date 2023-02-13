@@ -1,6 +1,8 @@
 import {getERC1155Instance, getERC721Instance, getRoyaltyFeeMangerInstance} from './contracts'
 import {RoyaltyFeeManagerAddress} from './constants/addresses'
 
+const S3_BUCKET_URL = process.env.S3_BUCKET_URL || ''
+
 export const getRoyalty = async (contractType: string, address: string, chainId: number): Promise<number> => {
   try {
     if (contractType === 'ERC721') {
@@ -53,4 +55,19 @@ export const getRoyalty = async (contractType: string, address: string, chainId:
     console.log(error)
   }
   return 0
+}
+
+export const getETHPrice = async (): Promise<number> => {
+  const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd')
+  const data = await response.json()
+  return data.ethereum.usd
+}
+
+export const getImageProperLink = (image: string): string => {
+  if (image.includes('ipfs://')) {
+    return `https://ipfs.io/ipfs/${image.split('ipfs://')[1]}`
+  } else if (image.startsWith('upload')) {
+    return S3_BUCKET_URL + image
+  }
+  return image
 }

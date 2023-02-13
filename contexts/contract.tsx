@@ -5,19 +5,20 @@ export type PendingTxType = {
   txHash?: string,
   destTxHash?: string | undefined,
   lastTxHash?: string | undefined,
-  type: 'bridge' | 'buy' | 'accept' | 'approve',
+  type: 'bridge' | 'buy' | 'accept' | 'gaslessMint',
   senderChainId: number,
   senderAddress?: string,
   targetChainId: number,
   targetAddress: string,
   isONFTCore: boolean,
-  nftItem: NFTItem,
+  nftItem?: NFTItem,
   contractType: string, // 'ERC721' | 'ERC1155',
   targetBlockNumber: number,
   senderBlockNumber?: number,
   itemName: string | undefined,
   lastTxAvailable?: boolean,
-  colUrl?: string
+  colUrl?: string,
+  lzPath?: string
 }
 
 export type ContractContextType = {

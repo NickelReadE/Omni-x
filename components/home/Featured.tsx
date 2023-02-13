@@ -1,11 +1,31 @@
-import { useEffect, useState } from 'react'
+import {useEffect, useMemo, useState} from 'react'
+import Link from 'next/link'
 import {TextH3, TextSH2} from '../common/Basic'
 import {formatDollarAmount} from '../../utils/numbers'
 import { collectionsService } from '../../services/collections'
 import {BaseCollectionType} from '../../types/collections'
-import Link from 'next/link'
 
-const FeaturedCard = ({ collection }: { collection: BaseCollectionType }) => {
+const FeaturedCard = ({ collection, ethPrice }: { collection: BaseCollectionType, ethPrice: number }) => {
+  const floor_price = useMemo(() => {
+    if (collection.floor_prices.ethereum === 0) {
+      return collection.floor_prices.stable
+    }
+    if (collection.floor_prices.stable === 0) {
+      return collection.floor_prices.ethereum * ethPrice
+    }
+    return Math.min(collection.floor_prices.ethereum * ethPrice, collection.floor_prices.stable)
+  }, [collection, ethPrice])
+
+  const ceil_price = useMemo(() => {
+    if (collection.ceil_prices.ethereum === 0) {
+      return collection.ceil_prices.stable
+    }
+    if (collection.ceil_prices.stable === 0) {
+      return collection.ceil_prices.ethereum * ethPrice
+    }
+    return Math.max(collection.ceil_prices.ethereum * ethPrice, collection.ceil_prices.stable)
+  }, [collection, ethPrice])
+
   return (
     <Link href={'/collections/' + collection.col_url}>
       <div className={'relative bg-[#00807D] rounded-[12px] aspect-[3/2] h-[300px] cursor-pointer m-7 featured-card'}>
@@ -14,14 +34,14 @@ const FeaturedCard = ({ collection }: { collection: BaseCollectionType }) => {
         </div>
         <div className={'flex justify-between items-center absolute bottom-0 left-0 w-full h-[60px] px-4 card-text'}>
           <TextH3 className={'text-[#F5F5F5]'}>{collection.name}</TextH3>
-          <TextSH2 className={'text-[#F5F5F5]'}>{formatDollarAmount(collection.floor_price)} - {formatDollarAmount(collection.ceil_price)}</TextSH2>
+          <TextSH2 className={'text-[#F5F5F5]'}>{formatDollarAmount(floor_price)} - {formatDollarAmount(ceil_price)}</TextSH2>
         </div>
       </div>
     </Link>
   )
 }
 
-export const HomeFeatured = () => {
+export const HomeFeatured = ({ ethPrice }: {ethPrice: number}) => {
   const [collections, setCollections] = useState<BaseCollectionType[]>([])
 
   useEffect(() => {
@@ -32,11 +52,11 @@ export const HomeFeatured = () => {
   }, [])
 
   return (
-    <div className={'flex items-center justify-between space-x-10 mt-8 overflow-auto'}>
+    <div className={'flex items-center space-x-10 mt-8 overflow-auto p-8 -mx-8'}>
       {
         collections.map((collection, index) => {
           return (
-            <FeaturedCard key={index} collection={collection} />
+            <FeaturedCard key={index} collection={collection} ethPrice={ethPrice} />
           )
         })
       }

@@ -69,7 +69,7 @@ export default function SearchBar() {
                               <div className={'flex items-center text-xs'}>
                                 <span className={'bg-primary-gradient bg-clip-text text-transparent'}>floor ${getMinValue([item.floorPrice.omni, item.floorPrice.usd])}</span>
                                 <span className={'bg-primary-gradient bg-clip-text text-transparent mx-2'}> | </span>
-                                <span className={'bg-primary-gradient bg-clip-text text-transparent'}>items {item.itemsCnt}</span>
+                                <span className={'bg-primary-gradient bg-clip-text text-transparent'}>items {item.items_count}</span>
                               </div>
                             </div>
                           </div>
