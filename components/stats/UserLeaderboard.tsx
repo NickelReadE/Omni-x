@@ -7,6 +7,8 @@ import {formatDollarAmount} from '../../utils/numbers'
 import Pagination from '../common/Pagination'
 import {getImageProperLink} from '../../utils/helpers'
 
+const itemsPerPage = 10
+
 export const StatsUserLeaderboard = ({ leaderboard, totalPage, page, setPage }: { leaderboard: LeaderboardData[], totalPage: number, page: number, setPage: (page: number) => void }) => {
   const [dayRange, setDayRange] = useState(1)
 
@@ -86,7 +88,7 @@ export const StatsUserLeaderboard = ({ leaderboard, totalPage, page, setPage }: 
             <div key={index} className={'grid grid-cols-6 gap-4 w-full mt-8'}>
               <Link href={`/user/${user.address}`}>
                 <div className={'col-span-2 flex items-center space-x-2 cursor-pointer'}>
-                  <span className={'text-secondary text-[15px] leading-[18px] mr-2'}>{page * 5 + index + 1}</span>
+                  <span className={'text-secondary text-[15px] leading-[18px] mr-2'}>{page * itemsPerPage + index + 1}</span>
                   <img src={user.avatar || '/images/default_avatar.png'} alt={'user'} width={36} height={36} className={'rounded-full h-9 w-9'} />
                   <TextH3 className={'text-primary-light'}>{truncateAddress(user.address)}</TextH3>
                 </div>
