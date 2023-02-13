@@ -28,13 +28,13 @@ const FeaturedCard = ({ collection, ethPrice }: { collection: BaseCollectionType
 
   return (
     <Link href={'/collections/' + collection.col_url}>
-      <div className={'relative bg-[#00807D] rounded-[12px] aspect-[3/2] h-[300px] cursor-pointer'}>
-        <div className={'flex items-center justify-center bg-frame-gradient rounded-[12px] w-full h-full hover:shadow-[0_0_30px_#FFE817]'}>
+      <div className={'relative bg-[#00807D] rounded-[12px] aspect-[3/2] h-[300px] cursor-pointer m-7 featured-card'}>
+        <div className={'flex items-center justify-center bg-frame-gradient rounded-[12px] w-full h-full card-bg'}>
           <img src={collection.featured_image} alt={'featured'} className={'w-full h-full object-contain'} />
         </div>
-        <div className={'flex justify-between items-center absolute bottom-0 left-0 w-full h-[60px] px-4'}>
-          <TextH3 className={'text-white'}>{collection.name}</TextH3>
-          <TextSH2 className={'text-white'}>{formatDollarAmount(floor_price)} - {formatDollarAmount(ceil_price)}</TextSH2>
+        <div className={'flex justify-between items-center absolute bottom-0 left-0 w-full h-[60px] px-4 card-text'}>
+          <TextH3 className={'text-[#F5F5F5]'}>{collection.name}</TextH3>
+          <TextSH2 className={'text-[#F5F5F5]'}>{formatDollarAmount(floor_price)} - {formatDollarAmount(ceil_price)}</TextSH2>
         </div>
       </div>
     </Link>
