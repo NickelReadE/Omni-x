@@ -8,6 +8,13 @@ module.exports = {
     './components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
+    screens: {
+      'sm': '600px',
+      'md': '960px',
+      'lg': '1178px',
+      'xl': '1512px',
+      '2xl': '1600px',
+    },
     textShadow: {
       'sm': '0 4px 6px rgba(0, 0, 0, 0.25)',
       'sm2': '0 4px 6px rgba(0, 0, 0, 0.12)',

@@ -1,18 +1,6 @@
 import { useEffect, useState } from 'react'
 import { userService } from '../services/users'
-
-type CollectionResult = {
-    name: string,
-    profile_image: string,
-    description: string,
-    floorPrice: {
-      eth: number,
-      usd: number,
-      omni: number
-    },
-    items_count: number,
-    col_url: string,
-}
+import { UserCollectionType } from '../types/collections'
 
 type ProfileResult = {
     avatar: string,
@@ -21,7 +9,7 @@ type ProfileResult = {
 }
 
 export type SearchType = {
-    collections: CollectionResult[],
+    collections: UserCollectionType[],
     profiles: ProfileResult[]
 }
 

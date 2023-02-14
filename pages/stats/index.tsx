@@ -17,14 +17,17 @@ import {statsService} from '../../services/statsService'
 
 const Stats: NextPage = () => {
   const [tab, setTab] = useState(2)
+  const [page, setPage] = useState(0)
+  const [totalPage, setTotalPage] = useState(1)
   const [leaderboard, setLeaderboard] = useState<LeaderboardData[]>([])
 
   useEffect(() => {
     (async () => {
-      const _data = await statsService.getUserLeaderboard()
-      setLeaderboard(_data.data)
+      const _data = await statsService.getUserLeaderboard(page)
+      setTotalPage(_data.data.total)
+      setLeaderboard(_data.data.items)
     })()
-  }, [])
+  }, [page])
 
   return (
     <div className={'pt-8'}>
@@ -62,7 +65,7 @@ const Stats: NextPage = () => {
       }
       {
         tab === 2 &&
-          <StatsUserLeaderboard leaderboard={leaderboard} />
+          <StatsUserLeaderboard leaderboard={leaderboard} totalPage={totalPage} page={page} setPage={(page) => setPage(page)} />
       }
     </div>
   )

@@ -26,6 +26,7 @@ import {PrimaryButton} from '../common/buttons/PrimaryButton'
 import {GreenButton} from '../common/buttons/GreenButton'
 import {TextBodyemphasis, TextH3, TextSubtext} from '../common/Basic'
 import {getImageProperLink} from '../../utils/helpers'
+import {formatDollarAmount} from '../../utils/numbers'
 
 const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   const [imageError, setImageError] = useState(false)
@@ -61,7 +62,6 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     highestBid,
     highestBidCoin,
     lastSale,
-    lastSaleCoin
   } = useOrderStatics({
     nft,
     collection: nft_collection
@@ -88,7 +88,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   }, [router.pathname])
 
   const isCollectionPage = useMemo(() => {
-    return router.pathname === '/collections/[collection]' || router.pathname === '/playground'
+    return router.pathname === '/collections/[collection]' || router.pathname === '/user/[address]' || router.pathname === '/playground'
   }, [router.pathname])
 
   const isWhitelisted = useMemo(() => {
@@ -273,8 +273,8 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                     <div>
                       {(!!lastSale && lastSale > 0) && <div className={'flex items-center'}>
                         <TextSubtext className="text-secondary">last sale: &nbsp;</TextSubtext>
-                        <img alt={'saleIcon'} src={lastSaleCoin} className="w-[18px] h-[18px]"/>&nbsp;
-                        <TextSubtext className="text-secondary">{numberLocalize(Number(lastSale))}</TextSubtext>
+                        {/*<img alt={'saleIcon'} src={lastSaleCoin} className="w-[18px] h-[18px]"/>&nbsp;*/}
+                        <TextSubtext className="text-secondary">{formatDollarAmount(Number(lastSale))}</TextSubtext>
                       </div>}
                       {(!lastSale && !!highestBid && highestBid > 0) && <div className={'flex items-center'}>
                         <TextSubtext className="text-secondary">highest offer: &nbsp;</TextSubtext>
