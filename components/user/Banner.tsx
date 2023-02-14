@@ -25,8 +25,6 @@ const useStyles = makeStyles({
   },
 })
 
-const S3_BUCKET_URL = process.env.S3_BUCKET_URL || ''
-
 const UserBanner = ({user}: UserBannerProps): JSX.Element => {
   const {address} = useWallet()
   const classes = useStyles()
@@ -34,7 +32,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
 
   const bannerImage = useMemo(() => {
     if (user && user.banner) {
-      return S3_BUCKET_URL + user.banner
+      return getImageProperLink(user.banner)
     }
     return '/images/default_banner.png'
   }, [user])

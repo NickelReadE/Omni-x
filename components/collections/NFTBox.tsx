@@ -62,7 +62,6 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     highestBid,
     highestBidCoin,
     lastSale,
-    lastSaleCoin
   } = useOrderStatics({
     nft,
     collection: nft_collection
