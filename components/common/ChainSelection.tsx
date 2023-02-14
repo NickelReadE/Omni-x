@@ -39,7 +39,7 @@ export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, ad
                   )
                 })
                 :
-                <span className={'text-primary-light text-md'}>all networks</span>
+                <span className={'text-primary-light text-md cursor-pointer'}>all networks</span>
             }
           </div>
           <Transition
