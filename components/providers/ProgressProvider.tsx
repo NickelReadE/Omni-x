@@ -33,19 +33,17 @@ export const ProgressProvider = ({
   }
 
   const updateLzScanStatus = () => {
-    const isTxDone = (txInfo: PendingTxType) => (txInfo.type === 'gaslessMint' ? !!txInfo.txHash : (txInfo.txHash && txInfo.destTxHash))
     const isTxCross = (txInfo: PendingTxType) => (txInfo.senderChainId && txInfo.targetChainId && txInfo.senderChainId != txInfo.targetChainId)
 
-    histories.filter(txInfo => !isTxDone(txInfo) && isTxCross(txInfo) && (txInfo.lzPath === 'https://testnet.layerzeroscan.com'))
+    histories.filter(txInfo => isTxCross(txInfo) && (!txInfo.lzPath || txInfo.lzPath === 'https://testnet.layerzeroscan.com'))
       .forEach(async (txInfo) => {
         const lzTxInfo = await client.getMessagesBySrcTxHash(txInfo.txHash || txInfo.destTxHash || '')
-        console.log('--add tx--', lzTxInfo)
 
         if (lzTxInfo.messages.length > 0) {
           const lzMsg = lzTxInfo.messages[0]
           txInfo.lzPath = `https://testnet.layerzeroscan.com/${lzMsg.srcChainId}/address/${lzMsg.srcUaAddress}/message/${lzMsg.dstChainId}/address/${lzMsg.dstUaAddress}/nonce/${lzMsg.srcUaNonce}`
 
-          updateHistory(histories.indexOf(txInfo), txInfo)
+          await updateHistory(histories.indexOf(txInfo), txInfo)
         }
       })
   }
@@ -82,7 +80,7 @@ export const ProgressProvider = ({
           : (!history.txHash || !history.destTxHash)
     ).length > 0)
 
-    const timerId = setInterval(() => updateLzScanStatus, 2000)
+    const timerId = setInterval(updateLzScanStatus, 5000)
 
     return () => {
       clearInterval(timerId)
