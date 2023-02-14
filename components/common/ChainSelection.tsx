@@ -35,7 +35,7 @@ export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, ad
                 ?
                 selectedChainIds.map((chainId: number, index) => {
                   return (
-                    <ChainIcon key={index} chainName={getChainNameFromId(chainId)} isLarge={true} isSelected={true} onClick={() => removeFromList(chainId)}/>
+                    <ChainIcon key={index} chainName={getChainNameFromId(chainId)} size={'large'} isSelected={true} onClick={() => removeFromList(chainId)}/>
                   )
                 })
                 :
@@ -67,12 +67,12 @@ export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, ad
                   ?
                   SUPPORTED_CHAIN_IDS.map((chainId: ChainIds, index) => {
                     return (
-                      <ChainIcon key={index} chainName={getChainNameFromId(chainId)} isLarge={true} onClick={() => setChainId(chainId)}/>
+                      <ChainIcon key={index} chainName={getChainNameFromId(chainId)} size={'large'} onClick={() => setChainId(chainId)}/>
                     )
                   })
                   :activeChainIds.map((chainId: ChainIds, index) => {
                     return (
-                      <ChainIcon key={index} chainName={getChainNameFromId(chainId)} isLarge={true} onClick={() => setChainId(chainId)}/>
+                      <ChainIcon key={index} chainName={getChainNameFromId(chainId)} size={'large'} onClick={() => setChainId(chainId)}/>
                     )
                   })
               }

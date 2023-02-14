@@ -14,7 +14,7 @@ import LayerZeroIcon from '../../public/images/chain-new/layerzero.svg'
 interface IChainIconProps {
   chainName: string,
   disabled?: boolean,
-  isLarge?: boolean,
+  size?: 'small' | 'medium' | 'large',
   isSelected?: boolean,
   onClick?: () => void
 }
@@ -41,10 +41,11 @@ const ChainIcons: any = {
   'layerzero': <LayerZeroIcon/>,
 }
 
-export const ChainIcon = ({ chainName, isLarge, isSelected, onClick }: IChainIconProps) => {
+export const ChainIcon = ({ chainName, size, isSelected, onClick }: IChainIconProps) => {
   const SvgIcon = ChainIcons[chainName]
+  const dimension = size === 'large' ? 'w-[36px] h-[36px]' : size === 'medium' ? 'w-[28px] h-[28px]' : 'w-[20px] h-[20px]'
   return (
-    <div className={twMerge(`chain-icon ${isSelected ? 'selected' : ''} flex items-center justify-center ${isLarge ? 'w-[36px] h-[36px]' : 'w-[20px] h-[20px]'} rounded-full`)} onClick={onClick}>
+    <div className={twMerge(`chain-icon ${isSelected ? 'selected' : ''} ${dimension} flex items-center justify-center rounded-full`)} onClick={onClick}>
       {SvgIcon}
     </div>
   )
