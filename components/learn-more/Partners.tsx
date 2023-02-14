@@ -7,18 +7,18 @@ export default function LearnMorePartners () {
         </div>
         <div className="flex flex-col w-full mt-12 px-10">
           <div className={'flex justify-around w-full h-[70px] space-x-10'}>
-            <img src={'/images/learn-more/partners/layerzero.png'} alt={'layerzero'} />
-            <img src={'/images/learn-more/partners/sneaky.png'} alt={'sneaky'} className="m-h" />
-            <img src={'/images/learn-more/partners/phd.png'} alt={'pontem'} />
+            <a href='https://layerzero.network/'><img src={'/images/learn-more/partners/layerzero.png'} alt={'layerzero'} /></a>
+            <a href='https://www.sneaky.ventures/'><img src={'/images/learn-more/partners/sneaky.png'} alt={'sneaky-vc'} /></a>
+            <a href='https://www.phdcapital.fund/'><img src={'/images/learn-more/partners/phd.png'} alt={'phd-capital'} /></a>
           </div>
-          <div className={'flex justify-around w-full mt-8 h-[70px]'}>
-            <img src={'/images/learn-more/partners/galxe-logo-white.svg'} alt={'galxe'} width={300} height={70} />
-            <img src={'/images/learn-more/partners/brex.svg'} alt={'brex'} width={250} height={70} />
+          <div className={'flex justify-around w-full mt-12 h-[70px]'}>
+            <a href='https://galxe.com/'><img src={'/images/learn-more/partners/galxe-logo-white.svg'} alt={'galxe'} width={300} height={70} /></a>
+            <a href='https://www.brex.com/'><img src={'/images/learn-more/partners/brex.svg'} alt={'brex'} width={250} height={70} /></a>
           </div>
           <div className={'flex justify-around w-full mt-8 h-[70px] space-x-10'}>
-            <img src={'/images/learn-more/partners/polygon-logo-white.svg'} alt={'polygon'} width={300} />
-            <img src={'/images/learn-more/partners/kanpai_pandas.png'} alt={'kanpai pandas'} />
-            <img src={'/images/learn-more/partners/stargate_logo_full.svg'} width={300} alt={'stargate'} />
+            <a href='https://polygon.technology/'><img src={'/images/learn-more/partners/polygon-logo-white.svg'} alt={'polygon'} width={300} /></a>
+            <a href='https://kanpaipandas.io/'><img src={'/images/learn-more/partners/kanpai_pandas.png'} alt={'kanpai pandas'} /></a>
+            <a href='https://stargate.finance/'><img src={'/images/learn-more/partners/stargate_logo_full.svg'} width={300} alt={'stargate'} /></a>
           </div>
         </div>
       </div>
