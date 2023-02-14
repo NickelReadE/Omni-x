@@ -152,6 +152,7 @@ input:-moz-placeholder {
     fill: #969696;
   }
   &:hover {
+    cursor: pointer;
     svg {
       fill: #F5F5F5;
     }
