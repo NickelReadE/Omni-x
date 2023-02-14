@@ -1,10 +1,9 @@
 import React, {Fragment, useState} from 'react'
 import {Transition} from '@headlessui/react'
 import {useSwitchNetwork} from 'wagmi'
-import {getChainLogoById, getChainNameFromId, getChainOfficialNameById, SUPPORTED_CHAIN_IDS} from '../../../utils/constants'
+import {getChainNameFromId, getChainOfficialNameById, SUPPORTED_CHAIN_IDS} from '../../../utils/constants'
 import useWallet from '../../../hooks/useWallet'
 import {GradientBackground, TextBodyemphasis} from '../../common/Basic'
-import Image from 'next/image'
 import { ChainIcon } from '../../common/ChainIcon'
 
 export const SelectNetworks = () => {
@@ -20,7 +19,7 @@ export const SelectNetworks = () => {
           chainId &&
             <div className={'focus:outline-none w-full h-full'} onMouseEnter={() => setHovered(true)}>
               <div className={'flex items-center space-x-2'}>
-                <img alt={'networkIcon'} src={getChainLogoById(chainId.toString())} width={28} height={28} />
+                <ChainIcon chainName={getChainNameFromId(chainId)} size={'medium'}/>
                 <TextBodyemphasis className={'text-secondary'}>{getChainOfficialNameById(chainId)}</TextBodyemphasis>
               </div>
             </div>
