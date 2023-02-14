@@ -71,11 +71,11 @@ export const RPC_PROVIDERS: { [key: number]: string } = {
 
   // TESTNET RPC
   [CHAIN_IDS[CHAIN_TYPE.GOERLI]]: 'https://rpc.ankr.com/eth_goerli',
-  [CHAIN_IDS[CHAIN_TYPE.BSC_TESTNET]]: 'https://nd-018-909-554.p2pify.com/3fc24d27a5441c18c45d56a82df3e515',
+  [CHAIN_IDS[CHAIN_TYPE.BSC_TESTNET]]: 'https://rpc.ankr.com/bsc_testnet_chapel',
   [CHAIN_IDS[CHAIN_TYPE.FUJI_TESTNET]]: 'https://api.avax-test.network/ext/bc/C/rpc',
   [CHAIN_IDS[CHAIN_TYPE.MUMBAI]]: 'https://nd-887-934-654.p2pify.com/4caff699e2f0daa9d3af087933e7e78e',
   [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: 'https://convincing-clean-reel.arbitrum-goerli.discover.quiknode.pro/a7679fef301ca865c612a70bf2c98bc17c37135f/',
-  [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: 'https://rpc.ankr.com/optimism_testnet',
+  [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: 'https://goerli.optimism.io/',
   [CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET]]: 'https://nd-448-597-476.p2pify.com/33e5615fa247ab10f8f59ceded9136aa',
   [CHAIN_IDS[CHAIN_TYPE.MOONBEAM_TESTNET]]: 'https://rpc.testnet.moonbeam.network'
 }
@@ -105,11 +105,11 @@ export const RPC_LINKS: { [key: number]: string[] } = {
 
   // TESTNET RPC
   [CHAIN_IDS[CHAIN_TYPE.GOERLI]]: ['https://rpc.ankr.com/eth_goerli', 'https://goerli.blockpi.network/v1/rpc/public', 'https://eth-goerli.public.blastapi.io'],
-  [CHAIN_IDS[CHAIN_TYPE.BSC_TESTNET]]: ['https://nd-018-909-554.p2pify.com/3fc24d27a5441c18c45d56a82df3e515', 'https://data-seed-prebsc-1-s3.binance.org:8545', 'https://data-seed-prebsc-1-s3.binance.org:8545', 'https://bsc-testnet.public.blastapi.io'],
+  [CHAIN_IDS[CHAIN_TYPE.BSC_TESTNET]]: ['https://rpc.ankr.com/bsc_testnet_chapel'],
   [CHAIN_IDS[CHAIN_TYPE.FUJI_TESTNET]]: ['https://api.avax-test.network/ext/bc/C/rpc', 'https://ava-testnet.public.blastapi.io/ext/bc/C/rpc', 'https://rpc.ankr.com/avalanche_fuji-c'],
   [CHAIN_IDS[CHAIN_TYPE.MUMBAI]]: ['https://nd-887-934-654.p2pify.com/4caff699e2f0daa9d3af087933e7e78e'],
   [CHAIN_IDS[CHAIN_TYPE.ARB_TESTNET]]: ['https://convincing-clean-reel.arbitrum-goerli.discover.quiknode.pro/a7679fef301ca865c612a70bf2c98bc17c37135f/'],
-  [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: ['https://rpc.ankr.com/optimism_testnet', 'https://endpoints.omniatech.io/v1/op/goerli/public', 'https://goerli.optimism.io'],
+  [CHAIN_IDS[CHAIN_TYPE.OPT_TESTNET]]: ['https://goerli.optimism.io/'],
   [CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET]]: ['https://nd-448-597-476.p2pify.com/33e5615fa247ab10f8f59ceded9136aa'],
   [CHAIN_IDS[CHAIN_TYPE.MOONBEAM_TESTNET]]: ['https://rpc.testnet.moonbeam.network']
 }
