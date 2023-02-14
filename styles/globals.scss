@@ -146,3 +146,14 @@ input:-moz-placeholder {
   outline: none;
   box-shadow: none;
 }
+
+.chain-icon {
+  svg {
+    fill: #969696;
+  }
+  &:hover {
+    svg {
+      fill: #F5F5F5;
+    }
+  }
+}
