@@ -107,7 +107,7 @@ const Item: NextPage = () => {
     if (currentNFT && currentNFT.image) {
       return getImageProperLink(currentNFT.image)
     }
-    return '/images/omnix_logo_black_1.png'
+    return '/images/omni-logo-mint-cropped.jpg'
   }, [currentNFT])
 
   return (
@@ -117,10 +117,10 @@ const Item: NextPage = () => {
           <div className="w-full 2xl:px-[10%] xl:px-[5%] lg:px-[2%] md:px-[2%] ">
             <div className="grid grid-cols-2 2xl:gap-16 md:gap-12">
               <div className="col-span-1 h-full">
-                <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image"/>}>
+                <LazyLoad placeholder={<img src={'/images/omni-logo-mint-cropped.jpg'} alt="nft-image"/>}>
                   <img
                     className='rounded-lg'
-                    src={imageError ? '/images/omnix_logo_black_1.png' : nftImage}
+                    src={imageError ? '/images/omni-logo-mint-cropped.jpg' : nftImage}
                     alt="nft-image"
                     onError={() => { setImageError(true) }}
                     data-src={nftImage}

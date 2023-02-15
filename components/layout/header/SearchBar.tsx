@@ -91,7 +91,7 @@ export default function SearchBar() {
                           <div className={'flex items-center cursor-pointer'}>
                             <div className={'mr-2 w-[30px] h-[30px] rounded-full overflow-hidden'}>
                               <img
-                                src={item.avatar ? (S3_BUCKET_URL + item.avatar) : '/images/omnix_logo_black_1.png'}
+                                src={item.avatar ? (S3_BUCKET_URL + item.avatar) : '/images/omni-logo-mint-cropped.jpg'}
                                 alt={'avatar'}
                                 width={30}
                                 height={30}

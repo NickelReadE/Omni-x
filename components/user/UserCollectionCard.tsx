@@ -37,7 +37,7 @@ const UserCollectionCard = ({ collection, ethPrice }: { collection: UserCollecti
           <div>
             <img
               className='nft-image w-full rounded-tr-[8px] rounded-tl-[8px] background-fill'
-              src={imageError ? '/images/omnix_logo_black_1.png' : collection.profile_image}
+              src={imageError ? '/images/omni-logo-mint-cropped.jpg' : collection.profile_image}
               alt="nft-image"
               onError={() => { setImageError(true) }}
               data-src={collection.profile_image} />
