@@ -109,7 +109,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     if (nft && nft.image) {
       return getImageProperLink(nft.image)
     }
-    return '/images/omnix_logo_black_1.png'
+    return '/images/omni-logo-mint-cropped.jpg'
   }, [nft])
 
   const doubleClickToSetDetailLink = async () => {
@@ -170,10 +170,10 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           <div className="nft-image-container w-full group relative flex justify-center text-center overflow-hidden rounded-tr-[8px] rounded-tl-[8px]">
             <Link href={`/collections/${col_url}/${nft.token_id}`}>
               <div className="w-full h-full cursor-pointer">
-                <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
+                <LazyLoad placeholder={<img src={'/images/omni-logo-mint-cropped.jpg'} alt="nft-image" />}>
                   <img
-                    className='rounded-tr-[8px] rounded-tl-[8px] object-fill object-center  hover:backdrop-blur-[2px] hover:rounded-tr-[8px] hover:rounded-tl-[8px] duration-300 absolute top-0 bottom-0 left-0 right-0'
-                    src={imageError ? '/images/omnix_logo_black_1.png' : image}
+                    className='object-fill hover:scale-125 duration-300 absolute top-0 bottom-0 left-0 right-0'
+                    src={image}
                     alt="nft-image"
                     onError={() => { setImageError(true) }}
                     data-src={image}
@@ -186,13 +186,10 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
               <div className={'relative w-5 h-5'}>
                 <img src={'/images/icons/nftbox/heart.svg'} alt={'heart'}/>
               </div>
-              {/*<span className='text-md text-like'>
-                24
-              </span>*/}
             </div>
-            <div className={`absolute w-8 h-8 top-3 right-3 ${boxHovered ? 'block' : 'hidden'}`}>
+            {/* <div className={`absolute w-8 h-8 top-3 right-3 ${boxHovered ? 'block' : 'hidden'}`}>
               <img src={'/images/icons/nftbox/plus_circle_default.svg'} alt={'circle'} />
-            </div>
+            </div> */}
           </div>
           <div className={'flex flex-col justify-between min-h-[100px] p-3'}>
             <div className="flex flex-col-1 flex-row justify-between items-center">

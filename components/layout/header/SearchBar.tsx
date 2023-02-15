@@ -91,7 +91,7 @@ export default function SearchBar() {
                           <div className={'flex items-center cursor-pointer'}>
                             <div className={'mr-2 w-[30px] h-[30px] rounded-full overflow-hidden'}>
                               <img
-                                src={item.avatar ? getImageProperLink(item.avatar) : '/images/default_avatar.png'}
+                                src={item.avatar ? getImageProperLink(item.avatar) : '/images/omni-logo-mint-cropped.jpg'}
                                 alt={'avatar'}
                                 width={30}
                                 height={30}
