@@ -146,3 +146,35 @@ input:-moz-placeholder {
   outline: none;
   box-shadow: none;
 }
+
+.chain-icon {
+  background: #202020;
+
+  svg {
+    fill: #969696;
+    width: 65%;
+    height: 65%;
+  }
+  &:hover {
+    cursor: pointer;
+    svg {
+      fill: #F5F5F5;
+      width: 65%;
+      height: 65%;
+    }
+  }
+
+  &:hover {
+    background: #303030;
+  }
+
+  &.selected {
+    background: #303030;
+
+    svg {
+      fill: #F5F5F5;
+      width: 65%;
+      height: 65%;
+    }
+  }
+}
