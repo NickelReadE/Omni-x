@@ -12,7 +12,7 @@ interface IChainSelectionProps {
     setChainId: (chainId: number) => void,
 }
 
-export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, addAllChainIds, setChainId }: IChainSelectionProps) => {
+export const ChainSelection = ({ selectedChainIds, removeChainId, addAllChainIds, setChainId }: IChainSelectionProps) => {
   const [isShow, setIsShow] = useState(false)
 
   const activeChainIds = useMemo(() => {

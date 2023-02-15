@@ -29,7 +29,7 @@ import {getImageProperLink} from '../../utils/helpers'
 import {formatDollarAmount} from '../../utils/numbers'
 
 const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
-  const [imageError, setImageError] = useState(false)
+  const [,setImageError] = useState(false)
   const [boxHovered, setBoxHovered] = useState(false)
   const [dotHover, setDotHover] = useState(false)
   const [isFullscreenView, setIsFullscreenView] = useState(false)
