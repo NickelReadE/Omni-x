@@ -25,9 +25,9 @@ export const FavoriteCollection = ({ collection }: { collection: FavoriteCollect
       <span className={'text-primary-light'}>{collection.total_volume}</span>
       <span className={'text-primary-light'}>0</span>
       <span className={'text-primary-light'}>{collection.floor_prices.stable}</span>
-      <span className={'text-primary-light'}>{collection.sales_count}</span>
+      <span className={'text-primary-light'}>{collection.sales_count || 0}</span>
       <span className={'text-primary-light'}>{collection.owners_count}</span>
-      <span className={'text-primary-light'}>{collection.listed_count}</span>
+      <span className={'text-primary-light'}>{collection.listed_count || 0}</span>
     </div>
   )
 }
