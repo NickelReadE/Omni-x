@@ -1,6 +1,7 @@
 import React, {useMemo} from 'react'
 import { useState } from 'react'
 import Link from 'next/link'
+import {useRouter} from 'next/router'
 import classNames from '../../helpers/classNames'
 import useWallet from '../../hooks/useWallet'
 import {TextBody, TextBodyemphasis, TextH3} from '../common/Basic'
@@ -11,6 +12,8 @@ import {SecondaryButton} from '../common/buttons/SecondaryButton'
 
 const UserCollectionCard = ({ collection, ethPrice }: { collection: UserCollectionType, ethPrice: number }) => {
   const { address } = useWallet()
+  const router = useRouter()
+
   const [hover, setHover] = useState<boolean>(false)
   const [imageError, setImageError] = useState(false)
 
@@ -55,7 +58,7 @@ const UserCollectionCard = ({ collection, ethPrice }: { collection: UserCollecti
             ?
             <div className={'flex items-center justify-between px-3 space-x-5'}>
               <SecondaryButton text={'create post'} className={'w-full flex-1'} />
-              <PrimaryButton text={'edit collection'} className={'w-full flex-1'} />
+              <PrimaryButton text={'edit collection'} className={'w-full flex-1'} onClick={() => router.push(`/collections/${collection.col_url}/edit`)} />
             </div>
             :
             <div className="flex justify-between h-[48px]">
