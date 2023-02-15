@@ -10,6 +10,7 @@ import {getRoyalty} from '../../utils/helpers'
 import {formatDollarAmount} from '../../utils/numbers'
 import {FullCollectionType} from '../../types/collections'
 import { CopyAddressButton } from '../common/buttons/CopyAddressButton'
+import {userService} from '../../services/users'
 
 interface CollectionBannerProps {
     collection: FullCollectionType,
@@ -17,7 +18,7 @@ interface CollectionBannerProps {
 }
 
 export const CollectionBanner = ({ collection, setSelectedTabIndex }: CollectionBannerProps) => {
-  const { chainId } = useWallet()
+  const { address, chainId } = useWallet()
 
   const [royalty, setRoyalty] = useState<number>(0)
   const [selectedTab, setSelectedTab] = useState(0)
@@ -34,6 +35,16 @@ export const CollectionBanner = ({ collection, setSelectedTabIndex }: Collection
   }
   const activeTextClasses = (index: number) => {
     return index === selectedTab ? 'bg-primary-gradient bg-clip-text text-transparent': 'text-secondary'
+  }
+
+  const onFavoriteClicked = async () => {
+    try {
+      if (address) {
+        await userService.addFavoriteCollection(address, collection.col_url)
+      }
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   useEffect(() => {
@@ -88,8 +99,8 @@ export const CollectionBanner = ({ collection, setSelectedTabIndex }: Collection
             <div className={'flex flex-col items-end justify-between space-y-2'}>
               <div className={'flex items-center space-x-4'}>
                 <div className={'flex items-center space-x-1 bg-[#202020] rounded-[20px] py-1 px-2'}>
-                  <Image src={'/images/icons/heart.svg'} width={20} height={20} alt={'heart'}/>
-                  <TextBodyemphasis className={'text-primary-light'}>250</TextBodyemphasis>
+                  <Image src={'/images/icons/heart.svg'} width={20} height={20} alt={'heart'} className={'cursor-pointer'} onClick={onFavoriteClicked}/>
+                  <TextBodyemphasis className={'text-primary-light'}>{collection.likes}</TextBodyemphasis>
                 </div>
                 {/* <GreyButton text={'join chat'}/>
                 <PrimaryButton text={'follow'}/> */}

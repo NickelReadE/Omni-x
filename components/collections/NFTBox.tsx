@@ -134,6 +134,28 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     }
   }
 
+  const onFavoriteAdd = async () => {
+    if (address && nft_collection?.col_url) {
+      try {
+        await userService.addFavorite(address, nft_collection.col_url, nft.token_id)
+        dispatch(openSnackBar({ message: 'Added to favorites', status: 'info' }))
+      } catch (e) {
+        console.error(e)
+      }
+    }
+  }
+
+  /*const onFavoriteRemove = async () => {
+    if (address && nft_collection?.col_url) {
+      try {
+        await userService.removeFavorite(address, nft_collection.col_url, nft.token_id)
+        dispatch(openSnackBar({ message: 'Removed from favorites', status: 'info' }))
+      } catch (e) {
+        console.error(e)
+      }
+    }
+  }*/
+
   const setAsPfp = async () => {
     if (address) {
       try {
@@ -303,7 +325,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
             {
               (isOwner && isWhitelisted) &&
               <>
-                <div className={'flex items-center px-2 rounded-tr-[8px] rounded-tl-[8px]'}>
+                <div className={'flex items-center px-2 rounded-tr-[8px] rounded-tl-[8px] cursor-pointer'} onClick={onFavoriteAdd}>
                   <div className={'p-1 mr-2'}>
                     <img src={'/images/icons/nftbox/star.svg'} alt={'star'} width={24} height={24}/>
                   </div>
