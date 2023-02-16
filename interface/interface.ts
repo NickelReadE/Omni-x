@@ -32,8 +32,10 @@ export interface NFTItem {
   collection_address: string,
   currency: string,
   order: any,
+  order_data?: any,
   bid_datas: any[],
   bid_order_data: any[],
+  likes?: number,
 }
 
 export interface IGetOrderRequest {

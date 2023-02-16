@@ -122,6 +122,14 @@ export const TextBodyemphasis = ({ children, className }: { children: ReactNode,
   )
 }
 
+export const TextHeader400 = ({ children, className }: { children: ReactNode, className?: string }) => {
+  return (
+    <div className={`text-[16px] leading-[140%] font-[400] ${className ?? ''}`}>
+      {children}
+    </div>
+  )
+}
+
 export const TextSubtext = ({ children, className }: { children: ReactNode, className?: string }) => {
   return (
     <div className={`text-[14px] leading-[140%] font-medium ${className ?? ''}`}>

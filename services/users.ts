@@ -32,9 +32,54 @@ const getActivity = async (address: string) => {
   return res.data
 }
 
+const getUserCollections = async (address: string) => {
+  const { data } = await API.get(`users/collections/${address.toLowerCase()}`)
+  return data
+}
+
 const getUserNonce = async (address: string) => {
   const { data } = await API.get(`users/get-nonce/${address.toLowerCase()}`)
   return data.nonce
+}
+
+const addFavoriteCollection = async (address: string, col_url: string) => {
+  const { data } = await API.post(`users/fav-collections/${address.toLowerCase()}/add`, {
+    col_url: col_url,
+  })
+  return data
+}
+
+const removeFavoriteCollection = async (address: string, col_url: string) => {
+  const { data } = await API.post(`users/fav-collections/${address.toLowerCase()}/remove`, {
+    col_url: col_url,
+  })
+  return data
+}
+
+const getFavoriteCollections = async (address: string) => {
+  const { data } = await API.get(`users/fav-collections/${address.toLowerCase()}`)
+  return data
+}
+
+const addFavorite = async (address: string, col_url: string, token_id: string) => {
+  const { data } = await API.post(`users/items/${address.toLowerCase()}/add`, {
+    col_url: col_url,
+    token_id: token_id
+  })
+  return data
+}
+
+const removeFavorite = async (address: string, col_url: string, token_id: string) => {
+  const { data } = await API.post(`users/items/${address.toLowerCase()}/remove`, {
+    col_url: col_url,
+    token_id: token_id
+  })
+  return data
+}
+
+const getFavoriteItems = async (address: string) => {
+  const { data } = await API.get(`users/items/${address.toLowerCase()}`)
+  return data
 }
 
 export const userService = {
@@ -44,5 +89,12 @@ export const userService = {
   searchByKeyword,
   getUserNFTs,
   getActivity,
-  getUserNonce
+  getUserNonce,
+  getUserCollections,
+  addFavoriteCollection,
+  removeFavoriteCollection,
+  addFavorite,
+  removeFavorite,
+  getFavoriteItems,
+  getFavoriteCollections
 }

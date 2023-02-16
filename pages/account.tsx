@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import React, { useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import UserBanner from '../components/user/Banner'
 import NFTGrid from '../components/user/NFTGrid'
 import {UserFavorites} from '../components/user/Favorites'
@@ -8,13 +8,21 @@ import UserActivity from '../components/user/UserActivity'
 import useData from '../hooks/useData'
 import useActivities from '../hooks/useActivities'
 import useWallet from '../hooks/useWallet'
+import UserCollections from '../components/user/UserCollections'
+import {userService} from '../services/users'
+import {FavoriteCollectionType, FavoriteItemType, UserCollectionType} from '../types/collections'
+import {getETHPrice} from '../utils/helpers'
 
 const Account: NextPage = () => {
   const { address } = useWallet()
   const {profile, userNfts: nfts, isLoadingNfts: isLoading} = useData()
   const { activities } = useActivities(address)
 
+  const [ethPrice, setEthPrice] = useState(0)
   const [selectedTab, setSelectedTab] = useState(0)
+  const [collections, setCollections] = useState<UserCollectionType[]>([])
+  const [favorites, setFavorites] = useState<FavoriteItemType[]>([])
+  const [favoriteCollections, setFavoriteCollections] = useState<FavoriteCollectionType[]>([])
 
   const activeClasses = (index: number) => {
     return index === selectedTab ? 'bg-primary-gradient': 'bg-secondary'
@@ -22,6 +30,26 @@ const Account: NextPage = () => {
   const activeTextClasses = (index: number) => {
     return index === selectedTab ? 'bg-primary-gradient bg-clip-text text-transparent': 'text-secondary'
   }
+
+  useEffect(() => {
+    (async () => {
+      if (address) {
+        const _collections = await userService.getUserCollections(address)
+        setCollections(_collections)
+        const _favoritesItems = await userService.getFavoriteItems(address)
+        setFavorites(_favoritesItems)
+        const _favoritesCollections = await userService.getFavoriteCollections(address)
+        setFavoriteCollections(_favoritesCollections)
+      }
+    })()
+  }, [address])
+
+  useEffect(() => {
+    (async () => {
+      const ethPrice = await getETHPrice()
+      setEthPrice(ethPrice)
+    })()
+  }, [])
 
   return (
     <div>
@@ -77,9 +105,9 @@ const Account: NextPage = () => {
 
             <div className={'my-6'}>
               {selectedTab === 0 && <NFTGrid nfts={nfts} isLoading={isLoading} />}
-              {selectedTab === 1 && <div />}
+              {selectedTab === 1 && <UserCollections ethPrice={ethPrice} collections={collections} />}
               {selectedTab === 2 && <UserActivity activities={activities}/>}
-              {selectedTab === 3 && <UserFavorites />}
+              {selectedTab === 3 && <UserFavorites items={favorites} collections={favoriteCollections} />}
               {selectedTab === 4 && <div/>}
             </div>
           </>

@@ -3,8 +3,8 @@ import React, {useEffect, useState} from 'react'
 import useComponentVisible from '../../../hooks/useComponentVisible'
 import useSearch from '../../../hooks/useSearch'
 import {truncateAddress} from '../../../utils/utils'
-
-const S3_BUCKET_URL = process.env.S3_BUCKET_URL || ''
+import {formatDollarAmount} from '../../../utils/numbers'
+import {getImageProperLink} from '../../../utils/helpers'
 
 export default function SearchBar() {
   const [query, setQuery] = useState('')
@@ -67,9 +67,9 @@ export default function SearchBar() {
                             <div className={'flex flex-col'}>
                               <span className={'text-lg text-primary-light'}>{item.name}</span>
                               <div className={'flex items-center text-xs'}>
-                                <span className={'bg-primary-gradient bg-clip-text text-transparent'}>floor ${getMinValue([item.floorPrice.omni, item.floorPrice.usd])}</span>
+                                <span className={'bg-primary-gradient bg-clip-text text-transparent'}>floor {formatDollarAmount(getMinValue([item.floor_prices.stable]))}</span>
                                 <span className={'bg-primary-gradient bg-clip-text text-transparent mx-2'}> | </span>
-                                <span className={'bg-primary-gradient bg-clip-text text-transparent'}>items {item.items_count}</span>
+                                <span className={'bg-primary-gradient bg-clip-text text-transparent'}>items {item.items_count.toLocaleString()}</span>
                               </div>
                             </div>
                           </div>
@@ -91,7 +91,7 @@ export default function SearchBar() {
                           <div className={'flex items-center cursor-pointer'}>
                             <div className={'mr-2 w-[30px] h-[30px] rounded-full overflow-hidden'}>
                               <img
-                                src={item.avatar ? (S3_BUCKET_URL + item.avatar) : '/images/omnix_logo_black_1.png'}
+                                src={item.avatar ? getImageProperLink(item.avatar) : '/images/omni-logo-mint-cropped.jpg'}
                                 alt={'avatar'}
                                 width={30}
                                 height={30}

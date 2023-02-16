@@ -44,10 +44,10 @@ const BuyContent: React.FC<IBuyContentProps> = ({
         <div className={'flex justify-center mb-5'}>
           <div className={'flex flex-col'}>
             <div className={'bg-primary-gradient p-[1px] rounded'}>
-              <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image"/>}>
+              <LazyLoad placeholder={<img src={'/images/omni-logo-mint-cropped.jpg'} alt="nft-image"/>}>
                 <img
                   className='bg-primary rounded'
-                  src={imageError ? '/images/omnix_logo_black_1.png' : nftImage}
+                  src={imageError ? '/images/omni-logo-mint-cropped.jpg' : nftImage}
                   alt="nft-image"
                   width={190}
                   height={190}

@@ -26,9 +26,10 @@ import {PrimaryButton} from '../common/buttons/PrimaryButton'
 import {GreenButton} from '../common/buttons/GreenButton'
 import {TextBodyemphasis, TextH3, TextSubtext} from '../common/Basic'
 import {getImageProperLink} from '../../utils/helpers'
+import {formatDollarAmount} from '../../utils/numbers'
 
 const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
-  const [imageError, setImageError] = useState(false)
+  const [,setImageError] = useState(false)
   const [boxHovered, setBoxHovered] = useState(false)
   const [dotHover, setDotHover] = useState(false)
   const [isFullscreenView, setIsFullscreenView] = useState(false)
@@ -61,7 +62,6 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     highestBid,
     highestBidCoin,
     lastSale,
-    lastSaleCoin
   } = useOrderStatics({
     nft,
     collection: nft_collection
@@ -88,7 +88,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
   }, [router.pathname])
 
   const isCollectionPage = useMemo(() => {
-    return router.pathname === '/collections/[collection]' || router.pathname === '/playground'
+    return router.pathname === '/collections/[collection]' || router.pathname === '/user/[address]' || router.pathname === '/playground'
   }, [router.pathname])
 
   const isWhitelisted = useMemo(() => {
@@ -109,7 +109,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     if (nft && nft.image) {
       return getImageProperLink(nft.image)
     }
-    return '/images/omnix_logo_black_1.png'
+    return '/images/omni-logo-mint-cropped.jpg'
   }, [nft])
 
   const doubleClickToSetDetailLink = async () => {
@@ -133,6 +133,28 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
       }
     }
   }
+
+  const onFavoriteAdd = async () => {
+    if (address && nft_collection?.col_url) {
+      try {
+        await userService.addFavorite(address, nft_collection.col_url, nft.token_id)
+        dispatch(openSnackBar({ message: 'Added to favorites', status: 'info' }))
+      } catch (e) {
+        console.error(e)
+      }
+    }
+  }
+
+  /*const onFavoriteRemove = async () => {
+    if (address && nft_collection?.col_url) {
+      try {
+        await userService.removeFavorite(address, nft_collection.col_url, nft.token_id)
+        dispatch(openSnackBar({ message: 'Removed from favorites', status: 'info' }))
+      } catch (e) {
+        console.error(e)
+      }
+    }
+  }*/
 
   const setAsPfp = async () => {
     if (address) {
@@ -170,10 +192,10 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
           <div className="nft-image-container w-full group relative flex justify-center text-center overflow-hidden rounded-tr-[8px] rounded-tl-[8px]">
             <Link href={`/collections/${col_url}/${nft.token_id}`}>
               <div className="w-full h-full cursor-pointer">
-                <LazyLoad placeholder={<img src={'/images/omnix_logo_black_1.png'} alt="nft-image" />}>
+                <LazyLoad placeholder={<img src={'/images/omni-logo-mint-cropped.jpg'} alt="nft-image" />}>
                   <img
-                    className='rounded-tr-[8px] rounded-tl-[8px] object-fill object-center  hover:backdrop-blur-[2px] hover:rounded-tr-[8px] hover:rounded-tl-[8px] duration-300 absolute top-0 bottom-0 left-0 right-0'
-                    src={imageError ? '/images/omnix_logo_black_1.png' : image}
+                    className='object-fill hover:scale-125 duration-300 absolute top-0 bottom-0 left-0 right-0'
+                    src={image}
                     alt="nft-image"
                     onError={() => { setImageError(true) }}
                     data-src={image}
@@ -186,13 +208,10 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
               <div className={'relative w-5 h-5'}>
                 <img src={'/images/icons/nftbox/heart.svg'} alt={'heart'}/>
               </div>
-              {/*<span className='text-md text-like'>
-                24
-              </span>*/}
             </div>
-            <div className={`absolute w-8 h-8 top-3 right-3 ${boxHovered ? 'block' : 'hidden'}`}>
+            {/* <div className={`absolute w-8 h-8 top-3 right-3 ${boxHovered ? 'block' : 'hidden'}`}>
               <img src={'/images/icons/nftbox/plus_circle_default.svg'} alt={'circle'} />
-            </div>
+            </div> */}
           </div>
           <div className={'flex flex-col justify-between min-h-[100px] p-3'}>
             <div className="flex flex-col-1 flex-row justify-between items-center">
@@ -273,8 +292,8 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                     <div>
                       {(!!lastSale && lastSale > 0) && <div className={'flex items-center'}>
                         <TextSubtext className="text-secondary">last sale: &nbsp;</TextSubtext>
-                        <img alt={'saleIcon'} src={lastSaleCoin} className="w-[18px] h-[18px]"/>&nbsp;
-                        <TextSubtext className="text-secondary">{numberLocalize(Number(lastSale))}</TextSubtext>
+                        {/*<img alt={'saleIcon'} src={lastSaleCoin} className="w-[18px] h-[18px]"/>&nbsp;*/}
+                        <TextSubtext className="text-secondary">{formatDollarAmount(Number(lastSale))}</TextSubtext>
                       </div>}
                       {(!lastSale && !!highestBid && highestBid > 0) && <div className={'flex items-center'}>
                         <TextSubtext className="text-secondary">highest offer: &nbsp;</TextSubtext>
@@ -306,7 +325,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
             {
               (isOwner && isWhitelisted) &&
               <>
-                <div className={'flex items-center px-2 rounded-tr-[8px] rounded-tl-[8px]'}>
+                <div className={'flex items-center px-2 rounded-tr-[8px] rounded-tl-[8px] cursor-pointer'} onClick={onFavoriteAdd}>
                   <div className={'p-1 mr-2'}>
                     <img src={'/images/icons/nftbox/star.svg'} alt={'star'} width={24} height={24}/>
                   </div>

@@ -1,6 +1,6 @@
 import {useEffect, useMemo, useState} from 'react'
 import Link from 'next/link'
-import {TextBody, TextBodyemphasis, TextH2, TextH3} from '../common/Basic'
+import {TextBody, TextHeader400, TextBodyemphasis, TextH2, TextH3} from '../common/Basic'
 import {collectionsService} from '../../services/collections'
 import {formatDollarAmount} from '../../utils/numbers'
 import {TopCollection} from '../../types/collections'
@@ -17,22 +17,42 @@ const CollectionRow = ({ collection, ethPrice }: { collection: TopCollection, et
   }, [collection, ethPrice])
 
   return (
-    <div className={'grid grid-cols-5 gap-x-12 h-[64px] flex items-center mt-4'}>
+    <div className={'grid grid-cols-6 gap-x-6 flex items-center mt-4'}>
       <Link href={'/collections/' + collection.col_url}>
-        <div className={'col-span-2 flex items-center space-x-4 cursor-pointer'}>
+        <div className={'col-span-3 flex items-center space-x-4 cursor-pointer'}>
           <TextBody className={'text-secondary'}>{collection.rank}</TextBody>
-          <div className={'bg-[#202020] rounded-[8px] w-full p-2 flex items-center space-x-3'}>
+          <div className={'bg-[#202020] rounded-[8px] w-full p-2 flex items-center space-x-3 top-collection-card'}>
             <img src={collection.profile_image} alt={'collection icon'} width={50} height={50} className={'rounded'} />
             <TextH3 className={'text-white'}>{collection.name}</TextH3>
           </div>
         </div>
       </Link>
-      <TextBody className={'col-span-1 text-white text-center'}>{formatDollarAmount(Number(collection.total_volume))}</TextBody>
-      <TextBody className={'col-span-1 text-transparent bg-primary-gradient bg-clip-text'}>{collection.change}%</TextBody>
-      <TextBody className={'col-span-1 text-secondary text-center'}>{formatDollarAmount(floor_price)}</TextBody>
+      <TextBodyemphasis className={'col-span-1 text-white text-center'}>{formatDollarAmount(Number(collection.total_volume))}</TextBodyemphasis>
+      <TextBodyemphasis className={'col-span-1 text-transparent bg-primary-gradient bg-clip-text text-center'}>{collection.change}%</TextBodyemphasis>
+      <TextBodyemphasis className={'col-span-1 text-secondary text-center'}>{formatDollarAmount(floor_price)}</TextBodyemphasis>
     </div>
   )
 }
+
+const DAY_RANGES = [{
+  day: 1,
+  displayName: '24hr'
+}, {
+  day: 7,
+  displayName: '7d'
+}, {
+  day: 30,
+  displayName: '30d'
+}, {
+  day: 90,
+  displayName: '90d'
+}, {
+  day: 365,
+  displayName: '1yr'
+}, {
+  day: 0,
+  displayName: 'all'
+}]
 
 export const HomeTopCollections = ({ ethPrice }: {ethPrice: number}) => {
   const [collections, setCollections] = useState<TopCollection[]>([])
@@ -56,64 +76,50 @@ export const HomeTopCollections = ({ ethPrice }: {ethPrice: number}) => {
         <div className={'flex items-center space-x-8'}>
           <TextH2 className={'text-white'}>Top Collections</TextH2>
         </div>
-        <div className={'bg-[#202020] rounded-[8px] h-[38px] flex items-center'}>
-          <div className={`${dayRange === 1 ? 'bg-[#303030]' : ''} flex rounded-tl-[8px] rounded-bl-[8px] items-center justify-center py-2 px-4 cursor-pointer`} onClick={() => setDayRange(1)}>
-            <TextBodyemphasis className={`${dayRange === 1 ? 'bg-clip-text text-transparent bg-primary-gradient' : 'text-secondary'}`}>24hr</TextBodyemphasis>
-          </div>
-          <div className={`${dayRange === 7 ? 'bg-[#303030]' : ''} flex items-center justify-center py-2 px-4 cursor-pointer`} onClick={() => setDayRange(7)}>
-            <TextBodyemphasis className={`${dayRange === 7 ? 'bg-clip-text text-transparent bg-primary-gradient' : 'text-secondary'}`}>7d</TextBodyemphasis>
-          </div>
-          <div className={`${dayRange === 30 ? 'bg-[#303030]' : ''} flex items-center justify-center py-2 px-4 cursor-pointer`} onClick={() => setDayRange(30)}>
-            <TextBodyemphasis className={`${dayRange === 30 ? 'bg-clip-text text-transparent bg-primary-gradient' : 'text-secondary'}`}>30d</TextBodyemphasis>
-          </div>
-          <div className={`${dayRange === 90 ? 'bg-[#303030]' : ''} flex items-center justify-center py-2 px-4 cursor-pointer`} onClick={() => setDayRange(90)}>
-            <TextBodyemphasis className={`${dayRange === 90 ? 'bg-clip-text text-transparent bg-primary-gradient' : 'text-secondary'}`}>90d</TextBodyemphasis>
-          </div>
-          <div className={`${dayRange === 365 ? 'bg-[#303030]' : ''} flex items-center justify-center py-2 px-4 cursor-pointer`} onClick={() => setDayRange(365)}>
-            <TextBodyemphasis className={`${dayRange === 365 ? 'bg-clip-text text-transparent bg-primary-gradient' : 'text-secondary'}`}>1yr</TextBodyemphasis>
-          </div>
-          <div className={`${dayRange === 0 ? 'bg-[#303030]' : ''} flex items-center rounded-tr-[8px] rounded-br-[8px] justify-center py-2 px-4 cursor-pointer`} onClick={() => setDayRange(0)}>
-            <TextBodyemphasis className={`${dayRange === 0 ? 'bg-clip-text text-transparent bg-primary-gradient' : 'text-secondary'}`}>all</TextBodyemphasis>
-          </div>
+        <div className={'bg-[#202020] rounded-[8px] h-[38px] flex items-center rounded-bar'}>
+          {DAY_RANGES.map((item, idx) => (
+            <div key={idx} className={`${dayRange === item.day ? 'bg-[#303030]' : ''} flex items-center justify-center py-2 px-4 cursor-pointer`} onClick={() => setDayRange(item.day)}>
+              <TextBodyemphasis className={`${dayRange === item.day ? 'bg-clip-text text-transparent bg-primary-gradient' : ''}`}>{item.displayName}</TextBodyemphasis>
+            </div>
+          ))}
         </div>
       </div>
 
       <div className={'flex mt-6 space-x-[120px]'}>
         <div className={'flex-1'}>
-          <div className={'grid grid-cols-5'}>
-            <div className={'col-span-2'}></div>
+          <div className={'grid grid-cols-6 gap-x-6'}>
+            <div className={'col-span-3'}></div>
             <div className={''}>
-              <TextBodyemphasis className={'text-white text-center'}>volume</TextBodyemphasis>
+              <TextHeader400 className={'text-white text-center'}>volume</TextHeader400>
             </div>
             <div className={''}>
-              <TextBodyemphasis className={'text-white text-center'}>%change</TextBodyemphasis>
+              <TextHeader400 className={'text-secondary text-center'}>% change</TextHeader400>
             </div>
             <div className={''}>
-              <TextBodyemphasis className={'text-white text-center'}>floor</TextBodyemphasis>
+              <TextHeader400 className={'text-secondary text-center'}>floor</TextHeader400>
             </div>
           </div>
           {
-            collections.filter((item, index) => index % 2 === 0).map((collection, index) => {
+            collections.slice(0, (collections.length + 1) / 2).map((collection, index) => {
               return <CollectionRow key={index} collection={collection} ethPrice={ethPrice} />
             })
           }
         </div>
         <div className={'flex-1'}>
-          <div className={'grid grid-cols-5'}>
-            <div className={'col-span-2'}></div>
+          <div className={'grid grid-cols-6 gap-x-6'}>
+            <div className={'col-span-3'}></div>
             <div className={''}>
-              <TextBodyemphasis className={'text-white text-center'}>volume</TextBodyemphasis>
+              <TextHeader400 className={'text-white text-center'}>volume</TextHeader400>
             </div>
             <div className={''}>
-              <TextBodyemphasis className={'text-white text-center'}>%change</TextBodyemphasis>
+              <TextHeader400 className={'text-secondary text-center'}>% change</TextHeader400>
             </div>
             <div className={''}>
-              <TextBodyemphasis className={'text-whit' +
-                'e text-center'}>floor</TextBodyemphasis>
+              <TextHeader400 className={'text-secondary text-center'}>floor</TextHeader400>
             </div>
           </div>
           {
-            collections.filter((item, index) => index % 2 === 1).map((collection, index) => {
+            collections.slice((collections.length + 1) / 2).map((collection, index) => {
               return <CollectionRow key={index} collection={collection} ethPrice={ethPrice} />
             })
           }

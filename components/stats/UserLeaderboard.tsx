@@ -7,9 +7,10 @@ import {formatDollarAmount} from '../../utils/numbers'
 import Pagination from '../common/Pagination'
 import {getImageProperLink} from '../../utils/helpers'
 
-export const StatsUserLeaderboard = ({ leaderboard }: { leaderboard: LeaderboardData[] }) => {
+const itemsPerPage = 10
+
+export const StatsUserLeaderboard = ({ leaderboard, totalPage, page, setPage }: { leaderboard: LeaderboardData[], totalPage: number, page: number, setPage: (page: number) => void }) => {
   const [dayRange, setDayRange] = useState(1)
-  const [page, setPage] = useState(1)
 
   const mappedLeaderboard = useMemo(() => {
     const dayRangeMap: any = {
@@ -87,7 +88,7 @@ export const StatsUserLeaderboard = ({ leaderboard }: { leaderboard: Leaderboard
             <div key={index} className={'grid grid-cols-6 gap-4 w-full mt-8'}>
               <Link href={`/user/${user.address}`}>
                 <div className={'col-span-2 flex items-center space-x-2 cursor-pointer'}>
-                  <span className={'text-secondary text-[15px] leading-[18px] mr-2'}>{index + 1}</span>
+                  <span className={'text-secondary text-[15px] leading-[18px] mr-2'}>{page * itemsPerPage + index + 1}</span>
                   <img src={user.avatar || '/images/default_avatar.png'} alt={'user'} width={36} height={36} className={'rounded-full h-9 w-9'} />
                   <TextH3 className={'text-primary-light'}>{truncateAddress(user.address)}</TextH3>
                 </div>
@@ -112,8 +113,7 @@ export const StatsUserLeaderboard = ({ leaderboard }: { leaderboard: Leaderboard
       {/* Pagination */}
       <div className={'flex justify-center mt-10'}>
         <Pagination
-          totalItems={100}
-          itemsPerPage={10}
+          totalPage={totalPage}
           currentPage={page}
           setCurrentPage={(page) => setPage(page)}
         />

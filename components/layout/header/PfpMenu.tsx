@@ -79,7 +79,7 @@ export const PfpMenu = ({ avatarImage }: IPfpMenuPros) => {
           show={hovered}
         >
           <div className={'absolute right-0 w-56 origin-top-right pt-4'}>
-            <GradientBackground className="shadow-[0_0px_250px_rgba(0,0,0,1)] py-2">
+            <GradientBackground className="py-2">
               {/*Wallet Balance Section*/}
               <div className={'p-4'}>
                 <Disclosure>

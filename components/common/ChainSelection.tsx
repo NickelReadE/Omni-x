@@ -1,7 +1,8 @@
 import {Fragment, useMemo, useState} from 'react'
-import {getDarkChainIconById, SUPPORTED_CHAIN_IDS} from '../../utils/constants'
+import {getChainNameFromId, SUPPORTED_CHAIN_IDS} from '../../utils/constants'
 import {ChainIds} from '../../types/enum'
 import {Transition} from '@headlessui/react'
+import { ChainIcon } from './ChainIcon'
 
 interface IChainSelectionProps {
     selectedChainIds: number[],
@@ -11,7 +12,7 @@ interface IChainSelectionProps {
     setChainId: (chainId: number) => void,
 }
 
-export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, addAllChainIds, setChainId }: IChainSelectionProps) => {
+export const ChainSelection = ({ selectedChainIds, removeChainId, addAllChainIds, setChainId }: IChainSelectionProps) => {
   const [isShow, setIsShow] = useState(false)
 
   const activeChainIds = useMemo(() => {
@@ -24,19 +25,6 @@ export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, ad
     }
   }
 
-  const DarkChainIcon = ({chainId, onClick}: {chainId: number, onClick: () => void}) => {
-    return (
-      <div
-        className={'font-medium cursor-pointer m-[1px]'}
-        onClick={onClick}
-      >
-        <img alt={'listing'}
-          src={getDarkChainIconById(chainId.toString())}
-          className="w-[38px] h-[38px]"/>
-      </div>
-    )
-  }
-
   return (
     <>
       {
@@ -47,11 +35,11 @@ export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, ad
                 ?
                 selectedChainIds.map((chainId: number, index) => {
                   return (
-                    <DarkChainIcon key={index} chainId={chainId} onClick={() => removeFromList(chainId)} />
+                    <ChainIcon key={index} chainName={getChainNameFromId(chainId)} size={'large'} isSelected={true} onClick={() => removeFromList(chainId)}/>
                   )
                 })
                 :
-                <span className={'text-primary-light text-md'}>all networks</span>
+                <span className={'text-primary-light text-md cursor-pointer'}>all networks</span>
             }
           </div>
           <Transition
@@ -70,8 +58,8 @@ export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, ad
               </div>
               {
                 activeChainIds.length > 0 &&
-                  <div className={'flex items-center font-medium cursor-pointer ml-[1px]'} onClick={addAllChainIds}>
-                    <span className={'text-primary-light text-md'}>all</span>
+                  <div className={'flex items-center font-medium cursor-pointer ml-[1px] text-secondary hover:text-primary-light'} onClick={addAllChainIds}>
+                    <span className={'text-md'}>all</span>
                   </div>
               }
               {
@@ -79,12 +67,12 @@ export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, ad
                   ?
                   SUPPORTED_CHAIN_IDS.map((chainId: ChainIds, index) => {
                     return (
-                      <DarkChainIcon key={index} chainId={chainId} onClick={() => setChainId(chainId)} />
+                      <ChainIcon key={index} chainName={getChainNameFromId(chainId)} size={'large'} onClick={() => setChainId(chainId)}/>
                     )
                   })
                   :activeChainIds.map((chainId: ChainIds, index) => {
                     return (
-                      <DarkChainIcon key={index} chainId={chainId} onClick={() => addChainId(chainId)} />
+                      <ChainIcon key={index} chainName={getChainNameFromId(chainId)} size={'large'} onClick={() => setChainId(chainId)}/>
                     )
                   })
               }
