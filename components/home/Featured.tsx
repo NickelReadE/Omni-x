@@ -28,7 +28,7 @@ const FeaturedCard = ({ collection, ethPrice }: { collection: BaseCollectionType
 
   return (
     <Link href={'/collections/' + collection.col_url}>
-      <div className={'relative bg-[#00807D] rounded-[12px] aspect-[3/2] h-[300px] cursor-pointer m-7 featured-card group'}>
+      <div className={'relative bg-[#00807D] rounded-[12px] aspect-[3/2] h-[300px] cursor-pointer m-2 featured-card group'}>
         {/* <div className={'flex items-center justify-center bg-frame-gradient rounded-[12px] w-full h-full card-bg'}> */}
         <img src={collection.featured_image} alt={'featured'} className={'w-full h-full object-cover rounded-[12px]'} />
         <div className="absolute rounded-b-[12px] bottom-0 left-0 right-0 h-16 opacity-0 bg-gradient-to-t from-black via-black to-transparent group-hover:opacity-60 duration-100" ></div>
@@ -53,7 +53,7 @@ export const HomeFeatured = ({ ethPrice }: {ethPrice: number}) => {
   }, [])
 
   return (
-    <div className={'flex items-center space-x-10 mt-8 overflow-auto p-8 -mx-8'}>
+    <div className={'flex items-center justify-center space-x-40 mt-8 overflow-auto p-8 -mx-8'}>
       {
         collections.map((collection, index) => {
           return (

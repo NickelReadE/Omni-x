@@ -306,6 +306,7 @@ const UserEdit: FC<IUserEditProps> = ({ updateModal }) => {
                         placeholder="https://"
                         value={twitter}
                         onChange={(e) => setTwitter(e.target.value)}
+                        pattern="^https:\/\/[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-z]{2,3})(:[0-9]+)?(\/.*)?$"
                       />
                     </div>
                     <div className="w-full mb-3 flex items-center">
@@ -319,6 +320,7 @@ const UserEdit: FC<IUserEditProps> = ({ updateModal }) => {
                         placeholder="https://"
                         value={website}
                         onChange={(e) => setWebsite(e.target.value)}
+                        pattern="^https:\/\/[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-z]{2,3})(:[0-9]+)?(\/.*)?$"
                       />
                     </div>
                     <div className="w-full flex items-center">
@@ -332,6 +334,7 @@ const UserEdit: FC<IUserEditProps> = ({ updateModal }) => {
                         placeholder="https://"
                         value={instagram}
                         onChange={(e) => setInstagram(e.target.value)}
+                        pattern="^https:\/\/[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-z]{2,3})(:[0-9]+)?(\/.*)?$"
                       />
                     </div>
                   </div>

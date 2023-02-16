@@ -96,17 +96,17 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
               {/* <div className={'w-11 h-11'}>
                 <Image src={'/images/icons/chat.svg'} alt={'chat'} width={44} height={44} />
               </div> */}
-              <div className={'w-8 h-8'}>
+              <div className={`w-8 h-8 ${user.website === '' ? 'hidden' : ''}`}>
                 <ExternalLink link={user.website}>
                   <Image src={'/images/icons/website.svg'} alt={'website'} width={32} height={32} />
                 </ExternalLink>
               </div>
-              <div className={'w-8 h-8'}>
+              <div className={`w-8 h-8 ${user.twitter === '' ? 'hidden' : ''}`}>
                 <ExternalLink link={user.twitter}>
                   <Image src={'/images/icons/twitter.svg'} alt={'website'} width={32} height={32} />
                 </ExternalLink>
               </div>
-              <div className={'w-8 h-8'}>
+              <div className={`w-8 h-8 ${user.instagram === '' ? 'hidden' : ''}`}>
                 <ExternalLink link={user.instagram}>
                   <Image src={'/images/icons/instagram.svg'} alt={'instagram'} width={32} height={32} />
                 </ExternalLink>
