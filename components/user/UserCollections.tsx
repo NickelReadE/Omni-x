@@ -1,39 +1,32 @@
-import {useEffect, useState} from 'react'
 import {UserCollectionType} from '../../types/collections'
-import {userService} from '../../services/users'
-import useWallet from '../../hooks/useWallet'
 import UserCollectionCard from './UserCollectionCard'
-import {getETHPrice} from '../../utils/helpers'
+import Dropdown from '../common/Dropdown'
 
-const UserCollections = () => {
-  const {address} = useWallet()
+const sortMenu = [
+  { text: 'A - Z', value: 'name' },
+  { text: 'Z - A', value: '-name' },
+  { text: 'last sold', value: 'lastSale' },
+  { text: 'price ascending', value: 'price' },
+  { text: 'price descending', value: '-price' },
+]
 
-  const [ethPrice, setEthPrice] = useState<number>(0)
-  const [collections, setCollections] = useState<UserCollectionType[]>([])
+const UserCollections = ({ collections, ethPrice }: { collections: UserCollectionType[], ethPrice: number }) => {
 
-  useEffect(() => {
-    (async () => {
-      if (address) {
-        const _collections = await userService.getUserCollections(address)
-        setCollections(_collections)
-      }
-    })()
-  }, [address])
-
-  useEffect(() => {
-    (async () => {
-      const ethPrice = await getETHPrice()
-      setEthPrice(ethPrice)
-    })()
-  }, [])
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const onChangeSort = () => {}
 
   return (
-    <div className={'grid grid-cols-4 gap-4'}>
-      {
-        collections.map((collection, index) => {
-          return <UserCollectionCard key={index} collection={collection} ethPrice={ethPrice} />
-        })
-      }
+    <div>
+      <div className={'mb-6 flex'}>
+        <Dropdown menus={sortMenu} onChange={onChangeSort} />
+      </div>
+      <div className={'grid grid-cols-4 gap-4'}>
+        {
+          collections.map((collection, index) => {
+            return <UserCollectionCard key={index} collection={collection} ethPrice={ethPrice} />
+          })
+        }
+      </div>
     </div>
   )
 }
