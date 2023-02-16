@@ -28,9 +28,10 @@ const FeaturedCard = ({ collection, ethPrice }: { collection: BaseCollectionType
 
   return (
     <Link href={'/collections/' + collection.col_url}>
-      <div className={'relative bg-[#00807D] rounded-[12px] aspect-[3/2] h-[300px] cursor-pointer m-7 featured-card'}>
+      <div className={'relative bg-[#00807D] rounded-[12px] aspect-[3/2] h-[300px] cursor-pointer m-7 featured-card group'}>
         {/* <div className={'flex items-center justify-center bg-frame-gradient rounded-[12px] w-full h-full card-bg'}> */}
-        <img src={collection.featured_image} alt={'featured'} className={'w-full h-full object-contain'} />
+        <img src={collection.featured_image} alt={'featured'} className={'w-full h-full object-cover rounded-[12px]'} />
+        <div className="absolute rounded-b-[12px] bottom-0 left-0 right-0 h-16 opacity-0 bg-gradient-to-t from-black via-black to-transparent group-hover:opacity-60 duration-100" ></div>
         {/* </div> */}
         <div className={'flex justify-between items-center absolute bottom-0 left-0 w-full h-[60px] px-4 card-text'}>
           <TextH3 className={'text-[#F5F5F5]'}>{collection.name}</TextH3>
