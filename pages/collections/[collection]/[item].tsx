@@ -3,11 +3,9 @@ import React, { useState, useMemo } from 'react'
 import LazyLoad from 'react-lazyload'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import {useDispatch} from 'react-redux'
 import useWallet from '../../../hooks/useWallet'
 import {
   getBlockExplorer,
-  getChainLogoById,
   getCurrencyIconByAddress,
   getDarkChainIconById,
 } from '../../../utils/constants'
@@ -16,12 +14,8 @@ import useCollectionNft from '../../../hooks/useCollectionNft'
 import { useModal } from '../../../hooks/useModal'
 import { ModalIDs } from '../../../contexts/modal'
 import {truncateAddress} from '../../../utils/utils'
-import { openSnackBar } from '../../../redux/reducers/snackBarReducer'
-import ShareIcon from '../../../public/images/icons/share.svg'
-import BridgeIcon from '../../../public/images/icons/bluegreen_linear.svg'
 import Accordion from '../../../components/collections/Accordion'
 import {PrimaryButton} from '../../../components/common/buttons/PrimaryButton'
-import {GreyButton} from '../../../components/common/buttons/GreyButton'
 import {getImageProperLink} from '../../../utils/helpers'
 import Link from 'next/link'
 import {formatDollarAmount} from '../../../utils/numbers'
@@ -36,7 +30,6 @@ const Item: NextPage = () => {
 
   const { address, chainId, chainName } = useWallet()
   const router = useRouter()
-  const dispatch = useDispatch()
   const col_url = router.query.collection as string
   const token_id = router.query.item as string
 
@@ -92,11 +85,6 @@ const Item: NextPage = () => {
     tokenId: token_id,
     selectedNFTItem: currentNFT,
     onRefresh
-  }
-
-  const onCopyToClipboard = async () => {
-    await navigator.clipboard.writeText(window.location.href)
-    dispatch(openSnackBar({ message: 'copied link to clipboard', status: 'info' }))
   }
 
   const nftImage = useMemo(() => {
