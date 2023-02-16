@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import LazyLoad from 'react-lazyload'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
@@ -10,7 +10,6 @@ import {
   getChainLogoById,
   getCurrencyIconByAddress,
   getDarkChainIconById,
-  numberLocalize
 } from '../../../utils/constants'
 import useOrderStatics from '../../../hooks/useOrderStatics'
 import useCollectionNft from '../../../hooks/useCollectionNft'
@@ -25,6 +24,10 @@ import {PrimaryButton} from '../../../components/common/buttons/PrimaryButton'
 import {GreyButton} from '../../../components/common/buttons/GreyButton'
 import {getImageProperLink} from '../../../utils/helpers'
 import Link from 'next/link'
+import {formatDollarAmount} from '../../../utils/numbers'
+import {SecondaryButton} from '../../../components/common/buttons/SecondaryButton'
+import Image from 'next/image'
+import {TextBodyemphasis} from '../../../components/common/Basic'
 
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false)
@@ -71,17 +74,16 @@ const Item: NextPage = () => {
 
   // statistics hook
   const {
-    order,
     sortedBids,
     // highestBid,
     // highestBidCoin,
     lastSale,
-    lastSaleCoin
   } = useOrderStatics({
     nft: currentNFT,
     collection
   })
 
+  const order = currentNFT?.order_data
   const { openModal, closeModal } = useModal()
 
   const tradingInput = {
@@ -91,12 +93,6 @@ const Item: NextPage = () => {
     selectedNFTItem: currentNFT,
     onRefresh
   }
-
-  // const currencyIcon = getCurrencyIconByAddress(currentNFT?.currency)
-  // const formattedPrice = currentNFT?.price
-  const chainIcon = useMemo(() => {
-    return getChainLogoById(currentNFT && currentNFT.chain_id ? currentNFT.chain_id.toString() : '5')
-  }, [currentNFT])
 
   const onCopyToClipboard = async () => {
     await navigator.clipboard.writeText(window.location.href)
@@ -219,90 +215,89 @@ const Item: NextPage = () => {
                 <div className={'flex justify-between items-center'}>
                   <div className={'text-primary-light text-xxl font-bold'}>{currentNFT.token_id}</div>
                   {/*icon group*/}
-                  <div className={'flex items-center space-x-3'}>
-                    <div className={'w-6 h-6 cursor-pointer'}>
-                      <svg width="28" height="24" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M24.6874 2.82871L24.6877 2.82905C25.2675 3.40853 25.7274 4.09656 26.0412 4.85384C26.3549 5.61111 26.5164 6.42279 26.5164 7.24249C26.5164 8.06219 26.3549 8.87387 26.0412 9.63114C25.7274 10.3884 25.2675 11.0765 24.6877 11.6559L24.6876 11.6561L23.2922 13.0515L13.7579 22.5858L4.22354 13.0515L2.82818 11.6561C1.65761 10.4855 1 8.89791 1 7.24249C1 5.58707 1.65761 3.99944 2.82818 2.82888C3.99874 1.65832 5.58636 1.0007 7.24179 1.0007C8.89721 1.0007 10.4848 1.65832 11.6554 2.82888L13.0508 4.22424C13.4413 4.61477 14.0744 4.61477 14.465 4.22424L15.8603 2.82888L15.8605 2.82872C16.44 2.24896 17.128 1.78906 17.8853 1.47528C18.6426 1.1615 19.4542 1 20.2739 1C21.0937 1 21.9053 1.1615 22.6626 1.47528C23.4199 1.78906 24.1079 2.24896 24.6874 2.82871Z" stroke="url(#paint0_linear_11_3106)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <defs>
-                          <linearGradient id="paint0_linear_11_3106" x1="5.15933" y1="-9.31788e-07" x2="28.2631" y2="6.39731" gradientUnits="userSpaceOnUse">
-                            <stop stopColor="#FA16FF"/>
-                            <stop offset="1" stopColor="#F00056"/>
-                          </linearGradient>
-                        </defs>
-                      </svg>
+                  <div className={'flex items-center space-x-4'}>
+                    <div className={'flex items-center bg-[#202020] rounded-[20px] py-[5px] px-2 space-x-2'}>
+                      <Image src={'/images/icons/heart.svg'} width={28} height={28} alt={'heart'} className={'cursor-pointer'} />
+                      <TextBodyemphasis className={'text-primary-light'}>
+                        {currentNFT.likes}
+                      </TextBodyemphasis>
                     </div>
-                    <div className={'w-6 h-6 cursor-pointer'}>
+                    <div className={'flex items-center'}>
+                      <Image src={'/images/icons/more.svg'} width={38} height={38} alt={'more'} className={'cursor-pointer'} />
+                    </div>
+                    {/*<div className={'w-6 h-6 cursor-pointer'}>
                       <BridgeIcon />
                     </div>
                     <div className={'w-6 h-6 cursor-pointer'} onClick={onCopyToClipboard}>
                       <ShareIcon />
-                    </div>
+                    </div>*/}
                   </div>
                 </div>
 
                 {/*collection name*/}
-                <div className={'flex flex-col mt-4'}>
+                <div className={'flex space-x-3 mt-4'}>
                   <div className={'text-secondary text-lg'}>collection</div>
-                  <div className={'text-primary-light text-lg mt-2'}>{collection.name}</div>
+                  <Link href={`/collections/${collection.col_url}`}>
+                    <div className={'text-primary-light text-lg underline hover:text-blue-400 cursor-pointer'}>{collection.name}</div>
+                  </Link>
                 </div>
 
                 {/*creator*/}
-                <div className={'flex flex-col mt-4'}>
+                <div className={'flex space-x-3 mt-4'}>
                   <div className={'text-secondary text-lg'}>creator</div>
                   <Link href={`/user/${collection.creator_address}`}>
-                    <div className={'text-primary-light text-lg mt-2 underline hover:text-blue-400 cursor-pointer'}>@{collection.creator_name}</div>
+                    <div className={'text-primary-light text-lg underline hover:text-blue-400 cursor-pointer'}>@{collection.creator_name}</div>
                   </Link>
                 </div>
 
                 {/*collector*/}
-                <div className={'flex flex-col mt-4'}>
+                <div className={'flex space-x-3 mt-4'}>
                   <div className={'text-secondary text-lg'}>collector</div>
                   <Link href={`/user/${currentNFT.owner}`}>
-                    <div className={'text-primary-light text-lg mt-2 underline hover:text-blue-400 cursor-pointer'}>{truncateAddress(currentNFT.owner)}</div>
+                    <div className={'text-primary-light text-lg underline hover:text-blue-400 cursor-pointer'}>{truncateAddress(currentNFT.owner)}</div>
                   </Link>
                 </div>
 
                 {/*current price*/}
-                <div className={'flex flex-col mt-4 border-[1px] rounded-lg w-full border-[#383838] pt-3 pb-6 px-6'}>
+                <div className={'flex flex-col mt-4 rounded-lg w-full bg-[#202020] p-3'}>
                   <div className={'flex items-center justify-between'}>
-                    <div className={'text-secondary text-xl'}>current price</div>
-                    <div className={'flex items-center'}>
-                      <div className={'text-primary-blue text-xxxl'}>{currentNFT.price > 0 ? currentNFT.price : '--'}</div>
-                      <img alt='chainIcon' src={chainIcon} className="ml-2 w-[32px] h-[32px]" />
-                    </div>
+                    <div className={'text-secondary text-lg'}>price</div>
                   </div>
-                  <div className={'flex items-center justify-around mt-5'}>
-                    <GreyButton text={'place bid'} className={'h-[32px]'} onClick={() => {
-                      openModal(ModalIDs.MODAL_BID, {
-                        nftImage: currentNFT.image,
-                        nftTitle: currentNFT.name,
-                        nftTokenId: currentNFT.token_id,
-                        tradingInput,
-                        handleBidDlgClose: closeModal
-                      })
-                    }}/>
-                    <PrimaryButton text={'buy now'} className={'h-[30px]'} disabled={!currentNFT.price} onClick={() => {
-                      openModal(ModalIDs.MODAL_BUY, {
-                        nftImage: currentNFT.image,
-                        nftTitle: currentNFT.name,
-                        nftTokenId: currentNFT.token_id,
-                        order,
-                        tradingInput,
-                        handleBuyDlgClose: closeModal
-                      })
-                    }}/>
+                  <div className={'flex items-center justify-between mt-3'}>
+                    <div className={'text-primary-blue text-xxxl'}>{currentNFT.price > 0 ? formatDollarAmount(currentNFT.price) : '--'}</div>
+                    <div className={'flex items-center space-x-4'}>
+                      <SecondaryButton text={'buy'} className={'h-[30px]'} disabled={!currentNFT.price} onClick={() => {
+                        openModal(ModalIDs.MODAL_BUY, {
+                          nftImage: nftImage,
+                          nftTitle: currentNFT.name,
+                          nftTokenId: currentNFT.token_id,
+                          order,
+                          tradingInput,
+                          handleBuyDlgClose: closeModal
+                        })
+                      }}/>
+                      <PrimaryButton text={'place bid'} className={'h-[32px]'} onClick={() => {
+                        openModal(ModalIDs.MODAL_BID, {
+                          nftImage: nftImage,
+                          nftTitle: currentNFT.name,
+                          nftTokenId: currentNFT.token_id,
+                          tradingInput,
+                          handleBidDlgClose: closeModal
+                        })
+                      }}/>
+                    </div>
                   </div>
                 </div>
 
                 {/*last sale*/}
                 {
                   Number(lastSale) > 0 &&
-                    <div className={'flex flex-col mt-4 border-[1px] rounded-lg w-full border-[#383838] py-3 px-6'}>
+                    <div className={'flex flex-col mt-4 rounded-lg w-full bg-[#202020] p-3'}>
                       <div className={'flex items-center justify-between'}>
-                        <div className={'text-secondary text-xl'}>last sale</div>
+                        <div className={'text-secondary text-lg'}>last sale</div>
                         <div className={'flex items-center'}>
-                          <div className={'text-primary-blue text-xxxl'}>{numberLocalize(Number(lastSale))}</div>
-                          <img alt='chainIcon' src={lastSaleCoin} className="ml-2 w-[32px] h-[32px]" />
+                          <div className={'text-primary-light text-lg'}>{formatDollarAmount(Number(lastSale))}</div>
+                          {/*<img alt='chainIcon' src={lastSaleCoin} className="ml-2 w-[32px] h-[32px]" />*/}
                         </div>
                       </div>
                     </div>
@@ -336,16 +331,15 @@ const Item: NextPage = () => {
                 <Accordion title={'attributes'}>
                   <div className="w-full">
                     {
-                      currentNFT && currentNFT.attributes && Object.entries(currentNFT.attributes).map((item: any, idx: number) => {
+                      currentNFT && currentNFT.attributes && currentNFT.attributes.map((attribute: any, idx: number) => {
                         const attrs = collection.attrs
                         if (!attrs) return null
 
-                        const attr = attrs[item[0]].values
-                        const trait = attr[(item[1] as string)]
+                        const trait = attrs[attribute.trait_type][attribute.value]
                         return <div className="px-5 py-2 rounded-lg" key={idx}>
-                          <p className="text-primary-green text-sm font-bold">{item[0]}</p>
+                          <p className="text-primary-green text-sm font-bold">{attribute.trait_type}</p>
                           <div className="flex justify-start items-center mt-2">
-                            <p className="text-primary-light text-xg font-bold">{item[1]}<span className="ml-3 font-normal">[{trait ? trait[1] : 0}%]</span></p>
+                            <p className="text-primary-light text-xg font-bold">{attribute.value}<span className="ml-3 font-normal">[{trait ? trait[1] : 0}%]</span></p>
                           </div>
                         </div>
                       })
