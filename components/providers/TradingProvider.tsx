@@ -417,8 +417,8 @@ export const doBuyConfirm = async (order: IOrder, common_data: TradingCommonData
 export const doBuyComplete = async (order: IOrder, common_data: TradingCommonData) => {
   if (!common_data.collectionUrl) throw new Error('Invalid Collection')
 
-  await updateOrderStatus(order, 'EXECUTED')
-  await collectionsService.updateCollectionNFTChainID(common_data.collectionUrl, Number(common_data.tokenId), Number(common_data.chainId))
+  // await updateOrderStatus(order, 'EXECUTED')
+  // await collectionsService.updateCollectionNFTChainID(common_data.collectionUrl, Number(common_data.tokenId), Number(common_data.chainId))
 }
 
 export const doBuyDone = (common_data: TradingCommonData) => {

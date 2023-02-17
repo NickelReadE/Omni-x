@@ -8,8 +8,8 @@ const createOrder = async (data: MakerOrderWithSignature) => {
 }
 
 const acceptOrder = async (request: IAcceptOrderRequest) => {
-  const res = await API.post('orders/change-order-status-to-executed', request)
-  return res.data
+  // const res = await API.post('orders/change-order-status-to-executed', request)
+  // return res.data
 }
 
 export const orderService = {

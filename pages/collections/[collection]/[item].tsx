@@ -323,13 +323,22 @@ const Item: NextPage = () => {
                     {
                       currentNFT && currentNFT.attributes && currentNFT.attributes.map((attribute: any, idx: number) => {
                         const attrs = collection.attrs
-                        if (!attrs) return null
 
-                        const trait = attrs[attribute.trait_type][attribute.value]
+                        if (collection.attrs !== null && JSON.stringify(collection.attrs) !== '{}' && attrs[attribute.trait_type]) {
+                          const trait = attrs[attribute.trait_type][attribute.value]
+                          return <div className="px-5 py-2 rounded-lg" key={idx}>
+                            <p className="text-primary-green text-sm font-bold">{attribute.trait_type}</p>
+                            <div className="flex justify-start items-center mt-2">
+                              <p className="text-primary-light text-xg font-bold">{attribute.value}<span
+                                className="ml-3 font-normal">[{trait ? trait[1] : 0}%]</span></p>
+                            </div>
+                          </div>
+                        }
                         return <div className="px-5 py-2 rounded-lg" key={idx}>
                           <p className="text-primary-green text-sm font-bold">{attribute.trait_type}</p>
                           <div className="flex justify-start items-center mt-2">
-                            <p className="text-primary-light text-xg font-bold">{attribute.value}<span className="ml-3 font-normal">[{trait ? trait[1] : 0}%]</span></p>
+                            <p className="text-primary-light text-xg font-bold">{attribute.value}<span
+                              className="ml-3 font-normal">[0%]</span></p>
                           </div>
                         </div>
                       })
