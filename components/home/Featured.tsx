@@ -53,7 +53,7 @@ export const HomeFeatured = ({ ethPrice }: {ethPrice: number}) => {
   }, [])
 
   return (
-    <div className={'flex items-center justify-center space-x-40 mt-8 overflow-auto p-8 -mx-8'}>
+    <div className={'flex items-center justify-center space-x-24 mt-8 overflow-auto p-8 -mx-8'}>
       {
         collections.map((collection, index) => {
           return (

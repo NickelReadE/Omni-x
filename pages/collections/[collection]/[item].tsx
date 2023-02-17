@@ -246,7 +246,7 @@ const Item: NextPage = () => {
                 <div className={'flex flex-row mt-4'}>
                   <span className={'text-secondary text-lg'}>collection</span>
                   <Link href={`/collections/${collection.name.toLowerCase()}`}>
-                    <span className={'text-primary-light text-lg ml-5 hover:text-blue-400 cursor-pointer'}>{collection.name}</span>
+                    <span className={'text-primary-light text-lg ml-5 hover:underline cursor-pointer'}>{collection.name}</span>
                   </Link>
                 </div>
 
@@ -254,7 +254,7 @@ const Item: NextPage = () => {
                 <div className={'flex flex-row mt-4'}>
                   <span className={'text-secondary text-lg'}>creator</span>
                   <Link href={`/user/${collection.creator_address}`}>
-                    <span className={'text-primary-light text-lg ml-5 hover:text-blue-400 cursor-pointer'}>@{collection.creator_name}</span>
+                    <span className={'text-primary-light text-lg ml-5 hover:underline cursor-pointer'}>@{collection.creator_name}</span>
                   </Link>
                 </div>
 
@@ -262,7 +262,7 @@ const Item: NextPage = () => {
                 <div className={'flex flex-row mt-4'}>
                   <span className={'text-secondary text-lg'}>collector</span>
                   <Link href={`/user/${currentNFT.owner}`}>
-                    <span className={'text-primary-light text-lg ml-5 hover:text-blue-400 cursor-pointer'}>{truncateAddress(currentNFT.owner)}</span>
+                    <span className={'text-primary-light text-lg ml-5 hover:underline cursor-pointer'}>{truncateAddress(currentNFT.owner)}</span>
                   </Link>
                 </div>
 

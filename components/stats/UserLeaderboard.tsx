@@ -43,24 +43,25 @@ export const StatsUserLeaderboard = ({ leaderboard, totalPage, page, setPage }: 
           <TextH2 className={'text-primary-light'}>User Leaderboard</TextH2>
         </div>
 
-        <div className={'bg-[#202020] rounded-[8px] h-[38px] flex items-center'}>
-          <div className={`${dayRange === 1 ? 'bg-[#303030]' : ''} flex rounded-tl-[8px] rounded-bl-[8px] items-center justify-center py-2 px-4 cursor-pointer`} onClick={() => setDayRange(1)}>
-            <TextBodyemphasis className={`${dayRange === 1 ? 'bg-clip-text text-transparent bg-primary-gradient' : 'text-secondary'}`}>24hr</TextBodyemphasis>
+        {/*rewrite this so it is coherent with the same component in TopCollections.tsx  */}
+        <div className={'bg-[#202020] rounded-[8px] h-[38px] flex items-center rounded-bar'}>
+          <div className={`${dayRange === 1 ? 'bg-[#303030]' : ''} flex items-center justify-center py-2 px-4 cursor-pointer`} onClick={() => setDayRange(1)}>
+            <TextBodyemphasis className={`${dayRange === 1 ? 'bg-clip-text text-transparent bg-primary-gradient' : ''}`}>24hr</TextBodyemphasis>
           </div>
           <div className={`${dayRange === 7 ? 'bg-[#303030]' : ''} flex items-center justify-center py-2 px-4 cursor-pointer`} onClick={() => setDayRange(7)}>
-            <TextBodyemphasis className={`${dayRange === 7 ? 'bg-clip-text text-transparent bg-primary-gradient' : 'text-secondary'}`}>7d</TextBodyemphasis>
+            <TextBodyemphasis className={`${dayRange === 7 ? 'bg-clip-text text-transparent bg-primary-gradient' : ''}`}>7d</TextBodyemphasis>
           </div>
           <div className={`${dayRange === 30 ? 'bg-[#303030]' : ''} flex items-center justify-center py-2 px-4 cursor-pointer`} onClick={() => setDayRange(30)}>
-            <TextBodyemphasis className={`${dayRange === 30 ? 'bg-clip-text text-transparent bg-primary-gradient' : 'text-secondary'}`}>30d</TextBodyemphasis>
+            <TextBodyemphasis className={`${dayRange === 30 ? 'bg-clip-text text-transparent bg-primary-gradient' : ''}`}>30d</TextBodyemphasis>
           </div>
           <div className={`${dayRange === 90 ? 'bg-[#303030]' : ''} flex items-center justify-center py-2 px-4 cursor-pointer`} onClick={() => setDayRange(90)}>
-            <TextBodyemphasis className={`${dayRange === 90 ? 'bg-clip-text text-transparent bg-primary-gradient' : 'text-secondary'}`}>90d</TextBodyemphasis>
+            <TextBodyemphasis className={`${dayRange === 90 ? 'bg-clip-text text-transparent bg-primary-gradient' : ''}`}>90d</TextBodyemphasis>
           </div>
           <div className={`${dayRange === 365 ? 'bg-[#303030]' : ''} flex items-center justify-center py-2 px-4 cursor-pointer`} onClick={() => setDayRange(365)}>
-            <TextBodyemphasis className={`${dayRange === 365 ? 'bg-clip-text text-transparent bg-primary-gradient' : 'text-secondary'}`}>1yr</TextBodyemphasis>
+            <TextBodyemphasis className={`${dayRange === 365 ? 'bg-clip-text text-transparent bg-primary-gradient' : ''}`}>1yr</TextBodyemphasis>
           </div>
-          <div className={`${dayRange === 0 ? 'bg-[#303030]' : ''} flex items-center rounded-tr-[8px] rounded-br-[8px] justify-center py-2 px-4 cursor-pointer`} onClick={() => setDayRange(0)}>
-            <TextBodyemphasis className={`${dayRange === 0 ? 'bg-clip-text text-transparent bg-primary-gradient' : 'text-secondary'}`}>all</TextBodyemphasis>
+          <div className={`${dayRange === 0 ? 'bg-[#303030]' : ''} flex items-center justify-center py-2 px-4 cursor-pointer`} onClick={() => setDayRange(0)}>
+            <TextBodyemphasis className={`${dayRange === 0 ? 'bg-clip-text text-transparent bg-primary-gradient' : ''}`}>all</TextBodyemphasis>
           </div>
         </div>
       </div>

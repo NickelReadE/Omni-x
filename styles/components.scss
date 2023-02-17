@@ -41,7 +41,8 @@
   
     &:hover {
       background-color: #303030;
-      color: white;
+      // color: white;
+      @apply text-white;
     }
   }
 }
