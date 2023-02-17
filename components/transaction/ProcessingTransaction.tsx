@@ -1,62 +1,21 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {PendingTxType} from '../../contexts/contract'
-import {getBlockExplorer, getChainIcons} from '../../utils/constants'
+import {getBlockExplorer, getChainNameFromId} from '../../utils/constants'
+import { ChainIcon } from '../common/ChainIcon'
 
 type ProcessingTransactionProps = {
   txInfo: PendingTxType
 }
 
 const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Element => {
-  const [hovered, setHovered] = useState(false)
-  // const [targetHovered, setTargetHovered] = useState(false)
-  // const [lastHovered, setLastHovered] = useState(false)
-
   const onViewExplorer = () => {
     if (txInfo && txInfo.lzPath) {
       window.open(txInfo.lzPath)
-    } else if (txInfo && txInfo.txHash && txInfo.senderChainId && hovered) {
+    } else if (txInfo && txInfo.txHash && txInfo.senderChainId) {
       const explorer = getBlockExplorer(txInfo.senderChainId)
       if (explorer) {
         window.open(`${explorer}/tx/${txInfo.txHash}`, '_blank')
       }
-    }
-  }
-
-  // const onViewExplorerOnDest = () => {
-  //   if (txInfo && txInfo.destTxHash && txInfo.targetChainId && targetHovered) {
-  //     const explorer = getBlockExplorer(txInfo.targetChainId)
-  //     if (explorer) {
-  //       window.open(`${explorer}/tx/${txInfo.destTxHash}`, '_blank')
-  //     }
-  //   }
-  // }
-
-  // const onViewExplorerOnLast = () => {
-  //   if (txInfo && txInfo.lastTxHash && txInfo.targetChainId && lastHovered) {
-  //     const explorer = getBlockExplorer(txInfo.targetChainId)
-  //     if (explorer) {
-  //       window.open(`${explorer}/tx/${txInfo.lastTxHash}`, '_blank')
-  //     }
-  //   }
-  // }
-
-  const onHover = (type: 'sender' | 'target' | 'last') => {
-    if (type === 'sender') {
-      setHovered(true)
-    } else if (type === 'last') {
-      // setLastHovered(true)
-    } else {
-      // setTargetHovered(true)
-    }
-  }
-
-  const onLeave = (type: 'sender' | 'target' | 'last') => {
-    if (type === 'sender') {
-      setHovered(false)
-    } else if (type === 'last') {
-      // setLastHovered(false)
-    } else {
-      // setTargetHovered(false)
     }
   }
 
@@ -71,56 +30,10 @@ const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Elem
           {txInfo.type === 'gaslessMint' && 'mint:'}
         </span>
         {txInfo.lzPath ? (
-          <img
-            onMouseEnter={() => onHover('sender')}
-            onMouseLeave={() => onLeave('sender')}
-            src={hovered ? getChainIcons(txInfo.senderChainId).explorer : '/images/chain/lz_icon.svg'}
-            style={{ cursor: (hovered) ? 'pointer' : 'auto', opacity: (txInfo && txInfo.txHash) ? 1 : 0.4 }}
-            alt="chain icon"
-            width={20}
-            height={20}
-            onClick={onViewExplorer}
-          />
+          <ChainIcon chainName='layerzero' onClick={onViewExplorer}/>
         ) : (
-          <img
-            onMouseEnter={() => onHover('sender')}
-            onMouseLeave={() => onLeave('sender')}
-            src={hovered ? getChainIcons(txInfo.senderChainId).explorer : getChainIcons(txInfo.senderChainId).icon}
-            style={{ cursor: (hovered) ? 'pointer' : 'auto', opacity: (txInfo && txInfo.txHash) ? 1 : 0.4 }}
-            alt="chain icon"
-            width={20}
-            height={20}
-            onClick={onViewExplorer}
-          />
+          <ChainIcon chainName={getChainNameFromId(txInfo.senderChainId)} onClick={onViewExplorer}/>
         )}
-        {/* {txInfo.type != 'gaslessMint' && (<>
-          <div className={'w-4 h-4 flex items-center justify-center'}>
-            <img src={'/images/icons/arrow_right.svg'} alt="arrowRight" />
-          </div>
-          <img
-            width={20}
-            height={20}
-            onMouseEnter={() => onHover('target')}
-            onMouseLeave={() => onLeave('target')}
-            src={(targetHovered && txInfo.destTxHash) ? getChainIcons(txInfo.targetChainId).explorer : getChainIcons(txInfo.targetChainId).icon}
-            style={{ cursor: (txInfo && txInfo.destTxHash) ? 'pointer' : 'auto', opacity: (txInfo && txInfo.destTxHash) ? 1 : 0.4 }}
-            onClick={onViewExplorerOnDest}
-            alt="chain icon"
-          />
-        </>)}
-        {txInfo.lastTxAvailable && (<>
-          <Image src={arrowRight} alt="arrowRight" />
-          <img
-            width={20}
-            height={20}
-            onMouseEnter={() => onHover('last')}
-            onMouseLeave={() => onLeave('last')}
-            src={(lastHovered && txInfo.lastTxHash) ? getChainIcons(txInfo.targetChainId).explorer : getChainIcons(txInfo.targetChainId).icon}
-            style={{ cursor: (txInfo && txInfo.lastTxHash) ? 'pointer' : 'auto', opacity: (txInfo && txInfo.lastTxHash) ? 1 : 0.4 }}
-            onClick={onViewExplorerOnLast}
-            alt="chain icon"
-          />
-        </>)} */}
         <span className="text-md text-primary-light ml-1 w-[120px] truncate">{txInfo?.itemName}</span>
         {txDone ?<img src='/images/tx_check.svg' alt='tx check'/> : <span className='w-[16px] h-[16px]'/>}
       </div>

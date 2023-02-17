@@ -10,7 +10,7 @@ import useActivities from '../hooks/useActivities'
 import useWallet from '../hooks/useWallet'
 import UserCollections from '../components/user/UserCollections'
 import {userService} from '../services/users'
-import {UserCollectionType} from '../types/collections'
+import {FavoriteCollectionType, FavoriteItemType, UserCollectionType} from '../types/collections'
 import {getETHPrice} from '../utils/helpers'
 
 const Account: NextPage = () => {
@@ -21,6 +21,8 @@ const Account: NextPage = () => {
   const [ethPrice, setEthPrice] = useState(0)
   const [selectedTab, setSelectedTab] = useState(0)
   const [collections, setCollections] = useState<UserCollectionType[]>([])
+  const [favorites, setFavorites] = useState<FavoriteItemType[]>([])
+  const [favoriteCollections, setFavoriteCollections] = useState<FavoriteCollectionType[]>([])
 
   const activeClasses = (index: number) => {
     return index === selectedTab ? 'bg-primary-gradient': 'bg-secondary'
@@ -34,6 +36,10 @@ const Account: NextPage = () => {
       if (address) {
         const _collections = await userService.getUserCollections(address)
         setCollections(_collections)
+        const _favoritesItems = await userService.getFavoriteItems(address)
+        setFavorites(_favoritesItems)
+        const _favoritesCollections = await userService.getFavoriteCollections(address)
+        setFavoriteCollections(_favoritesCollections)
       }
     })()
   }, [address])
@@ -101,7 +107,7 @@ const Account: NextPage = () => {
               {selectedTab === 0 && <NFTGrid nfts={nfts} isLoading={isLoading} />}
               {selectedTab === 1 && <UserCollections ethPrice={ethPrice} collections={collections} />}
               {selectedTab === 2 && <UserActivity activities={activities}/>}
-              {selectedTab === 3 && <UserFavorites />}
+              {selectedTab === 3 && <UserFavorites items={favorites} collections={favoriteCollections} />}
               {selectedTab === 4 && <div/>}
             </div>
           </>

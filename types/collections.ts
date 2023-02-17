@@ -51,6 +51,7 @@ export type FullCollectionType = BaseCollectionType & {
   is_gasless: boolean,
   creator_name: string,
   creator_address: string,
+  likes: number,
 }
 
 export type MintingSchedule = {
@@ -78,4 +79,27 @@ export type UserCollectionType = BaseCollectionType & {
   items_count: number,
   owners_count: number,
   revenue: number,
+}
+
+export type FavoriteItemType = {
+  name: string;
+  image: string;
+  token_id: string;
+  price: number;
+  currency: string;
+  last_sale_price: number;
+  last_sale_currency: string;
+  likes: number;
+  sale_count: number;
+  highest_bid: number;
+}
+
+export type FavoriteCollectionType = {
+  name: string;
+  profile_image: string;
+  total_volume: number;
+  floor_prices: CollectionPrice;
+  sales_count: number;
+  owners_count: number;
+  listed_count: number;
 }
