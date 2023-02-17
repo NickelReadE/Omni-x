@@ -50,18 +50,18 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
         <div className={'hidden lg:block'} />
         <div className={classNames( 'col-span-4')}>
           <div className={'relative'}>
-            <div className={'overflow-hidden aspect-[3/1]'}>
+            <div className={'overflow-hidden aspect-[3/1] rounded-lg'}>
               <img
                 src={bannerImage}
-                className="rounded-md w-full object-cover"
+                className="w-full object-cover"
                 alt={'banner'}
               />
             </div>
-            <div className="bottom-[-80px] left-6 w-[120px] h-[120px] absolute flex items-end">
+            <div className="bottom-[-80px] left-6 w-[120px] h-[120px] absolute flex items-end border-solid rounded border-4 border-primary">
               <img
                 src={avatarImage}
                 alt="avatar"
-                className={'w-full h-full rounded-lg'}
+                className={'w-full h-full'}
               />
             </div>
           </div>
