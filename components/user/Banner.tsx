@@ -50,18 +50,18 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
         <div className={'hidden lg:block'} />
         <div className={classNames( 'col-span-4')}>
           <div className={'relative'}>
-            <div className={'overflow-hidden aspect-[3/1]'}>
+            <div className={'overflow-hidden aspect-[3/1] rounded-lg'}>
               <img
                 src={bannerImage}
-                className="rounded-md w-full object-cover"
+                className="w-full object-cover"
                 alt={'banner'}
               />
             </div>
-            <div className="bottom-[-80px] left-6 w-[120px] h-[120px] absolute flex items-end">
+            <div className="bottom-[-80px] left-6 w-[120px] h-[120px] absolute flex items-end border-solid rounded border-4 border-primary">
               <img
                 src={avatarImage}
                 alt="avatar"
-                className={'w-full h-full rounded-lg'}
+                className={'w-full h-full'}
               />
             </div>
           </div>
@@ -96,17 +96,17 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
               {/* <div className={'w-11 h-11'}>
                 <Image src={'/images/icons/chat.svg'} alt={'chat'} width={44} height={44} />
               </div> */}
-              <div className={'w-8 h-8'}>
+              <div className={`w-8 h-8 ${user.website === '' ? 'hidden' : ''}`}>
                 <ExternalLink link={user.website}>
                   <Image src={'/images/icons/website.svg'} alt={'website'} width={32} height={32} />
                 </ExternalLink>
               </div>
-              <div className={'w-8 h-8'}>
+              <div className={`w-8 h-8 ${user.twitter === '' ? 'hidden' : ''}`}>
                 <ExternalLink link={user.twitter}>
                   <Image src={'/images/icons/twitter.svg'} alt={'website'} width={32} height={32} />
                 </ExternalLink>
               </div>
-              <div className={'w-8 h-8'}>
+              <div className={`w-8 h-8 ${user.instagram === '' ? 'hidden' : ''}`}>
                 <ExternalLink link={user.instagram}>
                   <Image src={'/images/icons/instagram.svg'} alt={'instagram'} width={32} height={32} />
                 </ExternalLink>

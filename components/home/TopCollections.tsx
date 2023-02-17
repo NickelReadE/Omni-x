@@ -34,6 +34,7 @@ const CollectionRow = ({ collection, ethPrice }: { collection: TopCollection, et
   )
 }
 
+//properly export this!!! same intervals are needed in UserLeaderboard.tsx
 const DAY_RANGES = [{
   day: 1,
   displayName: '24hr'

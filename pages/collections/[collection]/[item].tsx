@@ -153,7 +153,9 @@ const Item: NextPage = () => {
                         return (
                           <div key={index} onMouseEnter={() => setBidHover(index)} onMouseLeave={() => setBidHover(undefined)}>
                             <div className={'w-full grid grid-cols-5'}>
-                              <div className='col-span-1 break-all mt-3 text-lg font-bold text-secondary'>{truncateAddress(item.signer)}</div>
+                              <Link href={`/user/${item.signer}`}>
+                                <div className='col-span-1 break-all mt-3 text-lg font-bold text-secondary hover:text-blue-400 cursor-pointer'>{truncateAddress(item.signer)}</div>
+                              </Link>
                               <div className='col-span-1' />
                               <div className="col-span-1 flex justify-center mt-3">
                                 <img
@@ -223,26 +225,26 @@ const Item: NextPage = () => {
                 </div>
 
                 {/*collection name*/}
-                <div className={'flex space-x-3 mt-4'}>
-                  <div className={'text-secondary text-lg'}>collection</div>
+                <div className={'flex flex-row mt-4'}>
+                  <span className={'text-secondary text-lg'}>collection</span>
                   <Link href={`/collections/${collection.col_url}`}>
-                    <div className={'text-primary-light text-lg underline hover:text-blue-400 cursor-pointer'}>{collection.name}</div>
+                    <span className={'text-primary-light text-lg ml-5 hover:underline cursor-pointer'}>{collection.name}</span>
                   </Link>
                 </div>
 
                 {/*creator*/}
-                <div className={'flex space-x-3 mt-4'}>
-                  <div className={'text-secondary text-lg'}>creator</div>
+                <div className={'flex flex-row mt-4'}>
+                  <span className={'text-secondary text-lg'}>creator</span>
                   <Link href={`/user/${collection.creator_address}`}>
-                    <div className={'text-primary-light text-lg underline hover:text-blue-400 cursor-pointer'}>@{collection.creator_name}</div>
+                    <span className={'text-primary-light text-lg ml-5 hover:underline cursor-pointer'}>@{collection.creator_name}</span>
                   </Link>
                 </div>
 
                 {/*collector*/}
-                <div className={'flex space-x-3 mt-4'}>
-                  <div className={'text-secondary text-lg'}>collector</div>
+                <div className={'flex flex-row mt-4'}>
+                  <span className={'text-secondary text-lg'}>collector</span>
                   <Link href={`/user/${currentNFT.owner}`}>
-                    <div className={'text-primary-light text-lg underline hover:text-blue-400 cursor-pointer'}>{truncateAddress(currentNFT.owner)}</div>
+                    <span className={'text-primary-light text-lg ml-5 hover:underline cursor-pointer'}>{truncateAddress(currentNFT.owner)}</span>
                   </Link>
                 </div>
 

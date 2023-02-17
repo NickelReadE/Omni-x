@@ -32,7 +32,7 @@ export const SpinLoader = () => {
 
 export const GradientBackground = ({ children, className }: { children: ReactNode, className?: string }) => {
   return (
-    <div className={twMerge(`gradient-box bg-[#202020] opacity-90 rounded-[8px] backdrop-filter backdrop-blur-[10px] shadow-[0_0px_20px_rgba(231,237,245,0.25)] focus:outline-none ${className ?? ''}`)}>
+    <div className={twMerge(`gradient-box bg-[#202020] opacity-100 rounded-[8px] backdrop-filter backdrop-blur-[10px] shadow-[0_0px_20px_rgba(231,237,245,0.25)] focus:outline-none ${className ?? ''}`)}>
       {children}
     </div>
   )

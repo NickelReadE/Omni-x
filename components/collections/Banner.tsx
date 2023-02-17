@@ -55,20 +55,20 @@ export const CollectionBanner = ({ collection, setSelectedTabIndex }: Collection
 
   return (
     <>
-      <div className={'w-full flex space-x-6'}>
+      <div className={'w-full flex space-x-6 min-h-[200px] max-h-[200px] display: inline-block box-sizing: border-box;'}>
         <div className="w-[200px] h-[200px]">
           <img
             src={collection.profile_image}
             alt="avatar"
             width={200}
             height={200}
-            className={'rounded'}
+            className={'rounded min-h-[200px] min-w-[200px] max-h-[200px]'}
           />
         </div>
 
-        <div className={'flex flex-col w-full'}>
-          <div className={'flex justify-between w-full'}>
-            <div className={'flex flex-col space-y-2'}>
+        <div className={'flex flex-col w-full max-h-[200px]'}>
+          <div className={'flex justify-between max-h-[200px]'}>
+            <div className={'flex flex-col space-y-2 max-h-[200px]'}>
               <TextH2 className={'text-primary-light'}>{collection.name}</TextH2>
               <div className={'flex space-x-4'}>
                 <TextBody className={'text-primary-light'}>by {collection.creator_name}</TextBody>
@@ -120,34 +120,37 @@ export const CollectionBanner = ({ collection, setSelectedTabIndex }: Collection
           </div>
 
           <div className={'pt-2 flex items-center'}>
-            <div className={'w-[100%] md:w-[50%] text-secondary text-md'}>
-              {collection.description}
-            </div>
+            <div className={'w-[100%] md:w-[90%] text-secondary text-md'}>
+              {collection.description.length > 200
+                ? collection.description.slice(0, 200) + '...'
+                : collection.description
+              }
+            </div> 
             <div className={'w-0 md:w-[50%}'}/>
           </div>
 
-          <div className={'flex items-center space-x-6 mt-4'}>
-            <div className={'flex flex-col items-center space-y-2'}>
+          <div className={'flex items-center space-x-6 my-3 whitespace-nowrap '}>
+            <div className={'flex flex-col items-center space-y-2 '}>
               <span className={'text-md text-secondary'}>items</span>
               <span className={'text-xg text-primary-light'}>{collection.items_count}</span>
             </div>
-            <div className={'md:flex flex-col items-center space-y-2 hidden'}>
+            <div className={'flex flex-col items-center space-y-2 '}>
               <span className={'text-md text-secondary'}>owners</span>
               <span className={'text-xg text-primary-light'}>{collection.owner_count}</span>
             </div>
-            <div className={'lg:flex flex-col items-center space-y-2 hidden'}>
+            <div className={'flex flex-col items-center space-y-2 '}>
               <span className={'text-md text-secondary'}>creator&nbsp;fee</span>
               <span className={'text-xg text-primary-light'}>{royalty}%</span>
             </div>
-            <div className={'xl:flex flex-col items-center space-y-2 hidden'}>
+            <div className={'flex flex-col items-center space-y-2 '}>
               <span className={'text-md text-secondary'}>total&nbsp;vol</span>
               <span className={'text-xg text-primary-light'}>{formatDollarAmount(Number(collection.total_volume))}</span>
             </div>
-            <div className={'2xl:flex flex-col items-center space-y-2 hidden'}>
+            <div className={'flex flex-col items-center space-y-2 '}>
               <span className={'text-md text-secondary'}>7d&nbsp;vol</span>
               <span className={'text-xg text-primary-light'}>{formatDollarAmount(Number(collection.volume7d))}</span>
             </div>
-            <div className={'2xl:flex flex-col items-center space-y-2 hidden'}>
+            <div className={'flex flex-col items-center space-y-2 '}>
               <span className={'text-md text-secondary'}>listed</span>
               <span className={'text-xg text-primary-light'}>{collection.listed_count}</span>
             </div>
