@@ -82,6 +82,28 @@ const getFavoriteItems = async (address: string) => {
   return data
 }
 
+const addHideItem = async (address: string, col_url: string, token_id: string) => {
+  const { data } = await API.post(`users/hidden/${address.toLowerCase()}/add`, {
+    col_url: col_url,
+    token_id: token_id
+  })
+  return data
+}
+
+const removeHideItem = async (address: string, col_url: string, token_id: string) => {
+  const { data } = await API.post(`users/hidden/${address.toLowerCase()}/remove`, {
+    col_url: col_url,
+    token_id: token_id
+  })
+  return data
+}
+
+const getHideItems = async (address: string) => {
+  const { data } = await API.get(`users/hidden/${address.toLowerCase()}`)
+  return data
+}
+
+
 export const userService = {
   updateProfile,
   updateProfileImage,
@@ -93,6 +115,9 @@ export const userService = {
   getUserCollections,
   addFavoriteCollection,
   removeFavoriteCollection,
+  addHideItem,
+  removeHideItem,
+  getHideItems,
   addFavorite,
   removeFavorite,
   getFavoriteItems,

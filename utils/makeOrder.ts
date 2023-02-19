@@ -5,7 +5,6 @@ import {userService} from '../services/users'
 import {orderService} from '../services/orders'
 import {minNetPriceRatio} from '../constants'
 import {MakerOrder, MakerOrderWithEncodedParams, SolidityType} from '../types'
-import {OrderStatus} from '../interface/interface'
 
 const MAKE_ORDER_SIGN_TYPES = {
   EIP712Domain: [
@@ -189,21 +188,6 @@ export const updateMakerOrder = async (
   await orderService.createOrder(data)
 
   return data
-}
-
-export const acceptOrder = async (
-  hash: string, tokeId: string, status: OrderStatus
-) => {
-  const data  = {
-    hash: hash,
-    token_id: tokeId,
-    status
-  }
-  try{
-    await orderService.acceptOrder(data)
-  } catch(error) {
-    console.log(error)
-  }
 }
 
 const zeroPad = (value: any, length: number) => {
