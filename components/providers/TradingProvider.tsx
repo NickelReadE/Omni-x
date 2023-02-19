@@ -1,7 +1,7 @@
 import {addDays} from 'date-fns'
 import {BigNumber, BigNumberish, ethers} from 'ethers'
 import {PendingTxType} from '../../contexts/contract'
-import {IBidData, IListingData, IOrder, NFTItem, OrderStatus} from '../../interface/interface'
+import {IBidData, IListingData, IOrder, NFTItem} from '../../interface/interface'
 import {openSnackBar} from '../../redux/reducers/snackBarReducer'
 import {collectionsService} from '../../services/collections'
 import {MakerOrderWithSignature, TakerOrderWithEncodedParams} from '../../types'
@@ -32,7 +32,7 @@ import {
   getTransferSelectorNftInstance,
   getLayerZeroEndpointInstance
 } from '../../utils/contracts'
-import {acceptOrder, postMakerOrder} from '../../utils/makeOrder'
+import {postMakerOrder} from '../../utils/makeOrder'
 import {serializeMakeOrder, serializeTakeOrder} from '../../utils/utils'
 
 export type TradingCommonData = {
@@ -113,14 +113,6 @@ const checkValid = async (currency: string, price: string, chainId: number, sign
   }
 
   return true
-}
-
-const updateOrderStatus = async (order: IOrder, status: OrderStatus) => {
-  await acceptOrder(
-    order.hash,
-    order.token_id,
-    status
-  )
 }
 
 export const doListingApprove = async (
@@ -663,7 +655,6 @@ export const doAcceptConfirm = async (bid_order: IOrder, common_data: TradingCom
 export const doAcceptComplete = async (bid_order: IOrder, common_data: TradingCommonData) => {
   if (!common_data.collectionUrl) throw new Error('Invalid collection')
 
-  await updateOrderStatus(bid_order, 'EXECUTED')
   await collectionsService.updateCollectionNFTChainID(common_data.collectionUrl, Number(common_data.tokenId), Number(common_data.chainId))
 }
 

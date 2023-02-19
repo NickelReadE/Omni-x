@@ -123,6 +123,17 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
     dispatch(openSnackBar({ message: 'copied link to clipboard', status: 'info' }))
   }
 
+  const onHide = async () => {
+    if (address && nft_collection?.col_url) {
+      try {
+        await userService.addHideItem(address, nft_collection.col_url, nft.token_id)
+        dispatch(openSnackBar({ message: 'NFT hidden', status: 'info' }))
+      } catch (e) {
+        console.error(e)
+      }
+    }
+  }
+
   const onRefreshMetadata = async () => {
     if (nft_collection?.col_url) {
       try {
@@ -349,7 +360,7 @@ const NFTBox = ({nft, col_url, onRefresh}: IPropsNFTItem) => {
                   </div>
                   <span className={'text-primary-light text-md'}>copy link</span>
                 </div>
-                <div className={'flex items-center px-2'}>
+                <div className={'flex items-center px-2 cursor-pointer'} onClick={onHide}>
                   <div className={'p-1 mr-2'}>
                     <img src={'/images/icons/nftbox/hide.svg'} alt={'star'} width={24} height={24}/>
                   </div>

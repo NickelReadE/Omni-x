@@ -94,6 +94,19 @@ export type FavoriteItemType = {
   highest_bid: number;
 }
 
+export type HiddenItemType = {
+  name: string;
+  image: string;
+  token_id: string;
+  price: number;
+  currency: string;
+  last_sale_price: number;
+  last_sale_currency: string;
+  likes: number;
+  sale_count: number;
+  highest_bid: number;
+}
+
 export type FavoriteCollectionType = {
   name: string;
   profile_image: string;

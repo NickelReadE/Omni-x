@@ -50,9 +50,7 @@ const CollectionCard = ({ collection, ethPrice }: { collection: FullCollectionTy
     for (const kind in collection.floorPrice) {
       const floorPrice = collection.floorPrice[kind]
       if (floorPrice > 0) {
-        if (kind === 'omni') {
-          return collection.floorNft[kind]
-        } else if (kind === 'usd' || kind === 'usdc' || kind === 'usdt') {
+        if (kind === 'usd' || kind === 'usdc' || kind === 'usdt') {
           if (floorPrice <= totalUSDCBalance || floorPrice <= totalUSDTBalance) {
             return collection.floorNft[kind]
           }

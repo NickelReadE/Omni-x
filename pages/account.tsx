@@ -12,6 +12,8 @@ import UserCollections from '../components/user/UserCollections'
 import {userService} from '../services/users'
 import {FavoriteCollectionType, FavoriteItemType, UserCollectionType} from '../types/collections'
 import {getETHPrice} from '../utils/helpers'
+import UserHidden from '../components/user/UserHidden'
+import {NFTItem} from '../interface/interface'
 
 const Account: NextPage = () => {
   const { address } = useWallet()
@@ -23,6 +25,7 @@ const Account: NextPage = () => {
   const [collections, setCollections] = useState<UserCollectionType[]>([])
   const [favorites, setFavorites] = useState<FavoriteItemType[]>([])
   const [favoriteCollections, setFavoriteCollections] = useState<FavoriteCollectionType[]>([])
+  const [hiddenItems, setHiddenItems] = useState<NFTItem[]>([])
 
   const activeClasses = (index: number) => {
     return index === selectedTab ? 'bg-primary-gradient': 'bg-secondary'
@@ -40,6 +43,8 @@ const Account: NextPage = () => {
         setFavorites(_favoritesItems)
         const _favoritesCollections = await userService.getFavoriteCollections(address)
         setFavoriteCollections(_favoritesCollections)
+        const _hiddenItems = await userService.getHideItems(address)
+        setHiddenItems(_hiddenItems)
       }
     })()
   }, [address])
@@ -108,7 +113,7 @@ const Account: NextPage = () => {
               {selectedTab === 1 && <UserCollections ethPrice={ethPrice} collections={collections} />}
               {selectedTab === 2 && <UserActivity activities={activities}/>}
               {selectedTab === 3 && <UserFavorites items={favorites} collections={favoriteCollections} />}
-              {selectedTab === 4 && <div/>}
+              {selectedTab === 4 && <UserHidden items={hiddenItems} />}
             </div>
           </>
           :
