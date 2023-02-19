@@ -1,76 +1,75 @@
-import {useMemo} from 'react'
-import {IOrder, NFTItem} from '../interface/interface'
-import {getCurrencyIconByAddress} from '../utils/constants'
-import {FullCollectionType} from '../types/collections'
+import { useMemo } from "react";
+import { IOrder, NFTItem } from "../interface/interface";
+import { getCurrencyIconByAddress } from "../utils/constants";
+import { FullCollectionType } from "../types/collections";
 
 export type OrderStatics = {
-  order: IOrder,
-  isListed: boolean,
-  sortedBids: IOrder[],
-  highestBid?: number,
-  highestBidCoin?:  string,
-  lastSale?: number,
-  lastSaleCoin?:  string,
-}
+  order: IOrder;
+  isListed: boolean;
+  sortedBids: IOrder[];
+  highestBid?: number;
+  highestBidCoin?: string;
+  lastSale?: number;
+  lastSaleCoin?: string;
+};
 
 export type OrderStaticsInput = {
-  nft?: NFTItem,
-  collection?: FullCollectionType
-}
-const useOrderStatics = ({
-  nft,
-  collection
-}: OrderStaticsInput): OrderStatics => {
+  nft?: NFTItem;
+  collection?: FullCollectionType;
+};
+const useOrderStatics = ({ nft, collection }: OrderStaticsInput): OrderStatics => {
   const combinedBids = useMemo(() => {
-    const bidDatas = []
-    const bidOrderDatas: any[] = []
+    const bidDatas = [];
+    const bidOrderDatas: any[] = [];
 
     if (nft && nft.bid_datas && nft.bid_order_data) {
-      bidDatas.push(...nft.bid_datas)
-      bidOrderDatas.push(...nft.bid_order_data)
+      bidDatas.push(...nft.bid_datas);
+      bidOrderDatas.push(...nft.bid_order_data);
     }
 
     if (collection && collection.bid_datas && collection.bid_orders) {
-      bidDatas.push(...collection.bid_datas)
-      bidOrderDatas.push(...collection.bid_orders)
+      bidDatas.push(...collection.bid_datas);
+      bidOrderDatas.push(...collection.bid_orders);
     }
 
-    return bidDatas.map((data: any, index: number) => ({
-      ...data,
-      order_data: bidOrderDatas[index]
-    })).filter(data => data.signer?.toLowerCase() != nft?.owner?.toLowerCase() && data.status != 'VALID' && !data.signature)
-  }, [nft, collection])
+    return bidDatas
+      .map((data: any, index: number) => ({
+        ...data,
+        order_data: bidOrderDatas[index]
+      }))
+      .filter((data) => data.signer?.toLowerCase() != nft?.owner?.toLowerCase() && data.status != "VALID" && !data.signature);
+  }, [nft, collection]);
 
   const sortedBids = useMemo(() => {
     if (combinedBids) {
       return combinedBids.sort((a: any, b: any) => {
         if (a.price && b.price) {
-          if (a.price === b.price) return 0
-          return a.price > b.price ? -1 : 1
+          if (a.price === b.price) return 0;
+          return a.price > b.price ? -1 : 1;
         }
-        return 0
-      })
+        return 0;
+      });
     }
-    return []
-  }, [combinedBids])
+    return [];
+  }, [combinedBids]);
   const highestBid = useMemo(() => {
     if (sortedBids.length > 0) {
-      return sortedBids[0].price
+      return sortedBids[0].price;
     }
-    return 0
-  }, [sortedBids])
+    return 0;
+  }, [sortedBids]);
   const highestBidCoin = useMemo(() => {
     if (sortedBids.length > 0 && sortedBids[0].currency) {
-      return getCurrencyIconByAddress(sortedBids[0].currency)
+      return getCurrencyIconByAddress(sortedBids[0].currency);
     }
-  }, [sortedBids])
+  }, [sortedBids]);
   const lastSaleCoin = useMemo(() => {
     if (nft && nft.last_sale_currency) {
-      return getCurrencyIconByAddress(nft.last_sale_currency)
+      return getCurrencyIconByAddress(nft.last_sale_currency);
     }
-  }, [nft])
+  }, [nft]);
 
-  const isListed = (!!nft?.price && nft.price > 0)
+  const isListed = !!nft?.price && nft.price > 0;
   return {
     order: nft?.order,
     isListed,
@@ -79,7 +78,7 @@ const useOrderStatics = ({
     highestBidCoin,
     lastSale: nft?.last_sale_price || 0,
     lastSaleCoin
-  }
-}
+  };
+};
 
-export default useOrderStatics
+export default useOrderStatics;

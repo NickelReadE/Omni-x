@@ -1,12 +1,12 @@
-import { useContext } from 'react'
-import { ProgressContext, ProgressContextType } from '../contexts/progress'
+import { useContext } from "react";
+import { ProgressContext, ProgressContextType } from "../contexts/progress";
 
 const useProgress = (): ProgressContextType => {
-  const context = useContext(ProgressContext)
+  const context = useContext(ProgressContext);
   if (context === undefined) {
-    throw new Error('useProgress must be used within an WalletProvider')
+    throw new Error("useProgress must be used within an WalletProvider");
   }
-  return context
-}
+  return context;
+};
 
-export default useProgress
+export default useProgress;
