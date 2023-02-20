@@ -5,7 +5,6 @@ import OmnixBridge1155ABI from "../constants/abis/OmnixBridge1155.json";
 import OmnixExchangeABI from "../constants/abis/OmnixExchange.json";
 import FundManagerABI from "../constants/abis/FundManager.json";
 import TransferSelectorNFTABI from "../constants/abis/TransferSelectorNFT.json";
-import OmniABI from "../constants/abis/Omni.json";
 import ERC721ABI from "../constants/abis/ERC721.json";
 import ERC1155ABI from "../constants/abis/ERC1155.json";
 import ERC20Abi from "../constants/abis/ERC20.json";

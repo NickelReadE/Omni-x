@@ -1,8 +1,7 @@
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import ChainIds from "../../constants/layerzero/chainIds.json";
 import CHAINS from "../../constants/chains.json";
 import { CHAIN_TYPE } from "../../types/enum";
-import { Network } from "alchemy-sdk";
 import { Chain } from "wagmi";
 import { FallbackProvider } from "@ethersproject/providers";
 
@@ -361,7 +360,9 @@ export const getProvider = (chainId: number) => {
   for (const rpc of RPC_LINKS[chainId]) {
     try {
       providers.push(new ethers.providers.JsonRpcProvider(rpc));
-    } catch (e) {}
+    } catch (e) {
+      console.error(e);
+    }
   }
   return new FallbackProvider(providers);
 };

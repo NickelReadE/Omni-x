@@ -10,7 +10,7 @@ import StargatePoolManager from "../../constants/addresses/StargatePoolManager.j
 import CurrencyManager from "../../constants/addresses/CurrencyManager.json";
 import LZEndpoint from "../../constants/layerzero/LayerzeroEndpoints.json";
 import { chainInfos } from "./chains";
-import { oft, usdc, usdt, weth } from "./currency";
+import { usdc, usdt, weth } from "./currency";
 
 const omnixBridge: any = OmnixBridge;
 const omnixBridge1155: any = OmnixBridge1155;
