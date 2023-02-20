@@ -1,31 +1,31 @@
-import React, {useCallback, useEffect, useState} from 'react'
-import { BidStep } from '../../types/enum'
-import ListingSection from './ListingSection'
-import ApproveSection from './ApproveSection'
-import CongratsSection from './CongratsSection'
-import CompleteSection from './CompleteSection'
-import useWallet from '../../hooks/useWallet'
-import {FullCollectionType} from '../../types/collections'
-import {getImageProperLink} from '../../utils/helpers'
+import React, { useCallback, useEffect, useState } from "react";
+import { BidStep } from "../../types/enum";
+import ListingSection from "./ListingSection";
+import ApproveSection from "./ApproveSection";
+import CongratsSection from "./CongratsSection";
+import CompleteSection from "./CompleteSection";
+import useWallet from "../../hooks/useWallet";
+import { FullCollectionType } from "../../types/collections";
+import { getImageProperLink } from "../../utils/helpers";
 
 interface IBidContentProps {
-  bidStep: BidStep,
-  processing: boolean,
-  approveTx?: string,
-  price: number,
-  collectionInfo?: FullCollectionType,
-  isCollectionBid: boolean,
-  onChangePrice: (e: any) => void,
-  currency: any,
-  onChangeCurrency: (e: any) => void,
-  period: any,
-  onChangePeriod: (e: any) => void,
-  nftImage: string,
-  nftTitle: string,
-  nftTokenId: string,
-  collectionName: string,
-  onBid?: () => void,
-  onBuyFloor?: (floorNft: any) => void,
+  bidStep: BidStep;
+  processing: boolean;
+  approveTx?: string;
+  price: number;
+  collectionInfo?: FullCollectionType;
+  isCollectionBid: boolean;
+  onChangePrice: (e: any) => void;
+  currency: any;
+  onChangeCurrency: (e: any) => void;
+  period: any;
+  onChangePeriod: (e: any) => void;
+  nftImage: string;
+  nftTitle: string;
+  nftTokenId: string;
+  collectionName: string;
+  onBid?: () => void;
+  onBuyFloor?: (floorNft: any) => void;
 }
 
 const BidContent: React.FC<IBidContentProps> = ({
@@ -46,51 +46,52 @@ const BidContent: React.FC<IBidContentProps> = ({
   onBid,
   onBuyFloor
 }) => {
-  const { chainId } = useWallet()
-  const [ floorNft, setFloorNft ] = useState<any>(null)
+  const { chainId } = useWallet();
+  const [floorNft, setFloorNft] = useState<any>(null);
 
-  const updateFloorNft = useCallback((c?: string) => {
-    if (isCollectionBid && collectionInfo && c) {
-      const nft = (collectionInfo.floorNft as any)[c.toLowerCase()]
-      if (nft && nft.order_data) {
-        setFloorNft(nft)
+  const updateFloorNft = useCallback(
+    (c?: string) => {
+      if (isCollectionBid && collectionInfo && c) {
+        const nft = (collectionInfo.floorNft as any)[c.toLowerCase()];
+        if (nft && nft.order_data) {
+          setFloorNft(nft);
+        } else {
+          setFloorNft(null);
+        }
       }
-      else {
-        setFloorNft(null)
-      }
-    }
-  }, [collectionInfo, isCollectionBid])
+    },
+    [collectionInfo, isCollectionBid]
+  );
   const onChangeCurrencyFloor = (v: any) => {
-    if (onChangeCurrency) onChangeCurrency(v)
-    updateFloorNft(v?.text)
-  }
+    if (onChangeCurrency) onChangeCurrency(v);
+    updateFloorNft(v?.text);
+  };
 
   useEffect(() => {
-    updateFloorNft(currency.text)
-  }, [currency.text, updateFloorNft])
+    updateFloorNft(currency.text);
+  }, [currency.text, updateFloorNft]);
 
   return (
     <>
       <div className='flex flex-col justify-between'>
-        <div className={'flex justify-center'}>
-          <div className={'flex flex-col'}>
-            <div className={'bg-primary-gradient p-[1px] rounded'}>
-              <img alt={'nftImage'} className='bg-primary rounded' width={190} height={190} src={getImageProperLink(nftImage)} />
+        <div className={"flex justify-center"}>
+          <div className={"flex flex-col"}>
+            <div className={"bg-primary-gradient p-[1px] rounded"}>
+              <img alt={"nftImage"} className='bg-primary rounded' width={190} height={190} src={getImageProperLink(nftImage)} />
             </div>
-            {
-              !isCollectionBid &&
-                <>
-                  <p className={'text-primary-light mt-3'}>#{nftTokenId}</p>
-                  <p className='text-secondary font-medium'>{collectionName}</p>
-                </>
-            }
+            {!isCollectionBid && (
+              <>
+                <p className={"text-primary-light mt-3"}>#{nftTokenId}</p>
+                <p className='text-secondary font-medium'>{collectionName}</p>
+              </>
+            )}
           </div>
         </div>
-        <div className={'mt-4'}>
+        <div className={"mt-4"}>
           {bidStep === BidStep.StepBid ? (
             <ListingSection
               nftChainId={chainId || 0}
-              priceLabel={'Bid Price'}
+              priceLabel={"Bid Price"}
               price={price}
               onChangePrice={onChangePrice}
               currency={currency}
@@ -107,10 +108,10 @@ const BidContent: React.FC<IBidContentProps> = ({
                 completed={bidStep > BidStep.StepApprove}
                 txHash={approveTx}
                 sectionNo={1}
-                title="Approve Token"
+                title='Approve Token'
                 descriptions={[
-                  'Please confirm the transaction in your wallet.',
-                  'This confirmation allows you to sell or buy both this NFT and any future NFT from this collection.'
+                  "Please confirm the transaction in your wallet.",
+                  "This confirmation allows you to sell or buy both this NFT and any future NFT from this collection."
                 ]}
               />
               <CompleteSection
@@ -118,48 +119,49 @@ const BidContent: React.FC<IBidContentProps> = ({
                 active={bidStep == BidStep.StepConfirm}
                 completed={bidStep > BidStep.StepConfirm}
                 sectionNo={2}
-                title="Complete Bid"
-                description="Please confirm this signature in your wallet to sign off on your bid."
+                title='Complete Bid'
+                description='Please confirm this signature in your wallet to sign off on your bid.'
               />
 
               {bidStep === BidStep.StepDone && (
-                <CongratsSection failed={false} succeedMessage={isCollectionBid ? 'you successfully bid on this collection' : 'you successfully bid on this NFT'}/>
+                <CongratsSection
+                  failed={false}
+                  succeedMessage={isCollectionBid ? "you successfully bid on this collection" : "you successfully bid on this NFT"}
+                />
               )}
-              {bidStep === BidStep.StepFail && (
-                <CongratsSection failed={true} failedMessage={'you failed to place a bid'}/>
-              )}
+              {bidStep === BidStep.StepFail && <CongratsSection failed={true} failedMessage={"you failed to place a bid"} />}
             </div>
           )}
         </div>
       </div>
 
-      <div className="mt-5 flex justify-center">
-        {(bidStep === BidStep.StepDone || bidStep === BidStep.StepFail) ? (
+      <div className='mt-5 flex justify-center'>
+        {bidStep === BidStep.StepDone || bidStep === BidStep.StepFail ? (
           <button
             className='bg-primary-gradient rounded-full text-black w-[95px] px-4 py-1.5 font-medium'
             onClick={onBid}
-            disabled={processing}>
+            disabled={processing}
+          >
             close
           </button>
         ) : (
           <button
             className='bg-primary-gradient rounded-full text-black w-[95px] px-4 py-1.5 font-medium'
             onClick={onBid}
-            disabled={processing}>
+            disabled={processing}
+          >
             bid
           </button>
         )}
 
         {isCollectionBid && !!floorNft && onBuyFloor && (
-          <button
-            className='bg-[#38B000] rounded text-[#fff] w-[95px] h-[35px] ml-1'
-            onClick={() => onBuyFloor(floorNft)}>
+          <button className='bg-[#38B000] rounded text-[#fff] w-[95px] h-[35px] ml-1' onClick={() => onBuyFloor(floorNft)}>
             buy floor
           </button>
         )}
       </div>
     </>
-  )
-}
+  );
+};
 
-export default BidContent
+export default BidContent;

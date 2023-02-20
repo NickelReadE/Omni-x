@@ -1,12 +1,12 @@
-import { useContext } from 'react'
-import { ContractContext, ContractContextType } from '../contexts/contract'
+import { useContext } from "react";
+import { ContractContext, ContractContextType } from "../contexts/contract";
 
 const useContract = (): ContractContextType => {
-  const context = useContext(ContractContext)
+  const context = useContext(ContractContext);
   if (context === undefined) {
-    throw new Error('useContract must be used within an WalletProvider')
+    throw new Error("useContract must be used within an WalletProvider");
   }
-  return context
-}
+  return context;
+};
 
-export default useContract
+export default useContract;

@@ -1,42 +1,42 @@
-import {BigNumber, BigNumberish, ethers, providers} from 'ethers'
-import addTime from 'date-fns/add'
-import {TypedDataUtils} from 'ethers-eip712'
-import {userService} from '../services/users'
-import {orderService} from '../services/orders'
-import {minNetPriceRatio} from '../constants'
-import {MakerOrder, MakerOrderWithEncodedParams, SolidityType} from '../types'
+import { BigNumber, BigNumberish, ethers, providers } from "ethers";
+import addTime from "date-fns/add";
+import { TypedDataUtils } from "ethers-eip712";
+import { userService } from "../services/users";
+import { orderService } from "../services/orders";
+import { minNetPriceRatio } from "../constants";
+import { MakerOrder, MakerOrderWithEncodedParams, SolidityType } from "../types";
 
 const MAKE_ORDER_SIGN_TYPES = {
   EIP712Domain: [
-    { name: 'name', type: 'string' },
-    { name: 'version', type: 'string' },
-    { name: 'chainId', type: 'uint256' },
-    { name: 'verifyingContract', type: 'address' }
+    { name: "name", type: "string" },
+    { name: "version", type: "string" },
+    { name: "chainId", type: "uint256" },
+    { name: "verifyingContract", type: "address" }
   ],
   MakerOrder: [
-    { name: 'isOrderAsk', type: 'bool' },
-    { name: 'signer', type: 'address' },
-    { name: 'collection', type: 'address' },
-    { name: 'price', type: 'uint256' },
-    { name: 'tokenId', type: 'uint256' },
-    { name: 'amount', type: 'uint256' },
-    { name: 'strategy', type: 'address' },
-    { name: 'currency', type: 'address' },
-    { name: 'nonce', type: 'uint256' },
-    { name: 'startTime', type: 'uint256' },
-    { name: 'endTime', type: 'uint256' },
-    { name: 'minPercentageToAsk', type: 'uint256' },
-    { name: 'params', type: 'bytes' }
+    { name: "isOrderAsk", type: "bool" },
+    { name: "signer", type: "address" },
+    { name: "collection", type: "address" },
+    { name: "price", type: "uint256" },
+    { name: "tokenId", type: "uint256" },
+    { name: "amount", type: "uint256" },
+    { name: "strategy", type: "address" },
+    { name: "currency", type: "address" },
+    { name: "nonce", type: "uint256" },
+    { name: "startTime", type: "uint256" },
+    { name: "endTime", type: "uint256" },
+    { name: "minPercentageToAsk", type: "uint256" },
+    { name: "params", type: "bytes" }
   ]
-}
+};
 interface PostMakerOrderOptionalParams {
-    tokenId?: string
-    startTime?: number
-    endTime?: number
-    params?: { values: any[]; types: SolidityType[] }
+  tokenId?: string;
+  startTime?: number;
+  endTime?: number;
+  params?: { values: any[]; types: SolidityType[] };
 }
 
-const prepareMakerOrder = async(
+const prepareMakerOrder = async (
   signer: ethers.providers.JsonRpcSigner | ethers.Signer | undefined,
   signerAddress: string,
   isOrderAsk: boolean,
@@ -51,20 +51,20 @@ const prepareMakerOrder = async(
   optionalParams: PostMakerOrderOptionalParams = {},
   chain: string,
   chain_id: number,
-  col_url: string,
+  col_url: string
 ) => {
-  const now = Date.now()
-  const { tokenId, params, startTime, endTime } = optionalParams
-  const paramsValue = params ? params.values : []
-  const paramsTypes = params ? params.types : []
-  const netPriceRatio = BigNumber.from(10000).sub(protocolFees.add(creatorFees)).toNumber()
+  const now = Date.now();
+  const { tokenId, params, startTime, endTime } = optionalParams;
+  const paramsValue = params ? params.values : [];
+  const paramsTypes = params ? params.types : [];
+  const netPriceRatio = BigNumber.from(10000).sub(protocolFees.add(creatorFees)).toNumber();
 
   const makerOrder: MakerOrder = {
     isOrderAsk,
     signer: signerAddress,
     collection: collectionAddress,
     price: price.toString(),
-    tokenId: tokenId?.toString() || '0',
+    tokenId: tokenId?.toString() || "0",
     amount: amount.toString(),
     strategy: strategyAddress,
     currency,
@@ -72,12 +72,12 @@ const prepareMakerOrder = async(
     startTime: startTime ? Math.floor(startTime / 1000) : Math.floor(now / 1000),
     endTime: endTime ? Math.floor(endTime / 1000) : Math.floor(addTime(now, { months: 1 }).getTime() / 1000),
     minPercentageToAsk: Math.min(netPriceRatio, minNetPriceRatio),
-    params: paramsValue,
-  }
+    params: paramsValue
+  };
 
-  let signatureHash = '0x0'
+  let signatureHash = "0x0";
   if (signer) {
-    signatureHash = await signMakerOrder(signer, makerOrder, paramsTypes)
+    signatureHash = await signMakerOrder(signer, makerOrder, paramsTypes);
   }
 
   return {
@@ -85,11 +85,11 @@ const prepareMakerOrder = async(
     signature: signatureHash,
     col_url: col_url,
     chain,
-    chain_id,
-  }
-}
+    chain_id
+  };
+};
 
-export const postMakerOrder = async(
+export const postMakerOrder = async (
   signer: ethers.Signer,
   isOrderAsk: boolean,
   collectionAddress: string,
@@ -103,11 +103,10 @@ export const postMakerOrder = async(
   chain: string,
   chain_id: number,
   needSign: boolean,
-  col_url: string,
+  col_url: string
 ) => {
-
-  const signerAddress = await signer.getAddress()
-  const nonce = await userService.getUserNonce(signerAddress)
+  const signerAddress = await signer.getAddress();
+  const nonce = await userService.getUserNonce(signerAddress);
 
   const data = await prepareMakerOrder(
     needSign ? signer : undefined,
@@ -124,11 +123,11 @@ export const postMakerOrder = async(
     optionalParams,
     chain,
     chain_id,
-    col_url,
-  )
+    col_url
+  );
 
-  return await orderService.createOrder(data)
-}
+  return await orderService.createOrder(data);
+};
 
 /**
  * Update a maker order
@@ -162,10 +161,10 @@ export const updateMakerOrder = async (
   optionalParams: PostMakerOrderOptionalParams = {},
   chain: string,
   chain_id: number,
-  col_url: string,
+  col_url: string
 ) => {
-  const signer = library.getSigner()
-  const signerAddress = await signer.getAddress()
+  const signer = library.getSigner();
+  const signerAddress = await signer.getAddress();
 
   const data = await prepareMakerOrder(
     signer,
@@ -182,24 +181,24 @@ export const updateMakerOrder = async (
     optionalParams,
     chain,
     chain_id,
-    col_url,
-  )
+    col_url
+  );
 
-  await orderService.createOrder(data)
+  await orderService.createOrder(data);
 
-  return data
-}
+  return data;
+};
 
 const zeroPad = (value: any, length: number) => {
-  return ethers.utils.arrayify(ethers.utils.hexZeroPad(ethers.utils.hexlify(value), length))
-}
+  return ethers.utils.arrayify(ethers.utils.hexZeroPad(ethers.utils.hexlify(value), length));
+};
 
-export const encodeMakerOrder = (order: MakerOrder, paramsTypes: SolidityType[]) : MakerOrderWithEncodedParams => {
+export const encodeMakerOrder = (order: MakerOrder, paramsTypes: SolidityType[]): MakerOrderWithEncodedParams => {
   return {
     ...order,
     params: ethers.utils.defaultAbiCoder.encode(paramsTypes, order.params)
-  }
-}
+  };
+};
 
 /**
  * Create a signature for a maker order
@@ -208,21 +207,22 @@ export const encodeMakerOrder = (order: MakerOrder, paramsTypes: SolidityType[])
  * @param paramsTypes contains an array of solidity types mapping the params array types
  * @returns String signature
  */
-const signMakerOrder = async (signer: providers.JsonRpcSigner | ethers.Signer, order: MakerOrder, paramsTypes: SolidityType[]): Promise<string> => {
-  const encodedOrder = encodeMakerOrder(order, paramsTypes)
+const signMakerOrder = async (
+  signer: providers.JsonRpcSigner | ethers.Signer,
+  order: MakerOrder,
+  paramsTypes: SolidityType[]
+): Promise<string> => {
+  const encodedOrder = encodeMakerOrder(order, paramsTypes);
   const typedData = {
     domain: {},
     types: MAKE_ORDER_SIGN_TYPES,
-    primaryType: 'MakerOrder',
+    primaryType: "MakerOrder",
     message: encodedOrder
-  }
+  };
 
-  const eip191Header = ethers.utils.arrayify('0x1901')
-  const messageHash = TypedDataUtils.hashStruct(typedData, typedData.primaryType, typedData.message)
-  const pack = ethers.utils.solidityPack(['bytes', 'bytes32'], [
-    eip191Header,
-    zeroPad(messageHash, 32)
-  ])
-  const digest = ethers.utils.keccak256(pack)
-  return await signer.signMessage(ethers.utils.arrayify(digest))
-}
+  const eip191Header = ethers.utils.arrayify("0x1901");
+  const messageHash = TypedDataUtils.hashStruct(typedData, typedData.primaryType, typedData.message);
+  const pack = ethers.utils.solidityPack(["bytes", "bytes32"], [eip191Header, zeroPad(messageHash, 32)]);
+  const digest = ethers.utils.keccak256(pack);
+  return await signer.signMessage(ethers.utils.arrayify(digest));
+};
