@@ -12,8 +12,8 @@ interface IChainSelectionProps {
   setChainId: (chainId: number) => void;
 }
 
-export const ChainSelection = ({ selectedChainIds, removeChainId, addAllChainIds, setChainId }: IChainSelectionProps) => {
-  const [isShow, setIsShow] = useState(false);
+export const ChainSelection = ({ selectedChainIds, addChainId, removeChainId, addAllChainIds, setChainId }: IChainSelectionProps) => {
+  const [isShow, setIsShow] = useState(false)
 
   const activeChainIds = useMemo(() => {
     return SUPPORTED_CHAIN_IDS.filter((chainId) => !selectedChainIds.includes(chainId));
@@ -76,9 +76,10 @@ export const ChainSelection = ({ selectedChainIds, removeChainId, addAllChainIds
                   })
                 : activeChainIds.map((chainId: ChainIds, index) => {
                     return (
-                      <ChainIcon key={index} chainName={getChainNameFromId(chainId)} size={"large"} onClick={() => setChainId(chainId)} />
-                    );
-                  })}
+                      <ChainIcon key={index} chainName={getChainNameFromId(chainId)} size={'large'} onClick={() => addChainId(chainId)}/>
+                    )
+                  })
+              }
             </div>
           </Transition>
         </div>
