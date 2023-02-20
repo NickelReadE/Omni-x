@@ -1,19 +1,24 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import NavMenu from "./NavMenu";
 import useData from "../../../hooks/useData";
 import SearchBar from "./SearchBar";
 import useWallet from "../../../hooks/useWallet";
 import classNames from "../../../helpers/classNames";
-import { SelectNetworks } from "./SelectNetworks";
+import { SelectNetworks } from "../SelectNetworks";
 import { PfpMenu } from "./PfpMenu";
 import { TransactionTracker } from "./TransactionTracker";
 import { getImageProperLink } from "../../../utils/helpers";
+import { SUPPORTED_CHAIN_IDS, getChainOfficialNameById, getChainNameFromId } from "../../../utils/constants";
+import { TextBodyemphasis } from "../../common/Basic";
+import { ChainIcon } from "../../common/ChainIcon";
 
 const Header = (): JSX.Element => {
   const { address } = useWallet();
   const { profile, onFaucet } = useData();
   const { openConnectModal } = useConnectModal();
+  const { chainId } = useWallet();
+  const [hovered, setHovered] = useState(false);
 
   const onConnect = () => {
     if (!address && openConnectModal) {
@@ -52,7 +57,24 @@ const Header = (): JSX.Element => {
                 >
                   $USD
                 </div>
-                <SelectNetworks />
+                <div className={"h-11"}>
+                  <div
+                    className={`relative inline-block text-left w-[140px] h-11 py-2 px-2 rounded-[8px] ${hovered ? "bg-[#303030]" : "bg-[#202020]"}`}
+                    onMouseLeave={() => setHovered(false)}
+                  >
+                    {chainId && (
+                      <>
+                        <div className={"focus:outline-none w-full h-full"} onMouseEnter={() => setHovered(true)}>
+                          <div className={"flex items-center space-x-2"}>
+                            <ChainIcon chainName={getChainNameFromId(chainId)} size={"medium"} />
+                            <TextBodyemphasis className={"text-secondary"}>{getChainOfficialNameById(chainId)}</TextBodyemphasis>
+                          </div>
+                        </div>
+                        <SelectNetworks chainList={SUPPORTED_CHAIN_IDS} type="header" selectedChainIds={[chainId]} opened={hovered} />
+                      </>
+                    )}
+                  </div>
+                </div>
                 {/* <MessageArea /> */}
                 {/* <NotificationArea /> */}
                 <PfpMenu avatarImage={avatarImage} />

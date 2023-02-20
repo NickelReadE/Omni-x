@@ -27,6 +27,7 @@ const ChainIcons: any = {
   avalanche: <AvaxIcon />,
   "avalanche testnet": <AvaxIcon />,
   polygon: <PolygonIcon />,
+  matic: <PolygonIcon />,
   mumbai: <PolygonIcon />,
   arbitrum: <ArbIcon />,
   "arbitrum-goerli": <ArbIcon />,
