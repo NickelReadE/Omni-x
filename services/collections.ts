@@ -58,6 +58,10 @@ const getCollections = async () => {
   return await API.get("collections");
 };
 
+const getOmniCollections = async () => {
+  return await API.get("collections/omni");
+};
+
 const getCollectionsWithoutMetadata = async () => {
   return await API.get("collections/compact");
 };
@@ -74,6 +78,7 @@ export const collectionsService = {
   getCollectionInfo,
   getNFTInfo,
   getCollections,
+  getOmniCollections,
   getCollectionsWithoutMetadata,
   refreshMetadata,
   updateCollectionNFTSalePrice,

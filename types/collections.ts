@@ -1,4 +1,4 @@
-import { IOrder } from "../interface/interface";
+import { IOrder, NFTItem } from "../interface/interface";
 
 type CollectionPrice = {
   ethereum: number;
@@ -18,6 +18,14 @@ export type TopCollection = BaseCollectionType & {
   rank: number;
   total_volume: string;
   change: number;
+};
+
+export type OmniCollectionType = BaseCollectionType & {
+  address: { [chain_id: number]: string };
+  likes: number;
+  floor_nft: {
+    usd: NFTItem | null;
+  };
 };
 
 export type FullCollectionType = BaseCollectionType & {

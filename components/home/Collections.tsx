@@ -1,10 +1,10 @@
-import useCollections from "../../hooks/useCollections";
 import CollectionCard from "./CollectionCard";
 import { SkeletonCard } from "../common/skeleton/Card";
 import { TextH2, TextSH2 } from "../common/Basic";
+import useOmniCollections from "../../hooks/useOmniCollections";
 
 export default function HomeCollections({ ethPrice }: { ethPrice: number }) {
-  const { loading: isCollectionLoading, collections } = useCollections();
+  const { loading: isCollectionLoading, collections } = useOmniCollections();
 
   return (
     <div className='mt-12'>
