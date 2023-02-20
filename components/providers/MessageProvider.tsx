@@ -1,42 +1,40 @@
-import {createContext, ReactNode, useState} from 'react'
+import { createContext, ReactNode, useState } from "react";
 
 export type MessageContextType = {
-  opened: boolean,
-  activeRoomId: string,
-  openMessage: (roomId: string) => void,
-  closeMessage: () => void,
-  setOpen: (status: boolean) => void,
-}
+  opened: boolean;
+  activeRoomId: string;
+  openMessage: (roomId: string) => void;
+  closeMessage: () => void;
+  setOpen: (status: boolean) => void;
+};
 
 export const MessageContext = createContext<MessageContextType>({
   opened: false,
-  activeRoomId: '',
+  activeRoomId: "",
   openMessage: () => undefined,
   closeMessage: () => undefined,
-  setOpen: () => undefined,
-})
+  setOpen: () => undefined
+});
 
 type MessageProviderProps = {
-  children?: ReactNode
-}
+  children?: ReactNode;
+};
 
-export const MessageProvider = ({
-  children,
-}: MessageProviderProps): JSX.Element => {
-  const [opened, setOpened] = useState<boolean>(false)
-  const [activeRoomId, setActiveRoomId] = useState<string>('')
+export const MessageProvider = ({ children }: MessageProviderProps): JSX.Element => {
+  const [opened, setOpened] = useState<boolean>(false);
+  const [activeRoomId, setActiveRoomId] = useState<string>("");
 
   const setOpen = (status: boolean) => {
-    setOpened(status)
-  }
+    setOpened(status);
+  };
 
   const openMessage = (roomId: string) => {
-    setActiveRoomId(roomId)
-  }
+    setActiveRoomId(roomId);
+  };
 
   const closeMessage = () => {
-    setActiveRoomId('')
-  }
+    setActiveRoomId("");
+  };
 
   return (
     <MessageContext.Provider
@@ -50,5 +48,5 @@ export const MessageProvider = ({
     >
       {children}
     </MessageContext.Provider>
-  )
-}
+  );
+};

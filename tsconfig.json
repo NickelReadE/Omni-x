@@ -16,10 +16,5 @@
     "incremental": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": [
-    "node_modules",
-    "./node_modules",
-    "./node_modules/*",
-    "./node_modules/@wagmi/connectors/node_modules/abitype/dist/utils.d.ts",
-  ]
+  "exclude": ["node_modules", "./node_modules", "./node_modules/*", "./node_modules/@wagmi/connectors/node_modules/abitype/dist/utils.d.ts"]
 }

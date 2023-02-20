@@ -12,4 +12,4 @@ export type LeaderboardData = {
   rank_in_90d: number;
   rank_in_1yr: number;
   rank_in_all: number;
-}
+};
