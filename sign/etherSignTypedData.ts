@@ -1,10 +1,10 @@
-import {ethers} from 'ethers'
-import {TypedDataDomain, TypedDataField} from '@ethersproject/abstract-signer'
-import {_TypedDataEncoder} from '@ethersproject/hash'
+import { ethers } from "ethers";
+import { TypedDataDomain, TypedDataField } from "@ethersproject/abstract-signer";
+import { _TypedDataEncoder } from "@ethersproject/hash";
 
 enum Wallet {
   METAMASK,
-  OTHER,
+  OTHER
 }
 
 /**
@@ -13,9 +13,9 @@ enum Wallet {
  * @returns Wallet
  */
 const getCurrentWallet = async (provider: ethers.providers.JsonRpcProvider): Promise<Wallet> => {
-  const isMetaMask = provider.connection.url === 'metamask'
-  return isMetaMask ? Wallet.METAMASK : Wallet.OTHER
-}
+  const isMetaMask = provider.connection.url === "metamask";
+  return isMetaMask ? Wallet.METAMASK : Wallet.OTHER;
+};
 
 /**
  * Copy of ethers '_signTypedData' helper, modified to support EIP-712 typed signatures with different call names
@@ -34,15 +34,15 @@ export const etherSignTypedData = async (
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const populated = await _TypedDataEncoder.resolveNames(domain, types, value, (name: string) => {
-    return provider.resolveName(name)
-  })
-  const rpcData = _TypedDataEncoder.getPayload(populated.domain, types, populated.value)
+    return provider.resolveName(name);
+  });
+  const rpcData = _TypedDataEncoder.getPayload(populated.domain, types, populated.value);
 
-  const wallet = await getCurrentWallet(provider)
+  const wallet = await getCurrentWallet(provider);
 
   if (wallet === Wallet.METAMASK) {
-    return await provider.send('eth_signTypedData_v4', [address, JSON.stringify(rpcData)]) // MetaMask injected
+    return await provider.send("eth_signTypedData_v4", [address, JSON.stringify(rpcData)]); // MetaMask injected
   }
 
-  return await provider.send('eth_signTypedData', [address, JSON.stringify(rpcData)]) // CoinBase wallet. WalletConnect: Trust, MetaMask Mobile, Rainbow, SafePal
-}
+  return await provider.send("eth_signTypedData", [address, JSON.stringify(rpcData)]); // CoinBase wallet. WalletConnect: Trust, MetaMask Mobile, Rainbow, SafePal
+};

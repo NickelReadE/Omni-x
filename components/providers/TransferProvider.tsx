@@ -1,27 +1,24 @@
-import { ReactNode } from 'react'
-import { TransferContext } from '../../contexts/transfer'
+import { ReactNode } from "react";
+import { TransferContext } from "../../contexts/transfer";
 
 type TransferProviderProps = {
-    children?: ReactNode
-}
+  children?: ReactNode;
+};
 
-export const TransferProvider = ({
-  children,
-}: TransferProviderProps): JSX.Element => {
-
-  const isLoading = true
+export const TransferProvider = ({ children }: TransferProviderProps): JSX.Element => {
+  const isLoading = true;
   const faucet = () => {
-    console.log('faucet')
-  }
-    
+    console.log("faucet");
+  };
+
   return (
     <TransferContext.Provider
       value={{
         isLoading,
-        onFaucet: faucet,
+        onFaucet: faucet
       }}
     >
       {children}
     </TransferContext.Provider>
-  )
-}
+  );
+};

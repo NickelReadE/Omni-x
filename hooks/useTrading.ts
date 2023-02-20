@@ -1,67 +1,82 @@
-import { useMemo } from 'react'
-import { useDispatch } from 'react-redux'
-import { doAcceptApprove, doAcceptComplete, doAcceptConfirm, doAcceptDone, doBidApprove, doBidConfirm, doBidDone, doBuyApprove, doBuyComplete, doBuyConfirm, doBuyDone, doListingApprove, doListingConfirm, doListingDone } from '../components/providers/TradingProvider'
-import { IBidData, IListingData, IOrder, NFTItem } from '../interface/interface'
-import useContract from './useContract'
-import useProgress from './useProgress'
-import { useSwitchedNetwork } from './useSwitchedNetwork'
-import useWallet from './useWallet'
+import { useMemo } from "react";
+import { useDispatch } from "react-redux";
+import {
+  doAcceptApprove,
+  doAcceptComplete,
+  doAcceptConfirm,
+  doAcceptDone,
+  doBidApprove,
+  doBidConfirm,
+  doBidDone,
+  doBuyApprove,
+  doBuyComplete,
+  doBuyConfirm,
+  doBuyDone,
+  doListingApprove,
+  doListingConfirm,
+  doListingDone
+} from "../components/providers/TradingProvider";
+import { IBidData, IListingData, IOrder, NFTItem } from "../interface/interface";
+import useContract from "./useContract";
+import useProgress from "./useProgress";
+import { useSwitchedNetwork } from "./useSwitchedNetwork";
+import useWallet from "./useWallet";
 
 export type TradingInput = {
-  collectionUrl?: string,  // col_url
-  collectionAddressMap?: {[chainId: number]: string},
-  tokenId?: string,
-  selectedNFTItem?: NFTItem,
-  onRefresh: () => void
-}
+  collectionUrl?: string; // col_url
+  collectionAddressMap?: { [chainId: number]: string };
+  tokenId?: string;
+  selectedNFTItem?: NFTItem;
+  onRefresh: () => void;
+};
 
 type TradingFunction = {
-  onListingApprove: (check_network: boolean) => Promise<any>,
-  onListingConfirm: (listing_data: IListingData) => Promise<any>,
-  onListingDone: () => void,
-  onBuyApprove: (order?: IOrder) => Promise<any>,
-  onBuyConfirm: (order?: IOrder) => Promise<any>,
-  onBuyComplete: (order?: IOrder) => Promise<void>,
-  onBuyDone: () => void,
-  onBidApprove: (bid_data: IBidData) => Promise<any>,
-  onBidConfirm: (bid_data: IBidData) => Promise<void>,
-  onBidDone: () => void,
-  onAcceptApprove: (check_network: boolean) => Promise<any>,
-  onAcceptConfirm: (bid_order: IOrder, tokenId: string) => Promise<any>,
-  onAcceptComplete: (bid_order: IOrder) => Promise<void>,
-  onAcceptDone: () => void
-}
+  onListingApprove: (check_network: boolean) => Promise<any>;
+  onListingConfirm: (listing_data: IListingData) => Promise<any>;
+  onListingDone: () => void;
+  onBuyApprove: (order?: IOrder) => Promise<any>;
+  onBuyConfirm: (order?: IOrder) => Promise<any>;
+  onBuyComplete: (order?: IOrder) => Promise<void>;
+  onBuyDone: () => void;
+  onBidApprove: (bid_data: IBidData) => Promise<any>;
+  onBidConfirm: (bid_data: IBidData) => Promise<void>;
+  onBidDone: () => void;
+  onAcceptApprove: (check_network: boolean) => Promise<any>;
+  onAcceptConfirm: (bid_order: IOrder, tokenId: string) => Promise<any>;
+  onAcceptComplete: (bid_order: IOrder) => Promise<void>;
+  onAcceptDone: () => void;
+};
 
 export const useTrading = (data?: TradingInput): TradingFunction => {
-  const { addTxToHistories } = useProgress()
-  const { listenONFTEvents } = useContract()
-  const { switchNetworkAsync } = useSwitchedNetwork()
-  const { provider, signer, address, chainId } = useWallet()
-  const dispatch = useDispatch()
+  const { addTxToHistories } = useProgress();
+  const { listenONFTEvents } = useContract();
+  const { switchNetworkAsync } = useSwitchedNetwork();
+  const { provider, signer, address, chainId } = useWallet();
+  const dispatch = useDispatch();
 
   if (!data) {
     return {
-      onListingApprove: async() => undefined,
-      onListingConfirm: async() => undefined,
+      onListingApprove: async () => undefined,
+      onListingConfirm: async () => undefined,
       onListingDone: () => undefined,
-      onBuyApprove: async() => undefined,
-      onBuyConfirm: async() => undefined,
-      onBuyComplete: async() => undefined,
+      onBuyApprove: async () => undefined,
+      onBuyConfirm: async () => undefined,
+      onBuyComplete: async () => undefined,
       onBuyDone: () => undefined,
-      onBidApprove: async() => undefined,
-      onBidConfirm: async() => undefined,
+      onBidApprove: async () => undefined,
+      onBidConfirm: async () => undefined,
       onBidDone: () => undefined,
-      onAcceptApprove: async() => undefined,
-      onAcceptConfirm: async() => undefined,
-      onAcceptComplete: async() => undefined,
+      onAcceptApprove: async () => undefined,
+      onAcceptConfirm: async () => undefined,
+      onAcceptComplete: async () => undefined,
       onAcceptDone: () => undefined
-    }
+    };
   }
 
   const collection_address = useMemo(() => {
-    if (data.collectionAddressMap && chainId) return data.collectionAddressMap[chainId]
-    return undefined
-  }, [data.collectionAddressMap, chainId])
+    if (data.collectionAddressMap && chainId) return data.collectionAddressMap[chainId];
+    return undefined;
+  }, [data.collectionAddressMap, chainId]);
 
   const getCommonData = () => ({
     provider,
@@ -73,63 +88,63 @@ export const useTrading = (data?: TradingInput): TradingFunction => {
     collectionAddress: collection_address,
     selectedNFTItem: data.selectedNFTItem,
     onRefresh: data.onRefresh
-  })
+  });
   const getSpecialData = () => ({
     dispatch,
     switchNetworkAsync,
     addTxToHistories,
     listenONFTEvents
-  })
+  });
 
   // listing
   const onListingApprove = (check_network: boolean) => {
-    return doListingApprove(check_network, getCommonData(), getSpecialData())
-  }
+    return doListingApprove(check_network, getCommonData(), getSpecialData());
+  };
   const onListingConfirm = (listing_data: IListingData) => {
-    return doListingConfirm(listing_data, getCommonData())
-  }
+    return doListingConfirm(listing_data, getCommonData());
+  };
   const onListingDone = () => {
-    return doListingDone(getCommonData())
-  }
+    return doListingDone(getCommonData());
+  };
   // buy
   const onBuyApprove = (order?: IOrder) => {
-    if (!order) throw new Error('Not listed')
-    return doBuyApprove(order, getCommonData(), getSpecialData())
-  }
+    if (!order) throw new Error("Not listed");
+    return doBuyApprove(order, getCommonData(), getSpecialData());
+  };
   const onBuyConfirm = (order?: IOrder) => {
-    if (!order) throw new Error('Not listed')
-    return doBuyConfirm(order, getCommonData(), getSpecialData())
-  }
+    if (!order) throw new Error("Not listed");
+    return doBuyConfirm(order, getCommonData(), getSpecialData());
+  };
   const onBuyComplete = (order?: IOrder) => {
-    if (!order) throw new Error('Not listed')
-    return doBuyComplete(order, getCommonData())
-  }
+    if (!order) throw new Error("Not listed");
+    return doBuyComplete(order, getCommonData());
+  };
   const onBuyDone = () => {
-    return doBuyDone(getCommonData())
-  }
+    return doBuyDone(getCommonData());
+  };
   // bid
   const onBidApprove = (bid_data: IBidData) => {
-    return doBidApprove(bid_data, getCommonData(), getSpecialData())
-  }
+    return doBidApprove(bid_data, getCommonData(), getSpecialData());
+  };
   const onBidConfirm = (bid_data: IBidData) => {
-    return doBidConfirm(bid_data, getCommonData())
-  }
+    return doBidConfirm(bid_data, getCommonData());
+  };
   const onBidDone = () => {
-    return doBidDone(getCommonData())
-  }
+    return doBidDone(getCommonData());
+  };
   // accept
   const onAcceptApprove = (check_network: boolean) => {
-    return doAcceptApprove(check_network, getCommonData(), getSpecialData())
-  }
+    return doAcceptApprove(check_network, getCommonData(), getSpecialData());
+  };
   const onAcceptConfirm = (bid_order: IOrder) => {
-    return doAcceptConfirm(bid_order, getCommonData(), getSpecialData())
-  }
+    return doAcceptConfirm(bid_order, getCommonData(), getSpecialData());
+  };
   const onAcceptComplete = (bid_order: IOrder) => {
-    return doAcceptComplete(bid_order, getCommonData())
-  }
+    return doAcceptComplete(bid_order, getCommonData());
+  };
   const onAcceptDone = () => {
-    return doAcceptDone(getCommonData())
-  }
+    return doAcceptDone(getCommonData());
+  };
 
   return {
     onListingApprove,
@@ -146,7 +161,7 @@ export const useTrading = (data?: TradingInput): TradingFunction => {
     onAcceptConfirm,
     onAcceptComplete,
     onAcceptDone
-  }
-}
+  };
+};
 
-export default useTrading
+export default useTrading;

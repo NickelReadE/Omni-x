@@ -1,9 +1,9 @@
-import {NextPage} from 'next'
-import {useEffect, useState} from 'react'
-import {TextH2, TextH3} from '../../components/common/Basic'
-import {StatsUserLeaderboard} from '../../components/stats/UserLeaderboard'
-import {LeaderboardData} from '../../types/stats'
-import {statsService} from '../../services/statsService'
+import { NextPage } from "next";
+import { useEffect, useState } from "react";
+import { TextH2, TextH3 } from "../../components/common/Basic";
+import { StatsUserLeaderboard } from "../../components/stats/UserLeaderboard";
+import { LeaderboardData } from "../../types/stats";
+import { statsService } from "../../services/statsService";
 
 /*const mockData = [
   { chainId: 5, value: 10000 },
@@ -16,38 +16,46 @@ import {statsService} from '../../services/statsService'
 ]*/
 
 const Stats: NextPage = () => {
-  const [tab, setTab] = useState(2)
-  const [page, setPage] = useState(0)
-  const [totalPage, setTotalPage] = useState(1)
-  const [leaderboard, setLeaderboard] = useState<LeaderboardData[]>([])
+  const [tab, setTab] = useState(2);
+  const [page, setPage] = useState(0);
+  const [totalPage, setTotalPage] = useState(1);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardData[]>([]);
 
   useEffect(() => {
     (async () => {
-      const _data = await statsService.getUserLeaderboard(page)
-      setTotalPage(_data.data.total)
-      setLeaderboard(_data.data.items)
-    })()
-  }, [page])
+      const _data = await statsService.getUserLeaderboard(page);
+      setTotalPage(_data.data.total);
+      setLeaderboard(_data.data.items);
+    })();
+  }, [page]);
 
   return (
-    <div className={'pt-8'}>
-      <div className={'flex justify-center space-x-6'}>
-        <div className={`${tab === 2 ? 'bg-primary-gradient' : 'bg-[#202020]'} rounded-full py-2 px-4 cursor-pointer`} onClick={() => setTab(2)}>
-          <TextH3 className={`${tab === 2 ? 'text-primary' : 'text-secondary'} font-medium`}>User Leaderboard</TextH3>
+    <div className={"pt-8"}>
+      <div className={"flex justify-center space-x-6"}>
+        <div
+          className={`${tab === 2 ? "bg-primary-gradient" : "bg-[#202020]"} rounded-full py-2 px-4 cursor-pointer`}
+          onClick={() => setTab(2)}
+        >
+          <TextH3 className={`${tab === 2 ? "text-primary" : "text-secondary"} font-medium`}>User Leaderboard</TextH3>
         </div>
-        <div className={`${tab === 0 ? 'bg-primary-gradient' : 'bg-[#202020]'} rounded-full py-2 px-4 cursor-pointer`} onClick={() => setTab(0)}>
-          <TextH3 className={`${tab === 0 ? 'text-primary' : 'text-secondary'} font-medium`}>Omni X Protocol</TextH3>
+        <div
+          className={`${tab === 0 ? "bg-primary-gradient" : "bg-[#202020]"} rounded-full py-2 px-4 cursor-pointer`}
+          onClick={() => setTab(0)}
+        >
+          <TextH3 className={`${tab === 0 ? "text-primary" : "text-secondary"} font-medium`}>Omni X Protocol</TextH3>
         </div>
-        <div className={`${tab === 1 ? 'bg-primary-gradient' : 'bg-[#202020]'} rounded-full py-2 px-4 cursor-pointer`} onClick={() => setTab(1)}>
-          <TextH3 className={`${tab === 1 ? 'text-primary' : 'text-secondary'} font-medium`}>NFT Collections</TextH3>
+        <div
+          className={`${tab === 1 ? "bg-primary-gradient" : "bg-[#202020]"} rounded-full py-2 px-4 cursor-pointer`}
+          onClick={() => setTab(1)}
+        >
+          <TextH3 className={`${tab === 1 ? "text-primary" : "text-secondary"} font-medium`}>NFT Collections</TextH3>
         </div>
       </div>
 
-      {
-        tab === 0 &&
-          <div className={'flex flex-col md:px-6 xl:px-[150px] mt-7'}>
-            <TextH2 className={'text-primary-light'}>Coming soon</TextH2>
-            {/*<div className={'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-12'}>
+      {tab === 0 && (
+        <div className={"flex flex-col md:px-6 xl:px-[150px] mt-7"}>
+          <TextH2 className={"text-primary-light"}>Coming soon</TextH2>
+          {/*<div className={'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-12'}>
               <AnalyticsCard header={'Total Volume'} amount={'8000'} chainData={mockData} />
               <AnalyticsCard header={'Total Tx'} amount={'3000'} chainData={mockData} />
               <AnalyticsCard header={'Total NFTs Bridged'} amount={'20000'} chainData={mockData} />
@@ -55,20 +63,16 @@ const Stats: NextPage = () => {
             </div>
 
             <AnalyticsWeeklyVolume />*/}
-          </div>
-      }
-      {
-        tab === 1 &&
-          <div className={'flex flex-col md:px-6 xl:px-[150px] mt-7'}>
-            <TextH2 className={'text-primary-light'}>Coming soon</TextH2>
-          </div>
-      }
-      {
-        tab === 2 &&
-          <StatsUserLeaderboard leaderboard={leaderboard} totalPage={totalPage} page={page} setPage={(page) => setPage(page)} />
-      }
+        </div>
+      )}
+      {tab === 1 && (
+        <div className={"flex flex-col md:px-6 xl:px-[150px] mt-7"}>
+          <TextH2 className={"text-primary-light"}>Coming soon</TextH2>
+        </div>
+      )}
+      {tab === 2 && <StatsUserLeaderboard leaderboard={leaderboard} totalPage={totalPage} page={page} setPage={(page) => setPage(page)} />}
     </div>
-  )
-}
+  );
+};
 
-export default Stats
+export default Stats;

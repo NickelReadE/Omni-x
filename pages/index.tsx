@@ -11,10 +11,10 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     (async () => {
-      const ethPrice = await getETHPrice()
-      setEthPrice(ethPrice)
-    })()
-  }, [])
+      const ethPrice = await getETHPrice();
+      setEthPrice(ethPrice);
+    })();
+  }, []);
 
   return (
     <>

@@ -21,9 +21,9 @@ const Header = (): JSX.Element => {
 
   const onConnect = () => {
     if (!address && openConnectModal) {
-      openConnectModal()
+      openConnectModal();
     }
-  }
+  };
 
   // check if the connected chain is among the supported ones. if not, trigger the warning to pop
   useEffect(()=>{
@@ -44,10 +44,10 @@ const Header = (): JSX.Element => {
 
   const avatarImage = useMemo(() => {
     if (profile && profile.avatar) {
-      return getImageProperLink(profile.avatar)
+      return getImageProperLink(profile.avatar);
     }
-    return '/images/default_avatar.png'
-  }, [profile])
+    return "/images/default_avatar.png";
+  }, [profile]);
 
   return (
     <>
@@ -86,14 +86,14 @@ const Header = (): JSX.Element => {
         </div>
         <div className={`bg-red-600 min-w-full h-8 px-6 justify-center items-center flex ${isConnectedWarning ? '' : 'hidden'}`}>
           <span className='text-white'>
-            Your crypto wallet is currently connected to an unsupported network. 
+            Your crypto wallet is currently connected to an unsupported network.
             <a onClick={() => switchNetwork?.(CHAIN_IDS['goerli'])} className='mx-1 cursor-pointer underline'>Click here</a>
             to connect to Goerli testnet
           </span>
         </div>
       </nav>
     </>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;
