@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react";
 import { collectionsService } from "../services/collections";
-import { FullCollectionType } from "../types/collections";
+import { OmniCollectionType } from "../types/collections";
 
 export type CollectionsTypeFunc = {
   loading: boolean;
-  collections: FullCollectionType[];
+  collections: OmniCollectionType[];
   refreshCollections: () => void;
 };
 
-const getAllCollections = async () => {
-  const { data: collections } = await collectionsService.getCollections();
+const getOmniCollections = async () => {
+  const { data: collections } = await collectionsService.getOmniCollections();
   return collections;
 };
 
-const useCollections = (): CollectionsTypeFunc => {
-  const [collections, setCollections] = useState<FullCollectionType[]>([]);
+const useOmniCollections = (): CollectionsTypeFunc => {
+  const [collections, setCollections] = useState<OmniCollectionType[]>([]);
   const [refresh, setRefresh] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -26,7 +26,7 @@ const useCollections = (): CollectionsTypeFunc => {
     (async () => {
       try {
         setIsLoading(true);
-        const _collections = await getAllCollections();
+        const _collections = await getOmniCollections();
         setCollections(_collections);
       } catch (e) {
         console.error(e);
@@ -43,4 +43,4 @@ const useCollections = (): CollectionsTypeFunc => {
   };
 };
 
-export default useCollections;
+export default useOmniCollections;

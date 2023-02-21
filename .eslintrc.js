@@ -10,11 +10,11 @@ module.exports = {
     'prettier' // Add "prettier" last. This will turn off eslint rules conflicting with prettier. This is not what formats the code.
   ],
   rules: {
-    semi: ['error', 'never'],
-    indent: ['error', 2],
-    quotes: [2, 'single', { avoidEscape: true }],
     '@typescript-eslint/no-explicit-any': 'off',
-    '@next/next/no-img-element': 'off'
+    '@next/next/no-img-element': 'off',
+    "@typescript-eslint/no-inferrable-types": 0,
+    "@typescript-eslint/no-unused-vars": 2,
+    "@typescript-eslint/no-var-requires": 0
   },
   env: {
     browser: true,

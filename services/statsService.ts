@@ -1,9 +1,9 @@
-import API from './api'
+import API from "./api";
 
 const getUserLeaderboard = async (page: number) => {
-  return await API.get(`leaderboard?page=${page}`)
-}
+  return await API.get(`leaderboard?page=${page}`);
+};
 
 export const statsService = {
-  getUserLeaderboard,
-}
+  getUserLeaderboard
+};
