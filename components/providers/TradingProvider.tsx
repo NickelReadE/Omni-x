@@ -410,7 +410,7 @@ export const doBuyDone = (common_data: TradingCommonData) => {
   if (common_data.onRefresh) common_data.onRefresh();
 };
 
-export const doBidApprove = async (bid_data: IBidData, common_data: TradingCommonData, special_data: TradingSpecialData) => {
+export const doBidApprove = async (bid_data: IBidData, common_data: TradingCommonData/*, special_data: TradingSpecialData*/) => {
   if (!common_data.chainId) {
     throw new Error("Please connect to your wallet");
   }
