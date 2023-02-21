@@ -10,13 +10,13 @@ export const SelectNetworks = ({
   chainList,
   type,
   opened = false,
-  updateGasChainId = null
+  updateGasChainId
 }: {
   selectedChainIds: number[];
   chainList: number[];
   type: string;
   opened: boolean;
-  updateGasChainId: any;
+  updateGasChainId?: (chainId: number) => void;
 }) => {
   const { switchNetwork } = useSwitchNetwork();
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
@@ -49,7 +49,7 @@ export const SelectNetworks = ({
                           className={`py-2 px-6 flex items-center cursor-pointer ${
                             selectedChainIds.includes(chainID) ? "" : "bg-[#303030]"
                           }`}
-                          onClick={() => updateGasChainId(chainID)}
+                          onClick={() => (updateGasChainId ? updateGasChainId(chainID) : undefined)}
                         >
                           <img alt={"chainIcon"} src={getChainLogoById(chainID.toString())} />
                           <span className={"text-primary-light text-lg pl-4"}>{getChainOfficialNameById(chainID)}</span>
@@ -69,7 +69,9 @@ export const SelectNetworks = ({
                       } ${index === 0 ? "rounded-t-[8px]" : ""} ${index === chainList.length - 1 ? "rounded-b-[8px]" : ""}`}
                       onMouseEnter={() => setActiveIndex(index)}
                       onMouseLeave={() => setActiveIndex(undefined)}
-                      onClick={() => (type == "header" ? switchNetwork?.(chainId) : updateGasChainId(chainId))}
+                      onClick={() =>
+                        type == "header" ? switchNetwork?.(chainId) : updateGasChainId ? updateGasChainId(chainId) : undefined
+                      }
                     >
                       <ChainIcon chainName={getChainNameFromId(chainId)} isSelected={activeIndex === index} size={"medium"} />
                       <TextBodyemphasis className={`${activeIndex === index ? "text-white" : "text-secondary"} leading-none`}>
