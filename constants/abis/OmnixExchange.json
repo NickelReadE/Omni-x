@@ -181,17 +181,74 @@
       {
         "indexed": false,
         "internalType": "uint16",
-        "name": "_srcChainId",
+        "name": "_dstChainId",
+        "type": "uint16"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint16",
+        "name": "_type",
+        "type": "uint16"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_minDstGas",
+        "type": "uint256"
+      }
+    ],
+    "name": "SetMinDstGas",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "precrime",
+        "type": "address"
+      }
+    ],
+    "name": "SetPrecrime",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint16",
+        "name": "_remoteChainId",
         "type": "uint16"
       },
       {
         "indexed": false,
         "internalType": "bytes",
-        "name": "_srcAddress",
+        "name": "_path",
         "type": "bytes"
       }
     ],
     "name": "SetTrustedRemote",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint16",
+        "name": "_remoteChainId",
+        "type": "uint16"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "_remoteAddress",
+        "type": "bytes"
+      }
+    ],
+    "name": "SetTrustedRemoteAddress",
     "type": "event"
   },
   {
@@ -368,6 +425,112 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "strategy",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "collection",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "currency",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint16",
+        "name": "fromChainId",
+        "type": "uint16"
+      },
+      {
+        "internalType": "uint16",
+        "name": "toChainId",
+        "type": "uint16"
+      },
+      {
+        "internalType": "bytes",
+        "name": "royaltyInfo",
+        "type": "bytes"
+      }
+    ],
+    "name": "_transferFeesAndFundsLzReceive",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "collectionFrom",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "collectionTo",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint16",
+        "name": "fromChainId",
+        "type": "uint16"
+      },
+      {
+        "internalType": "uint16",
+        "name": "toChainId",
+        "type": "uint16"
+      }
+    ],
+    "name": "_transferNFTLzReceive",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "minNonce",
         "type": "uint256"
@@ -483,10 +646,23 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "gasForOmniLzReceiveResp",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint16",
-        "name": "",
+        "name": "_version",
         "type": "uint16"
       },
       {
@@ -511,19 +687,6 @@
         "internalType": "bytes",
         "name": "",
         "type": "bytes"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getLzEndpoint",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -644,6 +807,11 @@
         "internalType": "struct OrderTypes.MakerOrder",
         "name": "maker",
         "type": "tuple"
+      },
+      {
+        "internalType": "uint256",
+        "name": "destAirdrop",
+        "type": "uint256"
       }
     ],
     "name": "getLzFeesForTrading",
@@ -671,11 +839,11 @@
     "inputs": [
       {
         "internalType": "uint16",
-        "name": "_chainId",
+        "name": "_remoteChainId",
         "type": "uint16"
       }
     ],
-    "name": "getTrustedRemote",
+    "name": "getTrustedRemoteAddress",
     "outputs": [
       {
         "internalType": "bytes",
@@ -740,6 +908,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "lzEndpoint",
+    "outputs": [
+      {
+        "internalType": "contract ILayerZeroEndpoint",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint16",
@@ -769,6 +950,11 @@
   },
   {
     "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "destAirdrop",
+        "type": "uint256"
+      },
       {
         "components": [
           {
@@ -892,6 +1078,11 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "destAirdrop",
+        "type": "uint256"
+      },
+      {
         "components": [
           {
             "internalType": "bool",
@@ -1013,6 +1204,11 @@
   },
   {
     "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "destAirdrop",
+        "type": "uint256"
+      },
       {
         "components": [
           {
@@ -1137,6 +1333,30 @@
     "inputs": [
       {
         "internalType": "uint16",
+        "name": "",
+        "type": "uint16"
+      },
+      {
+        "internalType": "uint16",
+        "name": "",
+        "type": "uint16"
+      }
+    ],
+    "name": "minDstGasLookup",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint16",
         "name": "_srcChainId",
         "type": "uint16"
       },
@@ -1164,6 +1384,19 @@
   {
     "inputs": [],
     "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "precrime",
     "outputs": [
       {
         "internalType": "address",
@@ -1280,11 +1513,52 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "gas",
+        "name": "gas1",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "gas2",
         "type": "uint256"
       }
     ],
     "name": "setGasForOmniLZReceive",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint16",
+        "name": "_dstChainId",
+        "type": "uint16"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_packetType",
+        "type": "uint16"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_minGas",
+        "type": "uint256"
+      }
+    ],
+    "name": "setMinDstGas",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_precrime",
+        "type": "address"
+      }
+    ],
+    "name": "setPrecrime",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1337,11 +1611,29 @@
       },
       {
         "internalType": "bytes",
-        "name": "_srcAddress",
+        "name": "_path",
         "type": "bytes"
       }
     ],
     "name": "setTrustedRemote",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint16",
+        "name": "_remoteChainId",
+        "type": "uint16"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_remoteAddress",
+        "type": "bytes"
+      }
+    ],
+    "name": "setTrustedRemoteAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1380,6 +1672,25 @@
         "internalType": "contract ITransferSelectorNFT",
         "name": "",
         "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint16",
+        "name": "",
+        "type": "uint16"
+      }
+    ],
+    "name": "trustedRemoteLookup",
+    "outputs": [
+      {
+        "internalType": "bytes",
+        "name": "",
+        "type": "bytes"
       }
     ],
     "stateMutability": "view",

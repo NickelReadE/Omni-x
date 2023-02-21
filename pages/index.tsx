@@ -1,35 +1,29 @@
-import React from 'react'
-import type { NextPage } from 'next'
-import MetaMaskConnect from '../components/MetaMaskConnect'
-import Tabs from '../components/Tabs'
-import useWallet from '../hooks/useWallet'
-import { supportChainIDs } from '../utils/constants'
-import '@rainbow-me/rainbowkit/styles.css'
+import React, { useState, useEffect } from "react";
+import type { NextPage } from "next";
+import HomeCollections from "../components/home/Collections";
+import HomeIntro from "../components/home/Intro";
+import { HomeFeatured } from "../components/home/Featured";
+import { HomeTopCollections } from "../components/home/TopCollections";
+import { getETHPrice } from "../utils/helpers";
 
 const Home: NextPage = () => {
-  const {chainId, address} = useWallet()
-  const [isBlur, setIsBlur] = React.useState<boolean>(false)
+  const [ethPrice, setEthPrice] = useState<number>(0);
 
-  React.useEffect(() => {
-    if(address){
-      setIsBlur(false)
-    } else setIsBlur(true)
-  }, [address])
-
-  React.useEffect(()=>{
-    if(chainId && supportChainIDs.includes(chainId)){
-      setIsBlur(false)
-    } else setIsBlur(true)
-  },[chainId])
+  useEffect(() => {
+    (async () => {
+      const ethPrice = await getETHPrice();
+      setEthPrice(ethPrice);
+    })();
+  }, []);
 
   return (
     <>
-      {isBlur &&
-        <MetaMaskConnect />
-      }
-      <Tabs blur={isBlur} />
+      <HomeIntro />
+      <HomeFeatured ethPrice={ethPrice} />
+      <HomeTopCollections ethPrice={ethPrice} />
+      <HomeCollections ethPrice={ethPrice} />
     </>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

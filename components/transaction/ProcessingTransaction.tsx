@@ -1,178 +1,55 @@
-import React, {useState} from 'react'
-import {PendingTxType} from '../../contexts/contract'
-import Image from 'next/image'
-import arrowRight from '../../public/images/arrowRight.png'
-import {getBlockExplorer, getChainIcons} from '../../utils/constants'
+import React from "react";
+import { PendingTxType } from "../../contexts/contract";
+import { getBlockExplorer, getChainNameFromId } from "../../utils/constants";
+import { ChainIcon } from "../common/ChainIcon";
 
 type ProcessingTransactionProps = {
-  txInfo: PendingTxType
-}
+  txInfo: PendingTxType;
+};
 
 const ProcessingTransaction = ({ txInfo }: ProcessingTransactionProps): JSX.Element => {
-  const [hovered, setHovered] = useState(false)
-  const [targetHovered, setTargetHovered] = useState(false)
-  const [lastHovered, setLastHovered] = useState(false)
-
   const onViewExplorer = () => {
-    if (txInfo && txInfo.txHash && txInfo.senderChainId && hovered) {
-      const explorer = getBlockExplorer(txInfo.senderChainId)
+    if (txInfo && txInfo.lzPath) {
+      window.open(txInfo.lzPath);
+    } else if (txInfo && txInfo.txHash && txInfo.senderChainId) {
+      const explorer = getBlockExplorer(txInfo.senderChainId);
       if (explorer) {
-        window.open(`${explorer}/tx/${txInfo.txHash}`, '_blank')
+        window.open(`${explorer}/tx/${txInfo.txHash}`, "_blank");
       }
     }
-  }
+  };
 
-  const onViewExplorerOnDest = () => {
-    if (txInfo && txInfo.destTxHash && txInfo.targetChainId && targetHovered) {
-      const explorer = getBlockExplorer(txInfo.targetChainId)
-      if (explorer) {
-        window.open(`${explorer}/tx/${txInfo.destTxHash}`, '_blank')
-      }
-    }
-  }
-
-  const onViewExplorerOnLast = () => {
-    if (txInfo && txInfo.lastTxHash && txInfo.targetChainId && lastHovered) {
-      const explorer = getBlockExplorer(txInfo.targetChainId)
-      if (explorer) {
-        window.open(`${explorer}/tx/${txInfo.lastTxHash}`, '_blank')
-      }
-    }
-  }
-
-  const onHover = (type: 'sender' | 'target' | 'last') => {
-    if (type === 'sender') {
-      setHovered(true)
-    } else if (type === 'last') {
-      setLastHovered(true)
-    } else {
-      setTargetHovered(true)
-    }
-  }
-
-  const onLeave = (type: 'sender' | 'target' | 'last') => {
-    if (type === 'sender') {
-      setHovered(false)
-    } else if (type === 'last') {
-      setLastHovered(false)
-    } else {
-      setTargetHovered(false)
-    }
-  }
+  const txDone = txInfo.type === "gaslessMint" ? !!txInfo.txHash : txInfo.txHash && txInfo.destTxHash;
+  const renderContent = (txInfo: PendingTxType) => {
+    return (
+      <div className='flex items-center justify-between px-3'>
+        <span className='bg-repost-gradient bg-clip-text text-transparent w-[35px] truncate text-[14px] leading-[18px] font-bold'>
+          {txInfo.type === "bridge" && "xfer:"}
+          {txInfo.type === "buy" && "buy:"}
+          {txInfo.type === "accept" && "sell:"}
+          {txInfo.type === "gaslessMint" && "mint:"}
+        </span>
+        {txInfo.lzPath ? (
+          <ChainIcon chainName='layerzero' onClick={onViewExplorer} />
+        ) : (
+          <ChainIcon chainName={getChainNameFromId(txInfo.senderChainId)} onClick={onViewExplorer} />
+        )}
+        <span className='text-md text-primary-light ml-1 w-[120px] truncate'>{txInfo?.itemName}</span>
+        {txDone ? <img src='/images/tx_check.svg' alt='tx check' /> : <span className='w-[16px] h-[16px]' />}
+      </div>
+    );
+  };
 
   return (
     <>
-      <div className={'rounded-[8px] w-[250px] h-[40px] md:order-2 mr-[70px] px-4 flex flex-col justify-center py-2'}>
-        {
-          txInfo?.type === 'bridge'
-            &&
-            <div className='flex items-center justify-between'>
-              <span className="text-[#38B000] w-[30px] truncate" style={{fontSize: 14, lineHeight: '18px', fontWeight: 700}}>
-                xfer:
-              </span>
-              <Image
-                onMouseEnter={() => onHover('sender')}
-                onMouseLeave={() => onLeave('sender')}
-                src={hovered ? getChainIcons(txInfo.senderChainId).explorer : getChainIcons(txInfo.senderChainId).icon}
-                style={{ cursor: (hovered) ? 'pointer' : 'auto' }}
-                alt="chain icon"
-                width={18}
-                height={18}
-                onClick={onViewExplorer}
-              />
-              <Image src={arrowRight} alt="arrowRight" />
-              <Image
-                width={18}
-                height={18}
-                onMouseEnter={() => onHover('target')}
-                onMouseLeave={() => onLeave('target')}
-                src={(targetHovered && txInfo.destTxHash) ? getChainIcons(txInfo.targetChainId).explorer : getChainIcons(txInfo.targetChainId).icon}
-                style={{ cursor: (txInfo && txInfo.destTxHash) ? 'pointer' : 'auto', opacity: (txInfo && txInfo.destTxHash) ? 1 : 0.4 }}
-                onClick={onViewExplorerOnDest}
-                alt="chain icon"
-              />
-              <span className="text-md text-gray-500 w-[120px] truncate">{txInfo?.itemName}</span>
-            </div>
-        }
-
-        {
-          txInfo?.type === 'buy'
-            &&
-            <div className='flex items-center justify-between'>
-              <span className="text-[#38B000] w-[30px] truncate" style={{fontSize: 14, lineHeight: '18px', fontWeight: 700}}>
-                buy:
-              </span>
-              <Image
-                width={18}
-                height={18}
-                onMouseEnter={() => onHover('target')}
-                onMouseLeave={() => onLeave('target')}
-                src={(targetHovered && txInfo.destTxHash) ? getChainIcons(txInfo.targetChainId).explorer : getChainIcons(txInfo.targetChainId).icon}
-                style={{ cursor: (txInfo && txInfo.destTxHash) ? 'pointer' : 'auto', opacity: (txInfo && txInfo.destTxHash) ? 1 : 0.4 }}
-                onClick={onViewExplorerOnDest}
-                alt="chain icon"
-              />
-              <Image src={arrowRight} alt="arrowRight" />
-              <Image
-                onMouseEnter={() => onHover('sender')}
-                onMouseLeave={() => onLeave('sender')}
-                src={(hovered && txInfo.txHash) ? getChainIcons(txInfo.senderChainId).explorer : getChainIcons(txInfo.senderChainId).icon}
-                style={{ cursor: (txInfo && txInfo.txHash) ? 'pointer' : 'auto', opacity: (txInfo && txInfo.txHash) ? 1 : 0.4 }}
-                alt="chain icon"
-                width={18}
-                height={18}
-                onClick={onViewExplorer}
-              />
-              {txInfo.lastTxAvailable && (<>
-                <Image src={arrowRight} alt="arrowRight" />
-                <Image
-                  width={18}
-                  height={18}
-                  onMouseEnter={() => onHover('last')}
-                  onMouseLeave={() => onLeave('last')}
-                  src={(lastHovered && txInfo.lastTxHash) ? getChainIcons(txInfo.targetChainId).explorer : getChainIcons(txInfo.targetChainId).icon}
-                  style={{ cursor: (txInfo && txInfo.lastTxHash) ? 'pointer' : 'auto', opacity: (txInfo && txInfo.lastTxHash) ? 1 : 0.4 }}
-                  onClick={onViewExplorerOnLast}
-                  alt="chain icon"
-                />
-              </>)}
-              <span className="text-md text-gray-500 w-[120px] truncate">{txInfo?.itemName}</span>
-            </div>
-        }
-
-        {
-          txInfo?.type === 'accept'
-            &&
-            <div className='flex items-center justify-between'>
-              <span className="text-[#38B000] w-[30px] truncate" style={{fontSize: 14, lineHeight: '18px', fontWeight: 700}}>
-                apt:
-              </span>
-              <Image
-                onMouseEnter={() => onHover('sender')}
-                onMouseLeave={() => onLeave('sender')}
-                src={(hovered && txInfo.txHash) ? getChainIcons(txInfo.senderChainId).explorer : getChainIcons(txInfo.senderChainId).icon}
-                style={{ cursor: (txInfo && txInfo.txHash) ? 'pointer' : 'auto', opacity: (txInfo && txInfo.txHash) ? 1 : 0.4 }}
-                alt="chain icon"
-                width={18}
-                height={18}
-                onClick={onViewExplorer}
-              />
-              <Image src={arrowRight} alt="arrowRight" />
-              <Image
-                width={18}
-                height={18}
-                onMouseEnter={() => onHover('target')} onMouseLeave={() => onLeave('target')}
-                src={(targetHovered && txInfo.destTxHash) ? getChainIcons(txInfo.targetChainId).explorer : getChainIcons(txInfo.targetChainId).icon}
-                style={{ cursor: (txInfo && txInfo.destTxHash) ? 'pointer' : 'auto', opacity: (txInfo && txInfo.destTxHash) ? 1 : 0.4 }}
-                onClick={onViewExplorerOnDest}
-                alt="chain icon"
-              />
-              <span className="text-md text-gray-500 w-[120px] truncate">{txInfo?.itemName}</span>
-            </div>
-        }
+      <div className={"rounded-lg w-full h-[40px] md:order-2 mr-[70px] flex flex-col justify-center py-2"}>
+        {txInfo.type === "bridge" && renderContent(txInfo)}
+        {txInfo.type === "buy" && renderContent(txInfo)}
+        {txInfo.type === "accept" && renderContent(txInfo)}
+        {txInfo.type === "gaslessMint" && renderContent(txInfo)}
       </div>
     </>
-  )
-}
+  );
+};
 
-export default ProcessingTransaction
+export default ProcessingTransaction;

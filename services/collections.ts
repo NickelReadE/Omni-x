@@ -1,81 +1,88 @@
-import API from './api'
+import API from "./api";
 
-const getCollectionNFTs = async (col_url: string, page: number, display_per_page: number, sort: string, searchObj: any) => {
+const getCollectionNFTs = async (
+  col_url: string,
+  page: number,
+  display_per_page: number,
+  sort: string,
+  searchObj: any,
+  chainIds: number[]
+) => {
   const option = {
     col_url,
     page,
     display_per_page,
     sort,
-    searchObj
-  }
-  const res = await API.post('collections/nfts', option)
-  return res.data
-}
+    search: searchObj,
+    chainIds
+  };
+  return await API.post("collections/nfts", option);
+};
 
 const updateCollectionNFTSalePrice = async (col_url: string, token_id: number, price: number) => {
   const option = {
     col_url,
     token_id,
     price
-  }
-  const res = await API.post('collections/nfts/updateSalePrice', option)
-  return res.data
-}
+  };
+  return await API.post("collections/update-sale-price", option);
+};
 
 const updateCollectionNFTChainID = async (col_url: string, token_id: number, chain_id: number) => {
   const option = {
     col_url,
     token_id,
     chain_id
-  }
-  const res = await API.post('collections/nfts/updateChainID', option)
-  return res.data
-}
+  };
+  return await API.post("collections/update-chain-id", option);
+};
 
-const getCollectionAllNFTs = async (col_url: string, sort: string, searchObj: any) => {
-  const option = {
-    col_url,
-    sort,
-    searchObj
-  }
-  const res = await API.post('collections/allNfts', option)
-  return res.data
-}
-
+const getFeaturedCollections = async () => {
+  return await API.get("collections/featured");
+};
+const getTopCollections = async (dayRange: number) => {
+  return await API.post("collections/top", {
+    dayRange
+  });
+};
 
 const getCollectionInfo = async (col_url: string) => {
-  const res = await API.get(`collections/${col_url}`)
-  return res.data
-}
-
-const getCollectionOwners = async (chain: string, address: string) => {
-  const res = await API.post(`collections/${chain}/${address}`)
-  return res.data
-}
+  return await API.get(`collections/${col_url}`);
+};
 
 const getNFTInfo = async (col_url: string, token_id: string) => {
-  const res = await API.get(`collections/${col_url}/${token_id}`)
-  return res.data
-}
+  return await API.get(`collections/${col_url}/${token_id}`);
+};
 
 const getCollections = async () => {
-  const res = await API.get('collections/all')
-  return res.data
-}
+  return await API.get("collections");
+};
 
-const getNFTOwner = async (col_address: string, collection_chain_name: string, token_id: string) => {
-  const res = await API.get(`collections/owner/${col_address}/${collection_chain_name}/${token_id}`)
-  return res.data.owner
-}
+const getOmniCollections = async () => {
+  return await API.get("collections/omni");
+};
+
+const getCollectionsWithoutMetadata = async () => {
+  return await API.get("collections/compact");
+};
+
+const refreshMetadata = async (col_url: string, token_id: string) => {
+  return await API.post("collections/refresh-metadata", {
+    col_url,
+    token_id
+  });
+};
 
 export const collectionsService = {
   getCollectionNFTs,
   getCollectionInfo,
-  getCollectionOwners,
   getNFTInfo,
   getCollections,
-  getNFTOwner,
-  getCollectionAllNFTs,
+  getOmniCollections,
+  getCollectionsWithoutMetadata,
+  refreshMetadata,
   updateCollectionNFTSalePrice,
   updateCollectionNFTChainID,
-}
+  getFeaturedCollections,
+  getTopCollections
+};
