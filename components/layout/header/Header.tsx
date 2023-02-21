@@ -31,7 +31,6 @@ const Header = (): JSX.Element => {
   // check if the connected chain is among the supported ones. if not, trigger the warning to pop
   useEffect(() => {
     if (chainId && supportChainIDs.includes(chainId)) {
-      console.log(chainId);
       setIsConnectedWarning(false);
     } else setIsConnectedWarning(true);
   }, [chainId]);
@@ -41,7 +40,6 @@ const Header = (): JSX.Element => {
     if (address === undefined) {
       setIsConnectedWarning(false);
     }
-    console.log(address);
   }, [address]);
 
   const avatarImage = useMemo(() => {
@@ -77,7 +75,9 @@ const Header = (): JSX.Element => {
                 </div>
                 <div className={"h-11"}>
                   <div
-                    className={`relative inline-block text-left w-[140px] h-11 py-2 px-2 rounded-[8px] ${hovered ? "bg-[#303030]" : "bg-[#202020]"}`}
+                    className={`relative inline-block text-left w-[140px] h-11 py-2 px-2 rounded-[8px] ${
+                      hovered ? "bg-[#303030]" : "bg-[#202020]"
+                    }`}
                     onMouseLeave={() => setHovered(false)}
                   >
                     {chainId && (
@@ -88,7 +88,7 @@ const Header = (): JSX.Element => {
                             <TextBodyemphasis className={"text-secondary"}>{getChainOfficialNameById(chainId)}</TextBodyemphasis>
                           </div>
                         </div>
-                        <SelectNetworks chainList={SUPPORTED_CHAIN_IDS} type="header" selectedChainIds={[chainId]} opened={hovered} />
+                        <SelectNetworks chainList={SUPPORTED_CHAIN_IDS} type='header' selectedChainIds={[chainId]} opened={hovered} />
                       </>
                     )}
                   </div>

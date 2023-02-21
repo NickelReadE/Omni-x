@@ -17,7 +17,11 @@ export default function Footer() {
           <Menu as='div' className='relative inline-block align-middle flex items-center'>
             {({ open }) => (
               <>
-                <Menu.Button className={"focus:outline-none w-5 h-5"} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
+                <Menu.Button
+                  className={"focus:outline-none w-5 h-5"}
+                  onMouseEnter={() => setHover(true)}
+                  onMouseLeave={() => setHover(false)}
+                >
                   <div className={`${open ? "rotate-90" : ""} duration-300 flex items-center justify-center`}>
                     <svg width='19' height='3' viewBox='0 0 19 3' fill='none' xmlns='http://www.w3.org/2000/svg'>
                       <path
@@ -35,7 +39,13 @@ export default function Footer() {
                     </svg>
                   </div>
                 </Menu.Button>
-                <SelectNetworks type="footer" opened={open} chainList={GAS_SUPPORTED_CHAIN_IDS} selectedChainIds={gasSupportChainIds} updateGasChainId={updateGasChainId} />
+                <SelectNetworks
+                  type='footer'
+                  opened={open}
+                  chainList={GAS_SUPPORTED_CHAIN_IDS}
+                  selectedChainIds={gasSupportChainIds}
+                  updateGasChainId={updateGasChainId}
+                />
               </>
             )}
           </Menu>

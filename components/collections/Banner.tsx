@@ -11,7 +11,7 @@ import { formatDollarAmount } from "../../utils/numbers";
 import { FullCollectionType } from "../../types/collections";
 import { CopyAddressButton } from "../common/buttons/CopyAddressButton";
 import { userService } from "../../services/users";
-import { activeClasses, activeTextClasses } from '../../utils/utils';
+import { activeClasses, activeTextClasses } from "../../utils/utils";
 
 interface CollectionBannerProps {
   collection: FullCollectionType;
@@ -166,9 +166,9 @@ export const CollectionBanner = ({ collection, setSelectedTabIndex }: Collection
                 setSelectedTabIndex(0);
               }}
             >
-              <div className={`${activeClasses(0,selectedTab)} pb-[2px] cursor-pointer`}>
+              <div className={`${activeClasses(0, selectedTab)} pb-[2px] cursor-pointer`}>
                 <div className={"flex flex-col justify-between h-full bg-primary text-white py-1 px-4"}>
-                  <span className={`${activeTextClasses(0,selectedTab)}`}>items</span>
+                  <span className={`${activeTextClasses(0, selectedTab)}`}>items</span>
                 </div>
               </div>
             </li>
@@ -187,9 +187,9 @@ export const CollectionBanner = ({ collection, setSelectedTabIndex }: Collection
                 setSelectedTabIndex(2);
               }}
             >
-              <div className={`${activeClasses(2,selectedTab)} pb-[2px] cursor-pointer`}>
+              <div className={`${activeClasses(2, selectedTab)} pb-[2px] cursor-pointer`}>
                 <div className={"flex flex-col justify-between h-full bg-primary text-[white] py-1 px-4"}>
-                  <span className={`${activeTextClasses(2,selectedTab)}`}>activity</span>
+                  <span className={`${activeTextClasses(2, selectedTab)}`}>activity</span>
                 </div>
               </div>
             </li>
@@ -199,9 +199,9 @@ export const CollectionBanner = ({ collection, setSelectedTabIndex }: Collection
                 setSelectedTabIndex(3);
               }}
             >
-              <div className={`${activeClasses(3,selectedTab)} pb-[2px] cursor-pointer`}>
+              <div className={`${activeClasses(3, selectedTab)} pb-[2px] cursor-pointer`}>
                 <div className={"flex flex-col justify-between h-full bg-primary text-white py-1 px-4"}>
-                  <span className={`${activeTextClasses(3,selectedTab)}`}>posts</span>
+                  <span className={`${activeTextClasses(3, selectedTab)}`}>posts</span>
                 </div>
               </div>
             </li>

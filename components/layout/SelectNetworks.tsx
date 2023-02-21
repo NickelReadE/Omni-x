@@ -14,8 +14,8 @@ export const SelectNetworks = ({
 }: {
   selectedChainIds: number[];
   chainList: number[];
-  type: string,
-  opened: boolean,
+  type: string;
+  opened: boolean;
   updateGasChainId: any;
 }) => {
   const { switchNetwork } = useSwitchNetwork();
@@ -33,18 +33,22 @@ export const SelectNetworks = ({
         leaveTo='transform opacity-0 scale-95'
         show={opened}
       >
-        <div className={`absolute ${type == "header" ? "top-0 left-0 origin-top-left w-[140px]" : "bottom-10 left-[-12px] w-[166px] origin-bottom-left rounded-md"} ${opened ? "block" : "hidden"}`}>
+        <div
+          className={`absolute ${
+            type == "header" ? "top-0 left-0 origin-top-left w-[140px]" : "bottom-10 left-[-12px] w-[166px] origin-bottom-left rounded-md"
+          } ${opened ? "block" : "hidden"}`}
+        >
           <GradientBackground className='shadow-[0_0px_20px_rgba(231,237,245,0.25)]'>
             <div className={"rounded-[8px] mx-[1px] p-[1px]"}>
-              {
-                type == "footer" &&
+              {type == "footer" && (
                 <Menu.Items className='focus:outline-none py-1'>
                   {chainList.map((chainID, index) => {
                     return (
                       <Menu.Item key={index} as={Fragment}>
                         <div
-                          className={`py-2 px-6 flex items-center cursor-pointer ${selectedChainIds.includes(chainID) ? "" : "bg-[#303030]"
-                            }`}
+                          className={`py-2 px-6 flex items-center cursor-pointer ${
+                            selectedChainIds.includes(chainID) ? "" : "bg-[#303030]"
+                          }`}
                           onClick={() => updateGasChainId(chainID)}
                         >
                           <img alt={"chainIcon"} src={getChainLogoById(chainID.toString())} />
@@ -54,18 +58,18 @@ export const SelectNetworks = ({
                     );
                   })}
                 </Menu.Items>
-              }
-              {
-                type == "header" &&
+              )}
+              {type == "header" &&
                 chainList.map((chainId, index) => {
                   return (
                     <div
                       key={index}
-                      className={`p-2 flex items-center space-x-2 cursor-pointer overflow-hidden ${activeIndex === index || !selectedChainIds.includes(chainId) ? "bg-[#303030]" : ""
-                        } ${index === 0 ? "rounded-t-[8px]" : ""} ${index === chainList.length - 1 ? "rounded-b-[8px]" : ""}`}
+                      className={`p-2 flex items-center space-x-2 cursor-pointer overflow-hidden ${
+                        activeIndex === index || !selectedChainIds.includes(chainId) ? "bg-[#303030]" : ""
+                      } ${index === 0 ? "rounded-t-[8px]" : ""} ${index === chainList.length - 1 ? "rounded-b-[8px]" : ""}`}
                       onMouseEnter={() => setActiveIndex(index)}
                       onMouseLeave={() => setActiveIndex(undefined)}
-                      onClick={() => type == "header" ? switchNetwork?.(chainId) : updateGasChainId(chainId)}
+                      onClick={() => (type == "header" ? switchNetwork?.(chainId) : updateGasChainId(chainId))}
                     >
                       <ChainIcon chainName={getChainNameFromId(chainId)} isSelected={activeIndex === index} size={"medium"} />
                       <TextBodyemphasis className={`${activeIndex === index ? "text-white" : "text-secondary"} leading-none`}>
@@ -73,8 +77,7 @@ export const SelectNetworks = ({
                       </TextBodyemphasis>
                     </div>
                   );
-                })
-              }
+                })}
             </div>
           </GradientBackground>
         </div>

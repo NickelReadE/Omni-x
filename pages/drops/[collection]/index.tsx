@@ -26,7 +26,7 @@ import useData from "../../../hooks/useData";
 import useContract from "../../../hooks/useContract";
 import { PendingTxType } from "../../../contexts/contract";
 import useProgress from "../../../hooks/useProgress";
-import { activeClasses, activeTextClasses } from '../../../utils/utils';
+import { activeClasses, activeTextClasses } from "../../../utils/utils";
 
 const errorToast = (error: string): void => {
   toast.error(error, {
@@ -262,30 +262,30 @@ const Mint: NextPage = () => {
                   <div className='text-xl font-medium text-center text-secondary'>
                     <ul className='flex flex-wrap -mb-px'>
                       <li onClick={() => setSelectedTab(0)}>
-                        <div className={`${activeClasses(0,selectedTab)} pb-[2px] cursor-pointer`}>
+                        <div className={`${activeClasses(0, selectedTab)} pb-[2px] cursor-pointer`}>
                           <div className={"flex flex-col justify-between h-full bg-primary text-white p-4 pb-1"}>
-                            <span className={`${activeTextClasses(0,selectedTab)}`}>about</span>
+                            <span className={`${activeTextClasses(0, selectedTab)}`}>about</span>
                           </div>
                         </div>
                       </li>
                       <li onClick={() => setSelectedTab(1)}>
-                        <div className={`${activeClasses(1,selectedTab)} pb-[2px] cursor-pointer`}>
+                        <div className={`${activeClasses(1, selectedTab)} pb-[2px] cursor-pointer`}>
                           <div className={"flex flex-col justify-between h-full bg-primary text-white p-4 pb-1"}>
-                            <span className={`${activeTextClasses(1,selectedTab)}`}>utility</span>
+                            <span className={`${activeTextClasses(1, selectedTab)}`}>utility</span>
                           </div>
                         </div>
                       </li>
                       <li onClick={() => setSelectedTab(2)}>
-                        <div className={`${activeClasses(2,selectedTab)} pb-[2px] cursor-pointer`}>
+                        <div className={`${activeClasses(2, selectedTab)} pb-[2px] cursor-pointer`}>
                           <div className={"flex flex-col justify-between h-full bg-primary text-white p-4 pb-1"}>
-                            <span className={`${activeTextClasses(2,selectedTab)}`}>team</span>
+                            <span className={`${activeTextClasses(2, selectedTab)}`}>team</span>
                           </div>
                         </div>
                       </li>
                       <li onClick={() => setSelectedTab(4)}>
-                        <div className={`${activeClasses(4,selectedTab)} pb-[2px] cursor-pointer`}>
+                        <div className={`${activeClasses(4, selectedTab)} pb-[2px] cursor-pointer`}>
                           <div className={"flex flex-col justify-between h-full bg-primary text-white p-4 pb-1"}>
-                            <span className={`${activeTextClasses(4,selectedTab)}`}>roadmap</span>
+                            <span className={`${activeTextClasses(4, selectedTab)}`}>roadmap</span>
                           </div>
                         </div>
                       </li>

@@ -28,6 +28,17 @@ export type OmniCollectionType = BaseCollectionType & {
   };
 };
 
+export type MintingScheduleType = {
+  title: string;
+  start_timestamp: number;
+  end_timestamp: number;
+  max_limit: number;
+  limit_per_wallet: number;
+  currency: string; // in case native currency, should be 0x0
+  price: number;
+  wl?: string; // merkle root
+};
+
 export type FullCollectionType = BaseCollectionType & {
   address: any;
   items_count: number;
@@ -42,7 +53,7 @@ export type FullCollectionType = BaseCollectionType & {
   attrs: any;
   bid_datas: any[];
   bid_orders: IOrder[];
-  whitelist_infos: any[];
+  whitelist_infos: MintingScheduleType[];
   floorPrice: any;
   floorNft: any;
   mint_start_timestamp: number;
