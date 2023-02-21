@@ -18,6 +18,7 @@ import { formatDollarAmount } from "../../../utils/numbers";
 import { SecondaryButton } from "../../../components/common/buttons/SecondaryButton";
 import Image from "next/image";
 import { TextBodyemphasis } from "../../../components/common/Basic";
+import { activeClasses, activeTextClasses } from '../../../utils/utils'; 
 
 const Item: NextPage = () => {
   const [imageError, setImageError] = useState(false);
@@ -33,13 +34,6 @@ const Item: NextPage = () => {
 
   const onRefresh = () => {
     refreshNft();
-  };
-
-  const activeClasses = (index: number) => {
-    return index === selectedTab ? "bg-primary-gradient" : "bg-secondary";
-  };
-  const activeTextClasses = (index: number) => {
-    return index === selectedTab ? "bg-primary-gradient bg-clip-text text-transparent" : "text-secondary";
   };
 
   const collection_address_map = useMemo(() => {
@@ -113,16 +107,16 @@ const Item: NextPage = () => {
                   <div className='text-xl font-medium text-center text-secondary'>
                     <ul className='flex flex-wrap -mb-px'>
                       <li onClick={() => setSelectedTab(0)}>
-                        <div className={`${activeClasses(0)} pb-[2px] cursor-pointer`}>
+                        <div className={`${activeClasses(0,selectedTab)} pb-[2px] cursor-pointer`}>
                           <div className={"flex flex-col justify-between h-full bg-primary text-white p-4 pb-1"}>
-                            <span className={`${activeTextClasses(0)}`}>bids</span>
+                            <span className={`${activeTextClasses(0,selectedTab)}`}>bids</span>
                           </div>
                         </div>
                       </li>
                       <li onClick={() => setSelectedTab(1)}>
-                        <div className={`${activeClasses(1)} pb-[2px] cursor-pointer`}>
+                        <div className={`${activeClasses(1,selectedTab)} pb-[2px] cursor-pointer`}>
                           <div className={"flex flex-col justify-between h-full bg-primary text-white p-4 pb-1"}>
-                            <span className={`${activeTextClasses(1)}`}>history</span>
+                            <span className={`${activeTextClasses(1,selectedTab)}`}>history</span>
                           </div>
                         </div>
                       </li>

@@ -11,6 +11,7 @@ import { formatDollarAmount } from "../../utils/numbers";
 import { FullCollectionType } from "../../types/collections";
 import { CopyAddressButton } from "../common/buttons/CopyAddressButton";
 import { userService } from "../../services/users";
+import { activeClasses, activeTextClasses } from '../../utils/utils';
 
 interface CollectionBannerProps {
   collection: FullCollectionType;
@@ -29,13 +30,6 @@ export const CollectionBanner = ({ collection, setSelectedTabIndex }: Collection
     }
     return undefined;
   }, [collection, chainId]);
-
-  const activeClasses = (index: number) => {
-    return index === selectedTab ? "bg-primary-gradient" : "bg-secondary";
-  };
-  const activeTextClasses = (index: number) => {
-    return index === selectedTab ? "bg-primary-gradient bg-clip-text text-transparent" : "text-secondary";
-  };
 
   const onFavoriteClicked = async () => {
     try {
@@ -164,7 +158,7 @@ export const CollectionBanner = ({ collection, setSelectedTabIndex }: Collection
 
       {/*items & activity Tabs section*/}
       <div className={"flex items-center mt-10"}>
-        <div className='text-xl font-medium text-center text-secondary'>
+        <div className='text-xl font-medium text-center'>
           <ul className='flex flex-wrap -mb-px'>
             <li
               onClick={() => {
@@ -172,9 +166,9 @@ export const CollectionBanner = ({ collection, setSelectedTabIndex }: Collection
                 setSelectedTabIndex(0);
               }}
             >
-              <div className={`${activeClasses(0)} pb-[2px] cursor-pointer`}>
+              <div className={`${activeClasses(0,selectedTab)} pb-[2px] cursor-pointer`}>
                 <div className={"flex flex-col justify-between h-full bg-primary text-white py-1 px-4"}>
-                  <span className={`${activeTextClasses(0)}`}>items</span>
+                  <span className={`${activeTextClasses(0,selectedTab)}`}>items</span>
                 </div>
               </div>
             </li>
@@ -193,9 +187,9 @@ export const CollectionBanner = ({ collection, setSelectedTabIndex }: Collection
                 setSelectedTabIndex(2);
               }}
             >
-              <div className={`${activeClasses(2)} pb-[2px] cursor-pointer`}>
-                <div className={"flex flex-col justify-between h-full bg-primary text-white py-1 px-4"}>
-                  <span className={`${activeTextClasses(2)}`}>activity</span>
+              <div className={`${activeClasses(2,selectedTab)} pb-[2px] cursor-pointer`}>
+                <div className={"flex flex-col justify-between h-full bg-primary text-[white] py-1 px-4"}>
+                  <span className={`${activeTextClasses(2,selectedTab)}`}>activity</span>
                 </div>
               </div>
             </li>
@@ -205,9 +199,9 @@ export const CollectionBanner = ({ collection, setSelectedTabIndex }: Collection
                 setSelectedTabIndex(3);
               }}
             >
-              <div className={`${activeClasses(3)} pb-[2px] cursor-pointer`}>
+              <div className={`${activeClasses(3,selectedTab)} pb-[2px] cursor-pointer`}>
                 <div className={"flex flex-col justify-between h-full bg-primary text-white py-1 px-4"}>
-                  <span className={`${activeTextClasses(3)}`}>posts</span>
+                  <span className={`${activeTextClasses(3,selectedTab)}`}>posts</span>
                 </div>
               </div>
             </li>
