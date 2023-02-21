@@ -458,7 +458,7 @@ const NFTBox = ({ nft, col_url, onRefresh }: IPropsNFTItem) => {
             )}
           </div>
         </Transition>
-        <NFTBoxFullscreenDialog open={isFullscreenView} nftImage={image} closeModal={() => setIsFullscreenView(false)} />
+        <NFTBoxFullscreenDialog open={isFullscreenView} nftImage={image} closeModal={() => setIsFullscreenView(false)}/>
       </div>
 
       <ConfirmTransfer

@@ -18,7 +18,7 @@ const okToast = (success: string): void => {
 export const CopyAddressButton = ({ address }: CopyAddressButtonProps) => {
   return (
     <div
-      className={"flex items-center space-x-2 bg-[#202020] py-1 px-2 rounded-[12px] cursor-pointer "}
+      className={"flex items-center space-x-2 bg-[#202020] py-1 px-2 rounded-[12px] cursor-pointer hover:bg-[#303030]"}
       onClick={() => {
         navigator.clipboard.writeText(address);
         okToast("address copied");

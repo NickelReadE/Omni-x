@@ -93,3 +93,11 @@ export const calcVolumeUp = (volume1x: string, volume2x: string) => {
   }
   return 0;
 };
+
+export const activeClasses = (index: number, selectedTab: number) => {
+  return index === selectedTab ? "bg-primary-gradient" : "bg-[#303030]";
+}
+
+export const activeTextClasses = (index: number, selectedTab: number) => {
+  return index === selectedTab ? "bg-primary-gradient bg-clip-text text-transparent" : "text-secondary";
+}

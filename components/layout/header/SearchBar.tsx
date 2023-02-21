@@ -34,7 +34,7 @@ export default function SearchBar() {
       <div className={"relative"}>
         {
           <div
-            className={`${query !== "" && isComponentVisible ? "absolute bg-[#303030]" : ""} min-width-[230px] lg:w-[500px]`}
+            className={`${query !== "" && isComponentVisible ? "absolute bg-[#303030]" : ""} min-width-[300px] lg:w-[500px]`}
             style={query !== "" && isComponentVisible ? { borderRadius: "20px", top: -20 } : {}}
           >
             <div
