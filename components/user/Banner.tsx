@@ -12,6 +12,7 @@ import UserEdit from './UserEdit'
 import {formatAmount} from '../../utils/numbers'
 import { CopyAddressButton } from '../common/buttons/CopyAddressButton'
 import {getImageProperLink} from '../../utils/helpers'
+import { NFTBoxFullscreenDialog } from '../collections/FullscreenDialog'
 
 type UserBannerProps = {
     user: ProfileData,
@@ -29,6 +30,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
   const {address} = useWallet()
   const classes = useStyles()
   const [settingModal, setSettingModal] = useState(false)
+  const [isFullscreenView, setIsFullscreenView] = useState(false)
 
   const bannerImage = useMemo(() => {
     if (user && user.banner) {
@@ -57,7 +59,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
                 alt={'banner'}
               />
             </div>
-            <div className="bottom-[-80px] left-6 w-[120px] h-[120px] absolute flex items-end border-solid rounded border-4 border-primary">
+            <div className="bottom-[-80px] left-6 w-[120px] h-[120px] absolute flex items-end border-solid rounded border-4 border-primary hover: cursor-pointer" onClick={() => setIsFullscreenView(true)}>
               <img
                 src={avatarImage}
                 alt="avatar"
@@ -119,6 +121,7 @@ const UserBanner = ({user}: UserBannerProps): JSX.Element => {
       <Dialog open={settingModal} onClose={() => setSettingModal(false)} aria-labelledby='simple-dialog-title' maxWidth={'xl'} classes={{ paper: classes.paper }}>
         <UserEdit updateModal={() => setSettingModal(false)} />
       </Dialog>
+      <NFTBoxFullscreenDialog open={isFullscreenView} nftImage={avatarImage} closeModal={() => setIsFullscreenView(false)}/>
     </>
   )
 }
