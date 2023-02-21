@@ -427,14 +427,14 @@ export const doBidApprove = async (bid_data: IBidData, common_data: TradingCommo
     throw new Error("Could not find the currency");
   }
 
-  {
+  /*{
     const balance = await omni.balanceOf(common_data.address);
     if (balance.lt(price)) {
       const errMessage = "Not enough balance";
       special_data.dispatch(openSnackBar({ message: errMessage, status: "warning" }));
       throw new Error(errMessage);
     }
-  }
+  }*/
 
   const approveTxs = [];
   approveTxs.push(await approve(omni, common_data.address, getAddressByName("FundManager", common_data.chainId), price));
