@@ -43,7 +43,9 @@ module.exports = {
         'primary-blue': '#00F0EC',
         'primary-green': '#16FFC5',
         'like': '#FF166A',
-        'comment': '#007DF0'
+        'comment': '#007DF0',
+        '20':'#202020',
+        '30':'#303030'
       },
       fontFamily: {
         sans: ['Inter', ...fontFamily.sans],

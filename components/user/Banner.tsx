@@ -7,11 +7,12 @@ import useWallet from "../../hooks/useWallet";
 import classNames from "../../helpers/classNames";
 import { ProfileData } from "../../hooks/useProfile";
 // import {ExternalLink, TextBody, TextBodyemphasis, TextH3} from './basic'
-import { ExternalLink, TextBody, TextH3 } from "../common/Basic";
-import UserEdit from "./UserEdit";
-import { formatAmount } from "../../utils/numbers";
-import { CopyAddressButton } from "../common/buttons/CopyAddressButton";
-import { getImageProperLink } from "../../utils/helpers";
+import {ExternalLink, TextBody, TextH3} from '../common/Basic'
+import UserEdit from './UserEdit'
+import {formatAmount} from '../../utils/numbers'
+import { CopyAddressButton } from '../common/buttons/CopyAddressButton'
+import {getImageProperLink} from '../../utils/helpers'
+import { NFTBoxFullscreenDialog } from '../collections/FullscreenDialog'
 
 type UserBannerProps = {
   user: ProfileData;
@@ -25,10 +26,11 @@ const useStyles = makeStyles({
   }
 });
 
-const UserBanner = ({ user }: UserBannerProps): JSX.Element => {
-  const { address } = useWallet();
-  const classes = useStyles();
-  const [settingModal, setSettingModal] = useState(false);
+const UserBanner = ({user}: UserBannerProps): JSX.Element => {
+  const {address} = useWallet()
+  const classes = useStyles()
+  const [settingModal, setSettingModal] = useState(false)
+  const [isFullscreenView, setIsFullscreenView] = useState(false)
 
   const bannerImage = useMemo(() => {
     if (user && user.banner) {
@@ -53,8 +55,12 @@ const UserBanner = ({ user }: UserBannerProps): JSX.Element => {
             <div className={"overflow-hidden aspect-[3/1] rounded-lg"}>
               <img src={bannerImage} className='w-full object-cover' alt={"banner"} />
             </div>
-            <div className='bottom-[-80px] left-6 w-[120px] h-[120px] absolute flex items-end border-solid rounded border-4 border-primary'>
-              <img src={avatarImage} alt='avatar' className={"w-full h-full"} />
+            <div className="bottom-[-80px] left-6 w-[120px] h-[120px] absolute flex items-end border-solid rounded border-4 border-primary hover: cursor-pointer" onClick={() => setIsFullscreenView(true)}>
+              <img
+                src={avatarImage}
+                alt="avatar"
+                className={'w-full h-full'}
+              />
             </div>
           </div>
 
@@ -117,6 +123,7 @@ const UserBanner = ({ user }: UserBannerProps): JSX.Element => {
       >
         <UserEdit updateModal={() => setSettingModal(false)} />
       </Dialog>
+      <NFTBoxFullscreenDialog open={isFullscreenView} nftImage={avatarImage} closeModal={() => setIsFullscreenView(false)}/>
     </>
   );
 };

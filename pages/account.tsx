@@ -14,6 +14,7 @@ import { FavoriteCollectionType, FavoriteItemType, UserCollectionType } from "..
 import { getETHPrice } from "../utils/helpers";
 import UserHidden from "../components/user/UserHidden";
 import { NFTItem } from "../interface/interface";
+import { activeClasses, activeTextClasses } from '../utils/utils';
 
 const Account: NextPage = () => {
   const { address } = useWallet();
@@ -26,13 +27,6 @@ const Account: NextPage = () => {
   const [favorites, setFavorites] = useState<FavoriteItemType[]>([]);
   const [favoriteCollections, setFavoriteCollections] = useState<FavoriteCollectionType[]>([]);
   const [hiddenItems, setHiddenItems] = useState<NFTItem[]>([]);
-
-  const activeClasses = (index: number) => {
-    return index === selectedTab ? "bg-primary-gradient" : "bg-secondary";
-  };
-  const activeTextClasses = (index: number) => {
-    return index === selectedTab ? "bg-primary-gradient bg-clip-text text-transparent" : "text-secondary";
-  };
 
   useEffect(() => {
     (async () => {
@@ -68,37 +62,37 @@ const Account: NextPage = () => {
               <div className='text-xl font-medium text-center text-secondary'>
                 <ul className='flex flex-wrap -mb-px'>
                   <li onClick={() => setSelectedTab(0)}>
-                    <div className={`${activeClasses(0)} pb-[2px] cursor-pointer`}>
+                    <div className={`${activeClasses(0,selectedTab)} pb-[2px] cursor-pointer`}>
                       <div className={"flex flex-col justify-between h-full bg-primary text-white p-4 pb-1"}>
-                        <span className={`${activeTextClasses(0)}`}>collected</span>
+                        <span className={`${activeTextClasses(0,selectedTab)}`}>collected</span>
                       </div>
                     </div>
                   </li>
                   <li onClick={() => setSelectedTab(1)}>
-                    <div className={`${activeClasses(1)} pb-[2px] cursor-pointer`}>
+                    <div className={`${activeClasses(1,selectedTab)} pb-[2px] cursor-pointer`}>
                       <div className={"flex flex-col justify-between h-full bg-primary text-white p-4 pb-1"}>
-                        <span className={`${activeTextClasses(1)}`}>created</span>
+                        <span className={`${activeTextClasses(1,selectedTab)}`}>created</span>
                       </div>
                     </div>
                   </li>
                   <li onClick={() => setSelectedTab(2)}>
-                    <div className={`${activeClasses(2)} pb-[2px] cursor-pointer`}>
+                    <div className={`${activeClasses(2,selectedTab)} pb-[2px] cursor-pointer`}>
                       <div className={"flex flex-col justify-between h-full bg-primary text-white p-4 pb-1"}>
-                        <span className={`${activeTextClasses(2)}`}>activity</span>
+                        <span className={`${activeTextClasses(2,selectedTab)}`}>activity</span>
                       </div>
                     </div>
                   </li>
                   <li onClick={() => setSelectedTab(3)}>
-                    <div className={`${activeClasses(3)} pb-[2px] cursor-pointer`}>
+                    <div className={`${activeClasses(3,selectedTab)} pb-[2px] cursor-pointer`}>
                       <div className={"flex flex-col justify-between h-full bg-primary text-white p-4 pb-1"}>
-                        <span className={`${activeTextClasses(3)}`}>favorites</span>
+                        <span className={`${activeTextClasses(3,selectedTab)}`}>favorites</span>
                       </div>
                     </div>
                   </li>
                   <li onClick={() => setSelectedTab(4)}>
-                    <div className={`${activeClasses(4)} pb-[2px] cursor-pointer`}>
+                    <div className={`${activeClasses(4,selectedTab)} pb-[2px] cursor-pointer`}>
                       <div className={"flex flex-col justify-between h-full bg-primary text-white p-4 pb-1"}>
-                        <span className={`${activeTextClasses(4)}`}>hidden</span>
+                        <span className={`${activeTextClasses(4,selectedTab)}`}>hidden</span>
                       </div>
                     </div>
                   </li>

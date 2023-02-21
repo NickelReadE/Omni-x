@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import NavMenu from "./NavMenu";
 import useData from "../../../hooks/useData";
@@ -9,22 +9,40 @@ import { SelectNetworks } from "../SelectNetworks";
 import { PfpMenu } from "./PfpMenu";
 import { TransactionTracker } from "./TransactionTracker";
 import { getImageProperLink } from "../../../utils/helpers";
-import { SUPPORTED_CHAIN_IDS, getChainOfficialNameById, getChainNameFromId } from "../../../utils/constants";
+import { SUPPORTED_CHAIN_IDS, getChainOfficialNameById, getChainNameFromId, CHAIN_IDS, supportChainIDs } from "../../../utils/constants";
 import { TextBodyemphasis } from "../../common/Basic";
 import { ChainIcon } from "../../common/ChainIcon";
+import { useSwitchNetwork } from "wagmi";
 
 const Header = (): JSX.Element => {
-  const { address } = useWallet();
+  const { address, chainId } = useWallet();
   const { profile, onFaucet } = useData();
   const { openConnectModal } = useConnectModal();
-  const { chainId } = useWallet();
   const [hovered, setHovered] = useState(false);
+  const [isConnectedWarning, setIsConnectedWarning] = useState<boolean>(false);
+  const { switchNetwork } = useSwitchNetwork();
 
   const onConnect = () => {
     if (!address && openConnectModal) {
       openConnectModal();
     }
   };
+
+  // check if the connected chain is among the supported ones. if not, trigger the warning to pop
+  useEffect(() => {
+    if (chainId && supportChainIDs.includes(chainId)) {
+      console.log(chainId);
+      setIsConnectedWarning(false);
+    } else setIsConnectedWarning(true);
+  }, [chainId]);
+
+  // disable the warning if the user is not connected
+  useEffect(() => {
+    if (address === undefined) {
+      setIsConnectedWarning(false);
+    }
+    console.log(address);
+  }, [address]);
 
   const avatarImage = useMemo(() => {
     if (profile && profile.avatar) {
@@ -35,8 +53,8 @@ const Header = (): JSX.Element => {
 
   return (
     <>
-      <nav className={classNames("bg-[#161616]", "h-[64px]", "px-8", "z-50", "fixed", "w-full")}>
-        <div className='flex items-center text-[16px] font-medium'>
+      <nav className={classNames("bg-[#161616]", "z-50", "fixed", "w-full")}>
+        <div className='flex items-center text-[16px] font-medium px-8'>
           <div className={"flex items-center flex-1 space-x-[50px] md:w-auto mx-auto"}>
             <TransactionTracker />
             <NavMenu />
@@ -90,6 +108,15 @@ const Header = (): JSX.Element => {
               </div>
             )}
           </div>
+        </div>
+        <div className={`bg-red-600 min-w-full h-8 px-6 justify-center items-center flex ${isConnectedWarning ? "" : "hidden"}`}>
+          <span className='text-white'>
+            Your crypto wallet is currently connected to an unsupported network.
+            <a onClick={() => switchNetwork?.(CHAIN_IDS["goerli"])} className='mx-1 cursor-pointer underline'>
+              Click here
+            </a>
+            to connect to Goerli testnet
+          </span>
         </div>
       </nav>
     </>
