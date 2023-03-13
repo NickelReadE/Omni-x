@@ -1,12 +1,3 @@
-<svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="38" height="38" rx="19" fill="#202020"/>
-<path d="M19 16.8125V28.625" stroke="#969696" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M19 9.375V12.4375" stroke="#969696" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M19 16.8125C20.2081 16.8125 21.1875 15.8331 21.1875 14.625C21.1875 13.4169 20.2081 12.4375 19 12.4375C17.7919 12.4375 16.8125 13.4169 16.8125 14.625C16.8125 15.8331 17.7919 16.8125 19 16.8125Z" stroke="#969696" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M26.875 25.5625V28.625" stroke="#969696" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M26.875 9.375V21.1875" stroke="#969696" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M26.875 25.5625C28.0831 25.5625 29.0625 24.5831 29.0625 23.375C29.0625 22.1669 28.0831 21.1875 26.875 21.1875C25.6669 21.1875 24.6875 22.1669 24.6875 23.375C24.6875 24.5831 25.6669 25.5625 26.875 25.5625Z" stroke="#969696" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M11.125 22.0625V28.625" stroke="#969696" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M11.125 9.375V17.6875" stroke="#969696" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M11.125 22.0625C12.3331 22.0625 13.3125 21.0831 13.3125 19.875C13.3125 18.6669 12.3331 17.6875 11.125 17.6875C9.91688 17.6875 8.9375 18.6669 8.9375 19.875C8.9375 21.0831 9.91688 22.0625 11.125 22.0625Z" stroke="#969696" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
+version https://git-lfs.github.com/spec/v1
+oid sha256:3aaa0824d65d36175cedb01dba727a5471db16e3b1965fbc876e906d9db507a4
+size 1733

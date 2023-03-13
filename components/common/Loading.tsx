@@ -1,13 +1,3 @@
-import Image from "next/image";
-import React from "react";
-import LoadingImage from "../../public/images/loading_f.gif";
-
-const Loading = () => {
-  return (
-    <div>
-      <Image src={LoadingImage} alt='Loading...' width='80px' height='80px' />
-    </div>
-  );
-};
-
-export default Loading;
+version https://git-lfs.github.com/spec/v1
+oid sha256:f5f891f149334fd14e4860938038b422fad6d448c46cfeb0c14b9dea2468f52e
+size 303

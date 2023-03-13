@@ -1,18 +1,3 @@
-import "../styles/globals.scss";
-import type { AppProps } from "next/app";
-import dynamic from "next/dynamic";
-import { wrapper } from "../redux/store";
-
-const AppWithoutSSR = dynamic(() => import("../components/App"), {
-  ssr: false
-});
-
-function AppWrapper({ Component, pageProps }: AppProps) {
-  return (
-    <AppWithoutSSR>
-      <Component {...pageProps} />
-    </AppWithoutSSR>
-  );
-}
-
-export default wrapper.withRedux(AppWrapper);
+version https://git-lfs.github.com/spec/v1
+oid sha256:b023387efc879bcd67da0173ece54c03004d5d6236bbb516428f7121a433a4d7
+size 456

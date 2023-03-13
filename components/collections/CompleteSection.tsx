@@ -1,31 +1,3 @@
-import React from "react";
-import TransactionStatusSection from "./TransactionStatusSection";
-import SectionHeader from "./SectionHeader";
-
-interface ICompleteSectionProps {
-  processing: boolean;
-  active: boolean;
-  completed: boolean;
-  title: string;
-  description: string;
-  txHash?: string;
-  sectionNo: number;
-}
-
-const CompleteSection: React.FC<ICompleteSectionProps> = ({ processing, active, completed, title, description, sectionNo, txHash }) => {
-  return (
-    <div className='mt-[16px]'>
-      <SectionHeader sectionNo={sectionNo} title={title} active={active} processing={processing} completed={completed} />
-
-      {active && (
-        <div className='mt-4 mb-4 ml-6 max-w-[450px]'>
-          <p className='text-secondary text-md'>{description}</p>
-
-          <TransactionStatusSection processing={processing} txHash={txHash} isTx={false} />
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default CompleteSection;
+version https://git-lfs.github.com/spec/v1
+oid sha256:8f69b060a10a3381813f55a0167464c079223ecfb20c65838212c1a0201f2557
+size 964

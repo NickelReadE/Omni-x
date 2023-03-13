@@ -1,17 +1,3 @@
-import { useContext, useEffect } from "react";
-import { SwitchedNetworkContext, SwitchedNetworkContextType } from "../contexts/network";
-
-export const useSwitchedNetwork = (callback?: any): SwitchedNetworkContextType => {
-  const { switched, switchNetworkAsync } = useContext(SwitchedNetworkContext);
-
-  useEffect(() => {
-    if (switched && callback) {
-      setTimeout(callback, 1000);
-    }
-  }, [callback, switched]);
-
-  return {
-    switched,
-    switchNetworkAsync
-  };
-};
+version https://git-lfs.github.com/spec/v1
+oid sha256:0b29659286d73f5672dd7bf199bf63e4601090bb510f39ca76846f0b26abced1
+size 496

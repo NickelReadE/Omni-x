@@ -1,21 +1,3 @@
-import { createContext } from "react";
-
-export enum ModalIDs {
-  MODAL_NONE,
-  MODAL_LISTING,
-  MODAL_BUY,
-  MODAL_BID,
-  MODAL_ACCEPT
-}
-
-export type ModalContextType = {
-  modal: ModalIDs;
-  openModal: (modal: ModalIDs, data: any) => void;
-  closeModal: () => void;
-};
-
-export const ModalContext = createContext<ModalContextType>({
-  modal: ModalIDs.MODAL_NONE,
-  openModal: () => undefined,
-  closeModal: () => undefined
-});
+version https://git-lfs.github.com/spec/v1
+oid sha256:b9001e49e992dbbea2d21294fc3ad7f8be0721e4f79c7b279ddf72de95248b15
+size 448

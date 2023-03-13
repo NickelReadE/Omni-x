@@ -1,16 +1,3 @@
-import React from "react";
-
-interface IPropsButton {
-  selected: boolean;
-  onClick: () => void;
-}
-
-export const DotButton = ({ selected, onClick }: IPropsButton) => (
-  <button
-    className={`embla__dot bg-transparent cursor-pointer relative w-[80px] h-[30px] mr-[7.5px] ml-[7.5px] flex items-center outline-none ${
-      selected ? "is-selected" : ""
-    }`}
-    type='button'
-    onClick={onClick}
-  />
-);
+version https://git-lfs.github.com/spec/v1
+oid sha256:17c1271890bccb7368351e3cdd054600ecc13a63dc00b7121edcfa593373e14e
+size 426

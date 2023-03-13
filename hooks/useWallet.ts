@@ -1,12 +1,3 @@
-import { useContext } from "react";
-import { WalletContext, WalletContextType } from "../contexts/wallet";
-
-const useWallet = (): WalletContextType => {
-  const context = useContext(WalletContext);
-  if (context === undefined) {
-    throw new Error("useWallet must be used within an WalletProvider");
-  }
-  return context;
-};
-
-export default useWallet;
+version https://git-lfs.github.com/spec/v1
+oid sha256:235a7385ede75b7f0a383acd261ccf086ba7bb74fa249333767936debc9a8c56
+size 365

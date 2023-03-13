@@ -1,36 +1,3 @@
-import numbro from "numbro";
-
-// using a currency library here in case we want to add more in future
-export const formatDollarAmount = (num: number | undefined, digits = 2, round = true) => {
-  if (num === 0) return "$0.00";
-  if (!num) return "-";
-  if (num < 0.001 && digits <= 3) {
-    return "<$0.001";
-  }
-
-  return numbro(num).formatCurrency({
-    average: round,
-    mantissa: num > 1000 ? 2 : digits,
-    abbreviations: {
-      million: "M",
-      billion: "B"
-    }
-  });
-};
-
-// using a currency library here in case we want to add more in future
-export const formatAmount = (num: number | undefined, digits = 2) => {
-  if (num === 0) return "0";
-  if (!num) return "-";
-  if (num < 0.001) {
-    return "<0.001";
-  }
-  return numbro(num).format({
-    average: true,
-    mantissa: num > 1000 ? 2 : digits,
-    abbreviations: {
-      million: "M",
-      billion: "B"
-    }
-  });
-};
+version https://git-lfs.github.com/spec/v1
+oid sha256:70016db6a4375ac7f5b16ef37af5dcb58c928300cdd50fdeac803a31d02fbb80
+size 925

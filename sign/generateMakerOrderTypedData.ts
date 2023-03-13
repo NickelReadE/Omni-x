@@ -1,25 +1,3 @@
-import { TypedDataDomain, TypedDataField } from "@ethersproject/abstract-signer";
-import { SupportedChainId, MakerOrder, MakerOrderWithEncodedParams } from "../types";
-import { getMakerOrderTypeAndDomain } from "./getMakerOrderTypeAndDomain";
-import { encodeOrderParams } from "./encodeOrderParams";
-
-export const generateMakerOrderTypedData = (
-  signerAddress: string,
-  chainId: SupportedChainId,
-  order: MakerOrder,
-  verifyingContractAddress?: string
-): {
-  type: Record<string, TypedDataField[]>;
-  domain: TypedDataDomain;
-  value: MakerOrderWithEncodedParams;
-} => {
-  const { domain, type } = getMakerOrderTypeAndDomain(chainId, verifyingContractAddress);
-  const { encodedParams } = encodeOrderParams(order.params);
-  const value: MakerOrderWithEncodedParams = {
-    ...order,
-    signer: signerAddress,
-    params: encodedParams
-  };
-
-  return { domain, type, value };
-};
+version https://git-lfs.github.com/spec/v1
+oid sha256:f70aca22410e9a42cb7a5942097d698028b2a81661527216ef75a0703104059a
+size 909

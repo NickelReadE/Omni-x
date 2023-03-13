@@ -1,15 +1,3 @@
-export type LeaderboardData = {
-  id: number;
-  address: string;
-  avatar: string;
-  volume: number;
-  points: number;
-  total_points: number;
-  rank: number;
-  rank_in_24h: number;
-  rank_in_7d: number;
-  rank_in_30d: number;
-  rank_in_90d: number;
-  rank_in_1yr: number;
-  rank_in_all: number;
-};
+version https://git-lfs.github.com/spec/v1
+oid sha256:73ee463562284a6dbc8e99a012ab1d7d2bf6796e8e4be387f3f6ecbe68e79520
+size 314

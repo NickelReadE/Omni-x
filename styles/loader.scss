@@ -1,24 +1,3 @@
-.spin-loader {
-  display: inline-block;
-  width: 13px;
-  height: 13px;
-}
-.spin-loader:after {
-  content: " ";
-  display: block;
-  width: 13px;
-  height: 13px;
-  margin: 0px;
-  border-radius: 50%;
-  border: 3px solid #00F0EC;
-  border-color: #00F0EC transparent transparent transparent;
-  animation: spin-loader 1.2s linear infinite;
-}
-@keyframes spin-loader {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:33ebbaf7696ba1e56e52db6ae04d2acf4ef0f05c80181ccee4aad51a8385c59c
+size 468

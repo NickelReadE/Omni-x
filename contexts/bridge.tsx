@@ -1,32 +1,3 @@
-import { createContext } from "react";
-import { NFTItem } from "../interface/interface";
-import { BigNumber } from "ethers";
-
-export type UnwrapInfo = {
-  type: "ERC721" | "ERC1155";
-  chainId: number;
-  originAddress: string;
-  persistentAddress: string;
-  amount: number;
-  tokenId: string;
-};
-
-export type BridgeContextType = {
-  estimating: boolean;
-  unwrapInfo: UnwrapInfo | undefined;
-  selectedUnwrapInfo: UnwrapInfo | undefined;
-  validateOwNFT: (nft: NFTItem) => Promise<boolean>;
-  validateONFT: (nft: NFTItem) => Promise<boolean>;
-  estimateGasFee: (selectedNFTItem: NFTItem, senderChainId: number, targetChainId: number) => Promise<BigNumber>;
-  estimateGasFeeONFTCore: (selectedNFTItem: NFTItem, senderChainId: number, targetChainId: number) => Promise<BigNumber>;
-};
-
-export const BridgeContext = createContext<BridgeContextType>({
-  estimating: false,
-  unwrapInfo: undefined,
-  selectedUnwrapInfo: undefined,
-  validateOwNFT: async () => false,
-  validateONFT: async () => false,
-  estimateGasFee: async () => BigNumber.from("0"),
-  estimateGasFeeONFTCore: async () => BigNumber.from("0")
-});
+version https://git-lfs.github.com/spec/v1
+oid sha256:8a37e8fbd4fc53faa7c79ae7252cddcd1251a94ac3ea21045eae61ea63f4f5d8
+size 1142

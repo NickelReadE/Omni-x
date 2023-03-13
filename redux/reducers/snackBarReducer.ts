@@ -1,31 +1,3 @@
-import { createSlice } from "@reduxjs/toolkit";
-
-//reducers
-export const snackBarSlice = createSlice({
-  name: "snackBar",
-  initialState: {
-    opened: false,
-    message: "",
-    status: "success"
-  },
-  reducers: {
-    openSnackBar: (state, action) => {
-      state.opened = true;
-      state.message = action.payload.message;
-      state.status = action.payload.status;
-    },
-    closeSnackBar: (state) => {
-      state.opened = false;
-    }
-  }
-});
-
-//actions
-export const { openSnackBar, closeSnackBar } = snackBarSlice.actions;
-
-//selectors
-export const selectSnackState = (state: any) => state.snackBarState.opened;
-export const selectSnackStatus = (state: any) => state.snackBarState.status;
-export const selectSnackMessage = (state: any) => state.snackBarState.message;
-
-export default snackBarSlice.reducer;
+version https://git-lfs.github.com/spec/v1
+oid sha256:5a880032932e184adb10b9250960aa6e37997e0d29d04c7dd6ab814910050341
+size 479

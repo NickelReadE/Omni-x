@@ -1,21 +1,3 @@
-import React from "react";
-
-const ListingFeeSection: React.FC = () => {
-  return (
-    <div className='col-span-3'>
-      <div className='flex justify-end'>
-        <p className='text-sm text-[#6C757D] font-semibold mr-6'>service fee:</p>
-        <p className='text-sm w-[60px] text-[#ADB5BD] font-light'>1.50% *</p>
-      </div>
-      <div className='flex justify-end'>
-        <p className='text-sm text-[#6C757D] font-semibold mr-6'>creator fee:</p>
-        <p className='text-sm w-[60px] text-[#ADB5BD] font-light'>2.00%</p>
-      </div>
-      {/* <div className='flex justify-end'>
-        <p className='text-sm mt-1.5 text-[#ADB5BD] font-light italic text-right'>*purchases using $OMNI reduce buyer’s<br/>platform tax from 2% to 1.5%</p>
-      </div> */}
-    </div>
-  );
-};
-
-export default ListingFeeSection;
+version https://git-lfs.github.com/spec/v1
+oid sha256:89f6f762b2bb9c4aabd16cdd2408b4d1d9874da251974cf1d22c833ddcc5a4fd
+size 838

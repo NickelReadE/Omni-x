@@ -1,21 +1,3 @@
-import { Network } from "alchemy-sdk";
-
-export const ethSettings = {
-  apiKey: (process.env.GOERLI_ALCHEMY_API_KEY as string) || "",
-  network: Network.ETH_GOERLI
-};
-
-export const arbitrumSettings = {
-  apiKey: (process.env.ARBITRUM_ALCHEMY_API_KEY as string) || "",
-  network: Network.ARB_GOERLI
-};
-
-export const optimismSettings = {
-  apiKey: (process.env.OPTIMISM_ALCHEMY_API_KEY as string) || "",
-  network: Network.OPT_GOERLI
-};
-
-export const mumbaiSettings = {
-  apiKey: (process.env.MUMBAI_ALCHEMY_API_KEY as string) || "",
-  network: Network.MATIC_MUMBAI
-};
+version https://git-lfs.github.com/spec/v1
+oid sha256:7831fe87b2a0938796a8db33000a0ad2788010c322be01e4218076570174d214
+size 587

@@ -1,16 +1,3 @@
-{
-  "ethereum": "",
-  "bsc": "",
-  "avalanche": "",
-  "polygon": "",
-  "arbitrum": "",
-  "optimism": "",
-  "fantom": "",
-
-  "goerli": "0x3A694BC21512D97150a922A1F73b324f7e2Cc3f7",
-  "bsc testnet": "0xC87163116aCA4b6d1651D6DA3519134BB569052b",
-  "fuji": "0xe225cdB94F6DFca44CAE017d41c476bFc22a6f31",
-  "mumbai": "0x64E17F200b70cFaEc77F6aaC1Ae95d88Fb734838",
-  "arbitrum-goerli": "0x0AE54533Da4491Eb26D2882a8e65A84A1B2bD74C",
-  "optimism-goerli": "0xa0cF009bbf65F56b50FAf99CDA0708461dD25366"
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:9638edb4f06b932c15e178f9556cb25ba3c33f60daf1ec8871a7bf247d2803a4
+size 508

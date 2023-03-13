@@ -1,36 +1,3 @@
-import { useEffect, useState } from "react";
-import { collectionsService } from "../services/collections";
-import { FullCollectionType } from "../types/collections";
-
-export type CollectionTypeFunc = {
-  collectionInfo: FullCollectionType | undefined;
-  refreshCollection: () => void;
-};
-
-const getCollectionInfo = async (col_url: string) => {
-  const { data: collection_info } = await collectionsService.getCollectionInfo(col_url);
-  return collection_info as FullCollectionType;
-};
-
-const useCollection = (col_url: string): CollectionTypeFunc => {
-  const [collectionInfo, setCollectionInfo] = useState<FullCollectionType | undefined>();
-
-  const refreshCollection = () => {
-    getCollectionInfo(col_url).then((data) => {
-      setCollectionInfo(data);
-    });
-  };
-
-  useEffect(() => {
-    getCollectionInfo(col_url).then((data) => {
-      setCollectionInfo(data);
-    });
-  }, [col_url]);
-
-  return {
-    collectionInfo,
-    refreshCollection
-  };
-};
-
-export default useCollection;
+version https://git-lfs.github.com/spec/v1
+oid sha256:d868937db220e56726f0e42fee70c40e83f83635eff36b880a4343f49e56da2d
+size 1023

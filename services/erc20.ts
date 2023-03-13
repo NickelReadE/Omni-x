@@ -1,28 +1,3 @@
-import { ethers } from "ethers";
-import { CHAIN_IDS, getProvider } from "../utils/constants";
-import { CHAIN_TYPE } from "../types/enum";
-import { USDC_ADDRESS } from "../utils/constants/addresses";
-import ERC20Abi from "../constants/abis/ERC20.json";
-
-const chainIds = [CHAIN_IDS[CHAIN_TYPE.FANTOM_TESTNET]];
-
-export const getERC20BalanceFromDirectCall = async (address: string) => {
-  const balances = [];
-  for (const chainId of chainIds) {
-    const provider = getProvider(chainId);
-    const usdcInstance = new ethers.Contract(USDC_ADDRESS[chainId], ERC20Abi, provider);
-    const decimal = await usdcInstance.decimals();
-    const balance = await usdcInstance.balanceOf(address);
-    const usdcFormattedBalance = parseFloat(ethers.utils.formatUnits(balance, decimal));
-    const usdtInstance = new ethers.Contract(USDC_ADDRESS[chainId], ERC20Abi, provider);
-    const usdtDecimal = await usdtInstance.decimals();
-    const usdtBalance = await usdtInstance.balanceOf(address);
-    const usdtFormattedBalance = parseFloat(ethers.utils.formatUnits(usdtBalance, usdtDecimal));
-    balances.push({
-      chainId: chainId,
-      usdc: usdcFormattedBalance,
-      usdt: usdtFormattedBalance
-    });
-  }
-  return balances;
-};
+version https://git-lfs.github.com/spec/v1
+oid sha256:5dfa7331d5b666090c7eb06631b5f0628704199227b616d2ade0849a8d7476c9
+size 1252

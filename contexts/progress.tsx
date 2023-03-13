@@ -1,20 +1,3 @@
-import { createContext } from "react";
-import { PendingTxType } from "./contract";
-
-export type ProgressContextType = {
-  histories: PendingTxType[];
-  pending: boolean;
-  setPending: (pending: boolean) => void;
-  addTxToHistories: (txInfo: PendingTxType) => Promise<number>;
-  updateHistory: (historyIndex: number, txInfo: PendingTxType) => void;
-  clearHistories: () => void;
-};
-
-export const ProgressContext = createContext<ProgressContextType>({
-  histories: [],
-  pending: false,
-  setPending: () => undefined,
-  addTxToHistories: async () => -1,
-  updateHistory: () => undefined,
-  clearHistories: () => undefined
-});
+version https://git-lfs.github.com/spec/v1
+oid sha256:06d13938bbbd22327c3c2ab4a9f831109564350ac3c5e371699910a3319f80bf
+size 644

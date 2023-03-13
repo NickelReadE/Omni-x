@@ -1,5 +1,3 @@
-{
-  "presets": ["next/babel"],
-  "plugins": ["inline-react-svg"]
-}
-  
+version https://git-lfs.github.com/spec/v1
+oid sha256:624c5c681040d2aa8d16e59fa15aa1885198e47673e4ac49385b0b929f966db9
+size 73

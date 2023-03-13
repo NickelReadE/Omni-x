@@ -1,5 +1,3 @@
-export const ONFT_CORE_INTERFACE_ID = "0x7bb0080b";
-export const ONFT1155_CORE_INTERFACE_ID = "0x33577776";
-export const ERC1155_INTERFACE_ID = "0xd9b67a26";
-export const ERC721_INTERFACE_ID = "0x80ac58cd";
-export const ERC2189_INTERFACE_ID = "0x2a55205a";
+version https://git-lfs.github.com/spec/v1
+oid sha256:75d70f0a99e42948b1d7f877c251960c14d869919ebca22e96792842fdc5be29
+size 262

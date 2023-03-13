@@ -1,15 +1,3 @@
-import { twMerge } from "tailwind-merge";
-
-interface IGreenButtonProps {
-  text: string;
-  className?: string;
-  onClick: () => void;
-}
-
-export const GreenButton = ({ text, className, onClick }: IGreenButtonProps) => {
-  return (
-    <button className={twMerge(`border-green-500 border rounded-full px-4 py-2 hover:bg-green-500 ${className ?? ""}`)} onClick={onClick}>
-      <div className={"text-primary-light text-[16px] leading-[20px] h-[20px] font-medium"}>{text}</div>
-    </button>
-  );
-};
+version https://git-lfs.github.com/spec/v1
+oid sha256:f8fe45d3b87910534fa2fa4d0cda010950967b15e6d000b54da947f2bedaae03
+size 511

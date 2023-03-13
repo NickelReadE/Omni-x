@@ -1,29 +1,3 @@
-import React, { useState, useEffect } from "react";
-import type { NextPage } from "next";
-import HomeCollections from "../components/home/Collections";
-import HomeIntro from "../components/home/Intro";
-import { HomeFeatured } from "../components/home/Featured";
-import { HomeTopCollections } from "../components/home/TopCollections";
-import { getETHPrice } from "../utils/helpers";
-
-const Home: NextPage = () => {
-  const [ethPrice, setEthPrice] = useState<number>(0);
-
-  useEffect(() => {
-    (async () => {
-      const ethPrice = await getETHPrice();
-      setEthPrice(ethPrice);
-    })();
-  }, []);
-
-  return (
-    <>
-      <HomeIntro />
-      <HomeFeatured ethPrice={ethPrice} />
-      <HomeTopCollections ethPrice={ethPrice} />
-      <HomeCollections ethPrice={ethPrice} />
-    </>
-  );
-};
-
-export default Home;
+version https://git-lfs.github.com/spec/v1
+oid sha256:0f310b12f6667884fe464ee3b6d3578ba882d60a5bf60ac4628eaf3b01d05ec1
+size 846
